@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Imperative config should match the snapshot 1`] = `
+{
+  "definitions": [],
+  "name": "kubernetes-secrets-plugin",
+  "overrides": {
+    "CredentialManager": "./credentials/K8sCredentialManager",
+  },
+  "pluginAliases": [
+    "k8s",
+  ],
+  "pluginHealthCheck": "./lib/imperative/healthCheckHandler",
+  "pluginLifeCycle": "./lib/imperative/pluginLifeCycle",
+  "pluginSummary": "Work with secrets stored in kubernetes",
+  "productDisplayName": "Secrets for Kubernetes",
+  "rootCommandDescription": "Store credentials as secrets in a kubernetes cluster",
+}
+`;

@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="zoom: 1;"><!-- Font Awesome Free 5.15.3 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path fill="#eeeeee" d="M224.3,273 m192,-34 l-136,-136 c-9.4,-9.4 -24.6,-9.4 -33.9,0 l-22.6,22.6 c-9.4,9.4 -9.4,24.6 0,33.9 l96.4,96.4 l-96.4,96.4 c-9.4,9.4 -9.4,24.6 0,33.9 l22.6,22.6 c9.4,9.4 24.6,9.4 33.9,0 l136,-136 c9.4,-9.2 9.4,-24.4 0,-33.8 "></path>
+
+<circle stroke="#eeeeee" id="circle1" stroke-width="25px" cy="251.893066px" fill="#ffffff" r="79.401077px" cx="141.860962px" transform=""></circle>
+<line stroke="#313131" y1="212.648834px" id="line1" x1="108.092682px" stroke-width="25px" y2="254.631012px" x2="141.860947px" transform=""></line>
+<line stroke="#313131" y1="252.80571px" id="line2" x1="143.686279px" stroke-width="25px" y2="220.862747px" x2="193.882355px" transform=""></line>
+<circle stroke="#313131" id="circle2" stroke-width="3px" cy="250.980423px" fill="#ffffff" r="13.689835px" cx="141.860962px" transform=""></circle>
+</svg>

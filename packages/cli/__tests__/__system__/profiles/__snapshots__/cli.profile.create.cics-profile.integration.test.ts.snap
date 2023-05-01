@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create cics Profile Success scenarios should display create cics profile help 1`] = `
+"===============CREATE cics PROFILE HELP===============
+
+ COMMAND NAME
+ ------------
+
+   cics-profile | cics
+
+ DESCRIPTION
+ -----------
+
+   A cics profile is required to issue commands in the cics command group that
+   interact with CICS regions. The cics profile contains your host, port, user
+   name, and password for the IBM CICS management client interface (CMCI) server of
+   your choice.
+
+   Warning: This command has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   zowe profiles create cics-profile <profileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   profileName		 (string)
+
+      Specifies the name of the new cics profile. You can load this profile by using
+      the name on commands that support the \\"--cics-profile\\" option.
+
+ OPTIONS
+ -------
+
+   --host | -H (string)
+
+      The CMCI server host name
+
+   --port | -P (number)
+
+      The CMCI server port
+
+      Default value: 1490
+
+   --user | -u (string)
+
+      Your username to connect to CICS
+
+   --password | -p (string)
+
+      Your password to connect to CICS
+
+   --region-name (string)
+
+      The name of the CICS region name to interact with
+
+   --cics-plex (string)
+
+      The name of the CICSPlex to interact with
+
+   --overwrite | --ow (boolean)
+
+      Overwrite the cics profile when a profile of the same name exists.
+
+   --disable-defaults | --dd (boolean)
+
+      Disable populating profile values of undefined properties with default values.
+
+ CICS CONNECTION OPTIONS
+ -----------------------
+
+   --reject-unauthorized | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --protocol | -o (string)
+
+      Specifies CMCI protocol (http or https).
+
+      Default value: https
+      Allowed values: http, https
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Create a cics profile named 'cics123' to connect to CICS at
+   host zos123 and port 1490:
+
+      $ zowe profiles create cics-profile cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss
+
+"
+`;
