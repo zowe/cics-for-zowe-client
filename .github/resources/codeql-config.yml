@@ -6,4 +6,4 @@ queries:
 paths:
   - packages
 paths-ignore:
-  - node_modules
+  - "**/node_modules"

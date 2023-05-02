@@ -6,7 +6,7 @@
   "repository": {
     "url": "https://github.com/zowe/vscode-extension-for-cics"
   },
-  "version": "2.3.0",
+  "version": "5.0.1",
   "engines": {
     "vscode": "^1.53.2"
   },
@@ -880,9 +880,11 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "run-script-os",
+    "build": "npm run lint && run-script-os && npm run checkTestsCompile && npm run madge",
     "build:win32": "rd /s /q out && tsc -p ./",
     "build:default": "rm -rf out && tsc -p ./",
+    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
+    "madge": "madge -c lib",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "test:unit": "jest \".*__tests__.*\\.unit\\.test\\.ts\" --coverage",
@@ -891,24 +893,7 @@
     "package": "vsce package && mkdir -p dist && mv *.vsix dist"
   },
   "devDependencies": {
-    "@types/jest": "^29.2.3",
-    "@types/glob": "^7.2.0",
-    "@types/node": "^12.20.55",
-    "@types/vscode": "~1.53.0",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "jest": "^29.3.1",
-    "jest-html-reporter": "^3.7.0",
-    "jest-junit": "^15.0.0",
-    "jest-stare": "^2.4.1",
-    "glob": "^7.2.3",
-    "prettier": "2.6.0",
-    "shebang-regex": "^3.0.0",
-    "ts-jest": "^29.0.3",
-    "typescript": "^4.9.5"
+    "@types/vscode": "~1.53.0"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
@@ -922,16 +907,13 @@
     "xml-js": "~1.6.11"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.ts*"
-    ],
     "moduleFileExtensions": [
       "js",
       "ts",
       "tsx"
     ],
     "watchPathIgnorePatterns": [
-      "<rootDir>/results/unit"
+      "<rootDir>/__tests__/__results__/unit"
     ],
     "transform": {
       "^.+\\.(ts|tsx)$": [
@@ -948,6 +930,13 @@
       "__tests__/__theia__/",
       "out/"
     ],
+    "collectCoverageFrom": [
+      "src/**/*.ts*",
+      "!**/__tests__/**",
+      "!**/index.ts",
+      "!**/main.ts"
+    ],
+    "collectCoverage": false,
     "reporters": [
       "default",
       "jest-junit",
@@ -960,22 +949,18 @@
       "text",
       "cobertura"
     ],
-    "coverageDirectory": "<rootDir>/results/unit/coverage",
-    "setupFilesAfterEnv": [
-      "<rootDir>/__tests__/jest.setup.ts"
-    ],
-    "preset": "ts-jest"
-  },
-  "jest-html-reporter": {
-    "pageTitle": "Zowe Extension Tests",
-    "outputPath": "results/unit/results.html"
+    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
   },
   "jest-stare": {
-    "resultDir": "results/unit/jest-stare",
+    "resultDir": "__tests__/__results__/unit/jest-stare",
     "coverageLink": "../coverage/lcov-report/index.html"
   },
   "jest-junit": {
-    "outputDirectory": "<rootDir>/results/unit",
-    "outputName": "junit.xml"
+    "output": "__tests__/__results__/junit.xml"
+  },
+  "jest-html-reporter": {
+    "pageTitle": "Zowe CICS Extension Test Results",
+    "outputPath": "__tests__/__results__/unit/results.html",
+    "includeFailureMsg": true
   }
 }

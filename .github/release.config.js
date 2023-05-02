@@ -2,9 +2,20 @@ module.exports = {
     branches: [
         {
             name: "master",
+            level: "minor",
+            devDependencies: {
+                "@zowe/imperative": "zowe-v2-lts",
+                "@zowe/cli": "zowe-v2-lts",
+                "@zowe/zowe-explorer-api": "zowe-v2-lts",
+            }
+        },
+        {
+            name: "zowe-v1-lts",
             level: "patch",
             devDependencies: {
-                "@zowe/imperative": "zowe-v1-lts"
+                "@zowe/imperative": "zowe-v1-lts",
+                "@zowe/cli": "zowe-v1-lts",
+                "@zowe/zowe-explorer-api": "zowe-v1-lts",
             }
         }
     ],
@@ -12,9 +23,9 @@ module.exports = {
         "@octorelease/changelog",
         ["@octorelease/npm", {
             aliasTags: {
-                latest: ["zowe-v1-lts"]
+                latest: ["zowe-v2-lts"]
             },
-            pruneShrinkwrap: true
+            pruneShrinkwrap: false
         }],
         ["@octorelease/github", {
             checkPrLabels: true

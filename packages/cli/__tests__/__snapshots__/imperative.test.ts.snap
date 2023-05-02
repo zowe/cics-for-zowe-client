@@ -1,35 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`imperative config should match the snapshot 1`] = `
-Object {
-  "commandModuleGlobs": Array [
+{
+  "commandModuleGlobs": [
     "**/cli/*/*.definition!(.d).*s",
   ],
   "name": "cics",
   "pluginHealthCheck": "./lib/healthCheck.handler",
   "productDisplayName": "CLI Plug-in for IBM CICS",
-  "profiles": Array [
-    Object {
-      "createProfileExamples": Array [
-        Object {
+  "profiles": [
+    {
+      "createProfileExamples": [
+        {
           "description": "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490",
           "options": "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
         },
       ],
-      "schema": Object {
+      "schema": {
         "description": "A cics profile is required to issue commands in the cics command group that interact with CICS regions. The cics profile contains your host, port, user name, and password for the IBM CICS management client interface (CMCI) server of your choice.",
-        "properties": Object {
-          "cicsPlex": Object {
-            "optionDefinition": Object {
+        "properties": {
+          "cicsPlex": {
+            "optionDefinition": {
               "description": "The name of the CICSPlex to interact with",
               "name": "cics-plex",
               "type": "string",
             },
             "type": "string",
           },
-          "host": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "host": {
+            "optionDefinition": {
+              "aliases": [
                 "H",
               ],
               "description": "The CMCI server host name",
@@ -38,13 +38,13 @@ Object {
             },
             "type": "string",
           },
-          "password": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "password": {
+            "optionDefinition": {
+              "aliases": [
                 "p",
               ],
               "description": "Your password to connect to CICS",
-              "implies": Array [
+              "implies": [
                 "user",
               ],
               "name": "password",
@@ -53,9 +53,9 @@ Object {
             "secure": true,
             "type": "string",
           },
-          "port": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "port": {
+            "optionDefinition": {
+              "aliases": [
                 "P",
               ],
               "defaultValue": 1490,
@@ -65,14 +65,14 @@ Object {
             },
             "type": "number",
           },
-          "protocol": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "protocol": {
+            "optionDefinition": {
+              "aliases": [
                 "o",
               ],
-              "allowableValues": Object {
+              "allowableValues": {
                 "caseSensitive": false,
-                "values": Array [
+                "values": [
                   "http",
                   "https",
                 ],
@@ -85,17 +85,17 @@ Object {
             },
             "type": "string",
           },
-          "regionName": Object {
-            "optionDefinition": Object {
+          "regionName": {
+            "optionDefinition": {
               "description": "The name of the CICS region name to interact with",
               "name": "region-name",
               "type": "string",
             },
             "type": "string",
           },
-          "rejectUnauthorized": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "rejectUnauthorized": {
+            "optionDefinition": {
+              "aliases": [
                 "ru",
               ],
               "defaultValue": true,
@@ -106,13 +106,13 @@ Object {
             },
             "type": "boolean",
           },
-          "user": Object {
-            "optionDefinition": Object {
-              "aliases": Array [
+          "user": {
+            "optionDefinition": {
+              "aliases": [
                 "u",
               ],
               "description": "Your username to connect to CICS",
-              "implies": Array [
+              "implies": [
                 "password",
               ],
               "name": "user",
@@ -122,7 +122,7 @@ Object {
             "type": "string",
           },
         },
-        "required": Array [],
+        "required": [],
         "title": "CICS Profile",
         "type": "object",
       },

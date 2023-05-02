@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics define program should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "def",
   ],
   "description": "Define new resources (for example, programs) to CICS through IBM CMCI.",
   "name": "define",
-  "passOn": Array [
-    Object {
-      "ignoreNodes": Array [
-        Object {
+  "passOn": [
+    {
+      "ignoreNodes": [
+        {
           "type": "group",
         },
       ],
       "merge": true,
       "property": "options",
-      "value": Array [
-        Object {
-          "aliases": Array [
+      "value": [
+        {
+          "aliases": [
             "H",
           ],
           "description": "The CICS server host name.",
@@ -26,8 +26,8 @@ Object {
           "name": "host",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "P",
           ],
           "defaultValue": 443,
@@ -36,8 +36,8 @@ Object {
           "name": "port",
           "type": "number",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "u",
           ],
           "description": "Mainframe (CICS) user name, which can be the same as your TSO login.",
@@ -45,8 +45,8 @@ Object {
           "name": "user",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "pw",
           ],
           "description": "Mainframe (CICS) password, which can be the same as your TSO password.",
@@ -54,8 +54,8 @@ Object {
           "name": "password",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "ru",
           ],
           "defaultValue": true,
@@ -64,13 +64,13 @@ Object {
           "name": "reject-unauthorized",
           "type": "boolean",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "o",
           ],
-          "allowableValues": Object {
+          "allowableValues": {
             "caseSensitive": false,
-            "values": Array [
+            "values": [
               "http",
               "https",
             ],

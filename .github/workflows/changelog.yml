@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - zowe-v1-lts
 
 jobs:
   changelog:
@@ -12,14 +13,15 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
     - name: Check Changelog Updated
       id: checkchangelogupdated
-      uses: awharn/check_changelog_action@v0.0.2
+      uses: awharn/check_changelog_action@v1
       with:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
-        lerna: false
+        lerna: true
+        ignoreFiles: '__tests__|package.json|package-lock.json|*.md'
