@@ -27,99 +27,99 @@ const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
-    "cics", [{
-        name: "cics",
-        type: "cics",
-        host,
-        port,
-        user,
-        password
-    }]
+  "cics", [{
+    name: "cics",
+    type: "cics",
+    host,
+    port,
+    user,
+    password
+  }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-    positionals: ["cics", "define", "urimap-server"],
-    definition: UrimapServerDefinition,
-    profiles: PROFILES
+  positionals: ["cics", "define", "urimap-server"],
+  definition: UrimapServerDefinition,
+  profiles: PROFILES
 });
 
 describe("DefineUrimapServerHandler", () => {
-    const programName = "testProgram";
-    const regionName = "testRegion";
-    const csdGroup = "testGroup";
-    const urimapName = "testUrimap";
-    const urimapHost = "testHost";
-    const urimapPath = "testPath";
-    const urimapScheme = "http";
-    const cicsPlex = "testPlex";
-    const enable = false;
-    const tcpipservice = "TCPIPSRV";
+  const programName = "testProgram";
+  const regionName = "testRegion";
+  const csdGroup = "testGroup";
+  const urimapName = "testUrimap";
+  const urimapHost = "testHost";
+  const urimapPath = "testPath";
+  const urimapScheme = "http";
+  const cicsPlex = "testPlex";
+  const enable = false;
+  const tcpipservice = "TCPIPSRV";
 
-    const defaultReturn: ICMCIApiResponse = {
-        response: {
-            resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-            records: "testing"
-        }
+  const defaultReturn: ICMCIApiResponse = {
+    response: {
+      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
+      records: "testing"
+    }
+  };
+
+  const functionSpy = jest.spyOn(Define, "defineUrimapServer");
+
+  beforeEach(() => {
+    functionSpy.mockClear();
+    functionSpy.mockImplementation(async () => defaultReturn);
+  });
+
+  it("should call the defineUrimapServer api", async () => {
+    const handler = new UrimapServerHandler();
+
+    const commandParameters = {...DEFAULT_PARAMETERS};
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      urimapName,
+      csdGroup,
+      urimapPath,
+      urimapHost,
+      programName,
+      urimapScheme,
+      regionName,
+      cicsPlex,
+      enable,
+      tcpipservice,
+      host,
+      port,
+      user,
+      password,
+      rejectUnauthorized,
+      protocol
     };
 
-    const functionSpy = jest.spyOn(Define, "defineUrimapServer");
+    await handler.process(commandParameters);
 
-    beforeEach(() => {
-        functionSpy.mockClear();
-        functionSpy.mockImplementation(async () => defaultReturn);
-    });
-
-    it("should call the defineUrimapServer api", async () => {
-        const handler = new UrimapServerHandler();
-
-        const commandParameters = {...DEFAULT_PARAMETERS};
-        commandParameters.arguments = {
-            ...commandParameters.arguments,
-            urimapName,
-            csdGroup,
-            urimapPath,
-            urimapHost,
-            programName,
-            urimapScheme,
-            regionName,
-            cicsPlex,
-            enable,
-            tcpipservice,
-            host,
-            port,
-            user,
-            password,
-            rejectUnauthorized,
-            protocol
-        };
-
-        await handler.process(commandParameters);
-
-        expect(functionSpy).toHaveBeenCalledTimes(1);
-        const testProfile = PROFILE_MAP.get("cics")[0];
-        expect(functionSpy).toHaveBeenCalledWith(
-            new Session({
-                type: "basic",
-                hostname: testProfile.host,
-                port: testProfile.port,
-                user: testProfile.user,
-                password: testProfile.password,
-                rejectUnauthorized,
-                protocol
-            }),
-            {
-                name: urimapName,
-                csdGroup,
-                path: urimapPath,
-                host: urimapHost,
-                programName,
-                scheme: urimapScheme,
-                regionName,
-                cicsPlex,
-                enable,
-                tcpipservice,
-                description: undefined
-            }
-        );
-    });
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+    const testProfile = PROFILE_MAP.get("cics")[0];
+    expect(functionSpy).toHaveBeenCalledWith(
+      new Session({
+        type: "basic",
+        hostname: testProfile.host,
+        port: testProfile.port,
+        user: testProfile.user,
+        password: testProfile.password,
+        rejectUnauthorized,
+        protocol
+      }),
+      {
+        name: urimapName,
+        csdGroup,
+        path: urimapPath,
+        host: urimapHost,
+        programName,
+        scheme: urimapScheme,
+        regionName,
+        cicsPlex,
+        enable,
+        tcpipservice,
+        description: undefined
+      }
+    );
+  });
 });

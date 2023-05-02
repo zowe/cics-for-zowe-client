@@ -22,80 +22,80 @@ let session: Session;
 
 describe("CICS Delete web service", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_delete_webservice",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cicsProperties = testEnvironment.systemTestProperties.cics;
-
-        session = new Session({
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            type: "basic",
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_delete_webservice",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cicsProperties = testEnvironment.systemTestProperties.cics;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      type: "basic",
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
     });
+  });
 
-    const options: IWebServiceParms = {
-        pipelineName: "AAAA1234",
-        wsBind: "/u/exampleapp/wsbind/example.log",
-        validation: false
-    } as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should delete a web service from CICS", async () => {
-        let error;
-        let response;
+  const options: IWebServiceParms = {
+    pipelineName: "AAAA1234",
+    wsBind: "/u/exampleapp/wsbind/example.log",
+    validation: false
+  } as any;
 
-        const webserviceNameSuffixLength = 4;
-        const webserviceName = "AAAA" + generateRandomAlphaNumericString(webserviceNameSuffixLength);
+  it("should delete a web service from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = webserviceName;
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
+    const webserviceNameSuffixLength = 4;
+    const webserviceName = "AAAA" + generateRandomAlphaNumericString(webserviceNameSuffixLength);
 
-        try {
-            await defineWebservice(session, options);
-            response = await deleteWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = webserviceName;
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-    });
+    try {
+      await defineWebservice(session, options);
+      response = await deleteWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to delete a web service from CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+  });
 
-        const webserviceNameSuffixLength = 4;
-        const webserviceName = "AAAA" + generateRandomAlphaNumericString(webserviceNameSuffixLength);
+  it("should fail to delete a web service from CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        options.name = webserviceName;
-        options.csdGroup = csdGroup;
-        options.regionName = "FAKE";
+    const webserviceNameSuffixLength = 4;
+    const webserviceName = "AAAA" + generateRandomAlphaNumericString(webserviceNameSuffixLength);
 
-        try {
-            response = await deleteWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = webserviceName;
+    options.csdGroup = csdGroup;
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await deleteWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 });

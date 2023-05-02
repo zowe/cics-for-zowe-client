@@ -25,30 +25,30 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class UrimapClientHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Defining URIMAP of type Client to CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Defining URIMAP of type Client to CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await defineUrimapClient(session, {
-            name: params.arguments.urimapName,
-            csdGroup: params.arguments.csdGroup,
-            path: params.arguments.urimapPath,
-            host: params.arguments.urimapHost,
-            scheme: params.arguments.urimapScheme,
-            description: params.arguments.description,
-            enable: params.arguments.enable,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
-            authenticate: params.arguments.authenticate,
-            certificate: params.arguments.certificate
-        });
+    const response = await defineUrimapClient(session, {
+      name: params.arguments.urimapName,
+      csdGroup: params.arguments.csdGroup,
+      path: params.arguments.urimapPath,
+      host: params.arguments.urimapHost,
+      scheme: params.arguments.urimapScheme,
+      description: params.arguments.description,
+      enable: params.arguments.enable,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      authenticate: params.arguments.authenticate,
+      certificate: params.arguments.certificate
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
+    return response;
+  }
 }

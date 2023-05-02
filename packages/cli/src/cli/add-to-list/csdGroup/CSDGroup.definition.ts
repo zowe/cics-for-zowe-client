@@ -17,36 +17,36 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).ADDTOLIST.RESOURCES.CSDGROUP;
 
 export const CSDGroupDefinition: ICommandDefinition = {
-    name: "csdGroup",
-    aliases: ["csdg"],
-    description: strings.DESCRIPTION,
-    handler: __dirname + "/CSDGroup.handler",
-    type: "command",
-    positionals: [{
-        name: "name",
-        description: strings.POSITIONALS.NAME,
-        type: "string",
-        required: true
-    }, {
-        name: "csdList",
-        description: strings.POSITIONALS.CSDLIST,
-        type: "string",
-        required: true
+  name: "csdGroup",
+  aliases: ["csdg"],
+  description: strings.DESCRIPTION,
+  handler: __dirname + "/CSDGroup.handler",
+  type: "command",
+  positionals: [{
+    name: "name",
+    description: strings.POSITIONALS.NAME,
+    type: "string",
+    required: true
+  }, {
+    name: "csdList",
+    description: strings.POSITIONALS.CSDLIST,
+    type: "string",
+    required: true
+  }],
+  options: [
+    {
+      name: "region-name",
+      description: strings.OPTIONS.REGIONNAME,
+      type: "string"
+    },
+    {
+      name: "cics-plex",
+      description: strings.OPTIONS.CICSPLEX,
+      type: "string"
     }],
-    options: [
-        {
-            name: "region-name",
-            description: strings.OPTIONS.REGIONNAME,
-            type: "string"
-        },
-        {
-            name: "cics-plex",
-            description: strings.OPTIONS.CICSPLEX,
-            type: "string"
-        }],
-    profile: {optional: ["cics"]},
-    examples: [{
-        description: strings.EXAMPLES.EX1,
-        options: "MYGRP MYLIST --region-name MYREG"
-    }]
+  profile: {optional: ["cics"]},
+  examples: [{
+    description: strings.EXAMPLES.EX1,
+    options: "MYGRP MYLIST --region-name MYREG"
+  }]
 };

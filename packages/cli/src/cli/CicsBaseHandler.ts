@@ -18,7 +18,7 @@ import { CicsSession } from "./CicsSession";
  * All handlers should extend this class whenever possible
  */
 export abstract class CicsBaseHandler implements ICommandHandler {
-    /**
+  /**
      * This will grab the cics profile and create a session before calling the subclass
      * {@link CicsBaseHandler#processWithSession} method.
      *
@@ -26,19 +26,19 @@ export abstract class CicsBaseHandler implements ICommandHandler {
      *
      * @returns {Promise<void>}
      */
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("cics", false) || {};
-        const session = await CicsSession.createSessCfgFromArgs(commandParameters.arguments, true, commandParameters);
+  public async process(commandParameters: IHandlerParameters) {
+    const profile = commandParameters.profiles.get("cics", false) || {};
+    const session = await CicsSession.createSessCfgFromArgs(commandParameters.arguments, true, commandParameters);
 
-        const response = await this.processWithSession(commandParameters, session, profile);
+    const response = await this.processWithSession(commandParameters, session, profile);
 
-        commandParameters.response.progress.endBar(); // end any progress bars
+    commandParameters.response.progress.endBar(); // end any progress bars
 
-        // Return as an object when using --response-format-json
-        commandParameters.response.data.setObj(response);
-    }
+    // Return as an object when using --response-format-json
+    commandParameters.response.data.setObj(response);
+  }
 
-    /**
+  /**
      * This is called by the {@link CicsBaseHandler#process} after it creates a session. Should
      * be used so that every class does not have to instantiate the session object.
      *
@@ -48,9 +48,9 @@ export abstract class CicsBaseHandler implements ICommandHandler {
      *
      * @returns {Promise<ICMCIApiResponse>} The response from the underlying cics api call.
      */
-    public abstract processWithSession(
-        commandParameters: IHandlerParameters,
-        session: AbstractSession,
-        cicsProfile: IProfile
-    ): Promise<ICMCIApiResponse>;
+  public abstract processWithSession(
+    commandParameters: IHandlerParameters,
+    session: AbstractSession,
+    cicsProfile: IProfile
+  ): Promise<ICMCIApiResponse>;
 }

@@ -1,6 +1,5 @@
 # Contribution Guidelines
-
-This document is intended to be a living summary of conventions & best practices for development within Secure Credential Store Plug-in for Zowe CLI.
+This document is intended to be a living summary of conventions & best practices for development within IBM® CICS® Plug-in for Zowe CLI.
 
 ## Changelog Update Guidelines
 
@@ -28,8 +27,7 @@ The following information is critical to working with the code, running/writing/
 | Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md) |
 
-## Contribution Guidelines Specific to the Secure Credential Store Plug-in
-
-The following guidelines apply specifically to the Secure Credential Store Plug-in for Zowe CLI:
+## Contribution Guidelines Specific to the CICS Plug-in
+The following guidelines apply specifically to the IBM CICS Plug-in for Zowe CLI:
 
 -   None at this time.

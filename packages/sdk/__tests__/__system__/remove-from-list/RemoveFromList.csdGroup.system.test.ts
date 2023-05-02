@@ -22,101 +22,101 @@ let csdList: string;
 let session: Session;
 
 function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const sleepTime = 4000;
 
 describe("CICS RemoveFromList csdGroup", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_remove-from-list_csd-group",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const listNameSuffixLength = 4;
-        const cicsProperties = testEnvironment.systemTestProperties.cics;
-        csdList = "AAAA" + generateRandomAlphaNumericString(listNameSuffixLength);
-
-        session = new Session({
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            type: "basic",
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_remove-from-list_csd-group",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const listNameSuffixLength = 4;
+    const cicsProperties = testEnvironment.systemTestProperties.cics;
+    csdList = "AAAA" + generateRandomAlphaNumericString(listNameSuffixLength);
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      type: "basic",
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
     });
+  });
 
-    const options: ICSDGroupParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should remove a csdGroup from a list in CICS", async () => {
-        let error;
-        let response;
+  const options: ICSDGroupParms = {} as any;
 
-        options.name = csdGroup;
-        options.csdList = csdList;
-        options.regionName = regionName;
+  it("should remove a csdGroup from a list in CICS", async () => {
+    let error;
+    let response;
 
-        await addCSDGroupToList(session, options);
-        await sleep(sleepTime);
+    options.name = csdGroup;
+    options.csdList = csdList;
+    options.regionName = regionName;
 
-        try {
-            response = await removeCSDGroupFromList(session, options);
-        } catch (err) {
-            error = err;
-        }
+    await addCSDGroupToList(session, options);
+    await sleep(sleepTime);
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-    });
+    try {
+      response = await removeCSDGroupFromList(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to remove a csdGroup frp, a list in CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+  });
 
-        options.name = csdGroup;
-        options.csdList = csdList;
-        options.regionName = "FAKE";
+  it("should fail to remove a csdGroup frp, a list in CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await removeCSDGroupFromList(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = csdGroup;
+    options.csdList = csdList;
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await removeCSDGroupFromList(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to remove a csdGroup from a list in CICS that does not contain the csdGroup", async () => {
-        let error;
-        let response;
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 
-        options.name = csdGroup;
-        options.csdList = csdList;
-        options.regionName = regionName;
+  it("should fail to remove a csdGroup from a list in CICS that does not contain the csdGroup", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await removeCSDGroupFromList(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = csdGroup;
+    options.csdList = csdList;
+    options.regionName = regionName;
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("NODATA");
-    });
+    try {
+      response = await removeCSDGroupFromList(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("NODATA");
+  });
 });

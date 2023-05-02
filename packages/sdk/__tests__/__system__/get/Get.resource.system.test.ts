@@ -20,85 +20,85 @@ let session: Session;
 
 describe("CICS Get resource", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_get_resource",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cicsProperties = testEnvironment.systemTestProperties.cics;
-
-        session = new Session({
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            type: "basic",
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_get_resource",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cicsProperties = testEnvironment.systemTestProperties.cics;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      type: "basic",
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
     });
+  });
 
-    const options: IResourceParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should get a resource from CICS", async () => {
-        let error;
-        let response;
+  const options: IResourceParms = {} as any;
 
-        options.name = "CICSProgram";
-        options.regionName = regionName;
+  it("should get a resource from CICS", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await getResource(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = "CICSProgram";
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-    });
+    try {
+      response = await getResource(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should get a resource from CICS using criteria", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+  });
 
-        options.name = "CICSProgram";
-        options.regionName = regionName;
-        options.criteria = "program=D*";
-        try {
-            response = await getResource(session, options);
-        } catch (err) {
-            error = err;
-        }
+  it("should get a resource from CICS using criteria", async () => {
+    let error;
+    let response;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-    });
+    options.name = "CICSProgram";
+    options.regionName = regionName;
+    options.criteria = "program=D*";
+    try {
+      response = await getResource(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to define a resource to CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+  });
 
-        options.name = "CICSProgram";
-        options.criteria = "program=D*";
-        options.regionName = "FAKE";
+  it("should fail to define a resource to CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await getResource(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = "CICSProgram";
+    options.criteria = "program=D*";
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await getResource(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 });

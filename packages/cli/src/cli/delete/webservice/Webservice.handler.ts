@@ -26,22 +26,22 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  */
 
 export default class WebServiceHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Deleting web service from CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Deleting web service from CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await deleteWebservice(session, {
-            name: params.arguments.webserviceName,
-            csdGroup: params.arguments.csdGroup,
-            regionName: params.arguments.regionName || profile.regionName,
-        });
+    const response = await deleteWebservice(session, {
+      name: params.arguments.webserviceName,
+      csdGroup: params.arguments.csdGroup,
+      regionName: params.arguments.regionName || profile.regionName,
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);
+    return response;
+  }
 }

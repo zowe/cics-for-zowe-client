@@ -12,10 +12,10 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define urimap-client", () => {
-    it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/define/urimap-client/UrimapClient.definition").UrimapClientDefinition;
-        expect(definition).toBeDefined();
-        delete definition.handler;
-        expect(definition).toMatchSnapshot();
-    });
+  it ("should not have changed", () => {
+    const definition: ICommandDefinition = require("../../../../src/cli/define/urimap-client/UrimapClient.definition").UrimapClientDefinition;
+    expect(definition).toBeDefined();
+    delete definition.handler;
+    expect(definition).toMatchSnapshot();
+  });
 });

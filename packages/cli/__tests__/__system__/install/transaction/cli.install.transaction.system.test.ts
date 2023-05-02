@@ -27,144 +27,144 @@ let rejectUnauthorized: boolean;
 
 describe("CICS install transaction command", () => {
 
-    beforeAll(async () => {
-        TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "install_transaction",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
-        regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-        host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
-        port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
-        user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
-        password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
-        protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-        rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
+  beforeAll(async () => {
+    TEST_ENVIRONMENT = await TestEnvironment.setUp({
+      testName: "install_transaction",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
+    });
+    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
+    regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
+    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
+    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
+    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
+  });
+
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+  });
+
+  const deleteTransaction = async (transactionName: string) => {
+    const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
+    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
+    const session = new Session({
+      type: "basic",
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
     });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
-    const deleteTransaction = async (transactionName: string) => {
-        const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
-        const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
-        const session = new Session({
-            type: "basic",
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
-
-        return CicsCmciRestClient.deleteExpectParsedXml(session,
-            `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}` +
+    return CicsCmciRestClient.deleteExpectParsedXml(session,
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}` +
             `/${cmciProperties.regionName}?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
-    };
+  };
 
-    const discardTransaction = async (transactionName: string) => {
-        const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
-        const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
-        const deleteSession = new Session({
-            type: "basic",
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
+  const discardTransaction = async (transactionName: string) => {
+    const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
+    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
+    const deleteSession = new Session({
+      type: "basic",
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
+    });
 
-        return CicsCmciRestClient.deleteExpectParsedXml(deleteSession,
-            `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_LOCAL_TRANSACTION}/${cmciProperties.regionName}` +
+    return CicsCmciRestClient.deleteExpectParsedXml(deleteSession,
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_LOCAL_TRANSACTION}/${cmciProperties.regionName}` +
             `?CRITERIA=(TRANID=${transactionName})`);
-    };
+  };
 
-    it("should be able to display the help", () => {
-        const output = runCliScript(__dirname + "/__scripts__/install_transaction_help.sh", TEST_ENVIRONMENT, []);
-        expect(output.stderr.toString()).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toMatchSnapshot();
-    });
+  it("should be able to display the help", () => {
+    const output = runCliScript(__dirname + "/__scripts__/install_transaction_help.sh", TEST_ENVIRONMENT, []);
+    expect(output.stderr.toString()).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toMatchSnapshot();
+  });
 
-    it("should be able to successfully install a transaction with basic options", async () => {
+  it("should be able to successfully install a transaction with basic options", async () => {
 
-        // first define the transaction
-        const transactionNameSuffixLength = 3;
-        const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
-        let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT,
-            [transactionName, "program1", csdGroup, regionName]);
-        let stderr = output.stderr.toString();
-        expect(stderr).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toContain("success");
+    // first define the transaction
+    const transactionNameSuffixLength = 3;
+    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT,
+      [transactionName, "program1", csdGroup, regionName]);
+    let stderr = output.stderr.toString();
+    expect(stderr).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toContain("success");
 
-        output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, [transactionName, csdGroup, regionName]);
-        stderr = output.stderr.toString();
-        expect(stderr).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toContain("success");
-        await discardTransaction(transactionName);
-        await deleteTransaction(transactionName);
-    });
+    output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, [transactionName, csdGroup, regionName]);
+    stderr = output.stderr.toString();
+    expect(stderr).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toContain("success");
+    await discardTransaction(transactionName);
+    await deleteTransaction(transactionName);
+  });
 
-    it("should get a syntax error if transaction name is omitted", () => {
-        const output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKERGN"]);
-        const stderr = output.stderr.toString();
-        expect(stderr).toContain("Syntax");
-        expect(stderr).toContain("transaction");
-        expect(stderr).toContain("name");
-        expect(output.status).toEqual(1);
-    });
+  it("should get a syntax error if transaction name is omitted", () => {
+    const output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKERGN"]);
+    const stderr = output.stderr.toString();
+    expect(stderr).toContain("Syntax");
+    expect(stderr).toContain("transaction");
+    expect(stderr).toContain("name");
+    expect(output.status).toEqual(1);
+  });
 
-    it("should get a syntax error if CSD group is omitted", () => {
-        const output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, ["FAKE", "", "FAKERGN"]);
-        const stderr = output.stderr.toString();
-        expect(stderr).toContain("Syntax");
-        expect(stderr).toContain("csdGroup");
-        expect(output.status).toEqual(1);
-    });
+  it("should get a syntax error if CSD group is omitted", () => {
+    const output = runCliScript(__dirname + "/__scripts__/install_transaction.sh", TEST_ENVIRONMENT, ["FAKE", "", "FAKERGN"]);
+    const stderr = output.stderr.toString();
+    expect(stderr).toContain("Syntax");
+    expect(stderr).toContain("csdGroup");
+    expect(output.status).toEqual(1);
+  });
 
-    it("should be able to successfully install a transaction with profile options", async () => {
+  it("should be able to successfully install a transaction with profile options", async () => {
 
-        // first define the transaction
-        const transactionNameSuffixLength = 3;
-        const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
-        let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-            [transactionName,
-                "program1",
-                csdGroup,
-                regionName,
-                host,
-                port,
-                user,
-                password,
-                protocol,
-                rejectUnauthorized]);
-        let stderr = output.stderr.toString();
-        expect(stderr).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toContain("success");
+    // first define the transaction
+    const transactionNameSuffixLength = 3;
+    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
+      [transactionName,
+        "program1",
+        csdGroup,
+        regionName,
+        host,
+        port,
+        user,
+        password,
+        protocol,
+        rejectUnauthorized]);
+    let stderr = output.stderr.toString();
+    expect(stderr).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toContain("success");
 
-        output = runCliScript(__dirname + "/__scripts__/install_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-            [transactionName,
-                csdGroup,
-                regionName,
-                host,
-                port,
-                user,
-                password,
-                protocol,
-                rejectUnauthorized]);
-        stderr = output.stderr.toString();
-        expect(stderr).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toContain("success");
-        await discardTransaction(transactionName);
-        await deleteTransaction(transactionName);
-    });
+    output = runCliScript(__dirname + "/__scripts__/install_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
+      [transactionName,
+        csdGroup,
+        regionName,
+        host,
+        port,
+        user,
+        password,
+        protocol,
+        rejectUnauthorized]);
+    stderr = output.stderr.toString();
+    expect(stderr).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toContain("success");
+    await discardTransaction(transactionName);
+    await deleteTransaction(transactionName);
+  });
 
 });

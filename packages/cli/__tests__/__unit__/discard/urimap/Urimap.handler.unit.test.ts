@@ -27,76 +27,76 @@ const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
-    "cics", [{
-        name: "cics",
-        type: "cics",
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized
-    }]
+  "cics", [{
+    name: "cics",
+    type: "cics",
+    host,
+    port,
+    user,
+    password,
+    protocol,
+    rejectUnauthorized
+  }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-    positionals: ["cics", "discard", "urimap"],
-    definition: UrimapDefinition,
-    profiles: PROFILES
+  positionals: ["cics", "discard", "urimap"],
+  definition: UrimapDefinition,
+  profiles: PROFILES
 });
 
 describe("DiscardUrimapHandler", () => {
-    const urimapName = "testUrimap";
-    const regionName = "testRegion";
+  const urimapName = "testUrimap";
+  const regionName = "testRegion";
 
-    const defaultReturn: ICMCIApiResponse = {
-        response: {
-            resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-            records: "testing"
-        }
+  const defaultReturn: ICMCIApiResponse = {
+    response: {
+      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
+      records: "testing"
+    }
+  };
+
+  const functionSpy = jest.spyOn(Discard, "discardUrimap");
+
+  beforeEach(() => {
+    functionSpy.mockClear();
+    functionSpy.mockImplementation(async () => defaultReturn);
+  });
+
+  it("should call the discardUrimap api", async () => {
+    const handler = new UrimapHandler();
+
+    const commandParameters = {...DEFAULT_PARAMETERS};
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      urimapName,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized
     };
 
-    const functionSpy = jest.spyOn(Discard, "discardUrimap");
+    await handler.process(commandParameters);
 
-    beforeEach(() => {
-        functionSpy.mockClear();
-        functionSpy.mockImplementation(async () => defaultReturn);
-    });
-
-    it("should call the discardUrimap api", async () => {
-        const handler = new UrimapHandler();
-
-        const commandParameters = {...DEFAULT_PARAMETERS};
-        commandParameters.arguments = {
-            ...commandParameters.arguments,
-            urimapName,
-            regionName,
-            host,
-            port,
-            user,
-            password,
-            protocol,
-            rejectUnauthorized
-        };
-
-        await handler.process(commandParameters);
-
-        expect(functionSpy).toHaveBeenCalledTimes(1);
-        const testProfile = PROFILE_MAP.get("cics")[0];
-        expect(functionSpy).toHaveBeenCalledWith(
-            new Session({
-                type: "basic",
-                hostname: testProfile.host,
-                port: testProfile.port,
-                user: testProfile.user,
-                password: testProfile.password,
-                rejectUnauthorized,
-                protocol
-            }),
-            {
-                name: urimapName,
-                regionName
-            }
-        );
-    });
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+    const testProfile = PROFILE_MAP.get("cics")[0];
+    expect(functionSpy).toHaveBeenCalledWith(
+      new Session({
+        type: "basic",
+        hostname: testProfile.host,
+        port: testProfile.port,
+        user: testProfile.user,
+        password: testProfile.password,
+        rejectUnauthorized,
+        protocol
+      }),
+      {
+        name: urimapName,
+        regionName
+      }
+    );
+  });
 });

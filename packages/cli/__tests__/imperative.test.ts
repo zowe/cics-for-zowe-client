@@ -11,10 +11,10 @@
 
 describe("imperative config", () => {
 
-    // Will fail if imperative config object is changed. This is a sanity/protection check to ensure that any
-    // changes to the configuration document are intended (and the snapshot must be updated).
-    it ("should match the snapshot", () => {
-        const config = require("../src/imperative");
-        expect(config).toMatchSnapshot();
-    });
+  // Will fail if imperative config object is changed. This is a sanity/protection check to ensure that any
+  // changes to the configuration document are intended (and the snapshot must be updated).
+  it ("should match the snapshot", () => {
+    const config = require("../src/imperative");
+    expect(config).toMatchSnapshot();
+  });
 });

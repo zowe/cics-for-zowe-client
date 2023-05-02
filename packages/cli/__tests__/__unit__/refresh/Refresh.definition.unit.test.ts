@@ -12,13 +12,13 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics refresh program", () => {
-    const REFRESH_RESOURCES = 1;
+  const REFRESH_RESOURCES = 1;
 
-    it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/refresh/Refresh.definition");
-        expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(REFRESH_RESOURCES);
-        delete definition.children;
-        expect(definition).toMatchSnapshot();
-    });
+  it ("should not have changed", () => {
+    const definition: ICommandDefinition = require("../../../src/cli/refresh/Refresh.definition");
+    expect(definition).toBeDefined();
+    expect(definition.children.length).toBe(REFRESH_RESOURCES);
+    delete definition.children;
+    expect(definition).toMatchSnapshot();
+  });
 });

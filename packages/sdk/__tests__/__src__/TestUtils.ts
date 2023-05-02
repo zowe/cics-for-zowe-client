@@ -17,13 +17,13 @@
  * @returns {string} the random string
  */
 export function generateRandomAlphaNumericString(length: number, upToLength: boolean = false): string {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let result = "";
-    if (upToLength) {
-        length = Math.floor(Math.random() * length) + 1;
-    }
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  if (upToLength) {
+    length = Math.floor(Math.random() * length) + 1;
+  }
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 }

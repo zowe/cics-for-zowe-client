@@ -20,28 +20,28 @@ import { CicsBaseHandler } from "../../CicsBaseHandler";
  * @implements {ICommandHandler}
  */
 export default class ResourceHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Getting resources from CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Getting resources from CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await getResource(session, {
-            name: params.arguments.resourceName,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
-            criteria: params.arguments.criteria,
-            parameter: params.arguments.parameter
-        });
+    const response = await getResource(session, {
+      name: params.arguments.resourceName,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      criteria: params.arguments.criteria,
+      parameter: params.arguments.parameter
+    });
 
-        params.response.format.output({
-            fields: [],
-            format: "object",
-            output: response.response.records[params.arguments.resourceName.toLowerCase()]
-        });
-        return response;
-    }
+    params.response.format.output({
+      fields: [],
+      format: "object",
+      output: response.response.records[params.arguments.resourceName.toLowerCase()]
+    });
+    return response;
+  }
 }

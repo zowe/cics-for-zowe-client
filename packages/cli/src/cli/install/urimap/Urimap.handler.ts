@@ -26,22 +26,22 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).IN
  */
 
 export default class UrimapHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Installing URIMAP from CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Installing URIMAP from CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await installUrimap(session, {
-            name: params.arguments.urimapName,
-            csdGroup: params.arguments.csdGroup,
-            regionName: params.arguments.regionName || profile.regionName
-        });
+    const response = await installUrimap(session, {
+      name: params.arguments.urimapName,
+      csdGroup: params.arguments.csdGroup,
+      regionName: params.arguments.regionName || profile.regionName
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
+    return response;
+  }
 }

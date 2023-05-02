@@ -25,23 +25,23 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).IN
  * @implements {ICommandHandler}
  */
 export default class ProgramHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Installing program to CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Installing program to CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await installProgram(session, {
-            name: params.arguments.programName,
-            csdGroup: params.arguments.csdGroup,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
-        });
+    const response = await installProgram(session, {
+      name: params.arguments.programName,
+      csdGroup: params.arguments.csdGroup,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);
+    return response;
+  }
 }

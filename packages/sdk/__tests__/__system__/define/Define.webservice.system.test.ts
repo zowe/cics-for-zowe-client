@@ -22,121 +22,121 @@ let session: Session;
 
 describe("CICS Define web service", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_define_webservice",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cicsProperties = testEnvironment.systemTestProperties.cics;
-
-        session = new Session({
-            user: cicsProperties.user,
-            password: cicsProperties.password,
-            hostname: cicsProperties.host,
-            port: cicsProperties.port,
-            type: "basic",
-            rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-            protocol: cicsProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_define_webservice",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cicsProperties = testEnvironment.systemTestProperties.cics;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cicsProperties.user,
+      password: cicsProperties.password,
+      hostname: cicsProperties.host,
+      port: cicsProperties.port,
+      type: "basic",
+      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
+      protocol: cicsProperties.protocol as any || "https",
     });
+  });
 
-    const options: IWebServiceParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should define a web service to CICS", async () => {
-        let error;
-        let response;
+  const options: IWebServiceParms = {} as any;
 
-        const websvcNameSuffixLength = 4;
-        const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+  it("should define a web service to CICS", async () => {
+    let error;
+    let response;
 
-        options.name = websvcName;
-        options.pipelineName = "AAAA1234";
-        options.wsBind = "/u/exampleapp/wsbind/example.log";
-        options.validation = false;
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
+    const websvcNameSuffixLength = 4;
+    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
-        try {
-            response = await defineWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = websvcName;
+    options.pipelineName = "AAAA1234";
+    options.wsBind = "/u/exampleapp/wsbind/example.log";
+    options.validation = false;
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await deleteWebservice(session, options);
-    });
+    try {
+      response = await defineWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to define a web service to CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await deleteWebservice(session, options);
+  });
 
-        const websvcNameSuffixLength = 4;
-        const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+  it("should fail to define a web service to CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        options.name = websvcName;
-        options.pipelineName = "AAAA1234";
-        options.wsBind = "/u/exampleapp/wsbind/example.log";
-        options.validation = false;
-        options.csdGroup = csdGroup;
-        options.regionName = "FAKE";
+    const websvcNameSuffixLength = 4;
+    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
-        try {
-            response = await defineWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = websvcName;
+    options.pipelineName = "AAAA1234";
+    options.wsBind = "/u/exampleapp/wsbind/example.log";
+    options.validation = false;
+    options.csdGroup = csdGroup;
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await defineWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to define a web service to CICS due to duplicate name", async () => {
-        let error;
-        let response;
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 
-        const websvcNameSuffixLength = 4;
-        const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+  it("should fail to define a web service to CICS due to duplicate name", async () => {
+    let error;
+    let response;
 
-        options.name = websvcName;
-        options.pipelineName = "AAAA1234";
-        options.wsBind = "/u/exampleapp/wsbind/example.log";
-        options.validation = false;
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
+    const websvcNameSuffixLength = 4;
+    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
-        // define a web service to CICS
-        try {
-            response = await defineWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = websvcName;
+    options.pipelineName = "AAAA1234";
+    options.wsBind = "/u/exampleapp/wsbind/example.log";
+    options.validation = false;
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        response = null; // reset
+    // define a web service to CICS
+    try {
+      response = await defineWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-        // define the same web service and validate duplicate error
-        try {
-            response = await defineWebservice(session, options);
-        } catch (err) {
-            error = err;
-        }
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    response = null; // reset
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("DUPRES");
-        await deleteWebservice(session, options);
-    });
+    // define the same web service and validate duplicate error
+    try {
+      response = await defineWebservice(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("DUPRES");
+    await deleteWebservice(session, options);
+  });
 });

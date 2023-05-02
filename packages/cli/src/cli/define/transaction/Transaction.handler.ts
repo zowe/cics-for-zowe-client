@@ -25,24 +25,24 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class TransactionHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Defining transaction to CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Defining transaction to CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await defineTransaction(session, {
-            name: params.arguments.transactionName,
-            programName: params.arguments.programName,
-            csdGroup: params.arguments.csdGroup,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
-        });
+    const response = await defineTransaction(session, {
+      name: params.arguments.transactionName,
+      programName: params.arguments.programName,
+      csdGroup: params.arguments.csdGroup,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.transactionName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.transactionName);
+    return response;
+  }
 }

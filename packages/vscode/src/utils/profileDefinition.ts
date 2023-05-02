@@ -114,4 +114,4 @@ const cicsProfileMeta: ICommandProfileTypeConfiguration[] = [
   },
 ];
 
-export default cicsProfileMeta as ICommandProfileTypeConfiguration[];
+export default cicsProfileMeta ;

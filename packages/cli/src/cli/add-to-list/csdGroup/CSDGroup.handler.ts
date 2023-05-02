@@ -25,23 +25,23 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).AD
  * @implements {ICommandHandler}
  */
 export default class CSDGroupHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Adding CSD Group to CSD List on CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Adding CSD Group to CSD List on CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await addCSDGroupToList(session, {
-            name: params.arguments.name,
-            csdList: params.arguments.csdList,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
-        });
+    const response = await addCSDGroupToList(session, {
+      name: params.arguments.name,
+      csdList: params.arguments.csdList,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.name, params.arguments.csdList);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.name, params.arguments.csdList);
+    return response;
+  }
 }

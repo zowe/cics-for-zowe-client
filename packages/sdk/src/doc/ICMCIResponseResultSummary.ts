@@ -16,14 +16,14 @@
  * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_resultsummary_element.html
  */
 export interface ICMCIResponseResultSummary {
-    _source?: string;
-    api_function?: string;
-    api_response1: string;
-    api_response1_alt?: string;
-    api_response2: string;
-    api_response2_alt?: string;
-    recordcount: string;
-    displayed_recordcount: string;
-    successcount?: string;
-    cachetoken?: string;
+  _source?: string;
+  api_function?: string;
+  api_response1: string;
+  api_response1_alt?: string;
+  api_response2: string;
+  api_response2_alt?: string;
+  recordcount: string;
+  displayed_recordcount: string;
+  successcount?: string;
+  cachetoken?: string;
 }

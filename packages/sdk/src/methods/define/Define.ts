@@ -25,34 +25,34 @@ import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebS
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function defineProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function defineProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-    Logger.getAppLogger().debug("Attempting to define a program with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = {
-        request: {
-            create: {
-                parameter: {
-                    $: {
-                        name: "CSD",
-                    }
-                },
-                attributes: {
-                    $: {
-                        name: parms.name,
-                        csdgroup: parms.csdGroup
-                    }
-                }
-            }
+  Logger.getAppLogger().debug("Attempting to define a program with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = {
+    request: {
+      create: {
+        parameter: {
+          $: {
+            name: "CSD",
+          }
+        },
+        attributes: {
+          $: {
+            name: parms.name,
+            csdgroup: parms.csdGroup
+          }
         }
-    };
+      }
+    }
+  };
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
 /**
@@ -67,38 +67,38 @@ export async function defineProgram(session: AbstractSession, parms: IProgramPar
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function defineTransaction(session: AbstractSession, parms: ITransactionParms): Promise<ICMCIApiResponse> {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Transaction name", "CICS transaction name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.programName, "CICS Program name", "CICS program name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function defineTransaction(session: AbstractSession, parms: ITransactionParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Transaction name", "CICS transaction name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.programName, "CICS Program name", "CICS program name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-    Logger.getAppLogger().debug("Attempting to define a transaction with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = {
-        request: {
-            create: {
-                parameter: {
-                    $: {
-                        name: "CSD",
-                    }
-                },
-                attributes: {
-                    $: {
-                        name: parms.name,
-                        program: parms.programName,
-                        csdgroup: parms.csdGroup
-                    }
-                }
-            }
+  Logger.getAppLogger().debug("Attempting to define a transaction with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = {
+    request: {
+      create: {
+        parameter: {
+          $: {
+            name: "CSD",
+          }
+        },
+        attributes: {
+          $: {
+            name: parms.name,
+            program: parms.programName,
+            csdgroup: parms.csdGroup
+          }
         }
-    };
+      }
+    }
+  };
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex +
         parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
-        [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
+    [], requestBody) as any;
 }
 
 /**
@@ -116,18 +116,18 @@ export async function defineTransaction(session: AbstractSession, parms: ITransa
  * @throws {ImperativeError} CICS URIMap program name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function defineUrimapServer(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-    validateUrimapParms(parms);
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.programName, "CICS URIMap Program name", "CICS URIMap program name is required");
+export function defineUrimapServer(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
+  validateUrimapParms(parms);
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.programName, "CICS URIMap Program name", "CICS URIMap program name is required");
 
-    Logger.getAppLogger().debug("Attempting to define a server URIMap with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = buildUrimapRequestBody(parms, "server");
-    requestBody.request.create.attributes.$.program = parms.programName;
+  Logger.getAppLogger().debug("Attempting to define a server URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = buildUrimapRequestBody(parms, "server");
+  requestBody.request.create.attributes.$.program = parms.programName;
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
 /**
@@ -144,16 +144,16 @@ export async function defineUrimapServer(session: AbstractSession, parms: IURIMa
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function defineUrimapClient(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-    validateUrimapParms(parms);
+export function defineUrimapClient(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
+  validateUrimapParms(parms);
 
-    Logger.getAppLogger().debug("Attempting to define a client URIMap with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = buildUrimapRequestBody(parms, "client");
+  Logger.getAppLogger().debug("Attempting to define a client URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = buildUrimapRequestBody(parms, "client");
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
 /**
@@ -171,18 +171,18 @@ export async function defineUrimapClient(session: AbstractSession, parms: IURIMa
  * @throws {ImperativeError} CICS URIMap pipeline name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function defineUrimapPipeline(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-    validateUrimapParms(parms);
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.pipelineName, "CICS URIMap Pipeline name", "CICS URIMap pipeline name is required");
+export function defineUrimapPipeline(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
+  validateUrimapParms(parms);
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.pipelineName, "CICS URIMap Pipeline name", "CICS URIMap pipeline name is required");
 
-    Logger.getAppLogger().debug("Attempting to define a pipeline URIMap with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = buildUrimapRequestBody(parms, "pipeline");
-    requestBody.request.create.attributes.$.pipeline = parms.pipelineName;
+  Logger.getAppLogger().debug("Attempting to define a pipeline URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = buildUrimapRequestBody(parms, "pipeline");
+  requestBody.request.create.attributes.$.pipeline = parms.pipelineName;
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
 /**
@@ -196,12 +196,12 @@ export async function defineUrimapPipeline(session: AbstractSession, parms: IURI
  * @throws {ImperativeError} CICS region name not defined or blank
  */
 function validateUrimapParms(parms: IURIMapParms) {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap Name", "CICS URIMap name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.path, "CICS URIMap Path", "CICS URIMap path is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.host, "CICS URIMap Host", "CICS URIMap host is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.scheme, "CICS URIMap Scheme", "CICS URIMap scheme is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap Name", "CICS URIMap name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.path, "CICS URIMap Path", "CICS URIMap path is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.host, "CICS URIMap Host", "CICS URIMap host is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.scheme, "CICS URIMap Scheme", "CICS URIMap scheme is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 }
 
 /**
@@ -210,105 +210,105 @@ function validateUrimapParms(parms: IURIMapParms) {
  * @param {string} usage - value of the usage attribute (server, client, or pipeline)
  */
 function buildUrimapRequestBody(parms: IURIMapParms, usage: "server" | "client" | "pipeline") {
-    const requestAttrs: any = {
-        name: parms.name,
-        csdgroup: parms.csdGroup,
-        path: parms.path,
-        host: parms.host,
-        scheme: parms.scheme,
-        usage
-    };
+  const requestAttrs: any = {
+    name: parms.name,
+    csdgroup: parms.csdGroup,
+    path: parms.path,
+    host: parms.host,
+    scheme: parms.scheme,
+    usage
+  };
 
-    if (parms.description != null) {
-        requestAttrs.description = parms.description;
-    }
+  if (parms.description != null) {
+    requestAttrs.description = parms.description;
+  }
 
-    if (parms.transactionName != null) {
-        requestAttrs.transaction = parms.transactionName;
-    }
+  if (parms.transactionName != null) {
+    requestAttrs.transaction = parms.transactionName;
+  }
 
-    if (parms.webserviceName != null) {
-        requestAttrs.webservice = parms.webserviceName;
-    }
+  if (parms.webserviceName != null) {
+    requestAttrs.webservice = parms.webserviceName;
+  }
 
-    if (parms.enable === false) {
-        requestAttrs.status = "DISABLED";
-    } else {
-        requestAttrs.status = "ENABLED";
-    }
+  if (parms.enable === false) {
+    requestAttrs.status = "DISABLED";
+  } else {
+    requestAttrs.status = "ENABLED";
+  }
 
-    if (parms.authenticate != null) {
-        requestAttrs.authenticate = parms.authenticate;
-    }
+  if (parms.authenticate != null) {
+    requestAttrs.authenticate = parms.authenticate;
+  }
 
-    if (parms.certificate != null) {
-        requestAttrs.certificate = parms.certificate;
-    }
+  if (parms.certificate != null) {
+    requestAttrs.certificate = parms.certificate;
+  }
 
-    if (parms.tcpipservice != null) {
-        requestAttrs.tcpipservice = parms.tcpipservice;
-    }
+  if (parms.tcpipservice != null) {
+    requestAttrs.tcpipservice = parms.tcpipservice;
+  }
 
-    return {
-        request: {
-            create: {
-                parameter: {
-                    $: {
-                        name: "CSD",
-                    }
-                },
-                attributes: {
-                    $: requestAttrs
-                }
-            }
+  return {
+    request: {
+      create: {
+        parameter: {
+          $: {
+            name: "CSD",
+          }
+        },
+        attributes: {
+          $: requestAttrs
         }
-    };
+      }
+    }
+  };
 }
 
-export async function defineWebservice(session: AbstractSession, parms: IWebServiceParms): Promise<ICMCIApiResponse> {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Web service name", "CICS web service name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.pipelineName, "CICS Pipeline name", "CICS pipeline name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.wsBind, "CICS Web service binding file", "CICS web service binding file is required");
-    ImperativeExpect.toNotBeNullOrUndefined(parms.validation, "CICS web service validation is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function defineWebservice(session: AbstractSession, parms: IWebServiceParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Web service name", "CICS web service name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.pipelineName, "CICS Pipeline name", "CICS pipeline name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.wsBind, "CICS Web service binding file", "CICS web service binding file is required");
+  ImperativeExpect.toNotBeNullOrUndefined(parms.validation, "CICS web service validation is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-    Logger.getAppLogger().debug("Attempting to define a web service with the following parameters:\n%s", JSON.stringify(parms));
-    const requestAttrs: any = {
-        name: parms.name,
-        csdgroup: parms.csdGroup,
-        pipeline: parms.pipelineName,
-        wsbind: parms.wsBind,
-        validation: parms.validation ? "yes" : "no"
-    };
+  Logger.getAppLogger().debug("Attempting to define a web service with the following parameters:\n%s", JSON.stringify(parms));
+  const requestAttrs: any = {
+    name: parms.name,
+    csdgroup: parms.csdGroup,
+    pipeline: parms.pipelineName,
+    wsbind: parms.wsBind,
+    validation: parms.validation ? "yes" : "no"
+  };
 
-    if (parms.description != null) {
-        requestAttrs.description = parms.description;
-    }
+  if (parms.description != null) {
+    requestAttrs.description = parms.description;
+  }
 
-    if (parms.wsdlFile != null) {
-        requestAttrs.wsdlFile = parms.wsdlFile;
-    }
+  if (parms.wsdlFile != null) {
+    requestAttrs.wsdlFile = parms.wsdlFile;
+  }
 
-    const requestBody: any = {
-        request: {
-            create: {
-                parameter: {
-                    $: {
-                        name: "CSD",
-                    }
-                },
-                attributes: {
-                    $: requestAttrs
-                }
-            }
+  const requestBody: any = {
+    request: {
+      create: {
+        parameter: {
+          $: {
+            name: "CSD",
+          }
+        },
+        attributes: {
+          $: requestAttrs
         }
-    };
+      }
+    }
+  };
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex +
         parms.regionName;
-    return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
-        [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
+    [], requestBody) as any;
 }

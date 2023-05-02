@@ -12,13 +12,13 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define program", () => {
-    const DEFINE_RESOURCES = 6;
+  const DEFINE_RESOURCES = 6;
 
-    it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/define/Define.definition");
-        expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(DEFINE_RESOURCES);
-        delete definition.children;
-        expect(definition).toMatchSnapshot();
-    });
+  it ("should not have changed", () => {
+    const definition: ICommandDefinition = require("../../../src/cli/define/Define.definition");
+    expect(definition).toBeDefined();
+    expect(definition.children.length).toBe(DEFINE_RESOURCES);
+    delete definition.children;
+    expect(definition).toMatchSnapshot();
+  });
 });

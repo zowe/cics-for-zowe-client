@@ -12,13 +12,13 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics get resource", () => {
-    const DEFINE_RESOURCES = 1;
+  const DEFINE_RESOURCES = 1;
 
-    it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/get/Get.definition");
-        expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(DEFINE_RESOURCES);
-        delete definition.children;
-        expect(definition).toMatchSnapshot();
-    });
+  it ("should not have changed", () => {
+    const definition: ICommandDefinition = require("../../../src/cli/get/Get.definition");
+    expect(definition).toBeDefined();
+    expect(definition.children.length).toBe(DEFINE_RESOURCES);
+    delete definition.children;
+    expect(definition).toMatchSnapshot();
+  });
 });
