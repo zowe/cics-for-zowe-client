@@ -72,7 +72,7 @@ jobs:
 
     - name: Bundle all packages
       if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-      run: npm run package
+      run: npm i -g vsce && npm run package
 
     - name: Archive all packages
       if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'

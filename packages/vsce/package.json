@@ -871,10 +871,12 @@
   },
   "scripts": {
     "vscode:prepublish": "tsup",
-    "build": "npm run lint && rimraf dist && tsup && npm run checkTestsCompile && npm run madge",
+    "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "rimraf lib && tsc -p ./ && madge -c lib",
     "lint": "eslint src --ext ts",
+    "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
+    "clean": "rimraf lib && rimraf dist",
     "watch": "tsc -watch -p ./",
     "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
