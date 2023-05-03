@@ -21,8 +21,5 @@ if (targetPath.includes("-SNAPSHOT") && process.env.GITHUB_REF_PROTECTED !== "tr
     const gitSha = process.env.CI && childProcess.execSync("git rev-parse --short HEAD").toString().trim();
     targetPath = targetPath.replace("-SNAPSHOT", gitSha ? `-${gitBranch}.${gitSha}` : `-${gitBranch}`);
 }
-// console.log(path.join(process.cwd(), fullPackageName));
-// console.log(path.join(process.cwd(), targetPath));
-// fs.renameSync(path.join(process.cwd(), fullPackageName), path.join(process.cwd(), targetPath));
 fs.renameSync(fullPackageName, targetPath);
 console.log(`Published package to ${targetPath}.`);

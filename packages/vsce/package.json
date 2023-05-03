@@ -20,7 +20,7 @@
   "extensionDependencies": [
     "zowe.vscode-extension-for-zowe"
   ],
-  "main": "./lib/extension.js",
+  "main": "./dist/extension.js",
   "icon": "resources/zowe-cics-color.png",
   "keywords": [
     "Zowe",
@@ -870,12 +870,10 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run build",
-    "build": "npm run lint && run-script-os && npm run checkTestsCompile && npm run madge",
-    "build:win32": "rd /s /q lib && tsc -p ./",
-    "build:default": "rm -rf lib && tsc -p ./",
+    "vscode:prepublish": "tsup",
+    "build": "npm run lint && rimraf dist && tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-    "madge": "madge -c lib",
+    "madge": "rimraf lib && tsc -p ./ && madge -c lib",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "test:unit": "jest --config unit.jest_config.ts",
@@ -894,7 +892,20 @@
     "@zowe/zowe-explorer-api": "^2.7.0",
     "axios": "^0.21.4",
     "https": "~1.0.0",
-    "run-script-os": "~1.1.6",
     "xml-js": "~1.6.11"
+  },
+  "tsup": {
+      "entry": [
+          "src/extension.ts"
+      ],
+      "splitting": false,
+      "sourcemap": true,
+      "clean": true,
+      "format": "cjs",
+      "dts": true,
+      "external": [
+          "vscode"
+      ],
+      "minify": "terser"
   }
 }
