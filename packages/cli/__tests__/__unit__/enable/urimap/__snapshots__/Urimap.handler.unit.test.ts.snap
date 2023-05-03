@@ -3,10 +3,10 @@
 exports[`enableUrimapHandler should call the enableUrimap api 1`] = `"The urimap '%s' was enabled successfully."`;
 
 exports[`enableUrimapHandler should call the enableUrimap api 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

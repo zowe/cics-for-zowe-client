@@ -1,40 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics discard program should not have changed 1`] = `
-{
-  "aliases": [
+Object {
+  "aliases": Array [
     "prog",
   ],
   "description": "Discard a program from CICS.",
-  "examples": [
-    {
+  "examples": Array [
+    Object {
       "description": "Discard a program named PGM123 from the region named MYREGION",
       "options": "PGM123 --region-name MYREGION",
     },
   ],
   "name": "program",
-  "options": [
-    {
+  "options": Array [
+    Object {
       "description": "The CICS region name from which to discard the program",
       "name": "region-name",
       "type": "string",
     },
-    {
+    Object {
       "description": "The name of the CICSPlex from which to discard the program",
       "name": "cics-plex",
       "type": "string",
     },
   ],
-  "positionals": [
-    {
+  "positionals": Array [
+    Object {
       "description": "The name of the program to discard. The maximum length of the program name is eight characters.",
       "name": "programName",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": {
-    "optional": [
+  "profile": Object {
+    "optional": Array [
       "cics",
     ],
   },

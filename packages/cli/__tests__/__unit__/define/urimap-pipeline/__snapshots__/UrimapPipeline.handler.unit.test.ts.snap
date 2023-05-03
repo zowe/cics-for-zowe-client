@@ -3,10 +3,10 @@
 exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api with all options specified 1`] = `"The URIMAP '%s' was defined successfully."`;
 
 exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api with all options specified 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",
@@ -19,10 +19,10 @@ exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api wi
 exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api with required options specified 1`] = `"The URIMAP '%s' was defined successfully."`;
 
 exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api with required options specified 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics define urimap-server should not have changed 1`] = `
-{
-  "aliases": [
+Object {
+  "aliases": Array [
     "us",
   ],
   "description": "Define a new URIMAP of type server to CICS. This acts as an HTTP(S) server",
-  "examples": [
-    {
+  "examples": Array [
+    Object {
       "description": "Define a URIMAP named URIMAPA for the program named PGM123 to the region named MYREGION in the CSD group MYGRP where the host is www.example.com and the path is /example/index.html",
       "options": "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --program-name PGM123 --region-name MYREGION",
     },
   ],
   "name": "urimap-server",
-  "options": [
-    {
-      "aliases": [
+  "options": Array [
+    Object {
+      "aliases": Array [
         "up",
       ],
       "description": "The path component of the URI.",
@@ -23,8 +23,8 @@ exports[`cics define urimap-server should not have changed 1`] = `
       "required": true,
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "uh",
       ],
       "description": "The host component of the URI.",
@@ -32,13 +32,13 @@ exports[`cics define urimap-server should not have changed 1`] = `
       "required": true,
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "us",
       ],
-      "allowableValues": {
+      "allowableValues": Object {
         "caseSensitive": false,
-        "values": [
+        "values": Array [
           "http",
           "https",
         ],
@@ -48,8 +48,8 @@ exports[`cics define urimap-server should not have changed 1`] = `
       "name": "urimap-scheme",
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "pn",
       ],
       "description": "The application program that makes or handles the requests.",
@@ -57,55 +57,55 @@ exports[`cics define urimap-server should not have changed 1`] = `
       "required": true,
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "desc",
       ],
       "description": "Description of the URIMAP resource being defined.",
       "name": "description",
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "tcpip",
       ],
       "description": "The TCPIPSERVICE to which the URIMAP definition applies.",
       "name": "tcpipservice",
       "type": "string",
     },
-    {
+    Object {
       "description": "The CICS region name to which to define the new URIMAP.",
       "name": "region-name",
       "type": "string",
     },
-    {
+    Object {
       "description": "The name of the CICSPlex to which to define the new URIMAP.",
       "name": "cics-plex",
       "type": "string",
     },
-    {
+    Object {
       "defaultValue": true,
       "description": "Whether or not the URIMAP is to be enabled on install by default. ",
       "name": "enable",
       "type": "boolean",
     },
   ],
-  "positionals": [
-    {
+  "positionals": Array [
+    Object {
       "description": "The name of the URIMAP to create. The maximum length of the urimap name is eight characters.",
       "name": "urimapName",
       "required": true,
       "type": "string",
     },
-    {
+    Object {
       "description": "The CICS system definition (CSD) Group for the new urimap that you want to define. The maximum length of the group name is eight characters.",
       "name": "csdGroup",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": {
-    "optional": [
+  "profile": Object {
+    "optional": Array [
       "cics",
     ],
   },

@@ -1,13 +1,13 @@
-/**
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+/*
+* This program and the accompanying materials are made available under the terms of the *
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
+* https://www.eclipse.org/legal/epl-v20.html                                      *
+*                                                                                 *
+* SPDX-License-Identifier: EPL-2.0                                                *
+*                                                                                 *
+* Copyright Contributors to the Zowe Project.                                     *
+*                                                                                 *
+*/
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
@@ -27,25 +27,25 @@ import { ICMCIApiResponse, IURIMapParms } from "../../doc";
  */
 
 export async function disableUrimap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
+    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  Logger.getAppLogger().debug("Attempting to disable a URIMap with the following parameters:\n%s", JSON.stringify(parms));
+    Logger.getAppLogger().debug("Attempting to disable a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_URIMAP + "/" + cicsPlex +
         `${parms.regionName}?CRITERIA=(NAME=${parms.name})`;
-  const requestBody: any = {
-    request: {
-      update: {
-        attributes: {
-          $: {
-            ENABLESTATUS: "DISABLED"
-          }
+    const requestBody: any = {
+        request: {
+            update: {
+                attributes: {
+                    $: {
+                        ENABLESTATUS: "DISABLED"
+                    }
+                }
+            }
         }
-      }
-    }
-  };
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+    };
+    return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

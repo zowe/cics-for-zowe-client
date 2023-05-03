@@ -1,46 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics delete program should not have changed 1`] = `
-{
-  "aliases": [
+Object {
+  "aliases": Array [
     "prog",
   ],
   "description": "Delete a program from CICS.",
-  "examples": [
-    {
+  "examples": Array [
+    Object {
       "description": "Delete a program named PGM123 from the region named MYREGION",
       "options": "PGM123 --region-name MYREGION",
     },
   ],
   "name": "program",
-  "options": [
-    {
+  "options": Array [
+    Object {
       "description": "The CICS region name from which to delete the program",
       "name": "region-name",
       "type": "string",
     },
-    {
+    Object {
       "description": "The name of the CICSPlex from which to delete the program",
       "name": "cics-plex",
       "type": "string",
     },
   ],
-  "positionals": [
-    {
+  "positionals": Array [
+    Object {
       "description": "The name of the program to delete. The maximum length of the program name is eight characters.",
       "name": "programName",
       "required": true,
       "type": "string",
     },
-    {
+    Object {
       "description": "The CICS system definition (CSD) Group for the program that you want to delete. The maximum length of the group name is eight characters.",
       "name": "csdGroup",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": {
-    "optional": [
+  "profile": Object {
+    "optional": Array [
       "cics",
     ],
   },

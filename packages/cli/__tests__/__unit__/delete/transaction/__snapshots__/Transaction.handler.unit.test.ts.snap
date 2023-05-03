@@ -3,10 +3,10 @@
 exports[`DiscardTransactionHandler should call the deleteTransaction api 1`] = `"The transaction '%s' was deleted successfully."`;
 
 exports[`DiscardTransactionHandler should call the deleteTransaction api 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

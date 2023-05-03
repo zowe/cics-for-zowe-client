@@ -3,10 +3,10 @@
 exports[`InstallProgramHandler should call the installProgram api 1`] = `"The program named '%s' was installed successfully."`;
 
 exports[`InstallProgramHandler should call the installProgram api 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

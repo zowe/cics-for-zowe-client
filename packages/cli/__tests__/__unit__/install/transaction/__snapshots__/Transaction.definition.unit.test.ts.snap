@@ -1,46 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics install transaction should not have changed 1`] = `
-{
-  "aliases": [
+Object {
+  "aliases": Array [
     "tran",
   ],
   "description": "Install a transaction to CICS.",
-  "examples": [
-    {
+  "examples": Array [
+    Object {
       "description": "Install a transaction named TRN1 to the region named MYREGION in the CSD group MYGRP",
       "options": "TRN1 MYGRP --region-name MYREGION",
     },
   ],
   "name": "transaction",
-  "options": [
-    {
+  "options": Array [
+    Object {
       "description": "The CICS region name to which to install the transaction",
       "name": "region-name",
       "type": "string",
     },
-    {
+    Object {
       "description": "The name of the CICSPlex to which to install the transaction",
       "name": "cics-plex",
       "type": "string",
     },
   ],
-  "positionals": [
-    {
+  "positionals": Array [
+    Object {
       "description": "The name of the transaction to install. The maximum length of the transaction name is four characters.",
       "name": "transactionName",
       "required": true,
       "type": "string",
     },
-    {
+    Object {
       "description": "The CICS system definition (CSD) Group for the transaction that you want to install. The maximum length of the group name is eight characters.",
       "name": "csdGroup",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": {
-    "optional": [
+  "profile": Object {
+    "optional": Array [
       "cics",
     ],
   },

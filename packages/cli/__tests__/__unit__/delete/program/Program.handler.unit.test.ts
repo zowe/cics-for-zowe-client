@@ -1,22 +1,21 @@
-/**
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+/*
+* This program and the accompanying materials are made available under the terms of the *
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
+* https://www.eclipse.org/legal/epl-v20.html                                      *
+*                                                                                 *
+* SPDX-License-Identifier: EPL-2.0                                                *
+*                                                                                 *
+* Copyright Contributors to the Zowe Project.                                     *
+*                                                                                 *
+*/
 
-import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { ProgramDefinition } from "../../../../src/cli/delete/program/Program.definition";
-import ProgramHandler from "../../../../src/cli/delete/program/Program.handler";
+import { ProgramDefinition } from "../../../../src/delete/program/Program.definition";
+import ProgramHandler from "../../../../src/delete/program/Program.handler";
 
-jest.mock("@zowe/cics-for-zowe-sdk");
-const Discard = require("@zowe/cics-for-zowe-sdk");
+jest.mock("../../../../src/api/methods/delete");
+const Discard = require("../../../../src/api/methods/delete");
 
 const host = "somewhere.com";
 const port = "43443";
@@ -27,76 +26,107 @@ const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
-  "cics", [{
-    name: "cics",
-    type: "cics",
-    host,
-    port,
-    user,
-    password
-  }]
+    "cics", [{
+        name: "cics",
+        type: "cics",
+        host,
+        port,
+        user,
+        password
+    }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-  positionals: ["cics", "delete", "program"],
-  definition: ProgramDefinition,
-  profiles: PROFILES
-});
+const DEFAULT_PARAMETERS: IHandlerParameters = {
+    arguments: {$0: "", _: []}, // Please provide arguments later on
+    positionals: ["cics", "delete", "program"],
+    response: {
+        data: {
+            setMessage: jest.fn((setMsgArgs) => {
+                expect(setMsgArgs).toMatchSnapshot();
+            }) as any,
+            setObj: jest.fn((setObjArgs) => {
+                expect(setObjArgs).toMatchSnapshot();
+            }),
+            setExitCode: jest.fn()
+        },
+        console: {
+            log: jest.fn((logs) => {
+                expect(logs.toString()).toMatchSnapshot();
+            }) as any,
+            error: jest.fn((errors) => {
+                expect(errors.toString()).toMatchSnapshot();
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
+        },
+        progress: {
+            startBar: jest.fn((parms) => undefined),
+            endBar: jest.fn(() => undefined)
+        },
+        format: {
+            output: jest.fn((parms) => {
+                expect(parms).toMatchSnapshot();
+            })
+        }
+    },
+    definition: ProgramDefinition,
+    fullDefinition: ProgramDefinition,
+    profiles: PROFILES
+};
 
 describe("DiscardProgramHandler", () => {
-  const programName = "testProgram";
-  const regionName = "testRegion";
-  const csdGroup = "testGroup";
+    const programName = "testProgram";
+    const regionName = "testRegion";
+    const csdGroup = "testGroup";
 
-  const defaultReturn: ICMCIApiResponse = {
-    response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
-  };
-
-  const functionSpy = jest.spyOn(Discard, "deleteProgram");
-
-  beforeEach(() => {
-    functionSpy.mockClear();
-    functionSpy.mockImplementation(async () => defaultReturn);
-  });
-
-  it("should call the deleteProgram api", async () => {
-    const handler = new ProgramHandler();
-    const testProfile = PROFILE_MAP.get("cics")[0];
-    const commandParameters = {...DEFAULT_PARAMETERS};
-    commandParameters.arguments = {
-      ...commandParameters.arguments,
-      programName,
-      regionName,
-      csdGroup,
-      host,
-      port,
-      user,
-      password,
-      rejectUnauthorized,
-      protocol
+    const defaultReturn: ICMCIApiResponse = {
+        response: {
+            resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
+            records: "testing"
+        }
     };
 
-    await handler.process(commandParameters);
+    const functionSpy = jest.spyOn(Discard, "deleteProgram");
 
-    expect(functionSpy).toHaveBeenCalledTimes(1);
-    expect(functionSpy).toHaveBeenCalledWith(
-      new Session({
-        type: "basic",
-        hostname: testProfile.host,
-        port: testProfile.port,
-        user: testProfile.user,
-        password: testProfile.password,
-        rejectUnauthorized,
-        protocol
-      }),
-      {
-        name: programName,
-        csdGroup,
-        regionName
-      }
-    );
-  });
+    beforeEach(() => {
+        functionSpy.mockClear();
+        functionSpy.mockImplementation(async () => defaultReturn);
+    });
+
+    it("should call the deleteProgram api", async () => {
+        const handler = new ProgramHandler();
+        const testProfile = PROFILE_MAP.get("cics")[0];
+        const commandParameters = {...DEFAULT_PARAMETERS};
+        commandParameters.arguments = {
+            ...commandParameters.arguments,
+            programName,
+            regionName,
+            csdGroup,
+            host,
+            port,
+            user,
+            password,
+            rejectUnauthorized,
+            protocol
+        };
+
+        await handler.process(commandParameters);
+
+        expect(functionSpy).toHaveBeenCalledTimes(1);
+        expect(functionSpy).toHaveBeenCalledWith(
+            new Session({
+                type: "basic",
+                hostname: testProfile.host,
+                port: testProfile.port,
+                user: testProfile.user,
+                password: testProfile.password,
+                rejectUnauthorized,
+                protocol
+            }),
+            {
+                name: programName,
+                csdGroup,
+                regionName
+            }
+        );
+    });
 });

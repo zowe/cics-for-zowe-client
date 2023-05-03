@@ -3,10 +3,10 @@
 exports[`DiscardProgramHandler should call the deleteProgram api 1`] = `"The program '%s' was deleted successfully."`;
 
 exports[`DiscardProgramHandler should call the deleteProgram api 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

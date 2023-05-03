@@ -3,10 +3,10 @@
 exports[`DeleteUrimapHandler should call the deleteUrimap api 1`] = `"The urimap '%s' was deleted successfully."`;
 
 exports[`DeleteUrimapHandler should call the deleteUrimap api 2`] = `
-{
-  "response": {
+Object {
+  "response": Object {
     "records": "testing",
-    "resultsummary": {
+    "resultsummary": Object {
       "api_response1": "1024",
       "api_response2": "0",
       "displayed_recordcount": "0",

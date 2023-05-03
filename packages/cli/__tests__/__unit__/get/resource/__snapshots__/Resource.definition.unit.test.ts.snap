@@ -1,77 +1,77 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics get resource should not have changed 1`] = `
-{
-  "aliases": [
+Object {
+  "aliases": Array [
     "res",
   ],
   "description": "Get resources (for example, programs or transactions) from CICS.",
-  "examples": [
-    {
+  "examples": Array [
+    Object {
       "description": "Get program resources from the region named MYREGION",
       "options": "CICSProgram --region-name MYREGION",
     },
-    {
+    Object {
       "description": "Get local transaction resources from the region named MYREGION",
       "options": "CICSLocalTransaction --region-name MYREGION",
     },
-    {
+    Object {
       "description": "Get local file resources from the region named MYREGION",
       "options": "CICSLocalFile --region-name MYREGION",
     },
-    {
+    Object {
       "description": "Get program definition resources from the CSD group named GRP1 and the region named MYREGION",
-      "options": "CICSDefinitionProgram --region-name MYREGION --parameter "CSDGROUP(GRP1)"",
+      "options": "CICSDefinitionProgram --region-name MYREGION --parameter \\"CSDGROUP(GRP1)\\"",
     },
-    {
+    Object {
       "description": "Get transaction definition resources from the CSD group named GRP1 and the region named MYREGION",
-      "options": "CICSDefinitionTransaction --region-name MYREGION --parameter "CSDGROUP(GRP1)"",
+      "options": "CICSDefinitionTransaction --region-name MYREGION --parameter \\"CSDGROUP(GRP1)\\"",
     },
-    {
+    Object {
       "description": "Get URIMap definition resources from the CSD group named GRP1 and the region named MYREGION",
-      "options": "CICSDefinitionURIMap --region-name MYREGION --parameter "CSDGROUP(GRP1)"",
+      "options": "CICSDefinitionURIMap --region-name MYREGION --parameter \\"CSDGROUP(GRP1)\\"",
     },
-    {
+    Object {
       "description": "Get program resources that start with the name PRG from the region named MYREGION",
-      "options": "CICSProgram --region-name MYREGION --criteria "PROGRAM=PRG*"",
+      "options": "CICSProgram --region-name MYREGION --criteria \\"PROGRAM=PRG*\\"",
     },
-    {
+    Object {
       "description": "Get a local transaction resource named TRAN from the region named MYREGION",
-      "options": "CICSLocalTransaction --region-name MYREGION --criteria "TRANID=TRAN"",
+      "options": "CICSLocalTransaction --region-name MYREGION --criteria \\"TRANID=TRAN\\"",
     },
-    {
+    Object {
       "description": "Get program resources that start with the name MYPRG from the region named MYREGION and display various fields as a table",
-      "options": "CICSProgram --region-name MYREGION --criteria "PROGRAM=MYPRG*" --rft table --rfh --rff program length status",
+      "options": "CICSProgram --region-name MYREGION --criteria \\"PROGRAM=MYPRG*\\" --rft table --rfh --rff program length status",
     },
   ],
   "name": "resource",
-  "options": [
-    {
-      "aliases": [
+  "options": Array [
+    Object {
+      "aliases": Array [
         "rn",
       ],
       "description": "The CICS region name from which to get the resources",
       "name": "region-name",
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "cp",
       ],
       "description": "The name of the CICSPlex from which to get the resources",
       "name": "cics-plex",
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "c",
       ],
       "description": "The criteria by which to filter the resource",
       "name": "criteria",
       "type": "string",
     },
-    {
-      "aliases": [
+    Object {
+      "aliases": Array [
         "p",
       ],
       "description": "The parameter by which to refine the resource",
@@ -80,16 +80,16 @@ exports[`cics get resource should not have changed 1`] = `
     },
   ],
   "outputFormatOptions": true,
-  "positionals": [
-    {
+  "positionals": Array [
+    Object {
       "description": "The name of the resource to get.",
       "name": "resourceName",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": {
-    "optional": [
+  "profile": Object {
+    "optional": Array [
       "cics",
     ],
   },

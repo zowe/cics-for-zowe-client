@@ -23,6 +23,6 @@
     "lib",
     "__results__/",
     "__snapshots__",
-    "node_modules"
+    "**/node_modules"
   ]
 }

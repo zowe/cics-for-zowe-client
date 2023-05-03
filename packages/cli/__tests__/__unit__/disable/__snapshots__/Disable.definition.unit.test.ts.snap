@@ -1,30 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics disable urimap should not have changed 1`] = `
-{
+Object {
   "description": "Disable resources (for example, urimaps) from CICS through IBM CMCI.",
   "name": "disable",
-  "passOn": [
-    {
-      "ignoreNodes": [
-        {
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
           "type": "group",
         },
       ],
       "merge": true,
       "property": "options",
-      "value": [
-        {
-          "aliases": [
+      "value": Array [
+        Object {
+          "aliases": Array [
             "H",
           ],
           "description": "The CICS server host name.",
           "group": "Cics Connection Options",
           "name": "host",
+          "required": true,
           "type": "string",
         },
-        {
-          "aliases": [
+        Object {
+          "aliases": Array [
             "P",
           ],
           "defaultValue": 443,
@@ -33,41 +34,44 @@ exports[`cics disable urimap should not have changed 1`] = `
           "name": "port",
           "type": "number",
         },
-        {
-          "aliases": [
+        Object {
+          "aliases": Array [
             "u",
           ],
           "description": "Mainframe (CICS) user name, which can be the same as your TSO login.",
           "group": "Cics Connection Options",
           "name": "user",
+          "required": true,
           "type": "string",
         },
-        {
-          "aliases": [
+        Object {
+          "aliases": Array [
             "pw",
           ],
           "description": "Mainframe (CICS) password, which can be the same as your TSO password.",
           "group": "Cics Connection Options",
           "name": "password",
+          "required": true,
           "type": "string",
         },
-        {
-          "aliases": [
+        Object {
+          "aliases": Array [
             "ru",
           ],
           "defaultValue": true,
           "description": "Reject self-signed certificates.",
           "group": "Cics Connection Options",
           "name": "reject-unauthorized",
+          "required": false,
           "type": "boolean",
         },
-        {
-          "aliases": [
+        Object {
+          "aliases": Array [
             "o",
           ],
-          "allowableValues": {
+          "allowableValues": Object {
             "caseSensitive": false,
-            "values": [
+            "values": Array [
               "http",
               "https",
             ],
@@ -76,6 +80,7 @@ exports[`cics disable urimap should not have changed 1`] = `
           "description": "Specifies CMCI protocol (http or https).",
           "group": "Cics Connection Options",
           "name": "protocol",
+          "required": true,
           "type": "string",
         },
       ],
