@@ -9,11 +9,17 @@
  *
  */
 
+const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const packageName = process.argv[2];
 const extension = process.argv[3];
 const fullPackageName = `${packageName}-${process.env.npm_package_version}.${extension}`;
-const targetPath = path.join("..", "..", "dist", fullPackageName);
+let targetPath = path.join("..", "..", "dist", fullPackageName);
+if (targetPath.includes("-SNAPSHOT") && process.env.GITHUB_REF_PROTECTED !== "true") {
+    const gitBranch = childProcess.execSync("git rev-parse --abbrev-ref HEAD").toString().trim().replace(/\//g, "_");
+    const gitSha = process.env.CI && childProcess.execSync("git rev-parse --short HEAD").toString().trim();
+    targetPath = targetPath.replace("-SNAPSHOT", gitSha ? `-${gitBranch}.${gitSha}` : `-${gitBranch}`);
+}
 fs.renameSync(fullPackageName, targetPath);
 console.log(`Published package to ${targetPath}.`);

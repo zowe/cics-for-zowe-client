@@ -13,4 +13,5 @@ docs/typedoc
 .turbo
 build/**
 .next/**
-dist/
+dist/*
+!dist/README.md

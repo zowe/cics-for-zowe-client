@@ -1,7 +1,7 @@
 node_modules/
-out/
+dist/
+lib/
 .history/
 logs/
-dist/*.vsix
 .vscode-test/
 results/
