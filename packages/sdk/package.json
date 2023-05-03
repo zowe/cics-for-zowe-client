@@ -36,6 +36,7 @@
       "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
       "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
       "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
+      "package": "npm pack && node ../../scripts/mv-pack.js zowe-cics-for-zowe-sdk tgz",
       "test": "npm run test:unit && npm run test:system",
       "test:system": "jest .*/__system__/.* --config system.jest_config.ts --runInBand",
       "test:unit": "jest --config unit.jest_config.ts --testPathIgnorePatterns \".*/__system__/.*\" ",

@@ -1,4 +1,4 @@
-name: zowe-cli-plugin
+name: Zowe CICS Main CI
 
 on:
   push:
@@ -50,12 +50,6 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
-    - name: Update Dependencies
-      id: npm-update
-      uses: zowe-actions/octorelease-script@master
-      with:
-        script: npmUpdate
-
     - name: Build Source
       id: build
       run: npm run build
@@ -85,4 +79,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: zowe-cics-client
-        path: packages/*/dist/*
+        path: dist/*
