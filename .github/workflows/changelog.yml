@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - zowe-v1-lts
+    paths:
+      - packages/**
 
 jobs:
   changelog:
