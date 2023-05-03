@@ -37,7 +37,7 @@
       "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
       "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
       "test": "npm run test:unit && npm run test:system",
-      "test:system": "jest .*/__system__/.* --config __tests__/system.jest_config.ts --coverage false --runInBand",
+      "test:system": "jest .*/__system__/.* --config system.jest_config.ts --runInBand",
       "test:unit": "jest --config unit.jest_config.ts --testPathIgnorePatterns \".*/__system__/.*\" ",
       "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
       "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"

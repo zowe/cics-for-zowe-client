@@ -869,15 +869,6 @@
       }
     }
   },
-  "resolutions": {
-    "**/ansi-regex": "~5.0.1",
-    "**/log4js": "~6.4.6",
-    "**/glob-parent": "~5.1.2",
-    "**/minimist": "~1.2.6",
-    "**/moment": "~2.29.4",
-    "**/nanoid": "~3.1.30",
-    "**/tar": "~6.1.9"
-  },
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "npm run lint && run-script-os && npm run checkTestsCompile && npm run madge",
@@ -887,7 +878,7 @@
     "madge": "madge -c lib",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
-    "test:unit": "jest \".*__tests__.*\\.unit\\.test\\.ts\" --coverage",
+    "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
     "pretty": "prettier --write .",
     "package": "vsce package && mkdir -p dist && mv *.vsix dist"
@@ -905,62 +896,5 @@
     "https": "~1.0.0",
     "run-script-os": "~1.1.6",
     "xml-js": "~1.6.11"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "tsx"
-    ],
-    "watchPathIgnorePatterns": [
-      "<rootDir>/__tests__/__results__/unit"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": [
-        "ts-jest",
-        {
-          "tsconfig": "tsconfig-tests.json",
-          "diagnostics": false
-        }
-      ]
-    },
-    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
-    "modulePathIgnorePatterns": [
-      "__tests__/__integration__/",
-      "__tests__/__theia__/",
-      "out/"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.ts*",
-      "!**/__tests__/**",
-      "!**/index.ts",
-      "!**/main.ts"
-    ],
-    "collectCoverage": false,
-    "reporters": [
-      "default",
-      "jest-junit",
-      "jest-stare",
-      "jest-html-reporter"
-    ],
-    "coverageReporters": [
-      "json",
-      "lcov",
-      "text",
-      "cobertura"
-    ],
-    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
-  },
-  "jest-stare": {
-    "resultDir": "__tests__/__results__/unit/jest-stare",
-    "coverageLink": "../coverage/lcov-report/index.html"
-  },
-  "jest-junit": {
-    "output": "__tests__/__results__/junit.xml"
-  },
-  "jest-html-reporter": {
-    "pageTitle": "Zowe CICS Extension Test Results",
-    "outputPath": "__tests__/__results__/unit/results.html",
-    "includeFailureMsg": true
   }
 }
