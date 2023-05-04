@@ -1,4 +1,4 @@
-name: Zowe CICS Client Auto Responder for New Issues
+name: Zowe CICS Client Auto Responder
 # This workflow is triggered when a label is added to an issue.
 on:
   issues:
