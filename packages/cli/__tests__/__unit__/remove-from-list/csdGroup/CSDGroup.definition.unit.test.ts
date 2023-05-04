@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics remove-from-list csdGroup", () => {
   it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/cli/remove-from-list/csdGroup/CSDGroup.definition").CSDGroupDefinition;
+    const definition: ICommandDefinition = require("../../../../src/remove-from-list/csdGroup/CSDGroup.definition").CSDGroupDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

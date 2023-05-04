@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { CSDGroupDefinition } from "../../../../src/cli/add-to-list/csdGroup/CSDGroup.definition";
-import CSDGroupHandler from "../../../../src/cli/add-to-list/csdGroup/CSDGroup.handler";
+import { CSDGroupDefinition } from "../../../../src/add-to-list/csdGroup/CSDGroup.definition";
+import CSDGroupHandler from "../../../../src/add-to-list/csdGroup/CSDGroup.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const AddToList = require("@zowe/cics-for-zowe-sdk");

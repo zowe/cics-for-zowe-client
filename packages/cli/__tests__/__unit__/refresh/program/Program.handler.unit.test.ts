@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { ProgramDefinition } from "../../../../src/cli/refresh/program/Program.definition";
-import ProgramHandler from "../../../../src/cli/refresh/program/Program.handler";
+import { ProgramDefinition } from "../../../../src/refresh/program/Program.definition";
+import ProgramHandler from "../../../../src/refresh/program/Program.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Set = require("@zowe/cics-for-zowe-sdk");

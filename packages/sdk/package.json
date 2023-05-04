@@ -4,15 +4,14 @@
     "author": "Zowe",
     "license": "EPL-2.0",
     "description": "IBM CICS for Zowe SDK",
-    "homepage": "https://github.com/zowe/cics-for-zowe-client/packages/sdk/readme.md",
+    "homepage": "https://github.com/zowe/cics-for-zowe-client/blob/main/packages/sdk/README.md",
     "bugs": {
       "url": "https://github.com/zowe/cics-for-zowe-client/issues"
     },
     "keywords": [
       "zowe",
-      "cli",
-      "cics",
-      "plugin"
+      "sdk",
+      "cics"
     ],
     "repository": {
       "type": "git",
@@ -43,64 +42,10 @@
       "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
       "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
     },
-    "imperative": {
-      "configurationModule": "lib/imperative.js"
-    },
     "dependencies": {
       "xml2js": "0.5.0"
     },
     "peerDependencies": {
       "@zowe/imperative": "^5.0.0"
-    },
-    "devDependencies": {
-    },
-    "jest": {
-      "modulePathIgnorePatterns": [
-        "__tests__/__snapshots__/"
-      ],
-      "transform": {
-        ".(ts)": "ts-jest"
-      },
-      "testRegex": "(test|spec)\\.ts$",
-      "moduleFileExtensions": [
-        "ts",
-        "js"
-      ],
-      "testPathIgnorePatterns": [
-        "<rootDir>/__tests__/__results__"
-      ],
-      "testEnvironment": "node",
-      "collectCoverageFrom": [
-        "src/**/*.ts",
-        "!**/__tests__/**",
-        "!**/index.ts",
-        "!**/main.ts"
-      ],
-      "collectCoverage": false,
-      "reporters": [
-        "default",
-        "jest-junit",
-        "jest-stare",
-        "jest-html-reporter"
-      ],
-      "coverageReporters": [
-        "json",
-        "lcov",
-        "text",
-        "cobertura"
-      ],
-      "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
-    },
-    "jest-stare": {
-      "resultDir": "__tests__/__results__/jest-stare",
-      "coverageLink": "../coverage/lcov-report/index.html"
-    },
-    "jest-junit": {
-      "output": "__tests__/__results__/junit.xml"
-    },
-    "jest-html-reporter": {
-      "pageTitle": "Zowe CICS Plugin Test Results",
-      "outputPath": "__tests__/__results__/results.html",
-      "includeFailureMsg": true
     }
   }

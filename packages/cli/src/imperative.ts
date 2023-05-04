@@ -12,7 +12,7 @@
 // Imperative version of Zowe CLI
 import { IImperativeConfig } from "@zowe/imperative";
 import { PluginConstants } from "@zowe/cics-for-zowe-sdk";
-import { CicsSession } from "./cli/CicsSession";
+import { CicsSession } from "./CicsSession";
 
 const config: IImperativeConfig = {
   commandModuleGlobs: ["**/cli/*/*.definition!(.d).*s"],

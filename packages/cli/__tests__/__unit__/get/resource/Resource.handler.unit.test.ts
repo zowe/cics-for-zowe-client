@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { ResourceDefinition } from "../../../../src/cli/get/resource/Resource.definition";
-import ResourceHandler from "../../../../src/cli/get/resource/Resource.handler";
+import { ResourceDefinition } from "../../../../src/get/resource/Resource.definition";
+import ResourceHandler from "../../../../src/get/resource/Resource.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Get = require("@zowe/cics-for-zowe-sdk");

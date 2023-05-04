@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { UrimapDefinition } from "../../../../src/cli/disable/urimap/Urimap.definition";
-import UrimapHandler from "../../../../src/cli/disable/urimap/Urimap.handler";
+import { UrimapDefinition } from "../../../../src/disable/urimap/Urimap.definition";
+import UrimapHandler from "../../../../src/disable/urimap/Urimap.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Disable = require("@zowe/cics-for-zowe-sdk");

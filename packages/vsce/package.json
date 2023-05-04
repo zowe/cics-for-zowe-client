@@ -4,7 +4,8 @@
   "description": "Extension to the Zowe Explorer for IBM CICS",
   "publisher": "Zowe",
   "repository": {
-    "url": "https://github.com/zowe/vscode-extension-for-cics"
+    "type": "git",
+    "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
   "version": "5.0.1",
   "engines": {
@@ -894,19 +895,5 @@
     "axios": "^0.21.4",
     "https": "~1.0.0",
     "xml-js": "~1.6.11"
-  },
-  "tsup": {
-      "entry": [
-          "src/extension.ts"
-      ],
-      "splitting": false,
-      "sourcemap": true,
-      "clean": true,
-      "format": "cjs",
-      "dts": true,
-      "external": [
-          "vscode"
-      ],
-      "minify": "terser"
   }
 }
