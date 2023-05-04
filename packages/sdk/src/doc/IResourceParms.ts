@@ -10,12 +10,12 @@
 */
 
 export interface IResourceParms {
-    /**
+  /**
      * The name of the resource
      */
-    name: string;
+  name: string;
 
-    /**
+  /**
      * Criteria by which to filter the records
      *
      * Examples:
@@ -23,24 +23,24 @@ export interface IResourceParms {
      *    "PROGRAM=PRG*"
      *    "NAME=C* AND PROGRAM=D*"
      */
-    criteria?: string;
+  criteria?: string;
 
-    /**
+  /**
      * Parameter by which to refine the records
      *
      * Example:
      *    "CSDGROUP(GRP1)"
      *    "CSDGROUP(D*)"
      */
-    parameter?: string;
+  parameter?: string;
 
-    /**
+  /**
      * The name of the CICS region of the program
      */
-    regionName: string;
+  regionName: string;
 
-    /**
+  /**
      * CICS Plex of the program
      */
-    cicsPlex?: string;
+  cicsPlex?: string;
 }

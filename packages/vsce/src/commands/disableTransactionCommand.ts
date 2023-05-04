@@ -13,7 +13,7 @@ import {
   CicsCmciConstants,
   CicsCmciRestClient,
   ICMCIApiResponse,
-} from "@zowe/cics-for-zowe-cli";
+} from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -26,13 +26,13 @@ import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeI
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.disableTransaction",
-    async (clickedNode) => {
+    (clickedNode) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, clickedNode);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS Transaction selected");
         return;
       }
-      let parentRegions: CICSRegionTree[] = [];
+      const parentRegions: CICSRegionTree[] = [];
       window.withProgress({
         title: 'Disable',
         location: ProgressLocation.Notification,
@@ -47,9 +47,9 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             increment: (parseInt(index) / allSelectedNodes.length) * 100,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-          
+
           https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-          
+
           try {
             await disableTransaction(
               currentNode.parentRegion.parentSession.session,
@@ -94,14 +94,14 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
         // Reload contents
         for (const parentRegion of parentRegions) {
           try {
-            const transactionTree = parentRegion.children!.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
+            const transactionTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
             // Only load contents if the tree is expanded
             if (transactionTree.collapsibleState === 2) {
               await transactionTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allTransactionTree = parentRegion.parentPlex.children!.filter((child: any) => child.contextValue.includes("cicscombinedtransactiontree."))[0];
+              const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedtransactiontree."))[0];
               //@ts-ignore
               if (allTransactionTree.collapsibleState === 2 && allTransactionTree.getActiveFilter()) {
                 //@ts-ignore
@@ -118,7 +118,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
   );
 }
 
-async function disableTransaction(
+function disableTransaction(
   session: AbstractSession,
   parms: { name: string; regionName: string; cicsPlex: string; }
 ): Promise<ICMCIApiResponse> {
@@ -144,7 +144,7 @@ async function disableTransaction(
     "?CRITERIA=(TRANID=" +
     parms.name +
     ")";
-  return await CicsCmciRestClient.putExpectParsedXml(
+  return CicsCmciRestClient.putExpectParsedXml(
     session,
     cmciResource,
     [],

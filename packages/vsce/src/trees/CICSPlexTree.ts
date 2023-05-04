@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { IProfileLoaded } from "@zowe/imperative";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { CICSCombinedProgramTree } from "./CICSCombinedProgramTree";
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTransactionTree";
@@ -44,10 +44,10 @@ export class CICSPlexTree extends TreeItem {
     this.resourceFilters = {};
     this.activeFilter = undefined;
     this.groupName = group;
-    this.iconPath = 
-      group ? 
-      getIconPathInResources("cics-system-group-dark.svg ", "cics-system-group-light.svg ") : 
-      getIconPathInResources("cics-plex-dark.svg", "cics-plex-light.svg");
+    this.iconPath =
+      group ?
+        getIconPathInResources("cics-system-group-dark.svg ", "cics-system-group-light.svg ") :
+        getIconPathInResources("cics-plex-dark.svg", "cics-plex-light.svg");
   }
 
   public addRegion(region: CICSRegionTree) {
@@ -56,21 +56,21 @@ export class CICSPlexTree extends TreeItem {
 
   public async loadOnlyRegion() {
     const plexProfile = this.getProfile();
-    https.globalAgent.options.rejectUnauthorized = plexProfile.profile!.rejectUnauthorized;
+    https.globalAgent.options.rejectUnauthorized = plexProfile.profile.rejectUnauthorized;
     const session = this.getParent().getSession();
     const regionsObtained = await getResource(session, {
-        name: "CICSRegion",
-        cicsPlex: plexProfile.profile!.cicsPlex,
-        regionName: plexProfile.profile!.regionName
+      name: "CICSRegion",
+      cicsPlex: plexProfile.profile.cicsPlex,
+      regionName: plexProfile.profile.regionName
     });
     https.globalAgent.options.rejectUnauthorized = undefined;
     const newRegionTree = new CICSRegionTree(
-      plexProfile.profile!.regionName,
+      plexProfile.profile.regionName,
       regionsObtained.response.records.cicsregion,
       this.getParent(),
       this
-      );
-    this.clearChildren(); 
+    );
+    this.clearChildren();
     this.addRegion(newRegionTree);
   }
 

@@ -10,25 +10,25 @@
 */
 
 export interface IProgramParms {
-    /**
+  /**
      * The name of the program
      * Up to eight characters long
      */
-    name: string;
+  name: string;
 
-    /**
+  /**
      * CSD group for the program
      * Up to eight characters long
      */
-    csdGroup?: string;
+  csdGroup?: string;
 
-    /**
+  /**
      * The name of the CICS region of the program
      */
-    regionName: string;
+  regionName: string;
 
-    /**
+  /**
      * CICS Plex of the program
      */
-    cicsPlex?: string;
+  cicsPlex?: string;
 }

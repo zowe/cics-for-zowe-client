@@ -25,32 +25,32 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class UrimapPipelineHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Defining URIMAP of type Pipeline to CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Defining URIMAP of type Pipeline to CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        const response = await defineUrimapPipeline(session, {
-            name: params.arguments.urimapName,
-            csdGroup: params.arguments.csdGroup,
-            path: params.arguments.urimapPath,
-            host: params.arguments.urimapHost,
-            pipelineName: params.arguments.pipelineName,
-            scheme: params.arguments.urimapScheme,
-            description: params.arguments.description,
-            enable: params.arguments.enable,
-            transactionName: params.arguments.transactionName,
-            webserviceName: params.arguments.webserviceName,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
-            tcpipservice: params.arguments.tcpipservice
-        });
+    const response = await defineUrimapPipeline(session, {
+      name: params.arguments.urimapName,
+      csdGroup: params.arguments.csdGroup,
+      path: params.arguments.urimapPath,
+      host: params.arguments.urimapHost,
+      pipelineName: params.arguments.pipelineName,
+      scheme: params.arguments.urimapScheme,
+      description: params.arguments.description,
+      enable: params.arguments.enable,
+      transactionName: params.arguments.transactionName,
+      webserviceName: params.arguments.webserviceName,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      tcpipservice: params.arguments.tcpipservice
+    });
 
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
-        return response;
-    }
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
+    return response;
+  }
 }

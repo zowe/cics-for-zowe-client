@@ -17,35 +17,35 @@ import { ITestPropertiesSchema } from "../ITestPropertiesSchema";
  * @interface ITestEnvironment
  */
 export interface ITestEnvironment {
-    /**
+  /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that
      * must be created for your test.
      */
-    workingDir: string;
+  workingDir: string;
 
-    /**
+  /**
      * The system test properties configured and loaded as part of the test lifecyle. This field may be null
      * in the case that no system test properties were configured or could be loaded.
      *
      */
-    systemTestProperties: ITestPropertiesSchema;
+  systemTestProperties: ITestPropertiesSchema;
 
-    /**
+  /**
      * Set of environmental variables (such as profile/logging home directory)
      * that can be used when executing brightside commands
      */
-    env: { [key: string]: string };
+  env: { [key: string]: string };
 
-    /**
+  /**
      * a map of profileType to profile names created when you specify
      * tempProfileTypes on your ISetupEnvironmentParms object
      * empty if you did not specify any profile types
      */
-    tempProfiles?: { [profileType: string]: string[] };
+  tempProfiles?: { [profileType: string]: string[] };
 
-    /**
+  /**
      * Was the plugin installed in the working directory
      */
-    pluginInstalled?: boolean;
+  pluginInstalled?: boolean;
 }

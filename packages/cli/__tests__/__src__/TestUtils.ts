@@ -23,23 +23,23 @@ import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
  *           executing the script, including exit code and output
  */
 export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment, args: any[] = []): SpawnSyncReturns<Buffer> {
-    if (fs.existsSync(scriptPath)) {
+  if (fs.existsSync(scriptPath)) {
 
-        // We force the color off to prevent any oddities in the snapshots or expected values
-        // Color can vary OS/terminal
-        const childEnv = JSON.parse(JSON.stringify(process.env));
-        childEnv.FORCE_COLOR = "0";
-        for (const key of Object.keys(testEnvironment.env)) {
-            // copy the values from the env
-            childEnv[key] = testEnvironment.env[key];
-        }
-
-        // Execute the command synchronously
-        return spawnSync("sh", [`${scriptPath}`].concat(args), {cwd: testEnvironment.workingDir, env: childEnv});
-    } else {
-        throw new Error(`The script file  ${scriptPath} doesn't exist`);
-
+    // We force the color off to prevent any oddities in the snapshots or expected values
+    // Color can vary OS/terminal
+    const childEnv = JSON.parse(JSON.stringify(process.env));
+    childEnv.FORCE_COLOR = "0";
+    for (const key of Object.keys(testEnvironment.env)) {
+      // copy the values from the env
+      childEnv[key] = testEnvironment.env[key];
     }
+
+    // Execute the command synchronously
+    return spawnSync("sh", [`${scriptPath}`].concat(args), {cwd: testEnvironment.workingDir, env: childEnv});
+  } else {
+    throw new Error(`The script file  ${scriptPath} doesn't exist`);
+
+  }
 }
 
 /**
@@ -50,14 +50,14 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
  * @returns {string} the random string
  */
 export function generateRandomAlphaNumericString(length: number, upToLength: boolean = false): string {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let result = "";
-    if (upToLength) {
-        length = Math.floor(Math.random() * length) + 1;
-    }
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  if (upToLength) {
+    length = Math.floor(Math.random() * length) + 1;
+  }
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 }
 

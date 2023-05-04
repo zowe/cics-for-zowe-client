@@ -16,20 +16,20 @@
 import { ICMCIResponseResultSummary } from "./ICMCIResponseResultSummary";
 
 export interface ICMCIApiResponse {
-    /**
+  /**
      * See the following link for more information:
      * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_response_element.html
      */
-    response: {
-        /**
+  response: {
+    /**
          * See the following link for more information:
          * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_resultsummary_element.html
          */
-        resultsummary: ICMCIResponseResultSummary;
-        /**
+    resultsummary: ICMCIResponseResultSummary;
+    /**
          * See the following link for more information:
          * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_records_element.html
          */
-        records: any;
-    };
+    records: any;
+  };
 }

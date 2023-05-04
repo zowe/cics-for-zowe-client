@@ -14,13 +14,13 @@ import { ITestEnvironment } from "../../__src__/environment/doc/response/ITestEn
 import { TestEnvironment } from "../../__src__/environment/TestEnvironment";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
 import {
-    defineUrimapServer,
-    defineUrimapClient,
-    defineUrimapPipeline,
-    deleteUrimap,
-    IURIMapParms,
-    discardUrimap,
-    installUrimap
+  defineUrimapServer,
+  defineUrimapClient,
+  defineUrimapPipeline,
+  deleteUrimap,
+  IURIMapParms,
+  discardUrimap,
+  installUrimap
 } from "../../../src";
 
 let testEnvironment: ITestEnvironment;
@@ -30,202 +30,202 @@ let session: Session;
 let certificate: string;
 
 function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const sleepTime = 5000;
 
 describe("CICS Discard URImap", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_discard_urimap",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cmciProperties = await testEnvironment.systemTestProperties.cmci;
-        certificate = testEnvironment.systemTestProperties.urimap.certificate;
-
-        session = new Session({
-            user: cmciProperties.user,
-            password: cmciProperties.password,
-            hostname: cmciProperties.host,
-            port: cmciProperties.port,
-            type: "basic",
-            rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-            protocol: cmciProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_discard_urimap",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    certificate = testEnvironment.systemTestProperties.urimap.certificate;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cmciProperties.user,
+      password: cmciProperties.password,
+      hostname: cmciProperties.host,
+      port: cmciProperties.port,
+      type: "basic",
+      rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
+      protocol: cmciProperties.protocol as any || "https",
     });
+  });
 
-    const options: IURIMapParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should discard a URIMap of type server from CICS", async () => {
-        let error;
-        let response;
+  const options: IURIMapParms = {} as any;
 
-        const urimapNameSuffixLength = 6;
-        const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+  it("should discard a URIMap of type server from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.programName = "AAAA1234";
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
-        options.enable = false;
-        options.authenticate = undefined;
-        options.certificate = undefined;
-        options.tcpipservice = "TESTSVC";
-        await defineUrimapServer(session, options);
-        await sleep(sleepTime);
-        await installUrimap(session, options);
-        await sleep(sleepTime);
+    const urimapNameSuffixLength = 6;
+    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
-        try {
-            response = await discardUrimap(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.programName = "AAAA1234";
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
+    options.enable = false;
+    options.authenticate = undefined;
+    options.certificate = undefined;
+    options.tcpipservice = "TESTSVC";
+    await defineUrimapServer(session, options);
+    await sleep(sleepTime);
+    await installUrimap(session, options);
+    await sleep(sleepTime);
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await sleep(sleepTime);
-        await deleteUrimap(session, options);
-    });
+    try {
+      response = await discardUrimap(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should discard a URIMap of type pipeline from CICS", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await sleep(sleepTime);
+    await deleteUrimap(session, options);
+  });
 
-        const urimapNameSuffixLength = 6;
-        const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+  it("should discard a URIMap of type pipeline from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.pipelineName = "AAAB1234";
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
-        options.enable = false;
-        options.authenticate = undefined;
-        options.certificate = undefined;
-        options.tcpipservice = "TESTSVC";
-        await defineUrimapPipeline(session, options);
-        await sleep(sleepTime);
-        await installUrimap(session, options);
-        await sleep(sleepTime);
+    const urimapNameSuffixLength = 6;
+    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
-        try {
-            response = await discardUrimap(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.pipelineName = "AAAB1234";
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
+    options.enable = false;
+    options.authenticate = undefined;
+    options.certificate = undefined;
+    options.tcpipservice = "TESTSVC";
+    await defineUrimapPipeline(session, options);
+    await sleep(sleepTime);
+    await installUrimap(session, options);
+    await sleep(sleepTime);
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await sleep(sleepTime);
-        await deleteUrimap(session, options);
-    });
+    try {
+      response = await discardUrimap(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should discard a URIMap of type client from CICS", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await sleep(sleepTime);
+    await deleteUrimap(session, options);
+  });
 
-        const urimapNameSuffixLength = 6;
-        const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+  it("should discard a URIMap of type client from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
-        options.enable = false;
-        options.authenticate = "BASIC";
-        options.certificate = certificate;
-        options.tcpipservice = undefined;
-        await defineUrimapClient(session, options);
-        await sleep(sleepTime);
-        await installUrimap(session, options);
-        await sleep(sleepTime);
+    const urimapNameSuffixLength = 6;
+    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
-        try {
-            response = await discardUrimap(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
+    options.enable = false;
+    options.authenticate = "BASIC";
+    options.certificate = certificate;
+    options.tcpipservice = undefined;
+    await defineUrimapClient(session, options);
+    await sleep(sleepTime);
+    await installUrimap(session, options);
+    await sleep(sleepTime);
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await sleep(sleepTime);
-        await deleteUrimap(session, options);
-    });
+    try {
+      response = await discardUrimap(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to discard a URIMap to CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await sleep(sleepTime);
+    await deleteUrimap(session, options);
+  });
 
-        const urimapNameSuffixLength = 6;
-        const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+  it("should fail to discard a URIMap to CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.regionName = "fake";
-        options.authenticate = undefined;
-        options.certificate = undefined;
-        options.tcpipservice = "TESTSVC";
+    const urimapNameSuffixLength = 6;
+    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
-        try {
-            response = await discardUrimap(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.regionName = "fake";
+    options.authenticate = undefined;
+    options.certificate = undefined;
+    options.tcpipservice = "TESTSVC";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await discardUrimap(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to discard a URIMap that does not exist", async () => {
-        let error;
-        let response;
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 
-        const urimapName = "XXXXFAKE";
+  it("should fail to discard a URIMap that does not exist", async () => {
+    let error;
+    let response;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
-        options.authenticate = undefined;
-        options.certificate = undefined;
-        options.tcpipservice = "TESTSVC";
+    const urimapName = "XXXXFAKE";
 
-        try {
-            response = await discardUrimap(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
+    options.authenticate = undefined;
+    options.certificate = undefined;
+    options.tcpipservice = "TESTSVC";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("NODATA");
-    });
+    try {
+      response = await discardUrimap(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("NODATA");
+  });
 });

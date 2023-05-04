@@ -124,10 +124,10 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 <label for="protocol-select" class="bx--label">Protocol</label>
                 <div class="bx--select-input__wrapper">
                   <select id="protocol-select" class="bx--select-input" onload="renderRU()" onchange="renderRU()">
-                    <option class="bx--select-option" value="http" ${message?.profile!.protocol === "http" ? `selected="selected"` : ""}>
+                    <option class="bx--select-option" value="http" ${message?.profile.protocol === "http" ? `selected="selected"` : ""}>
                       HTTP
                     </option>
-                    <option class="bx--select-option" value="https" ${message?.profile!.protocol === "https" ? `selected="selected"` : ""}>
+                    <option class="bx--select-option" value="https" ${message?.profile.protocol === "https" ? `selected="selected"` : ""}>
                       HTTPS
                     </option>
                   </select>
@@ -157,7 +157,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                   class="bx--text-input"
                   placeholder="example.cics.host.com"
                   oninput="handleHostInputName()"
-                  ${message?.profile!.host ? `value =${message.profile.host}` : undefined}
+                  ${message?.profile.host ? `value =${message.profile.host}` : undefined}
                 />
               </div>
           </div>
@@ -170,7 +170,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 type="text"
                 class="bx--text-input"
                 placeholder="12345"
-                ${message?.profile!.port ? `value =${message.profile.port}` : undefined}
+                ${message?.profile.port ? `value =${message.profile.port}` : undefined}
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
               <div class="float-child-right">
                 <div class="bx--radio-button-group ">
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${message?.profile!.rejectUnauthorized ? `checked="checked"` : ""}>
+                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${message?.profile.rejectUnauthorized ? `checked="checked"` : ""}>
                     <label for="radio-button-true" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">True</span>
@@ -194,7 +194,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                   </div>
 
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${!message?.profile!.rejectUnauthorized ? `checked="checked""` : ""}>
+                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${!message?.profile.rejectUnauthorized ? `checked="checked""` : ""}>
                     <label for="radio-button-false" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">False</span>
@@ -234,7 +234,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 type="text"
                 class="bx--text-input"
                 placeholder=""
-                ${message?.profile!.user ? `value =${message.profile.user}` : undefined}
+                ${message?.profile.user ? `value =${message.profile.user}` : undefined}
               />
             </div>
           </div>
@@ -247,7 +247,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 type="password"
                 class="bx--text-input"
                 placeholder=""
-                ${message?.profile!.password ? `value =${message.profile.password}` : undefined}
+                ${message?.profile.password ? `value =${message.profile.password}` : undefined}
               />
             </div>
           </div>
@@ -265,7 +265,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 type="text"
                 class="bx--text-input"
                 placeholder=""
-                ${message?.profile!.regionName ? `value =${message.profile.regionName}` : undefined}
+                ${message?.profile.regionName ? `value =${message.profile.regionName}` : undefined}
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                 type="text"
                 class="bx--text-input"
                 placeholder=""
-                ${message?.profile!.cicsPlex ? `value =${message.profile.cicsPlex}` : undefined}
+                ${message?.profile.cicsPlex ? `value =${message.profile.cicsPlex}` : undefined}
               />
             </div>
           </div>
@@ -327,9 +327,9 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
         }
 
         function onLoadRenderRU() {
-          if (${message?.profile!.protocol === "https"}) {
+          if (${message?.profile.protocol === "https"}) {
             setContentsEnabled("ru-selection-container");
-          } else if (${message?.profile!.protocol === "http"}) {
+          } else if (${message?.profile.protocol === "http"}) {
             setContentsDisabled("ru-selection-container");
           }
         }

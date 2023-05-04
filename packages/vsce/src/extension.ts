@@ -87,11 +87,11 @@ export async function activate(context: ExtensionContext) {
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
           getIconPathInResources("profile-disconnected-dark.svg","profile-disconnected-light.svg")
-          );
+        );
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
-    } else if (node.element.contextValue.includes("cicsregion.")) {
+    // } else if (node.element.contextValue.includes("cicsregion.")) {
     } else if (node.element.contextValue.includes("cicstreeprogram.")) {
       window.withProgress({
         title: 'Loading Programs',
@@ -101,8 +101,8 @@ export async function activate(context: ExtensionContext) {
         token.onCancellationRequested(() => {
           console.log("Cancelling the loading of programs");
         });
-      await node.element.loadContents();
-      treeDataProv._onDidChangeTreeData.fire(undefined);
+        await node.element.loadContents();
+        treeDataProv._onDidChangeTreeData.fire(undefined);
       });
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
     } else if (node.element.contextValue.includes("cicstreetransaction.")) {
@@ -158,7 +158,7 @@ export async function activate(context: ExtensionContext) {
     treeDataProv._onDidChangeTreeData.fire(undefined);
   };
 
-  treeview.onDidCollapseElement(async (node) => {
+  treeview.onDidCollapseElement((node) => {
     if (node.element.contextValue.includes("cicsregionscontainer.")) {
       setIconClosed(node);
     } else if (node.element.contextValue.includes("cicscombinedprogramtree.")) {
@@ -210,12 +210,12 @@ export async function activate(context: ExtensionContext) {
     getFilterAllProgramsCommand(treeDataProv, treeview),
     getFilterAllTransactionsCommand(treeDataProv, treeview),
     getFilterAllLocalFilesCommand(treeDataProv, treeview),
-    
+
     getFilterPlexResources(treeDataProv, treeview),
 
     getClearResourceFilterCommand(treeDataProv, treeview),
     getClearPlexFilterCommand(treeDataProv, treeview),
-    
+
     viewMoreCommand(treeDataProv, treeview)
   );
 }

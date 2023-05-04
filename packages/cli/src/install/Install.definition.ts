@@ -24,22 +24,22 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).INSTA
  * Definition for the "install" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-    name: "install", aliases: ["ins"],
-    summary: strings.SUMMARY,
-    description: strings.DESCRIPTION,
-    type: "group",
-    children: [ProgramDefinition,
-        TransactionDefinition,
-        UrimapDefinition],
-    passOn: [
-        {
-            property: "options",
-            value: CicsSession.CICS_CONNECTION_OPTIONS,
-            merge: true,
-            ignoreNodes: [
-                {type: "group"}
-            ]
-        }
-    ]
+  name: "install", aliases: ["ins"],
+  summary: strings.SUMMARY,
+  description: strings.DESCRIPTION,
+  type: "group",
+  children: [ProgramDefinition,
+    TransactionDefinition,
+    UrimapDefinition],
+  passOn: [
+    {
+      property: "options",
+      value: CicsSession.CICS_CONNECTION_OPTIONS,
+      merge: true,
+      ignoreNodes: [
+        {type: "group"}
+      ]
+    }
+  ]
 };
 export = definition;

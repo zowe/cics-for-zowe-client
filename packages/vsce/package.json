@@ -460,7 +460,7 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-cli": "^4.0.8",
+    "@zowe/cics-for-zowe-sdk": "^4.0.8",
     "@zowe/imperative": "^4.8.15",
     "@zowe/zowe-explorer-api": "^1.22.3",
     "axios": "^0.21.4",

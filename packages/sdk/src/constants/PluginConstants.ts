@@ -11,18 +11,18 @@
 
 export class PluginConstants {
 
-    /**
+  /**
      * The name of this plug-in
      */
-    public static readonly PLUGIN_NAME = "CLI Plug-in for IBM CICS";
+  public static readonly PLUGIN_NAME = "CLI Plug-in for IBM CICS";
 
-    /**
+  /**
      * The description of the group exposed by this plug-in
      */
-    public static readonly PLUGIN_DESCRIPTION = "Interact with IBM CICS programs and transactions.";
+  public static readonly PLUGIN_DESCRIPTION = "Interact with IBM CICS programs and transactions.";
 
-    /**
+  /**
      * The name of the command group exposed by this plug-in
      */
-    public static readonly PLUGIN_GROUP_NAME = "cics";
+  public static readonly PLUGIN_GROUP_NAME = "cics";
 }

@@ -34,8 +34,8 @@ export function getFilterAllTransactionsCommand(tree: CICSTree, treeview: TreeVi
       if (!pattern) {
         return;
       }
-      await persistentStorage.addTransactionSearchHistory(pattern!);
-      chosenNode.setFilter(pattern!);
+      await persistentStorage.addTransactionSearchHistory(pattern);
+      chosenNode.setFilter(pattern);
       await chosenNode.loadContents(tree);
       tree._onDidChangeTreeData.fire(undefined);
     }

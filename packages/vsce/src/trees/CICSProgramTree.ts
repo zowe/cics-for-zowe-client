@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { getDefaultProgramFilter } from "../utils/getDefaultProgramFilter";
 import { toEscapedCriteriaString } from "../utils/toEscapedCriteriaString";
@@ -36,7 +36,7 @@ export class CICSProgramTree extends TreeItem {
   }
 
   public async loadContents() {
-    let defaultCriteria = await getDefaultProgramFilter();
+    const defaultCriteria = await getDefaultProgramFilter();
     let criteria;
     if (this.activeFilter) {
       criteria = toEscapedCriteriaString(this.activeFilter, 'PROGRAM');
@@ -51,7 +51,7 @@ export class CICSProgramTree extends TreeItem {
       const programResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSProgram",
         regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex!.getPlexName() : undefined,
+        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
@@ -66,10 +66,10 @@ export class CICSProgramTree extends TreeItem {
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       // @ts-ignore
-      if (error!.mMessage!.includes('exceeded a resource limit')) {
+      if (error.mMessage!.includes('exceeded a resource limit')) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a program filter to narrow search`);
         // @ts-ignore
-      } else if (error!.mMessage!.split(" ").join("").includes('recordcount:0')) {
+      } else if (error.mMessage!.split(" ").join("").includes('recordcount:0')) {
         window.showInformationMessage(`No programs found`);
       } else {
         window.showErrorMessage(`Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);

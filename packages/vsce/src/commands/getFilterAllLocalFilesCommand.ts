@@ -34,8 +34,8 @@ export function getFilterAllLocalFilesCommand(tree: CICSTree, treeview: TreeView
       if (!pattern) {
         return;
       }
-      await persistentStorage.addLocalFileSearchHistory(pattern!);
-      chosenNode.setFilter(pattern!);
+      await persistentStorage.addLocalFileSearchHistory(pattern);
+      chosenNode.setFilter(pattern);
       await chosenNode.loadContents(tree);
       tree._onDidChangeTreeData.fire(undefined);
     }

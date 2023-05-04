@@ -13,7 +13,7 @@ import {
   CicsCmciConstants,
   CicsCmciRestClient,
   ICMCIApiResponse,
-} from "@zowe/cics-for-zowe-cli";
+} from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -26,13 +26,13 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.openLocalFile",
-    async (clickedNode) => {
+    (clickedNode) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS local file selected");
         return;
       }
-      let parentRegions: CICSRegionTree[] = [];
+      const parentRegions: CICSRegionTree[] = [];
       window.withProgress({
         title: 'Open',
         location: ProgressLocation.Notification,
@@ -47,9 +47,9 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
             increment: (parseInt(index) / allSelectedNodes.length) * 100,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-          
+
           https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-          
+
           try {
             await openLocalFile(
               currentNode.parentRegion.parentSession.session,
@@ -93,14 +93,14 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
         }
         for (const parentRegion of parentRegions) {
           try {
-            const localFileTree = parentRegion.children!.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
+            const localFileTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
             // Only load contents if the tree is expanded
             if (localFileTree.collapsibleState === 2) {
               await localFileTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allLocalFileTreeTree = parentRegion.parentPlex.children!.filter((child: any) => child.contextValue.includes("cicscombinedlocalfiletree."))[0];
+              const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedlocalfiletree."))[0];
               //@ts-ignore
               if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
                 //@ts-ignore

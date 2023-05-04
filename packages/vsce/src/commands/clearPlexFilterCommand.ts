@@ -24,8 +24,8 @@ export function getClearPlexFilterCommand(tree: CICSTree, treeview: TreeView<any
         window.showErrorMessage("No CICSPlex tree selected");
         return;
       }
-      for (const node of allSelectedNodes) {
-        const plex = node.getParent();
+      for (const selectedNode of allSelectedNodes) {
+        const plex = selectedNode.getParent();
         const plexProfile = plex.getProfile();
         let resourceToClear;
         if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
@@ -38,36 +38,36 @@ export function getClearPlexFilterCommand(tree: CICSTree, treeview: TreeView<any
           return;
         }
         if ((resourceToClear === "Regions" || resourceToClear === "All") && !(plexProfile.profile.regionName && plexProfile.profile.cicsPlex)){
-          node.filterRegions("*", tree);
-        } 
+          selectedNode.filterRegions("*", tree);
+        }
         if (resourceToClear !== "Regions") {
-            for (const region of node.children) {
-              if (region instanceof CICSRegionTree) {
-                if (region.getIsActive()){
-                  if (region.children) {
-                    let treeToClear;
-                    if (resourceToClear === "Programs"){
-                        treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-                        treeToClear.clearFilter();
-                        await treeToClear.loadContents();
-                    } else if (resourceToClear === "Local Transactions"){
-                        treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
-                        treeToClear.clearFilter();
-                        await treeToClear.loadContents();
-                    } else if (resourceToClear === "Local Files"){
-                        treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
-                        treeToClear.clearFilter();
-                        await treeToClear.loadContents();
-                    } else if (resourceToClear === "All"){
-                      for (const child of region.children){
-                        child.clearFilter();
-                        await child.loadContents();
-                      }
+          for (const region of selectedNode.children) {
+            if (region instanceof CICSRegionTree) {
+              if (region.getIsActive()){
+                if (region.children) {
+                  let treeToClear;
+                  if (resourceToClear === "Programs"){
+                    treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
+                    treeToClear.clearFilter();
+                    await treeToClear.loadContents();
+                  } else if (resourceToClear === "Local Transactions"){
+                    treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
+                    treeToClear.clearFilter();
+                    await treeToClear.loadContents();
+                  } else if (resourceToClear === "Local Files"){
+                    treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
+                    treeToClear.clearFilter();
+                    await treeToClear.loadContents();
+                  } else if (resourceToClear === "All"){
+                    for (const child of region.children){
+                      child.clearFilter();
+                      await child.loadContents();
                     }
                   }
                 }
               }
-              tree._onDidChangeTreeData.fire(undefined);
+            }
+            tree._onDidChangeTreeData.fire(undefined);
           }
         }
       }

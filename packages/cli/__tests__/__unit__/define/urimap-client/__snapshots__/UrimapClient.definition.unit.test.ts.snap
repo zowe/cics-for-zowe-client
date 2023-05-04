@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics define urimap-client should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "uc",
   ],
   "description": "Define a new URIMAP of type client to CICS. This acts as an HTTP(S) client",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Define a URIMAP named URIMAPA to the region named MYREGION in the CSD group MYGRP where the host is www.example.com and the path is /example/index.html",
       "options": "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --region-name MYREGION",
     },
   ],
   "name": "urimap-client",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "up",
       ],
       "description": "The path component of the URI.",
@@ -23,8 +23,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "uh",
       ],
       "description": "The host component of the URI.",
@@ -32,13 +32,13 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "us",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": false,
-        "values": Array [
+        "values": [
           "http",
           "https",
         ],
@@ -48,13 +48,13 @@ Object {
       "name": "urimap-scheme",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "auth",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": true,
-        "values": Array [
+        "values": [
           "NO",
           "BASIC",
         ],
@@ -63,55 +63,55 @@ Object {
       "name": "authenticate",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cert",
       ],
       "description": "The label of a certificate in the keyring that is to be used as the client certificate in SSL handshakes",
       "name": "certificate",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "desc",
       ],
       "description": "Description of the URIMAP resource being defined.",
       "name": "description",
       "type": "string",
     },
-    Object {
+    {
       "description": "The CICS region name to which to define the new URIMAP.",
       "name": "region-name",
       "type": "string",
     },
-    Object {
+    {
       "description": "The name of the CICSPlex to which to define the new URIMAP.",
       "name": "cics-plex",
       "type": "string",
     },
-    Object {
+    {
       "defaultValue": true,
       "description": "Whether or not the URIMAP is to be enabled on install by default. ",
       "name": "enable",
       "type": "boolean",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The name of the URIMAP to create. The maximum length of the urimap name is eight characters.",
       "name": "urimapName",
       "required": true,
       "type": "string",
     },
-    Object {
+    {
       "description": "The CICS system definition (CSD) Group for the new urimap that you want to define. The maximum length of the group name is eight characters.",
       "name": "csdGroup",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "cics",
     ],
   },

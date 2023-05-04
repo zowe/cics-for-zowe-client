@@ -19,16 +19,16 @@ import { TreeView } from "vscode";
  * @return Array of selected nodes in the treeview.
  */
 export function findSelectedNodes(treeview: TreeView<any>, instanceOf:any, clickedNode?:any){
-    const selection = treeview.selection;
-    let allSelectedNodes = [];
-    if (clickedNode) {
-        const selectedNodes = selection.filter((selectedNode) => (selectedNode !== clickedNode));
-        allSelectedNodes = [clickedNode, ...selectedNodes];
-        allSelectedNodes = allSelectedNodes.filter((selectedNode) => selectedNode instanceof instanceOf);
-    }
-    // executed from command palette
-    else if (selection.length) {
-        allSelectedNodes = selection.filter((node:any) => node && node instanceof instanceOf);
-    }
-    return allSelectedNodes;
+  const selection = treeview.selection;
+  let allSelectedNodes = [];
+  if (clickedNode) {
+    const selectedNodes = selection.filter((selectedNode) => (selectedNode !== clickedNode));
+    allSelectedNodes = [clickedNode, ...selectedNodes];
+    allSelectedNodes = allSelectedNodes.filter((selectedNode) => selectedNode instanceof instanceOf);
+  }
+  // executed from command palette
+  else if (selection.length) {
+    allSelectedNodes = selection.filter((node:any) => node && node instanceof instanceOf);
+  }
+  return allSelectedNodes;
 }

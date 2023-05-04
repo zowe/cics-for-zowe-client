@@ -16,7 +16,7 @@ import { IMessageDefinition } from "@zowe/imperative";
  */
 export const CicsCmciMessages: { [key: string]: IMessageDefinition } = {
 
-    cmciRequestFailed: {
-        message: "Did not receive the expected response from CMCI REST API. "
-    }
+  cmciRequestFailed: {
+    message: "Did not receive the expected response from CMCI REST API. "
+  }
 };

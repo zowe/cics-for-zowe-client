@@ -19,7 +19,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.clearFilter",
-    async (node) => {
+    (node) => {
       const allSelectedProgramTreeNodes = findSelectedNodes(treeview, CICSProgramTree, node);
       const allSelectedTransactionTreeNodes = findSelectedNodes(treeview, CICSTransactionTree, node);
       const allSelectedLocalFileTreeNodes = findSelectedNodes(treeview, CICSLocalFileTree, node);
@@ -28,8 +28,8 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
         window.showErrorMessage("No CICS resource tree selected");
         return;
       }
-      for (const node of allSelectedNodes) {
-        node.clearFilter();
+      for (const selectedNode of allSelectedNodes) {
+        selectedNode.clearFilter();
         window.withProgress({
           title: 'Loading Resources',
           location: ProgressLocation.Notification,
@@ -38,8 +38,8 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
           token.onCancellationRequested(() => {
             console.log("Cancelling the loading of resources");
           });
-        await node.loadContents();
-        tree._onDidChangeTreeData.fire(undefined);
+          await selectedNode.loadContents();
+          tree._onDidChangeTreeData.fire(undefined);
         });
       }
     }

@@ -22,80 +22,80 @@ let session: Session;
 
 describe("CICS Refresh program", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_refresh_program",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cmciProperties = await testEnvironment.systemTestProperties.cmci;
-
-        session = new Session({
-            user: cmciProperties.user,
-            password: cmciProperties.password,
-            hostname: cmciProperties.host,
-            port: cmciProperties.port,
-            type: "basic",
-            rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-            protocol: cmciProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_refresh_program",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cmciProperties.user,
+      password: cmciProperties.password,
+      hostname: cmciProperties.host,
+      port: cmciProperties.port,
+      type: "basic",
+      rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
+      protocol: cmciProperties.protocol as any || "https",
     });
+  });
 
-    const options: IProgramParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should refresh a program from CICS", async () => {
-        let error;
-        let response;
+  const options: IProgramParms = {} as any;
 
-        // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-        const MAX_PROGRAMS = 4;
-        const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
+  it("should refresh a program from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = programName;
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
+    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
+    const MAX_PROGRAMS = 4;
+    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
 
-        try {
-            await defineProgram(session, options);
-            await installProgram(session, options);
-            response = await programNewcopy(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = programName;
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await discardProgram(session, options);
-        await deleteProgram(session, options);
-    });
+    try {
+      await defineProgram(session, options);
+      await installProgram(session, options);
+      response = await programNewcopy(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to refresh a program from CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await discardProgram(session, options);
+    await deleteProgram(session, options);
+  });
 
-        const programNameSuffixLength = 4;
-        const programName = "AAAA" + generateRandomAlphaNumericString(programNameSuffixLength);
+  it("should fail to refresh a program from CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        options.name = programName;
-        options.csdGroup = csdGroup;
-        options.regionName = "FAKE";
+    const programNameSuffixLength = 4;
+    const programName = "AAAA" + generateRandomAlphaNumericString(programNameSuffixLength);
 
-        try {
-            response = await programNewcopy(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = programName;
+    options.csdGroup = csdGroup;
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await programNewcopy(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 });

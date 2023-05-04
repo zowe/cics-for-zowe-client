@@ -15,7 +15,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
 import { ProfileManagement } from "../utils/profileManagement";
 import { getIconPathInResources } from "../utils/getIconPath";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 
 export class CICSRegionsContainer extends TreeItem {
@@ -39,7 +39,7 @@ export class CICSRegionsContainer extends TreeItem {
     this.children = [];
     this.activeFilter = pattern;
     this.setLabel(this.activeFilter === "*" ? `Regions` : `Regions (${this.activeFilter})`);
-    window.withProgress({
+    await window.withProgress({
       title: 'Filtering regions',
       location: ProgressLocation.Notification,
       cancellable: true
@@ -61,15 +61,15 @@ export class CICSRegionsContainer extends TreeItem {
   public async loadRegionsInCICSGroup(tree: CICSTree) {
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
-    https.globalAgent.options.rejectUnauthorized = plexProfile.profile!.rejectUnauthorized;
+    https.globalAgent.options.rejectUnauthorized = plexProfile.profile.rejectUnauthorized;
     const session = parentPlex.getParent().getSession();
     const regionsObtained = await getResource(session, {
-        name: "CICSManagedRegion",
-        cicsPlex: plexProfile.profile!.cicsPlex,
-        regionName: plexProfile.profile!.regionName
+      name: "CICSManagedRegion",
+      cicsPlex: plexProfile.profile.cicsPlex,
+      regionName: plexProfile.profile.regionName
     });
     https.globalAgent.options.rejectUnauthorized = undefined;
-    this.clearChildren(); 
+    this.clearChildren();
     const regionsArray = Array.isArray(regionsObtained.response.records.cicsmanagedregion) ? regionsObtained.response.records.cicsmanagedregion : [regionsObtained.response.records.cicsmanagedregion];
     this.addRegionsUtility(regionsArray);
     // Keep plex open after label change
@@ -80,10 +80,10 @@ export class CICSRegionsContainer extends TreeItem {
   public async loadRegionsInPlex() {
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
-    if (regionInfo) {   
-        this.addRegionsUtility(regionInfo);
-        // Keep plex open after label change
-        this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    if (regionInfo) {
+      this.addRegionsUtility(regionInfo);
+      // Keep plex open after label change
+      this.collapsibleState = TreeItemCollapsibleState.Expanded;
     }
   }
 

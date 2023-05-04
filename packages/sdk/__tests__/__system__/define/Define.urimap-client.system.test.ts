@@ -24,134 +24,134 @@ let urimapName: string;
 let certificate: string;
 
 function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const sleepTime = 4000;
 
 describe("CICS Define client URImap", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_define_urimap-client",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        enable = false;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const urimapNameSuffixLength = 4;
-        const cmciProperties = await testEnvironment.systemTestProperties.cmci;
-        urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
-        certificate = testEnvironment.systemTestProperties.urimap.certificate;
-
-        session = new Session({
-            user: cmciProperties.user,
-            password: cmciProperties.password,
-            hostname: cmciProperties.host,
-            port: cmciProperties.port,
-            type: "basic",
-            rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-            protocol: cmciProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_define_urimap-client",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    enable = false;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const urimapNameSuffixLength = 4;
+    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+    certificate = testEnvironment.systemTestProperties.urimap.certificate;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cmciProperties.user,
+      password: cmciProperties.password,
+      hostname: cmciProperties.host,
+      port: cmciProperties.port,
+      type: "basic",
+      rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
+      protocol: cmciProperties.protocol as any || "https",
     });
+  });
 
-    const options: IURIMapParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should define a URIMap to CICS", async () => {
-        let error;
-        let response;
+  const options: IURIMapParms = {} as any;
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.enable = enable;
-        options.regionName = regionName;
-        options.authenticate = "BASIC";
-        options.certificate = certificate;
+  it("should define a URIMap to CICS", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await defineUrimapClient(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.enable = enable;
+    options.regionName = regionName;
+    options.authenticate = "BASIC";
+    options.certificate = certificate;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-        await sleep(sleepTime);
-        await deleteUrimap(session, options);
-    });
+    try {
+      response = await defineUrimapClient(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to define a URIMap to CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+    await sleep(sleepTime);
+    await deleteUrimap(session, options);
+  });
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.regionName = "FAKE";
-        options.authenticate = "BASIC";
-        options.certificate = certificate;
+  it("should fail to define a URIMap to CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        try {
-            response = await defineUrimapClient(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.regionName = "FAKE";
+    options.authenticate = "BASIC";
+    options.certificate = certificate;
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await defineUrimapClient(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to define a URIMap to CICS due to duplicate name", async () => {
-        let error;
-        let response;
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 
-        options.name = urimapName;
-        options.path = "fake";
-        options.host = "fake";
-        options.scheme = "https";
-        options.csdGroup = csdGroup;
-        options.enable = enable;
-        options.regionName = regionName;
-        options.authenticate = "BASIC";
-        options.certificate = certificate;
+  it("should fail to define a URIMap to CICS due to duplicate name", async () => {
+    let error;
+    let response;
 
-        // define a URIMap to CICS
-        try {
-            response = await defineUrimapClient(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = urimapName;
+    options.path = "fake";
+    options.host = "fake";
+    options.scheme = "https";
+    options.csdGroup = csdGroup;
+    options.enable = enable;
+    options.regionName = regionName;
+    options.authenticate = "BASIC";
+    options.certificate = certificate;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        response = null; // reset
-        await sleep(sleepTime);
+    // define a URIMap to CICS
+    try {
+      response = await defineUrimapClient(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-        // define the same URIMap and validate duplicate error
-        try {
-            response = await defineUrimapClient(session, options);
-        } catch (err) {
-            error = err;
-        }
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    response = null; // reset
+    await sleep(sleepTime);
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("DUPRES");
-        await sleep(sleepTime);
-        await deleteUrimap(session, options);
-    });
+    // define the same URIMap and validate duplicate error
+    try {
+      response = await defineUrimapClient(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("DUPRES");
+    await sleep(sleepTime);
+    await deleteUrimap(session, options);
+  });
 });
