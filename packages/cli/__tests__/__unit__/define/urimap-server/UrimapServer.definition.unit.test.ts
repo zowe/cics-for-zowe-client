@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define urimap-server", () => {
   it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/cli/define/urimap-server/UrimapServer.definition").UrimapServerDefinition;
+    const definition: ICommandDefinition = require("../../../../src/define/urimap-server/UrimapServer.definition").UrimapServerDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

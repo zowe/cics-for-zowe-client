@@ -5,7 +5,6 @@ module.exports = {
             level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
-                "@zowe/cli": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": "zowe-v2-lts",
             }
         },
@@ -14,7 +13,6 @@ module.exports = {
             level: "patch",
             devDependencies: {
                 "@zowe/imperative": "zowe-v1-lts",
-                "@zowe/cli": "zowe-v1-lts",
                 "@zowe/zowe-explorer-api": "zowe-v1-lts",
             }
         }

@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { IProfileLoaded } from "@zowe/imperative";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";

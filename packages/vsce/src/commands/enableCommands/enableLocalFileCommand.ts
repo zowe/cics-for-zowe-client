@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-cli";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";

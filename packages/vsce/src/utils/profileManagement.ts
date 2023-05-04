@@ -9,9 +9,8 @@
  *
  */
 
-import { IDeleteProfile, IProfileLoaded, ISaveProfile, IUpdateProfile } from "@zowe/imperative";
+import { IDeleteProfile, IProfileLoaded, ISaveProfile, IUpdateProfile, ProfileInfo } from "@zowe/imperative";
 import { ProfilesCache, ZoweExplorerApi, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import { imperative } from "@zowe/cli";
 import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
@@ -66,7 +65,7 @@ export class ProfileManagement {
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
-  public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
+  public static async getConfigInstance(): Promise<ProfileInfo> {
     const mProfileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
     return mProfileInfo;
   }

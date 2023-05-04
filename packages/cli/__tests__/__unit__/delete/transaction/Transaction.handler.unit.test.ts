@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { TransactionDefinition } from "../../../../src/cli/delete/transaction/Transaction.definition";
-import TransactionHandler from "../../../../src/cli/delete/transaction/Transaction.handler";
+import { TransactionDefinition } from "../../../../src/delete/transaction/Transaction.definition";
+import TransactionHandler from "../../../../src/delete/transaction/Transaction.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Discard = require("@zowe/cics-for-zowe-sdk");

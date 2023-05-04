@@ -9,7 +9,7 @@
  *
  */
 
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { BaseAuthHandler, IProfileLoaded, IUpdateProfile, Session } from "@zowe/imperative";
 import {
   Event,

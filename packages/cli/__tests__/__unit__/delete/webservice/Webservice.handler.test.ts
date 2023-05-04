@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { WebServiceDefinition } from "../../../../src/cli/delete/webservice/Webservice.definition";
-import WebServiceHandler from "../../../../src/cli/delete/webservice/Webservice.handler";
+import { WebServiceDefinition } from "../../../../src/delete/webservice/Webservice.definition";
+import WebServiceHandler from "../../../../src/delete/webservice/Webservice.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Delete = require("@zowe/cics-for-zowe-sdk");
@@ -84,7 +84,7 @@ describe("DeleteWebserviceHandler", () => {
     await handler.process(commandParameters);
 
     expect(functionSpy).toHaveBeenCalledTimes(1);
-    const testProfile = PROFILE_MAP.get("cics")[0];
+    const testProfile = PROFILE_MAP.get("cics")?.[0] ?? {};
     expect(functionSpy).toHaveBeenCalledWith(
       new Session({
         type: "basic",

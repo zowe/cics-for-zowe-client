@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { UrimapClientDefinition } from "../../../../src/cli/define/urimap-client/UrimapClient.definition";
-import UrimapClientHandler from "../../../../src/cli/define/urimap-client/UrimapClient.handler";
+import { UrimapClientDefinition } from "../../../../src/define/urimap-client/UrimapClient.definition";
+import UrimapClientHandler from "../../../../src/define/urimap-client/UrimapClient.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Define = require("@zowe/cics-for-zowe-sdk");

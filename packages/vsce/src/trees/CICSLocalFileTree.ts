@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionTree } from "./CICSRegionTree";
 import * as https from "https";
 import { toEscapedCriteriaString } from "../utils/filterUtils";

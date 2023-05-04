@@ -15,7 +15,7 @@ describe("cics get resource", () => {
   const DEFINE_RESOURCES = 1;
 
   it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../src/cli/get/Get.definition");
+    const definition: ICommandDefinition = require("../../../src/get/Get.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(DEFINE_RESOURCES);
     delete definition.children;

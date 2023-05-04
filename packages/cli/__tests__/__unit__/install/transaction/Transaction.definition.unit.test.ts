@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics install transaction", () => {
   it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/cli/install/transaction/Transaction.definition").TransactionDefinition;
+    const definition: ICommandDefinition = require("../../../../src/install/transaction/Transaction.definition").TransactionDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

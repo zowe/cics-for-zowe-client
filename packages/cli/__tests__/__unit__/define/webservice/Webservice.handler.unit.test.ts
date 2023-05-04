@@ -12,8 +12,8 @@
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
-import { WebServiceDefinition } from "../../../../src/cli/define/webservice/Webservice.definition";
-import WebServiceHandler from "../../../../src/cli/define/webservice/Webservice.handler";
+import { WebServiceDefinition } from "../../../../src/define/webservice/Webservice.definition";
+import WebServiceHandler from "../../../../src/define/webservice/Webservice.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const Define = require("@zowe/cics-for-zowe-sdk");

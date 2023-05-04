@@ -15,7 +15,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
 import { ProfileManagement } from "../utils/profileManagement";
 import { getIconPathInResources } from "../utils/profileUtils";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 
 export class CICSRegionsContainer extends TreeItem {
