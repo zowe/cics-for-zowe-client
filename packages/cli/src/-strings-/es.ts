@@ -10,24 +10,24 @@
 */
 
 export default {
-    DEFINE: {
-        SUMMARY: "Definir nuevos recursos en CICS a través de IBM CMCI",
-        DESCRIPTION: "Definir nuevos recursos (por ejemplo, programas) en CICS a través de CMCI.",
-        RESOURCES: {
-            PROGRAM: {
-                DESCRIPTION: "Definir un nuevo programa en CICS a través de CMCI",
-                POSITIONALS: {
-                    PROGRAMNAME: "El nombre the programa que desea definir. La longitud máxima del nombre es de ocho caracteres",
-                    CSDGROUP: "El nombre del grupo CSD del programa que desea definir. La longitud máxima del nombre del grupo es de ocho caracteres"
-                },
-                OPTIONS: {
-                    REGIONNAME: "Nombre de la región CICS a la cual desea definir el programa.",
-                    CICSPLEX: "Nombre del CICS Plex al cual desea definir el programa."
-                },
-                MESSAGES: {
-                    SUCCESS: "La definición del programa '%s' fue exitosa."
-                }
-            }
+  DEFINE: {
+    SUMMARY: "Definir nuevos recursos en CICS a través de IBM CMCI",
+    DESCRIPTION: "Definir nuevos recursos (por ejemplo, programas) en CICS a través de CMCI.",
+    RESOURCES: {
+      PROGRAM: {
+        DESCRIPTION: "Definir un nuevo programa en CICS a través de CMCI",
+        POSITIONALS: {
+          PROGRAMNAME: "El nombre the programa que desea definir. La longitud máxima del nombre es de ocho caracteres",
+          CSDGROUP: "El nombre del grupo CSD del programa que desea definir. La longitud máxima del nombre del grupo es de ocho caracteres"
+        },
+        OPTIONS: {
+          REGIONNAME: "Nombre de la región CICS a la cual desea definir el programa.",
+          CICSPLEX: "Nombre del CICS Plex al cual desea definir el programa."
+        },
+        MESSAGES: {
+          SUCCESS: "La definición del programa '%s' fue exitosa."
         }
+      }
     }
+  }
 };

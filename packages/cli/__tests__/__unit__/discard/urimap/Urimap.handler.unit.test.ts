@@ -14,8 +14,8 @@ import { ICMCIApiResponse } from "../../../../src";
 import { UrimapDefinition } from "../../../../src/discard/urimap/Urimap.definition";
 import UrimapHandler from "../../../../src/discard/urimap/Urimap.handler";
 
-jest.mock("../../../../src/api/methods/discard");
-const Discard = require("../../../../src/api/methods/discard");
+jest.mock("@zowe/cics-for-zowe-sdk");
+const Discard = require("@zowe/cics-for-zowe-sdk");
 
 const host = "somewhere.com";
 const port = "43443";
@@ -26,107 +26,107 @@ const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
-    "cics", [{
-        name: "cics",
-        type: "cics",
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized
-    }]
+  "cics", [{
+    name: "cics",
+    type: "cics",
+    host,
+    port,
+    user,
+    password,
+    protocol,
+    rejectUnauthorized
+  }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {$0: "", _: []}, // Please provide arguments later on
-    positionals: ["cics", "discard", "urimap"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }) as any,
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }) as any,
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }) as any,
-            errorHeader: jest.fn(() => undefined) as any
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
+  arguments: {$0: "", _: []}, // Please provide arguments later on
+  positionals: ["cics", "discard", "urimap"],
+  response: {
+    data: {
+      setMessage: jest.fn((setMsgArgs) => {
+        expect(setMsgArgs).toMatchSnapshot();
+      }) as any,
+      setObj: jest.fn((setObjArgs) => {
+        expect(setObjArgs).toMatchSnapshot();
+      }),
+      setExitCode: jest.fn()
     },
-    definition: UrimapDefinition,
-    fullDefinition: UrimapDefinition,
-    profiles: PROFILES
+    console: {
+      log: jest.fn((logs) => {
+        expect(logs.toString()).toMatchSnapshot();
+      }) as any,
+      error: jest.fn((errors) => {
+        expect(errors.toString()).toMatchSnapshot();
+      }) as any,
+      errorHeader: jest.fn(() => undefined) as any
+    },
+    progress: {
+      startBar: jest.fn((parms) => undefined),
+      endBar: jest.fn(() => undefined)
+    },
+    format: {
+      output: jest.fn((parms) => {
+        expect(parms).toMatchSnapshot();
+      })
+    }
+  },
+  definition: UrimapDefinition,
+  fullDefinition: UrimapDefinition,
+  profiles: PROFILES
 };
 
 describe("DiscardUrimapHandler", () => {
-    const urimapName = "testUrimap";
-    const regionName = "testRegion";
+  const urimapName = "testUrimap";
+  const regionName = "testRegion";
 
-    const defaultReturn: ICMCIApiResponse = {
-        response: {
-            resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-            records: "testing"
-        }
+  const defaultReturn: ICMCIApiResponse = {
+    response: {
+      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
+      records: "testing"
+    }
+  };
+
+  const functionSpy = jest.spyOn(Discard, "discardUrimap");
+
+  beforeEach(() => {
+    functionSpy.mockClear();
+    functionSpy.mockImplementation(async () => defaultReturn);
+  });
+
+  it("should call the discardUrimap api", async () => {
+    const handler = new UrimapHandler();
+
+    const commandParameters = {...DEFAULT_PARAMETERS};
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      urimapName,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized
     };
 
-    const functionSpy = jest.spyOn(Discard, "discardUrimap");
+    await handler.process(commandParameters);
 
-    beforeEach(() => {
-        functionSpy.mockClear();
-        functionSpy.mockImplementation(async () => defaultReturn);
-    });
-
-    it("should call the discardUrimap api", async () => {
-        const handler = new UrimapHandler();
-
-        const commandParameters = {...DEFAULT_PARAMETERS};
-        commandParameters.arguments = {
-            ...commandParameters.arguments,
-            urimapName,
-            regionName,
-            host,
-            port,
-            user,
-            password,
-            protocol,
-            rejectUnauthorized
-        };
-
-        await handler.process(commandParameters);
-
-        expect(functionSpy).toHaveBeenCalledTimes(1);
-        const testProfile = PROFILE_MAP.get("cics")[0];
-        expect(functionSpy).toHaveBeenCalledWith(
-            new Session({
-                type: "basic",
-                hostname: testProfile.host,
-                port: testProfile.port,
-                user: testProfile.user,
-                password: testProfile.password,
-                rejectUnauthorized,
-                protocol
-            }),
-            {
-                name: urimapName,
-                regionName
-            }
-        );
-    });
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+    const testProfile = PROFILE_MAP.get("cics")[0];
+    expect(functionSpy).toHaveBeenCalledWith(
+      new Session({
+        type: "basic",
+        hostname: testProfile.host,
+        port: testProfile.port,
+        user: testProfile.user,
+        password: testProfile.password,
+        rejectUnauthorized,
+        protocol
+      }),
+      {
+        name: urimapName,
+        regionName
+      }
+    );
+  });
 });

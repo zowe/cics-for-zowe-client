@@ -34,8 +34,8 @@ export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<an
       if (!pattern) {
         return;
       }
-      await persistentStorage.addLocalFileSearchHistory(pattern!);
-      chosenNode.setFilter(pattern!);
+      await persistentStorage.addLocalFileSearchHistory(pattern);
+      chosenNode.setFilter(pattern);
       window.withProgress({
         title: 'Loading Local Files',
         location: ProgressLocation.Notification,

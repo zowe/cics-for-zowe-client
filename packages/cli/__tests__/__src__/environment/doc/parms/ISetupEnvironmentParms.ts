@@ -18,13 +18,13 @@
  */
 export interface ISetupEnvironmentParms {
 
-    /**
+  /**
      * The name of your test suite. Do not include spaces - used to create the working directory (to allow
      * for easier debug reference if a test fails).
      */
-    testName: string;
+  testName: string;
 
-    /**
+  /**
      * A list of types of profiles to create from your custom.properties file
      *
      * If this is specified, the tempProfiles field will appear on your
@@ -33,13 +33,13 @@ export interface ISetupEnvironmentParms {
      *
      * Example: ["cics"]
      */
-    tempProfileTypes?: string[];
+  tempProfileTypes?: string[];
 
-    /**
+  /**
      * Should the CICS plugin be installed to your home directory
      * before the tests? The is no need  to specify this unless
      * you are trying to execute CICS commands installed into
      * brightside.
      */
-    installPlugin?: boolean;
+  installPlugin?: boolean;
 }

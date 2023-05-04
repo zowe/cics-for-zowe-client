@@ -18,7 +18,7 @@ import { getAttributesHtml } from "../utils/webviewHTML";
 export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.showProgramAttributes",
-    async (node) => {
+    (node) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS program selected");
@@ -33,27 +33,27 @@ export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
           webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading]}</td></tr>`;
         }
         webText += "</tbody>";
-        
+
         const webviewHTML = getAttributesHtml(program.program, webText);
         const column = window.activeTextEditor
-        ? window.activeTextEditor.viewColumn
-        : undefined;
+          ? window.activeTextEditor.viewColumn
+          : undefined;
         const panel: WebviewPanel = window.createWebviewPanel(
           "zowe",
           `CICS Program ${programTreeItem.parentRegion.label}(${program.program})`,
           column || 1,
           { enableScripts: true }
-          );
-          panel.webview.html = webviewHTML;
-        }
+        );
+        panel.webview.html = webviewHTML;
       }
+    }
   );
 }
 
 export function getShowRegionAttributes(treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.showRegionAttributes",
-    async (node) => {
+    (node) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSRegionTree, node);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS region selected");

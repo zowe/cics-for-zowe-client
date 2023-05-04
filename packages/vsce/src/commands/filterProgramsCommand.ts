@@ -34,8 +34,8 @@ export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>
       if (!pattern) {
         return;
       }
-      await persistentStorage.addProgramSearchHistory(pattern!);
-      chosenNode.setFilter(pattern!);
+      await persistentStorage.addProgramSearchHistory(pattern);
+      chosenNode.setFilter(pattern);
       window.withProgress({
         title: 'Loading Programs',
         location: ProgressLocation.Notification,
@@ -44,8 +44,8 @@ export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>
         token.onCancellationRequested(() => {
           console.log("Cancelling the loading of programs");
         });
-      await chosenNode.loadContents();
-      tree._onDidChangeTreeData.fire(undefined);
+        await chosenNode.loadContents();
+        tree._onDidChangeTreeData.fire(undefined);
       });
     }
   );

@@ -22,7 +22,7 @@ import { TextTreeItem } from "./treeItems/utils/TextTreeItem";
 import { getIconPathInResources } from "../utils/getIconPath";
 
 export class CICSCombinedLocalFileTree extends TreeItem {
-  children: (CICSLocalFileTreeItem | ViewMore) [] | [TextTreeItem] | null;
+  children: (CICSLocalFileTreeItem | ViewMore)[] | [TextTreeItem] | null;
   parentPlex: CICSPlexTree;
   activeFilter: string | undefined;
   currentCount: number;
@@ -41,153 +41,143 @@ export class CICSCombinedLocalFileTree extends TreeItem {
     this.currentCount = 0;
     this.incrementCount = 500;
     this.constant = "CICSLocalFile";
-    }
+  }
 
-    public async loadContents(tree: CICSTree){
-      window.withProgress({
-        title: 'Loading Local Files',
-        location: ProgressLocation.Notification,
-        cancellable: true
-      }, async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the load");
-        });
-        let criteria;
-        if (this.activeFilter) {
-          criteria = toEscapedCriteriaString(this.activeFilter, 'file');
-        }
-        let count;
-        try {
-          const cacheTokenInfo = await ProfileManagement.generateCacheToken(
-            this.parentPlex.getProfile(),
-            this.parentPlex.getPlexName(),
-            this.constant,
-            criteria,
-            this.getParent().getGroupName()
-            );
-          if (cacheTokenInfo) {
-            const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
-              let allLocalFiles;
-              if (recordsCount <= 500) {
-                allLocalFiles = await ProfileManagement.getCachedResources(
-                  this.parentPlex.getProfile(),
-                  cacheTokenInfo.cacheToken,
-                  this.constant,
-                  1,
-                  parseInt(recordsCount, 10)
-                  );
-              } else {
-                allLocalFiles = await ProfileManagement.getCachedResources(
-                  this.parentPlex.getProfile(),
-                  cacheTokenInfo.cacheToken,
-                  this.constant,
-                  1,
-                  this.incrementCount
-                  );
-                count = parseInt(recordsCount);
-              }
-                this.addLocalFilesUtil([], allLocalFiles, count);
-                this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-                tree._onDidChangeTreeData.fire(undefined);
-            } else {
-              this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-              tree._onDidChangeTreeData.fire(undefined);
-              window.showInformationMessage(`No local files found`);
-            }
-          }
-        } catch (error) {
-          window.showErrorMessage(`Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
-        }
-        }
-      );
-    }
-
-    public addLocalFilesUtil(newChildren:(CICSLocalFileTreeItem | ViewMore) [], allLocalFiles:any, count:number|undefined){
-      for (const localfile of allLocalFiles) {
-        const regionsContainer = this.parentPlex.children.filter(child => {
-          if (child instanceof CICSRegionsContainer) {
-            return child;
-          }
-        })[0];
-        //@ts-ignore
-        const parentRegion = regionsContainer.getChildren().filter(child => {
-          if (child instanceof CICSRegionTree) {
-            return child.getRegionName() === localfile.eyu_cicsname;
-          }
-        })[0];
-        //@ts-ignore
-        const localFileTree = new CICSLocalFileTreeItem(localfile,parentRegion);
-        localFileTree.setLabel(localFileTree.label!.toString().replace(localfile.file, `${localfile.file} (${localfile.eyu_cicsname})`));
-        newChildren.push(localFileTree);
+  public async loadContents(tree: CICSTree) {
+    await window.withProgress({
+      title: 'Loading Local Files',
+      location: ProgressLocation.Notification,
+      cancellable: true
+    }, async (_, token) => {
+      token.onCancellationRequested(() => {
+        console.log("Cancelling the load");
+      });
+      let criteria;
+      if (this.activeFilter) {
+        criteria = toEscapedCriteriaString(this.activeFilter, 'file');
       }
-      if (!count) {
-        count = newChildren.length;
-      }
-      this.currentCount = newChildren.length;
-      this.label = `All Local Files ${this.activeFilter?`(${this.activeFilter}) `: " "}[${this.currentCount} of ${count}]`;
-      if (count !== this.currentCount) {
-        newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count-this.currentCount)));
-      }
-      this.children = newChildren;
-    }
-
-    public async addMoreCachedResources(tree: CICSTree) {
-      window.withProgress({
-        title: 'Loading more local files',
-        location: ProgressLocation.Notification,
-        cancellable: false
-      }, async () => {
+      let count;
+      try {
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
           this.parentPlex.getPlexName(),
           this.constant,
+          criteria,
           this.getParent().getGroupName()
-          );
-          if (cacheTokenInfo) {
-            // record count may have updated
-            const recordsCount = cacheTokenInfo.recordCount;
-            const count = parseInt(recordsCount);
-            const allLocalFiles = await ProfileManagement.getCachedResources(
-              this.parentPlex.getProfile(),
-              cacheTokenInfo.cacheToken,
-              this.constant,
-              this.currentCount+1,
-              this.incrementCount
+        );
+        if (cacheTokenInfo) {
+          const recordsCount = cacheTokenInfo.recordCount;
+          if (parseInt(recordsCount, 10)) {
+            let allLocalFiles;
+            if (recordsCount <= 500) {
+              allLocalFiles = await ProfileManagement.getCachedResources(
+                this.parentPlex.getProfile(),
+                cacheTokenInfo.cacheToken,
+                this.constant,
+                1,
+                parseInt(recordsCount, 10)
               );
-            if (allLocalFiles) {
-              // @ts-ignore
-              this.addLocalFilesUtil(this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSLocalFileTreeItem):[], allLocalFiles, count);
-              tree._onDidChangeTreeData.fire(undefined);
+            } else {
+              allLocalFiles = await ProfileManagement.getCachedResources(
+                this.parentPlex.getProfile(),
+                cacheTokenInfo.cacheToken,
+                this.constant,
+                1,
+                this.incrementCount
+              );
+              count = parseInt(recordsCount);
             }
+            this.addLocalFilesUtil([], allLocalFiles, count);
+            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            tree._onDidChangeTreeData.fire(undefined);
+          } else {
+            this.children = [];
+            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            tree._onDidChangeTreeData.fire(undefined);
+            window.showInformationMessage(`No local files found`);
           }
-        });
+        }
+      } catch (error) {
+        window.showErrorMessage(`Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`);
+      }
     }
+    );
+  }
 
-    public clearFilter() {
-      this.activeFilter = undefined;
-      this.label = `All Local Files`;
-      this.contextValue = `cicscombinedlocalfiletree.unfiltered`;
-      this.collapsibleState = TreeItemCollapsibleState.Expanded;
+  public addLocalFilesUtil(newChildren: (CICSLocalFileTreeItem | ViewMore)[], allLocalFiles: any, count: number | undefined) {
+    for (const localfile of allLocalFiles) {
+      const regionsContainer = this.parentPlex.children.filter(child => child instanceof CICSRegionsContainer)?.[0];
+      const parentRegion = regionsContainer.getChildren().filter(child => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0];
+      const localFileTree = new CICSLocalFileTreeItem(localfile, parentRegion as CICSRegionTree);
+      localFileTree.setLabel(localFileTree.label.toString().replace(localfile.file, `${localfile.file} (${localfile.eyu_cicsname})`));
+      newChildren.push(localFileTree);
     }
-  
-    public setFilter(newFilter: string) {
-      this.activeFilter = newFilter;
-      this.label = `All Local Files (${this.activeFilter})`;
-      this.contextValue = `cicscombinedlocalfiletree.filtered`;
-      this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    if (!count) {
+      count = newChildren.length;
     }
+    this.currentCount = newChildren.length;
+    this.label = `All Local Files ${this.activeFilter ? `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
+    if (count !== this.currentCount) {
+      newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count - this.currentCount)));
+    }
+    this.children = newChildren;
+  }
 
-    public getChildren() {
-      return this.children ? this.children.filter(child => !(child instanceof TextTreeItem)) : [];
-    }
+  public async addMoreCachedResources(tree: CICSTree) {
+    await window.withProgress({
+      title: 'Loading more local files',
+      location: ProgressLocation.Notification,
+      cancellable: false
+    }, async () => {
+      const cacheTokenInfo = await ProfileManagement.generateCacheToken(
+        this.parentPlex.getProfile(),
+        this.parentPlex.getPlexName(),
+        this.constant,
+        this.getParent().getGroupName()
+      );
+      if (cacheTokenInfo) {
+        // record count may have updated
+        const recordsCount = cacheTokenInfo.recordCount;
+        const count = parseInt(recordsCount);
+        const allLocalFiles = await ProfileManagement.getCachedResources(
+          this.parentPlex.getProfile(),
+          cacheTokenInfo.cacheToken,
+          this.constant,
+          this.currentCount + 1,
+          this.incrementCount
+        );
+        if (allLocalFiles) {
+          // @ts-ignore
+          this.addLocalFilesUtil(this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSLocalFileTreeItem) : [], allLocalFiles, count);
+          tree._onDidChangeTreeData.fire(undefined);
+        }
+      }
+    });
+  }
 
-    public getActiveFilter() {
-      return this.activeFilter;
-    }
+  public clearFilter() {
+    this.activeFilter = undefined;
+    this.label = `All Local Files`;
+    this.contextValue = `cicscombinedlocalfiletree.unfiltered`;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+  }
 
-    public getParent() {
-      return this.parentPlex;
-    }
+  public setFilter(newFilter: string) {
+    this.activeFilter = newFilter;
+    this.label = `All Local Files (${this.activeFilter})`;
+    this.contextValue = `cicscombinedlocalfiletree.filtered`;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+  }
+
+  public getChildren() {
+    return this.children ? this.children.filter(child => !(child instanceof TextTreeItem)) : [];
+  }
+
+  public getActiveFilter() {
+    return this.activeFilter;
+  }
+
+  public getParent() {
+    return this.parentPlex;
+  }
 }

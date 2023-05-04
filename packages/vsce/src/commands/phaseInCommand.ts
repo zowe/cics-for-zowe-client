@@ -9,7 +9,7 @@
 *
 */
 
-import { CicsCmciConstants, CicsCmciRestClient } from "@zowe/cics-for-zowe-cli";
+import { CicsCmciConstants, CicsCmciRestClient } from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -24,16 +24,16 @@ import { findSelectedNodes } from "../utils/commandUtils";
  * @param tree - tree which contains the node
  * @param treeview - Tree View of current cics tree
  */
- export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
+export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.phaseInCommand",
-    async (clickedNode) => {
+    (clickedNode) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS program selected");
         return;
       }
-      let parentRegions: CICSRegionTree[] = [];
+      const parentRegions: CICSRegionTree[] = [];
       window.withProgress({
         title: 'Phase In',
         location: ProgressLocation.Notification,
@@ -48,9 +48,9 @@ import { findSelectedNodes } from "../utils/commandUtils";
             increment: (parseInt(index) / allSelectedNodes.length) * 100,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-          
+
           https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-          
+
           try {
             await performPhaseIn(
               currentNode.parentRegion.parentSession.session,
@@ -96,14 +96,14 @@ import { findSelectedNodes } from "../utils/commandUtils";
         // Reload contents
         for (const parentRegion of parentRegions) {
           try {
-            const programTree = parentRegion.children!.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
+            const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
             // Only load contents if the tree is expanded
             if (programTree.collapsibleState === 2) {
               await programTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allProgramsTree = parentRegion.parentPlex!.children!.filter((child: any) => child.contextValue.includes("cicscombinedprogramtree."))[0];
+              const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedprogramtree."))[0];
               //@ts-ignore
               if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
                 //@ts-ignore
@@ -120,7 +120,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
   );
 }
 
-async function performPhaseIn(
+function performPhaseIn(
   session: AbstractSession,
   parms: { cicsPlex: string | null; regionName: string; name: string; }
 ) {

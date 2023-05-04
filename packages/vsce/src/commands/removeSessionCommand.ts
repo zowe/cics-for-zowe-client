@@ -17,7 +17,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getRemoveSessionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.removeSession",
-    async (node) => {
+    (node) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No profile selected to remove");

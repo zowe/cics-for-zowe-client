@@ -47,8 +47,7 @@
       "configurationModule": "lib/imperative.js"
     },
     "dependencies": {
-      "@zowe/cics-for-zowe-sdk": "~4.0.8",
-      "xml2js": "0.5.0"
+      "@zowe/cics-for-zowe-sdk": "~4.0.8"
     },
     "peerDependencies": {
       "@zowe/cli": "^6.0.0",

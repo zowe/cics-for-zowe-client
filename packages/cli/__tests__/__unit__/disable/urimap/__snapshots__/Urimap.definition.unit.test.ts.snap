@@ -1,33 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics disable urimap should not have changed 1`] = `
-Object {
-  "aliases": Array [],
+{
+  "aliases": [],
   "description": "Disable a urimap from CICS.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Disable a urimap named URIMAPA from the region named MYREGION",
       "options": "URIMAPA --region-name MYREGION",
     },
   ],
   "name": "urimap",
-  "options": Array [
-    Object {
+  "options": [
+    {
       "description": "The CICS region name in which to disable the urimap",
       "name": "region-name",
       "type": "string",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The name of the urimap to disable. The maximum length of the urimap name is eight characters.",
       "name": "urimapName",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "cics",
     ],
   },

@@ -14,8 +14,8 @@ import { ICMCIApiResponse } from "../../../../src";
 import { ProgramDefinition } from "../../../../src/refresh/program/Program.definition";
 import ProgramHandler from "../../../../src/refresh/program/Program.handler";
 
-jest.mock("../../../../src/api/methods/set");
-const Set = require("../../../../src/api/methods/set");
+jest.mock("@zowe/cics-for-zowe-sdk");
+const Set = require("@zowe/cics-for-zowe-sdk");
 
 const host = "somewhere.com";
 const port = "43443";
@@ -25,108 +25,108 @@ const protocol = "https";
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
-    "cics", [{
-        name: "cics",
-        type: "cics",
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized: false
-    }]
+  "cics", [{
+    name: "cics",
+    type: "cics",
+    host,
+    port,
+    user,
+    password,
+    protocol,
+    rejectUnauthorized: false
+  }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {$0: "", _: []}, // Please provide arguments later on
-    positionals: ["cics", "refresh", "program"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }) as any,
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }) as any,
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }) as any,
-            errorHeader: jest.fn(() => undefined) as any
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
+  arguments: {$0: "", _: []}, // Please provide arguments later on
+  positionals: ["cics", "refresh", "program"],
+  response: {
+    data: {
+      setMessage: jest.fn((setMsgArgs) => {
+        expect(setMsgArgs).toMatchSnapshot();
+      }) as any,
+      setObj: jest.fn((setObjArgs) => {
+        expect(setObjArgs).toMatchSnapshot();
+      }),
+      setExitCode: jest.fn()
     },
-    definition: ProgramDefinition,
-    fullDefinition: ProgramDefinition,
-    profiles: PROFILES
+    console: {
+      log: jest.fn((logs) => {
+        expect(logs.toString()).toMatchSnapshot();
+      }) as any,
+      error: jest.fn((errors) => {
+        expect(errors.toString()).toMatchSnapshot();
+      }) as any,
+      errorHeader: jest.fn(() => undefined) as any
+    },
+    progress: {
+      startBar: jest.fn((parms) => undefined),
+      endBar: jest.fn(() => undefined)
+    },
+    format: {
+      output: jest.fn((parms) => {
+        expect(parms).toMatchSnapshot();
+      })
+    }
+  },
+  definition: ProgramDefinition,
+  fullDefinition: ProgramDefinition,
+  profiles: PROFILES
 };
 
 describe("RefreshProgramHandler", () => {
-    const programName = "testProgram";
-    const regionName = "testRegion";
-    const csdGroup = "testGroup";
+  const programName = "testProgram";
+  const regionName = "testRegion";
+  const csdGroup = "testGroup";
 
-    const defaultReturn: ICMCIApiResponse = {
-        response: {
-            resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-            records: "testing"
-        }
+  const defaultReturn: ICMCIApiResponse = {
+    response: {
+      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
+      records: "testing"
+    }
+  };
+
+  const functionSpy = jest.spyOn(Set, "programNewcopy");
+
+  beforeEach(() => {
+    functionSpy.mockClear();
+    functionSpy.mockImplementation(async () => defaultReturn);
+  });
+
+  it("should call the programNewcopy api", async () => {
+    const handler = new ProgramHandler();
+
+    const commandParameters = {...DEFAULT_PARAMETERS};
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      programName,
+      regionName,
+      csdGroup,
+      host,
+      port,
+      user,
+      password,
+      rejectUnauthorized: false
     };
 
-    const functionSpy = jest.spyOn(Set, "programNewcopy");
+    await handler.process(commandParameters);
 
-    beforeEach(() => {
-        functionSpy.mockClear();
-        functionSpy.mockImplementation(async () => defaultReturn);
-    });
-
-    it("should call the programNewcopy api", async () => {
-        const handler = new ProgramHandler();
-
-        const commandParameters = {...DEFAULT_PARAMETERS};
-        commandParameters.arguments = {
-            ...commandParameters.arguments,
-            programName,
-            regionName,
-            csdGroup,
-            host,
-            port,
-            user,
-            password,
-            rejectUnauthorized: false
-        };
-
-        await handler.process(commandParameters);
-
-        expect(functionSpy).toHaveBeenCalledTimes(1);
-        const testProfile = PROFILE_MAP.get("cics")[0];
-        expect(functionSpy).toHaveBeenCalledWith(
-            new Session({
-                type: "basic",
-                hostname: testProfile.host,
-                port: testProfile.port,
-                user: testProfile.user,
-                password: testProfile.password,
-                rejectUnauthorized: false,
-                protocol: "https",
-            }),
-            {
-                name: programName,
-                regionName
-            }
-        );
-    });
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+    const testProfile = PROFILE_MAP.get("cics")[0];
+    expect(functionSpy).toHaveBeenCalledWith(
+      new Session({
+        type: "basic",
+        hostname: testProfile.host,
+        port: testProfile.port,
+        user: testProfile.user,
+        password: testProfile.password,
+        rejectUnauthorized: false,
+        protocol: "https",
+      }),
+      {
+        name: programName,
+        regionName
+      }
+    );
+  });
 });

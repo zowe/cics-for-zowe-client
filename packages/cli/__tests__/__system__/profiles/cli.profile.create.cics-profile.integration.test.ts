@@ -21,41 +21,41 @@ let testEnvironment: ITestEnvironment;
 
 describe("Create cics Profile", () => {
 
-    const args: any[] = [];
+  const args: any[] = [];
 
-    // Create the unique test environment
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_create_cics_profile",
-            installPlugin: true
-        });
+  // Create the unique test environment
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "zos_create_cics_profile",
+      installPlugin: true
+    });
+  });
+
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
+
+  describe("Success scenarios", () => {
+
+    it("should display create cics profile help", () => {
+
+      const scriptPath = __dirname + "/__scripts__/create_cics_profile_help.sh";
+      const response = runCliScript(scriptPath, testEnvironment, args);
+
+      expect(response.stderr.toString()).toBe("");
+      expect(response.status).toBe(0);
+      expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    it("should create cics profile", () => {
+
+      const scriptPath = __dirname + "/__scripts__/create_cics_profile.sh";
+      const response = runCliScript(scriptPath,
+        testEnvironment, args);
+
+      expect(response.stderr.toString()).toBe("");
+      expect(response.status).toBe(0);
+      expect(response.stdout.toString()).toContain("Profile created successfully");
     });
-
-    describe("Success scenarios", () => {
-
-        it("should display create cics profile help", () => {
-
-            const scriptPath = __dirname + "/__scripts__/create_cics_profile_help.sh";
-            const response = runCliScript(scriptPath, testEnvironment, args);
-
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
-        it("should create cics profile", () => {
-
-            const scriptPath = __dirname + "/__scripts__/create_cics_profile.sh";
-            const response = runCliScript(scriptPath,
-                testEnvironment, args);
-
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Profile created successfully");
-        });
-    });
+  });
 });

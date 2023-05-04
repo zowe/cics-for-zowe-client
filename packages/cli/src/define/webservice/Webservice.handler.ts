@@ -25,16 +25,16 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class WebServiceHandler extends CicsBaseHandler {
-    public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
 
-        const status: ITaskWithStatus = {
-            statusMessage: "Defining web service to CICS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        params.response.progress.startBar({task: status});
+    const status: ITaskWithStatus = {
+      statusMessage: "Defining web service to CICS",
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS
+    };
+    params.response.progress.startBar({task: status});
 
-        /*
+    /*
         * Git Bash on Windows attempts to replace forward slashes with a
         * directory path (e.g., /u -> U:/). CICS is picky when it validates the
         * wsbind path. Unlike typical Unix paths, it must start with one slash
@@ -42,24 +42,24 @@ export default class WebServiceHandler extends CicsBaseHandler {
         * slashes so Git Bash does not tamper with them, and then strip off the
         * extra leading slash here so CICS validation will not complain.
         */
-        let wsBind: string = params.arguments.wsbind;
-        if (wsBind.startsWith("//")) {
-            wsBind = wsBind.slice(1);
-        }
-
-        const response = await defineWebservice(session, {
-            name: params.arguments.webserviceName,
-            csdGroup: params.arguments.csdGroup,
-            pipelineName: params.arguments.pipelineName,
-            wsBind,
-            description: params.arguments.description,
-            validation: params.arguments.validation,
-            wsdlFile: params.arguments.wsdlFile,
-            regionName: params.arguments.regionName || profile.regionName,
-            cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
-        });
-
-        params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);
-        return response;
+    let wsBind: string = params.arguments.wsbind;
+    if (wsBind.startsWith("//")) {
+      wsBind = wsBind.slice(1);
     }
+
+    const response = await defineWebservice(session, {
+      name: params.arguments.webserviceName,
+      csdGroup: params.arguments.csdGroup,
+      pipelineName: params.arguments.pipelineName,
+      wsBind,
+      description: params.arguments.description,
+      validation: params.arguments.validation,
+      wsdlFile: params.arguments.wsdlFile,
+      regionName: params.arguments.regionName || profile.regionName,
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+    });
+
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);
+    return response;
+  }
 }

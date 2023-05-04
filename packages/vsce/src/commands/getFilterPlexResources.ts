@@ -49,25 +49,25 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       } else if (resourceToFilter === "Regions") {
         resourceHistory = persistentStorage.getRegionSearchHistory();
       } else {
-          window.showInformationMessage("No Selection Made");
-          return;
+        window.showInformationMessage("No Selection Made");
+        return;
       }
       const pattern = await getPatternFromFilter(resourceToFilter.slice(0,-1), resourceHistory);
       if (pattern) {
         if (resourceToFilter === "Programs"){
-            await persistentStorage.addProgramSearchHistory(pattern);
+          await persistentStorage.addProgramSearchHistory(pattern);
         } else if(resourceToFilter === "Local Transactions"){
-            await persistentStorage.addTransactionSearchHistory(pattern);
+          await persistentStorage.addTransactionSearchHistory(pattern);
         } else if (resourceToFilter === "Local Files"){
-            await persistentStorage.addLocalFileSearchHistory(pattern);
+          await persistentStorage.addLocalFileSearchHistory(pattern);
         } else if (resourceToFilter === "Regions"){
-            await persistentStorage.addRegionSearchHistory(pattern);
+          await persistentStorage.addRegionSearchHistory(pattern);
         }
 
         chosenNode.collapsibleState = TreeItemCollapsibleState.Expanded;
 
         if (resourceToFilter === "Regions"){
-          chosenNode.filterRegions(pattern!, tree);
+          chosenNode.filterRegions(pattern, tree);
         } else {
           window.withProgress({
             title: 'Loading Resources',
@@ -77,31 +77,31 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
             token.onCancellationRequested(() => {
               console.log("Cancelling the loading of resources");
             });
-          for (const region of chosenNode.children){
-            if (region instanceof CICSRegionTree) {
-              if (region.getIsActive()) {
-                let treeToFilter;
-                if (resourceToFilter === "Programs"){
+            for (const region of chosenNode.children){
+              if (region instanceof CICSRegionTree) {
+                if (region.getIsActive()) {
+                  let treeToFilter;
+                  if (resourceToFilter === "Programs"){
                     treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-                } else if (resourceToFilter === "Local Transactions"){
+                  } else if (resourceToFilter === "Local Transactions"){
                     treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
-                } else if (resourceToFilter === "Local Files"){
+                  } else if (resourceToFilter === "Local Files"){
                     treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
+                  }
+                  if (treeToFilter) {
+                    treeToFilter.setFilter(pattern);
+                    await treeToFilter.loadContents();
+                    treeToFilter.collapsibleState = TreeItemCollapsibleState.Expanded;
+                  }
+                  region.collapsibleState = TreeItemCollapsibleState.Expanded;
                 }
-                if (treeToFilter) {
-                  treeToFilter.setFilter(pattern!);
-                  await treeToFilter.loadContents();
-                  treeToFilter.collapsibleState = TreeItemCollapsibleState.Expanded;
-                }
-                region.collapsibleState = TreeItemCollapsibleState.Expanded;
               }
             }
-          }
-          tree._onDidChangeTreeData.fire(undefined);
+            tree._onDidChangeTreeData.fire(undefined);
           });
         }
         tree._onDidChangeTreeData.fire(undefined);
       }
-  }
+    }
   );
 }

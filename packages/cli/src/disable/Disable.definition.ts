@@ -22,21 +22,21 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).DISAB
  * Definition for the "disable" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-    name: "disable",
-    summary: strings.SUMMARY,
-    description: strings.DESCRIPTION,
-    type: "group",
-    children: [
-        UrimapDefinition],
-    passOn: [
-        {
-            property: "options",
-            value: CicsSession.CICS_CONNECTION_OPTIONS,
-            merge: true,
-            ignoreNodes: [
-                {type: "group"}
-            ]
-        }
-    ]
+  name: "disable",
+  summary: strings.SUMMARY,
+  description: strings.DESCRIPTION,
+  type: "group",
+  children: [
+    UrimapDefinition],
+  passOn: [
+    {
+      property: "options",
+      value: CicsSession.CICS_CONNECTION_OPTIONS,
+      merge: true,
+      ignoreNodes: [
+        {type: "group"}
+      ]
+    }
+  ]
 };
 export = definition;

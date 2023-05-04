@@ -17,30 +17,30 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).REFRESH.RESOURCES.PROGRAM;
 
 export const ProgramDefinition: ICommandDefinition = {
-    name: "program", aliases: ["prog"],
-    description: strings.DESCRIPTION,
-    handler: __dirname + "/Program.handler",
-    type: "command",
-    positionals: [{
-        name: "programName",
-        description: strings.POSITIONALS.PROGRAMNAME,
-        type: "string",
-        required: true
+  name: "program", aliases: ["prog"],
+  description: strings.DESCRIPTION,
+  handler: __dirname + "/Program.handler",
+  type: "command",
+  positionals: [{
+    name: "programName",
+    description: strings.POSITIONALS.PROGRAMNAME,
+    type: "string",
+    required: true
+  }],
+  options: [
+    {
+      name: "region-name",
+      description: strings.OPTIONS.REGIONNAME,
+      type: "string"
+    },
+    {
+      name: "cics-plex",
+      description: strings.OPTIONS.CICSPLEX,
+      type: "string"
     }],
-    options: [
-        {
-            name: "region-name",
-            description: strings.OPTIONS.REGIONNAME,
-            type: "string"
-        },
-        {
-            name: "cics-plex",
-            description: strings.OPTIONS.CICSPLEX,
-            type: "string"
-        }],
-    profile: {optional: ["cics"]},
-    examples: [{
-        description: strings.EXAMPLES.DEFINE_EXAMPLE_ONE,
-        options: "PGM123 --region-name MYREGION"
-    }]
+  profile: {optional: ["cics"]},
+  examples: [{
+    description: strings.EXAMPLES.DEFINE_EXAMPLE_ONE,
+    options: "PGM123 --region-name MYREGION"
+  }]
 };

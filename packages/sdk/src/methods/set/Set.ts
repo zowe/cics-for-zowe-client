@@ -24,24 +24,24 @@ import { ICMCIApiResponse, IProgramParms } from "../../doc";
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function programNewcopy(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function programNewcopy(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-    Logger.getAppLogger().debug("Attempting to refresh a program with the following parameters:\n%s", JSON.stringify(parms));
-    const requestBody: any = {
-        request: {
-            action: {
-                $: {
-                    name: "NEWCOPY",
-                }
-            }
+  Logger.getAppLogger().debug("Attempting to refresh a program with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = {
+    request: {
+      action: {
+        $: {
+          name: "NEWCOPY",
         }
-    };
+      }
+    }
+  };
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + parms.regionName +
         "?CRITERIA=(PROGRAM=" + parms.name + ")";
-    return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }

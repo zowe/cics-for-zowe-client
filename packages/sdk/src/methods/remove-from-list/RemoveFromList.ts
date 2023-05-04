@@ -24,16 +24,16 @@ import { ICMCIApiResponse, ICSDGroupParms } from "../../doc";
  * @throws {ImperativeError} CICS CSD List not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function removeCSDGroupFromList(session: AbstractSession, parms: ICSDGroupParms): Promise<ICMCIApiResponse> {
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS CSD Group Name", "CICS CSD Group Name is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.csdList, "CICS CSD List", "CICS CSD List is required");
-    ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function removeCSDGroupFromList(session: AbstractSession, parms: ICSDGroupParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS CSD Group Name", "CICS CSD Group Name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdList, "CICS CSD List", "CICS CSD List is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-    Logger.getAppLogger().debug("Attempting to remove a CSD Group from a CSD List with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug("Attempting to remove a CSD Group from a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
-    const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-    const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
         CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + cicsPlex + parms.regionName +
         "?CRITERIA=(CSDLIST=='" + parms.csdList + "')%20AND%20(CSDGROUP=='" + parms.name + "')";
-    return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []) as any;
+  return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []) as any;
 }

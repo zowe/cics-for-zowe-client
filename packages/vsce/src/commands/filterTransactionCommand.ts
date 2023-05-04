@@ -34,8 +34,8 @@ export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<a
       if (!pattern) {
         return;
       }
-      await persistentStorage.addTransactionSearchHistory(pattern!);
-      chosenNode.setFilter(pattern!);
+      await persistentStorage.addTransactionSearchHistory(pattern);
+      chosenNode.setFilter(pattern);
       window.withProgress({
         title: 'Loading Transactions',
         location: ProgressLocation.Notification,

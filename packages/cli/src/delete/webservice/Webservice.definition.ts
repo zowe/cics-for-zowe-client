@@ -17,30 +17,30 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE.RESOURCES.WEBSERVICE;
 
 export const WebServiceDefinition: ICommandDefinition = {
-    name: "webservice",
-    aliases: ["web"],
-    description: strings.DESCRIPTION,
-    handler: __dirname + "/Webservice.handler",
-    type: "command",
-    positionals: [{
-        name: "webserviceName",
-        description: strings.POSITIONALS.WEBSERVICENAME,
-        type: "string",
-        required: true
-    }, {
-        name: "csdGroup",
-        description: strings.POSITIONALS.CSDGROUP,
-        type: "string",
-        required: true
-    }],
-    options: [{
-        name: "region-name",
-        description: strings.OPTIONS.REGIONNAME,
-        type: "string"
-    }],
-    profile: {optional: ["cics"]},
-    examples: [{
-        description: strings.EXAMPLES.EX1,
-        options: "WEBSVCA MYGRP --region-name MYREGION"
-    }]
+  name: "webservice",
+  aliases: ["web"],
+  description: strings.DESCRIPTION,
+  handler: __dirname + "/Webservice.handler",
+  type: "command",
+  positionals: [{
+    name: "webserviceName",
+    description: strings.POSITIONALS.WEBSERVICENAME,
+    type: "string",
+    required: true
+  }, {
+    name: "csdGroup",
+    description: strings.POSITIONALS.CSDGROUP,
+    type: "string",
+    required: true
+  }],
+  options: [{
+    name: "region-name",
+    description: strings.OPTIONS.REGIONNAME,
+    type: "string"
+  }],
+  profile: {optional: ["cics"]},
+  examples: [{
+    description: strings.EXAMPLES.EX1,
+    options: "WEBSVCA MYGRP --region-name MYREGION"
+  }]
 };

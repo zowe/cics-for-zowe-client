@@ -17,7 +17,7 @@ import { getAttributesHtml } from "../utils/webviewHTML";
 export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.showLocalFileAttributes",
-    async (node) => {
+    (node) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, node);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS local file selected");

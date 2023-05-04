@@ -26,9 +26,9 @@ export class CICSProgramTreeItem extends TreeItem {
     super(
       `${program.program}${(
         program.status.toLowerCase() === "disabled" && parseInt(program.newcopycnt) ? ` (New copy count: ${program.newcopycnt}) (Disabled)` : 
-        program.status.toLowerCase() === "disabled" && !parseInt(program.newcopycnt) ? ` (Disabled)` : 
-        program.status.toLowerCase() !== "disabled" && parseInt(program.newcopycnt) ? `  (New copy count: ${program.newcopycnt})` : 
-        ""
+          program.status.toLowerCase() === "disabled" && !parseInt(program.newcopycnt) ? ` (Disabled)` : 
+            program.status.toLowerCase() !== "disabled" && parseInt(program.newcopycnt) ? `  (New copy count: ${program.newcopycnt})` : 
+              ""
       )}`,
       TreeItemCollapsibleState.None
     );
@@ -36,7 +36,7 @@ export class CICSProgramTreeItem extends TreeItem {
     this.program = program;
     this.parentRegion = parentRegion;
     this.contextValue = `cicsprogram.${program.status.toLowerCase()}.${program.program
-      }`;
+    }`;
   }
 
   public setLabel(newLabel: string) {

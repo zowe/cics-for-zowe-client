@@ -9,7 +9,7 @@
 *
 */
 
-;
+
 import { commands, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSProgramTree } from "../trees/CICSProgramTree";
@@ -18,8 +18,7 @@ import { CICSTree } from "../trees/CICSTree";
 export function getRefreshCommand(tree: CICSTree) {
   return commands.registerCommand(
     "cics-extension-for-zowe.refreshTree",
-    async () => {
-
+    () => {
       window.withProgress({
         title: 'Refresh',
         location: ProgressLocation.Notification,
@@ -33,7 +32,7 @@ export function getRefreshCommand(tree: CICSTree) {
             message: `Refreshing session ${parseInt(index) + 1} of ${tree.loadedProfiles.length}`,
             increment: (parseInt(index) / tree.loadedProfiles.length) * 100,
           });
-          let sessionTree = tree.loadedProfiles[parseInt(index)];
+          const sessionTree = tree.loadedProfiles[parseInt(index)];
 
           sessionTree.collapsibleState = TreeItemCollapsibleState.Collapsed;
 
@@ -42,7 +41,7 @@ export function getRefreshCommand(tree: CICSTree) {
             if (sessionChild instanceof CICSPlexTree) {
               // plex tree -> .children is region trees
               for (const region of sessionChild.children) {
-                for (const child of region.children!) {
+                for (const child of region.children) {
                   if (child instanceof CICSProgramTree) {
                     await child.loadContents();
                   }
@@ -50,7 +49,7 @@ export function getRefreshCommand(tree: CICSTree) {
               }
             } else {
               // region tree
-              for (const child of sessionChild.children!) {
+              for (const child of sessionChild.children) {
                 await child.loadContents();
               }
             }

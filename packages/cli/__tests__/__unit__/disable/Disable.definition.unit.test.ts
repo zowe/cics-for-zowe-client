@@ -12,13 +12,13 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics disable urimap", () => {
-    const DISABLE_RESOURCES = 1;
+  const DISABLE_RESOURCES = 1;
 
-    it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/disable/Disable.definition");
-        expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(DISABLE_RESOURCES);
-        delete definition.children;
-        expect(definition).toMatchSnapshot();
-    });
+  it ("should not have changed", () => {
+    const definition: ICommandDefinition = require("../../../src/disable/Disable.definition");
+    expect(definition).toBeDefined();
+    expect(definition.children.length).toBe(DISABLE_RESOURCES);
+    delete definition.children;
+    expect(definition).toMatchSnapshot();
+  });
 });

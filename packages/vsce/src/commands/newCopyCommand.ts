@@ -9,7 +9,7 @@
 *
 */
 
-import { programNewcopy } from "@zowe/cics-for-zowe-cli";
+import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
@@ -26,13 +26,13 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand(
     "cics-extension-for-zowe.newCopyProgram",
-    async (clickedNode) => {
+    (clickedNode) => {
       const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
       if (!allSelectedNodes || !allSelectedNodes.length) {
         window.showErrorMessage("No CICS program selected");
         return;
       }
-      let parentRegions: CICSRegionTree[] = [];
+      const parentRegions: CICSRegionTree[] = [];
       window.withProgress({
         title: 'New Copy',
         location: ProgressLocation.Notification,
@@ -47,9 +47,9 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
             increment: (parseInt(index) / allSelectedNodes.length) * 100,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-          
+
           https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-          
+
           try {
             await programNewcopy(
               currentNode.parentRegion.parentSession.session,
@@ -58,7 +58,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
                 regionName: currentNode.parentRegion.label,
                 cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
               }
-              );
+            );
             https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
@@ -95,14 +95,14 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         // Reload contents
         for (const parentRegion of parentRegions) {
           try {
-            const programTree = parentRegion.children!.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
+            const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
             // Only load contents if the tree is expanded
             if (programTree.collapsibleState === 2) {
               await programTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allProgramsTree = parentRegion.parentPlex.children!.filter((child: any) => child.contextValue.includes("cicscombinedprogramtree."))[0];
+              const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedprogramtree."))[0];
               //@ts-ignore
               if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
                 //@ts-ignore
@@ -115,6 +115,6 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         }
         tree._onDidChangeTreeData.fire(undefined);
       });
-    } 
+    }
   );
 }

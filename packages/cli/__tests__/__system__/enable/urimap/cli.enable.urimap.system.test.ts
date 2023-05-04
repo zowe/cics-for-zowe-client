@@ -24,46 +24,46 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const sleepTime = 2000;
 
 describe("CICS enable urimap command", () => {
 
-    beforeAll(async () => {
-        TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "enable_urimap",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
-        regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-        host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
-        port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
-        user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
-        password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
-        protocol = TEST_ENVIRONMENT.systemTestProperties.cmci.protocol;
-        rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized;
+  beforeAll(async () => {
+    TEST_ENVIRONMENT = await TestEnvironment.setUp({
+      testName: "enable_urimap",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
+    regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
+    host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
+    protocol = TEST_ENVIRONMENT.systemTestProperties.cmci.protocol;
+    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized;
+  });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+  });
 
-    it("should be able to display the help", () => {
-        const output = runCliScript(__dirname + "/__scripts__/enable_urimap_help.sh", TEST_ENVIRONMENT, []);
-        expect(output.stderr.toString()).toEqual("");
-        expect(output.status).toEqual(0);
-        expect(output.stdout.toString()).toMatchSnapshot();
-    });
+  it("should be able to display the help", () => {
+    const output = runCliScript(__dirname + "/__scripts__/enable_urimap_help.sh", TEST_ENVIRONMENT, []);
+    expect(output.stderr.toString()).toEqual("");
+    expect(output.status).toEqual(0);
+    expect(output.stdout.toString()).toMatchSnapshot();
+  });
 
-    it("should get a syntax error if urimapName is omitted", () => {
-        const output = runCliScript(__dirname + "/__scripts__/enable_urimap.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKEREG"]);
-        const stderr = output.stderr.toString();
-        expect(stderr).toContain("Syntax");
-        expect(stderr).toContain("Missing Positional Argument");
-        expect(stderr).toContain("urimapName");
-        expect(output.status).toEqual(1);
-    });
+  it("should get a syntax error if urimapName is omitted", () => {
+    const output = runCliScript(__dirname + "/__scripts__/enable_urimap.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKEREG"]);
+    const stderr = output.stderr.toString();
+    expect(stderr).toContain("Syntax");
+    expect(stderr).toContain("Missing Positional Argument");
+    expect(stderr).toContain("urimapName");
+    expect(output.status).toEqual(1);
+  });
 });

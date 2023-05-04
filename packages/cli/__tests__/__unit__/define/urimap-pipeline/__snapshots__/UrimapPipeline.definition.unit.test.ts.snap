@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cics define urimap-pipeline should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "up",
   ],
   "description": "Define a new URIMAP of type pipeline to CICS. This processes incoming HTTP(S) requests",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Define a URIMAP named URIMAPA for the pipeline named PIPE123 to the region named MYREGION in the CSD group MYGRP where the host is www.example.com and the path is /example/index.html",
       "options": "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --pipeline-name PIPE123 --region-name MYREGION",
     },
   ],
   "name": "urimap-pipeline",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "up",
       ],
       "description": "The path component of the URI.",
@@ -23,8 +23,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "uh",
       ],
       "description": "The host component of the URI.",
@@ -32,13 +32,13 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "us",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": false,
-        "values": Array [
+        "values": [
           "http",
           "https",
         ],
@@ -48,8 +48,8 @@ Object {
       "name": "urimap-scheme",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "pn",
       ],
       "description": "The name of the PIPELINE resource definition for the URIMAP. The maximum length of the pipeline name is eight characters.",
@@ -57,71 +57,71 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "desc",
       ],
       "description": "Description of the URIMAP resource being defined.",
       "name": "description",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "tn",
       ],
       "description": "The name of the TRANSACTION resource definition for the URIMAP. The maximum length of the transaction name is four characters.",
       "name": "transaction-name",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "wn",
       ],
       "description": "The name of the WEBSERVICE resource definition for the URIMAP. The maximum length of the transaction name is 32 characters.",
       "name": "webservice-name",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "tcpip",
       ],
       "description": "The TCPIPSERVICE to which the URIMAP definition applies.",
       "name": "tcpipservice",
       "type": "string",
     },
-    Object {
+    {
       "description": "The CICS region name to which to define the new URIMAP.",
       "name": "region-name",
       "type": "string",
     },
-    Object {
+    {
       "description": "The name of the CICSPlex to which to define the new URIMAP.",
       "name": "cics-plex",
       "type": "string",
     },
-    Object {
+    {
       "defaultValue": true,
       "description": "Whether or not the URIMAP is to be enabled on install by default. ",
       "name": "enable",
       "type": "boolean",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The name of the URIMAP to create. The maximum length of the urimap name is eight characters.",
       "name": "urimapName",
       "required": true,
       "type": "string",
     },
-    Object {
+    {
       "description": "The CICS system definition (CSD) Group for the new urimap that you want to define. The maximum length of the group name is eight characters.",
       "name": "csdGroup",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "cics",
     ],
   },

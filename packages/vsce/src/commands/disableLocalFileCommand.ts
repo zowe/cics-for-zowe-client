@@ -13,7 +13,7 @@ import {
   CicsCmciConstants,
   CicsCmciRestClient,
   ICMCIApiResponse,
-} from "@zowe/cics-for-zowe-cli";
+} from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -32,7 +32,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
         window.showErrorMessage("No CICS local file selected");
         return;
       }
-      let parentRegions: CICSRegionTree[] = [];
+      const parentRegions: CICSRegionTree[] = [];
       let busyDecision = await window.showInformationMessage(
         `Choose one of the following for the file busy condition`,
         ...["Wait", "No Wait", "Force"]);
@@ -53,9 +53,9 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
               increment: (parseInt(index) / allSelectedNodes.length) * 100,
             });
             const currentNode = allSelectedNodes[parseInt(index)];
-            
+
             https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-            
+
             try {
               await disableLocalFile(
                 currentNode.parentRegion.parentSession.session,
@@ -64,7 +64,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
                   regionName: currentNode.parentRegion.label,
                   cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
                 },
-                busyDecision!
+                busyDecision
               );
               https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
@@ -77,14 +77,14 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
           }
           for (const parentRegion of parentRegions) {
             try {
-              const localFileTree = parentRegion.children!.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
+              const localFileTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
               // Only load contents if the tree is expanded
               if (localFileTree.collapsibleState === 2) {
                 await localFileTree.loadContents();
               }
               // if node is in a plex and the plex contains the region container tree
               if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-                const allLocalFileTreeTree = parentRegion.parentPlex.children!.filter((child: any) => child.contextValue.includes("cicscombinedlocalfiletree."))[0];
+                const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedlocalfiletree."))[0];
                 //@ts-ignore
                 if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
                   //@ts-ignore
@@ -109,23 +109,22 @@ async function disableLocalFile(
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
-        action: {
-            $: {
-                name: "DISABLE"
-            },
-            parameter: {
-              $: {
-                  name: "BUSY",
-                  value: busyDecision
-              }
-          }
+      action: {
+        $: {
+          name: "DISABLE"
         },
-        
+        parameter: {
+          $: {
+            name: "BUSY",
+            value: busyDecision
+          }
+        }
+      },
+
     }
-  
+
   };
 
-  
 
   const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
   const cmciResource =

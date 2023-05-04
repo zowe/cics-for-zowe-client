@@ -22,78 +22,78 @@ let session: Session;
 
 describe("CICS Delete transaction", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "cics_cmci_delete_transaction",
-            installPlugin: true,
-            tempProfileTypes: ["cics"]
-        });
-        csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
-        regionName = testEnvironment.systemTestProperties.cmci.regionName;
-        const cmciProperties = await testEnvironment.systemTestProperties.cmci;
-
-        session = new Session({
-            user: cmciProperties.user,
-            password: cmciProperties.password,
-            hostname: cmciProperties.host,
-            port: cmciProperties.port,
-            type: "basic",
-            rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-            protocol: cmciProperties.protocol as any || "https",
-        });
+  beforeAll(async () => {
+    testEnvironment = await TestEnvironment.setUp({
+      testName: "cics_cmci_delete_transaction",
+      installPlugin: true,
+      tempProfileTypes: ["cics"]
     });
+    csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
+    regionName = testEnvironment.systemTestProperties.cmci.regionName;
+    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+    session = new Session({
+      user: cmciProperties.user,
+      password: cmciProperties.password,
+      hostname: cmciProperties.host,
+      port: cmciProperties.port,
+      type: "basic",
+      rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
+      protocol: cmciProperties.protocol as any || "https",
     });
+  });
 
-    const options: ITransactionParms = {} as any;
+  afterAll(async () => {
+    await TestEnvironment.cleanUp(testEnvironment);
+  });
 
-    it("should delete a transaction from CICS", async () => {
-        let error;
-        let response;
+  const options: ITransactionParms = {} as any;
 
-        const programName = "program1";
-        const transactionNameSuffixLength = 3;
-        const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+  it("should delete a transaction from CICS", async () => {
+    let error;
+    let response;
 
-        options.name = transactionName;
-        options.programName = programName;
-        options.csdGroup = csdGroup;
-        options.regionName = regionName;
+    const programName = "program1";
+    const transactionNameSuffixLength = 3;
+    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
-        try {
-            await defineTransaction(session, options);
-            response = await deleteTransaction(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = transactionName;
+    options.programName = programName;
+    options.csdGroup = csdGroup;
+    options.regionName = regionName;
 
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-        expect(response.response.resultsummary.api_response1).toBe("1024");
-    });
+    try {
+      await defineTransaction(session, options);
+      response = await deleteTransaction(session, options);
+    } catch (err) {
+      error = err;
+    }
 
-    it("should fail to delete a transaction from CICS with invalid CICS region", async () => {
-        let error;
-        let response;
+    expect(error).toBeFalsy();
+    expect(response).toBeTruthy();
+    expect(response.response.resultsummary.api_response1).toBe("1024");
+  });
 
-        const transactionNameSuffixLength = 3;
-        const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+  it("should fail to delete a transaction from CICS with invalid CICS region", async () => {
+    let error;
+    let response;
 
-        options.name = transactionName;
-        options.csdGroup = csdGroup;
-        options.regionName = "FAKE";
+    const transactionNameSuffixLength = 3;
+    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
-        try {
-            response = await deleteTransaction(session, options);
-        } catch (err) {
-            error = err;
-        }
+    options.name = transactionName;
+    options.csdGroup = csdGroup;
+    options.regionName = "FAKE";
 
-        expect(error).toBeTruthy();
-        expect(response).toBeFalsy();
-        expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
-        expect(error.message).toContain("INVALIDPARM");
-    });
+    try {
+      response = await deleteTransaction(session, options);
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).toBeTruthy();
+    expect(response).toBeFalsy();
+    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain("INVALIDPARM");
+  });
 });
