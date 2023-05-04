@@ -114,7 +114,7 @@ describe("DeleteWebserviceHandler", () => {
     await handler.process(commandParameters);
 
     expect(functionSpy).toHaveBeenCalledTimes(1);
-    const testProfile = PROFILE_MAP.get("cics")[0];
+    const testProfile = PROFILE_MAP.get("cics")?.[0] ?? {};
     expect(functionSpy).toHaveBeenCalledWith(
       new Session({
         type: "basic",
