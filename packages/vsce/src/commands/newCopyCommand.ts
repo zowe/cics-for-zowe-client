@@ -9,7 +9,7 @@
  *
  */
 
-import { programNewcopy } from "@zowe/cics-for-zowe-cli";
+import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";

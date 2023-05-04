@@ -12,7 +12,7 @@
 import { commands, window, WebviewPanel, TreeView } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
-import { getResource } from "@zowe/cics-for-zowe-cli";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getParametersHtml } from "../utils/webviewHTML";
 
 export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {

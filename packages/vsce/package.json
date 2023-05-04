@@ -888,8 +888,7 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-cli": "^5.0.1",
-    "@zowe/cli": "^7.14.0",
+    "@zowe/cics-for-zowe-sdk": "^5.0.1",
     "@zowe/imperative": "^5.13.0",
     "@zowe/zowe-explorer-api": "^2.7.0",
     "axios": "^0.21.4",
