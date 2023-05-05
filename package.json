@@ -1,6 +1,6 @@
 {
     "name": "cics-for-zowe-client",
-    "version": "5.0.1",
+    "version": "5.0.1-SNAPSHOT",
     "private": true,
     "scripts": {
         "build": "turbo build",

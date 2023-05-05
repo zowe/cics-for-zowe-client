@@ -1,8 +1,0 @@
-.github
-.vscode-test
-dist
-out
-lib
-results
-scripts
-node_modules

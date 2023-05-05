@@ -1,6 +1,6 @@
 {
     "name": "@zowe/cics-for-zowe-sdk",
-    "version": "5.0.1",
+    "version": "5.0.1-SNAPSHOT",
     "author": "Zowe",
     "license": "EPL-2.0",
     "description": "IBM CICS for Zowe SDK",
@@ -37,8 +37,8 @@
       "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
       "package": "npm pack && node ../../scripts/mv-pack.js zowe-cics-for-zowe-sdk tgz",
       "test": "npm run test:unit && npm run test:system",
-      "test:system": "jest .*/__system__/.* --config system.jest_config.ts --runInBand",
-      "test:unit": "jest --config unit.jest_config.ts --testPathIgnorePatterns \".*/__system__/.*\" ",
+      "test:system": "jest --config system.jest_config.ts",
+      "test:unit": "jest --config unit.jest_config.ts",
       "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
       "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
     },

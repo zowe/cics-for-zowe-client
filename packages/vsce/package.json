@@ -881,7 +881,6 @@
     "watch": "tsc -watch -p ./",
     "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
-    "pretty": "prettier --write .",
     "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
   },
   "devDependencies": {
@@ -889,7 +888,7 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-sdk": "^5.0.1",
+    "@zowe/cics-for-zowe-sdk": "5.0.1-SNAPSHOT",
     "@zowe/imperative": "^5.13.0",
     "@zowe/zowe-explorer-api": "^2.7.0",
     "axios": "^0.21.4",
