@@ -164,7 +164,7 @@ export class CICSCombinedProgramTree extends TreeItem {
           if (allPrograms) {
             // @ts-ignore
             this.addProgramsUtil(
-              this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSProgramTreeItem) : [],
+              (this.getChildren()?.filter((child) => child instanceof CICSProgramTreeItem) ?? []) as CICSProgramTreeItem[],
               allPrograms,
               count
             );

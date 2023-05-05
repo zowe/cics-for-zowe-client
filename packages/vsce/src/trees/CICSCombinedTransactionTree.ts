@@ -158,7 +158,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
           if (allLocalTransactions) {
             // @ts-ignore
             this.addLocalTransactionsUtil(
-              this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSTransactionTreeItem) : [],
+              (this.getChildren()?.filter((child) => child instanceof CICSTransactionTreeItem) ?? []) as CICSTransactionTreeItem[],
               allLocalTransactions,
               count
             );

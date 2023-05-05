@@ -157,7 +157,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
           if (allLocalFiles) {
             // @ts-ignore
             this.addLocalFilesUtil(
-              this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSLocalFileTreeItem) : [],
+              (this.getChildren()?.filter((child) => child instanceof CICSLocalFileTreeItem) ?? []) as CICSLocalFileTreeItem[],
               allLocalFiles,
               count
             );
