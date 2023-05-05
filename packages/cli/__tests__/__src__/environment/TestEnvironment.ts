@@ -20,8 +20,8 @@ import { TemporaryScripts } from "./TemporaryScripts";
 import { runCliScript } from "../TestUtils";
 import { ITestPropertiesSchema } from "./doc/ITestPropertiesSchema";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
+import { v4 as uuidv4 } from 'uuid';
 
-const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
 
 /**
@@ -134,7 +134,7 @@ export class TestEnvironment {
          */
     try {
       logger.info("Reading yaml configuration file: " + propfile + "...");
-      properties = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
+      properties = yaml.load(fs.readFileSync(propfile, "utf8"));
       logger.info("Properties file read.");
       // injectCliProps(properties);
       // console.log(properties);
@@ -156,7 +156,7 @@ export class TestEnvironment {
      */
   private static async installPlugin(testEnvironment: ITestEnvironment) {
     let installScript: string = TemporaryScripts.SHEBANG;
-    installScript += "zowe plugins install ../../../../\n"; // install plugin from root of project
+    installScript += "zowe plugins install ../../../../ --registry https://registry.npmjs.org/\n"; // install plugin from root of project
     installScript += "zowe plugins validate @zowe/cics-for-zowe-cli\n";
     installScript += "zowe cics --help\n"; // check that the plugin help is available
     const scriptPath = testEnvironment.workingDir + "/install_plugin.sh";

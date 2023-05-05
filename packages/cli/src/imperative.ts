@@ -11,11 +11,11 @@
 
 // Imperative version of Zowe CLI
 import { IImperativeConfig } from "@zowe/imperative";
-import { PluginConstants } from "@zowe/cics-for-zowe-sdk";
+import { PluginConstants } from "./PluginConstants";
 import { CicsSession } from "./CicsSession";
 
 const config: IImperativeConfig = {
-  commandModuleGlobs: ["**/cli/*/*.definition!(.d).*s"],
+  commandModuleGlobs: ["*/*.definition!(.d).*s"],
   rootCommandDescription: PluginConstants.PLUGIN_DESCRIPTION,
   productDisplayName: PluginConstants.PLUGIN_NAME,
   name: PluginConstants.PLUGIN_GROUP_NAME,

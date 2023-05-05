@@ -3,7 +3,7 @@
 exports[`imperative config should match the snapshot 1`] = `
 {
   "commandModuleGlobs": [
-    "**/cli/*/*.definition!(.d).*s",
+    "*/*.definition!(.d).*s",
   ],
   "name": "cics",
   "pluginHealthCheck": "./lib/healthCheck.handler",

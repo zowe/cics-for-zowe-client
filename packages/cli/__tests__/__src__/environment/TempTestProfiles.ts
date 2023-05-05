@@ -19,8 +19,7 @@ import { ImperativeError, IO } from "@zowe/imperative";
 import { TemporaryScripts } from "./TemporaryScripts";
 import { runCliScript } from "../TestUtils";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-
-const uuidv4 = require("uuid");
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Utilities for creating and cleaning up temporary profiles for tests
