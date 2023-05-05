@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { TestEnvironment } from "../../../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../__src__/environment/doc/response/ITestEnvironment";
@@ -25,12 +25,11 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 describe("CICS delete transaction command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "delete_transaction",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -54,22 +53,23 @@ describe("CICS delete transaction command", () => {
   });
 
   it("should be able to successfully delete a transaction with basic options", async () => {
-
     // Get a random transaction name
     const transactionNameSuffixLength = 3;
     const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
     // Define the transaction
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT,
-      [transactionName, programName, csdGroup, regionName]);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      programName,
+      csdGroup,
+      regionName,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-
-    output = runCliScript(__dirname + "/__scripts__/delete_transaction.sh", TEST_ENVIRONMENT,
-      [transactionName, csdGroup, regionName]);
+    output = runCliScript(__dirname + "/__scripts__/delete_transaction.sh", TEST_ENVIRONMENT, [transactionName, csdGroup, regionName]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -86,42 +86,42 @@ describe("CICS delete transaction command", () => {
   });
 
   it("should be able to successfully delete a transaction with profile options", async () => {
-
     // Get a random transaction name
     const transactionNameSuffixLength = 3;
     const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
     // Define the transaction
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
-        programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/delete_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/__scripts__/delete_transaction_fully_qualified.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
   });
-
 });

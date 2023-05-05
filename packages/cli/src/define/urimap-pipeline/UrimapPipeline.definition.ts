@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { ICommandDefinition } from "@zowe/imperative";
 
@@ -22,70 +22,73 @@ export const UrimapPipelineDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION.PIPELINE,
   handler: __dirname + "/UrimapPipeline.handler",
   type: "command",
-  positionals: [{
-    name: "urimapName",
-    description: strings.POSITIONALS.URIMAPNAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdGroup",
-    description: strings.POSITIONALS.CSDGROUP,
-    type: "string",
-    required: true
-  }],
+  positionals: [
+    {
+      name: "urimapName",
+      description: strings.POSITIONALS.URIMAPNAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdGroup",
+      description: strings.POSITIONALS.CSDGROUP,
+      type: "string",
+      required: true,
+    },
+  ],
   options: [
     {
       name: "urimap-path",
       aliases: ["up"],
       description: strings.OPTIONS.URIMAPPATH,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "urimap-host",
       aliases: ["uh"],
       description: strings.OPTIONS.URIMAPHOST,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "urimap-scheme",
       aliases: ["us"],
       description: strings.OPTIONS.URIMAPSCHEME,
       type: "string",
-      allowableValues: {values: ["http", "https"], caseSensitive: false},
-      defaultValue: "https"
+      allowableValues: { values: ["http", "https"], caseSensitive: false },
+      defaultValue: "https",
     },
     {
       name: "pipeline-name",
       aliases: ["pn"],
       description: strings.OPTIONS.PIPELINENAME,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "description",
       aliases: ["desc"],
       description: strings.OPTIONS.DESCRIPTION,
-      type: "string"
+      type: "string",
     },
     {
       name: "transaction-name",
       aliases: ["tn"],
       description: strings.OPTIONS.TRANSACTIONNAME,
-      type: "string"
+      type: "string",
     },
     {
       name: "webservice-name",
       aliases: ["wn"],
       description: strings.OPTIONS.WEBSERVICENAME,
-      type: "string"
+      type: "string",
     },
     {
       name: "tcpipservice",
       aliases: ["tcpip"],
       description: strings.OPTIONS.TCPIPSERVICE,
-      type: "string"
+      type: "string",
     },
     {
       name: "region-name",
@@ -95,17 +98,20 @@ export const UrimapPipelineDefinition: ICommandDefinition = {
     {
       name: "cics-plex",
       description: strings.OPTIONS.CICSPLEX,
-      type: "string"
+      type: "string",
     },
     {
       name: "enable",
       description: strings.OPTIONS.ENABLE,
       type: "boolean",
-      defaultValue: true
-    }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.PIPELINE.EX1,
-    options: "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --pipeline-name PIPE123 --region-name MYREGION"
-  }]
+      defaultValue: true,
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.PIPELINE.EX1,
+      options: "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --pipeline-name PIPE123 --region-name MYREGION",
+    },
+  ],
 };

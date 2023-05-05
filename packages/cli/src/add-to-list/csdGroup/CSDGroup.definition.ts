@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { ICommandDefinition } from "@zowe/imperative";
 
@@ -22,31 +22,37 @@ export const CSDGroupDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION,
   handler: __dirname + "/CSDGroup.handler",
   type: "command",
-  positionals: [{
-    name: "name",
-    description: strings.POSITIONALS.NAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdList",
-    description: strings.POSITIONALS.CSDLIST,
-    type: "string",
-    required: true
-  }],
+  positionals: [
+    {
+      name: "name",
+      description: strings.POSITIONALS.NAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdList",
+      description: strings.POSITIONALS.CSDLIST,
+      type: "string",
+      required: true,
+    },
+  ],
   options: [
     {
       name: "region-name",
       description: strings.OPTIONS.REGIONNAME,
-      type: "string"
+      type: "string",
     },
     {
       name: "cics-plex",
       description: strings.OPTIONS.CICSPLEX,
-      type: "string"
-    }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.EX1,
-    options: "MYGRP MYLIST --region-name MYREG"
-  }]
+      type: "string",
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.EX1,
+      options: "MYGRP MYLIST --region-name MYREG",
+    },
+  ],
 };

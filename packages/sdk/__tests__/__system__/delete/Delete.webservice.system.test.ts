@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../__src__/environment/doc/response/ITestEnvironment";
@@ -21,12 +21,9 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Delete web service", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_delete_webservice",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -39,7 +36,7 @@ describe("CICS Delete web service", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 
@@ -50,7 +47,7 @@ describe("CICS Delete web service", () => {
   const options: IWebServiceParms = {
     pipelineName: "AAAA1234",
     wsBind: "/u/exampleapp/wsbind/example.log",
-    validation: false
+    validation: false,
   } as any;
 
   it("should delete a web service from CICS", async () => {

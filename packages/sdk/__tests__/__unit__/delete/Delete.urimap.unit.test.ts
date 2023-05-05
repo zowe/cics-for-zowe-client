@@ -1,24 +1,18 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  IURIMapParms,
-  deleteUrimap
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, IURIMapParms, deleteUrimap } from "../../../src";
 
 describe("CMCI - Delete urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const group = "group";
@@ -27,14 +21,14 @@ describe("CMCI - Delete urimap", () => {
   const deleteParms: IURIMapParms = {
     regionName: region,
     name: urimap,
-    csdGroup: group
+    csdGroup: group,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -101,9 +95,14 @@ describe("CMCI - Delete urimap", () => {
     });
 
     it("should be able to delete a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        region +
+        `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteUrimap(dummySession, deleteParms);
       expect(response).toContain(content);

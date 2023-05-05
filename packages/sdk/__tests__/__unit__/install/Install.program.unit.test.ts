@@ -1,19 +1,18 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient, installProgram, IProgramParms } from "../../../src";
 
 describe("CMCI - Install program", () => {
-
   const program = "program";
   const region = "region";
   const group = "group";
@@ -24,14 +23,14 @@ describe("CMCI - Install program", () => {
     regionName: region,
     name: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -61,7 +60,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: "fake",
           name: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -77,7 +76,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -93,7 +92,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: undefined,
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -109,7 +108,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: "fake",
           name: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -125,7 +124,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -141,7 +140,7 @@ describe("CMCI - Install program", () => {
         response = await installProgram(dummySession, {
           regionName: "",
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -154,15 +153,14 @@ describe("CMCI - Install program", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         action: {
           $: {
             name: "CSDINSTALL",
-          }
-        }
-      }
+          },
+        },
+      },
     };
 
     const installSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockReturnValue(content);
@@ -175,9 +173,18 @@ describe("CMCI - Install program", () => {
     });
 
     it("should be able to install a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installProgram(dummySession, installParms);
 
@@ -188,9 +195,18 @@ describe("CMCI - Install program", () => {
 
     it("should be able to install a program with cicsPlex specified but empty string", async () => {
       installParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "//" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installProgram(dummySession, installParms);
 
@@ -201,9 +217,20 @@ describe("CMCI - Install program", () => {
 
     it("should be able to install a program with cicsPlex specified", async () => {
       installParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installProgram(dummySession, installParms);
 

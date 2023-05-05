@@ -1,38 +1,32 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  enableUrimap,
-  IURIMapParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableUrimap, IURIMapParms } from "../../../src";
 
 describe("CMCI - enable urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const content: any = "ThisIsATest";
 
   const enableParms: IURIMapParms = {
     regionName: region,
-    name: urimap
+    name: urimap,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -86,19 +80,18 @@ describe("CMCI - enable urimap", () => {
     });
 
     it("should be able to enable a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${enableParms.name})`;
+      endPoint =
+        "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_URIMAP + "/" + region + `?CRITERIA=(NAME=${enableParms.name})`;
       requestBody = {
         request: {
           update: {
             attributes: {
               $: {
-                ENABLESTATUS: "ENABLED"
-              }
-            }
-          }
-        }
+                ENABLESTATUS: "ENABLED",
+              },
+            },
+          },
+        },
       };
 
       response = await enableUrimap(dummySession, enableParms);

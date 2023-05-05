@@ -14,18 +14,22 @@ import * as commandUtils from "../../../src/utils/commandUtils";
 describe("Command Utils tests", () => {
   describe("findSelectedNodes", () => {
     it("should return no selected nodes", () => {
-      const response = commandUtils.findSelectedNodes({ selection: [] } as any, new class Test { });
+      const response = commandUtils.findSelectedNodes({ selection: [] } as any, new (class Test {})());
       expect(response).toEqual([]);
     });
 
     it("should return selected nodes matching the test class", () => {
-      const c = class Test { constructor() { } };
+      const c = class Test {
+        constructor() {}
+      };
       const response = commandUtils.findSelectedNodes({ selection: [new c(), {}] } as any, c);
       expect(response).toEqual([new c()]);
     });
 
     it("should return cicked node from the selected nodes matching the test class", () => {
-      const c = class MyTest { constructor() { } };
+      const c = class MyTest {
+        constructor() {}
+      };
       const t = new Error("test");
       const response = commandUtils.findSelectedNodes({ selection: [t, new c(), {}] } as any, Error, t);
       expect(response).toEqual([t]);

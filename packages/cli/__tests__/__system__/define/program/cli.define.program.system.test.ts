@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { TestEnvironment } from "../../../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../__src__/environment/doc/response/ITestEnvironment";
@@ -25,12 +25,11 @@ let password: string;
 let protocol: string;
 let rejectUnauthorized: boolean;
 describe("CICS define program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "define_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -55,12 +54,14 @@ describe("CICS define program command", () => {
       user: cmciProperties.user,
       password: cmciProperties.password,
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+    );
   };
 
   it("should be able to display the help", () => {
@@ -101,21 +102,21 @@ describe("CICS define program command", () => {
   it("should be able to successfully define a program using profile options", async () => {
     const programNameSuffixLength = 4;
     const programName = "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
-    const output = runCliScript(__dirname + "/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    const output = runCliScript(__dirname + "/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
     await deleteProgram(programName);
   });
-
 });

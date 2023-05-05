@@ -1,14 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
-
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { commands, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
@@ -16,14 +15,14 @@ import { CICSProgramTree } from "../trees/CICSProgramTree";
 import { CICSTree } from "../trees/CICSTree";
 
 export function getRefreshCommand(tree: CICSTree) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.refreshTree",
-    () => {
-      window.withProgress({
-        title: 'Refresh',
+  return commands.registerCommand("cics-extension-for-zowe.refreshTree", () => {
+    window.withProgress(
+      {
+        title: "Refresh",
         location: ProgressLocation.Notification,
-        cancellable: true
-      }, async (progress, token) => {
+        cancellable: true,
+      },
+      async (progress, token) => {
         token.onCancellationRequested(() => {
           console.log("Cancelling the refresh");
         });
@@ -55,9 +54,9 @@ export function getRefreshCommand(tree: CICSTree) {
             }
           }
         }
-      });
-      tree._onDidChangeTreeData.fire(undefined);
-      window.showInformationMessage("Refreshed");
-    }
-  );
+      }
+    );
+    tree._onDidChangeTreeData.fire(undefined);
+    window.showInformationMessage("Refreshed");
+  });
 }

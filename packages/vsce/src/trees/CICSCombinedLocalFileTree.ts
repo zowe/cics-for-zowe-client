@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation } from "vscode";
 import { CICSPlexTree } from "./CICSPlexTree";
@@ -29,10 +29,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(
-    parentPlex: CICSPlexTree,
-    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
-  ) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
     super("All Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlocalfiletree.`;
     this.parentPlex = parentPlex;
@@ -44,70 +41,79 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   }
 
   public async loadContents(tree: CICSTree) {
-    await window.withProgress({
-      title: 'Loading Local Files',
-      location: ProgressLocation.Notification,
-      cancellable: true
-    }, async (_, token) => {
-      token.onCancellationRequested(() => {
-        console.log("Cancelling the load");
-      });
-      let criteria;
-      if (this.activeFilter) {
-        criteria = toEscapedCriteriaString(this.activeFilter, 'file');
-      }
-      let count;
-      try {
-        const cacheTokenInfo = await ProfileManagement.generateCacheToken(
-          this.parentPlex.getProfile(),
-          this.parentPlex.getPlexName(),
-          this.constant,
-          criteria,
-          this.getParent().getGroupName()
-        );
-        if (cacheTokenInfo) {
-          const recordsCount = cacheTokenInfo.recordCount;
-          if (parseInt(recordsCount, 10)) {
-            let allLocalFiles;
-            if (recordsCount <= 500) {
-              allLocalFiles = await ProfileManagement.getCachedResources(
-                this.parentPlex.getProfile(),
-                cacheTokenInfo.cacheToken,
-                this.constant,
-                1,
-                parseInt(recordsCount, 10)
-              );
-            } else {
-              allLocalFiles = await ProfileManagement.getCachedResources(
-                this.parentPlex.getProfile(),
-                cacheTokenInfo.cacheToken,
-                this.constant,
-                1,
-                this.incrementCount
-              );
-              count = parseInt(recordsCount);
-            }
-            this.addLocalFilesUtil([], allLocalFiles, count);
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-            tree._onDidChangeTreeData.fire(undefined);
-          } else {
-            this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-            tree._onDidChangeTreeData.fire(undefined);
-            window.showInformationMessage(`No local files found`);
-          }
+    await window.withProgress(
+      {
+        title: "Loading Local Files",
+        location: ProgressLocation.Notification,
+        cancellable: true,
+      },
+      async (_, token) => {
+        token.onCancellationRequested(() => {
+          console.log("Cancelling the load");
+        });
+        let criteria;
+        if (this.activeFilter) {
+          criteria = toEscapedCriteriaString(this.activeFilter, "file");
         }
-      } catch (error) {
-        window.showErrorMessage(`Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`);
+        let count;
+        try {
+          const cacheTokenInfo = await ProfileManagement.generateCacheToken(
+            this.parentPlex.getProfile(),
+            this.parentPlex.getPlexName(),
+            this.constant,
+            criteria,
+            this.getParent().getGroupName()
+          );
+          if (cacheTokenInfo) {
+            const recordsCount = cacheTokenInfo.recordCount;
+            if (parseInt(recordsCount, 10)) {
+              let allLocalFiles;
+              if (recordsCount <= 500) {
+                allLocalFiles = await ProfileManagement.getCachedResources(
+                  this.parentPlex.getProfile(),
+                  cacheTokenInfo.cacheToken,
+                  this.constant,
+                  1,
+                  parseInt(recordsCount, 10)
+                );
+              } else {
+                allLocalFiles = await ProfileManagement.getCachedResources(
+                  this.parentPlex.getProfile(),
+                  cacheTokenInfo.cacheToken,
+                  this.constant,
+                  1,
+                  this.incrementCount
+                );
+                count = parseInt(recordsCount);
+              }
+              this.addLocalFilesUtil([], allLocalFiles, count);
+              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              tree._onDidChangeTreeData.fire(undefined);
+            } else {
+              this.children = [];
+              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              tree._onDidChangeTreeData.fire(undefined);
+              window.showInformationMessage(`No local files found`);
+            }
+          }
+        } catch (error) {
+          window.showErrorMessage(
+            `Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+              /(\\n\t|\\n|\\t)/gm,
+              " "
+            )}`
+          );
+        }
       }
-    }
     );
   }
 
   public addLocalFilesUtil(newChildren: (CICSLocalFileTreeItem | ViewMore)[], allLocalFiles: any, count: number | undefined) {
     for (const localfile of allLocalFiles) {
-      const regionsContainer = this.parentPlex.children.filter(child => child instanceof CICSRegionsContainer)?.[0];
-      const parentRegion = regionsContainer.getChildren().filter(child => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0];
+      const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      const parentRegion = regionsContainer
+        .getChildren()
+        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0];
       const localFileTree = new CICSLocalFileTreeItem(localfile, parentRegion as CICSRegionTree);
       localFileTree.setLabel(localFileTree.label.toString().replace(localfile.file, `${localfile.file} (${localfile.eyu_cicsname})`));
       newChildren.push(localFileTree);
@@ -124,35 +130,42 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   }
 
   public async addMoreCachedResources(tree: CICSTree) {
-    await window.withProgress({
-      title: 'Loading more local files',
-      location: ProgressLocation.Notification,
-      cancellable: false
-    }, async () => {
-      const cacheTokenInfo = await ProfileManagement.generateCacheToken(
-        this.parentPlex.getProfile(),
-        this.parentPlex.getPlexName(),
-        this.constant,
-        this.getParent().getGroupName()
-      );
-      if (cacheTokenInfo) {
-        // record count may have updated
-        const recordsCount = cacheTokenInfo.recordCount;
-        const count = parseInt(recordsCount);
-        const allLocalFiles = await ProfileManagement.getCachedResources(
+    await window.withProgress(
+      {
+        title: "Loading more local files",
+        location: ProgressLocation.Notification,
+        cancellable: false,
+      },
+      async () => {
+        const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
-          cacheTokenInfo.cacheToken,
+          this.parentPlex.getPlexName(),
           this.constant,
-          this.currentCount + 1,
-          this.incrementCount
+          this.getParent().getGroupName()
         );
-        if (allLocalFiles) {
-          // @ts-ignore
-          this.addLocalFilesUtil(this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSLocalFileTreeItem) : [], allLocalFiles, count);
-          tree._onDidChangeTreeData.fire(undefined);
+        if (cacheTokenInfo) {
+          // record count may have updated
+          const recordsCount = cacheTokenInfo.recordCount;
+          const count = parseInt(recordsCount);
+          const allLocalFiles = await ProfileManagement.getCachedResources(
+            this.parentPlex.getProfile(),
+            cacheTokenInfo.cacheToken,
+            this.constant,
+            this.currentCount + 1,
+            this.incrementCount
+          );
+          if (allLocalFiles) {
+            // @ts-ignore
+            this.addLocalFilesUtil(
+              (this.getChildren()?.filter((child) => child instanceof CICSLocalFileTreeItem) ?? []) as CICSLocalFileTreeItem[],
+              allLocalFiles,
+              count
+            );
+            tree._onDidChangeTreeData.fire(undefined);
+          }
         }
       }
-    });
+    );
   }
 
   public clearFilter() {
@@ -170,7 +183,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children ? this.children.filter(child => !(child instanceof TextTreeItem)) : [];
+    return this.children ? this.children.filter((child) => !(child instanceof TextTreeItem)) : [];
   }
 
   public getActiveFilter() {

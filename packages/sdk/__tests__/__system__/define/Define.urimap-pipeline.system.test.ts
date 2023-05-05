@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../__src__/environment/doc/response/ITestEnvironment";
@@ -29,12 +29,9 @@ function sleep(ms: number) {
 const sleepTime = 4000;
 
 describe("CICS Define pipeline URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_define_urimap-pipeline",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -50,7 +47,7 @@ describe("CICS Define pipeline URImap", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

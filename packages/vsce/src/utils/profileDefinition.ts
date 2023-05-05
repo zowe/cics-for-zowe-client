@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
 
@@ -17,9 +17,10 @@ const cicsProfileMeta = [
     schema: {
       type: "object",
       title: "CICS Profile",
-      description: "A cics profile is required to issue commands in the cics command group that interact with " +
-                "CICS regions. The cics profile contains your host, port, user name, and password " +
-                "for the IBM CICS management client interface (CMCI) server of your choice.",
+      description:
+        "A cics profile is required to issue commands in the cics command group that interact with " +
+        "CICS regions. The cics profile contains your host, port, user name, and password " +
+        "for the IBM CICS management client interface (CMCI) server of your choice.",
       properties: {
         host: {
           type: "string",
@@ -70,7 +71,7 @@ const cicsProfileMeta = [
           optionDefinition: {
             name: "region-name",
             description: "The name of the CICS region name to interact with",
-            type: "string"
+            type: "string",
           },
         },
         cicsPlex: {
@@ -78,7 +79,7 @@ const cicsProfileMeta = [
           optionDefinition: {
             name: "cics-plex",
             description: "The name of the CICSPlex to interact with",
-            type: "string"
+            type: "string",
           },
         },
         rejectUnauthorized: {
@@ -90,8 +91,8 @@ const cicsProfileMeta = [
             type: "boolean",
             defaultValue: true,
             required: false,
-            group: "Cics Connection Options"
-          }
+            group: "Cics Connection Options",
+          },
         },
         protocol: {
           type: "string",
@@ -103,19 +104,19 @@ const cicsProfileMeta = [
             defaultValue: "https",
             required: true,
             allowableValues: { values: ["http", "https"], caseSensitive: false },
-            group: "Cics Connection Options"
-          }
-        }
+            group: "Cics Connection Options",
+          },
+        },
       },
       required: ["host"],
     },
     createProfileExamples: [
       {
         options: "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
-        description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490"
-      }
-    ]
-  }
+        description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490",
+      },
+    ],
+  },
 ];
 
 export default cicsProfileMeta as ICommandProfileTypeConfiguration[];

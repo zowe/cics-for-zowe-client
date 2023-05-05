@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { TestEnvironment } from "../../../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../__src__/environment/doc/response/ITestEnvironment";
@@ -26,12 +26,11 @@ let password: string;
 let ru: boolean;
 
 describe("CICS refresh program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "refresh_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -48,14 +47,13 @@ describe("CICS refresh program command", () => {
       port,
       type: "basic",
       rejectUnauthorized: ru,
-      protocol: TEST_ENVIRONMENT.systemTestProperties.cmci.protocol as any || "https",
+      protocol: (TEST_ENVIRONMENT.systemTestProperties.cmci.protocol as any) || "https",
     });
   });
 
   afterAll(async () => {
     await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
   });
-
 
   it("should be able to display the help", () => {
     const output = runCliScript(__dirname + "/__scripts__/refresh_program_help.sh", TEST_ENVIRONMENT, []);
@@ -72,7 +70,7 @@ describe("CICS refresh program command", () => {
     const options: IProgramParms = {
       name: programName,
       csdGroup,
-      regionName
+      regionName,
     };
 
     await defineProgram(session, options);
@@ -105,19 +103,20 @@ describe("CICS refresh program command", () => {
     const options: IProgramParms = {
       name: programName,
       csdGroup,
-      regionName
+      regionName,
     };
 
     await defineProgram(session, options);
     await installProgram(session, options);
 
-    const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT,
-      [programName,
-        regionName,
-        host,
-        port,
-        user,
-        password]);
+    const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [
+      programName,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);

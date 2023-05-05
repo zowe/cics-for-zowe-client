@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ImperativeError, ImperativeExpect, IO, Logger, TextUtils } from "@zowe/imperative";
@@ -20,8 +20,8 @@ import { TemporaryScripts } from "./TemporaryScripts";
 import { runCliScript } from "../TestUtils";
 import { ITestPropertiesSchema } from "./doc/ITestPropertiesSchema";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
+import { v4 as uuidv4 } from "uuid";
 
-const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
 
 /**
@@ -35,19 +35,21 @@ export class TestEnvironment {
   public static readonly HOME_ENV_KEY = "ZOWE_CLI_HOME";
 
   /**
-     * Integration tests (tests that will perform an Imperative init, use the filesystem, etc) should invoke this method
-     * as part of the Jest describes "beforeAll()" method. This method creates a unique test environment to enable
-     * parallel execution of tests and to provide an isolated working directory for any filesystem manipulation that
-     * needs to occur.
-     * @param  params - See the interface for parameter details.
-     */
+   * Integration tests (tests that will perform an Imperative init, use the filesystem, etc) should invoke this method
+   * as part of the Jest describes "beforeAll()" method. This method creates a unique test environment to enable
+   * parallel execution of tests and to provide an isolated working directory for any filesystem manipulation that
+   * needs to occur.
+   * @param  params - See the interface for parameter details.
+   */
   public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment> {
     // Validate the input parameters
-    ImperativeExpect.toNotBeNullOrUndefined(params,
-      `${TestEnvironment.ERROR_TAG} createTestEnv(): No parameters supplied.`);
-    ImperativeExpect.keysToBeDefinedAndNonBlank(params, ["testName"],
+    ImperativeExpect.toNotBeNullOrUndefined(params, `${TestEnvironment.ERROR_TAG} createTestEnv(): No parameters supplied.`);
+    ImperativeExpect.keysToBeDefinedAndNonBlank(
+      params,
+      ["testName"],
       `${TestEnvironment.ERROR_TAG} createTestEnv(): You must supply the name of the test. ` +
-            `Used to append to the data directory for ease of identification.`);
+        `Used to append to the data directory for ease of identification.`
+    );
 
     // Get a unique test data area
     const testDirectory: string = TestEnvironment.createUniqueTestDataDir(params.testName);
@@ -62,7 +64,7 @@ export class TestEnvironment {
     const result: ITestEnvironment = {
       workingDir: testDirectory,
       systemTestProperties: systemProps,
-      env
+      env,
     };
 
     if (params.installPlugin) {
@@ -73,19 +75,18 @@ export class TestEnvironment {
     // the result of the test environment setup so far is used to create profiles
     result.tempProfiles = await TempTestProfiles.createProfiles(result, params.tempProfileTypes);
 
-
     // Return the test environment including working directory that the tests should be using
     return result;
   }
 
   /**
-     * Clean up your test environment.
-     * Deletes any temporary profiles that have been created
-     * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv
-     *
-     * @returns promise fulfilled when cleanup is complete
-     * @throws {ImperativeError} profiles fail to delete
-     */
+   * Clean up your test environment.
+   * Deletes any temporary profiles that have been created
+   * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv
+   *
+   * @returns promise fulfilled when cleanup is complete
+   * @throws {ImperativeError} profiles fail to delete
+   */
   public static async cleanUp(testEnvironment: ITestEnvironment) {
     if (testEnvironment.tempProfiles != null) {
       await TempTestProfiles.deleteProfiles(testEnvironment);
@@ -97,10 +98,10 @@ export class TestEnvironment {
   }
 
   /**
-     * Creates a unique test data directory for a test to work with in isolation.
-     * @param testName - Adds the test name to the directory name for ease of identification.
-     * @returns  - The unique directory (within the results/data/ area).
-     */
+   * Creates a unique test data directory for a test to work with in isolation.
+   * @param testName - Adds the test name to the directory name for ease of identification.
+   * @returns  - The unique directory (within the results/data/ area).
+   */
   public static createUniqueTestDataDir(testName: string): string {
     const app = testName + "_" + uuidv4() + "/";
     const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
@@ -112,35 +113,33 @@ export class TestEnvironment {
   private static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(__dirname + "/../../__resources__/properties/") + "/";
 
   /**
-     *  Load the properties file specified with system test configuration information.
-     *  @param filePath - Specify the filePath of the properties file. Leave empty to use the properties
-     *   file specified in the process.env (see gulp tasks for more information).
-     *  @returns  The parsed test properties.
-     */
-  private static loadSystemTestProperties(filePath: string = null,
-    workingDir: string = process.cwd()): ITestPropertiesSchema {
+   *  Load the properties file specified with system test configuration information.
+   *  @param filePath - Specify the filePath of the properties file. Leave empty to use the properties
+   *   file specified in the process.env (see gulp tasks for more information).
+   *  @returns  The parsed test properties.
+   */
+  private static loadSystemTestProperties(filePath: string = null, workingDir: string = process.cwd()): ITestPropertiesSchema {
     const logger: Logger = this.getMockFileLogger(workingDir);
     // For now, I'm leaving the option for env specified properties in code. This will not be documented.
     const propfilename: string = process.env.propfile || TestEnvironment.DEFAULT_PROPERTIES;
     const propfiledir: string = process.env.propdirectory || TestEnvironment.DEFAULT_PROPERTIES_LOCATION;
     const propfile: string = propfiledir + propfilename;
     /**
-         * Extract the properties file location from the mocha cli args
-         */
+     * Extract the properties file location from the mocha cli args
+     */
     let properties: ITestPropertiesSchema;
 
     /**
-         * Parse the yaml file
-         */
+     * Parse the yaml file
+     */
     try {
       logger.info("Reading yaml configuration file: " + propfile + "...");
-      properties = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
+      properties = yaml.load(fs.readFileSync(propfile, "utf8"));
       logger.info("Properties file read.");
       // injectCliProps(properties);
       // console.log(properties);
     } catch (error) {
-      logger.error("Error reading test properties yaml configuration file. Tests cannot continue. " +
-                "Additional details:" + error);
+      logger.error("Error reading test properties yaml configuration file. Tests cannot continue. " + "Additional details:" + error);
       throw new Error(error);
     }
     logger.info("Loaded configuration properties file.");
@@ -149,14 +148,14 @@ export class TestEnvironment {
   }
 
   /**
-     * Installs the plug-in into the working directory created for the test environment,
-     * so that commands exposed through this plug-in can be issued in tests.
-     * @param {ITestEnvironment} testEnvironment the test environment so far
-     * @returns {Promise<void>} - promise that resolves on completion of the install
-     */
+   * Installs the plug-in into the working directory created for the test environment,
+   * so that commands exposed through this plug-in can be issued in tests.
+   * @param {ITestEnvironment} testEnvironment the test environment so far
+   * @returns {Promise<void>} - promise that resolves on completion of the install
+   */
   private static async installPlugin(testEnvironment: ITestEnvironment) {
     let installScript: string = TemporaryScripts.SHEBANG;
-    installScript += "zowe plugins install ../../../../\n"; // install plugin from root of project
+    installScript += "zowe plugins install ../../../../ --registry https://registry.npmjs.org/\n"; // install plugin from root of project
     installScript += "zowe plugins validate @zowe/cics-for-zowe-cli\n";
     installScript += "zowe cics --help\n"; // check that the plugin help is available
     const scriptPath = testEnvironment.workingDir + "/install_plugin.sh";
@@ -165,22 +164,26 @@ export class TestEnvironment {
     const output = runCliScript(scriptPath, testEnvironment, []);
     if (output.status !== 0) {
       throw new ImperativeError({
-        msg: "Install of 'cics' plugin failed! You should delete the script: \n'" + scriptPath + "' " +
-                "after reviewing it to check for possible errors.\n Output of the plugin install command:\n" + output.stderr.toString() +
-                output.stdout.toString() +
-                TempTestProfiles.GLOBAL_INSTALL_NOTE
+        msg:
+          "Install of 'cics' plugin failed! You should delete the script: \n'" +
+          scriptPath +
+          "' " +
+          "after reviewing it to check for possible errors.\n Output of the plugin install command:\n" +
+          output.stderr.toString() +
+          output.stdout.toString() +
+          TempTestProfiles.GLOBAL_INSTALL_NOTE,
       });
     }
     IO.deleteFile(scriptPath);
   }
 
   /**
-     * Get a mocked version of the logger interface for logging test environment debug info
-     * @param {string} workingDir - the working directory to log to
-     * @returns {Logger} - a logger that can be used for test environment clean up and set up
-     */
+   * Get a mocked version of the logger interface for logging test environment debug info
+   * @param {string} workingDir - the working directory to log to
+   * @returns {Logger} - a logger that can be used for test environment clean up and set up
+   */
   private static getMockFileLogger(workingDir: string): Logger {
-    const logFile = workingDir += "/TestEnvironment.log";
+    const logFile = (workingDir += "/TestEnvironment.log");
     const logFn = (tag: string, message: string, ...args: any[]) => {
       message = TextUtils.formatMessage(message, ...args);
       fs.appendFileSync(logFile, tag + " " + message + "\n");
@@ -213,9 +216,7 @@ export class TestEnvironment {
       },
       logError: (error: ImperativeError) => {
         logFn("[ERROR]", "Error:\n" + require("util").inspect(error));
-      }
+      },
     } as any;
-
   }
-
 }

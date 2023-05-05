@@ -1,19 +1,15 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  ICMCIApiResponse,
-} from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -24,26 +20,27 @@ import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem"
 import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.closeLocalFile",
-    async (clickedNode) => {
-      const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
-      if (!allSelectedNodes || !allSelectedNodes.length) {
-        window.showErrorMessage("No CICS local file selected");
-        return;
-      }
-      const parentRegions: CICSRegionTree[] = [];
-      let busyDecision = await window.showInformationMessage(
-        `Choose one of the following for the file busy condition`,
-        ...["Wait", "No Wait", "Force"]);
-      if (busyDecision){
-        busyDecision =  busyDecision.replace(" ","").toUpperCase();
+  return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
+    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      window.showErrorMessage("No CICS local file selected");
+      return;
+    }
+    const parentRegions: CICSRegionTree[] = [];
+    let busyDecision = await window.showInformationMessage(
+      `Choose one of the following for the file busy condition`,
+      ...["Wait", "No Wait", "Force"]
+    );
+    if (busyDecision) {
+      busyDecision = busyDecision.replace(" ", "").toUpperCase();
 
-        window.withProgress({
-          title: 'Close',
+      window.withProgress(
+        {
+          title: "Close",
           location: ProgressLocation.Notification,
-          cancellable: true
-        }, async (progress, token) => {
+          cancellable: true,
+        },
+        async (progress, token) => {
           token.onCancellationRequested(() => {
             console.log("Cancelling the Close");
           });
@@ -82,19 +79,28 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
                 let eibfnAlt;
                 for (const val of mMessageArr) {
                   const values = val.split(":");
-                  if (values[0] === "resp"){
+                  if (values[0] === "resp") {
                     resp = values[1];
-                  } else if (values[0] === "resp2"){
+                  } else if (values[0] === "resp2") {
                     resp2 = values[1];
-                  } else if (values[0] === "resp_alt"){
+                  } else if (values[0] === "resp_alt") {
                     respAlt = values[1];
-                  } else if (values[0] === "eibfn_alt"){
+                  } else if (values[0] === "eibfn_alt") {
                     eibfnAlt = values[1];
                   }
                 }
-                window.showErrorMessage(`Perform CLOSE on local file "${allSelectedNodes[parseInt(index)].localFile.file}" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`);
+                window.showErrorMessage(
+                  `Perform CLOSE on local file "${
+                    allSelectedNodes[parseInt(index)].localFile.file
+                  }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
+                );
               } else {
-                window.showErrorMessage(`Something went wrong when performing a CLOSE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
+                window.showErrorMessage(
+                  `Something went wrong when performing a CLOSE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                    /(\\n\t|\\n|\\t)/gm,
+                    " "
+                  )}`
+                );
               }
             }
           }
@@ -107,44 +113,50 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
               }
               // if node is in a plex and the plex contains the region container tree
               if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-                const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedlocalfiletree."))[0];
+                const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
+                  child.contextValue.includes("cicscombinedlocalfiletree.")
+                )[0];
                 //@ts-ignore
                 if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
                   //@ts-ignore
                   await allLocalFileTreeTree.loadContents(tree);
                 }
               }
-            } catch(error) {
-              window.showErrorMessage(`Something went wrong when reloading local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
+            } catch (error) {
+              window.showErrorMessage(
+                `Something went wrong when reloading local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                  /(\\n\t|\\n|\\t)/gm,
+                  " "
+                )}`
+              );
             }
           }
           tree._onDidChangeTreeData.fire(undefined);
-        });
-      }
+        }
+      );
     }
-  );
+  });
 }
 
 async function closeLocalFile(
   session: AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string; },
+  parms: { name: string; regionName: string; cicsPlex: string },
   busyDecision: string
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {
         $: {
-          name: "CLOSE"
+          name: "CLOSE",
         },
         parameter: {
           $: {
             name: "BUSY",
-            value: busyDecision
-          }
-        }
+            value: busyDecision,
+          },
+        },
       },
-
-    }
+    },
   };
 
   const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
@@ -160,10 +172,5 @@ async function closeLocalFile(
     parms.name +
     ")";
 
-  return await CicsCmciRestClient.putExpectParsedXml(
-    session,
-    cmciResource,
-    [],
-    requestBody
-  );
+  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

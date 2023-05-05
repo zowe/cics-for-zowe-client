@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
@@ -33,8 +33,7 @@ export async function getResource(session: AbstractSession, parms: IResourceParm
   Logger.getAppLogger().debug("Attempting to get resource(s) with the following parameters:\n%s", JSON.stringify(parms));
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  let cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        parms.name + "/" + cicsPlex + parms.regionName;
+  let cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + parms.name + "/" + cicsPlex + parms.regionName;
 
   if (parms.criteria != null) {
     cmciResource = cmciResource + delimiter + "CRITERIA=(" + encodeURIComponent(parms.criteria) + ")";

@@ -1,24 +1,18 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  deleteProgram,
-  IProgramParms
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, deleteProgram, IProgramParms } from "../../../src";
 
 describe("CMCI - Delete program", () => {
-
   const program = "program";
   const region = "region";
   const cicsPlex = "plex";
@@ -29,14 +23,14 @@ describe("CMCI - Delete program", () => {
     regionName: region,
     name: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -82,7 +76,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: undefined,
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -98,7 +92,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: undefined,
           csdGroup: "fake",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -114,7 +108,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -130,7 +124,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: "",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -146,7 +140,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "",
           csdGroup: "fake",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -159,7 +153,6 @@ describe("CMCI - Delete program", () => {
   });
 
   describe("success scenarios", () => {
-
     const deleteSpy = jest.spyOn(CicsCmciRestClient, "deleteExpectParsedXml").mockReturnValue(content);
 
     beforeEach(() => {
@@ -170,9 +163,14 @@ describe("CMCI - Delete program", () => {
     });
 
     it("should be able to delete a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        region +
+        `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -183,9 +181,14 @@ describe("CMCI - Delete program", () => {
 
     it("should be able to delete a program with cicsPlex specified but empty string", async () => {
       deleteParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "//" +
+        region +
+        `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -196,9 +199,16 @@ describe("CMCI - Delete program", () => {
 
     it("should be able to delete a program with cicsPlex specified", async () => {
       deleteParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 

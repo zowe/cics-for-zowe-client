@@ -1,19 +1,18 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient, discardProgram, IProgramParms } from "../../../src";
 
 describe("CMCI - Discard program", () => {
-
   const program = "program";
   const region = "region";
   const cicsPlex = "plex";
@@ -22,14 +21,14 @@ describe("CMCI - Discard program", () => {
   const discardParms: IProgramParms = {
     regionName: region,
     name: program,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -73,7 +72,7 @@ describe("CMCI - Discard program", () => {
       try {
         response = await discardProgram(dummySession, {
           regionName: undefined,
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -88,7 +87,7 @@ describe("CMCI - Discard program", () => {
       try {
         response = await discardProgram(dummySession, {
           regionName: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -103,7 +102,7 @@ describe("CMCI - Discard program", () => {
       try {
         response = await discardProgram(dummySession, {
           regionName: "",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -116,7 +115,6 @@ describe("CMCI - Discard program", () => {
   });
 
   describe("success scenarios", () => {
-
     const discardSpy = jest.spyOn(CicsCmciRestClient, "deleteExpectParsedXml").mockReturnValue(content);
 
     beforeEach(() => {
@@ -127,9 +125,16 @@ describe("CMCI - Discard program", () => {
     });
 
     it("should be able to discard a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "/" +
+        region +
+        "?CRITERIA=(PROGRAM=" +
+        discardParms.name +
+        ")";
 
       response = await discardProgram(dummySession, discardParms);
 
@@ -140,9 +145,16 @@ describe("CMCI - Discard program", () => {
 
     it("should be able to discard a program with cicsPlex specified but empty string", async () => {
       discardParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "//" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "//" +
+        region +
+        "?CRITERIA=(PROGRAM=" +
+        discardParms.name +
+        ")";
 
       response = await discardProgram(dummySession, discardParms);
 
@@ -153,9 +165,18 @@ describe("CMCI - Discard program", () => {
 
     it("should be able to discard a program with cicsPlex specified", async () => {
       discardParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        "?CRITERIA=(PROGRAM=" +
+        discardParms.name +
+        ")";
 
       response = await discardProgram(dummySession, discardParms);
 

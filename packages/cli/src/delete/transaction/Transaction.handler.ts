@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { AbstractSession, IHandlerParameters, IProfile, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { deleteTransaction, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
@@ -26,19 +26,18 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  */
 export default class TransactionHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Deleting transaction from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await deleteTransaction(session, {
       name: params.arguments.transactionName,
       csdGroup: params.arguments.csdGroup,
       regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.transactionName);

@@ -1,19 +1,15 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  ICMCIApiResponse,
-} from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -24,20 +20,20 @@ import { findSelectedNodes } from "../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.disableTransaction",
-    (clickedNode) => {
-      const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, clickedNode);
-      if (!allSelectedNodes || !allSelectedNodes.length) {
-        window.showErrorMessage("No CICS Transaction selected");
-        return;
-      }
-      const parentRegions: CICSRegionTree[] = [];
-      window.withProgress({
-        title: 'Disable',
+  return commands.registerCommand("cics-extension-for-zowe.disableTransaction", (clickedNode) => {
+    const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, clickedNode);
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      window.showErrorMessage("No CICS Transaction selected");
+      return;
+    }
+    const parentRegions: CICSRegionTree[] = [];
+    window.withProgress(
+      {
+        title: "Disable",
         location: ProgressLocation.Notification,
-        cancellable: true
-      }, async (progress, token) => {
+        cancellable: true,
+      },
+      async (progress, token) => {
         token.onCancellationRequested(() => {
           console.log("Cancelling the Disable");
         });
@@ -51,14 +47,11 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
           https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
           try {
-            await disableTransaction(
-              currentNode.parentRegion.parentSession.session,
-              {
-                name: currentNode.transaction.tranid,
-                regionName: currentNode.parentRegion.label,
-                cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
-              }
-            );
+            await disableTransaction(currentNode.parentRegion.parentSession.session, {
+              name: currentNode.transaction.tranid,
+              regionName: currentNode.parentRegion.label,
+              cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
+            });
             https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
@@ -75,19 +68,28 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
               let eibfnAlt;
               for (const val of mMessageArr) {
                 const values = val.split(":");
-                if (values[0] === "resp"){
+                if (values[0] === "resp") {
                   resp = values[1];
-                } else if (values[0] === "resp2"){
+                } else if (values[0] === "resp2") {
                   resp2 = values[1];
-                } else if (values[0] === "resp_alt"){
+                } else if (values[0] === "resp_alt") {
                   respAlt = values[1];
-                } else if (values[0] === "eibfn_alt"){
+                } else if (values[0] === "eibfn_alt") {
                   eibfnAlt = values[1];
                 }
               }
-              window.showErrorMessage(`Perform DISABLE on Transaction "${allSelectedNodes[parseInt(index)].transaction.tranid}" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`);
+              window.showErrorMessage(
+                `Perform DISABLE on Transaction "${
+                  allSelectedNodes[parseInt(index)].transaction.tranid
+                }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
+              );
             } else {
-              window.showErrorMessage(`Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
+              window.showErrorMessage(
+                `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                  /(\\n\t|\\n|\\t)/gm,
+                  " "
+                )}`
+              );
             }
           }
         }
@@ -101,27 +103,31 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             }
             // if node is in a plex and the plex contains the region container tree
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) => child.contextValue.includes("cicscombinedtransactiontree."))[0];
+              const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) =>
+                child.contextValue.includes("cicscombinedtransactiontree.")
+              )[0];
               //@ts-ignore
               if (allTransactionTree.collapsibleState === 2 && allTransactionTree.getActiveFilter()) {
                 //@ts-ignore
                 await allTransactionTree.loadContents(tree);
               }
             }
-          } catch(error) {
-            window.showErrorMessage(`Something went wrong when reloading transactions - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
+          } catch (error) {
+            window.showErrorMessage(
+              `Something went wrong when reloading transactions - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " "
+              )}`
+            );
           }
         }
         tree._onDidChangeTreeData.fire(undefined);
-      });
-    }
-  );
+      }
+    );
+  });
 }
 
-function disableTransaction(
-  session: AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string; }
-): Promise<ICMCIApiResponse> {
+function disableTransaction(session: AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {
@@ -144,10 +150,5 @@ function disableTransaction(
     "?CRITERIA=(TRANID=" +
     parms.name +
     ")";
-  return CicsCmciRestClient.putExpectParsedXml(
-    session,
-    cmciResource,
-    [],
-    requestBody
-  );
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

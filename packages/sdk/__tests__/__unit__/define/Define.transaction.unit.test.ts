@@ -1,19 +1,18 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Session } from "@zowe/imperative";
 import { CicsCmciRestClient, CicsCmciConstants, ITransactionParms, defineTransaction } from "../../../src";
 
 describe("CMCI - Define transaction", () => {
-
   const transaction = "transaction";
   const program = "program";
   const region = "region";
@@ -21,19 +20,19 @@ describe("CMCI - Define transaction", () => {
   const cicsPlex = "plex";
   const content: any = "This\nis\r\na\ntest";
 
-  const defineParms: ITransactionParms  = {
+  const defineParms: ITransactionParms = {
     regionName: region,
     name: transaction,
     programName: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -64,7 +63,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: undefined,
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -81,7 +80,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: "fake",
           programName: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -98,7 +97,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: "fake",
           programName: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -115,7 +114,7 @@ describe("CMCI - Define transaction", () => {
           regionName: undefined,
           name: "fake",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -132,7 +131,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: "",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -149,7 +148,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: "fake",
           programName: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -166,7 +165,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "fake",
           name: "fake",
           programName: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -183,7 +182,7 @@ describe("CMCI - Define transaction", () => {
           regionName: "",
           name: "fake",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -196,24 +195,23 @@ describe("CMCI - Define transaction", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
               name: transaction,
               program,
-              csdgroup: group
-            }
-          }
-        }
-      }
+              csdgroup: group,
+            },
+          },
+        },
+      },
     };
 
     const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockReturnValue(content);
@@ -226,8 +224,7 @@ describe("CMCI - Define transaction", () => {
     });
 
     it("should be able to define a transaction without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + region;
 
       response = await defineTransaction(dummySession, defineParms);
 
@@ -238,8 +235,7 @@ describe("CMCI - Define transaction", () => {
 
     it("should be able to define a transaction with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "//" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "//" + region;
 
       response = await defineTransaction(dummySession, defineParms);
 
@@ -250,8 +246,7 @@ describe("CMCI - Define transaction", () => {
 
     it("should be able to define a transaction with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex +"/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex + "/" + region;
 
       response = await defineTransaction(dummySession, defineParms);
 

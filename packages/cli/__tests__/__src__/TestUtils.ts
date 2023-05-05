@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
@@ -24,7 +24,6 @@ import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
  */
 export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment, args: any[] = []): SpawnSyncReturns<Buffer> {
   if (fs.existsSync(scriptPath)) {
-
     // We force the color off to prevent any oddities in the snapshots or expected values
     // Color can vary OS/terminal
     const childEnv = JSON.parse(JSON.stringify(process.env));
@@ -34,11 +33,25 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
       childEnv[key] = testEnvironment.env[key];
     }
 
+    if (process.platform !== "win32") {
+      // Check to see if the file is executable
+      try {
+        fs.accessSync(scriptPath, fs.constants.X_OK);
+      } catch {
+        fs.chmodSync(scriptPath, "755");
+      }
+
+      return spawnSync(scriptPath, args, {
+        cwd: testEnvironment.workingDir,
+        env: childEnv,
+        encoding: "buffer",
+      });
+    }
+
     // Execute the command synchronously
-    return spawnSync("sh", [`${scriptPath}`].concat(args), {cwd: testEnvironment.workingDir, env: childEnv});
+    return spawnSync("sh", [`${scriptPath}`].concat(args), { cwd: testEnvironment.workingDir, env: childEnv, encoding: "buffer" });
   } else {
     throw new Error(`The script file  ${scriptPath} doesn't exist`);
-
   }
 }
 
@@ -60,4 +73,3 @@ export function generateRandomAlphaNumericString(length: number, upToLength: boo
   }
   return result;
 }
-

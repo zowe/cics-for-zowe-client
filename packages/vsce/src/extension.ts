@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { getDisableProgramCommand } from "./commands/disableProgramCommand";
 import { getRemoveSessionCommand } from "./commands/removeSessionCommand";
@@ -16,10 +16,7 @@ import { getAddSessionCommand } from "./commands/addSessionCommand";
 import { getNewCopyCommand } from "./commands/newCopyCommand";
 import { ExtensionContext, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
 import { getPhaseInCommand } from "./commands/phaseInCommand";
-import {
-  getShowProgramAttributesCommand,
-  getShowRegionAttributes,
-} from "./commands/showAttributesCommand";
+import { getShowProgramAttributesCommand, getShowRegionAttributes } from "./commands/showAttributesCommand";
 import { getFilterProgramsCommand } from "./commands/filterProgramsCommand";
 import { ProfileManagement } from "./utils/profileManagement";
 import { CICSTree } from "./trees/CICSTree";
@@ -50,27 +47,23 @@ import { sessionExpansionHandler } from "./utils/sessionExpansionHandler";
 import { regionContainerExpansionHandler } from "./utils/regionContainerExpansionHandler";
 
 export async function activate(context: ExtensionContext) {
-
   if (ProfileManagement.apiDoesExist()) {
     try {
       await ProfileManagement.registerCICSProfiles();
-      ProfileManagement.getProfilesCache().registerCustomProfilesType('cics');
+      ProfileManagement.getProfilesCache().registerCustomProfilesType("cics");
       await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
-      window.showInformationMessage(
-        "Zowe Explorer was modified for the CICS Extension"
-      );
+      window.showInformationMessage("Zowe Explorer was modified for the CICS Extension");
     } catch (error) {
       console.log(error);
     }
   }
 
   const treeDataProv = new CICSTree();
-  const treeview = window
-    .createTreeView("cics-view", {
-      treeDataProvider: treeDataProv,
-      showCollapseAll: true,
-      canSelectMany: true
-    });
+  const treeview = window.createTreeView("cics-view", {
+    treeDataProvider: treeDataProv,
+    showCollapseAll: true,
+    canSelectMany: true,
+  });
 
   treeview.onDidExpandElement(async (node) => {
     if (node.element.contextValue.includes("cicssession.")) {
@@ -86,50 +79,59 @@ export async function activate(context: ExtensionContext) {
         console.log(error);
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg","profile-disconnected-light.svg")
+          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
         );
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
-    // } else if (node.element.contextValue.includes("cicsregion.")) {
+      // } else if (node.element.contextValue.includes("cicsregion.")) {
     } else if (node.element.contextValue.includes("cicstreeprogram.")) {
-      window.withProgress({
-        title: 'Loading Programs',
-        location: ProgressLocation.Notification,
-        cancellable: false
-      }, async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of programs");
-        });
-        await node.element.loadContents();
-        treeDataProv._onDidChangeTreeData.fire(undefined);
-      });
+      window.withProgress(
+        {
+          title: "Loading Programs",
+          location: ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async (_, token) => {
+          token.onCancellationRequested(() => {
+            console.log("Cancelling the loading of programs");
+          });
+          await node.element.loadContents();
+          treeDataProv._onDidChangeTreeData.fire(undefined);
+        }
+      );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
     } else if (node.element.contextValue.includes("cicstreetransaction.")) {
-      window.withProgress({
-        title: 'Loading Transactions',
-        location: ProgressLocation.Notification,
-        cancellable: false
-      }, async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of transactions");
-        });
-        await node.element.loadContents();
-        treeDataProv._onDidChangeTreeData.fire(undefined);
-      });
+      window.withProgress(
+        {
+          title: "Loading Transactions",
+          location: ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async (_, token) => {
+          token.onCancellationRequested(() => {
+            console.log("Cancelling the loading of transactions");
+          });
+          await node.element.loadContents();
+          treeDataProv._onDidChangeTreeData.fire(undefined);
+        }
+      );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
     } else if (node.element.contextValue.includes("cicstreelocalfile.")) {
-      window.withProgress({
-        title: 'Loading Local Files',
-        location: ProgressLocation.Notification,
-        cancellable: false
-      }, async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of local files");
-        });
-        await node.element.loadContents();
-        treeDataProv._onDidChangeTreeData.fire(undefined);
-      });
+      window.withProgress(
+        {
+          title: "Loading Local Files",
+          location: ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async (_, token) => {
+          token.onCancellationRequested(() => {
+            console.log("Cancelling the loading of local files");
+          });
+          await node.element.loadContents();
+          treeDataProv._onDidChangeTreeData.fire(undefined);
+        }
+      );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
     } else if (node.element.contextValue.includes("cicscombinedprogramtree.")) {
       if (node.element.getActiveFilter()) {
@@ -175,8 +177,7 @@ export async function activate(context: ExtensionContext) {
       setIconClosed(node);
     }
     node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
-  }
-  );
+  });
 
   context.subscriptions.push(
     getAddSessionCommand(treeDataProv),
@@ -219,4 +220,3 @@ export async function activate(context: ExtensionContext) {
     viewMoreCommand(treeDataProv, treeview)
   );
 }
-

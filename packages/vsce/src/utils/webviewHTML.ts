@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { IUpdateProfile } from "@zowe/imperative";
 
@@ -186,7 +186,9 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
               <div class="float-child-right">
                 <div class="bx--radio-button-group ">
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${message?.profile.rejectUnauthorized ? `checked="checked"` : ""}>
+                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${
+  message?.profile.rejectUnauthorized ? `checked="checked"` : ""
+}>
                     <label for="radio-button-true" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">True</span>
@@ -194,7 +196,9 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                   </div>
 
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${!message?.profile.rejectUnauthorized ? `checked="checked""` : ""}>
+                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${
+  !message?.profile.rejectUnauthorized ? `checked="checked""` : ""
+}>
                     <label for="radio-button-false" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">False</span>
