@@ -25,19 +25,19 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = {
-  arguments: {$0: "", _: []}, // Please provide arguments later on
+  arguments: { $0: "", _: [] }, // Please provide arguments later on
   positionals: ["cics", "define", "transaction"],
   response: {
     data: {
@@ -47,7 +47,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
       setObj: jest.fn((setObjArgs) => {
         expect(setObjArgs).toMatchSnapshot();
       }),
-      setExitCode: jest.fn()
+      setExitCode: jest.fn(),
     },
     console: {
       log: jest.fn((logs) => {
@@ -56,21 +56,21 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
       error: jest.fn((errors) => {
         expect(errors.toString()).toMatchSnapshot();
       }) as any,
-      errorHeader: jest.fn(() => undefined) as any
+      errorHeader: jest.fn(() => undefined) as any,
     },
     progress: {
       startBar: jest.fn((parms) => undefined),
-      endBar: jest.fn(() => undefined)
+      endBar: jest.fn(() => undefined),
     },
     format: {
       output: jest.fn((parms) => {
         expect(parms).toMatchSnapshot();
-      })
-    }
+      }),
+    },
   },
   definition: TransactionDefinition,
   fullDefinition: TransactionDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 };
 
 describe("DefineTransactionHandler", () => {
@@ -81,9 +81,9 @@ describe("DefineTransactionHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineTransaction");
@@ -96,7 +96,7 @@ describe("DefineTransactionHandler", () => {
   it("should call the defineTransaction api", async () => {
     const handler = new TransactionHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       transactionName,
@@ -108,7 +108,7 @@ describe("DefineTransactionHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -123,13 +123,13 @@ describe("DefineTransactionHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: transactionName,
         programName,
         csdGroup,
-        regionName
+        regionName,
       }
     );
   });

@@ -27,17 +27,16 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).EN
 
 export default class UrimapHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Enabling URIMAP from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await enableUrimap(session, {
       name: params.arguments.urimapName,
-      regionName: params.arguments.regionName || profile.regionName
+      regionName: params.arguments.regionName || profile.regionName,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);

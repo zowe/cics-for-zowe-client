@@ -452,7 +452,6 @@
     "watch": "tsc -watch -p ./",
     "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
-    "pretty": "prettier --write .",
     "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
   },
   "devDependencies": {

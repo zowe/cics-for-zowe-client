@@ -13,8 +13,17 @@ import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../__src__/environment/TestEnvironment";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineUrimapServer, defineUrimapClient, defineUrimapPipeline, deleteUrimap, disableUrimap, IURIMapParms, enableUrimap, discardUrimap,
-  installUrimap } from "../../../src";
+import {
+  defineUrimapServer,
+  defineUrimapClient,
+  defineUrimapPipeline,
+  deleteUrimap,
+  disableUrimap,
+  IURIMapParms,
+  enableUrimap,
+  discardUrimap,
+  installUrimap,
+} from "../../../src";
 
 let testEnvironment: ITestEnvironment;
 let regionName: string;
@@ -29,10 +38,9 @@ function sleep(ms: number) {
 const sleepTime = 2000;
 
 describe("CICS Enable URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_enable_urimap"
+      testName: "cics_cmci_enable_urimap",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -46,7 +54,7 @@ describe("CICS Enable URImap", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

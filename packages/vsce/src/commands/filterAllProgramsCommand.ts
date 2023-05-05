@@ -16,28 +16,25 @@ import { getPatternFromFilter } from "../utils/FilterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
 
 export function getFilterAllProgramsCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.filterAllPrograms",
-    async (node) => {
-      const selection = treeview.selection;
-      let chosenNode;
-      if (node) {
-        chosenNode = node;
-      } else if (selection[selection.length-1] && selection[selection.length-1] instanceof CICSCombinedProgramTree) {
-        chosenNode = selection[selection.length-1];
-      } else { 
-        window.showErrorMessage("No CICS 'All Programs' tree selected");
-        return;
-      }
-      const persistentStorage = new PersistentStorage("Zowe.CICS.Persistent");
-      const pattern = await getPatternFromFilter("Program", persistentStorage.getProgramSearchHistory());
-      if (!pattern) {
-        return;
-      }
-      await persistentStorage.addProgramSearchHistory(pattern);
-      chosenNode.setFilter(pattern);
-      await chosenNode.loadContents(tree);
-      tree._onDidChangeTreeData.fire(undefined);
+  return commands.registerCommand("cics-extension-for-zowe.filterAllPrograms", async (node) => {
+    const selection = treeview.selection;
+    let chosenNode;
+    if (node) {
+      chosenNode = node;
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedProgramTree) {
+      chosenNode = selection[selection.length - 1];
+    } else {
+      window.showErrorMessage("No CICS 'All Programs' tree selected");
+      return;
     }
-  );
+    const persistentStorage = new PersistentStorage("Zowe.CICS.Persistent");
+    const pattern = await getPatternFromFilter("Program", persistentStorage.getProgramSearchHistory());
+    if (!pattern) {
+      return;
+    }
+    await persistentStorage.addProgramSearchHistory(pattern);
+    chosenNode.setFilter(pattern);
+    await chosenNode.loadContents(tree);
+    tree._onDidChangeTreeData.fire(undefined);
+  });
 }

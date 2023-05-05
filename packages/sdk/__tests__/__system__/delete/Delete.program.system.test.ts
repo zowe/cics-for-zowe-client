@@ -21,10 +21,9 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Delete program", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_delete_program"
+      testName: "cics_cmci_delete_program",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -37,7 +36,7 @@ describe("CICS Delete program", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

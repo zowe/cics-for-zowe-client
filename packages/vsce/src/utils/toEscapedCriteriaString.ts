@@ -9,15 +9,15 @@
  *
  */
 
-export function toEscapedCriteriaString(activeFilter:string, attribute:string): string {
-  // returns a string as an escaped_criteria_string suitable for the criteria 
+export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {
+  // returns a string as an escaped_criteria_string suitable for the criteria
   // query parameter for a CMCI request.
   let criteria;
   const splitActiveFilter = activeFilter.split(",");
   criteria = "(";
   for (const index in splitActiveFilter) {
     criteria += `${attribute}=${splitActiveFilter[parseInt(index)]}`;
-    if (parseInt(index) !== splitActiveFilter.length-1){
+    if (parseInt(index) !== splitActiveFilter.length - 1) {
       criteria += " OR ";
     }
   }

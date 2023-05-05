@@ -22,10 +22,9 @@ let session: Session;
 let certificate: string;
 
 describe("CICS Delete URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_delete_urimap"
+      testName: "cics_cmci_delete_urimap",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -39,7 +38,7 @@ describe("CICS Delete URImap", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

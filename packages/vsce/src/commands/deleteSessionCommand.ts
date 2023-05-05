@@ -15,20 +15,22 @@ import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getDeleteSessionCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.deleteSession",
-    async (node) => {
-      const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
-      if (!allSelectedNodes || !allSelectedNodes.length) {
-        window.showErrorMessage("No profile selected to delete");
-        return;
-      }
-      try {
-        const selectedNodes = treeview.selection.filter((selectedNode) => selectedNode !== node);
-        await tree.deleteSession(selectedNodes);
-      } catch (error) {
-        window.showErrorMessage(`Something went wrong when deleting the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm," ")}`);
-      }
+  return commands.registerCommand("cics-extension-for-zowe.deleteSession", async (node) => {
+    const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      window.showErrorMessage("No profile selected to delete");
+      return;
     }
-  );
+    try {
+      const selectedNodes = treeview.selection.filter((selectedNode) => selectedNode !== node);
+      await tree.deleteSession(selectedNodes);
+    } catch (error) {
+      window.showErrorMessage(
+        `Something went wrong when deleting the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+          /(\\n\t|\\n|\\t)/gm,
+          " "
+        )}`
+      );
+    }
+  });
 }

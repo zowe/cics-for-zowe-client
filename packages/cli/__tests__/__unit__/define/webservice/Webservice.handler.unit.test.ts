@@ -25,19 +25,19 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = {
-  arguments: {$0: "", _: []}, // Please provide arguments later on
+  arguments: { $0: "", _: [] }, // Please provide arguments later on
   positionals: ["cics", "define", "webservice"],
   response: {
     data: {
@@ -47,7 +47,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
       setObj: jest.fn((setObjArgs) => {
         expect(setObjArgs).toMatchSnapshot();
       }),
-      setExitCode: jest.fn()
+      setExitCode: jest.fn(),
     },
     console: {
       log: jest.fn((logs) => {
@@ -56,21 +56,21 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
       error: jest.fn((errors) => {
         expect(errors.toString()).toMatchSnapshot();
       }) as any,
-      errorHeader: jest.fn(() => undefined) as any
+      errorHeader: jest.fn(() => undefined) as any,
     },
     progress: {
       startBar: jest.fn((parms) => undefined),
-      endBar: jest.fn(() => undefined)
+      endBar: jest.fn(() => undefined),
     },
     format: {
       output: jest.fn((parms) => {
         expect(parms).toMatchSnapshot();
-      })
-    }
+      }),
+    },
   },
   definition: WebServiceDefinition,
   fullDefinition: WebServiceDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 };
 
 describe("DefineWebserviceHandler", () => {
@@ -83,9 +83,9 @@ describe("DefineWebserviceHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineWebservice");
@@ -98,7 +98,7 @@ describe("DefineWebserviceHandler", () => {
   it("should call the defineWebservice api", async () => {
     const handler = new WebServiceHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       webserviceName: websvcName,
@@ -112,7 +112,7 @@ describe("DefineWebserviceHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -127,7 +127,7 @@ describe("DefineWebserviceHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: websvcName,
@@ -135,7 +135,7 @@ describe("DefineWebserviceHandler", () => {
         pipelineName,
         wsBind,
         regionName,
-        cicsPlex
+        cicsPlex,
       }
     );
   });

@@ -13,7 +13,7 @@ import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { ProfileManagement } from "./profileManagement";
 
-export async function sessionExpansionHandler(session: CICSSessionTree, tree:CICSTree) {
-  const profile = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString()!, 'cics');
+export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
+  const profile = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString()!, "cics");
   await tree.loadProfile(profile, tree.getLoadedProfiles().indexOf(session), session);
 }

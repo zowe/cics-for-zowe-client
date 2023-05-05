@@ -11,8 +11,8 @@
 
 export class TemporaryScripts {
   /**
-     * Shebang to generated start script files with
-     */
+   * Shebang to generated start script files with
+   */
   public static readonly SHEBANG = "#!/bin/bash\n\n";
 
   public static readonly BRIGHT_BIN = "bright";

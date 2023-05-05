@@ -14,84 +14,83 @@
  */
 export const CicsCmciConstants: { [key: string]: any } = {
   /**
-     * Specifies the required part of the REST interface URI
-     */
+   * Specifies the required part of the REST interface URI
+   */
   CICS_SYSTEM_MANAGEMENT: "CICSSystemManagement",
 
   /**
-     * Specifies the required part of the REST interface URI to access program definitions
-     */
+   * Specifies the required part of the REST interface URI to access program definitions
+   */
   CICS_DEFINITION_PROGRAM: "CICSDefinitionProgram",
 
   /**
-     * Specifies the required part of the REST interface URI to update installed transactions
-     */
+   * Specifies the required part of the REST interface URI to update installed transactions
+   */
   CICS_LOCAL_TRANSACTION: "CICSLocalTransaction",
 
   /**
-     * Specifies the required part of the REST interface URI to access transaction definitions
-     */
+   * Specifies the required part of the REST interface URI to access transaction definitions
+   */
   CICS_DEFINITION_TRANSACTION: "CICSDefinitionTransaction",
 
   /**
-     * Specifies the required part of the REST interface URI to access program resources
-     */
+   * Specifies the required part of the REST interface URI to access program resources
+   */
   CICS_PROGRAM_RESOURCE: "CICSProgram",
 
   /**
-     * Specifies the required part of the REST interface URI to access URIMap definitions
-     */
+   * Specifies the required part of the REST interface URI to access URIMap definitions
+   */
   CICS_DEFINITION_URIMAP: "CICSDefinitionURIMap",
 
   /**
-     * Specifies the required part of the REST interface URI to access webservice definitions
-     */
+   * Specifies the required part of the REST interface URI to access webservice definitions
+   */
   CICS_DEFINITION_WEBSERVICE: "CICSDefinitionWebService",
 
   /*
-     * Specifies the required part of the REST interface URI to access URIMaps
-     */
+   * Specifies the required part of the REST interface URI to access URIMaps
+   */
   CICS_URIMAP: "CICSURIMap",
 
   /**
-     * Specifies the required part of the REST interface URI to access CSD Group definitions
-     */
+   * Specifies the required part of the REST interface URI to access CSD Group definitions
+   */
 
   CICS_CSDGROUP: "CICSCSDGroup",
 
   /**
-     * Specifies the required part of the REST interface URI to access CSD Group in list definitions
-     */
+   * Specifies the required part of the REST interface URI to access CSD Group in list definitions
+   */
   CICS_CSDGROUP_IN_LIST: "CICSCSDGroupInList",
 
   /**
-     * ORDERBY parameter
-     */
+   * ORDERBY parameter
+   */
   ORDER_BY: "ORDERBY",
 
   /**
-     * SUMMONLY parameter
-     */
+   * SUMMONLY parameter
+   */
   SUMM_ONLY: "SUMMONLY",
 
   /**
-     * NODISCARD parameter
-     */
+   * NODISCARD parameter
+   */
   NO_DISCARD: "NODISCARD",
 
   /**
-     * CRITERIA parameter
-     */
+   * CRITERIA parameter
+   */
   CRITERIA: "CRITERIA",
 
   /**
-     * PARAMETER parameter
-     */
+   * PARAMETER parameter
+   */
   PARAMETER: "PARAMETER",
 
   /**
-     * The CICS CMCI external resource names
-     */
+   * The CICS CMCI external resource names
+   */
   CICS_CMCI_EXTERNAL_RESOURCES: ["CICSLocalTransaction", "CICSRemoteTransaction", "CICSDefinitionTransaction", "CICSLocalFile"],
-
 };

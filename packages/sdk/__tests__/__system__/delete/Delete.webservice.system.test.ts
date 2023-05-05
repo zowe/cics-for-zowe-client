@@ -21,10 +21,9 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Delete web service", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_delete_webservice"
+      testName: "cics_cmci_delete_webservice",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -37,7 +36,7 @@ describe("CICS Delete web service", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 
@@ -48,7 +47,7 @@ describe("CICS Delete web service", () => {
   const options: IWebServiceParms = {
     pipelineName: "AAAA1234",
     wsBind: "/u/exampleapp/wsbind/example.log",
-    validation: false
+    validation: false,
   } as any;
 
   it("should delete a web service from CICS", async () => {

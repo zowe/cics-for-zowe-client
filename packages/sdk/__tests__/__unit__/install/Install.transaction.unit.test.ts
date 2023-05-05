@@ -13,7 +13,6 @@ import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient, installTransaction, ITransactionParms } from "../../../src";
 
 describe("CMCI - Install transaction", () => {
-
   const transaction = "transaction";
   const program = "program";
   const region = "region";
@@ -26,14 +25,14 @@ describe("CMCI - Install transaction", () => {
     name: transaction,
     programName: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -46,8 +45,7 @@ describe("CMCI - Install transaction", () => {
       error = undefined;
     });
 
-    it("should throw " +
-            "error if no parms are defined", async () => {
+    it("should throw " + "error if no parms are defined", async () => {
       try {
         response = await installTransaction(dummySession, undefined);
       } catch (err) {
@@ -64,7 +62,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: "fake",
           name: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -80,7 +78,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -96,7 +94,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: undefined,
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -112,7 +110,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: "fake",
           name: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -128,7 +126,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -144,7 +142,7 @@ describe("CMCI - Install transaction", () => {
         response = await installTransaction(dummySession, {
           regionName: "",
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -157,15 +155,14 @@ describe("CMCI - Install transaction", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         action: {
           $: {
             name: "CSDINSTALL",
-          }
-        }
-      }
+          },
+        },
+      },
     };
 
     const installSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockReturnValue(content);
@@ -178,9 +175,18 @@ describe("CMCI - Install transaction", () => {
     });
 
     it("should be able to install a transaction without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "/" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installTransaction(dummySession, installParms);
 
@@ -191,9 +197,18 @@ describe("CMCI - Install transaction", () => {
 
     it("should be able to install a transaction with cicsPlex specified but empty string", async () => {
       installParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "//" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "//" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installTransaction(dummySession, installParms);
 
@@ -204,9 +219,20 @@ describe("CMCI - Install transaction", () => {
 
     it("should be able to install a transaction with cicsPlex specified", async () => {
       installParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        "?CRITERIA=(NAME=" +
+        installParms.name +
+        ")&PARAMETER=CSDGROUP(" +
+        installParms.csdGroup +
+        ")";
 
       response = await installTransaction(dummySession, installParms);
 

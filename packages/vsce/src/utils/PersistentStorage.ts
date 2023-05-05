@@ -9,7 +9,7 @@
  *
  */
 
-import { ConfigurationTarget, workspace } from 'vscode';
+import { ConfigurationTarget, workspace } from "vscode";
 
 export class PersistentStorage {
   public schema: string;
@@ -19,16 +19,13 @@ export class PersistentStorage {
   private static readonly regionSearchHistory: string = "regionSearchHistory";
   private static readonly loadedCICSProfile: string = "loadedCICSProfile";
 
-
   private mProgramSearchHistory: string[] = [];
   private mTransactionSearchHistory: string[] = [];
   private mLocalFileSearchHistory: string[] = [];
   private mRegionSearchHistory: string[] = [];
   private mLoadedCICSProfile: string[] = [];
 
-  constructor(
-    schema: string,
-  ) {
+  constructor(schema: string) {
     this.schema = schema;
     this.init();
   }
@@ -74,7 +71,6 @@ export class PersistentStorage {
     }
   }
 
-
   public getProgramSearchHistory(): string[] {
     return this.mProgramSearchHistory;
   }
@@ -90,7 +86,6 @@ export class PersistentStorage {
   public getLoadedCICSProfile(): string[] {
     return this.mLoadedCICSProfile;
   }
-
 
   public async resetProgramSearchHistory() {
     this.mProgramSearchHistory = [];
@@ -108,11 +103,10 @@ export class PersistentStorage {
     this.mRegionSearchHistory = [];
     await this.updateRegionSearchHistory();
   }
-  public async resetLoadedCICSProfile(){
+  public async resetLoadedCICSProfile() {
     this.mLoadedCICSProfile = [];
     await this.updateLoadedCICSProfile();
   }
-
 
   private async updateProgramSearchHistory() {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
@@ -142,14 +136,13 @@ export class PersistentStorage {
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
-  private async updateLoadedCICSProfile(){
+  private async updateLoadedCICSProfile() {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.loadedCICSProfile] = this.mLoadedCICSProfile;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
-
 
   public async addProgramSearchHistory(criteria: string) {
     if (criteria) {
@@ -219,7 +212,7 @@ export class PersistentStorage {
     }
   }
 
-  public async removeLoadedCICSProfile(name: string){
+  public async removeLoadedCICSProfile(name: string) {
     if (name) {
       this.mLoadedCICSProfile = this.mLoadedCICSProfile.filter((element) => {
         return element.trim() !== name.trim();
@@ -228,5 +221,4 @@ export class PersistentStorage {
       await this.updateLoadedCICSProfile();
     }
   }
-
 }

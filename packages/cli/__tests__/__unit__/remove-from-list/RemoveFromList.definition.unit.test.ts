@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("cics remove-from-list", () => {
   const REMOVE_FROM_LIST_RESOURCES = 1;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/remove-from-list/RemoveFromList.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(REMOVE_FROM_LIST_RESOURCES);

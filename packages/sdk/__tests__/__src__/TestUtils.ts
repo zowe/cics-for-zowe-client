@@ -24,7 +24,6 @@ import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
  */
 export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment, args: any[] = []): SpawnSyncReturns<Buffer> {
   if (fs.existsSync(scriptPath)) {
-
     // We force the color off to prevent any oddities in the snapshots or expected values
     // Color can vary OS/terminal
     const childEnv = JSON.parse(JSON.stringify(process.env));
@@ -35,10 +34,9 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
     }
 
     // Execute the command synchronously
-    return spawnSync("sh", [`${scriptPath}`].concat(args), {cwd: testEnvironment.workingDir, env: childEnv});
+    return spawnSync("sh", [`${scriptPath}`].concat(args), { cwd: testEnvironment.workingDir, env: childEnv });
   } else {
     throw new Error(`The script file  ${scriptPath} doesn't exist`);
-
   }
 }
 
@@ -60,4 +58,3 @@ export function generateRandomAlphaNumericString(length: number, upToLength: boo
   }
   return result;
 }
-

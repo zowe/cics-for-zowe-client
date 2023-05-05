@@ -15,23 +15,26 @@ import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";
 import { regionContainerExpansionHandler } from "./regionContainerExpansionHandler";
 
-export function plexExpansionHandler(plex: CICSPlexTree, tree:CICSTree) {
+export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
   const plexProfile = plex.getProfile();
   // Region name and plex name specified
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
     if (!plex.getGroupName()) {
       // CICSRegion
-      window.withProgress({
-        title: 'Loading region',
-        location: ProgressLocation.Notification,
-        cancellable: false
-      }, async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of the region");
-        });
-        await plex.loadOnlyRegion();
-        tree._onDidChangeTreeData.fire(undefined);
-      });
+      window.withProgress(
+        {
+          title: "Loading region",
+          location: ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async (_, token) => {
+          token.onCancellationRequested(() => {
+            console.log("Cancelling the loading of the region");
+          });
+          await plex.loadOnlyRegion();
+          tree._onDidChangeTreeData.fire(undefined);
+        }
+      );
     } else {
       // CICSGroup
       plex.clearChildren();
@@ -53,6 +56,6 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree:CICSTree) {
 }
 
 function findRegionsContainerFromPlex(plex: CICSPlexTree): CICSRegionsContainer {
-  const regionsContainer = plex.children.filter(child => child instanceof CICSRegionsContainer)?.[0];
+  const regionsContainer = plex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
   return regionsContainer as CICSRegionsContainer;
 }

@@ -28,25 +28,26 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).DEFIN
  * Definition for the "define" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "define", aliases: ["def"],
+  name: "define",
+  aliases: ["def"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [ProgramDefinition,
+  children: [
+    ProgramDefinition,
     TransactionDefinition,
     UrimapServerDefinition,
     UrimapClientDefinition,
     UrimapPipelineDefinition,
-    WebServiceDefinition],
+    WebServiceDefinition,
+  ],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

@@ -11,24 +11,24 @@
 
 export interface ICSDGroupParms {
   /**
-     * The name of the CSD Group
-     * Up to eight characters long
-     */
+   * The name of the CSD Group
+   * Up to eight characters long
+   */
   name: string;
 
   /**
-     * CSD list name for the CSD Group
-     * Up to eight characters long
-     */
+   * CSD list name for the CSD Group
+   * Up to eight characters long
+   */
   csdList: string;
 
   /**
-     * The name of the CICS region of the CSD List
-     */
+   * The name of the CICS region of the CSD List
+   */
   regionName: string;
 
   /**
-     * CICS Plex of the CSD List
-     */
+   * CICS Plex of the CSD List
+   */
   cicsPlex?: string;
 }

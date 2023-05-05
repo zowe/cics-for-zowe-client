@@ -16,28 +16,25 @@ import { getPatternFromFilter } from "../utils/FilterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
 
 export function getFilterAllLocalFilesCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.filterAllLocalFiles",
-    async (node) => {
-      const selection = treeview.selection;
-      let chosenNode;
-      if (node) {
-        chosenNode = node;
-      } else if (selection[selection.length-1] && selection[selection.length-1] instanceof CICSCombinedLocalFileTree) {
-        chosenNode = selection[selection.length-1];
-      } else { 
-        window.showErrorMessage("No CICS 'All Local Files' tree selected");
-        return;
-      }
-      const persistentStorage = new PersistentStorage("Zowe.CICS.Persistent");
-      const pattern = await getPatternFromFilter("Local File", persistentStorage.getLocalFileSearchHistory());
-      if (!pattern) {
-        return;
-      }
-      await persistentStorage.addLocalFileSearchHistory(pattern);
-      chosenNode.setFilter(pattern);
-      await chosenNode.loadContents(tree);
-      tree._onDidChangeTreeData.fire(undefined);
+  return commands.registerCommand("cics-extension-for-zowe.filterAllLocalFiles", async (node) => {
+    const selection = treeview.selection;
+    let chosenNode;
+    if (node) {
+      chosenNode = node;
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedLocalFileTree) {
+      chosenNode = selection[selection.length - 1];
+    } else {
+      window.showErrorMessage("No CICS 'All Local Files' tree selected");
+      return;
     }
-  );
+    const persistentStorage = new PersistentStorage("Zowe.CICS.Persistent");
+    const pattern = await getPatternFromFilter("Local File", persistentStorage.getLocalFileSearchHistory());
+    if (!pattern) {
+      return;
+    }
+    await persistentStorage.addLocalFileSearchHistory(pattern);
+    chosenNode.setFilter(pattern);
+    await chosenNode.loadContents(tree);
+    tree._onDidChangeTreeData.fire(undefined);
+  });
 }

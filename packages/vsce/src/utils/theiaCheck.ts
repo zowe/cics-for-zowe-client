@@ -9,7 +9,7 @@
  *
  */
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 export function isTheia(): boolean {
   const VSCODE_APPNAME: string[] = ["Visual Studio Code", "VSCodium"];

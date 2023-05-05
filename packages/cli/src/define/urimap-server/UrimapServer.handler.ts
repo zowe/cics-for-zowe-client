@@ -26,13 +26,12 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  */
 export default class UrimapServerHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Defining URIMAP of type Server to CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await defineUrimapServer(session, {
       name: params.arguments.urimapName,
@@ -45,7 +44,7 @@ export default class UrimapServerHandler extends CicsBaseHandler {
       enable: params.arguments.enable,
       regionName: params.arguments.regionName || profile.regionName,
       cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
-      tcpipservice: params.arguments.tcpipservice
+      tcpipservice: params.arguments.tcpipservice,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);

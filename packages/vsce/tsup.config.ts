@@ -9,7 +9,7 @@
  *
  */
 
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/extension.ts"],
@@ -19,5 +19,5 @@ export default defineConfig({
   format: "cjs",
   dts: true,
   external: ["vscode"],
-  minify: "terser"
+  minify: "terser",
 });

@@ -30,10 +30,9 @@ function sleep(ms: number) {
 const sleepTime = 4000;
 
 describe("CICS Define client URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_define_urimap-client"
+      testName: "cics_cmci_define_urimap-client",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     enable = false;
@@ -50,7 +49,7 @@ describe("CICS Define client URImap", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

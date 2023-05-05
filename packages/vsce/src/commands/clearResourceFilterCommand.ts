@@ -17,31 +17,31 @@ import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.clearFilter",
-    (node) => {
-      const allSelectedProgramTreeNodes = findSelectedNodes(treeview, CICSProgramTree, node);
-      const allSelectedTransactionTreeNodes = findSelectedNodes(treeview, CICSTransactionTree, node);
-      const allSelectedLocalFileTreeNodes = findSelectedNodes(treeview, CICSLocalFileTree, node);
-      const allSelectedNodes = [...allSelectedProgramTreeNodes, ...allSelectedTransactionTreeNodes, ...allSelectedLocalFileTreeNodes];
-      if (!allSelectedNodes || !allSelectedNodes.length) {
-        window.showErrorMessage("No CICS resource tree selected");
-        return;
-      }
-      for (const selectedNode of allSelectedNodes) {
-        selectedNode.clearFilter();
-        window.withProgress({
-          title: 'Loading Resources',
+  return commands.registerCommand("cics-extension-for-zowe.clearFilter", (node) => {
+    const allSelectedProgramTreeNodes = findSelectedNodes(treeview, CICSProgramTree, node);
+    const allSelectedTransactionTreeNodes = findSelectedNodes(treeview, CICSTransactionTree, node);
+    const allSelectedLocalFileTreeNodes = findSelectedNodes(treeview, CICSLocalFileTree, node);
+    const allSelectedNodes = [...allSelectedProgramTreeNodes, ...allSelectedTransactionTreeNodes, ...allSelectedLocalFileTreeNodes];
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      window.showErrorMessage("No CICS resource tree selected");
+      return;
+    }
+    for (const selectedNode of allSelectedNodes) {
+      selectedNode.clearFilter();
+      window.withProgress(
+        {
+          title: "Loading Resources",
           location: ProgressLocation.Notification,
-          cancellable: false
-        }, async (_, token) => {
+          cancellable: false,
+        },
+        async (_, token) => {
           token.onCancellationRequested(() => {
             console.log("Cancelling the loading of resources");
           });
           await selectedNode.loadContents();
           tree._onDidChangeTreeData.fire(undefined);
-        });
-      }
+        }
+      );
     }
-  );
+  });
 }

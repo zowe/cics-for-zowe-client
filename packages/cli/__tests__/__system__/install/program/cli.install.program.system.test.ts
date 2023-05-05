@@ -26,12 +26,11 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 describe("CICS install program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "install_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -56,12 +55,14 @@ describe("CICS install program command", () => {
       user: cmciProperties.user,
       password: cmciProperties.password,
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+    );
   };
 
   const discardProgram = async (programName: string) => {
@@ -73,12 +74,13 @@ describe("CICS install program command", () => {
       user: cmciProperties.user,
       password: cmciProperties.password,
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(deleteSession,
-      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(PROGRAM=${programName})`);
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      deleteSession,
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSProgram/${cmciProperties.regionName}` + `?CRITERIA=(PROGRAM=${programName})`
+    );
   };
 
   it("should be able to display the help", () => {
@@ -89,12 +91,14 @@ describe("CICS install program command", () => {
   });
 
   it("should be able to successfully install a program with basic options", async () => {
-
     // first define the program
     const programNameSuffixLength = 4;
     const programName = "AAA" + generateRandomAlphaNumericString(programNameSuffixLength);
-    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program.sh", TEST_ENVIRONMENT,
-      [programName, csdGroup, regionName]);
+    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -127,35 +131,36 @@ describe("CICS install program command", () => {
   });
 
   it("should be able to successfully install a program with profile options", async () => {
-
     // first define the program
     const programNameSuffixLength = 4;
     const programName = "AAA" + generateRandomAlphaNumericString(programNameSuffixLength);
-    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/install_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/__scripts__/install_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -163,5 +168,4 @@ describe("CICS install program command", () => {
     await discardProgram(programName);
     await deleteProgram(programName);
   });
-
 });

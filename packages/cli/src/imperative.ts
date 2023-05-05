@@ -26,9 +26,10 @@ const config: IImperativeConfig = {
       schema: {
         type: "object",
         title: "CICS Profile",
-        description: "A cics profile is required to issue commands in the cics command group that interact with " +
-                    "CICS regions. The cics profile contains your host, port, user name, and password " +
-                    "for the IBM CICS management client interface (CMCI) server of your choice.",
+        description:
+          "A cics profile is required to issue commands in the cics command group that interact with " +
+          "CICS regions. The cics profile contains your host, port, user name, and password " +
+          "for the IBM CICS management client interface (CMCI) server of your choice.",
         properties: {
           host: {
             type: "string",
@@ -79,7 +80,7 @@ const config: IImperativeConfig = {
             optionDefinition: {
               name: "region-name",
               description: "The name of the CICS region name to interact with",
-              type: "string"
+              type: "string",
             },
           },
           cicsPlex: {
@@ -87,28 +88,28 @@ const config: IImperativeConfig = {
             optionDefinition: {
               name: "cics-plex",
               description: "The name of the CICSPlex to interact with",
-              type: "string"
+              type: "string",
             },
           },
           rejectUnauthorized: {
             type: "boolean",
-            optionDefinition: CicsSession.CICS_OPTION_REJECT_UNAUTHORIZED
+            optionDefinition: CicsSession.CICS_OPTION_REJECT_UNAUTHORIZED,
           },
           protocol: {
             type: "string",
-            optionDefinition: CicsSession.CICS_OPTION_PROTOCOL
-          }
+            optionDefinition: CicsSession.CICS_OPTION_PROTOCOL,
+          },
         },
         required: ["host"],
       },
       createProfileExamples: [
         {
           options: "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
-          description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490"
-        }
-      ]
-    }
-  ]
+          description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490",
+        },
+      ],
+    },
+  ],
 };
 
 export = config;

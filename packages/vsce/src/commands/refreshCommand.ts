@@ -15,14 +15,14 @@ import { CICSProgramTree } from "../trees/CICSProgramTree";
 import { CICSTree } from "../trees/CICSTree";
 
 export function getRefreshCommand(tree: CICSTree) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.refreshTree",
-    () => {
-      window.withProgress({
-        title: 'Refresh',
+  return commands.registerCommand("cics-extension-for-zowe.refreshTree", () => {
+    window.withProgress(
+      {
+        title: "Refresh",
         location: ProgressLocation.Notification,
-        cancellable: true
-      }, async (progress, token) => {
+        cancellable: true,
+      },
+      async (progress, token) => {
         token.onCancellationRequested(() => {
           console.log("Cancelling the refresh");
         });
@@ -54,9 +54,9 @@ export function getRefreshCommand(tree: CICSTree) {
             }
           }
         }
-      });
-      tree._onDidChangeTreeData.fire(undefined);
-      window.showInformationMessage("Refreshed");
-    }
-  );
+      }
+    );
+    tree._onDidChangeTreeData.fire(undefined);
+    window.showInformationMessage("Refreshed");
+  });
 }

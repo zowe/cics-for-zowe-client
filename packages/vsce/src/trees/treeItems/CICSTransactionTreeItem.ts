@@ -23,11 +23,7 @@ export class CICSTransactionTreeItem extends TreeItem {
     parentRegion: CICSRegionTree,
     public readonly iconPath = getIconPathInResources("local-transaction-dark.svg", "local-transaction-light.svg")
   ) {
-
-    super(
-      `${transaction.tranid} ${transaction.status.toLowerCase() === "disabled"  ? "(Disabled)" : ""}`,
-      TreeItemCollapsibleState.None
-    );
+    super(`${transaction.tranid} ${transaction.status.toLowerCase() === "disabled" ? "(Disabled)" : ""}`, TreeItemCollapsibleState.None);
     this.transaction = transaction;
     this.contextValue = `cicstransaction.${transaction.status.toLowerCase()}.${transaction.tranid}`;
     this.parentRegion = parentRegion;

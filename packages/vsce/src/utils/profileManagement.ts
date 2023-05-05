@@ -19,19 +19,20 @@ import * as https from "https";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 
 export class ProfileManagement {
-
-  private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi('1.18.0');
+  private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi("1.18.0");
   private static profilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
-  constructor() { }
+  constructor() {}
 
   public static apiDoesExist() {
-    if (ProfileManagement.zoweExplorerAPI) { return true; }
+    if (ProfileManagement.zoweExplorerAPI) {
+      return true;
+    }
     return false;
   }
 
   public static async registerCICSProfiles() {
-    await ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().initForZowe('cics', cicsProfileMeta);
+    await ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().initForZowe("cics", cicsProfileMeta);
   }
 
   public static getExplorerApis() {
@@ -43,22 +44,22 @@ export class ProfileManagement {
   }
 
   public static async createNewProfile(formResponse: ISaveProfile) {
-    await ProfileManagement.profilesCache.getCliProfileManager('cics').save(formResponse);
+    await ProfileManagement.profilesCache.getCliProfileManager("cics").save(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
   public static async updateProfile(formResponse: IUpdateProfile): Promise<IProfileUpdated> {
-    const profile = await ProfileManagement.profilesCache.getCliProfileManager('cics').update(formResponse);
+    const profile = await ProfileManagement.profilesCache.getCliProfileManager("cics").update(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
     return profile;
   }
 
   public static async deleteProfile(formResponse: IDeleteProfile) {
-    await ProfileManagement.profilesCache.getCliProfileManager('cics').delete(formResponse);
+    await ProfileManagement.profilesCache.getCliProfileManager("cics").delete(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
-  public static async makeRequest(path:string, config:AxiosRequestConfig) {
+  public static async makeRequest(path: string, config: AxiosRequestConfig) {
     const response = await axios.get(path, config);
     return response;
   }
@@ -73,12 +74,12 @@ export class ProfileManagement {
       auth: {
         username: profile.profile.user,
         password: profile.profile.password,
-      }
+      },
     };
     const infoLoaded: {
-      plexname: string | null,
-      regions: any[],
-      group: boolean
+      plexname: string | null;
+      regions: any[];
+      group: boolean;
     }[] = [];
 
     https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
@@ -93,20 +94,22 @@ export class ProfileManagement {
           config
         );
         const regionGroupJson = ProfileManagement.cmciResponseXml2Json(checkIfSystemGroup.data);
-        if (regionGroupJson.response.resultsummary &&
+        if (
+          regionGroupJson.response.resultsummary &&
           regionGroupJson.response.resultsummary._attributes &&
-          regionGroupJson.response.resultsummary._attributes.recordcount !== '0') {
+          regionGroupJson.response.resultsummary._attributes.recordcount !== "0"
+        ) {
           // CICSGroup
           const singleGroupResponse = await ProfileManagement.makeRequest(
             `/CICSManagedRegion/${profile.profile.cicsPlex}/${profile.profile.regionName}`,
             config
           );
           const jsonFromXml = ProfileManagement.cmciResponseXml2Json(singleGroupResponse.data);
-          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any; }) => item._attributes);
+          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
           infoLoaded.push({
             plexname: profile.profile.cicsPlex,
             regions: [allRegions],
-            group: true
+            group: true,
           });
         } else {
           // Region
@@ -120,10 +123,12 @@ export class ProfileManagement {
             infoLoaded.push({
               plexname: profile.profile.cicsPlex,
               regions: [singleRegion],
-              group: false
+              group: false,
             });
           } else {
-            window.showErrorMessage(`Cannot find region ${profile.profile.regionName} in plex ${profile.profile.cicsPlex} for profile ${profile.name}`);
+            window.showErrorMessage(
+              `Cannot find region ${profile.profile.regionName} in plex ${profile.profile.cicsPlex} for profile ${profile.name}`
+            );
             https.globalAgent.options.rejectUnauthorized = undefined;
             throw new Error("Region Not Found");
           }
@@ -135,11 +140,11 @@ export class ProfileManagement {
         const allRegionResponse = await ProfileManagement.makeRequest(`/CICSManagedRegion/${profile.profile.cicsPlex}`, config);
         const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allRegionResponse.data);
         if (jsonFromXml.response.records && jsonFromXml.response.records.cicsmanagedregion) {
-          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any; }) => item._attributes);
+          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
           infoLoaded.push({
             plexname: profile.profile.cicsPlex,
             regions: allRegions,
-            group: false
+            group: false,
           });
         } else {
           window.showErrorMessage(`Cannot find plex ${profile.profile.cicsPlex} for profile ${profile.name}`);
@@ -159,7 +164,7 @@ export class ProfileManagement {
           infoLoaded.push({
             plexname: null,
             regions: [singleRegion],
-            group: false
+            group: false,
           });
         } else {
           window.showErrorMessage(`Cannot find region ${profile.profile.regionName} for profile ${profile.name}`);
@@ -174,20 +179,18 @@ export class ProfileManagement {
           const testIfPlexResponse = await ProfileManagement.makeRequest(`/CICSCICSPlex`, config);
           if (testIfPlexResponse.status === 200) {
             // Plex
-            const jsonFromXml = ProfileManagement.cmciResponseXml2Json(testIfPlexResponse.data,);
+            const jsonFromXml = ProfileManagement.cmciResponseXml2Json(testIfPlexResponse.data);
             if (jsonFromXml.response.records && jsonFromXml.response.records.cicscicsplex) {
-              const returnedPlexes = jsonFromXml.response.records.cicscicsplex.map((item: { _attributes: any; }) => item._attributes);
-              const uniqueReturnedPlexes = returnedPlexes.filter((plex:any, index:number) =>
-                index === returnedPlexes.findIndex((found:any) => (
-                  found.plexname === plex.plexname
-                ))
+              const returnedPlexes = jsonFromXml.response.records.cicscicsplex.map((item: { _attributes: any }) => item._attributes);
+              const uniqueReturnedPlexes = returnedPlexes.filter(
+                (plex: any, index: number) => index === returnedPlexes.findIndex((found: any) => found.plexname === plex.plexname)
               );
               for (const plex of uniqueReturnedPlexes) {
                 try {
                   infoLoaded.push({
                     plexname: plex.plexname,
                     regions: [],
-                    group: false
+                    group: false,
                   });
                 } catch (error) {
                   console.log(error);
@@ -202,7 +205,7 @@ export class ProfileManagement {
             infoLoaded.push({
               plexname: null,
               regions: [returnedRegion],
-              group: false
+              group: false,
             });
           }
         } catch (error) {
@@ -217,7 +220,7 @@ export class ProfileManagement {
             infoLoaded.push({
               plexname: null,
               regions: [returnedRegion],
-              group: false
+              group: false,
             });
           } catch (error2) {
             https.globalAgent.options.rejectUnauthorized = undefined;
@@ -238,7 +241,7 @@ export class ProfileManagement {
         auth: {
           username: profile.profile.user,
           password: profile.profile.password,
-        }
+        },
       };
       https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
       const regionResponse = await ProfileManagement.makeRequest(`/CICSManagedRegion/${plex.getPlexName()}`, config);
@@ -246,7 +249,7 @@ export class ProfileManagement {
       if (regionResponse.status === 200) {
         const jsonFromXml = ProfileManagement.cmciResponseXml2Json(regionResponse.data);
         if (jsonFromXml.response.records && jsonFromXml.response.records.cicsmanagedregion) {
-          const returnedRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any; }) => item._attributes);
+          const returnedRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
           return returnedRegions;
         }
       }
@@ -257,7 +260,7 @@ export class ProfileManagement {
     }
   }
 
-  public static async generateCacheToken(profile: IProfileLoaded, plexName: string, resourceName:string, criteria?: string, group?: string) {
+  public static async generateCacheToken(profile: IProfileLoaded, plexName: string, resourceName: string, criteria?: string, group?: string) {
     try {
       const config: AxiosRequestConfig = {
         baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
@@ -266,20 +269,20 @@ export class ProfileManagement {
           password: profile.profile.password,
         },
         params: {
-          OVERRIDEWARNINGCOUNT: 'YES',
+          OVERRIDEWARNINGCOUNT: "YES",
           CRITERIA: criteria,
-          NODISCARD: '',
-          SUMMONLY: '',
-        }
+          NODISCARD: "",
+          SUMMONLY: "",
+        },
       };
       https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
-      const allProgramsResponse = await ProfileManagement.makeRequest(`/${resourceName}/${plexName}${group?`/${group}`:''}`,config);
+      const allProgramsResponse = await ProfileManagement.makeRequest(`/${resourceName}/${plexName}${group ? `/${group}` : ""}`, config);
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (allProgramsResponse.status === 200) {
         const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allProgramsResponse.data);
         if (jsonFromXml.response && jsonFromXml.response.resultsummary) {
           const resultsSummary = jsonFromXml.response.resultsummary._attributes;
-          return { 'cacheToken': resultsSummary.cachetoken, 'recordCount': resultsSummary.recordcount};
+          return { cacheToken: resultsSummary.cachetoken, recordCount: resultsSummary.recordcount };
         }
       }
     } catch (error) {
@@ -288,14 +291,14 @@ export class ProfileManagement {
     }
   }
 
-  public static async getCachedResources(profile: IProfileLoaded, cacheToken: string, resourceName:string, start=1, increment=800) {
+  public static async getCachedResources(profile: IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
     try {
       const config: AxiosRequestConfig = {
         baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
         auth: {
           username: profile.profile.user,
           password: profile.profile.password,
-        }
+        },
       };
       https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
       const allItemsResponse = await ProfileManagement.makeRequest(`/CICSResultCache/${cacheToken}/${start}/${increment}`, config);
@@ -303,7 +306,7 @@ export class ProfileManagement {
       if (allItemsResponse.status === 200) {
         const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allItemsResponse.data);
         if (jsonFromXml.response && jsonFromXml.response.records && jsonFromXml.response.records[resourceName.toLowerCase()]) {
-          const returnedResources = jsonFromXml.response.records[resourceName.toLowerCase()].map((item: { _attributes: any; }) => item._attributes);
+          const returnedResources = jsonFromXml.response.records[resourceName.toLowerCase()].map((item: { _attributes: any }) => item._attributes);
           return returnedResources;
         }
       }

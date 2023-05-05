@@ -53,7 +53,6 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.children = [new CICSProgramTree(this), new CICSTransactionTree(this), new CICSLocalFileTree(this)];
     }
-
   }
 
   public getRegionName() {
@@ -63,7 +62,7 @@ export class CICSRegionTree extends TreeItem {
   public getIsActive() {
     return this.isActive;
   }
-  
+
   public getChildren() {
     return this.children;
   }

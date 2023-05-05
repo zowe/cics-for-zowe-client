@@ -19,10 +19,9 @@ let regionName: string;
 let session: Session;
 
 describe("CICS Get resource", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_get_resource"
+      testName: "cics_cmci_get_resource",
     });
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     const cmciProperties = await testEnvironment.systemTestProperties.cmci;
@@ -34,7 +33,7 @@ describe("CICS Get resource", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

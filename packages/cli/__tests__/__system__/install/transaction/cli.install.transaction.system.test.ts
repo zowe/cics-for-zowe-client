@@ -26,12 +26,11 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 describe("CICS install transaction command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "install_transaction",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -56,12 +55,14 @@ describe("CICS install transaction command", () => {
       user: cmciProperties.user,
       password: cmciProperties.password,
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}` +
-            `/${cmciProperties.regionName}?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `/${cmciProperties.regionName}?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+    );
   };
 
   const discardTransaction = async (transactionName: string) => {
@@ -73,12 +74,14 @@ describe("CICS install transaction command", () => {
       user: cmciProperties.user,
       password: cmciProperties.password,
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(deleteSession,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      deleteSession,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_LOCAL_TRANSACTION}/${cmciProperties.regionName}` +
-            `?CRITERIA=(TRANID=${transactionName})`);
+        `?CRITERIA=(TRANID=${transactionName})`
+    );
   };
 
   it("should be able to display the help", () => {
@@ -89,12 +92,15 @@ describe("CICS install transaction command", () => {
   });
 
   it("should be able to successfully install a transaction with basic options", async () => {
-
     // first define the transaction
     const transactionNameSuffixLength = 3;
     const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT,
-      [transactionName, "program1", csdGroup, regionName]);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      "program1",
+      csdGroup,
+      regionName,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -127,36 +133,37 @@ describe("CICS install transaction command", () => {
   });
 
   it("should be able to successfully install a transaction with profile options", async () => {
-
     // first define the transaction
     const transactionNameSuffixLength = 3;
     const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
-        "program1",
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      "program1",
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/install_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/__scripts__/install_transaction_fully_qualified.sh", TEST_ENVIRONMENT, [
+      transactionName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -164,5 +171,4 @@ describe("CICS install transaction command", () => {
     await discardTransaction(transactionName);
     await deleteTransaction(transactionName);
   });
-
 });

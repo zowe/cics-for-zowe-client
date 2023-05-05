@@ -29,10 +29,9 @@ function sleep(ms: number) {
 const sleepTime = 4000;
 
 describe("CICS Define pipeline URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_define_urimap-pipeline"
+      testName: "cics_cmci_define_urimap-pipeline",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -48,7 +47,7 @@ describe("CICS Define pipeline URImap", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

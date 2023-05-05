@@ -30,10 +30,7 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(
-    parentPlex: CICSPlexTree,
-    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
-  ) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;
@@ -45,59 +42,80 @@ export class CICSCombinedProgramTree extends TreeItem {
   }
 
   public async loadContents(tree: CICSTree) {
-    await window.withProgress({
-      title: 'Loading Programs',
-      location: ProgressLocation.Notification,
-      cancellable: true
-    }, async (_, token) => {
-      token.onCancellationRequested(() => {
-        console.log("Cancelling the load");
-      });
-      try {
-        let criteria;
-        if (this.activeFilter) {
-          criteria = toEscapedCriteriaString(this.activeFilter, 'PROGRAM');
-        }
-        let count;
-        const cacheTokenInfo = await ProfileManagement.generateCacheToken(
-          this.parentPlex.getProfile(),
-          this.parentPlex.getPlexName(),
-          this.constant,
-          criteria,
-          this.getParent().getGroupName()
-        );
-        if (cacheTokenInfo) {
-          const recordsCount = cacheTokenInfo.recordCount;
-          if (parseInt(recordsCount, 10)) {
-            let allPrograms;
-            if (recordsCount <= 500) {
-              allPrograms = await ProfileManagement.getCachedResources(this.parentPlex.getProfile(), cacheTokenInfo.cacheToken, this.constant, 1, parseInt(recordsCount, 10));
-            } else {
-              allPrograms = await ProfileManagement.getCachedResources(this.parentPlex.getProfile(), cacheTokenInfo.cacheToken, this.constant, 1, this.incrementCount);
-              count = parseInt(recordsCount);
-            }
-            this.addProgramsUtil([], allPrograms, count);
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-            tree._onDidChangeTreeData.fire(undefined);
-          } else {
-            this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
-            tree._onDidChangeTreeData.fire(undefined);
-            window.showInformationMessage(`No programs found`);
+    await window.withProgress(
+      {
+        title: "Loading Programs",
+        location: ProgressLocation.Notification,
+        cancellable: true,
+      },
+      async (_, token) => {
+        token.onCancellationRequested(() => {
+          console.log("Cancelling the load");
+        });
+        try {
+          let criteria;
+          if (this.activeFilter) {
+            criteria = toEscapedCriteriaString(this.activeFilter, "PROGRAM");
           }
+          let count;
+          const cacheTokenInfo = await ProfileManagement.generateCacheToken(
+            this.parentPlex.getProfile(),
+            this.parentPlex.getPlexName(),
+            this.constant,
+            criteria,
+            this.getParent().getGroupName()
+          );
+          if (cacheTokenInfo) {
+            const recordsCount = cacheTokenInfo.recordCount;
+            if (parseInt(recordsCount, 10)) {
+              let allPrograms;
+              if (recordsCount <= 500) {
+                allPrograms = await ProfileManagement.getCachedResources(
+                  this.parentPlex.getProfile(),
+                  cacheTokenInfo.cacheToken,
+                  this.constant,
+                  1,
+                  parseInt(recordsCount, 10)
+                );
+              } else {
+                allPrograms = await ProfileManagement.getCachedResources(
+                  this.parentPlex.getProfile(),
+                  cacheTokenInfo.cacheToken,
+                  this.constant,
+                  1,
+                  this.incrementCount
+                );
+                count = parseInt(recordsCount);
+              }
+              this.addProgramsUtil([], allPrograms, count);
+              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              tree._onDidChangeTreeData.fire(undefined);
+            } else {
+              this.children = [];
+              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              tree._onDidChangeTreeData.fire(undefined);
+              window.showInformationMessage(`No programs found`);
+            }
+          }
+        } catch (error) {
+          window.showErrorMessage(
+            `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+              /(\\n\t|\\n|\\t)/gm,
+              " "
+            )}`
+          );
         }
-      } catch (error) {
-        window.showErrorMessage(`Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`);
       }
-    }
     );
   }
 
   public addProgramsUtil(newChildren: (CICSProgramTreeItem | ViewMore)[], allPrograms: any, count: number | undefined) {
     for (const program of allPrograms) {
       // Regions container must exist if all programs tree exists
-      const regionsContainer = this.parentPlex.children.filter(child => child instanceof CICSRegionsContainer)?.[0];
-      const parentRegion = regionsContainer.getChildren().filter(child => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0];
+      const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      const parentRegion = regionsContainer
+        .getChildren()
+        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0];
       const progamTree = new CICSProgramTreeItem(program, parentRegion as CICSRegionTree);
       progamTree.setLabel(progamTree.label.toString().replace(program.program, `${program.program} (${program.eyu_cicsname})`));
       newChildren.push(progamTree);
@@ -114,43 +132,47 @@ export class CICSCombinedProgramTree extends TreeItem {
   }
 
   public async addMoreCachedResources(tree: CICSTree) {
-    await window.withProgress({
-      title: 'Loading more programs',
-      location: ProgressLocation.Notification,
-      cancellable: false
-    }, async () => {
-      let criteria;
-      if (this.activeFilter) {
-        criteria = toEscapedCriteriaString(this.activeFilter, 'PROGRAM');
-      }
-      const cacheTokenInfo = await ProfileManagement.generateCacheToken(
-        this.parentPlex.getProfile(),
-        this.parentPlex.getPlexName(),
-        this.constant,
-        criteria,
-        this.getParent().getGroupName()
-      );
-      if (cacheTokenInfo) {
-        // record count may have updated
-        const recordsCount = cacheTokenInfo.recordCount;
-        const count = parseInt(recordsCount);
-        const allPrograms = await ProfileManagement.getCachedResources(
+    await window.withProgress(
+      {
+        title: "Loading more programs",
+        location: ProgressLocation.Notification,
+        cancellable: false,
+      },
+      async () => {
+        let criteria;
+        if (this.activeFilter) {
+          criteria = toEscapedCriteriaString(this.activeFilter, "PROGRAM");
+        }
+        const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
-          cacheTokenInfo.cacheToken,
+          this.parentPlex.getPlexName(),
           this.constant,
-          this.currentCount + 1,
-          this.incrementCount
+          criteria,
+          this.getParent().getGroupName()
         );
-        if (allPrograms) {
-          // @ts-ignore
-          this.addProgramsUtil(this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSProgramTreeItem) : [],
-            allPrograms,
-            count
+        if (cacheTokenInfo) {
+          // record count may have updated
+          const recordsCount = cacheTokenInfo.recordCount;
+          const count = parseInt(recordsCount);
+          const allPrograms = await ProfileManagement.getCachedResources(
+            this.parentPlex.getProfile(),
+            cacheTokenInfo.cacheToken,
+            this.constant,
+            this.currentCount + 1,
+            this.incrementCount
           );
-          tree._onDidChangeTreeData.fire(undefined);
+          if (allPrograms) {
+            // @ts-ignore
+            this.addProgramsUtil(
+              this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSProgramTreeItem) : [],
+              allPrograms,
+              count
+            );
+            tree._onDidChangeTreeData.fire(undefined);
+          }
         }
       }
-    });
+    );
   }
 
   public clearFilter() {
@@ -168,7 +190,7 @@ export class CICSCombinedProgramTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children ? this.children.filter(child => !(child instanceof TextTreeItem)) : [];
+    return this.children ? this.children.filter((child) => !(child instanceof TextTreeItem)) : [];
   }
 
   public getActiveFilter() {

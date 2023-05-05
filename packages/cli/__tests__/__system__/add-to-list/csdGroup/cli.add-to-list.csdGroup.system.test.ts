@@ -23,12 +23,11 @@ let password: string;
 let protocol: string;
 let rejectUnauthorized: boolean;
 describe("CICS add-to-list csdGroup command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "add_to_list_csdGroup",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -52,8 +51,7 @@ describe("CICS add-to-list csdGroup command", () => {
   });
 
   it("should get a syntax error if csdGroup name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/add_to_list_csdGroup.sh", TEST_ENVIRONMENT,
-      ["", "FAKELIST", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/add_to_list_csdGroup.sh", TEST_ENVIRONMENT, ["", "FAKELIST", "FAKERGN"]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("Missing Positional Argument");
@@ -62,8 +60,7 @@ describe("CICS add-to-list csdGroup command", () => {
   });
 
   it("should get a syntax error if list name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/add_to_list_csdGroup.sh", TEST_ENVIRONMENT,
-      ["FAKEGRP", "", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/add_to_list_csdGroup.sh", TEST_ENVIRONMENT, ["FAKEGRP", "", "FAKERGN"]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("Missing Positional Argument");

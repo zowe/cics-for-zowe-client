@@ -186,7 +186,9 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
               <div class="float-child-right">
                 <div class="bx--radio-button-group ">
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${message?.profile.rejectUnauthorized ? `checked="checked"` : ""}>
+                    <input id="radio-button-true" class="bx--radio-button" type="radio" value="true" name="radio-button" tabindex="0" ${
+  message?.profile.rejectUnauthorized ? `checked="checked"` : ""
+}>
                     <label for="radio-button-true" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">True</span>
@@ -194,7 +196,9 @@ export const addProfileHtml = (message?: IUpdateProfile) => {
                   </div>
 
                   <div class="bx--radio-button-wrapper">
-                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${!message?.profile.rejectUnauthorized ? `checked="checked""` : ""}>
+                    <input id="radio-button-false" class="bx--radio-button" type="radio" value="false" name="radio-button" tabindex="0" ${
+  !message?.profile.rejectUnauthorized ? `checked="checked""` : ""
+}>
                     <label for="radio-button-false" class="bx--radio-button__label">
                       <span class="bx--radio-button__appearance" style="background-color:white"></span>
                       <span class="bx--radio-button__label-text">False</span>

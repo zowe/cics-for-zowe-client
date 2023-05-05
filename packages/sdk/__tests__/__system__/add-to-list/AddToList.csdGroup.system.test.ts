@@ -28,10 +28,9 @@ function sleep(ms: number) {
 const sleepTime = 4000;
 
 describe("CICS AddToList csdGroup", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_add-to-list_csd-group"
+      testName: "cics_cmci_add-to-list_csd-group",
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -46,7 +45,7 @@ describe("CICS AddToList csdGroup", () => {
       port: cmciProperties.port,
       type: "basic",
       rejectUnauthorized: cmciProperties.rejectUnauthorized || false,
-      protocol: cmciProperties.protocol as any || "https",
+      protocol: (cmciProperties.protocol as any) || "https",
     });
   });
 

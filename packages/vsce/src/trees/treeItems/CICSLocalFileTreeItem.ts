@@ -23,15 +23,20 @@ export class CICSLocalFileTreeItem extends TreeItem {
     parentRegion: CICSRegionTree,
     public readonly iconPath = getIconPathInResources("local-file-dark.svg", "local-file-light.svg")
   ) {
-
     super(
       `${localFile.file} ${
-        localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Disabled) (Closed)" : 
-          localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() !== "closed" ? "(Disabled)" :
-            localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Unenabled) (Closed)" : 
-              localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() !== "closed" ? "(Unenabled)" :
-                localFile.enablestatus.toLowerCase() === "enabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Closed)" :
-                  ""}`,
+        localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() === "closed"
+          ? "(Disabled) (Closed)"
+          : localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() !== "closed"
+            ? "(Disabled)"
+            : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() === "closed"
+              ? "(Unenabled) (Closed)"
+              : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() !== "closed"
+                ? "(Unenabled)"
+                : localFile.enablestatus.toLowerCase() === "enabled" && localFile.openstatus.toLowerCase() === "closed"
+                  ? "(Closed)"
+                  : ""
+      }`,
       TreeItemCollapsibleState.None
     );
     this.localFile = localFile;
@@ -43,5 +48,4 @@ export class CICSLocalFileTreeItem extends TreeItem {
   public setLabel(newLabel: string) {
     this.label = newLabel;
   }
-  
 }
