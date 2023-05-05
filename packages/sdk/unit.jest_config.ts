@@ -9,6 +9,5 @@
  *
  */
 
-import { createConfig } from './__tests__/common.jest_config';
-
-export default createConfig("unit", "Zowe CICS SDK Unit Tests");
+import { createConfig, ConfigGlobals } from '../../common.jest_config';
+export default createConfig("unit", "Zowe CICS SDK Unit Tests") as ConfigGlobals;

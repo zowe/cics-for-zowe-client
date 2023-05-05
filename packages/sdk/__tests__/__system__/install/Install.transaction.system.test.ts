@@ -25,9 +25,7 @@ describe("CICS Install transaction", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_install_transaction",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_install_transaction"
     });
     programName = "program1";
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;

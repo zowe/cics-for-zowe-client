@@ -24,9 +24,7 @@ describe("CICS Discard transaction", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_discard_transaction",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_discard_transaction"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;

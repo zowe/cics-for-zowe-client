@@ -22,9 +22,7 @@ describe("CICS Get resource", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_get_resource",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_get_resource"
     });
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     const cmciProperties = await testEnvironment.systemTestProperties.cmci;

@@ -31,9 +31,7 @@ describe("CICS RemoveFromList csdGroup", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_remove-from-list_csd-group",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_remove-from-list_csd-group"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;

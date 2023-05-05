@@ -32,9 +32,7 @@ describe("CICS Install URImap", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_install_urimap",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_install_urimap"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;

@@ -25,9 +25,7 @@ describe("CICS Delete URImap", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_delete_urimap",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_delete_urimap"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;

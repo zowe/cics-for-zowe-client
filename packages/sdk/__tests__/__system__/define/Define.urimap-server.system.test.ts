@@ -32,9 +32,7 @@ describe("CICS Define server URImap", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_define_urimap-server",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_define_urimap-server"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     enable = false;

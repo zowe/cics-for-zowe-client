@@ -24,9 +24,7 @@ describe("CICS Delete web service", () => {
 
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
-      testName: "cics_cmci_delete_webservice",
-      installPlugin: true,
-      tempProfileTypes: ["cics"]
+      testName: "cics_cmci_delete_webservice"
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
