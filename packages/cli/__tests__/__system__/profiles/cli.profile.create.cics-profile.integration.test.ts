@@ -36,7 +36,7 @@ describe("Create cics Profile", () => {
 
   describe("Success scenarios", () => {
 
-    it("should display create cics profile help", () => {
+    fit("should display create cics profile help", () => {
 
       const scriptPath = __dirname + "/__scripts__/create_cics_profile_help.sh";
       const response = runCliScript(scriptPath, testEnvironment, args);

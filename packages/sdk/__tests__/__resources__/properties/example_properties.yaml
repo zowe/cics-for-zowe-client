@@ -20,14 +20,14 @@ zosmf:
   host: &host zosmf-host
   port: &port 443
   rejectUnauthorized: &ru false
-cmci:
+cics:
   user: *user
   password: *pass
   host: *host
   port: 1443
   rejectUnauthorized: *ru
   protocol: https
-cics:
+cmci:
   regionName: region-name
   csdGroup: CSDGROUP
 urimap:
