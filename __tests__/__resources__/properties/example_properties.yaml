@@ -15,8 +15,21 @@
 #  Connection details/credentials for z/OSMF                              #
 #-------------------------------------------------------------------------#
 zosmf:
-  user: my-user-name
-  pass: my-password
-  host: zosmf-host
-  port: zosmf-port
-  rejectUnauthorized: false
+  user: &user zosmf-user
+  password: &pass zosmf-password
+  host: &host zosmf-host
+  port: &port 443
+  rejectUnauthorized: &ru false
+cmci:
+  user: *user
+  password: *pass
+  host: *host
+  port: 1443
+  rejectUnauthorized: *ru
+  protocol: https
+cics:
+  regionName: region-name
+  csdGroup: CSDGROUP
+urimap:
+  certificate: null
+
