@@ -28,7 +28,7 @@ describe("CICS Delete URImap", () => {
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
     certificate = testEnvironment.systemTestProperties.urimap.certificate;
 
     session = new Session({

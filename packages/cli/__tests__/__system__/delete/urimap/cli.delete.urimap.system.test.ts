@@ -36,12 +36,12 @@ describe("CICS delete urimap command", () => {
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cmci.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized;
+    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
+    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
+    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
     certificate = TEST_ENVIRONMENT.systemTestProperties.urimap.certificate;
   });
 

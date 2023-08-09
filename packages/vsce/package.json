@@ -450,6 +450,7 @@
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "tsc -watch -p ./",
+    "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
     "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
     "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"

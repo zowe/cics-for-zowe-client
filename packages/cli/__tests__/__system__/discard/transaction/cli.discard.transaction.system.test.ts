@@ -35,12 +35,12 @@ describe("CICS discard transaction command", () => {
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cmci.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized;
+    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
+    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
+    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
   });
 
   afterAll(async () => {
@@ -48,7 +48,7 @@ describe("CICS discard transaction command", () => {
   });
 
   const deleteTransaction = async (transactionName: string) => {
-    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
+    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
     const session = new Session({
       type: "basic",
       hostname: cmciProperties.host,
@@ -61,8 +61,8 @@ describe("CICS discard transaction command", () => {
 
     return CicsCmciRestClient.deleteExpectParsedXml(
       session,
-      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}/${cmciProperties.regionName}` +
-        `?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}/${regionName}` +
+        `?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${csdGroup})`
     );
   };
 

@@ -36,7 +36,7 @@ describe("CICS Define pipeline URImap", () => {
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     enable = false;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
     const urimapNameSuffixLength = 4;
     urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 

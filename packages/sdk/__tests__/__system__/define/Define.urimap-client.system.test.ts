@@ -38,7 +38,7 @@ describe("CICS Define client URImap", () => {
     enable = false;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     const urimapNameSuffixLength = 4;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
     urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
     certificate = testEnvironment.systemTestProperties.urimap.certificate;
 

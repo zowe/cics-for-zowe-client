@@ -34,11 +34,11 @@ describe("CICS refresh program command", () => {
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
-    ru = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized || false;
+    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
+    ru = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized || false;
 
     session = new Session({
       user,
@@ -47,7 +47,7 @@ describe("CICS refresh program command", () => {
       port,
       type: "basic",
       rejectUnauthorized: ru,
-      protocol: (TEST_ENVIRONMENT.systemTestProperties.cmci.protocol as any) || "https",
+      protocol: (TEST_ENVIRONMENT.systemTestProperties.cics.protocol as any) || "https",
     });
   });
 
