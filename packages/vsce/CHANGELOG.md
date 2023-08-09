@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Migrated the package the CICS for Zowe Client Monorepo
+
 ## `2.3.0`
 
 - Provided the ability to view relevant programs beneath the library dataset resource [#295](https://github.com/zowe/vscode-extension-for-cics/pull/295).
