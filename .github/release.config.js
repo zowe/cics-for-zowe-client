@@ -1,7 +1,7 @@
 module.exports = {
     branches: [
         {
-            name: "master",
+            name: "main",
             level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
