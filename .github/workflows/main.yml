@@ -2,11 +2,6 @@ name: Zowe CICS Main CI
 
 on:
   push:
-    paths:
-      - packages/**
-  pull_request:
-    paths:
-      - packages/**
   workflow_dispatch:
 
 jobs:
