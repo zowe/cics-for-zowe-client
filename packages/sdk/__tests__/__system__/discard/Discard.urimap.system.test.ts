@@ -33,7 +33,6 @@ describe("CICS Discard URImap", () => {
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_discard_urimap",
-      installPlugin: true,
       tempProfileTypes: ["cics"]
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;

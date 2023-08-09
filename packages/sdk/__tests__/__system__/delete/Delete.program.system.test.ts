@@ -25,7 +25,6 @@ describe("CICS Delete program", () => {
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_delete_program",
-      installPlugin: true,
       tempProfileTypes: ["cics"]
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;

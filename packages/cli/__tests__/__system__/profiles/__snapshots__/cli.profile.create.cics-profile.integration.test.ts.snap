@@ -30,7 +30,7 @@ exports[`Create cics Profile Success scenarios should display create cics profil
    profileName		 (string)
 
       Specifies the name of the new cics profile. You can load this profile by using
-      the name on commands that support the \\"--cics-profile\\" option.
+      the name on commands that support the "--cics-profile" option.
 
  OPTIONS
  -------

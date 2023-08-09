@@ -25,7 +25,6 @@ describe("CICS Define web service", () => {
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_define_webservice",
-      installPlugin: true,
       tempProfileTypes: ["cics"]
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;

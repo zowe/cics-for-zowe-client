@@ -1,5 +1,0 @@
-{
-  "overrides": {
-    "CredentialManager": "@zowe/secrets-for-kubernetes-for-zowe-cli"
-  }
-}
