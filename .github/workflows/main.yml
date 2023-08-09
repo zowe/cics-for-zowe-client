@@ -82,3 +82,47 @@ jobs:
       with:
         name: zowe-cics-client
         path: dist/*
+
+  release:
+    if: github.event_name == 'push' && github.ref_protected
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+        ref: ${{ github.ref }}
+
+    # Use Node 16 until npm@9 bundled with Node 18 becomes more stable
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Update Dependencies
+      uses: zowe-actions/octorelease/script@v1
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
+      with:
+        script: npmUpdate
+
+    - name: Build Source
+      run: npm run build
+
+    - uses: zowe-actions/octorelease@v1
+      env:
+        GIT_COMMITTER_NAME: zowe_robot
+        GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
+        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_USERNAME: dummy
+        NPM_PASSWORD: dummy
+        NPM_EMAIL: zowe.robot@gmail.com
