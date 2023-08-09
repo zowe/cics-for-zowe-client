@@ -31,5 +31,5 @@ cmci:
   regionName: region-name
   csdGroup: CSDGROUP
 urimap:
-  certificate: null
+  certificate: " "
 

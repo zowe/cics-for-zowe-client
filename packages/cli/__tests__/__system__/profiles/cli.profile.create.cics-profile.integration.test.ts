@@ -9,7 +9,7 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment, runCliScript, isStderrEmptyForProfilesCommand } from "@zowe/cli-test-utils";
+import { ITestEnvironment, TestEnvironment, runCliScript, stripProfileDeprecationMessages } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -36,7 +36,7 @@ describe("Create cics Profile", () => {
 
   describe("Success scenarios", () => {
 
-    fit("should display create cics profile help", () => {
+    it("should display create cics profile help", () => {
 
       const scriptPath = __dirname + "/__scripts__/create_cics_profile_help.sh";
       const response = runCliScript(scriptPath, testEnvironment, args);
@@ -52,7 +52,7 @@ describe("Create cics Profile", () => {
       const response = runCliScript(scriptPath,
         testEnvironment, args);
 
-      expect(isStderrEmptyForProfilesCommand(response.stderr)).toBe(true);
+      expect(stripProfileDeprecationMessages(response.stderr)).toBe("");
       expect(response.status).toBe(0);
       expect(response.stdout.toString()).toContain("Profile created successfully");
     });
