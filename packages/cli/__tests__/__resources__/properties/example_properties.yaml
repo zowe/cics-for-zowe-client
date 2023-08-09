@@ -6,16 +6,17 @@ zosmf:
   user: &user my-user-name
   password: &pass my-password
   host: &host zosmf-host
-  port: &port zosmf-port
+  port: 443
   rejectUnauthorized: &ru false
-cmci:
+cics:
   user: *user
   password: *pass
   host: *host
-  port: cics-port
-  protocol: https
+  port: 1443
   rejectUnauthorized: *ru
-  csdGroup: cics-group
-  regionName: cics-region
+  protocol: https
+cmci:
+  regionName: region-name
+  csdGroup: CSDGROUP
 urimap:
-  certificate:
+  certificate: " "

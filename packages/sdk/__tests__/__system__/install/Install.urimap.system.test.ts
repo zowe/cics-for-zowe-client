@@ -35,7 +35,7 @@ describe("CICS Install URImap", () => {
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     certificate = testEnvironment.systemTestProperties.urimap.certificate;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
 
     session = new Session({
       user: cmciProperties.user,

@@ -24,7 +24,7 @@ describe("CICS Get resource", () => {
       testName: "cics_cmci_get_resource",
     });
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
 
     session = new Session({
       user: cmciProperties.user,

@@ -27,7 +27,7 @@ describe("CICS Define transaction", () => {
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
 
     session = new Session({
       user: cmciProperties.user,

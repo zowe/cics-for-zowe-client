@@ -36,7 +36,7 @@ describe("CICS Define server URImap", () => {
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     enable = false;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
-    const cmciProperties = await testEnvironment.systemTestProperties.cmci;
+    const cmciProperties = testEnvironment.systemTestProperties.cics;
     const urimapNameSuffixLength = 4;
     urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 

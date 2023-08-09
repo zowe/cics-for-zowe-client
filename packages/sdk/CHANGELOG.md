@@ -2,45 +2,9 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## `5.0.1`
+## Recent Changes
 
-- BugFix: Updated `xml2js` dependency to resolve security vulnerability.
-
-## `5.0.0`
-
-- Major: Updated for V2 compatibility. See the prerelease items below for more details.
-
-## `5.0.0-next.202204141925`
-
-- BugFix: Remove APIML Conn Lookup until the CICS definition for APIML is known.
-
-## `5.0.0-next.202204111400`
-
-- BugFix: Fixed daemon mode prompting
-
-## `5.0.0-next.202202071745`
-
-- BugFix: Pruned dev dependencies from npm-shrinkwrap file.
-
-## `5.0.0-next.202201261655`
-
-- BugFix: Updated dependencies to resolve security vulnerabilities.
-
-## `5.0.0-next.202201241457`
-
-- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
-
-## `5.0.0-next.202107021819`
-
-- Enhancement: Add apimlConnLookup properties to enable auto-config through APIML. A valid apiId must still be identified.
-
-## `5.0.0-next.202104261510`
-
-- Remove @zowe/cli peer dependency to better support NPM v7
-
-## `5.0.0-next.202104141723`
-
-- Publish `@next` tag that is compatible with team config profiles.
+- BugFix: Migrated the package the CICS for Zowe Client Monorepo
 
 ## `4.0.7`
 

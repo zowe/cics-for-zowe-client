@@ -34,12 +34,12 @@ describe("CICS install program command", () => {
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cmci.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cmci.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cmci.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cmci.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cmci.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cmci.rejectUnauthorized;
+    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
+    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
+    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
+    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
+    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
+    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
   });
 
   afterAll(async () => {
@@ -47,7 +47,7 @@ describe("CICS install program command", () => {
   });
 
   const deleteProgram = async (programName: string) => {
-    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
+    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
     const session = new Session({
       type: "basic",
       hostname: cmciProperties.host,
@@ -60,13 +60,13 @@ describe("CICS install program command", () => {
 
     return CicsCmciRestClient.deleteExpectParsedXml(
       session,
-      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${regionName}` +
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${csdGroup})`
     );
   };
 
   const discardProgram = async (programName: string) => {
-    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cmci;
+    const cmciProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
     const deleteSession = new Session({
       type: "basic",
       hostname: cmciProperties.host,
@@ -79,7 +79,7 @@ describe("CICS install program command", () => {
 
     return CicsCmciRestClient.deleteExpectParsedXml(
       deleteSession,
-      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSProgram/${cmciProperties.regionName}` + `?CRITERIA=(PROGRAM=${programName})`
+      `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSProgram/${regionName}` + `?CRITERIA=(PROGRAM=${programName})`
     );
   };
 

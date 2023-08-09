@@ -83,17 +83,17 @@ export class TempTestProfiles {
    */
   private static async createCicsProfile(testEnvironment: ITestEnvironment) {
     const profileName: string = "tmp_cics" + uuidv4();
-    const cmciProps = testEnvironment.systemTestProperties.cmci;
+    const cicsProps = testEnvironment.systemTestProperties.cics;
     let createProfileScript =
       TemporaryScripts.SHEBANG +
-      `${TemporaryScripts.BRIGHT_BIN} profiles create cics ${profileName} --user ${cmciProps.user} -p ` +
-      `${cmciProps.password} ` +
-      ` --host ${cmciProps.host} --port ${cmciProps.port}`;
-    if (cmciProps.protocol != null) {
-      createProfileScript += ` --protocol ${cmciProps.protocol}`;
+      `${TemporaryScripts.BRIGHT_BIN} profiles create cics ${profileName} --user ${cicsProps.user} -p ` +
+      `${cicsProps.password} ` +
+      ` --host ${cicsProps.host} --port ${cicsProps.port}`;
+    if (cicsProps.protocol != null) {
+      createProfileScript += ` --protocol ${cicsProps.protocol}`;
     }
-    if (cmciProps.rejectUnauthorized != null) {
-      createProfileScript += ` --reject-unauthorized ${cmciProps.rejectUnauthorized}`;
+    if (cicsProps.rejectUnauthorized != null) {
+      createProfileScript += ` --reject-unauthorized ${cicsProps.rejectUnauthorized}`;
     }
 
     const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
