@@ -57,6 +57,7 @@ jobs:
       id: npm-update
       uses: zowe-actions/octorelease/script@v1
       with:
+        config-dir: .github
         script: npmUpdate
 
     - name: Build Source
@@ -119,6 +120,7 @@ jobs:
         GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
         NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
       with:
+        config-dir: .github
         script: npmUpdate
 
     - name: Build Source
