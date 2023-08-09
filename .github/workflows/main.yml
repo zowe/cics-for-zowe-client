@@ -2,6 +2,12 @@ name: Zowe CICS Main CI
 
 on:
   push:
+    paths:
+      - .github/**
+      - packages/**
+  pull_request:
+    paths:
+      - packages/**
   workflow_dispatch:
 
 jobs:
@@ -14,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         os: [ubuntu-latest]
         # node-version: [16.x, 18.x]
         # os: [windows-latest, ubuntu-latest, macos-latest]
@@ -46,6 +52,12 @@ jobs:
 
     - name: Install Dependencies
       run: npm ci
+
+    - name: Update Dependencies
+      id: npm-update
+      uses: zowe-actions/octorelease/script@v1
+      with:
+        script: npmUpdate
 
     - name: Build Source
       id: build
@@ -103,8 +115,8 @@ jobs:
     - name: Update Dependencies
       uses: zowe-actions/octorelease/script@v1
       env:
-        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
-        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        GIT_COMMITTER_NAME: zowe_robot
+        GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
         NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
       with:
         script: npmUpdate
