@@ -2,7 +2,7 @@
   "version": "5.0.2",
   "command": {
     "version": {
-      "ignoreChanges": ["packages/vsce"],
+      "ignoreChanges": ["packages/vsce/**"],
       "private": true
     }
   },
