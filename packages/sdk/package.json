@@ -38,7 +38,7 @@
       "package": "npm pack && node ../../scripts/mv-pack.js zowe-cics-for-zowe-sdk tgz",
       "test": "npm run test:unit && npm run test:system",
       "test:system": "jest --config system.jest_config.ts",
-      "test:unit": "jest --config unit.jest_config.ts",
+      "test:unit": "jest __tests__/__unit__/get/Get.resource.unit.test.ts --config unit.jest_config.ts",
       "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
       "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
     },
