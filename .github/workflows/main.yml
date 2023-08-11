@@ -135,6 +135,8 @@ jobs:
         NPM_USERNAME: dummy
         NPM_PASSWORD: dummy
         NPM_EMAIL: zowe.robot@gmail.com
+      with:
+        config-dir: .github
     # - uses: zowe-actions/octorelease@v1
     #   env:
     #     GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
@@ -144,3 +146,5 @@ jobs:
     #     NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
     #     NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
     #     NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+    #   with:
+    #     config-dir: .github
