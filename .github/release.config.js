@@ -3,7 +3,7 @@ module.exports = {
         {
             name: "main",
             channel: "latest",
-            level: "minor",
+            // level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": "zowe-v2-lts",
@@ -44,7 +44,7 @@ module.exports = {
         [
             "@octorelease/lerna",
             {
-                pruneShrinkwrap: ["@zowe/cli"],
+                pruneShrinkwrap: ["@zowe/cics-for-zowe-cli"],
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
             },

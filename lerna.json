@@ -1,7 +1,8 @@
 {
-  "version": "independent",
+  "version": "5.0.2",
   "command": {
     "version": {
+      "ignoreChanges": ["packages/vsce"],
       "private": true
     }
   },
