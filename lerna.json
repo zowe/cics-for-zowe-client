@@ -2,7 +2,6 @@
   "version": "5.0.1-SNAPSHOT",
   "command": {
     "version": {
-      "forcePublish": true,
       "ignoreChanges": ["packages/vsce"],
       "private": true
     }
