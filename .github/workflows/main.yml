@@ -92,7 +92,7 @@ jobs:
         path: dist/*
 
   release:
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: test
     runs-on: ubuntu-latest
 
