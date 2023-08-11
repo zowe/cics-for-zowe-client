@@ -1,7 +1,7 @@
 module.exports = {
     branches: [
         {
-            name: "main",
+            name: "test",
             channel: "latest",
             // level: "minor",
             devDependencies: {
