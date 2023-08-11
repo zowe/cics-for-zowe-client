@@ -3,6 +3,7 @@
   "command": {
     "version": {
       "forcePublish": true,
+      "ignoreChanges": ["packages/vsce"],
       "private": true
     }
   },

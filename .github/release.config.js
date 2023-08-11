@@ -44,6 +44,7 @@ module.exports = {
         [
             "@octorelease/lerna",
             {
+                pruneShrinkwrap: ["@zowe/cli"],
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
             },
