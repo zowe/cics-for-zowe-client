@@ -42,8 +42,9 @@ getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
 .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
 .then(() => console.log(chalk.green("Lockfile contents written!")))
 .catch((err) => {
-  // console.error(err);
+  console.error(err);
   if (err.statusCode !== 404) {
+    // Avoid 404 on missing packages (most likely the CICS SDK)
     process.exit(1);
   }
 });
@@ -52,10 +53,13 @@ const rootDir = __dirname + "/../";
 const pkgA = rootDir + "package.json";
 const pkgB = rootDir + "package.json_";
 try {
+  // Mimic non-workspaces monorepo
   fs.renameSync(pkgA, pkgB);
-  cp.execSync("npm i ../sdk", {cwd: cliDir});
+
+  cp.execSync("npm i ../sdk --no-save", {cwd: cliDir});
   cp.execSync("npm shrinkwrap", {cwd: cliDir});
   cp
 } finally{
+  // revert back to workspaces monorepo
   fs.renameSync(pkgB, pkgA);
 }
