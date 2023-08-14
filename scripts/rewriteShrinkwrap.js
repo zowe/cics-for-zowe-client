@@ -10,12 +10,14 @@
 */
 
 const fs = require("fs");
+const cp = require("child_process");
 const chalk = require("chalk");
 const getLockfile = require("npm-lockfile/getLockfile");
 
 const rootPackageLockFile = __dirname + "/../package-lock.json";
 const rootShrinkwrapFile = __dirname + "/../npm-shrinkwrap.json";
-const cliShrinkwrapFile = __dirname + "/../packages/cli/npm-shrinkwrap.json";
+const cliDir = __dirname + "/../packages/cli";
+const cliShrinkwrapFile = cliDir + "/npm-shrinkwrap.json";
 
 if (!fs.existsSync(rootShrinkwrapFile)) {
   if (fs.existsSync(rootPackageLockFile)) {
@@ -37,11 +39,23 @@ fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 // Build deduped shrinkwrap for @zowe/cics-for-zowe-cli
 const zoweRegistry = require("../lerna.json").command.publish.registry;
 getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
-    .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
-    .then(() => console.log(chalk.green("Lockfile contents written!")))
-    .catch((err) => {
-      console.error(err);
-      if (err.statusCode !== 404) {
-        process.exit(1);
-      }
-    });
+.then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
+.then(() => console.log(chalk.green("Lockfile contents written!")))
+.catch((err) => {
+  // console.error(err);
+  if (err.statusCode !== 404) {
+    process.exit(1);
+  }
+});
+
+const rootDir = __dirname + "/../";
+const pkgA = rootDir + "package.json";
+const pkgB = rootDir + "package.json_";
+try {
+  fs.renameSync(pkgA, pkgB);
+  cp.execSync("npm i ../sdk", {cwd: cliDir});
+  cp.execSync("npm shrinkwrap", {cwd: cliDir});
+  cp
+} finally{
+  fs.renameSync(pkgB, pkgA);
+}
