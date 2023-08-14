@@ -34,9 +34,14 @@ for (const [k, v] of Object.entries(shrinkwrap.packages)) {
 }
 fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
-// Build deduped shrinkwrap for @zowe/cli
+// Build deduped shrinkwrap for @zowe/cics-for-zowe-cli
 const zoweRegistry = require("../lerna.json").command.publish.registry;
 getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
     .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
     .then(() => console.log(chalk.green("Lockfile contents written!")))
-    .catch((err) => { console.error(err); process.exit(1); });
+    .catch((err) => {
+      console.error(err);
+      if (err.statusCode !== 404) {
+        process.exit(1);
+      }
+    });
