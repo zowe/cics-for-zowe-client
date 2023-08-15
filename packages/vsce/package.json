@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "2.3.0",
+  "version": "5.0.2",
   "engines": {
     "vscode": "^1.53.2"
   },
@@ -885,13 +885,13 @@
     "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
   },
   "devDependencies": {
-    "@zowe/cli": "^7.18.0",
     "@types/vscode": "~1.53.0",
+    "@zowe/cli": "^7.18.0",
     "vsce": "^2.15.0"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-sdk": "5.0.1-SNAPSHOT",
+    "@zowe/cics-for-zowe-sdk": "5.0.2",
     "@zowe/imperative": "^5.18.0",
     "@zowe/zowe-explorer-api": "^2.9.2",
     "axios": "^0.21.4",

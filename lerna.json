@@ -2,7 +2,9 @@
   "version": "5.0.2",
   "command": {
     "publish": {
-      "ignoreChanges": [ "packages/vsce/**" ],
+      "ignoreChanges": [
+        "packages/vsce/**"
+      ],
       "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
     }
   },

@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 
-## Recent Changes
+## `5.0.2`
 
 - BugFix: Migrated the package the CICS for Zowe Client Monorepo
 
