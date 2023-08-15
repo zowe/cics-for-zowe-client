@@ -1,5 +1,5 @@
 {
-    "name": "cics-for-zowe-client",
+    "name": "@zowe/cics-for-zowe-cli",
     "private": true,
     "scripts": {
         "build": "turbo build",
