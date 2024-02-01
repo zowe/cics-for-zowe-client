@@ -20,10 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x]
-        os: [ubuntu-latest]
-        # node-version: [16.x, 18.x]
-        # os: [windows-latest, ubuntu-latest, macos-latest]
+        node-version: [16.x, 18.x, 20.x]
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
       OS: ${{ matrix.os }}
@@ -68,17 +66,17 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit
 
-    # - name: Archive Results
-    #   if: ${{ always() && steps.build.outcome == 'success' }}
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: ${{ matrix.os }}-${{ matrix.node-version }}-results
-    #     path: packages/*/__tests__/__results__/
+    - name: Archive Results
+      if: ${{ always() && steps.build.outcome == 'success' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.os }}-${{ matrix.node-version }}-results
+        path: packages/*/__tests__/__results__/
 
-    # - name: Upload Results to Codecov
-    #   uses: codecov/codecov-action@v3
-    #   with:
-    #     env_vars: OS,NODE
+    - name: Upload Results to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        env_vars: OS,NODE
 
     # - name: Bundle all packages
     #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
@@ -92,7 +90,7 @@ jobs:
     #     path: dist/*
 
   release:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
 
