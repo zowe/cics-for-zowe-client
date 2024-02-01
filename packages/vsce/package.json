@@ -880,13 +880,13 @@
     "clean": "rimraf lib && rimraf dist",
     "watch": "tsc -watch -p ./",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
-    "test:unit": "jest --config unit.jest_config.ts",
+    "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
-    "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "tsupDep": "node ./scripts/tsup-deps.js",
+    "package": "npm run tsupDep -- add && vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix && npm run tsupDep"
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
-    "@zowe/cli": "^7.18.0",
     "vsce": "^2.15.0"
   },
   "dependencies": {
