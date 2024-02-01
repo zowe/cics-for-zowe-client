@@ -48,13 +48,13 @@ jobs:
         echo "::remove-matcher owner=eslint-compact::"
         echo "::remove-matcher owner=eslint-stylish::"
 
-    - name: Install turbo based on the OS
-      run: |
-        os_name="${{ matrix.os }}"
-        os_name="${os_name/windows-latest/windows}"
-        os_name="${os_name/ubuntu-latest/linux}"
-        os_name="${os_name/macos-latest/darwin}"
-        npm i "turbo-${os_name}-64"
+    # - name: Install turbo based on the OS
+    #   run: |
+    #     os_name="${{ matrix.os }}"
+    #     os_name="${os_name/windows-latest/windows}"
+    #     os_name="${os_name/ubuntu-latest/linux}"
+    #     os_name="${os_name/macos-latest/darwin}"
+    #     npm i "turbo-${os_name}-64"
 
     - name: Install Dependencies
       run: npm ci
