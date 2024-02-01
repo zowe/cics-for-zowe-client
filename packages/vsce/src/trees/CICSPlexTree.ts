@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { IProfileLoaded } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
@@ -26,7 +26,6 @@ import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTC
 import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
 import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
-import { CICSPipelineTree } from "./treeItems/web/CICSPipelineTree";
 
 export class CICSPlexTree extends TreeItem {
   children: (
@@ -43,13 +42,13 @@ export class CICSPlexTree extends TreeItem {
     | CICSCombinedWebServiceTree
   )[] = [];
   plexName: string;
-  profile: IProfileLoaded;
+  profile: imperative.IProfileLoaded;
   parent: CICSSessionTree;
   resourceFilters: any;
   activeFilter: string | undefined;
   groupName: string | undefined;
 
-  constructor(plexName: string, profile: IProfileLoaded, sessionTree: CICSSessionTree, group?: string) {
+  constructor(plexName: string, profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree, group?: string) {
     super(plexName, TreeItemCollapsibleState.Collapsed);
     this.plexName = plexName;
     this.profile = profile;

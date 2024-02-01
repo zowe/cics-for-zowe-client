@@ -1,9 +1,11 @@
 {
-  "version": "5.0.1-SNAPSHOT",
+  "version": "5.0.2",
   "command": {
-    "version": {
-      "forcePublish": true,
-      "private": true
+    "publish": {
+      "ignoreChanges": [
+        "packages/vsce/**"
+      ],
+      "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
     }
   },
   "useWorkspaces": true

@@ -9,11 +9,10 @@
  *
  */
 
-import { ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { join } from "path";
 import { CICSTree } from "../trees/CICSTree";
 import { window } from "vscode";
-import { IProfileLoaded } from "@zowe/imperative";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
   const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
@@ -33,7 +32,7 @@ export function getIconPathInResources(iconFileNameLight: string, iconFileNameDa
   };
 }
 
-export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<IProfileLoaded> {
+export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {
   //   requireKeytar: () => getSecurityModules("keytar", isTheia())!,
   // });

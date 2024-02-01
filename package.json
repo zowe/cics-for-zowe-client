@@ -1,6 +1,5 @@
 {
-    "name": "cics-for-zowe-client",
-    "version": "5.0.1-SNAPSHOT",
+    "name": "@zowe/cics_monorepo",
     "private": true,
     "scripts": {
         "build": "turbo build",
@@ -17,11 +16,6 @@
     "workspaces": [
         "./packages/*"
     ],
-    "engines": {
-        "npm": ">=8.19.3",
-        "node": ">=16.19.0"
-    },
-    "packageManager": "npm@8.19.3",
     "devDependencies": {
         "@types/glob": "^7.2.0",
         "@types/jest": "^29.5.0",
@@ -32,14 +26,15 @@
         "@types/yargs": "^17.0.24",
         "@typescript-eslint/eslint-plugin": "^5.57.1",
         "@typescript-eslint/parser": "^5.57.1",
-        "@zowe/imperative": "^5.12.0",
         "@zowe/cli-test-utils": "^7.13.0",
+        "@zowe/imperative": "^5.22.0",
+        "@zowe/zowe-explorer-api": "^2.14.0",
         "chalk": "^4.1.2",
         "eslint": "^8.37.0",
         "eslint-config-prettier": "^8.6.0",
-        "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-jest": "^27.2.1",
         "eslint-plugin-license-header": "^0.6.0",
+        "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-unused-imports": "^2.0.0",
         "glob": "^10.2.2",
         "husky": "^8.0.3",
@@ -51,9 +46,12 @@
         "jest-junit": "^15.0.0",
         "jest-stare": "^2.5.0",
         "js-yaml": "^4.1.0",
+        "lerna": "^6.6.2",
         "madge": "^6.0.0",
+        "npm-lockfile": "^3.0.7",
         "prettier": "2.6.0",
         "rimraf": "^4.4.1",
+        "syncpack": "^8.5.14",
         "terser": "^5.16.8",
         "ts-jest": "^29.1.0",
         "ts-node": "^10.9.1",

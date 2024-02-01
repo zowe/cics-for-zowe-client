@@ -1,51 +1,51 @@
 {
-    "name": "@zowe/cics-for-zowe-sdk",
-    "version": "5.0.1-SNAPSHOT",
-    "author": "Zowe",
-    "license": "EPL-2.0",
-    "description": "IBM CICS for Zowe SDK",
-    "homepage": "https://github.com/zowe/cics-for-zowe-client/blob/main/packages/sdk/README.md",
-    "bugs": {
-      "url": "https://github.com/zowe/cics-for-zowe-client/issues"
-    },
-    "keywords": [
-      "zowe",
-      "sdk",
-      "cics"
-    ],
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/zowe/cics-for-zowe-client.git"
-    },
-    "main": "lib/index.js",
-    "files": [
-      "lib"
-    ],
-    "publishConfig": {
-      "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-    },
-    "scripts": {
-      "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
-      "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-      "madge": "madge -c lib",
-      "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
-      "clean": "rimraf lib",
-      "watch": "tsc --pretty --watch",
-      "prepublishOnly": "npm run build",
-      "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
-      "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
-      "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-      "package": "npm pack && node ../../scripts/mv-pack.js zowe-cics-for-zowe-sdk tgz",
-      "test": "npm run test:unit && npm run test:system",
-      "test:system": "jest --config system.jest_config.ts",
-      "test:unit": "jest --config unit.jest_config.ts",
-      "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
-      "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
-    },
-    "dependencies": {
-      "xml2js": "0.5.0"
-    },
-    "peerDependencies": {
-      "@zowe/imperative": "^5.0.0"
-    }
+  "name": "@zowe/cics-for-zowe-sdk",
+  "version": "5.0.2",
+  "author": "Zowe",
+  "license": "EPL-2.0",
+  "description": "IBM CICS for Zowe SDK",
+  "homepage": "https://github.com/zowe/cics-for-zowe-client/blob/main/packages/sdk/README.md",
+  "bugs": {
+    "url": "https://github.com/zowe/cics-for-zowe-client/issues"
+  },
+  "keywords": [
+    "zowe",
+    "sdk",
+    "cics"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/cics-for-zowe-client.git"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "scripts": {
+    "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
+    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
+    "madge": "madge -c lib",
+    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "clean": "rimraf lib",
+    "watch": "tsc --pretty --watch",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
+    "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
+    "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
+    "package": "npm pack --pack-destination=../../dist",
+    "test": "npm run test:unit && npm run test:system",
+    "test:system": "jest --config system.jest_config.ts",
+    "test:unit": "jest --config unit.jest_config.ts",
+    "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
+    "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
+  },
+  "dependencies": {
+    "xml2js": "0.5.0"
+  },
+  "peerDependencies": {
+    "@zowe/imperative": "^5.0.0"
   }
+}

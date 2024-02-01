@@ -9,9 +9,9 @@
  *
  */
 
-import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 
-const cicsProfileMeta: ICommandProfileTypeConfiguration[] = [
+const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
   {
     type: "cics",
     schema: {

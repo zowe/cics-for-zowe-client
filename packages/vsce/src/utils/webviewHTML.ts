@@ -9,7 +9,7 @@
  *
  */
 
-import { IUpdateProfile } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 
 /**
  * Used for both Update and Create webviews. 'message' parameter is passed in when
@@ -17,7 +17,7 @@ import { IUpdateProfile } from "@zowe/imperative";
  * @param message
  * @returns
  */
-export const addProfileHtml = (message?: IUpdateProfile): string => {
+export const addProfileHtml = (message?: imperative.IUpdateProfile): string => {
   return `<!DOCTYPE html>
   <html lang="en">
     <head>

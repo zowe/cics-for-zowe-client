@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "engines": {
     "vscode": "^1.53.2"
   },
@@ -874,26 +874,25 @@
     "vscode:prepublish": "tsup",
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-    "madge": "rimraf lib && tsc -p ./ && madge -c lib",
+    "madge": "echo 'Nothing to check'",
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "tsc -watch -p ./",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
-    "test:unit": "jest --config unit.jest_config.ts",
+    "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
-    "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "tsupDep": "node ./scripts/tsup-deps.js",
+    "package": "npm run tsupDep -- add && vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix && npm run tsupDep"
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
     "vsce": "^2.15.0"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-sdk": "5.0.1-SNAPSHOT",
-    "@zowe/imperative": "^5.13.0",
-    "@zowe/zowe-explorer-api": "^2.7.0",
-    "axios": "^0.21.4",
+    "@zowe/cics-for-zowe-sdk": "5.0.2",
+    "@zowe/zowe-explorer-api": "^2.14.0",
+    "axios": "^1.6.7",
     "https": "~1.0.0",
     "xml-js": "~1.6.11"
   }

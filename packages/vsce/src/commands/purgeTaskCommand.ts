@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { AbstractSession } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
@@ -135,7 +135,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
  * @returns
  */
 async function purgeTask(
-  session: AbstractSession,
+  session: imperative.AbstractSession,
   parms: { name: string; regionName: string; cicsPlex: string },
   purgeType: string
 ): Promise<ICMCIApiResponse> {
