@@ -13,11 +13,13 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ["src/extension.ts"],
-  splitting: false,
+  // splitting: false,
   sourcemap: true,
   clean: true,
   format: "cjs",
+  skipNodeModulesBundle: false,
   dts: true,
   external: ["vscode"],
+  noExternal: ["@zowe/cics-for-zowe-sdk", "@zowe/zowe-explorer-api", "axios", "xml-js"],
   minify: "terser"
 });

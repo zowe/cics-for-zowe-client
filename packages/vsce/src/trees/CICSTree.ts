@@ -10,7 +10,6 @@
  */
 
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { BaseAuthHandler, IProfileLoaded, IUpdateProfile, Session } from "@zowe/imperative";
 import {
   Event,
   EventEmitter,
@@ -18,7 +17,6 @@ import {
   ProviderResult,
   TreeDataProvider,
   TreeItem,
-  TreeItemCollapsibleState,
   WebviewPanel,
   window,
 } from "vscode";
@@ -31,7 +29,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import * as https from "https";
 import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
-import { Gui } from "@zowe/zowe-explorer-api";
+import { Gui, imperative } from "@zowe/zowe-explorer-api";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -160,7 +158,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * to replace position of current CICSSessionTree.
    * @param sessionTree current CICSSessionTree only passed in if expanding a profile
    */
-  async loadProfile(profile?: IProfileLoaded, position?: number | undefined, sessionTree?: CICSSessionTree) {
+  async loadProfile(profile?: imperative.IProfileLoaded, position?: number | undefined, sessionTree?: CICSSessionTree) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
     let newSessionTree: CICSSessionTree;
@@ -215,7 +213,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           for (const item of plexInfo) {
             // No plex
             if (item.plexname === null) {
-              const session = new Session({
+              const session = new imperative.Session({
                 type: "basic",
                 hostname: profile.profile.host,
                 port: Number(profile.profile.port),
@@ -512,7 +510,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     }
   }
 
-  async removeSession(session: CICSSessionTree, profile?: IProfileLoaded, position?: number) {
+  async removeSession(session: CICSSessionTree, profile?: imperative.IProfileLoaded, position?: number) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.removeLoadedCICSProfile(session.label.toString());
     this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
@@ -591,7 +589,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     await this.updateSessionHelper(session, message);
   }
 
-  async updateSessionHelper(session: CICSSessionTree, messageToUpdate?: IUpdateProfile) {
+  async updateSessionHelper(session: CICSSessionTree, messageToUpdate?: imperative.IUpdateProfile) {
     const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
     const panel: WebviewPanel = window.createWebviewPanel("zowe", `Update CICS Profile`, column || 1, { enableScripts: true });
     panel.webview.html = addProfileHtml(messageToUpdate);

@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestClient } from "@zowe/cics-for-zowe-sdk";
-import { AbstractSession } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
@@ -116,7 +116,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
   });
 }
 
-async function performPhaseIn(session: AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string }) {
+async function performPhaseIn(session: imperative.AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string }) {
   const requestBody: any = {
     request: {
       action: {

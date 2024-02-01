@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { AbstractSession } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
@@ -111,7 +111,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
 }
 
 async function disableTransaction(
-  session: AbstractSession,
+  session: imperative.AbstractSession,
   parms: { name: string; regionName: string; cicsPlex: string }
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {

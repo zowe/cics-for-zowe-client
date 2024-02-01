@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+
 ## `5.0.2`
 
 - BugFix: Migrated the package the CICS for Zowe Client Monorepo

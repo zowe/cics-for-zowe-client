@@ -2,6 +2,9 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
 
 ## `5.0.2`
 

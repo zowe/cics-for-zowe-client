@@ -9,8 +9,7 @@
  *
  */
 
-import { IDeleteProfile, IProfileLoaded, IProfileUpdated, ISaveProfile, IUpdateProfile, ProfileInfo } from "@zowe/imperative";
-import { ProfilesCache, ZoweExplorerApi, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { ProfilesCache, ZoweExplorerApi, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
@@ -49,23 +48,23 @@ export class ProfileManagement {
     await ProfileManagement.getProfilesCache().refresh(apiRegiser);
   }
 
-  public static async createNewProfile(formResponse: ISaveProfile) {
+  public static async createNewProfile(formResponse: imperative.ISaveProfile) {
     await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.save(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
-  public static async updateProfile(formResponse: IUpdateProfile) {
-    const profile: IProfileUpdated = await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.update(formResponse);
+  public static async updateProfile(formResponse: imperative.IUpdateProfile) {
+    const profile: imperative.IProfileUpdated = await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.update(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
     return profile;
   }
 
-  public static async deleteProfile(formResponse: IDeleteProfile) {
+  public static async deleteProfile(formResponse: imperative.IDeleteProfile) {
     await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.delete(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
-  public static async getConfigInstance(): Promise<ProfileInfo> {
+  public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
     const mProfileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
     return mProfileInfo;
   }
@@ -90,7 +89,7 @@ export class ProfileManagement {
    * @param profile
    * @returns Array of type InfoLoaded
    */
-  public static async getPlexInfo(profile: IProfileLoaded): Promise<InfoLoaded[]> {
+  public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
     const config: AxiosRequestConfig = {
       baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
       auth: {
@@ -282,7 +281,7 @@ export class ProfileManagement {
     }
   }
 
-  public static async generateCacheToken(profile: IProfileLoaded, plexName: string, resourceName: string, criteria?: string, group?: string) {
+  public static async generateCacheToken(profile: imperative.IProfileLoaded, plexName: string, resourceName: string, criteria?: string, group?: string) {
     try {
       const config: AxiosRequestConfig = {
         baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
@@ -313,7 +312,7 @@ export class ProfileManagement {
     }
   }
 
-  public static async getCachedResources(profile: IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
+  public static async getCachedResources(profile: imperative.IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
     try {
       const config: AxiosRequestConfig = {
         baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
