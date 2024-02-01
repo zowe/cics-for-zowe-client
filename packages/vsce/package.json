@@ -883,7 +883,7 @@
     "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
-    "package": "npm run tsupDep -- add && vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix && npm run tsupDep"
+    "package": "npm run tsupDep -- add && vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix && npm run tsupDep"
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
