@@ -80,16 +80,16 @@ jobs:
     #   with:
     #     env_vars: OS,NODE
 
-    - name: Bundle all packages
-      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-      run: npm i -g vsce && npm run package
+    # - name: Bundle all packages
+    #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
+    #   run: npm i -g vsce && npm run package
 
-    - name: Archive all packages
-      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-      uses: actions/upload-artifact@v3
-      with:
-        name: zowe-cics-client
-        path: dist/*
+    # - name: Archive all packages
+    #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: zowe-cics-client
+    #     path: dist/*
 
   release:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
