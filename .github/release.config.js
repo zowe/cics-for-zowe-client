@@ -47,6 +47,7 @@ module.exports = {
                 pruneShrinkwrap: ["@zowe/cics-for-zowe-cli"],
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
+                versionIndependent: ["cics-extension-for-zowe"]
             },
         ],
         [
@@ -81,6 +82,7 @@ module.exports = {
             "@octorelease/github",
             {
                 assets: ["dist/*.tgz", "dist/*.vsix"],
+                checkPrLabels: true,
                 draftRelease: true,
             },
         ],
