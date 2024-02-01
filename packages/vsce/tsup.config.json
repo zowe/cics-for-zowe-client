@@ -10,6 +10,6 @@
   "external": [
     "vscode"
   ],
-  "noExternal": [],
-  "minify": "terser"
+  "minify": "terser",
+  "noExternal": []
 }
