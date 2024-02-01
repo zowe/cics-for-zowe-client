@@ -3,7 +3,7 @@ module.exports = {
         {
             name: "main",
             channel: "latest",
-            // level: "minor",
+            level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": "zowe-v2-lts",
