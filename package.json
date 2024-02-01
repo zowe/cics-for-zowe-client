@@ -1,5 +1,5 @@
 {
-    "name": "@zowe/cics-for-zowe-cli",
+    "name": "@zowe/cics_monorepo",
     "private": true,
     "scripts": {
         "build": "turbo build",

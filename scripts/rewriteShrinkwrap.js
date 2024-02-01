@@ -10,7 +10,7 @@
 */
 
 const fs = require("fs");
-// const cp = require("child_process");
+const cp = require("child_process");
 const chalk = require("chalk");
 const getLockfile = require("npm-lockfile/getLockfile");
 
@@ -51,20 +51,31 @@ getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
   }
 });
 
-// const pkgA = rootDir + "package.json";
-// const pkgB = rootDir + "package.json_";
-// try {
-//   // Mimic non-workspaces monorepo
-//   fs.renameSync(pkgA, pkgB);
+const pkgA = rootDir + "package.json";
+const pkgB = rootDir + "package.json_";
+try {
+  // Mimic non-workspaces monorepo
+  fs.renameSync(pkgA, pkgB);
 
-//   cp.execSync("npm shrinkwrap", {cwd: cliDir});
+  cp.execSync("npm shrinkwrap", {cwd: cliDir});
 
-//   const shrinkwrap = JSON.parse(fs.readFileSync(cliShrinkwrapFile, "utf-8"));
-//   shrinkwrap.lockfileVersion = 2;
-//   fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
+  const shrinkwrap = JSON.parse(fs.readFileSync(cliShrinkwrapFile, "utf-8"));
+  shrinkwrap.lockfileVersion = 2;
+  for (const [k, v] of Object.entries(shrinkwrap.packages)) {
+    if (v.link || v.extraneous || k === "../sdk") {
+        delete shrinkwrap.packages[k];
+    }
+  }
+  for (const [k, v] of Object.entries(shrinkwrap?.dependencies ?? [])) {
+    if (v.link || v.extraneous || k === "../sdk") {
+        delete shrinkwrap.dependencies[k];
+    }
+  }
+  fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
-//   cp.execSync("npm i ../sdk --install-links --package-lock-only", {cwd: cliDir});
-// } finally{
-//   // revert back to workspaces monorepo
-//   fs.renameSync(pkgB, pkgA);
-// }
+  // cp.execSync(`sed -i 's#file:../sdk#${require("../lerna.json").version}#g' npm-shrinkwrap.json`, {cwd: cliDir});
+  // cp.execSync("npm i ../sdk --install-links --package-lock-only", {cwd: cliDir});
+} finally {
+  // revert back to workspaces monorepo
+  fs.renameSync(pkgB, pkgA);
+}

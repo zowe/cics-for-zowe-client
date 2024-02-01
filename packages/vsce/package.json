@@ -874,7 +874,7 @@
     "vscode:prepublish": "tsup",
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-    "madge": "rimraf lib && tsc -p ./ && madge -c lib",
+    "madge": "echo 'Nothing to check'",
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",

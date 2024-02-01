@@ -55,7 +55,7 @@ export class ProfileManagement {
   }
 
   public static async updateProfile(formResponse: IUpdateProfile) {
-    const profile = await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.update(formResponse);
+    const profile: IProfileUpdated = await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.update(formResponse);
     await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
     return profile;
   }

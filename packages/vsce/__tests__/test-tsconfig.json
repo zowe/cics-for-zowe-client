@@ -5,8 +5,8 @@
   ],
   "exclude": [
     "lib",
-    "__results__/",
-    "__snapshots__",
-    "node_modules"
+    "**/__results__/",
+    "**/__snapshots__",
+    "**/node_modules"
   ]
 }
