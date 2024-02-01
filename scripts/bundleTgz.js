@@ -10,7 +10,8 @@
 */
 
 const childProcess = require("child_process");
-const fs = require("fs-extra");
+const fsE = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 
 // Workaround for https://github.com/npm/cli/issues/3466
@@ -18,32 +19,36 @@ process.chdir(__dirname + "/..");
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
-fs.mkdirpSync("dist");
-fs.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
-fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
+fsE.mkdirpSync("dist");
+if(fs.existsSync(path.join(cliPkgDir, "node_modules"))) {
+    fsE.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
+}
+fsE.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 
 try {
     // Install node_modules directly inside packages/cli
     execCmd("npm run preshrinkwrap");
     execCmd("npm install --ignore-scripts --workspaces=false --force");
-    for (const zowePkgDir of fs.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
+    for (const zowePkgDir of fsE.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
         const destDir = path.join(cliPkgDir, srcDir);
-        fs.rmSync(destDir, { recursive: true, force: true });
-        fs.copySync(fs.realpathSync(srcDir), destDir);
+        fsE.rmSync(destDir, { recursive: true, force: true });
+        fsE.copySync(fsE.realpathSync(srcDir), destDir);
     }
 
     // Define bundled dependencies in package.json and package the TGZ
-    const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
+    const pkgJson = JSON.parse(fsE.readFileSync(pkgJsonFile, "utf-8"));
     pkgJson.bundledDependencies = [
         ...Object.keys(pkgJson.dependencies),
         ...Object.keys(pkgJson.optionalDependencies ?? {})
     ];
-    fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2));
+    fsE.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2));
     execCmd("npm pack --pack-destination=../../dist");
 } finally {
-    fs.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });
-    fs.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
+    fsE.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });
+    if(fs.existsSync(path.join(cliPkgDir, "node_modules_old"))) {
+        fsE.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
+    }
     // fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
-    fs.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
+    fsE.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
 }

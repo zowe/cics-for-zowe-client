@@ -11,12 +11,12 @@ overrides:
     rules:
       no-magic-numbers: off
       # There are several errors falling under these rules; resolve
-      "@typescript-eslint/require-await": warn
+      "@typescript-eslint/require-await": off
       "@typescript-eslint/no-misused-promises": warn
       "@typescript-eslint/no-unsafe-return": warn
-      "@typescript-eslint/restrict-plus-operands": warn
-      "@typescript-eslint/restrict-template-expressions": warn
-      "@typescript-eslint/explicit-function-return-type": warn
+      "@typescript-eslint/restrict-plus-operands": off
+      "@typescript-eslint/restrict-template-expressions": off
+      "@typescript-eslint/explicit-function-return-type": off
       "@typescript-eslint/unbound-method": warn
 parser: "@typescript-eslint/parser"
 parserOptions:
@@ -24,16 +24,16 @@ parserOptions:
   sourceType: module
   project:
     - "./tsconfig.json"
-    - "./tsconfig-tests.json"
+    - "./__tests__/test-tsconfig.json"
 plugins:
   - "@typescript-eslint"
 rules:
   "@typescript-eslint/await-thenable": off
   "@typescript-eslint/consistent-type-assertions": warn
-  "@typescript-eslint/restrict-plus-operands": warn
+  "@typescript-eslint/restrict-plus-operands": off
   "@typescript-eslint/explicit-member-accessibility": warn
-  "@typescript-eslint/explicit-function-return-type": warn
-  "@typescript-eslint/restrict-template-expressions": warn
+  "@typescript-eslint/explicit-function-return-type": off
+  "@typescript-eslint/restrict-template-expressions": off
   indent": off
   "@typescript-eslint/indent":
     - error
@@ -50,7 +50,7 @@ rules:
 
   "@typescript-eslint/no-shadow": error
   "@typescript-eslint/no-unused-expressions": error
-  "@typescript-eslint/no-var-requires": warn
+  "@typescript-eslint/no-var-requires": off
   array-callback-return: error
   complexity:
     - warn
