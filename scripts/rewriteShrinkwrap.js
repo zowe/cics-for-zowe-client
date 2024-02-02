@@ -38,7 +38,7 @@ for (const [k, v] of Object.entries(shrinkwrap.packages)) {
 fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for @zowe/cics-for-zowe-cli
-const zoweRegistry = require("../lerna.json").command.publish.registry;
+const zoweRegistry = require(cliDir + "package.json").publishConfig.registry;;
 getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
 .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
 .then(() => console.log(chalk.green("Lockfile contents written!")))
@@ -73,7 +73,7 @@ try {
   }
   fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
-  // cp.execSync(`sed -i 's#file:../sdk#${require("../lerna.json").version}#g' npm-shrinkwrap.json`, {cwd: cliDir});
+  // cp.execSync(`sed -i 's#file:../sdk#${require(cliDir + "package.json").version}#g' npm-shrinkwrap.json`, {cwd: cliDir});
   // cp.execSync("npm i ../sdk --install-links --package-lock-only", {cwd: cliDir});
 } finally {
   // revert back to workspaces monorepo

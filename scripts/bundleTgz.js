@@ -15,7 +15,8 @@ const fs = require("fs");
 const path = require("path");
 
 // Workaround for https://github.com/npm/cli/issues/3466
-process.chdir(__dirname + "/..");
+const rootDir = path.join(__dirname, "..");
+process.chdir(rootDir);
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
@@ -49,6 +50,7 @@ try {
     if(fs.existsSync(path.join(cliPkgDir, "node_modules_old"))) {
         fsE.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
     }
-    // fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
+    fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
+    fs.rmSync(path.join(rootDir, "npm-shrinkwrap.json"), { force: true });
     fsE.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
 }
