@@ -3,6 +3,7 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
+        "watch": "turbo watch",
         "package": "turbo package",
         "test": "npm run test --workspaces",
         "test:system": "npm run test:system --workspaces",

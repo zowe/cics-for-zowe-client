@@ -871,18 +871,19 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run tsupDep -- add && tsup && npm run tsupDep",
+    "vscode:prepublish": "npm run getPrebuilds && npm run tsupDep -- add && tsup && npm run tsupDep",
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "echo 'Nothing to check'",
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
-    "watch": "tsc -watch -p ./",
+    "watch": "tsup --watch",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
     "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
+    "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
   },
   "devDependencies": {

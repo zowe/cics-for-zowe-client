@@ -36,7 +36,9 @@
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "node ../../scripts/bundleTgz.js",
+    "prepack": "node ../../scripts/bundleTgz.js",
+    "postpack": "node ../../scripts/bundleTgz.js post",
+    "package": "npm pack --pack-destination=../../dist",
     "test": "npm run test:unit && npm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
@@ -53,7 +55,7 @@
   "peerDependencies": {
     "@zowe/imperative": "^5.0.0"
   },
-  "bundleDependencies": [
+  "bundledDependencies": [
     "@zowe/cics-for-zowe-sdk"
   ]
 }

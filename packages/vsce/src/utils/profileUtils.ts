@@ -13,6 +13,7 @@ import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { join } from "path";
 import { CICSTree } from "../trees/CICSTree";
 import { window } from "vscode";
+import { ProfileManagement } from "./profileManagement";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
   const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
@@ -38,10 +39,10 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
   // });
   // await mProfileInfo.readProfilesFromDisk();
   // ProfilesCache.createConfigInstance(mProfileInfo);
-  const promptInfo = await ZoweVsCodeExtension.promptCredentials({
+  const promptInfo = await ZoweVsCodeExtension.updateCredentials({
     sessionName,
     rePrompt,
-  });
+  }, ProfileManagement.getExplorerApis());
   if (!promptInfo) {
     window.showInformationMessage("Input credentials operation Cancelled");
   }
