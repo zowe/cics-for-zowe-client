@@ -878,7 +878,7 @@
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
-    "watch": "tsc -watch -p ./",
+    "watch": "tsup --watch",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
     "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
