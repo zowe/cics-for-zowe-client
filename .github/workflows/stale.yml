@@ -11,7 +11,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v8
+      - uses: actions/stale@v9
         with:
           # General rules applied to both, issues and pull requests (PRs)
           days-before-close: 14

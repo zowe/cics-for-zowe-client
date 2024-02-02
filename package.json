@@ -13,6 +13,9 @@
         "license": "node scripts/updateLicenses.js"
     },
     "repository": "https://github.com/zowe/cics-for-zowe-client",
+    "publishConfig": {
+      "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+    },
     "workspaces": [
         "./packages/*"
     ],
