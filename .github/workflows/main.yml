@@ -90,8 +90,7 @@ jobs:
     #     path: dist/*
 
   release:
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
-    # if: github.event_name == 'push' && github.ref_protected
+    if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
 
@@ -124,7 +123,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@fix/allow-first-time-publish2
+    - uses: zowe-actions/octorelease@v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
