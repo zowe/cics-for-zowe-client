@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- BugFix: Updated dependencies for technical currency
 - BugFix: Migrated the package the CICS for Zowe Client Monorepo
 
 ## `2.3.0`
