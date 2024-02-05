@@ -3,6 +3,7 @@ name: Zowe CICS Main CI
 on:
   push:
     paths:
+      - .github/**
       - packages/**
   pull_request:
     paths:
@@ -19,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
@@ -35,10 +36,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -50,6 +51,13 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
+    - name: Update Dependencies
+      id: npm-update
+      uses: zowe-actions/octorelease/script@v1
+      with:
+        config-dir: .github
+        script: npmUpdate
+
     - name: Build Source
       id: build
       run: npm run build
@@ -60,23 +68,69 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: packages/*/__tests__/__results__/
 
     - name: Upload Results to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         env_vars: OS,NODE
 
-    - name: Bundle all packages
-      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-      run: npm i -g vsce && npm run package
+    # - name: Bundle all packages
+    #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
+    #   run: npm i -g vsce && npm run package
 
-    - name: Archive all packages
-      if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-      uses: actions/upload-artifact@v3
+    # - name: Archive all packages
+    #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: zowe-cics-client
+    #     path: dist/*
+
+  release:
+    if: github.event_name == 'push' && github.ref_protected
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
       with:
-        name: zowe-cics-client
-        path: dist/*
+        fetch-depth: 0
+        persist-credentials: false
+        ref: ${{ github.ref }}
+
+    - name: Use Node.js LTS
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Update Dependencies
+      uses: zowe-actions/octorelease/script@v1
+      env:
+        GIT_COMMITTER_NAME: zowe_robot
+        GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
+        NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
+      with:
+        config-dir: .github
+        script: npmUpdate
+
+    - name: Build Source
+      run: npm run build
+
+    - uses: zowe-actions/octorelease@fix/allow-first-time-publish2
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+        NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+      with:
+        config-dir: .github

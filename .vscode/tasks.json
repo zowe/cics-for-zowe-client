@@ -4,15 +4,15 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build dev watch",
+      "label": "npm run watch",
       "group": "build",
       "isBackground": true,
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/packages/vscode"
+        "cwd": "${workspaceFolder}/packages/vsce"
       },
       "command": "npm",
-      "args": ["run", "dev"],
+      "args": ["run", "watch"],
       "problemMatcher": {
         "owner": "typescript",
         "source": "ts",
