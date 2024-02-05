@@ -51,6 +51,7 @@
         "jest-junit": "^15.0.0",
         "jest-stare": "^2.5.0",
         "js-yaml": "^4.1.0",
+        "lerna": "^6.6.2",
         "madge": "^6.0.0",
         "npm-lockfile": "^3.0.7",
         "rimraf": "^4.4.1",
