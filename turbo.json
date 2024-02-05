@@ -5,7 +5,7 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "lib/**"]
     },
-    "dev": {
+    "watch": {
       "dependsOn": ["build"]
     },
     "test": {
@@ -14,7 +14,8 @@
     },
     "lint": {},
     "package": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
+      "cache": false
     },
     "deploy": {
       "dependsOn": ["build", "test", "lint"]

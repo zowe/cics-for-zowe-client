@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "4.0.8-SNAPSHOT",
+  "version": "4.0.8",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS Plug-in for Zowe CLI",
@@ -36,11 +36,14 @@
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "npm pack && node ../../scripts/mv-pack.js zowe-cics-for-zowe-cli tgz",
+    "prepack": "node ../../scripts/bundleTgz.js",
+    "postpack": "node ../../scripts/bundleTgz.js post",
+    "package": "npm pack --pack-destination=../../dist",
     "test": "npm run test:unit && npm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
     "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
+    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck"
   },
   "imperative": {
@@ -50,13 +53,13 @@
     "@zowe/cics-for-zowe-sdk"
   ],
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "4.0.8-SNAPSHOT"
+    "@zowe/cics-for-zowe-sdk": "4.0.8"
   },
   "devDependencies": {
     "@zowe/cli": "~6.40.18"
   },
   "peerDependencies": {
-    "@zowe/cli": "^6.40.18",
-    "@zowe/imperative": "^4.18.17"
+    "@zowe/cli": "~6.40.18",
+    "@zowe/imperative": "~4.18.17"
   }
 }

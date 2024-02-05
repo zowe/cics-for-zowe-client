@@ -1,3 +1,5 @@
+npm-shrinkwrap.json
+packages/cli/npm-shrinkwrap.json
 coverage/
 node_modules/
 npm-debug.log

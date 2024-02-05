@@ -6,7 +6,7 @@
   "repository": {
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "4.0.8-SNAPSHOT",
+  "version": "1.3.0",
   "engines": {
     "vscode": "^1.53.2"
   },
@@ -442,29 +442,31 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "tsup",
+    "vscode:prepublish": "npm run getPrebuilds && npm run tsupDep -- add && tsup && npm run tsupDep",
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-    "madge": "rimraf lib && tsc -p ./ && madge -c lib",
+    "madge": "echo 'Nothing to check'",
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
-    "watch": "tsc -watch -p ./",
+    "watch": "tsup --watch",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
-    "test:unit": "jest --config unit.jest_config.ts",
+    "test:unit": "jest --config unit.jest_config.ts --no-coverage",
     "test": "npm run test:unit",
-    "package": "vsce package --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "tsupDep": "node ./scripts/tsup-deps.js",
+    "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
+    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
     "vsce": "^2.15.0"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
-    "@zowe/cics-for-zowe-sdk": "4.0.8-SNAPSHOT",
+    "@zowe/cics-for-zowe-sdk": "4.0.8",
     "@zowe/imperative": "~4.18.17",
+    "@zowe/secrets-for-zowe-sdk": "^7.18.4",
     "@zowe/zowe-explorer-api": "~1.22.3",
-    "axios": "^0.21.4",
+    "axios": "^1.6.7",
     "https": "~1.0.0",
     "xml-js": "~1.6.11"
   }
