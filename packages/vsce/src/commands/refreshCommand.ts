@@ -23,9 +23,7 @@ export function getRefreshCommand(tree: CICSTree) {
           cancellable: false,
         },
         async () => {
-          tree.clearLoadedProfiles();
-          await ProfileManagement.profilesCacheRefresh();
-          await tree.loadStoredProfileNames();
+          await tree.refreshLoadedProfiles();
         }
       );
     } catch (error) {

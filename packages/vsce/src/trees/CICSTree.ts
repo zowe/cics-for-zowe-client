@@ -19,6 +19,7 @@ import {
   TreeItem,
   WebviewPanel,
   window,
+  commands
 } from "vscode";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
@@ -40,6 +41,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return this.loadedProfiles;
   }
 
+  public async refreshLoadedProfiles() {
+    this.clearLoadedProfiles();
+    await this.loadStoredProfileNames();
+    commands.executeCommand('workbench.actions.treeView.cics-view.collapseAll');
+  }
   public clearLoadedProfiles() {
     this.loadedProfiles = [];
     this._onDidChangeTreeData.fire(undefined);
