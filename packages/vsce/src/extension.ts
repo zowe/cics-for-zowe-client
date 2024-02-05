@@ -85,7 +85,7 @@ import { getInquireProgramCommand } from "./commands/inquireProgram";
  */
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
-  let treeDataProv: CICSTree;
+  let treeDataProv: CICSTree = null;
   if (!zeVersion) {
     window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
     return;
