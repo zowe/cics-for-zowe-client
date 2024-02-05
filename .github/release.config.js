@@ -48,7 +48,6 @@ module.exports = {
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
                 versionIndependent: ["cics-extension-for-zowe"],
-                IS_LERNA_JSON_TEMP: true,
             },
         ],
         [
