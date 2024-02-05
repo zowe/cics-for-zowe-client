@@ -6,7 +6,6 @@ module.exports = {
             level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
-                "@zowe/secrets-for-zowe-sdk": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": "zowe-v2-lts",
             }
         },
@@ -16,7 +15,6 @@ module.exports = {
             level: "patch",
             devDependencies: {
                 "@zowe/imperative": "zowe-v1-lts",
-                "@zowe/secrets-for-zowe-sdk": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": "zowe-v1-lts",
             }
         },
@@ -27,7 +25,6 @@ module.exports = {
             prerelease: true,
             devDependencies: {
                 "@zowe/imperative": "next",
-                "@zowe/secrets-for-zowe-sdk": "next",
                 "@zowe/zowe-explorer-api": "next",
             }
         }
