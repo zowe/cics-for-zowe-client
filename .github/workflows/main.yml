@@ -5,6 +5,8 @@ on:
     paths:
       - .github/**
       - packages/**
+      - .npmrc
+      - package.json
   pull_request:
     paths:
       - packages/**
