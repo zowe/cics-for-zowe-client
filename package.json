@@ -1,7 +1,14 @@
 {
     "name": "cics-for-zowe-client",
-    "version": "4.0.8",
     "private": true,
+    "version": "4.0.8",
+    "publishConfig": {
+        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+    },
+    "repository": "https://github.com/zowe/cics-for-zowe-client",
+    "workspaces": [
+        "./packages/*"
+    ],
     "scripts": {
         "build": "turbo build",
         "package": "turbo package",
@@ -13,10 +20,6 @@
         "prepare": "husky install",
         "license": "node scripts/updateLicenses.js"
     },
-    "repository": "https://github.com/zowe/cics-for-zowe-client",
-    "workspaces": [
-        "./packages/*"
-    ],
     "devDependencies": {
         "@types/fs-extra": "^11.0.1",
         "@types/glob": "^7.2.0",
