@@ -57,7 +57,7 @@ module.exports = {
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
                 },
-                npmPublish: false,
+                npmPublish: true,
                 tarballDir: "dist",
             },
             {
@@ -65,7 +65,7 @@ module.exports = {
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
                 },
-                npmPublish: false,
+                npmPublish: true,
                 tarballDir: "dist",
             },
         ],
@@ -73,8 +73,8 @@ module.exports = {
             "@octorelease/vsce",
             {
                 $cwd: "packages/vsce",
-                ovsxPublish: false,
-                vscePublish: false,
+                ovsxPublish: true,
+                vscePublish: true,
                 vsixDir: "dist",
             },
         ],
