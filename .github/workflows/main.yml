@@ -55,7 +55,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease/script@v1
+      uses: zowe-actions/octorelease/script@reg-config
       with:
         config-dir: .github
         script: npmUpdate
@@ -113,7 +113,7 @@ jobs:
       run: npm ci
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease/script@v1
+      uses: zowe-actions/octorelease/script@reg-config
       env:
         GIT_COMMITTER_NAME: zowe_robot
         GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
