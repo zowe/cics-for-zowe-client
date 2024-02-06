@@ -1,10 +1,9 @@
 {
-    "name": "cics-for-zowe-client",
+    "name": "@zowe/cics_monorepo",
     "private": true,
     "version": "4.0.8",
     "publishConfig": {
-        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/",
-        "scope": "@zowe"
+        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
     },
     "repository": "https://github.com/zowe/cics-for-zowe-client",
     "workspaces": [
