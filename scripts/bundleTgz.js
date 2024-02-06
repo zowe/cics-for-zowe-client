@@ -50,8 +50,8 @@ fsE.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 try {
     // Install node_modules directly inside packages/cli
     execCmd("npm run preshrinkwrap");
-
-    execCmd(`${npmInstallCmd} ${path.relative(__dirname, "../dist/zowe-cics-for-zowe-sdk-" + tempPkgJson.version + ".tgz")}`);
+    const sdkTgzPath = path.relative(__dirname, "../dist/zowe-cics-for-zowe-sdk-" + tempPkgJson.version + ".tgz");
+    execCmd(`${npmInstallCmd} ${sdkTgzPath}`);
     execCmd(npmInstallCmd);
     for (const zowePkgDir of fsE.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);

@@ -22,7 +22,8 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/",
+    "scope": "@zowe"
   },
   "scripts": {
     "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
