@@ -5,6 +5,8 @@ on:
     paths:
       - .github/**
       - packages/**
+      - .npmrc
+      - package.json
   pull_request:
     paths:
       - packages/**
@@ -77,6 +79,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         env_vars: OS,NODE
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     # - name: Bundle all packages
     #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
@@ -123,7 +126,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@v1
+    - uses: zowe-actions/octorelease@reg-config
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
