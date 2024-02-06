@@ -3,7 +3,8 @@
     "private": true,
     "version": "4.0.8",
     "publishConfig": {
-        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/",
+        "scope": "@zowe"
     },
     "repository": "https://github.com/zowe/cics-for-zowe-client",
     "workspaces": [

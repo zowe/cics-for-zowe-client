@@ -31,18 +31,19 @@ if (!fs.existsSync(rootShrinkwrapFile)) {
 // Remove "file:" links from shrinkwrap
 const shrinkwrap = JSON.parse(fs.readFileSync(rootShrinkwrapFile, "utf-8"));
 for (const [k, v] of Object.entries(shrinkwrap.packages)) {
-    if (v.link) {
-        delete shrinkwrap.packages[k];
-    }
+  if (v.link) {
+    delete shrinkwrap.packages[k];
+  }
 }
 fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for @zowe/cics-for-zowe-cli
 const zoweRegistry = require(cliDir + "package.json").publishConfig.registry;;
-getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
-.then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
-.then(() => console.log(chalk.green("Lockfile contents written!")))
-.catch((err) => {
+getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry }).then((lockfile) => {
+  fs.writeFileSync(cliShrinkwrapFile, lockfile);
+  console.log(chalk.green("Lockfile contents written!"));
+  monorepoShrinkwrap();
+}).catch((err) => {
   if (err.statusCode !== 404) {
     console.error(err);
     process.exit(1);
@@ -51,31 +52,34 @@ getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
   }
 });
 
-const pkgA = rootDir + "package.json";
-const pkgB = rootDir + "package.json_";
-try {
-  // Mimic non-workspaces monorepo
-  fs.renameSync(pkgA, pkgB);
+function monorepoShrinkwrap() {
+  const pkgA = rootDir + "package.json";
+  const pkgB = rootDir + "package.json_";
+  try {
+    // Mimic non-workspaces monorepo
+    fs.renameSync(pkgA, pkgB);
 
-  cp.execSync("npm shrinkwrap", {cwd: cliDir});
+    cp.execSync("npm shrinkwrap", { cwd: cliDir });
 
-  const shrinkwrap = JSON.parse(fs.readFileSync(cliShrinkwrapFile, "utf-8"));
-  shrinkwrap.lockfileVersion = 2;
-  for (const [k, v] of Object.entries(shrinkwrap.packages)) {
-    if (v.link || v.extraneous || k === "../sdk") {
+    const shrinkwrap = JSON.parse(fs.readFileSync(cliShrinkwrapFile, "utf-8"));
+    shrinkwrap.lockfileVersion = 2;
+    for (const [k, v] of Object.entries(shrinkwrap.packages)) {
+      if (v.link || v.extraneous || k === "../sdk") {
         delete shrinkwrap.packages[k];
+      }
     }
-  }
-  for (const [k, v] of Object.entries(shrinkwrap?.dependencies ?? [])) {
-    if (v.link || v.extraneous || k === "../sdk") {
+    for (const [k, v] of Object.entries(shrinkwrap?.dependencies ?? [])) {
+      if (v.link || v.extraneous || k === "../sdk") {
         delete shrinkwrap.dependencies[k];
+      }
     }
-  }
-  fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
+    fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
+    console.log(chalk.green("Shrinkwrap contents written!"));
 
-  // cp.execSync(`sed -i 's#file:../sdk#${require(cliDir + "package.json").version}#g' npm-shrinkwrap.json`, {cwd: cliDir});
-  // cp.execSync("npm i ../sdk --install-links --package-lock-only", {cwd: cliDir});
-} finally {
-  // revert back to workspaces monorepo
-  fs.renameSync(pkgB, pkgA);
+    // cp.execSync(`sed -i 's#file:../sdk#${require(cliDir + "package.json").version}#g' npm-shrinkwrap.json`, {cwd: cliDir});
+    // cp.execSync("npm i ../sdk --install-links --package-lock-only", {cwd: cliDir});
+  } finally {
+    // revert back to workspaces monorepo
+    fs.renameSync(pkgB, pkgA);
+  }
 }
