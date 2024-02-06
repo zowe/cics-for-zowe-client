@@ -75,6 +75,7 @@ module.exports = {
                 $cwd: "packages/vsce",
                 ovsxPublish: true,
                 vscePublish: true,
+                vsixDir: "dist",
             },
         ],
         [
