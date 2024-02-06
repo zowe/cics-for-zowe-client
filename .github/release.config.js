@@ -6,7 +6,7 @@ module.exports = {
             level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
-                "@zowe/zowe-explorer-api": "zowe-v2-lts",
+                "@zowe/zowe-explorer-api": ["zowe-v2-lts", "@zowe:registry=https://registry.npmjs.org/"],
             }
         },
         {
@@ -15,7 +15,7 @@ module.exports = {
             level: "patch",
             devDependencies: {
                 "@zowe/imperative": "zowe-v1-lts",
-                "@zowe/zowe-explorer-api": "zowe-v1-lts",
+                "@zowe/zowe-explorer-api": ["zowe-v1-lts", "@zowe:registry=https://registry.npmjs.org/"],
             }
         },
         {
@@ -25,7 +25,7 @@ module.exports = {
             prerelease: true,
             devDependencies: {
                 "@zowe/imperative": "next",
-                "@zowe/zowe-explorer-api": "next",
+                "@zowe/zowe-explorer-api": ["next", "@zowe:registry=https://registry.npmjs.org/"],
             }
         }
     ],
@@ -44,10 +44,12 @@ module.exports = {
         [
             "@octorelease/lerna",
             {
-                pruneShrinkwrap: ["@zowe/cics-for-zowe-cli"],
+                // The shrinkwrap pruning should happen after only as part of the prepack of the CLI Plug-in
+                // pruneShrinkwrap: ["@zowe/cics-for-zowe-cli"],
+
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
-                versionIndependent: ["cics-extension-for-zowe"]
+                versionIndependent: ["cics-extension-for-zowe"],
             },
         ],
         [
@@ -57,24 +59,22 @@ module.exports = {
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
                 },
-                npmPublish: false,
-                tarballDir: "dist",
+                npmPublish: true,
             },
             {
                 $cwd: "packages/cli",
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
                 },
-                npmPublish: false,
-                tarballDir: "dist",
+                npmPublish: true,
             },
         ],
         [
             "@octorelease/vsce",
             {
                 $cwd: "packages/vsce",
-                ovsxPublish: false,
-                vscePublish: false,
+                ovsxPublish: true,
+                vscePublish: true,
                 vsixDir: "dist",
             },
         ],

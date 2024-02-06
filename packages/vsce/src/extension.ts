@@ -85,6 +85,7 @@ import { getInquireProgramCommand } from "./commands/inquireProgram";
  */
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
+  let treeDataProv: CICSTree = null;
   if (!zeVersion) {
     window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
     return;
@@ -97,7 +98,13 @@ export async function activate(context: ExtensionContext) {
       // Register 'cics' profiles as a ZE extender
       await ProfileManagement.registerCICSProfiles();
       ProfileManagement.getProfilesCache().registerCustomProfilesType("cics");
-      await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
+      const apiRegister = await ProfileManagement.getExplorerApis();
+      await apiRegister.getExplorerExtenderApi().reloadProfiles();
+      if (apiRegister.onProfilesUpdate) {
+        apiRegister.onProfilesUpdate(async () => {
+          await treeDataProv.refreshLoadedProfiles();
+        });
+      }
       window.showInformationMessage("Zowe Explorer was modified for the CICS Extension.");
     } catch (error) {
       console.log(error);
@@ -111,7 +118,7 @@ export async function activate(context: ExtensionContext) {
     return;
   }
 
-  const treeDataProv = new CICSTree();
+  treeDataProv = new CICSTree();
   const treeview = window.createTreeView("cics-view", {
     treeDataProvider: treeDataProv,
     showCollapseAll: true,

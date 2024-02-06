@@ -1,6 +1,14 @@
 {
     "name": "@zowe/cics_monorepo",
     "private": true,
+    "version": "5.0.3",
+    "publishConfig": {
+        "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+    },
+    "repository": "https://github.com/zowe/cics-for-zowe-client",
+    "workspaces": [
+        "./packages/*"
+    ],
     "scripts": {
         "build": "turbo build",
         "watch": "turbo watch",
@@ -13,10 +21,6 @@
         "prepare": "husky install",
         "license": "node scripts/updateLicenses.js"
     },
-    "repository": "https://github.com/zowe/cics-for-zowe-client",
-    "workspaces": [
-        "./packages/*"
-    ],
     "devDependencies": {
         "@types/glob": "^7.2.0",
         "@types/jest": "^29.5.0",
