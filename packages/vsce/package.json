@@ -9,7 +9,7 @@
   },
   "version": "3.0.0-next.202402072252",
   "engines": {
-    "vscode": "^1.53.2"
+    "vscode": "^1.79.0"
   },
   "categories": [
     "Other"
