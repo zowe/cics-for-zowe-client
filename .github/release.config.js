@@ -21,7 +21,7 @@ module.exports = {
         {
             name: "next",
             channel: "next",
-            level: "major",
+            level: "none",
             prerelease: true,
             devDependencies: {
                 "@zowe/imperative": "next",
