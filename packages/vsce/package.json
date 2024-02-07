@@ -892,6 +892,7 @@
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.0.0",
+    "@zowe/core-for-zowe-sdk": "^8.0.0-next.202402021649",
     "@zowe/zowe-explorer-api": "^3.0.0-next",
     "axios": "^1.6.7",
     "https": "~1.0.0",
