@@ -9,11 +9,13 @@
  *
  */
 
-import { ConnectionPropsForSessCfg, ICommandArguments, ICommandOptionDefinition,
-  IHandlerParameters, IProfile, ISession, Logger, Session } from "@zowe/imperative";
+import {
+  ConnectionPropsForSessCfg, ICommandArguments, ICommandOptionDefinition,
+  IHandlerParameters, IProfile, ISession, Logger, Session
+} from "@zowe/imperative";
 
 /**
- * Utility Methods for Brightside
+ * Utility Methods for Zowe
  * @export
  */
 export class CicsSession {
@@ -64,9 +66,9 @@ export class CicsSession {
     type: "string",
     group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
-    /**
-     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to FMP
-     */
+  /**
+   * Option used in profile creation and commands for rejectUnauthorized setting for connecting to FMP
+   */
   public static CICS_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
     name: "reject-unauthorized",
     aliases: ["ru"],
@@ -75,16 +77,16 @@ export class CicsSession {
     defaultValue: true,
     group: CicsSession.CICS_CONNECTION_OPTION_GROUP
   };
-    /**
-     * Option used in profile creation and commands for protocol for CMCI
-     */
+  /**
+   * Option used in profile creation and commands for protocol for CMCI
+   */
   public static CICS_OPTION_PROTOCOL: ICommandOptionDefinition = {
     name: "protocol",
     aliases: ["o"],
     description: "Specifies CMCI protocol (http or https).",
     type: "string",
     defaultValue: "https",
-    allowableValues: {values: ["http", "https"], caseSensitive: false},
+    allowableValues: { values: ["http", "https"], caseSensitive: false },
     group: CicsSession.CICS_CONNECTION_OPTION_GROUP
   };
 
@@ -160,7 +162,7 @@ export class CicsSession {
       protocol: args.protocol || "https",
     };
 
-    const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(sessCfg, args, {doPrompting, parms: handlerParams});
+    const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(sessCfg, args, { doPrompting, parms: handlerParams });
     return new Session(sessCfgWithCreds);
   }
 

@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Major: Release v3.0.0-next pre-release
+
 ## `2.3.3`
 
 - BugFix: Updated dependencies for technical currency
