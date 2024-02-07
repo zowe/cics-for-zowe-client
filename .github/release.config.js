@@ -58,6 +58,9 @@ module.exports = {
                 $cwd: "packages/sdk",
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
+                    "next": ["zowe-v3-lts"],
+                    // TODO: Remove the two lines above when merging to the `main` branch
+                    // "latest": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
             },
@@ -65,6 +68,9 @@ module.exports = {
                 $cwd: "packages/cli",
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
+                    "next": ["zowe-v3-lts"],
+                    // TODO: Remove the two lines above when merging to the `main` branch
+                    // "latest": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
             },
