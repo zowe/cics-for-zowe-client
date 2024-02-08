@@ -63,6 +63,7 @@ module.exports = {
                     // "latest": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
+                tarballDir: "dist",
             },
             {
                 $cwd: "packages/cli",
@@ -73,6 +74,7 @@ module.exports = {
                     // "latest": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
+                tarballDir: "dist",
             },
         ],
         [
