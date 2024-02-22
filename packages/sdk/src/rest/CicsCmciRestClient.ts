@@ -140,7 +140,7 @@ export class CicsCmciRestClient extends RestClient {
    * @returns {string} the XML that can be used as the request body
    */
   private static convertPayloadToXML(payload: any): string {
-    if (isString(payload)) {
+    if (typeof payload === "string") {
       // if it's already a string, use it verbatim
       return payload;
     } else {

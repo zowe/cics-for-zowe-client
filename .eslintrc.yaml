@@ -1,5 +1,6 @@
 extends:
   - eslint:recommended
+  - plugin:deprecation/recommended
   - plugin:@typescript-eslint/recommended-requiring-type-checking
   - prettier
 env:
