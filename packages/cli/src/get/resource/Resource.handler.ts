@@ -9,7 +9,7 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, IProfile } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 

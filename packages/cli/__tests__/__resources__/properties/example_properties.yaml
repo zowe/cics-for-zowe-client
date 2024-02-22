@@ -24,12 +24,12 @@ cics:
   user: *user
   password: *pass
   host: *host
-  port: 1443
+  port: 1234
   rejectUnauthorized: *ru
   protocol: https
 cmci:
   regionName: region-name
   csdGroup: CSDGROUP
 urimap:
-  certificate: " "
+  certificate: null
 
