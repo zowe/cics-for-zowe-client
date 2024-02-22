@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class WebServiceHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Defining web service to CICS",
@@ -55,8 +55,8 @@ export default class WebServiceHandler extends CicsBaseHandler {
       description: params.arguments.description,
       validation: params.arguments.validation,
       wsdlFile: params.arguments.wsdlFile,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);

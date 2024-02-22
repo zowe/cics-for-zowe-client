@@ -27,10 +27,9 @@ export abstract class CicsBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
   public async process(commandParameters: IHandlerParameters) {
-    const profile = commandParameters.profiles.get("cics", false) || {};
     const session = await CicsSession.createSessCfgFromArgs(commandParameters.arguments, true, commandParameters);
 
-    const response = await this.processWithSession(commandParameters, session, profile);
+    const response = await this.processWithSession(commandParameters, session);
 
     commandParameters.response.progress.endBar(); // end any progress bars
 
@@ -44,13 +43,11 @@ export abstract class CicsBaseHandler implements ICommandHandler {
      *
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      * @param {AbstractSession} session The session object generated from the cics profile.
-     * @param {IProfile} cicsProfile The cics profile that was loaded for the command.
      *
      * @returns {Promise<ICMCIApiResponse>} The response from the underlying cics api call.
      */
   public abstract processWithSession(
     commandParameters: IHandlerParameters,
-    session: AbstractSession,
-    cicsProfile: IProfile
+    session: AbstractSession
   ): Promise<ICMCIApiResponse>;
 }

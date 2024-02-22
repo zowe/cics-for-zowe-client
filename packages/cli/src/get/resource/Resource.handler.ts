@@ -20,7 +20,7 @@ import { CicsBaseHandler } from "../../CicsBaseHandler";
  * @implements {ICommandHandler}
  */
 export default class ResourceHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Getting resources from CICS",
@@ -31,8 +31,8 @@ export default class ResourceHandler extends CicsBaseHandler {
 
     const response = await getResource(session, {
       name: params.arguments.resourceName,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex,
       criteria: params.arguments.criteria,
       parameter: params.arguments.parameter
     });

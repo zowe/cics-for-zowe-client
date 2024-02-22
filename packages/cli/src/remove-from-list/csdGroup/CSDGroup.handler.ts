@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).RE
  * @implements {ICommandHandler}
  */
 export default class CSDGroupFromListHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Removing CSD Group from CSD List on CICS",
@@ -37,8 +37,8 @@ export default class CSDGroupFromListHandler extends CicsBaseHandler {
     const response = await removeCSDGroupFromList(session, {
       name: params.arguments.name,
       csdList: params.arguments.csdList,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.name, params.arguments.csdList);

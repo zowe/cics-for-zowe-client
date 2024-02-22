@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class TransactionHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Defining transaction to CICS",
@@ -38,8 +38,8 @@ export default class TransactionHandler extends CicsBaseHandler {
       name: params.arguments.transactionName,
       programName: params.arguments.programName,
       csdGroup: params.arguments.csdGroup,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.transactionName);

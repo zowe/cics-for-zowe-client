@@ -14,15 +14,6 @@ import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let regionName: string;
-let csdGroup: string;
-let host: string;
-let port: number;
-let user: string;
-let password: string;
-let protocol: string;
-let rejectUnauthorized: boolean;
-let session: Session;
 
 describe("CICS define urimap-pipeline command", () => {
 
@@ -31,24 +22,6 @@ describe("CICS define urimap-pipeline command", () => {
       testName: "define_urimap_pipeline",
       installPlugin: true,
       tempProfileTypes: ["cics"]
-    });
-    const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
-    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
-    regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
-    session = new Session({
-      type: "basic",
-      hostname: cicsProperties.host,
-      port: cicsProperties.port,
-      user: cicsProperties.user,
-      password: cicsProperties.password,
-      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
     });
   });
 

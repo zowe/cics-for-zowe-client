@@ -13,7 +13,6 @@ import { AbstractSession, IImperativeError, ImperativeError, Logger, RestClient,
 import { Builder, Parser } from "xml2js";
 import { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
 import { CicsCmciMessages } from "../constants/CicsCmci.messages";
-import { isString } from "util";
 
 /**
  * Wrapper for invoke CICS CMCI API through the RestClient to perform common error

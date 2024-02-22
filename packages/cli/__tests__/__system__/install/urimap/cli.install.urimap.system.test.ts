@@ -13,20 +13,6 @@ import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-
 import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let regionName: string;
-let csdGroup: string;
-let host: string;
-let port: number;
-let user: string;
-let password: string;
-let protocol: string;
-let rejectUnauthorized: boolean;
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-const sleepTime = 2000;
 
 describe("CICS install urimap command", () => {
 
@@ -36,14 +22,6 @@ describe("CICS install urimap command", () => {
       installPlugin: true,
       tempProfileTypes: ["cics"]
     });
-    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
-    regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
   });
 
   afterAll(async () => {

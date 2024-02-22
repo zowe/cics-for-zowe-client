@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class UrimapPipelineHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Defining URIMAP of type Pipeline to CICS",
@@ -45,8 +45,8 @@ export default class UrimapPipelineHandler extends CicsBaseHandler {
       enable: params.arguments.enable,
       transactionName: params.arguments.transactionName,
       webserviceName: params.arguments.webserviceName,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex,
       tcpipservice: params.arguments.tcpipservice
     });
 
