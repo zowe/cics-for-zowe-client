@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## Recent Changes
+## `6.0.0-next.202402261537`
 
 - BugFix: Updated deprecated methods for technical currency purposes
 
