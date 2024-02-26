@@ -54,7 +54,7 @@
     "@zowe/cics-for-zowe-sdk": "6.0.0-next.202402081454"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^8.0.0-next"
+    "@zowe/imperative": ">=8.0.0-next.0 <8.0.0"
   },
   "bundledDependencies": [
     "@zowe/cics-for-zowe-sdk"

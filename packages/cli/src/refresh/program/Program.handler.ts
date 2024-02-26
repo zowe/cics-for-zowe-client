@@ -9,7 +9,7 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, IProfile, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { programNewcopy, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).RE
  * @implements {ICommandHandler}
  */
 export default class ProgramHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Refreshing program to CICS",
@@ -36,8 +36,8 @@ export default class ProgramHandler extends CicsBaseHandler {
 
     const response = await programNewcopy(session, {
       name: params.arguments.programName,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);

@@ -23,6 +23,8 @@ As an application developer, you can use the plug-in to perform various CICS-rel
 
 The plug-in uses the IBM CICS management client interface (CMCI) API to achieve the interaction with CICS. For more information, see [CICS management client interface](https://www.ibm.com/docs/en/cics-ts/5.6?topic=environment-cics-management-client-interface-cmci).
 
+**Note:** The plug-in will return an exit code of `1` when there is an error coming back from the CMCI REST APIs.
+
 ## Software requirements
 
 Before you install and use the plug-in:

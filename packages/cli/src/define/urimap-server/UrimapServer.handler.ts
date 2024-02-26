@@ -9,7 +9,7 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, IProfile, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, defineUrimapServer } from "@zowe/cics-for-zowe-sdk";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
@@ -25,7 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class UrimapServerHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Defining URIMAP of type Server to CICS",
@@ -43,8 +43,8 @@ export default class UrimapServerHandler extends CicsBaseHandler {
       scheme: params.arguments.urimapScheme,
       description: params.arguments.description,
       enable: params.arguments.enable,
-      regionName: params.arguments.regionName || profile.regionName,
-      cicsPlex: params.arguments.cicsPlex || profile.cicsPlex,
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex,
       tcpipservice: params.arguments.tcpipservice
     });
 
