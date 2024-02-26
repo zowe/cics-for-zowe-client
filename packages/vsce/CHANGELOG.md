@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Make VSCE V3 conformant with Zowe Explorer
+
 ## `3.0.0-next.202402072252`
 
 - Major: Release v3.0.0-next pre-release
