@@ -20,7 +20,7 @@ import { LoggerUtils } from "./loggerUtils";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
-  private static ProfilesCache = new ProfilesCache(LoggerUtils.instance.getImperativeLogger());
+  private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
   constructor() {}
 
