@@ -463,9 +463,9 @@
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "4.0.10",
-    "@zowe/imperative": "~4.18.17",
+    "@zowe/imperative": "^4.18.22",
     "@zowe/secrets-for-zowe-sdk": "^7.18.4",
-    "@zowe/zowe-explorer-api": "~1.22.3",
+    "@zowe/zowe-explorer-api": "^1.22.6",
     "axios": "^1.6.7",
     "https": "~1.0.0",
     "xml-js": "~1.6.11"
