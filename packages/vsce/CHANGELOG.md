@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `1.3.7`
 
 - BugFix: Fixed icons not displaying.[#112](https://github.com/zowe/cics-for-zowe-client/issues/112)
 - BugFix: Updated dependencies for technical currency

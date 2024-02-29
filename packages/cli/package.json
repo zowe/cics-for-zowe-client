@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "4.0.10",
+  "version": "4.0.11",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS Plug-in for Zowe CLI",
@@ -53,7 +53,7 @@
     "@zowe/cics-for-zowe-sdk"
   ],
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "4.0.10"
+    "@zowe/cics-for-zowe-sdk": "4.0.11"
   },
   "devDependencies": {
     "@zowe/cli": "~6.40.18"
