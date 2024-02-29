@@ -13,7 +13,9 @@ import { join } from "path";
 
 export function getIconPathInResources(iconFileNameLight: string, iconFileNameDark: string) {
   return {
-    light: join(__dirname, "..", "..", "resources", "imgs", iconFileNameLight),
-    dark: join(__dirname, "..", "..", "resources", "imgs", iconFileNameDark),
+    // We bundle the extension into a single `dist/extension.js`
+    // `__dirname/../resources/imgs === `/path/to/dist/../resources/imgs`
+    light: join(__dirname, "..", "resources", "imgs", iconFileNameLight),
+    dark: join(__dirname, "..", "resources", "imgs", iconFileNameDark),
   };
 }
