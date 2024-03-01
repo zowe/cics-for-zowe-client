@@ -20,7 +20,7 @@
   // Standardize on the Prettier formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Enforce prettier on save
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "npm.packageManager": "npm",
   "eslint.packageManager": "npm"
 }
