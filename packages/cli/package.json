@@ -58,5 +58,8 @@
   },
   "bundledDependencies": [
     "@zowe/cics-for-zowe-sdk"
-  ]
+  ],
+  "engines": {
+    "node": ">=18.12.0"
+  }
 }

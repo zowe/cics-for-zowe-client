@@ -9,12 +9,6 @@ exports[`imperative config should match the snapshot 1`] = `
   "productDisplayName": "CLI Plug-in for IBM CICS",
   "profiles": [
     {
-      "createProfileExamples": [
-        {
-          "description": "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490",
-          "options": "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
-        },
-      ],
       "schema": {
         "description": "A cics profile is required to issue commands in the cics command group that interact with CICS regions. The cics profile contains your host, port, user name, and password for the IBM CICS management client interface (CMCI) server of your choice.",
         "properties": {

@@ -47,5 +47,8 @@
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0-next"
+  },
+  "engines": {
+    "node": ">=18.12.0"
   }
 }
