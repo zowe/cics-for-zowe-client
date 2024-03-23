@@ -308,8 +308,24 @@ export default {
   },
   ENABLE: {
     SUMMARY: "Enable resources from CICS",
-    DESCRIPTION: "Enable resources (for example, urimaps) from CICS through IBM CMCI.",
+    DESCRIPTION: "Enable resources from CICS through IBM CMCI.",
     RESOURCES: {
+      TRANSACTION: {
+        DESCRIPTION: "Enable a transaction from CICS.",
+        POSITIONALS: {
+          NAME: "The name of the transaction to enable. The maximum length is four characters."
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to enable the transaction",
+          CICSPLEX: "The name of the CICSPlex to which to enable the transaction"
+        },
+        MESSAGES: {
+          SUCCESS: "The transaction '%s' was enabled successfully."
+        },
+        EXAMPLES: {
+          EX1: "Enable a transaction named TRN1 from the region named MYREGION"
+        }
+      },      
       URIMAP: {
         DESCRIPTION: "Enable a urimap from CICS.",
         POSITIONALS: {

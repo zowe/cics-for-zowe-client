@@ -12,7 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, IURIMapParms } from "../../doc";
+import { IBaseParms, ICMCIApiResponse, IURIMapParms } from "../../doc";
 
 /**
  * Enable a URIMap installed in CICS through CMCI REST API
@@ -21,11 +21,9 @@ import { ICMCIApiResponse, IURIMapParms } from "../../doc";
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response (XML parsed into a javascript object)
  *                          when the request is complete
  * @throws {ImperativeError} CICS URIMap name not defined or blank
- * @throws {ImperativeError} CICS CSD group not defined or blank
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-
 export async function enableUrimap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
@@ -49,3 +47,43 @@ export async function enableUrimap(session: AbstractSession, parms: IURIMapParms
   };
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
+
+/**
+ * Enable a transaction installed in CICS through CMCI REST API
+ * @param {AbstractSession} session - the session to connect to CMCI with
+ * @param {IURIMapParms} parms - parameters for enabling your transaction
+ * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response (XML parsed into a javascript object)
+ *                          when the request is complete
+ * @throws {ImperativeError} CICS Transaction name not defined or blank
+ * @throws {ImperativeError} CICS Region name not defined or blank
+ * @throws {ImperativeError} CicsCmciRestClient request fails
+ */
+export async function enableTransaction(session: AbstractSession, parms: IBaseParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Transaction name", "CICS Transaction name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+  const requestBody: any = {
+    request: {
+      action: {
+        $: {
+          name: "ENABLE",
+        },
+      },
+    },
+  };
+
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_LOCAL_TRANSACTION +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=(TRANID=" +
+    parms.name +
+    ")";
+
+  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+

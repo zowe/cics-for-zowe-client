@@ -9,13 +9,9 @@
  *
  */
 
-export interface IWebServiceParms {
-  /**
-     * The name of the web service
-     * Up to eight characters long
-     */
-  name: string;
+import { IBaseParms } from "./IBaseParms";
 
+export interface IWebServiceParms extends IBaseParms {
   /**
      * CSD group for the web service
      * Up to eight characters long
@@ -51,14 +47,4 @@ export interface IWebServiceParms {
      * Should be a fully qualified file name
      */
   wsdlFile?: string;
-
-  /**
-     * The name of the CICS region of the web service
-     */
-  regionName: string;
-
-  /**
-     * CICS Plex of the web service
-     */
-  cicsPlex?: string;
 }

@@ -9,12 +9,20 @@
  *
  */
 
-import { IBaseParms } from "./IBaseParms";
-
-export interface ICSDGroupParms extends IBaseParms {
+export interface IBaseParms {
   /**
-     * CSD list name for the CSD Group
+     * The name of resource
      * Up to eight characters long
      */
-  csdList: string;
+  name: string;
+
+  /**
+     * The name of the CICS region 
+     */
+  regionName: string;
+
+  /**
+     * The name of the CICS Plex
+     */
+  cicsPlex?: string;
 }

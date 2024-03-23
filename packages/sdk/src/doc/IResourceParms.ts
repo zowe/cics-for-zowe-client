@@ -9,12 +9,9 @@
  *
  */
 
-export interface IResourceParms {
-  /**
-     * The name of the resource
-     */
-  name: string;
+import { IBaseParms } from "./IBaseParms";
 
+export interface IResourceParms extends IBaseParms {
   /**
      * Criteria by which to filter the records
      *
@@ -33,14 +30,4 @@ export interface IResourceParms {
      *    "CSDGROUP(D*)"
      */
   parameter?: string;
-
-  /**
-     * The name of the CICS region of the program
-     */
-  regionName: string;
-
-  /**
-     * CICS Plex of the program
-     */
-  cicsPlex?: string;
 }

@@ -9,26 +9,12 @@
  *
  */
 
-export interface IProgramParms {
-  /**
-     * The name of the program
-     * Up to eight characters long
-     */
-  name: string;
+import { IBaseParms } from "./IBaseParms";
 
+export interface IProgramParms extends IBaseParms {
   /**
      * CSD group for the program
      * Up to eight characters long
      */
   csdGroup?: string;
-
-  /**
-     * The name of the CICS region of the program
-     */
-  regionName: string;
-
-  /**
-     * CICS Plex of the program
-     */
-  cicsPlex?: string;
 }

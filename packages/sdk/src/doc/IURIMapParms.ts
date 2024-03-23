@@ -9,13 +9,9 @@
  *
  */
 
-export interface IURIMapParms {
-  /**
-     * The name of the URIMap
-     * Up to eight characters long
-     */
-  name: string;
+import { IBaseParms } from "./IBaseParms";
 
+export interface IURIMapParms extends IBaseParms {
   /**
      * CSD group for the URIMap
      * Up to eight characters long
@@ -81,16 +77,6 @@ export interface IURIMapParms {
      * Only used for pipeline URIMaps, up to 32 characters long
      */
   webserviceName?: string;
-
-  /**
-     * The name of the CICS region of the URIMap
-     */
-  regionName: string;
-
-  /**
-     * CICS Plex of the URIMap
-     */
-  cicsPlex?: string;
 
   /**
      * Enable attribute of the URIMap

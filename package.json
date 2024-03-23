@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
-    "@types/jest": "^29.5.0",
+    "@types/jest": "^29.5.12",
     "@types/node": "^18.18.2",
     "@types/uuid": "^9.0.1",
     "@types/xml2js": "^0.4.4",

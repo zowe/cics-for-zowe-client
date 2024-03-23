@@ -9,8 +9,6 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
@@ -19,6 +17,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { enableTransaction } from "@zowe/cics-for-zowe-sdk";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -97,31 +96,4 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
       }
     );
   });
-}
-
-async function enableTransaction(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
-        },
-      },
-    },
-  };
-
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    CicsCmciConstants.CICS_LOCAL_TRANSACTION +
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(TRANID=" +
-    parms.name +
-    ")";
-
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

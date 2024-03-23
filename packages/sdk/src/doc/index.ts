@@ -9,6 +9,7 @@
  *
  */
 
+export * from "./IBaseParms";
 export * from "./ICMCIApiResponse";
 export * from "./ICMCIResponseResultSummary";
 export * from "./ICSDGroupParms";
