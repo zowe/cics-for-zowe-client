@@ -22,25 +22,32 @@ export const UrimapDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION,
   handler: __dirname + "/Urimap.handler",
   type: "command",
-  positionals: [{
-    name: "urimapName",
-    description: strings.POSITIONALS.URIMAPNAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdGroup",
-    description: strings.POSITIONALS.CSDGROUP,
-    type: "string",
-    required: true
-  }],
-  options: [{
-    name: "region-name",
-    description: strings.OPTIONS.REGIONNAME,
-    type: "string"
-  }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.EX1,
-    options: "URIMAPA MYGRP --region-name MYREGION"
-  }]
+  positionals: [
+    {
+      name: "urimapName",
+      description: strings.POSITIONALS.URIMAPNAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdGroup",
+      description: strings.POSITIONALS.CSDGROUP,
+      type: "string",
+      required: true,
+    },
+  ],
+  options: [
+    {
+      name: "region-name",
+      description: strings.OPTIONS.REGIONNAME,
+      type: "string",
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.EX1,
+      options: "URIMAPA MYGRP --region-name MYREGION",
+    },
+  ],
 };

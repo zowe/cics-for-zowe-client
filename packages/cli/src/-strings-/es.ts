@@ -18,16 +18,16 @@ export default {
         DESCRIPTION: "Definir un nuevo programa en CICS a través de CMCI",
         POSITIONALS: {
           PROGRAMNAME: "El nombre the programa que desea definir. La longitud máxima del nombre es de ocho caracteres",
-          CSDGROUP: "El nombre del grupo CSD del programa que desea definir. La longitud máxima del nombre del grupo es de ocho caracteres"
+          CSDGROUP: "El nombre del grupo CSD del programa que desea definir. La longitud máxima del nombre del grupo es de ocho caracteres",
         },
         OPTIONS: {
           REGIONNAME: "Nombre de la región CICS a la cual desea definir el programa.",
-          CICSPLEX: "Nombre del CICS Plex al cual desea definir el programa."
+          CICSPLEX: "Nombre del CICS Plex al cual desea definir el programa.",
         },
         MESSAGES: {
-          SUCCESS: "La definición del programa '%s' fue exitosa."
-        }
-      }
-    }
-  }
+          SUCCESS: "La definición del programa '%s' fue exitosa.",
+        },
+      },
+    },
+  },
 };

@@ -21,7 +21,10 @@ export class CICSWebServiceTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
     this.parentRegion = parentRegion;
@@ -50,8 +53,9 @@ export class CICSWebServiceTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const webservicesArray = Array.isArray(webserviceResponse.response.records.cicswebservice)
-        ? webserviceResponse.response.records.cicswebservice
+      const webservicesArray =
+        Array.isArray(webserviceResponse.response.records.cicswebservice) ?
+          webserviceResponse.response.records.cicswebservice
         : [webserviceResponse.response.records.cicswebservice];
       this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${webservicesArray.length}]`;
       for (const webservice of webservicesArray) {

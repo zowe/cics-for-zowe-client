@@ -22,7 +22,10 @@ export class CICSLocalFileTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.parentRegion = parentRegion;
@@ -55,8 +58,9 @@ export class CICSLocalFileTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const localFileArray = Array.isArray(localFileResponse.response.records.cicslocalfile)
-        ? localFileResponse.response.records.cicslocalfile
+      const localFileArray =
+        Array.isArray(localFileResponse.response.records.cicslocalfile) ?
+          localFileResponse.response.records.cicslocalfile
         : [localFileResponse.response.records.cicslocalfile];
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;
       for (const localFile of localFileArray) {

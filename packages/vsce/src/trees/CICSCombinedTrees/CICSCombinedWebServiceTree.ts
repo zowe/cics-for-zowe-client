@@ -29,7 +29,10 @@ export class CICSCombinedWebServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedwebservicetree.`;
     this.parentPlex = parentPlex;

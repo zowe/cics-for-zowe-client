@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics discard program", () => {
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../../src/discard/program/Program.definition").ProgramDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
