@@ -5,7 +5,7 @@ exports[`cics enable urimap should not have changed 1`] = `
   "aliases": [
     "en",
   ],
-  "description": "Enable resources (for example, urimaps) from CICS through IBM CMCI.",
+  "description": "Enable resources from CICS through IBM CMCI.",
   "name": "enable",
   "passOn": [
     {
