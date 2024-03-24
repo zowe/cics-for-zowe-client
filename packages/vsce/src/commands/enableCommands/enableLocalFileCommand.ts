@@ -9,8 +9,6 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
@@ -19,6 +17,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { enableLocalFile } from "@zowe/cics-for-zowe-sdk";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -97,34 +96,4 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
       }
     );
   });
-}
-
-async function enableLocalFile(
-  session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string }
-): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
-        },
-      },
-    },
-  };
-
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    "CICSLocalFile" + //CicsCmciConstants.CICS_CMCI_EXTERNAL_RESOURCES[3]
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(FILE=" +
-    parms.name +
-    ")";
-
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`enableLocalFileHandler should call the enableLocalFile api 1`] = `"The local file '%s' was enabled successfully."`;
+
+exports[`enableLocalFileHandler should call the enableLocalFile api 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;

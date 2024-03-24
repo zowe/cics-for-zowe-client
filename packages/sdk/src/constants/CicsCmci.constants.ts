@@ -88,9 +88,12 @@ export const CicsCmciConstants: { [key: string]: any } = {
    * PARAMETER parameter
    */
   PARAMETER: "PARAMETER",
-
   /**
-   * The CICS CMCI external resource names
+   * Specifies the required part of the REST interface URI to access local transactions definitions
    */
-  CICS_CMCI_EXTERNAL_RESOURCES: ["CICSLocalTransaction", "CICSRemoteTransaction", "CICSDefinitionTransaction", "CICSLocalFile"],
+  CICS_REMOTE_TRANSACTION: "CICSRemoteTransaction",
+  /**
+   * Specifies the required part of the REST interface URI to access local transactions definitions
+   */
+  CICS_LOCAL_FILE: "CICSLocalFile",
 };

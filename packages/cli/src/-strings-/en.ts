@@ -321,6 +321,22 @@ export default {
     SUMMARY: "Enable resources from CICS",
     DESCRIPTION: "Enable resources from CICS through IBM CMCI.",
     RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Enable a local file from CICS.",
+        POSITIONALS: {
+          NAME: "The name of the local file to enable.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to enable the local file",
+          CICSPLEX: "The name of the CICSPlex to which to enable the local file",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was enabled successfully.",
+        },
+        EXAMPLES: {
+          EX1: "Enable a local file named FILE from the region named MYREGION",
+        },
+      },
       PROGRAM: {
         DESCRIPTION: "Enable a program from CICS.",
         POSITIONALS: {

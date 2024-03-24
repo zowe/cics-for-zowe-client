@@ -130,3 +130,42 @@ export async function enableProgram(session: AbstractSession, parms: IProgramPar
 
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
+
+/**
+ * Enable a local file installed in CICS through CMCI REST API
+ * @param {AbstractSession} session - the session to connect to CMCI with
+ * @param {IURIMapParms} parms - parameters for enabling your local file
+ * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response (XML parsed into a javascript object)
+ *                          when the request is complete
+ * @throws {ImperativeError} CICS LocalFile name not defined or blank
+ * @throws {ImperativeError} CICS Region name not defined or blank
+ * @throws {ImperativeError} CicsCmciRestClient request fails
+ */
+export async function enableLocalFile(session: AbstractSession, parms: IBaseParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS LocalFile name", "CICS LocalFile name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+  const requestBody: any = {
+    request: {
+      action: {
+        $: {
+          name: "ENABLE",
+        },
+      },
+    },
+  };
+
+  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_LOCAL_FILE +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=(FILE=" +
+    parms.name +
+    ")";
+
+  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
