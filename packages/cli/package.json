@@ -30,6 +30,7 @@
     "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "madge -c lib",
+    "pretty": "prettier --write 'src/**/*.ts' '__tests__/**/*.ts' '__mocks__/**/*.ts'",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",

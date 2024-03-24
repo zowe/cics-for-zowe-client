@@ -19,6 +19,7 @@
     "lint": "npm run lint --workspaces",
     "lintErrors": "npm run lintErrors --workspaces",
     "prepare": "husky install",
+    "pretty": "turbo pretty",
     "license": "node scripts/updateLicenses.js"
   },
   "devDependencies": {

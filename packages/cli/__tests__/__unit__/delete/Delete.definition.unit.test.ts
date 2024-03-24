@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("cics delete program", () => {
   const DELETE_RESOURCES = 4;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/delete/Delete.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(DELETE_RESOURCES);

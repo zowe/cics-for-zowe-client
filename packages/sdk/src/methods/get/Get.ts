@@ -33,8 +33,7 @@ export async function getResource(session: AbstractSession, parms: IResourceParm
   Logger.getAppLogger().debug("Attempting to get resource(s) with the following parameters:\n%s", JSON.stringify(parms));
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  let cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        parms.name + "/" + cicsPlex + parms.regionName;
+  let cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + parms.name + "/" + cicsPlex + parms.regionName;
 
   if (parms.criteria != null) {
     cmciResource = cmciResource + delimiter + "CRITERIA=(" + encodeURIComponent(parms.criteria) + ")";

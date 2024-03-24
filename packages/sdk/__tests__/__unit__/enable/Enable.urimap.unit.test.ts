@@ -10,30 +10,23 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  enableUrimap,
-  ICMCIApiResponse,
-  IURIMapParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableUrimap, ICMCIApiResponse, IURIMapParms } from "../../../src";
 
 describe("CMCI - enable urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
   const enableParms: IURIMapParms = {
     regionName: region,
-    name: urimap
+    name: urimap,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -87,19 +80,18 @@ describe("CMCI - enable urimap", () => {
     });
 
     it("should be able to enable a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${enableParms.name})`;
+      endPoint =
+        "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_URIMAP + "/" + region + `?CRITERIA=(NAME=${enableParms.name})`;
       requestBody = {
         request: {
           update: {
             attributes: {
               $: {
-                ENABLESTATUS: "ENABLED"
-              }
-            }
-          }
-        }
+                ENABLESTATUS: "ENABLED",
+              },
+            },
+          },
+        },
       };
 
       response = await enableUrimap(dummySession, enableParms);

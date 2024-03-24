@@ -13,8 +13,8 @@ import { IBaseParms } from "./IBaseParms";
 
 export interface IProgramParms extends IBaseParms {
   /**
-     * CSD group for the program
-     * Up to eight characters long
-     */
+   * CSD group for the program
+   * Up to eight characters long
+   */
   csdGroup?: string;
 }

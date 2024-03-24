@@ -11,18 +11,18 @@
 
 export interface IBaseParms {
   /**
-     * The name of resource
-     * Up to eight characters long
-     */
+   * The name of resource
+   * Up to eight characters long
+   */
   name: string;
 
   /**
-     * The name of the CICS region 
-     */
+   * The name of the CICS region
+   */
   regionName: string;
 
   /**
-     * The name of the CICS Plex
-     */
+   * The name of the CICS Plex
+   */
   cicsPlex?: string;
 }

@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics enable urimap", () => {
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../../src/enable/urimap/Urimap.definition").UrimapDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;

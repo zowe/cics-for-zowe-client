@@ -22,7 +22,10 @@ export class CICSWebTree extends TreeItem {
   parentRegion: CICSRegionTree | undefined;
   //activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Web", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeweb.web`;
     this.parentRegion = parentRegion;

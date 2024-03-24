@@ -13,14 +13,14 @@ import { IBaseParms } from "./IBaseParms";
 
 export interface ITransactionParms extends IBaseParms {
   /**
-     * The name of the program to associate to the transaction
-     * Up to eight characters long
-     */
+   * The name of the program to associate to the transaction
+   * Up to eight characters long
+   */
   programName?: string;
 
   /**
-     * CSD group for the transaction
-     * Up to eight characters long
-     */
+   * CSD group for the transaction
+   * Up to eight characters long
+   */
   csdGroup?: string;
 }

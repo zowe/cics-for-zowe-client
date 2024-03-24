@@ -26,8 +26,8 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
@@ -35,14 +35,14 @@ PROFILE_MAP.set(
     user,
     password,
     protocol,
-    rejectUnauthorized
-  }]
-);
+    rejectUnauthorized,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "install", "urimap"],
   definition: UrimapDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("InstallUrimapHandler", () => {
@@ -52,9 +52,9 @@ describe("InstallUrimapHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Install, "installUrimap");
@@ -67,7 +67,7 @@ describe("InstallUrimapHandler", () => {
   it("should call the installUrimap api", async () => {
     const handler = new UrimapHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -78,7 +78,7 @@ describe("InstallUrimapHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -93,12 +93,12 @@ describe("InstallUrimapHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
         csdGroup,
-        regionName
+        regionName,
       }
     );
   });

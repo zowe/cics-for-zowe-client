@@ -105,7 +105,10 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-function disableProgram(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+function disableProgram(
+  session: imperative.AbstractSession,
+  parms: { name: string; regionName: string; cicsPlex: string }
+): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

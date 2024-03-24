@@ -10,16 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  ICMCIApiResponse,
-  installUrimap,
-  IURIMapParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, installUrimap, IURIMapParms } from "../../../src";
 
 describe("CMCI - Install urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const group = "group";
@@ -28,14 +21,14 @@ describe("CMCI - Install urimap", () => {
   const installParms: IURIMapParms = {
     regionName: region,
     name: urimap,
-    csdGroup: group
+    csdGroup: group,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -103,17 +96,22 @@ describe("CMCI - Install urimap", () => {
     });
 
     it("should be able to install a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${installParms.name})&PARAMETER=CSDGROUP(${installParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        region +
+        `?CRITERIA=(NAME=${installParms.name})&PARAMETER=CSDGROUP(${installParms.csdGroup})`;
       requestBody = {
         request: {
           action: {
             $: {
               name: "CSDINSTALL",
-            }
-          }
-        }
+            },
+          },
+        },
       };
 
       response = await installUrimap(dummySession, installParms);

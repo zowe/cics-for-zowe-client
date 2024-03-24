@@ -27,13 +27,12 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
 
 export default class UrimapHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Deleting URIMAP from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await deleteUrimap(session, {
       name: params.arguments.urimapName,

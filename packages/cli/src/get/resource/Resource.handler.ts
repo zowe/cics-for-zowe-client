@@ -21,26 +21,25 @@ import { CicsBaseHandler } from "../../CicsBaseHandler";
  */
 export default class ResourceHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Getting resources from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await getResource(session, {
       name: params.arguments.resourceName,
       regionName: params.arguments.regionName,
       cicsPlex: params.arguments.cicsPlex,
       criteria: params.arguments.criteria,
-      parameter: params.arguments.parameter
+      parameter: params.arguments.parameter,
     });
 
     params.response.format.output({
       fields: [],
       format: "object",
-      output: response.response.records[params.arguments.resourceName.toLowerCase()]
+      output: response.response.records[params.arguments.resourceName.toLowerCase()],
     });
     return response;
   }

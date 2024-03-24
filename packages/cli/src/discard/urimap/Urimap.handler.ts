@@ -27,17 +27,16 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DI
 
 export default class UrimapHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Discarding URIMAP from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await discardUrimap(session, {
       name: params.arguments.urimapName,
-      regionName: params.arguments.regionName
+      regionName: params.arguments.regionName,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);

@@ -13,21 +13,21 @@ import { IBaseParms } from "./IBaseParms";
 
 export interface IResourceParms extends IBaseParms {
   /**
-     * Criteria by which to filter the records
-     *
-     * Examples:
-     *    "TRANID=TRAN"
-     *    "PROGRAM=PRG*"
-     *    "NAME=C* AND PROGRAM=D*"
-     */
+   * Criteria by which to filter the records
+   *
+   * Examples:
+   *    "TRANID=TRAN"
+   *    "PROGRAM=PRG*"
+   *    "NAME=C* AND PROGRAM=D*"
+   */
   criteria?: string;
 
   /**
-     * Parameter by which to refine the records
-     *
-     * Example:
-     *    "CSDGROUP(GRP1)"
-     *    "CSDGROUP(D*)"
-     */
+   * Parameter by which to refine the records
+   *
+   * Example:
+   *    "CSDGROUP(GRP1)"
+   *    "CSDGROUP(D*)"
+   */
   parameter?: string;
 }

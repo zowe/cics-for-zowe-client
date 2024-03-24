@@ -22,7 +22,10 @@ export class CICSTaskTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeTransactionFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.parentRegion = parentRegion;
@@ -56,9 +59,8 @@ export class CICSTaskTree extends TreeItem {
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
 
-      const tasksArray = Array.isArray(taskResponse.response.records.cicstask)
-        ? taskResponse.response.records.cicstask
-        : [taskResponse.response.records.cicstask];
+      const tasksArray =
+        Array.isArray(taskResponse.response.records.cicstask) ? taskResponse.response.records.cicstask : [taskResponse.response.records.cicstask];
       this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[${tasksArray.length}]`;
       for (const task of tasksArray) {
         const newTaskItem = new CICSTaskTreeItem(task, this.parentRegion, this);

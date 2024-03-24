@@ -26,18 +26,17 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).RE
  */
 export default class ProgramHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Refreshing program to CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await programNewcopy(session, {
       name: params.arguments.programName,
       regionName: params.arguments.regionName,
-      cicsPlex: params.arguments.cicsPlex
+      cicsPlex: params.arguments.cicsPlex,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);

@@ -41,10 +41,13 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
   // });
   // await mProfileInfo.readProfilesFromDisk();
   // ProfilesCache.createConfigInstance(mProfileInfo);
-  const promptInfo = await ZoweVsCodeExtension.updateCredentials({
-    sessionName,
-    rePrompt,
-  }, ProfileManagement.getExplorerApis());
+  const promptInfo = await ZoweVsCodeExtension.updateCredentials(
+    {
+      sessionName,
+      rePrompt,
+    },
+    ProfileManagement.getExplorerApis()
+  );
   if (!promptInfo) {
     window.showInformationMessage("Input credentials operation Cancelled");
   }

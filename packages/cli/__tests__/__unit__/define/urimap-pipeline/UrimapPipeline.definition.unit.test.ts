@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define urimap-pipeline", () => {
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const path = "../../../../src/define/urimap-pipeline/UrimapPipeline.definition";
     const definition: ICommandDefinition = require(path).UrimapPipelineDefinition;
     expect(definition).toBeDefined();

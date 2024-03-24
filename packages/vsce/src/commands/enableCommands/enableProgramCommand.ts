@@ -104,7 +104,10 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-async function enableProgram(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+async function enableProgram(
+  session: imperative.AbstractSession,
+  parms: { name: string; regionName: string; cicsPlex: string }
+): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

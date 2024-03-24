@@ -26,21 +26,21 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "get", "resource"],
   definition: ResourceDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("GetResourceHandler", () => {
@@ -49,23 +49,23 @@ describe("GetResourceHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: {}
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: {},
+    },
   };
 
   const functionSpy = jest.spyOn(Get, "getResource");
 
   beforeEach(() => {
     functionSpy.mockClear();
-    defaultReturn.response.records[resourceName.toLowerCase()] = [{prop: "test1"}, {prop: "test2"}];
+    defaultReturn.response.records[resourceName.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
     functionSpy.mockImplementation(async () => defaultReturn);
   });
 
   it("should call the getResource api", async () => {
     const handler = new ResourceHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       resourceName,
@@ -75,7 +75,7 @@ describe("GetResourceHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -90,11 +90,11 @@ describe("GetResourceHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: resourceName,
-        regionName
+        regionName,
       }
     );
   });

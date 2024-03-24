@@ -26,21 +26,21 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "urimap-client"],
   definition: UrimapClientDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("DefineUrimapClientHandler", () => {
@@ -57,9 +57,9 @@ describe("DefineUrimapClientHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineUrimapClient");
@@ -72,7 +72,7 @@ describe("DefineUrimapClientHandler", () => {
   it("should call the defineUrimapClient api", async () => {
     const handler = new UrimapClientHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -90,7 +90,7 @@ describe("DefineUrimapClientHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -105,7 +105,7 @@ describe("DefineUrimapClientHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
@@ -118,7 +118,7 @@ describe("DefineUrimapClientHandler", () => {
         enable,
         description: undefined,
         authenticate,
-        certificate
+        certificate,
       }
     );
   });

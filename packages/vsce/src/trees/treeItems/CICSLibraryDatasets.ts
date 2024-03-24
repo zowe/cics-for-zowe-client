@@ -67,8 +67,9 @@ export class CICSLibraryDatasets extends TreeItem {
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
 
-      const programsArray = Array.isArray(datasetResponse.response.records.cicsprogram)
-        ? datasetResponse.response.records.cicsprogram
+      const programsArray =
+        Array.isArray(datasetResponse.response.records.cicsprogram) ?
+          datasetResponse.response.records.cicsprogram
         : [datasetResponse.response.records.cicsprogram];
       this.label = `${this.dataset.dsname}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {

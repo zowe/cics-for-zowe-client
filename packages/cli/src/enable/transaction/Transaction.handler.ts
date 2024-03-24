@@ -26,18 +26,17 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).EN
  */
 export default class TransactionHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Enabling Transaction from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await enableTransaction(session, {
       name: params.arguments.name,
       regionName: params.arguments.regionName,
-      cicsPlex: params.arguments.cicsPlex
+      cicsPlex: params.arguments.cicsPlex,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.name);

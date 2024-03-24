@@ -21,7 +21,10 @@ export class CICSURIMapTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("URI Maps", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.parentRegion = parentRegion;
@@ -50,8 +53,9 @@ export class CICSURIMapTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const urimapArray = Array.isArray(urimapResponse.response.records.cicsurimap)
-        ? urimapResponse.response.records.cicsurimap
+      const urimapArray =
+        Array.isArray(urimapResponse.response.records.cicsurimap) ?
+          urimapResponse.response.records.cicsurimap
         : [urimapResponse.response.records.cicsurimap];
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
       for (const urimap of urimapArray) {

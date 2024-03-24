@@ -29,7 +29,10 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtcpipstree.`;
     this.parentPlex = parentPlex;

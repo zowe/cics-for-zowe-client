@@ -21,7 +21,10 @@ export class CICSPipelineTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
     this.parentRegion = parentRegion;
@@ -50,8 +53,9 @@ export class CICSPipelineTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const pipelinesArray = Array.isArray(pipelineResponse.response.records.cicspipeline)
-        ? pipelineResponse.response.records.cicspipeline
+      const pipelinesArray =
+        Array.isArray(pipelineResponse.response.records.cicspipeline) ?
+          pipelineResponse.response.records.cicspipeline
         : [pipelineResponse.response.records.cicspipeline];
       this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;
       for (const pipeline of pipelinesArray) {

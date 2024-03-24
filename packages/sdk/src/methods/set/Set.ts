@@ -34,14 +34,22 @@ export function programNewcopy(session: AbstractSession, parms: IProgramParms): 
       action: {
         $: {
           name: "NEWCOPY",
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(PROGRAM=" + parms.name + ")";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=(PROGRAM=" +
+    parms.name +
+    ")";
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }

@@ -26,21 +26,21 @@ const rejectUnauthorized = false;
 const protocol = "https";
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "install", "transaction"],
   definition: TransactionDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("InstallTransactionHandler", () => {
@@ -50,9 +50,9 @@ describe("InstallTransactionHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Install, "installTransaction");
@@ -65,7 +65,7 @@ describe("InstallTransactionHandler", () => {
   it("should call the installTransaction api", async () => {
     const handler = new TransactionHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       transactionName,
@@ -75,7 +75,7 @@ describe("InstallTransactionHandler", () => {
       port,
       user,
       password,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -90,12 +90,12 @@ describe("InstallTransactionHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: transactionName,
         csdGroup,
-        regionName
+        regionName,
       }
     );
   });

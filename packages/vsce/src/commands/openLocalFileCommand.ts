@@ -109,7 +109,10 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-async function openLocalFile(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+async function openLocalFile(
+  session: imperative.AbstractSession,
+  parms: { name: string; regionName: string; cicsPlex: string }
+): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

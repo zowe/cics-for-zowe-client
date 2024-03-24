@@ -24,7 +24,10 @@ export class CICSRegionsContainer extends TreeItem {
   resourceFilters: any;
   activeFilter: string;
 
-  constructor(parent: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parent: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Regions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicsregionscontainer.`;
     this.parent = parent;
@@ -70,8 +73,9 @@ export class CICSRegionsContainer extends TreeItem {
     });
     https.globalAgent.options.rejectUnauthorized = undefined;
     this.clearChildren();
-    const regionsArray = Array.isArray(regionsObtained.response.records.cicsmanagedregion)
-      ? regionsObtained.response.records.cicsmanagedregion
+    const regionsArray =
+      Array.isArray(regionsObtained.response.records.cicsmanagedregion) ?
+        regionsObtained.response.records.cicsmanagedregion
       : [regionsObtained.response.records.cicsmanagedregion];
     this.addRegionsUtility(regionsArray);
     // Keep container open after label change

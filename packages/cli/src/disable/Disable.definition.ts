@@ -26,17 +26,14 @@ const definition: ICommandDefinition = {
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [
-    UrimapDefinition],
+  children: [UrimapDefinition],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

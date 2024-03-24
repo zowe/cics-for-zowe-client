@@ -22,7 +22,10 @@ export class CICSLibraryTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.parentRegion = parentRegion;
@@ -51,8 +54,9 @@ export class CICSLibraryTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const librariesArray = Array.isArray(libraryResponse.response.records.cicslibrary)
-        ? libraryResponse.response.records.cicslibrary
+      const librariesArray =
+        Array.isArray(libraryResponse.response.records.cicslibrary) ?
+          libraryResponse.response.records.cicslibrary
         : [libraryResponse.response.records.cicslibrary];
       this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${librariesArray.length}]`;
       for (const library of librariesArray) {

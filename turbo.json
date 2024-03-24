@@ -13,6 +13,9 @@
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
     },
     "lint": {},
+    "pretty": {
+      "cache": false
+    },
     "package": {
       "dependsOn": ["build"],
       "cache": false
