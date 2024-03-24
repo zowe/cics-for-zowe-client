@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("cics enable transaction", () => {
+describe("cics enable program", () => {
   it("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/enable/transaction/Transaction.definition").TransactionDefinition;
+    const definition: ICommandDefinition = require("../../../../src/enable/program/Program.definition").ProgramDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

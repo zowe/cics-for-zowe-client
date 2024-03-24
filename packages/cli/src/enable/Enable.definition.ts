@@ -15,6 +15,7 @@ import { UrimapDefinition } from "./urimap/Urimap.definition";
 import i18nTypings from "../-strings-/en";
 import { CicsSession } from "../CicsSession";
 import { TransactionDefinition } from "./transaction/Transaction.definition";
+import { ProgramDefinition } from "./program/Program.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE;
@@ -28,7 +29,7 @@ const definition: ICommandDefinition = {
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [TransactionDefinition, UrimapDefinition],
+  children: [ProgramDefinition, TransactionDefinition, UrimapDefinition],
   passOn: [
     {
       property: "options",

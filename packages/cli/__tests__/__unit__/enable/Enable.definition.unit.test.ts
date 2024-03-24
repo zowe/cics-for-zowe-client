@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics enable urimap", () => {
-  const ENABLE_RESOURCES = 2;
+  const ENABLE_RESOURCES = 3;
 
   it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/enable/Enable.definition");

@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`cics enable transaction should not have changed 1`] = `
+{
+  "aliases": [
+    "tran",
+  ],
+  "description": "Enable a transaction from CICS.",
+  "examples": [
+    {
+      "description": "Enable a transaction named TRN1 from the region named MYREGION",
+      "options": "TRN1 --region-name MYREGION",
+    },
+  ],
+  "name": "transaction",
+  "options": [
+    {
+      "description": "The CICS region name in which to enable the transaction",
+      "name": "region-name",
+      "type": "string",
+    },
+    {
+      "description": "The name of the CICSPlex to which to enable the transaction",
+      "name": "cics-plex",
+      "type": "string",
+    },
+  ],
+  "positionals": [
+    {
+      "description": "The name of the transaction to enable. The maximum length is four characters.",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": {
+    "optional": [
+      "cics",
+    ],
+  },
+  "type": "command",
+}
+`;
+
 exports[`cics enable urimap should not have changed 1`] = `
 {
   "aliases": [

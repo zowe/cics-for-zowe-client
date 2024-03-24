@@ -321,6 +321,22 @@ export default {
     SUMMARY: "Enable resources from CICS",
     DESCRIPTION: "Enable resources from CICS through IBM CMCI.",
     RESOURCES: {
+      PROGRAM: {
+        DESCRIPTION: "Enable a program from CICS.",
+        POSITIONALS: {
+          NAME: "The name of the program to enable. The maximum length is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to enable the program",
+          CICSPLEX: "The name of the CICSPlex to which to enable the program",
+        },
+        MESSAGES: {
+          SUCCESS: "The program '%s' was enabled successfully.",
+        },
+        EXAMPLES: {
+          EX1: "Enable a program named PROGRAM1 from the region named MYREGION",
+        },
+      },
       TRANSACTION: {
         DESCRIPTION: "Enable a transaction from CICS.",
         POSITIONALS: {

@@ -9,8 +9,6 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
@@ -19,6 +17,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { enableProgram } from "@zowe/cics-for-zowe-sdk";
 
 /**
  * Performs enable on selected CICSProgram nodes.
@@ -102,34 +101,4 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
       }
     );
   });
-}
-
-async function enableProgram(
-  session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string }
-): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
-        },
-      },
-    },
-  };
-
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    CicsCmciConstants.CICS_PROGRAM_RESOURCE +
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(PROGRAM=" +
-    parms.name +
-    ")";
-
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

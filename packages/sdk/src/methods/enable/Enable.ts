@@ -12,7 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { IBaseParms, ICMCIApiResponse, IURIMapParms } from "../../doc";
+import { IBaseParms, ICMCIApiResponse, IProgramParms, IURIMapParms } from "../../doc";
 
 /**
  * Enable a URIMap installed in CICS through CMCI REST API
@@ -86,6 +86,45 @@ export async function enableTransaction(session: AbstractSession, parms: IBasePa
     cicsPlex +
     parms.regionName +
     "?CRITERIA=(TRANID=" +
+    parms.name +
+    ")";
+
+  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+
+/**
+ * Enable a program installed in CICS through CMCI REST API
+ * @param {AbstractSession} session - the session to connect to CMCI with
+ * @param {IURIMapParms} parms - parameters for enabling your program
+ * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response (XML parsed into a javascript object)
+ *                          when the request is complete
+ * @throws {ImperativeError} CICS Program name not defined or blank
+ * @throws {ImperativeError} CICS Region name not defined or blank
+ * @throws {ImperativeError} CicsCmciRestClient request fails
+ */
+export async function enableProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS Program name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+  const requestBody: any = {
+    request: {
+      action: {
+        $: {
+          name: "ENABLE",
+        },
+      },
+    },
+  };
+
+  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=(PROGRAM=" +
     parms.name +
     ")";
 
