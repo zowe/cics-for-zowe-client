@@ -2,6 +2,13 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Enhacement: Added the following SDK methods: [#14](https://github.com/zowe/cics-for-zowe-client/issues/14)
+  - `enableTransaction`
+  - `enableProgram`
+  - `enableLocalFile`
+
 ## `6.0.0-next.202403042201`
 
 - V3 Breaking: Increased Node Engine to 18.12.0

@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated version of the SDK dependency for technical currency. [#14](https://github.com/zowe/cics-for-zowe-client/issues/14)
+
 ## `3.0.0-next.202403011419`
 
 - BugFix: Fixed icons not displaying.[#112](https://github.com/zowe/cics-for-zowe-client/issues/112)
