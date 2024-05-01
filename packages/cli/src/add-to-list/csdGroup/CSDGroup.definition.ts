@@ -22,31 +22,37 @@ export const CSDGroupDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION,
   handler: __dirname + "/CSDGroup.handler",
   type: "command",
-  positionals: [{
-    name: "name",
-    description: strings.POSITIONALS.NAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdList",
-    description: strings.POSITIONALS.CSDLIST,
-    type: "string",
-    required: true
-  }],
+  positionals: [
+    {
+      name: "name",
+      description: strings.POSITIONALS.NAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdList",
+      description: strings.POSITIONALS.CSDLIST,
+      type: "string",
+      required: true,
+    },
+  ],
   options: [
     {
       name: "region-name",
       description: strings.OPTIONS.REGIONNAME,
-      type: "string"
+      type: "string",
     },
     {
       name: "cics-plex",
       description: strings.OPTIONS.CICSPLEX,
-      type: "string"
-    }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.EX1,
-    options: "MYGRP MYLIST --region-name MYREG"
-  }]
+      type: "string",
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.EX1,
+      options: "MYGRP MYLIST --region-name MYREG",
+    },
+  ],
 };

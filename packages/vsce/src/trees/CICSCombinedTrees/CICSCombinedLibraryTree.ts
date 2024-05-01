@@ -29,7 +29,10 @@ export class CICSCombinedLibraryTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlibrarytree.`;
     this.parentPlex = parentPlex;

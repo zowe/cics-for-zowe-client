@@ -22,58 +22,61 @@ export const UrimapClientDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION.CLIENT,
   handler: __dirname + "/UrimapClient.handler",
   type: "command",
-  positionals: [{
-    name: "urimapName",
-    description: strings.POSITIONALS.URIMAPNAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdGroup",
-    description: strings.POSITIONALS.CSDGROUP,
-    type: "string",
-    required: true
-  }],
+  positionals: [
+    {
+      name: "urimapName",
+      description: strings.POSITIONALS.URIMAPNAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdGroup",
+      description: strings.POSITIONALS.CSDGROUP,
+      type: "string",
+      required: true,
+    },
+  ],
   options: [
     {
       name: "urimap-path",
       aliases: ["up"],
       description: strings.OPTIONS.URIMAPPATH,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "urimap-host",
       aliases: ["uh"],
       description: strings.OPTIONS.URIMAPHOST,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "urimap-scheme",
       aliases: ["us"],
       description: strings.OPTIONS.URIMAPSCHEME,
       type: "string",
-      allowableValues: {values: ["http", "https"], caseSensitive: false},
-      defaultValue: "https"
+      allowableValues: { values: ["http", "https"], caseSensitive: false },
+      defaultValue: "https",
     },
     {
       name: "authenticate",
       aliases: ["auth"],
       description: strings.OPTIONS.AUTHENTICATE,
       type: "string",
-      allowableValues: {values: ["NO", "BASIC"], caseSensitive: true},
+      allowableValues: { values: ["NO", "BASIC"], caseSensitive: true },
     },
     {
       name: "certificate",
       aliases: ["cert"],
       description: strings.OPTIONS.CERTIFICATE,
-      type: "string"
+      type: "string",
     },
     {
       name: "description",
       aliases: ["desc"],
       description: strings.OPTIONS.DESCRIPTION,
-      type: "string"
+      type: "string",
     },
     {
       name: "region-name",
@@ -83,17 +86,20 @@ export const UrimapClientDefinition: ICommandDefinition = {
     {
       name: "cics-plex",
       description: strings.OPTIONS.CICSPLEX,
-      type: "string"
+      type: "string",
     },
     {
       name: "enable",
       description: strings.OPTIONS.ENABLE,
       type: "boolean",
-      defaultValue: true
-    }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.CLIENT.EX1,
-    options: "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --region-name MYREGION"
-  }]
+      defaultValue: true,
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.CLIENT.EX1,
+      options: "URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --region-name MYREGION",
+    },
+  ],
 };

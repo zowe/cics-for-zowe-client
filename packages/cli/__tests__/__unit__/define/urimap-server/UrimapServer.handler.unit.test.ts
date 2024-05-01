@@ -26,21 +26,21 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "urimap-server"],
   definition: UrimapServerDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("DefineUrimapServerHandler", () => {
@@ -57,9 +57,9 @@ describe("DefineUrimapServerHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineUrimapServer");
@@ -72,7 +72,7 @@ describe("DefineUrimapServerHandler", () => {
   it("should call the defineUrimapServer api", async () => {
     const handler = new UrimapServerHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -90,7 +90,7 @@ describe("DefineUrimapServerHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -105,7 +105,7 @@ describe("DefineUrimapServerHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
@@ -118,7 +118,7 @@ describe("DefineUrimapServerHandler", () => {
         cicsPlex,
         enable,
         tcpipservice,
-        description: undefined
+        description: undefined,
       }
     );
   });

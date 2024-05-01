@@ -10,16 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  getResource,
-  ICMCIApiResponse,
-  IResourceParms
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, getResource, ICMCIApiResponse, IResourceParms } from "../../../src";
 
 describe("CMCI - Get resource", () => {
-
   const resource = "resource";
   const region = "region";
   const cicsPlex = "plex";
@@ -30,14 +23,14 @@ describe("CMCI - Get resource", () => {
     regionName: region,
     name: resource,
     criteria,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -81,7 +74,7 @@ describe("CMCI - Get resource", () => {
       try {
         response = await getResource(dummySession, {
           regionName: undefined,
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -96,7 +89,7 @@ describe("CMCI - Get resource", () => {
       try {
         response = await getResource(dummySession, {
           regionName: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -111,7 +104,7 @@ describe("CMCI - Get resource", () => {
       try {
         response = await getResource(dummySession, {
           regionName: "",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -124,7 +117,6 @@ describe("CMCI - Get resource", () => {
   });
 
   describe("success scenarios", () => {
-
     const deleteSpy = jest.spyOn(CicsCmciRestClient, "getExpectParsedXml").mockResolvedValue(content);
 
     beforeEach(() => {
@@ -135,8 +127,16 @@ describe("CMCI - Get resource", () => {
     });
 
     it("should be able to get a resource without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-                "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        resource +
+        "/" +
+        region +
+        "?CRITERIA=(" +
+        encodeURIComponent(resourceParms.criteria) +
+        ")";
 
       response = await getResource(dummySession, resourceParms);
 
@@ -146,8 +146,7 @@ describe("CMCI - Get resource", () => {
 
     it("should be able to get a resource without criteria specified", async () => {
       resourceParms.criteria = undefined;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-                "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
@@ -158,8 +157,7 @@ describe("CMCI - Get resource", () => {
     it("should be able to get a resource with cicsPlex specified and criteria not specified", async () => {
       resourceParms.cicsPlex = cicsPlex;
       resourceParms.criteria = undefined;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +  resource +
-                "/" + cicsPlex + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + cicsPlex + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
@@ -170,8 +168,16 @@ describe("CMCI - Get resource", () => {
     it("should be able to get a resource with criteria specified", async () => {
       resourceParms.cicsPlex = undefined;
       resourceParms.criteria = criteria;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +  resource +
-                "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        resource +
+        "/" +
+        region +
+        "?CRITERIA=(" +
+        encodeURIComponent(resourceParms.criteria) +
+        ")";
       response = await getResource(dummySession, resourceParms);
 
       expect(response).toContain(content);

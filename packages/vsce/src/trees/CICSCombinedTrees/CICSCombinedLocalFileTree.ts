@@ -29,7 +29,10 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlocalfiletree.`;
     this.parentPlex = parentPlex;

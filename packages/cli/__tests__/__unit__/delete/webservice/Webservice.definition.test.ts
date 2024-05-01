@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics delete web service", () => {
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../../src/delete/webservice/Webservice.definition").WebServiceDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;

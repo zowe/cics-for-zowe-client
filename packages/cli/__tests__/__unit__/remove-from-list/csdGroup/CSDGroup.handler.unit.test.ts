@@ -26,21 +26,21 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "remove-from-list", "csdGroup"],
   definition: CSDGroupDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("RemoveFromListProgramHandler", () => {
@@ -50,9 +50,9 @@ describe("RemoveFromListProgramHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(RemoveFromList, "removeCSDGroupFromList");
@@ -65,7 +65,7 @@ describe("RemoveFromListProgramHandler", () => {
   it("should call the removeCSDGroupFromList api", async () => {
     const handler = new CSDGroupHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       name,
@@ -76,7 +76,7 @@ describe("RemoveFromListProgramHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -91,12 +91,12 @@ describe("RemoveFromListProgramHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name,
         csdList,
-        regionName
+        regionName,
       }
     );
   });

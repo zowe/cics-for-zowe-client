@@ -21,7 +21,10 @@ export class CICSProgramTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.parentRegion = parentRegion;
@@ -50,8 +53,9 @@ export class CICSProgramTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const programsArray = Array.isArray(programResponse.response.records.cicsprogram)
-        ? programResponse.response.records.cicsprogram
+      const programsArray =
+        Array.isArray(programResponse.response.records.cicsprogram) ?
+          programResponse.response.records.cicsprogram
         : [programResponse.response.records.cicsprogram];
       this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {

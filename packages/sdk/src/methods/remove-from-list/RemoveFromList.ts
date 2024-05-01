@@ -32,8 +32,18 @@ export function removeCSDGroupFromList(session: AbstractSession, parms: ICSDGrou
   Logger.getAppLogger().debug("Attempting to remove a CSD Group from a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(CSDLIST=='" + parms.csdList + "')%20AND%20(CSDGROUP=='" + parms.name + "')";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_CSDGROUP_IN_LIST +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=(CSDLIST=='" +
+    parms.csdList +
+    "')%20AND%20(CSDGROUP=='" +
+    parms.name +
+    "')";
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []) as any;
 }

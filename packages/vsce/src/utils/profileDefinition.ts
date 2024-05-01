@@ -114,4 +114,4 @@ const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
   },
 ];
 
-export default cicsProfileMeta ;
+export default cicsProfileMeta;

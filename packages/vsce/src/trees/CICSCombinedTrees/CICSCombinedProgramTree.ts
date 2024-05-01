@@ -30,7 +30,10 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;

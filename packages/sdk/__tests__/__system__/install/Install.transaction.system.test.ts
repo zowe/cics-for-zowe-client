@@ -22,11 +22,10 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Install transaction", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_install_transaction",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     programName = "program1";
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
@@ -40,7 +39,7 @@ describe("CICS Install transaction", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 
