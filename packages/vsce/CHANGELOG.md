@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed several identified problems with possible null values in the tree and web views. [#123](https://github.com/zowe/cics-for-zowe-client/issues/123)
+
 ## `1.3.7`
 
 - BugFix: Fixed icons not displaying.[#112](https://github.com/zowe/cics-for-zowe-client/issues/112)
