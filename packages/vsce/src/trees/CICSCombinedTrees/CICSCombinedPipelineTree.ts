@@ -112,6 +112,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
   public addPipelinesUtil(newChildren: (CICSPipelineTreeItem | ViewMore)[], allPipelines: any, count: number | undefined) {
     for (const pipeline of allPipelines) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) { continue; }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === pipeline.eyu_cicsname)?.[0] as CICSRegionTree;
