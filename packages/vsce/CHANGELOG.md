@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `6.0.0-next.202405040307`
 
 - BugFix: Fixed several identified problems with possible null values in the tree and web views. [#122](https://github.com/zowe/cics-for-zowe-client/issues/122)
 

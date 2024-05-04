@@ -1,7 +1,7 @@
 {
   "name": "@zowe/cics_monorepo",
   "private": true,
-  "version": "6.0.0-next.202403042201",
+  "version": "6.0.0-next.202405040307",
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
