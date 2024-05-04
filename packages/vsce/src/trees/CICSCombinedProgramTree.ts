@@ -113,6 +113,7 @@ export class CICSCombinedProgramTree extends TreeItem {
     for (const program of allPrograms) {
       // Regions container must exist if all programs tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) { continue; }
       const parentRegion = regionsContainer
         .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0];
