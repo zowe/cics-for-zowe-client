@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## `2.3.6`
 
 - BugFix: Fixed several identified problems with possible null values in the tree and web views. [#121](https://github.com/zowe/cics-for-zowe-client/issues/121)
+- Moved the popup from activation `Zowe Explorer was modified for the CICS Extension.` to the logger instead.
 
 ## `2.3.5`
 
