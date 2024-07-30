@@ -14,5 +14,5 @@ jobs:
       - name: Process Label Action
         uses: dessant/label-actions@v4
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: '.github/label-actions.yml'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config-path: '.github/label-actions.yml'
