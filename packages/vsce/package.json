@@ -1,8 +1,9 @@
 {
   "name": "cics-extension-for-zowe",
-  "displayName": "Zowe Explorer for IBM CICS",
-  "description": "Extension to the Zowe Explorer for IBM CICS",
+  "displayName": "IBM CICS for Zowe Explorer",
+  "description": "Adds IBM CICS support to Zowe Explorer.",
   "publisher": "Zowe",
+  "author": "Zowe",
   "repository": {
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
