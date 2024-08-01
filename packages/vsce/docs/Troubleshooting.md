@@ -1,6 +1,6 @@
-# Zowe Explorer for IBM CICS extension Troubleshooting
+# IBM CICS for Zowe Explorer extension Troubleshooting
 
-Check that the [source of the error](https://github.com/zowe/vscode-extension-for-cics#checking-the-source-of-an-error) is from the Zowe Explorer for IBM CICS extension before refering to the troubleshooting documentation.
+Check that the [source of the error](https://github.com/zowe/vscode-extension-for-cics#checking-the-source-of-an-error) is from the IBM CICS for Zowe Explorer extension before refering to the troubleshooting documentation.
 
 ## Contents
 
@@ -13,7 +13,7 @@ If a socket closed error occurs when trying to connect to a profile with an IP a
 
 ## `Failed to load schema for profile type cics` error
 
-This Zowe V2 error appears when a cics profile entry is missing from the `zowe.schema.json` file. Currently, the installation of the Zowe Explorer for IBM CICS extension does not automatically add this cics entry. This is being worked on.
+This Zowe V2 error appears when a cics profile entry is missing from the `zowe.schema.json` file. Currently, the installation of the IBM CICS for Zowe Explorer extension does not automatically add this cics entry. This is being worked on.
 
 There are 2 ways of adding the cics entry to the schema file and getting around this error message:
 

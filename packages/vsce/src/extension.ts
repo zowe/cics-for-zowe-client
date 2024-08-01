@@ -110,7 +110,7 @@ export async function activate(context: ExtensionContext) {
       logger.debug("Zowe Explorer was modified for the CICS Extension.");
     } catch (error) {
       console.log(error);
-      logger.error("Zowe Explorer for IBM CICS was not initiliaized correctly");
+      logger.error("IBM CICS for Zowe Explorer was not initiliaized correctly");
       return;
     }
   } else {
