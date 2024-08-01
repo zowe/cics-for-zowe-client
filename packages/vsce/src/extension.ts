@@ -80,7 +80,7 @@ import { getInquireProgramCommand } from "./commands/inquireProgram";
 import { Logger } from "@zowe/imperative";
 
 /**
- * Initialises extension
+ * Initializes the extension
  * @param context
  * @returns
  */
@@ -110,7 +110,7 @@ export async function activate(context: ExtensionContext) {
       logger.debug("Zowe Explorer was modified for the CICS Extension.");
     } catch (error) {
       console.log(error);
-      logger.error("IBM CICS for Zowe Explorer was not initiliaized correctly");
+      logger.error("IBM CICS for Zowe Explorer was not initialized correctly");
       return;
     }
   } else {
