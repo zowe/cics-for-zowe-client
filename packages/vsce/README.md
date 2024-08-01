@@ -75,7 +75,7 @@ If you don't have an existing Zowe CICS CLI profile, follow these steps to creat
 
 3. Edit the config file to add a CICS profile.
 
-4. Refresh the Zowe Explorer for IBM CICS extension by either clicking the button at the top level of the CICS view, or the `Zowe Explorer for IBM CICS: Refresh` command palette option.
+4. Refresh the IBM CICS for Zowe Explorer extension by either clicking the button at the top level of the CICS view, or the `IBM CICS for Zowe Explorer: Refresh` command palette option.
 
 5. Select the **+** button in the CICS tree and click the newly created profile to load it into view.
 
@@ -146,7 +146,7 @@ To show more than one CICS profile in the tree, select the + button and choose f
 
 3. Edit the config file to update the profile(s).
 
-4. Refresh the Zowe Explorer for IBM CICS extension by either clicking the button at the top level of the CICS view, or the `Zowe Explorer for IBM CICS: Refresh` command palette option.
+4. Refresh the IBM CICS for Zowe Explorer extension by either clicking the button at the top level of the CICS view, or the `IBM CICS for Zowe Explorer: Refresh` command palette option.
 
 <p align="center">
 <img src="./docs/images/update-config-profile.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
@@ -184,7 +184,7 @@ Open the menu actions for a profile by right-clicking a profile and select `Hide
 
 3. Edit the config file to remove the cics profile entry.
 
-4. Refresh the Zowe Explorer for IBM CICS extension by either clicking the button at the top level of the CICS view, or the `Zowe Explorer for IBM CICS: Refresh` command palette option.
+4. Refresh the IBM CICS for Zowe Explorer extension by either clicking the button at the top level of the CICS view, or the `IBM CICS for Zowe Explorer: Refresh` command palette option.
 
 <p align="center">
 <img src="./docs/images/delete-config-profile.gif" alt="Zowe CICS Explorer NewCopy Program" width="600px"/>
@@ -342,7 +342,7 @@ If you define a profile as only accepting trusted TLS certificates when the Zowe
 
 ### Checking the source of an error
 
-Before filing an issue, check if an error is arising from the Zowe Explorer for IBM CICS extension and not the Zowe Explorer extension by expanding the error message and checking if the `Source` is `Zowe Explorer for IBM CICS (Extension)`.
+Before filing an issue, check if an error is arising from the IBM CICS for Zowe Explorer extension and not the Zowe Explorer extension by expanding the error message and checking if the `Source` is `IBM CICS for Zowe Explorer (Extension)`.
 
 <p align="center">
 <img src="./docs/images/expand-error-cics.gif" alt="Zowe CICS Explorer NewCopy Program" width="600px"/>
@@ -354,4 +354,4 @@ Error messages arising from the Zowe Explorer extension will have the `Source` a
 
 Before filing an issue, check the [Troubleshooting guide](./docs/Troubleshooting.md) first to ensure that the issue hasn't already been addressed.
 
-To file issues, use the [Zowe Explorer for IBM CICS issue list](https://github.com/zowe/vscode-extension-for-cics/issues), or chat with use on [Slack](https://openmainframeproject.slack.com/archives/CUVE37Z5F) by indicating the message is for the Zowe Explorer for IBM CICS extension.
+To file issues, use the [IBM CICS for Zowe Explorer issue list](https://github.com/zowe/vscode-extension-for-cics/issues), or chat with use on [Slack](https://openmainframeproject.slack.com/archives/CUVE37Z5F) by indicating the message is for the IBM CICS for Zowe Explorer extension.
