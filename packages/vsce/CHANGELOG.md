@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `6.0.0-next.202408011822`
 
 - Renamed the VSCE to `IBM CICS for Zowe Explorer`. [#129](https://github.com/zowe/cics-for-zowe-client/issues/129)
 
