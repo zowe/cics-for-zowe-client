@@ -121,7 +121,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0] as CICSRegionTree;
       const progamTree = new CICSProgramTreeItem(program, parentRegion, this);
       progamTree.setLabel(progamTree.label.toString().replace(program.program, `${program.program} (${program.eyu_cicsname})`));
@@ -169,7 +169,7 @@ export class CICSCombinedProgramTree extends TreeItem {
             this.incrementCount
           );
           if (allPrograms) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addProgramsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSProgramTreeItem) ?? []) as CICSProgramTreeItem[],
               allPrograms,

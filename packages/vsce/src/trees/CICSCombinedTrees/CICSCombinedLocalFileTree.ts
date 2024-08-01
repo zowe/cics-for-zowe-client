@@ -119,7 +119,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0] as CICSRegionTree;
       const localFileTree = new CICSLocalFileTreeItem(localfile, parentRegion, this);
       localFileTree.setLabel(localFileTree.label.toString().replace(localfile.file, `${localfile.file} (${localfile.eyu_cicsname})`));
@@ -162,7 +162,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
             this.incrementCount
           );
           if (allLocalFiles) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addLocalFilesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSLocalFileTreeItem) ?? []) as CICSLocalFileTreeItem[],
               allLocalFiles,

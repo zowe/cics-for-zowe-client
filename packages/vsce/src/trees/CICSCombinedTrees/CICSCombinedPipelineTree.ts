@@ -119,7 +119,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === pipeline.eyu_cicsname)?.[0] as CICSRegionTree;
       const pipelineTree = new CICSPipelineTreeItem(pipeline, parentRegion, this);
       pipelineTree.setLabel(pipelineTree.label.toString().replace(pipeline.name, `${pipeline.name} (${pipeline.eyu_cicsname})`));
@@ -167,7 +167,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
             this.incrementCount
           );
           if (allPipelines) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addPipelinesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSPipelineTreeItem) ?? []) as CICSPipelineTreeItem[],
               allPipelines,

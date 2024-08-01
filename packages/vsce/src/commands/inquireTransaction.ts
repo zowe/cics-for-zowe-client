@@ -33,9 +33,9 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
     if (allSelectedNodes[0].getParent() instanceof CICSCombinedTaskTree) {
       const cicsPlex: CICSPlexTree = allSelectedNodes[0].getParent().getParent();
       const regionsContainer = cicsPlex.getChildren().filter((child) => child instanceof CICSRegionsContainer)[0];
-      //@ts-ignore
+      //@ts-expect-error
       const regionTree: CICSRegionTree = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((region: CICSRegionTree) => region.getRegionName() === allSelectedNodes[0].parentRegion.getRegionName())[0];
       resourceFolders = regionTree.getChildren()!;
     } else {

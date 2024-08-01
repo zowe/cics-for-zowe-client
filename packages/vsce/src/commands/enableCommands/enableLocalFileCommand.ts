@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
 import * as https from "https";
@@ -71,7 +71,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
           try {
             const localFileTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
             // Only load contents if the tree is expanded
-            if (localFileTree.collapsibleState === 2) {
+            if (localFileTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
               await localFileTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
@@ -79,7 +79,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
               const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedlocalfiletree.")
               )[0] as CICSCombinedLocalFileTree;
-              if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
+              if (allLocalFileTreeTree.collapsibleState === TreeItemCollapsibleState.Expanded && allLocalFileTreeTree.getActiveFilter()) {
                 await allLocalFileTreeTree.loadContents(tree);
               }
             }

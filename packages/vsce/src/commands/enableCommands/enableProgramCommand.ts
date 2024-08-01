@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
 import * as https from "https";
@@ -76,7 +76,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
           try {
             const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
             // Only load contents if the tree is expanded
-            if (programTree.collapsibleState === 2) {
+            if (programTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
               await programTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
@@ -84,7 +84,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
               const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedprogramtree.")
               )[0] as CICSCombinedProgramTree;
-              if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
+              if (allProgramsTree.collapsibleState === TreeItemCollapsibleState.Expanded && allProgramsTree.getActiveFilter()) {
                 await allProgramsTree.loadContents(tree);
               }
             }

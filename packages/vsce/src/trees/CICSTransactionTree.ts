@@ -66,10 +66,10 @@ export class CICSTransactionTree extends TreeItem {
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
-      // @ts-ignore
+      // @ts-expect-error
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a transaction filter to narrow search`);
-        // @ts-ignore
+        // @ts-expect-error
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No transactions found`);
         this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;

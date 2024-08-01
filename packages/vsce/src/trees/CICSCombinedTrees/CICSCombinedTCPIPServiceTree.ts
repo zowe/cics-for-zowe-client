@@ -120,7 +120,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === tcpips.eyu_cicsname)?.[0] as CICSRegionTree;
       const tcpipsTree = new CICSTCPIPServiceTreeItem(tcpips, parentRegion, this);
       tcpipsTree.setLabel(
@@ -170,7 +170,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
             this.incrementCount
           );
           if (allTCPIPS) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addTCPIPSUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTCPIPServiceTreeItem) ?? []) as CICSTCPIPServiceTreeItem[],
               allTCPIPS,

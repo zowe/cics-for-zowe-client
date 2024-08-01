@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
 import * as https from "https";
@@ -71,7 +71,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
           try {
             const transactionTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
             // Only load contents if the tree is expanded
-            if (transactionTree.collapsibleState === 2) {
+            if (transactionTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
               await transactionTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
@@ -79,7 +79,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
               const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedtransactiontree.")
               )[0] as CICSCombinedTransactionsTree;
-              if (allTransactionTree.collapsibleState === 2 && allTransactionTree.getActiveFilter()) {
+              if (allTransactionTree.collapsibleState === TreeItemCollapsibleState.Expanded && allTransactionTree.getActiveFilter()) {
                 await allTransactionTree.loadContents(tree);
               }
             }

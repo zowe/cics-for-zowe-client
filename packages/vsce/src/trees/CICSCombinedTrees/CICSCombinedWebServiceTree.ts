@@ -120,7 +120,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === webservice.eyu_cicsname)?.[0] as CICSRegionTree;
       const webserviceTree = new CICSWebServiceTreeItem(webservice, parentRegion, this);
       webserviceTree.setLabel(webserviceTree.label.toString().replace(webservice.name, `${webservice.name} (${webservice.eyu_cicsname})`));
@@ -168,7 +168,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
             this.incrementCount
           );
           if (allWebServices) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addWebServicesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSWebServiceTreeItem) ?? []) as CICSWebServiceTreeItem[],
               allWebServices,

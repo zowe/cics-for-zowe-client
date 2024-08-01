@@ -120,7 +120,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === transaction.eyu_cicsname)?.[0] as CICSRegionTree;
       const transactionTree = new CICSTransactionTreeItem(transaction, parentRegion, this);
       transactionTree.setLabel(transactionTree.label.toString().replace(transaction.tranid, `${transaction.tranid} (${transaction.eyu_cicsname})`));
@@ -163,7 +163,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
             this.incrementCount
           );
           if (allLocalTransactions) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addLocalTransactionsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTransactionTreeItem) ?? []) as CICSTransactionTreeItem[],
               allLocalTransactions,

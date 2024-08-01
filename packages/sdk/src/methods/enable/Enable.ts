@@ -89,7 +89,7 @@ export async function enableTransaction(session: AbstractSession, parms: IBasePa
     parms.name +
     ")";
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
 
 /**
@@ -128,7 +128,7 @@ export async function enableProgram(session: AbstractSession, parms: IProgramPar
     parms.name +
     ")";
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
 
 /**
@@ -167,5 +167,5 @@ export async function enableLocalFile(session: AbstractSession, parms: IBaseParm
     parms.name +
     ")";
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

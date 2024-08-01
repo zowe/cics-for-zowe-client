@@ -477,7 +477,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         await ProfileManagement.profilesCacheRefresh();
         await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
       } catch (error) {
-        // @ts-ignore
+        // @ts-expect-error
         window.showErrorMessage(error);
       }
     } else {
@@ -499,7 +499,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
         } catch (error) {
           console.log(error);
-          // @ts-ignore
+          // @ts-expect-error
           window.showErrorMessage(error);
         }
       });
@@ -524,13 +524,13 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     let answer;
     if (sessions.length === 1) {
       answer = await window.showInformationMessage(
-        `Are you sure you want to delete the profile "${sessions[0].label?.toString()!}"`,
+        `Are you sure you want to delete the profile "${sessions[0].label?.toString()}"`,
         ...["Yes", "No"]
       );
     } else if (sessions.length > 1) {
       answer = await window.showInformationMessage(
         `Are you sure you want to delete the profiles "${sessions.map((sessionTree) => {
-          return sessionTree.label?.toString()!;
+          return sessionTree.label?.toString();
         })}"`,
         ...["Yes", "No"]
       );
@@ -553,7 +553,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             });
             try {
               await ProfileManagement.deleteProfile({
-                name: sessions[parseInt(index)].label?.toString()!,
+                name: sessions[parseInt(index)].label?.toString(),
                 rejectIfDependency: true,
               });
               const persistentStorage = new PersistentStorage("zowe.cics.persistent");
@@ -562,7 +562,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               this.loadedProfiles = this.loadedProfiles.filter((profile) => profile !== sessions[parseInt(index)]);
               this._onDidChangeTreeData.fire(undefined);
             } catch (error) {
-              // @ts-ignore
+              // @ts-expect-error
               window.showErrorMessage(error);
             }
           }
@@ -573,7 +573,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
   async updateSession(session: CICSSessionTree) {
     await ProfileManagement.profilesCacheRefresh();
-    const profileToUpdate = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString()!, "cics");
+    const profileToUpdate = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString(), "cics");
 
     const message = {
       name: profileToUpdate.name,
@@ -598,7 +598,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         const updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.profile.name, "cics");
         await this.removeSession(session, updatedProfile, position);
       } catch (error) {
-        // @ts-ignore
+        // @ts-expect-error
         window.showErrorMessage(error);
       }
     });
@@ -615,6 +615,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     element.getParent();
   }
 
-  public _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
-  readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
+  public _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
+  readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 }

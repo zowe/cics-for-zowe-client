@@ -119,7 +119,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === library.eyu_cicsname)?.[0] as CICSRegionTree;
       const libraryTree = new CICSLibraryTreeItem(library, parentRegion, this);
       libraryTree.setLabel(libraryTree.label.toString().replace(library.name, `${library.name} (${library.eyu_cicsname})`));
@@ -167,7 +167,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
             this.incrementCount
           );
           if (allLibraries) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addLibrariesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSLibraryTreeItem) ?? []) as CICSLibraryTreeItem[],
               allLibraries,

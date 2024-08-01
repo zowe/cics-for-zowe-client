@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants, CicsCmciRestClient } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import * as https from "https";
@@ -65,9 +65,9 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           } catch (error) {
             https.globalAgent.options.rejectUnauthorized = undefined;
-            // @ts-ignore
+            // @ts-expect-error
             if (error.mMessage) {
-              // @ts-ignore
+              // @ts-expect-error
               const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
                 `Perform PHASEIN on Program "${
@@ -89,7 +89,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
           try {
             const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
             // Only load contents if the tree is expanded
-            if (programTree.collapsibleState === 2) {
+            if (programTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
               await programTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
@@ -97,7 +97,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
               const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedprogramtree.")
               )[0] as CICSCombinedProgramTree;
-              if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
+              if (allProgramsTree.collapsibleState === TreeItemCollapsibleState.Expanded && allProgramsTree.getActiveFilter()) {
                 await allProgramsTree.loadContents(tree);
               }
             }

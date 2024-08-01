@@ -120,7 +120,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
         continue;
       }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === urimaps.eyu_cicsname)?.[0] as CICSRegionTree;
       const urimapsTree = new CICSURIMapTreeItem(urimaps, parentRegion, this);
       urimapsTree.setLabel(
@@ -172,7 +172,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
             this.incrementCount
           );
           if (allURIMaps) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addURIMapsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSURIMapTreeItem) ?? []) as CICSURIMapTreeItem[],
               allURIMaps,

@@ -70,10 +70,10 @@ export class CICSLocalFileTree extends TreeItem {
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
-      // @ts-ignore
+      // @ts-expect-error
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a local file filter to narrow search`);
-        // @ts-ignore
+        // @ts-expect-error
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No local files found`);
         this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
