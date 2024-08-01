@@ -20,7 +20,7 @@ jobs:
           exempt-all-milestones: true
 
           # Rules applied to Issues
-          exempt-issue-labels: "Epic, bug, priority-critical, priority-high, community-upvoted, for-review, keep"
+          exempt-issue-labels: "Epic, bug, priority-critical, priority-high, priority-medium, community-upvoted, for-review, good first issue, keep"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.

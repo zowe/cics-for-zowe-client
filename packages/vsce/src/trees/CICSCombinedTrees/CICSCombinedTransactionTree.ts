@@ -116,6 +116,9 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   public addLocalTransactionsUtil(newChildren: (CICSTransactionTreeItem | ViewMore)[], allLocalTransactions: any, count: number | undefined) {
     for (const transaction of allLocalTransactions) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === transaction.eyu_cicsname)?.[0] as CICSRegionTree;

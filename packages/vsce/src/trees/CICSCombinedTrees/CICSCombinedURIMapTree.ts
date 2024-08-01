@@ -116,6 +116,9 @@ export class CICSCombinedURIMapTree extends TreeItem {
     for (const urimaps of allURIMaps) {
       // Regions container must exist if all URI Maps tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === urimaps.eyu_cicsname)?.[0] as CICSRegionTree;

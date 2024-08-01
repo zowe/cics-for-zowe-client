@@ -77,6 +77,7 @@ import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 import { getInquireTransactionCommand } from "./commands/inquireTransaction";
 import { getPurgeTaskCommand } from "./commands/purgeTaskCommand";
 import { getInquireProgramCommand } from "./commands/inquireProgram";
+import { Logger } from "@zowe/imperative";
 
 /**
  * Initialises extension
@@ -85,6 +86,7 @@ import { getInquireProgramCommand } from "./commands/inquireProgram";
  */
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
+  const logger = Logger.getAppLogger();
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
     window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
@@ -105,10 +107,10 @@ export async function activate(context: ExtensionContext) {
           await treeDataProv.refreshLoadedProfiles();
         });
       }
-      window.showInformationMessage("Zowe Explorer was modified for the CICS Extension.");
+      logger.debug("Zowe Explorer was modified for the CICS Extension.");
     } catch (error) {
       console.log(error);
-      window.showErrorMessage("Zowe Explorer for IBM CICS was not initiliaized correctly");
+      logger.error("Zowe Explorer for IBM CICS was not initiliaized correctly");
       return;
     }
   } else {

@@ -115,6 +115,9 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   public addLocalFilesUtil(newChildren: (CICSLocalFileTreeItem | ViewMore)[], allLocalFiles: any, count: number | undefined) {
     for (const localfile of allLocalFiles) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0] as CICSRegionTree;

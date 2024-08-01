@@ -115,6 +115,9 @@ export class CICSCombinedLibraryTree extends TreeItem {
   public addLibrariesUtil(newChildren: (CICSLibraryTreeItem | ViewMore)[], allLibraries: any, count: number | undefined) {
     for (const library of allLibraries) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === library.eyu_cicsname)?.[0] as CICSRegionTree;
