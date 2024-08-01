@@ -281,7 +281,13 @@ export class ProfileManagement {
     }
   }
 
-  public static async generateCacheToken(profile: imperative.IProfileLoaded, plexName: string, resourceName: string, criteria?: string, group?: string) {
+  public static async generateCacheToken(
+    profile: imperative.IProfileLoaded,
+    plexName: string,
+    resourceName: string,
+    criteria?: string,
+    group?: string
+  ) {
     try {
       const config: AxiosRequestConfig = {
         baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,

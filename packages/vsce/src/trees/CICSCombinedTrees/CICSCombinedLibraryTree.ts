@@ -29,7 +29,10 @@ export class CICSCombinedLibraryTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlibrarytree.`;
     this.parentPlex = parentPlex;
@@ -112,9 +115,11 @@ export class CICSCombinedLibraryTree extends TreeItem {
   public addLibrariesUtil(newChildren: (CICSLibraryTreeItem | ViewMore)[], allLibraries: any, count: number | undefined) {
     for (const library of allLibraries) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === library.eyu_cicsname)?.[0] as CICSRegionTree;
       const libraryTree = new CICSLibraryTreeItem(library, parentRegion, this);
       libraryTree.setLabel(libraryTree.label.toString().replace(library.name, `${library.name} (${library.eyu_cicsname})`));
@@ -162,7 +167,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
             this.incrementCount
           );
           if (allLibraries) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addLibrariesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSLibraryTreeItem) ?? []) as CICSLibraryTreeItem[],
               allLibraries,

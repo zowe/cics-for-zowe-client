@@ -29,7 +29,10 @@ export class CICSCombinedPipelineTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedpipelinetree.`;
     this.parentPlex = parentPlex;
@@ -112,9 +115,11 @@ export class CICSCombinedPipelineTree extends TreeItem {
   public addPipelinesUtil(newChildren: (CICSPipelineTreeItem | ViewMore)[], allPipelines: any, count: number | undefined) {
     for (const pipeline of allPipelines) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === pipeline.eyu_cicsname)?.[0] as CICSRegionTree;
       const pipelineTree = new CICSPipelineTreeItem(pipeline, parentRegion, this);
       pipelineTree.setLabel(pipelineTree.label.toString().replace(pipeline.name, `${pipeline.name} (${pipeline.eyu_cicsname})`));
@@ -162,7 +167,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
             this.incrementCount
           );
           if (allPipelines) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addPipelinesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSPipelineTreeItem) ?? []) as CICSPipelineTreeItem[],
               allPipelines,

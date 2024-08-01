@@ -22,7 +22,10 @@ export class CICSLocalFileTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.parentRegion = parentRegion;
@@ -55,8 +58,9 @@ export class CICSLocalFileTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const localFileArray = Array.isArray(localFileResponse.response.records.cicslocalfile)
-        ? localFileResponse.response.records.cicslocalfile
+      const localFileArray =
+        Array.isArray(localFileResponse.response.records.cicslocalfile) ?
+          localFileResponse.response.records.cicslocalfile
         : [localFileResponse.response.records.cicslocalfile];
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;
       for (const localFile of localFileArray) {
@@ -66,10 +70,10 @@ export class CICSLocalFileTree extends TreeItem {
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
-      // @ts-ignore
+      // @ts-expect-error
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a local file filter to narrow search`);
-        // @ts-ignore
+        // @ts-expect-error
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No local files found`);
         this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;

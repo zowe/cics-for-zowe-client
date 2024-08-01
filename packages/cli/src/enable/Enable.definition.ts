@@ -14,6 +14,9 @@ import { UrimapDefinition } from "./urimap/Urimap.definition";
 
 import i18nTypings from "../-strings-/en";
 import { CicsSession } from "../CicsSession";
+import { TransactionDefinition } from "./transaction/Transaction.definition";
+import { ProgramDefinition } from "./program/Program.definition";
+import { LocalFileDefinition } from "./localFile/LocalFile.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE;
@@ -22,21 +25,19 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABL
  * Definition for the "Enable" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "enable", aliases: ["en"],
+  name: "enable",
+  aliases: ["en"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [
-    UrimapDefinition],
+  children: [ProgramDefinition, LocalFileDefinition, TransactionDefinition, UrimapDefinition],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

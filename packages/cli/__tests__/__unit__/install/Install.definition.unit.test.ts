@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("cics install program", () => {
   const INSTALL_RESOURCES = 3;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/install/Install.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(INSTALL_RESOURCES);

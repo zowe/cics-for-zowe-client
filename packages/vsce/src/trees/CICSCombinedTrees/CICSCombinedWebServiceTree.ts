@@ -29,7 +29,10 @@ export class CICSCombinedWebServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedwebservicetree.`;
     this.parentPlex = parentPlex;
@@ -113,9 +116,11 @@ export class CICSCombinedWebServiceTree extends TreeItem {
     for (const webservice of allWebServices) {
       // Regions container must exist if all web services tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === webservice.eyu_cicsname)?.[0] as CICSRegionTree;
       const webserviceTree = new CICSWebServiceTreeItem(webservice, parentRegion, this);
       webserviceTree.setLabel(webserviceTree.label.toString().replace(webservice.name, `${webservice.name} (${webservice.eyu_cicsname})`));
@@ -163,7 +168,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
             this.incrementCount
           );
           if (allWebServices) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addWebServicesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSWebServiceTreeItem) ?? []) as CICSWebServiceTreeItem[],
               allWebServices,

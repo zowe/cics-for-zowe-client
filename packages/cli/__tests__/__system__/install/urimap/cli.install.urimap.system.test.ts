@@ -15,12 +15,11 @@ import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("CICS install urimap command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "install_urimap",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
   });
 

@@ -30,7 +30,10 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Local Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtransactiontree.`;
     this.parentPlex = parentPlex;
@@ -113,9 +116,11 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   public addLocalTransactionsUtil(newChildren: (CICSTransactionTreeItem | ViewMore)[], allLocalTransactions: any, count: number | undefined) {
     for (const transaction of allLocalTransactions) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === transaction.eyu_cicsname)?.[0] as CICSRegionTree;
       const transactionTree = new CICSTransactionTreeItem(transaction, parentRegion, this);
       transactionTree.setLabel(transactionTree.label.toString().replace(transaction.tranid, `${transaction.tranid} (${transaction.eyu_cicsname})`));
@@ -158,7 +163,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
             this.incrementCount
           );
           if (allLocalTransactions) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addLocalTransactionsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTransactionTreeItem) ?? []) as CICSTransactionTreeItem[],
               allLocalTransactions,

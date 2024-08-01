@@ -9,9 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
 import * as https from "https";
@@ -19,6 +17,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { enableTransaction } from "@zowe/cics-for-zowe-sdk";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -72,7 +71,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
           try {
             const transactionTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
             // Only load contents if the tree is expanded
-            if (transactionTree.collapsibleState === 2) {
+            if (transactionTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
               await transactionTree.loadContents();
             }
             // if node is in a plex and the plex contains the region container tree
@@ -80,7 +79,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
               const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedtransactiontree.")
               )[0] as CICSCombinedTransactionsTree;
-              if (allTransactionTree.collapsibleState === 2 && allTransactionTree.getActiveFilter()) {
+              if (allTransactionTree.collapsibleState === TreeItemCollapsibleState.Expanded && allTransactionTree.getActiveFilter()) {
                 await allTransactionTree.loadContents(tree);
               }
             }
@@ -97,31 +96,4 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
       }
     );
   });
-}
-
-async function enableTransaction(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
-        },
-      },
-    },
-  };
-
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    CicsCmciConstants.CICS_LOCAL_TRANSACTION +
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(TRANID=" +
-    parms.name +
-    ")";
-
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

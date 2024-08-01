@@ -29,7 +29,10 @@ export class CICSCombinedTaskTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtasktree.`;
     this.parentPlex = parentPlex;
@@ -112,9 +115,11 @@ export class CICSCombinedTaskTree extends TreeItem {
   public addTasksUtil(newChildren: (CICSTaskTreeItem | ViewMore)[], allTasks: any, count: number | undefined) {
     for (const task of allTasks) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === task.eyu_cicsname)?.[0] as CICSRegionTree;
       const taskTree = new CICSTaskTreeItem(task, parentRegion, this);
       // Show run status if run status isn't SUSPENDED (assuming SUSPENDED is default runstatus)
@@ -162,7 +167,7 @@ export class CICSCombinedTaskTree extends TreeItem {
             this.incrementCount
           );
           if (allTasks) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addTasksUtil(this.getChildren() ? this.getChildren().filter((child) => child instanceof CICSTaskTreeItem) : [], allTasks, count);
             tree._onDidChangeTreeData.fire(undefined);
           }

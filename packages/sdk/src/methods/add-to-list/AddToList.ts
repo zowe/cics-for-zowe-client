@@ -32,9 +32,17 @@ export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParm
   Logger.getAppLogger().debug("Attempting to add a CSD Group to a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_CSDGROUP + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=NAME=='" + parms.name + "'";
+  const cmciResource =
+    "/" +
+    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+    "/" +
+    CicsCmciConstants.CICS_CSDGROUP +
+    "/" +
+    cicsPlex +
+    parms.regionName +
+    "?CRITERIA=NAME=='" +
+    parms.name +
+    "'";
 
   const requestBody: any = {
     request: {
@@ -45,11 +53,11 @@ export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParm
         parameter: {
           $: {
             name: "TO_CSDLIST",
-            value: parms.csdList
-          }
-        }
-      }
-    }
+            value: parms.csdList,
+          },
+        },
+      },
+    },
   };
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }

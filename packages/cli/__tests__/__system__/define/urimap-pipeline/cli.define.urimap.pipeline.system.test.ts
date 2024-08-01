@@ -15,12 +15,11 @@ import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("CICS define urimap-pipeline command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "define_urimap_pipeline",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
   });
 
@@ -36,8 +35,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if urimap name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["", "FAKEGRP", "FAKEPATH", "FAKEHOST", "FAKEPIPE", "FAKERGN", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "",
+      "FAKEGRP",
+      "FAKEPATH",
+      "FAKEHOST",
+      "FAKEPIPE",
+      "FAKERGN",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("urimap");
@@ -46,8 +53,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if CSD group is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["FAKESRV", "", "FAKEPATH", "FAKEHOST", "FAKEPIPE", "FAKERGN", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "FAKESRV",
+      "",
+      "FAKEPATH",
+      "FAKEHOST",
+      "FAKEPIPE",
+      "FAKERGN",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("csdGroup");
@@ -55,8 +70,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if urimap path is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["FAKESRV", "FAKEGRP", "", "FAKEHOST", "FAKEPIPE", "FAKERGN", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "FAKESRV",
+      "FAKEGRP",
+      "",
+      "FAKEHOST",
+      "FAKEPIPE",
+      "FAKERGN",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("urimap-path");
@@ -64,8 +87,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if urimap host is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["FAKESRV", "FAKEGRP", "FAKEPATH", "", "FAKEPIPE", "FAKERGN", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "FAKESRV",
+      "FAKEGRP",
+      "FAKEPATH",
+      "",
+      "FAKEPIPE",
+      "FAKERGN",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("urimap-host");
@@ -73,8 +104,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if pipeline name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["FAKESRV", "FAKEGRP", "FAKEPATH", "FAKEHOST", "", "FAKERGN", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "FAKESRV",
+      "FAKEGRP",
+      "FAKEPATH",
+      "FAKEHOST",
+      "",
+      "FAKERGN",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("pipeline-name");
@@ -82,8 +121,16 @@ describe("CICS define urimap-pipeline command", () => {
   });
 
   it("should get a syntax error if region name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT,
-      ["FAKESRV", "FAKEGRP", "FAKEPATH", "FAKEHOST", "FAKEPIPE", "", "false", "TESTSVC"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_urimap_pipeline.sh", TEST_ENVIRONMENT, [
+      "FAKESRV",
+      "FAKEGRP",
+      "FAKEPATH",
+      "FAKEHOST",
+      "FAKEPIPE",
+      "",
+      "false",
+      "TESTSVC",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("region-name");

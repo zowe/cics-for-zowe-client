@@ -22,7 +22,10 @@ export class CICSTransactionTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.parentRegion = parentRegion;
@@ -51,8 +54,9 @@ export class CICSTransactionTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const transactionArray = Array.isArray(transactionResponse.response.records.cicslocaltransaction)
-        ? transactionResponse.response.records.cicslocaltransaction
+      const transactionArray =
+        Array.isArray(transactionResponse.response.records.cicslocaltransaction) ?
+          transactionResponse.response.records.cicslocaltransaction
         : [transactionResponse.response.records.cicslocaltransaction];
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
       for (const transaction of transactionArray) {
@@ -62,10 +66,10 @@ export class CICSTransactionTree extends TreeItem {
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
-      // @ts-ignore
+      // @ts-expect-error
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a transaction filter to narrow search`);
-        // @ts-ignore
+        // @ts-expect-error
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No transactions found`);
         this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;

@@ -30,7 +30,10 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;
@@ -114,9 +117,11 @@ export class CICSCombinedProgramTree extends TreeItem {
     for (const program of allPrograms) {
       // Regions container must exist if all programs tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0] as CICSRegionTree;
       const progamTree = new CICSProgramTreeItem(program, parentRegion, this);
       progamTree.setLabel(progamTree.label.toString().replace(program.program, `${program.program} (${program.eyu_cicsname})`));
@@ -164,7 +169,7 @@ export class CICSCombinedProgramTree extends TreeItem {
             this.incrementCount
           );
           if (allPrograms) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addProgramsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSProgramTreeItem) ?? []) as CICSProgramTreeItem[],
               allPrograms,

@@ -26,21 +26,21 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
+PROFILE_MAP.set("cics", [
+  {
     name: "cics",
     type: "cics",
     host,
     port,
     user,
-    password
-  }]
-);
+    password,
+  },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "install", "program"],
   definition: ProgramDefinition,
-  profiles: PROFILES
+  profiles: PROFILES,
 });
 
 describe("InstallProgramHandler", () => {
@@ -50,9 +50,9 @@ describe("InstallProgramHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Install, "installProgram");
@@ -65,7 +65,7 @@ describe("InstallProgramHandler", () => {
   it("should call the installProgram api", async () => {
     const handler = new ProgramHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       programName,
@@ -76,7 +76,7 @@ describe("InstallProgramHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -91,12 +91,12 @@ describe("InstallProgramHandler", () => {
         user: testProfile.user,
         password: testProfile.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: programName,
         csdGroup,
-        regionName
+        regionName,
       }
     );
   });

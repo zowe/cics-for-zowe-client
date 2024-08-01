@@ -67,8 +67,9 @@ export class CICSLibraryTreeItem extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const datasetArray = Array.isArray(libraryResponse.response.records.cicslibrarydatasetname)
-        ? libraryResponse.response.records.cicslibrarydatasetname
+      const datasetArray =
+        Array.isArray(libraryResponse.response.records.cicslibrarydatasetname) ?
+          libraryResponse.response.records.cicslibrarydatasetname
         : [libraryResponse.response.records.cicslibrarydatasetname];
       this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${
         this.activeFilter ? ` (${this.activeFilter}) ` : " "

@@ -875,6 +875,7 @@
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "echo 'Nothing to check'",
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
     "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
@@ -888,7 +889,7 @@
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
-    "vsce": "^2.15.0"
+    "@vscode/vsce": "^2.31.1"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.0.0-next.202403011419",

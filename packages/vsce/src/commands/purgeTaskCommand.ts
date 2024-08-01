@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import * as https from "https";
@@ -73,9 +73,9 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               }
             } catch (error) {
               https.globalAgent.options.rejectUnauthorized = undefined;
-              // @ts-ignore
+              // @ts-expect-error
               if (error.mMessage) {
-                // @ts-ignore
+                // @ts-expect-error
                 const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
                 window.showErrorMessage(
                   `Perform ${purgeType?.toUpperCase()} on CICSTask "${
@@ -96,7 +96,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             try {
               const taskTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreetask."))[0];
               // Only load contents if the tree is expanded
-              if (taskTree.collapsibleState === 2) {
+              if (taskTree.collapsibleState === TreeItemCollapsibleState.Expanded) {
                 await taskTree.loadContents();
               }
               // if node is in a plex and the plex contains the region container tree
@@ -107,7 +107,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                   child.contextValue.includes("cicscombinedlocalfiletree.")
                 )[0] as CICSCombinedTaskTree;
                 // If allTasksTree is open
-                if (allTaskTreeTree.collapsibleState === 2 && allTaskTreeTree.getActiveFilter()) {
+                if (allTaskTreeTree.collapsibleState === TreeItemCollapsibleState.Expanded && allTaskTreeTree.getActiveFilter()) {
                   await allTaskTreeTree.loadContents(tree);
                 }
               }

@@ -21,7 +21,10 @@ export class CICSTCPIPServiceTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
     this.parentRegion = parentRegion;
@@ -50,8 +53,9 @@ export class CICSTCPIPServiceTree extends TreeItem {
         criteria: criteria,
       });
       https.globalAgent.options.rejectUnauthorized = undefined;
-      const tcpipservicesArray = Array.isArray(tcpipsResponse.response.records.cicstcpipservice)
-        ? tcpipsResponse.response.records.cicstcpipservice
+      const tcpipservicesArray =
+        Array.isArray(tcpipsResponse.response.records.cicstcpipservice) ?
+          tcpipsResponse.response.records.cicstcpipservice
         : [tcpipsResponse.response.records.cicstcpipservice];
       this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${tcpipservicesArray.length}]`;
       for (const tcpips of tcpipservicesArray) {

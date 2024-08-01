@@ -29,7 +29,10 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+  ) {
     super("All TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtcpipstree.`;
     this.parentPlex = parentPlex;
@@ -113,9 +116,11 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
     for (const tcpips of allTCPIPS) {
       // Regions container must exist if all TCPIP Services tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
-        .getChildren()!
+        .getChildren()
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === tcpips.eyu_cicsname)?.[0] as CICSRegionTree;
       const tcpipsTree = new CICSTCPIPServiceTreeItem(tcpips, parentRegion, this);
       tcpipsTree.setLabel(
@@ -165,7 +170,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
             this.incrementCount
           );
           if (allTCPIPS) {
-            // @ts-ignore
+            // @ts-expect-error
             this.addTCPIPSUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTCPIPServiceTreeItem) ?? []) as CICSTCPIPServiceTreeItem[],
               allTCPIPS,

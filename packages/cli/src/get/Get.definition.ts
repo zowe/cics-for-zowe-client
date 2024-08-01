@@ -32,10 +32,8 @@ const definition: ICommandDefinition = {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;
