@@ -1,35 +1,30 @@
 ###############################################################################
-# Example properties file for the SCS Credential Manager plug-in for Zowe CLI #
+# Example properties file for the CICS plug-in for Zowe CLI                   #
 # Copy this to custom_properties.yaml in the same directory                   #
 # and modify to fill in your customized connection and test details           #
 #-----------------------------------------------------------------------------#
 #  Find and replace the following:                                            #
 #                                                                             #
-#  my-user-name    - This is your TSO user  ID                                #
+#  my-user-name    - This is your TSO user ID                                 #
 #  my-password     - This is your TSO password                                #
-#  zosmf-host      - The host name for the LPAR with z/OSMF                   #
-#  zosmf-port      - The z/OSMF port                                          #
+#  my-cics-host    - This is the hostname for the CICS CMCI server            #
+#  my-cics-port    - this is the port for the CICS CMCI server                #
+#  my-csd-group    - this is the CSD group to which new resources will be     #
+#                    defined                                                  #
+#  my-region-name  - name of the CICS region                                  #
 ###############################################################################
 
-#-------------------------------------------------------------------------#
-#  Connection details/credentials for z/OSMF                              #
-#-------------------------------------------------------------------------#
-zosmf:
-  user: &user zosmf-user
-  password: &pass zosmf-password
-  host: &host zosmf-host
-  port: &port 443
-  rejectUnauthorized: &ru false
+# see zowe profiles create cics --help for more info
 cics:
-  user: *user
-  password: *pass
-  host: *host
-  port: 1443
-  rejectUnauthorized: *ru
+  user: my-user-name
+  password: my-password
+  host: my-cics-host
+  port: my-cics-port
   protocol: https
+  rejectUnauthorized: false
 cmci:
-  regionName: region-name
-  csdGroup: CSDGROUP
+  csdGroup: my-csd-group
+  regionName: my-region-name
 urimap:
-  certificate: " "
-
+  # certificate can be left blank, like the line below
+  certificate:
