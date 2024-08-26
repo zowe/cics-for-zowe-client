@@ -7,8 +7,8 @@ on:
       - zowe-v1-lts
     paths:
       - packages/**
-  # schedule:
-  #   - cron: '0 10 * * *'
+  schedule:
+    - cron: '0 10 * * *'
 
 jobs:
   audit:
