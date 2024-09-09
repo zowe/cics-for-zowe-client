@@ -26,13 +26,13 @@ const protocol = "http";
 const rejectUnauthorized = false;
 
 const PROFILE_MAP = {
-    name: "cics",
-    type: "cics",
-    host,
-    port,
-    user,
-    password
-  };
+  name: "cics",
+  type: "cics",
+  host,
+  port,
+  user,
+  password
+};
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "add-to-list", "csdGroup"],
