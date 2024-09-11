@@ -3,6 +3,8 @@ name: Zowe CICS Client Auto Responder
 on:
   issues:
     types: labeled
+permissions:
+  issues: write
 
 jobs:
   processLabelAction:
