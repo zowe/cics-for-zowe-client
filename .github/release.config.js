@@ -74,7 +74,7 @@ module.exports = {
         [
             "@octorelease/github",
             {
-                assets: ["dist/*.tgz", "dist/*.vsix"],
+                assets: ["dist/*.tgz"],//, "dist/*.vsix"],
                 checkPrLabels: true,
                 publishRelease: true
             },
