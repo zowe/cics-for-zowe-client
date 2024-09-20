@@ -4,6 +4,8 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Update: Final prerelease
+
 - BugFix: Updated dependencies for technical currency. [#142](https://github.com/zowe/cics-for-zowe-client/pull/142)
 - Renamed the VSCE to `IBM CICS for Zowe Explorer`. [#129](https://github.com/zowe/cics-for-zowe-client/issues/129)
 - Update: See `2.3.6` for details.
