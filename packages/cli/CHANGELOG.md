@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## `6.0.0-next.202409201821`
+## Recent Changes
 
 - Update: Final prerelease
 

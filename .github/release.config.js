@@ -79,7 +79,6 @@ module.exports = {
             {
                 assets: ["dist/*.tgz", "dist/*.vsix"],
                 checkPrLabels: true,
-                draftRelease: true,
             },
         ],
         "@octorelease/git",
