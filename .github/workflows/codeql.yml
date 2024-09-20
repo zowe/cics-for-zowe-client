@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
-      - zowe-v1-lts
+      - zowe-v?-lts
     paths:
       - packages/**
   pull_request:
     branches:
       - main
-      - zowe-v1-lts
+      - zowe-v?-lts
     paths:
       - packages/**
   # schedule:
