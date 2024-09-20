@@ -12,9 +12,8 @@ module.exports = {
         },
         {
             name: "main",
-            channel: "next",
+            channel: "zowe-v3-lts",
             level: "none",
-            prerelease: true,
             devDependencies: {
                 "@zowe/imperative": "zowe-v3-lts",
                 "@zowe/zowe-explorer-api": ["next", "@zowe:registry=https://registry.npmjs.org/"],
@@ -49,8 +48,7 @@ module.exports = {
             {
                 $cwd: "packages/sdk",
                 aliasTags: {
-                    "latest": ["zowe-v2-lts"],
-                    "next": ["zowe-v3-lts"],
+                    "latest": ["zowe-v2-lts"]
                 },
                 npmPublish: true,
                 tarballDir: "dist",
@@ -58,8 +56,7 @@ module.exports = {
             {
                 $cwd: "packages/cli",
                 aliasTags: {
-                    "latest": ["zowe-v2-lts"],
-                    "next": ["zowe-v3-lts"],
+                    "latest": ["zowe-v2-lts"]
                 },
                 npmPublish: true,
                 tarballDir: "dist",
@@ -69,16 +66,17 @@ module.exports = {
             "@octorelease/vsce",
             {
                 $cwd: "packages/vsce",
-                ovsxPublish: true,
-                vscePublish: true,
+                ovsxPublish: false,
+                vscePublish: false,
                 vsixDir: "dist",
             },
         ],
         [
             "@octorelease/github",
             {
-                assets: ["dist/*.tgz", "dist/*.vsix"],
+                assets: ["dist/*.tgz"],//, "dist/*.vsix"],
                 checkPrLabels: true,
+                publishRelease: true
             },
         ],
         "@octorelease/git",

@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- MAJOR: v3.0.0 release
+
 ## `3.0.0-next.202409201904`
 
 - Update: Final prerelease
