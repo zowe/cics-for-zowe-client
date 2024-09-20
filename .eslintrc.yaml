@@ -1,5 +1,6 @@
 extends:
   - eslint:recommended
+  - plugin:deprecation/recommended
   - plugin:@typescript-eslint/recommended-requiring-type-checking
   - prettier
 env:
@@ -31,7 +32,7 @@ rules:
   "@typescript-eslint/await-thenable": off
   "@typescript-eslint/consistent-type-assertions": warn
   "@typescript-eslint/restrict-plus-operands": off
-  "@typescript-eslint/explicit-member-accessibility": warn
+  "@typescript-eslint/explicit-member-accessibility": off
   "@typescript-eslint/explicit-function-return-type": off
   "@typescript-eslint/restrict-template-expressions": off
   indent": off

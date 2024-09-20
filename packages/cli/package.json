@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "5.0.6",
+  "version": "6.0.0-next.202403011419",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS Plug-in for Zowe CLI",
@@ -20,7 +20,8 @@
   },
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "npm-shrinkwrap.json"
   ],
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
@@ -32,7 +33,7 @@
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build && npm run preshrinkwrap",
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
@@ -50,12 +51,15 @@
     "configurationModule": "lib/imperative.js"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "5.0.6"
+    "@zowe/cics-for-zowe-sdk": "6.0.0-next.202403011419"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/imperative": "^8.0.0"
   },
   "bundledDependencies": [
     "@zowe/cics-for-zowe-sdk"
-  ]
+  ],
+  "engines": {
+    "node": ">=18.12.0"
+  }
 }

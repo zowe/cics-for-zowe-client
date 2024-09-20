@@ -48,10 +48,10 @@ if (fs.existsSync(path.join(cliPkgDir, "node_modules"))) {
 }
 fsE.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 try {
-    // Install node_modules directly inside packages/cli
-    execCmd("npm run preshrinkwrap");
     try {
-        execCmd(`npm view @zowe/cics-for-zowe-sdk`);
+        // Install node_modules directly inside packages/cli
+        execCmd("npm run preshrinkwrap");
+        execCmd(`npm view @zowe/cics-for-zowe-sdk@${tempPkgJson.version}`);
     } catch (err) {
         const sdkTgzPath = path.relative(__dirname, "../dist/zowe-cics-for-zowe-sdk-" + tempPkgJson.version + ".tgz");
         execCmd(`${npmInstallCmd} ${sdkTgzPath}`);

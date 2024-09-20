@@ -9,7 +9,8 @@
  *
  */
 
-import { IZoweLogger, getZoweDir } from "@zowe/zowe-explorer-api";
+import { IZoweLogger } from "@zowe/zowe-explorer-api";
+import { getZoweDir } from "@zowe/core-for-zowe-sdk";
 import { join as joinPaths } from "path";
 
 export class LoggerUtils {

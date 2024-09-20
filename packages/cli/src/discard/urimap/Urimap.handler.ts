@@ -9,7 +9,7 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, IProfile, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, discardUrimap } from "@zowe/cics-for-zowe-sdk";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
@@ -26,7 +26,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DI
  */
 
 export default class UrimapHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession, profile: IProfile): Promise<ICMCIApiResponse> {
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
 
     const status: ITaskWithStatus = {
       statusMessage: "Discarding URIMAP from CICS",
@@ -37,7 +37,7 @@ export default class UrimapHandler extends CicsBaseHandler {
 
     const response = await discardUrimap(session, {
       name: params.arguments.urimapName,
-      regionName: params.arguments.regionName || profile.regionName
+      regionName: params.arguments.regionName
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);

@@ -1,30 +1,22 @@
 module.exports = {
     branches: [
         {
-            name: "main",
-            channel: "latest",
-            level: "minor",
+            // This will be moved down once Zowe V3 is announced
+            // Remember to also update aliasTags below
+            name: "zowe-v2-lts",
+            level: "patch",
             devDependencies: {
                 "@zowe/imperative": "zowe-v2-lts",
                 "@zowe/zowe-explorer-api": ["zowe-v2-lts", "@zowe:registry=https://registry.npmjs.org/"],
             }
         },
         {
-            name: "zowe-v1-lts",
-            channel: "zowe-v1-lts",
-            level: "patch",
-            devDependencies: {
-                "@zowe/imperative": "zowe-v1-lts",
-                "@zowe/zowe-explorer-api": ["zowe-v1-lts", "@zowe:registry=https://registry.npmjs.org/"],
-            }
-        },
-        {
-            name: "next",
+            name: "main",
             channel: "next",
-            level: "major",
+            level: "none",
             prerelease: true,
             devDependencies: {
-                "@zowe/imperative": "next",
+                "@zowe/imperative": "zowe-v3-lts",
                 "@zowe/zowe-explorer-api": ["next", "@zowe:registry=https://registry.npmjs.org/"],
             }
         }
@@ -58,15 +50,19 @@ module.exports = {
                 $cwd: "packages/sdk",
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
+                    "next": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
+                tarballDir: "dist",
             },
             {
                 $cwd: "packages/cli",
                 aliasTags: {
                     "latest": ["zowe-v2-lts"],
+                    "next": ["zowe-v3-lts"],
                 },
                 npmPublish: true,
+                tarballDir: "dist",
             },
         ],
         [

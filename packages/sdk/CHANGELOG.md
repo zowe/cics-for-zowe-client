@@ -2,6 +2,26 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Update: Final prerelease
+
+## `6.0.0-next.202409111220`
+
+- BugFix: Updated dependencies for technical currency. [#142](https://github.com/zowe/cics-for-zowe-client/pull/142)
+
+## `6.0.0-next.202403042201`
+
+- V3 Breaking: Increased Node Engine to 18.12.0
+
+## `6.0.0-next.202402261537`
+
+- BugFix: Updated deprecated methods for technical currency purposes
+
+## `6.0.0-next.202402072252`
+
+- Major: Release v3.0.0-next pre-release
+
 ## `5.0.3`
 
 - BugFix: Updated dependencies for technical currency

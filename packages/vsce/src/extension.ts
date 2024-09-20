@@ -91,8 +91,8 @@ export async function activate(context: ExtensionContext) {
   if (!zeVersion) {
     window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
     return;
-  } else if (zeVersion[0] !== "2") {
-    window.showErrorMessage(`Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v2.0.0 or higher is installed`);
+  } else if (zeVersion[0] !== "3") {
+    window.showErrorMessage(`Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`);
     return;
   }
   if (ProfileManagement.apiDoesExist()) {

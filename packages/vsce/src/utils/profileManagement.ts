@@ -9,7 +9,7 @@
  *
  */
 
-import { ProfilesCache, ZoweExplorerApi, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { ProfilesCache, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
@@ -44,7 +44,7 @@ export class ProfileManagement {
   }
 
   public static async profilesCacheRefresh() {
-    const apiRegiser: ZoweExplorerApi.IApiRegisterClient = ProfileManagement.getExplorerApis();
+    const apiRegiser: Types.IApiRegisterClient = ProfileManagement.getExplorerApis();
     await ProfileManagement.getProfilesCache().refresh(apiRegiser);
   }
 

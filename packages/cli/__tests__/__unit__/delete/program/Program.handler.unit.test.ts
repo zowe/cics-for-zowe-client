@@ -10,7 +10,7 @@
  */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { CommandProfiles, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
+import { IHandlerParameters, Session } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../../../src";
 import { ProgramDefinition } from "../../../../src/delete/program/Program.definition";
 import ProgramHandler from "../../../../src/delete/program/Program.handler";
@@ -19,28 +19,24 @@ jest.mock("@zowe/cics-for-zowe-sdk");
 const Discard = require("@zowe/cics-for-zowe-sdk");
 
 const host = "somewhere.com";
-const port = "43443";
+const port = 43443;
 const user = "someone";
 const password = "somesecret";
 const protocol = "http";
 const rejectUnauthorized = false;
 
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-  "cics", [{
-    name: "cics",
-    type: "cics",
-    host,
-    port,
-    user,
-    password
-  }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
+const PROFILE_MAP = {
+  name: "cics",
+  type: "cics",
+  host,
+  port,
+  user,
+  password
+};
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "delete", "program"],
   definition: ProgramDefinition,
-  profiles: PROFILES
+  arguments: PROFILE_MAP
 });
 
 describe("DiscardProgramHandler", () => {
@@ -64,7 +60,7 @@ describe("DiscardProgramHandler", () => {
 
   it("should call the deleteProgram api", async () => {
     const handler = new ProgramHandler();
-    const testProfile = PROFILE_MAP.get("cics")[0];
+
     const commandParameters = {...DEFAULT_PARAMETERS};
     commandParameters.arguments = {
       ...commandParameters.arguments,
@@ -85,10 +81,10 @@ describe("DiscardProgramHandler", () => {
     expect(functionSpy).toHaveBeenCalledWith(
       new Session({
         type: "basic",
-        hostname: testProfile.host,
-        port: testProfile.port,
-        user: testProfile.user,
-        password: testProfile.password,
+        hostname: PROFILE_MAP.host,
+        port: PROFILE_MAP.port,
+        user: PROFILE_MAP.user,
+        password: PROFILE_MAP.password,
         rejectUnauthorized,
         protocol
       }),

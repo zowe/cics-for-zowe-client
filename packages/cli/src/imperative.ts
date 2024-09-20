@@ -19,7 +19,6 @@ const config: IImperativeConfig = {
   rootCommandDescription: PluginConstants.PLUGIN_DESCRIPTION,
   productDisplayName: PluginConstants.PLUGIN_NAME,
   name: PluginConstants.PLUGIN_GROUP_NAME,
-  pluginHealthCheck: "./lib/healthCheck.handler",
   // apimlConnLookup: [
   //     {
   //         apiId: "place_the_cics_apiId_here",
@@ -34,8 +33,8 @@ const config: IImperativeConfig = {
         type: "object",
         title: "CICS Profile",
         description: "A cics profile is required to issue commands in the cics command group that interact with " +
-                    "CICS regions. The cics profile contains your host, port, user name, and password " +
-                    "for the IBM CICS management client interface (CMCI) server of your choice.",
+          "CICS regions. The cics profile contains your host, port, user name, and password " +
+          "for the IBM CICS management client interface (CMCI) server of your choice.",
         properties: {
           host: {
             type: "string",
@@ -104,13 +103,7 @@ const config: IImperativeConfig = {
           }
         },
         required: [],
-      },
-      createProfileExamples: [
-        {
-          options: "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
-          description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490"
-        }
-      ]
+      }
     }
   ]
 };
