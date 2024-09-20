@@ -6,7 +6,7 @@ on:
       - packages/**
     branches-ignore:
       - main
-      - zowe-v1-lts
+      - zowe-v?-lts
       - next
   pull_request:
     paths:
