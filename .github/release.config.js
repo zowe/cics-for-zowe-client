@@ -5,7 +5,7 @@ module.exports = {
             level: "minor",
             devDependencies: {
                 "@zowe/imperative": "zowe-v3-lts",
-                "@zowe/zowe-explorer-api": ["next", "@zowe:registry=https://registry.npmjs.org/"],
+                "@zowe/zowe-explorer-api": ["zowe-v3-lts", "@zowe:registry=https://registry.npmjs.org/"],
             }
         },
         {
