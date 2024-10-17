@@ -24,7 +24,7 @@ export function createConfig(testType: string, title: string): Config {
     displayName: title,
     modulePathIgnorePatterns: ["__tests__/__snapshots__/"],
     transform: { ".(ts)": "ts-jest" },
-    transformIgnorePatterns: [ "^.+\\.js$", "^.+\\.json$" ],
+    transformIgnorePatterns: [ "^.+\\.cjs$", "^.+\\.js$", "^.+\\.json$" ],
     testRegex: "(test|spec)\\.ts$",
     moduleFileExtensions: ["ts", "js", "json"],
     testPathIgnorePatterns: ["<rootDir>/__tests__/__results__", `.*/__${isUnit ? "system" : "unit"}__/.*`],
