@@ -105,7 +105,7 @@ describe("CMCI - Install urimap", () => {
     it("should be able to install a urimap", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${installParms.name})&PARAMETER=CSDGROUP(${installParms.csdGroup})`;
+            `?CRITERIA=(NAME%3D${installParms.name})&PARAMETER=CSDGROUP(${installParms.csdGroup})`;
       requestBody = {
         request: {
           action: {

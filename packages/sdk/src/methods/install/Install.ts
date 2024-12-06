@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, IProgramParms, IURIMapParms } from "../../doc";
 
 /**
@@ -41,10 +42,11 @@ export function installProgram(session: AbstractSession, parms: IProgramParms): 
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(NAME=" + parms.name + ")&PARAMETER=CSDGROUP(" + parms.csdGroup + ")";
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_PROGRAM,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
@@ -75,10 +77,11 @@ export function installTransaction(session: AbstractSession, parms: IProgramParm
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(NAME=" + parms.name + ")&PARAMETER=CSDGROUP(" + parms.csdGroup + ")";
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                      CicsCmciConstants.CICS_DEFINITION_TRANSACTION,
+                      `NAME=${parms.name}`,
+                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource,
     [], requestBody) as any;
 }
@@ -102,10 +105,11 @@ export function installUrimap(session: AbstractSession, parms: IURIMapParms): Pr
 
   Logger.getAppLogger().debug("Attempting to install a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})&PARAMETER=CSDGROUP(${parms.csdGroup})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_URIMAP,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   const requestBody: any = {
     request: {
       action: {
@@ -115,5 +119,6 @@ export function installUrimap(session: AbstractSession, parms: IURIMapParms): Pr
       }
     }
   };
+
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

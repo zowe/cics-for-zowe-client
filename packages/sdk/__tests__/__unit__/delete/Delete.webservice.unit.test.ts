@@ -104,7 +104,7 @@ describe("CMCI - Delete web service", () => {
     it("should be able to delete a web service", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + region +
-            `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+            `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteWebservice(dummySession, deleteParms);
       expect(response).toContain(content);

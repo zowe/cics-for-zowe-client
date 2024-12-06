@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, IURIMapParms } from "../../doc";
 
 /**
@@ -32,10 +33,10 @@ export async function enableUrimap(session: AbstractSession, parms: IURIMapParms
 
   Logger.getAppLogger().debug("Attempting to enable a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_URIMAP + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_URIMAP,
+                                      `NAME=${parms.name}`);
+
   const requestBody: any = {
     request: {
       update: {

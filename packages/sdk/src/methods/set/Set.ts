@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, IProgramParms } from "../../doc";
 
 /**
@@ -39,9 +40,9 @@ export function programNewcopy(session: AbstractSession, parms: IProgramParms): 
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(PROGRAM=" + parms.name + ")";
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+                                      `PROGRAM=${parms.name}`);
+
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }

@@ -147,7 +147,7 @@ describe("CMCI - Discard transaction", () => {
     it("should be able to discard a transaction without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_LOCAL_TRANSACTION + "/" + region +
-                "?CRITERIA=(TRANID=" + discardParms.name + ")";
+                "?CRITERIA=(TRANID%3D" + discardParms.name + ")";
 
       response = await discardTransaction(dummySession, discardParms);
 
@@ -160,7 +160,7 @@ describe("CMCI - Discard transaction", () => {
       discardParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_LOCAL_TRANSACTION + "//" + region +
-                "?CRITERIA=(TRANID=" + discardParms.name + ")";
+                "?CRITERIA=(TRANID%3D" + discardParms.name + ")";
 
       response = await discardTransaction(dummySession, discardParms);
 
@@ -173,7 +173,7 @@ describe("CMCI - Discard transaction", () => {
       discardParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_LOCAL_TRANSACTION + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(TRANID=" + discardParms.name + ")";
+                "?CRITERIA=(TRANID%3D" + discardParms.name + ")";
 
       response = await discardTransaction(dummySession, discardParms);
 

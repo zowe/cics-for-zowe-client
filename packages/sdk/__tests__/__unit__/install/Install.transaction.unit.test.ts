@@ -180,7 +180,7 @@ describe("CMCI - Install transaction", () => {
     it("should be able to install a transaction without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installTransaction(dummySession, installParms);
 
@@ -193,7 +193,7 @@ describe("CMCI - Install transaction", () => {
       installParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "//" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installTransaction(dummySession, installParms);
 
@@ -206,7 +206,7 @@ describe("CMCI - Install transaction", () => {
       installParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installTransaction(dummySession, installParms);
 

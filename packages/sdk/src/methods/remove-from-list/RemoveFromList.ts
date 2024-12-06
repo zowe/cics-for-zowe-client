@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, ICSDGroupParms } from "../../doc";
 
 /**
@@ -31,9 +32,9 @@ export function removeCSDGroupFromList(session: AbstractSession, parms: ICSDGrou
 
   Logger.getAppLogger().debug("Attempting to remove a CSD Group from a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(CSDLIST=='" + parms.csdList + "')%20AND%20(CSDGROUP=='" + parms.name + "')";
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_CSDGROUP_IN_LIST,
+                                      `(CSDLIST=='${parms.csdList}') AND (CSDGROUP=='${parms.name}')`);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []) as any;
 }

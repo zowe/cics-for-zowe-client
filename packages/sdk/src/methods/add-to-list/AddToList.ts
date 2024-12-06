@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, ICSDGroupParms } from "../../doc";
 
 /**
@@ -31,10 +32,8 @@ export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParm
 
   Logger.getAppLogger().debug("Attempting to add a CSD Group to a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_CSDGROUP + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=NAME=='" + parms.name + "'";
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+        CicsCmciConstants.CICS_CSDGROUP, "NAME=='" + parms.name + "'");
 
   const requestBody: any = {
     request: {

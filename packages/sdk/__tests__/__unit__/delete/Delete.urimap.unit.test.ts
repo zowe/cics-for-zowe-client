@@ -104,7 +104,7 @@ describe("CMCI - Delete urimap", () => {
     it("should be able to delete a urimap", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+            `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteUrimap(dummySession, deleteParms);
       expect(response).toContain(content);

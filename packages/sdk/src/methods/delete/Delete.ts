@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { getResourceUri } from "../common";
 import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
 
 /**
@@ -31,10 +32,11 @@ export async function deleteProgram(session: AbstractSession, parms: IProgramPar
 
   Logger.getAppLogger().debug("Attempting to delete a program with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})&PARAMETER=CSDGROUP(${parms.csdGroup})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_PROGRAM,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
 
@@ -55,10 +57,11 @@ export async function deleteTransaction(session: AbstractSession, parms: ITransa
 
   Logger.getAppLogger().debug("Attempting to delete a transaction with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})&PARAMETER=CSDGROUP(${parms.csdGroup})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_TRANSACTION,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
 
@@ -80,10 +83,11 @@ export async function deleteUrimap(session: AbstractSession, parms: IURIMapParms
 
   Logger.getAppLogger().debug("Attempting to delete a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})&PARAMETER=CSDGROUP(${parms.csdGroup})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_URIMAP,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
 
@@ -105,9 +109,10 @@ export async function deleteWebservice(session: AbstractSession, parms: IWebServ
 
   Logger.getAppLogger().debug("Attempting to delete a web service with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME=${parms.name})&PARAMETER=CSDGROUP(${parms.csdGroup})`;
+  const cmciResource = getResourceUri(parms.cicsPlex, parms.regionName,
+                                      CicsCmciConstants.CICS_DEFINITION_WEBSERVICE,
+                                      `NAME=${parms.name}`,
+                                      `CSDGROUP(${parms.csdGroup})`);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
