@@ -1,12 +1,11 @@
-<?xml version="1.0" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cogs" class="svg-inline--fa fa-cogs fa-w-20" role="img" viewBox="0 0 512 512" style="zoom: 1;">
-<path fill="#c5c5c5" d="M464,32 H48 C21.49,32 0,53.49 0,80 v352 c0,26.51 21.49,48 48,48 h416 c26.51,0 48,-21.49 48,-48 V80 c0,-26.51 -21.49,-48 -48,-48 m-6,400 H54 a14,14 0 0 1 -14,-14 V86 a14,14 0 0 1 14,-14 h404 a14,14 0 0 1 14,14 v332 a14,14 0 0 1 -14,14 m-42,-102 v24 "></path>
-
-<rect x="200" y="155" width="170" height="25" fill="#c5c5c5"/>
-<rect x="140" y="220" width="25" height="100" fill="#c5c5c5"/>
-<rect x="140" y="315" width="170" height="25" fill="#c5c5c5"/>
-<rect x="350" y="155" width="25" height="125" fill="#c5c5c5"/>
-
-<rect x="100" y="120" width="100" height="100" rx="15" fill="#ccccff" stroke-width="2" stroke="#c5c5c5"/>
-<rect x="310" y="280" width="100" height="100" rx="15" fill="#ccccff" stroke-width="2" stroke="#c5c5c5"/>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f3f3f4;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M11.37,8.72v-4.06h-4.1v-2.63H2v5.27h2.6v4.06h4.13v2.63h5.27v-5.27h-2.63ZM2.87,6.41v-3.52h3.52v3.52h-3.52ZM8.72,8.7v1.78h-3.25v-3.17h1.81v-1.78h3.22v3.17h-1.77ZM13.13,13.11h-3.52v-3.52h3.52v3.52Z"/>
 </svg>
