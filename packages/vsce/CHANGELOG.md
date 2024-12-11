@@ -6,6 +6,10 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - MAJOR: v3.0.0 release
 
+## Recent Changes
+
+- BugFix: Correcting condition to read team configuration file. [#160](https://github.com/zowe/cics-for-zowe-client/pull/160)
+
 ## `3.0.0-next.202409201904`
 
 - Update: Final prerelease
@@ -14,7 +18,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Renamed the VSCE to `IBM CICS for Zowe Explorer`. [#129](https://github.com/zowe/cics-for-zowe-client/issues/129)
 - Update: See `2.3.6` for details.
 - BugFix: Fixed several identified problems with possible null values in the tree and web views. [#122](https://github.com/zowe/cics-for-zowe-client/issues/122)
-- BugFix: Correcting condition to read team configuration file. [#160](https://github.com/zowe/cics-for-zowe-client/pull/160)
 
 ## `3.0.0-next.202403011419`
 
