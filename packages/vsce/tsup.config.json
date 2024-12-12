@@ -8,7 +8,8 @@
   "format": "cjs",
   "dts": true,
   "external": [
-    "vscode"
+    "vscode",
+    "ssh2"
   ],
   "minify": "terser",
   "noExternal": []
