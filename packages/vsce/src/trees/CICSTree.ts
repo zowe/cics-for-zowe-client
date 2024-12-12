@@ -85,18 +85,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       const configInstance = await ProfileManagement.getConfigInstance();
       const allCICSProfiles = (await ProfileManagement.getProfilesCache().getProfileInfo()).getAllProfiles("cics");
       // const allCICSProfiles = await ProfileManagement.getProfilesCache().getProfiles('cics');
-      if (!allCICSProfiles) {
-        if (!configInstance.getTeamConfig().exists) {
-          window.showErrorMessage(`Could not find any CICS profiles`);
-          return;
-        }
-        window.showInformationMessage(`Could not find any CICS profiles`);
-      }
       const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
       // No cics profiles needed beforhand for team config method
       if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
         const profileNameToLoad = await window.showQuickPick(
-          [{ label: "\uFF0B Create New CICS Profile..." }].concat(
+          [{ label: "\uFF0B Edit CICS Profile..." }].concat(
             allCICSProfileNames
               .filter((name) => {
                 for (const loadedProfile of this.loadedProfiles) {
@@ -118,7 +111,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         if (profileNameToLoad) {
           // If Create New CICS Profile option chosen
           if (profileNameToLoad.label.includes("\uFF0B")) {
-            if (configInstance.getTeamConfig().exists) {
               // get all profiles of all types including zosmf
               const profiles = configInstance.getAllProfiles();
               if (!profiles.length) {
@@ -127,9 +119,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName);
               const filePath = currentProfile?.profLoc.osLoc?.[0] ?? "";
               await openConfigFile(filePath);
-            } else {
-              await this.createNewProfile();
-            }
           } else {
             let profileToLoad;
             // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
@@ -491,28 +480,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         window.showErrorMessage(error);
       }
     } else {
-      const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-      const panel: WebviewPanel = window.createWebviewPanel("zowe", `Create CICS Profile`, column || 1, { enableScripts: true });
-      panel.webview.html = addProfileHtml();
-      panel.webview.onDidReceiveMessage(async (message) => {
-        try {
-          panel.dispose();
-          const allCICSProfileNames = (await ProfileManagement.getProfilesCache().getProfileInfo())
-            .getAllProfiles("cics")
-            .map((profile) => profile.profName); //await ProfileManagement.getProfilesCache().getNamesForType('cics');
-          if (allCICSProfileNames.includes(message.name)) {
-            window.showErrorMessage(`Profile "${message.name}" already exists`);
-            return;
-          }
-          await ProfileManagement.createNewProfile(message);
-          await ProfileManagement.profilesCacheRefresh();
-          await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
-        } catch (error) {
-          console.log(error);
-          // @ts-ignore
-          window.showErrorMessage(error);
-        }
-      });
+        //  Initialize new team configuration file
+        commands.executeCommand("zowe.all.config.init");
     }
   }
 
