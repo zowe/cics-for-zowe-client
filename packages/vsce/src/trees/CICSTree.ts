@@ -86,7 +86,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       const allCICSProfiles = (await ProfileManagement.getProfilesCache().getProfileInfo()).getAllProfiles("cics");
       // const allCICSProfiles = await ProfileManagement.getProfilesCache().getProfiles('cics');
       if (!allCICSProfiles) {
-        if (!configInstance.usingTeamConfig) {
+        if (!configInstance.getTeamConfig().exists) {
           window.showErrorMessage(`Could not find any CICS profiles`);
           return;
         }
@@ -94,7 +94,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       }
       const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
       // No cics profiles needed beforhand for team config method
-      if (configInstance.usingTeamConfig || allCICSProfileNames.length > 0) {
+      if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
         const profileNameToLoad = await window.showQuickPick(
           [{ label: "\uFF0B Create New CICS Profile..." }].concat(
             allCICSProfileNames
@@ -118,7 +118,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         if (profileNameToLoad) {
           // If Create New CICS Profile option chosen
           if (profileNameToLoad.label.includes("\uFF0B")) {
-            if (configInstance.usingTeamConfig) {
+            if (configInstance.getTeamConfig().exists) {
               // get all profiles of all types including zosmf
               const profiles = configInstance.getAllProfiles();
               if (!profiles.length) {
@@ -133,7 +133,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           } else {
             let profileToLoad;
             // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
-            if (configInstance.usingTeamConfig) {
+            if (configInstance.getTeamConfig().exists) {
               profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileNameToLoad.label); //ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, 'cics');
             } else {
               await ProfileManagement.profilesCacheRefresh();
@@ -184,7 +184,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         });
         try {
           const configInstance = await ProfileManagement.getConfigInstance();
-          if (configInstance.usingTeamConfig) {
+          if (configInstance.getTeamConfig().exists) {
             let missingParamters = missingSessionParameters(profile.profile);
             if (missingParamters.length) {
               const userPass = ["user", "password"];
@@ -318,7 +318,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                       if (decision === "Yes") {
                         const configInstance = await ProfileManagement.getConfigInstance();
                         let updatedProfile;
-                        if (configInstance.usingTeamConfig) {
+                        if (configInstance.getTeamConfig().exists) {
                           const upd = { profileName: profile.name, profileType: "cics" };
                           //   const configInstance = await ProfileManagement.getConfigInstance();
                           // flip rejectUnauthorized to false
