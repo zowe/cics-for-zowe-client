@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.0.2`
 
 - BugFix: Correcting condition to read team configuration file. [#160](https://github.com/zowe/cics-for-zowe-client/pull/160)
 - BugFix: Updated the icons for the plex, region, and CICS profile. [#161](https://github.com/zowe/cics-for-zowe-client/pull/161)
