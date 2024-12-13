@@ -37,7 +37,7 @@ export interface IResourceParms {
   /**
      * The name of the CICS region of the program
      */
-  regionName: string;
+  regionName?: string;
 
   /**
      * CICS Plex of the program

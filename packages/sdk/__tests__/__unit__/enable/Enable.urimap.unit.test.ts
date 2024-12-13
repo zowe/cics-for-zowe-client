@@ -89,7 +89,7 @@ describe("CMCI - enable urimap", () => {
     it("should be able to enable a urimap", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${enableParms.name})`;
+            `?CRITERIA=(NAME%3D${enableParms.name})`;
       requestBody = {
         request: {
           update: {

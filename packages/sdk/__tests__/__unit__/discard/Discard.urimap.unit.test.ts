@@ -88,7 +88,7 @@ describe("CMCI - Discard urimap", () => {
     it("should be able to discard a urimap", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME='${discardParms.name}')`;
+            `?CRITERIA=(NAME%3D${discardParms.name})`;
 
       response = await discardUrimap(dummySession, discardParms);
       expect(response).toContain(content);

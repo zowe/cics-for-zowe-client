@@ -89,7 +89,7 @@ describe("CMCI - Disable urimap", () => {
     it("should be able to disable a urimap", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME=${disableParms.name})`;
+            `?CRITERIA=(NAME%3D${disableParms.name})`;
       requestBody = {
         request: {
           update: {

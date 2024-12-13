@@ -17,3 +17,4 @@ export * from "./IResourceParms";
 export * from "./ITransactionParms";
 export * from "./IURIMapParms";
 export * from "./IWebServiceParms";
+export * from "./IGetResourceUriOptions";

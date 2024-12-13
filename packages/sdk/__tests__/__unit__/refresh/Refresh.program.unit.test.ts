@@ -139,7 +139,7 @@ describe("CMCI - Refresh program", () => {
     it("should be able to refresh a program without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + region +
-                "?CRITERIA=(PROGRAM=" + refreshParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 
@@ -152,7 +152,7 @@ describe("CMCI - Refresh program", () => {
       refreshParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "//" + region +
-                "?CRITERIA=(PROGRAM=" + refreshParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 
@@ -165,7 +165,7 @@ describe("CMCI - Refresh program", () => {
       refreshParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(PROGRAM=" + refreshParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 
