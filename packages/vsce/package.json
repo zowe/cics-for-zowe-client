@@ -20,7 +20,7 @@
     "onView:cics-view"
   ],
   "extensionDependencies": [
-    "zowe.vscode-extension-for-zowe"
+    "Zowe.vscode-extension-for-zowe"
   ],
   "main": "./dist/extension.js",
   "icon": "resources/zowe-cics-color.png",
