@@ -111,14 +111,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         if (profileNameToLoad) {
           // If Create New CICS Profile option chosen
           if (profileNameToLoad.label.includes("\uFF0B")) {
-              // get all profiles of all types including zosmf
-              const profiles = configInstance.getAllProfiles();
-              if (!profiles.length) {
-                window.showErrorMessage("No profiles found in config file. Create a new config file or add a profile to get started");
-              }
-              const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName);
-              const filePath = currentProfile?.profLoc.osLoc?.[0] ?? "";
-              await openConfigFile(filePath);
+            // get all profiles of all types including zosmf
+            const profiles = configInstance.getAllProfiles();
+            if (!profiles.length) {
+              window.showErrorMessage("No profiles found in config file. Create a new config file or add a profile to get started");
+            }
+            const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName);
+            const filePath = currentProfile?.profLoc.osLoc?.[0] ?? "";
+            await openConfigFile(filePath);
           } else {
             let profileToLoad;
             // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
@@ -480,8 +480,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         window.showErrorMessage(error);
       }
     } else {
-        //  Initialize new team configuration file
-        commands.executeCommand("zowe.all.config.init");
+      //  Initialize new team configuration file
+      commands.executeCommand("zowe.all.config.init");
     }
   }
 
