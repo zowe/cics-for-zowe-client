@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconOpen } from "../../../utils/profileUtils";
 
@@ -42,7 +41,6 @@ export class CICSTCPIPServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const tcpipsResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSTCPIPService",
@@ -50,10 +48,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const tcpipservicesArray = Array.isArray(tcpipsResponse.response.records.cicstcpipservice)
-        ? tcpipsResponse.response.records.cicstcpipservice
-        : [tcpipsResponse.response.records.cicstcpipservice];
+      const tcpipservicesArray = toArray(tcpipsResponse.response.records.cicstcpipservice);
       this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${tcpipservicesArray.length}]`;
       for (const tcpips of tcpipservicesArray) {
         const newTCPIPServiceItem = new CICSTCPIPServiceTreeItem(tcpips, this.parentRegion, this);
@@ -64,7 +59,6 @@ export class CICSTCPIPServiceTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a TCPIPService filter to narrow search`);
       } else if (this.children.length === 0) {

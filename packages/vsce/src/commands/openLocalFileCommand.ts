@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import * as https from "https";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
@@ -45,27 +44,22 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
-          https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
           try {
             await openLocalFile(currentNode.parentRegion.parentSession.session, {
               name: currentNode.localFile.file,
               regionName: currentNode.parentRegion.label,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
-            https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
             }
           } catch (error) {
-            https.globalAgent.options.rejectUnauthorized = undefined;
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
               const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform OPEN on local file "${
-                  allSelectedNodes[parseInt(index)].localFile.file
+                `Perform OPEN on local file "${allSelectedNodes[parseInt(index)].localFile.file
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -109,7 +103,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-async function openLocalFile(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+async function openLocalFile(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string; }): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

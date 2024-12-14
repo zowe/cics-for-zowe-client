@@ -45,7 +45,6 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
-          https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
           try {
             await enableLocalFile(currentNode.parentRegion.parentSession.session, {
@@ -53,12 +52,10 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
               regionName: currentNode.parentRegion.label,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
-            https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
             }
           } catch (error) {
-            https.globalAgent.options.rejectUnauthorized = undefined;
             window.showErrorMessage(
               `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
                 /(\\n\t|\\n|\\t)/gm,

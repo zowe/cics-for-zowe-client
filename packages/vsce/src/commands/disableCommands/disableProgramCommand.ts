@@ -50,7 +50,6 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
-          https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
           try {
             await disableProgram(currentNode.parentRegion.parentSession.session, {
@@ -58,12 +57,10 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
               regionName: currentNode.parentRegion.label,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
-            https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
             }
           } catch (error) {
-            https.globalAgent.options.rejectUnauthorized = undefined;
             // @ts-ignore
             window.showErrorMessage(
               `Something went wrong when performing a disable - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

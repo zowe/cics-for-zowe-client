@@ -12,10 +12,10 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { getIconOpen } from "../../utils/profileUtils";
+import { toArray } from "../../utils/commandUtils";
 
 export class CICSLibraryTreeItem extends TreeItem {
   children: CICSLibraryDatasets[] = [];
@@ -58,7 +58,6 @@ export class CICSLibraryTreeItem extends TreeItem {
 
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "cicslibrarydatasetname",
@@ -66,20 +65,15 @@ export class CICSLibraryTreeItem extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const datasetArray = Array.isArray(libraryResponse.response.records.cicslibrarydatasetname)
-        ? libraryResponse.response.records.cicslibrarydatasetname
-        : [libraryResponse.response.records.cicslibrarydatasetname];
-      this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${
-        this.activeFilter ? ` (${this.activeFilter}) ` : " "
-      }[${datasetArray.length}]`;
+      const datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
+      this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${this.activeFilter ? ` (${this.activeFilter}) ` : " "
+        }[${datasetArray.length}]`;
       for (const dataset of datasetArray) {
         const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
         this.addDataset(newDatasetItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a datasets filter to narrow search`);
       } else if (this.children.length === 0) {

@@ -12,10 +12,10 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { getIconOpen } from "../utils/profileUtils";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSLibraryTree extends TreeItem {
   children: CICSLibraryTreeItem[] = [];
@@ -42,7 +42,6 @@ export class CICSLibraryTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSLibrary",
@@ -50,10 +49,7 @@ export class CICSLibraryTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const librariesArray = Array.isArray(libraryResponse.response.records.cicslibrary)
-        ? libraryResponse.response.records.cicslibrary
-        : [libraryResponse.response.records.cicslibrary];
+      const librariesArray = toArray(libraryResponse.response.records.cicslibrary);
       this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${librariesArray.length}]`;
       for (const library of librariesArray) {
         const newLibraryItem = new CICSLibraryTreeItem(library, this.parentRegion, this);
@@ -61,7 +57,6 @@ export class CICSLibraryTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a library filter to narrow search`);
       } else if (this.children.length === 0) {

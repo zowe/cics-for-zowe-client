@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconOpen } from "../../../utils/profileUtils";
 
@@ -42,7 +41,6 @@ export class CICSURIMapTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const urimapResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSURIMap",
@@ -50,10 +48,7 @@ export class CICSURIMapTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const urimapArray = Array.isArray(urimapResponse.response.records.cicsurimap)
-        ? urimapResponse.response.records.cicsurimap
-        : [urimapResponse.response.records.cicsurimap];
+      const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
       for (const urimap of urimapArray) {
         const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
@@ -64,7 +59,6 @@ export class CICSURIMapTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a URIMap filter to narrow search`);
       } else if (this.children.length === 0) {
