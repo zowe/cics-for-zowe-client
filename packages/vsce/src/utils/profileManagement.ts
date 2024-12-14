@@ -9,10 +9,9 @@
  *
  */
 
-import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { getCache, getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
@@ -52,17 +51,6 @@ export class ProfileManagement {
   public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
     const mProfileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
     return mProfileInfo;
-  }
-
-  /**
-   * Makes axios GET request with path and axios config object given
-   * @param path
-   * @param config
-   * @returns
-   */
-  public static async makeRequest(path: string, config: AxiosRequestConfig) {
-    const response = await axios.get(path, config);
-    return response;
   }
 
   public static cmciResponseXml2Json(data: string) {
@@ -314,21 +302,25 @@ export class ProfileManagement {
 
   public static async getCachedResources(profile: imperative.IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
     try {
-      const config: AxiosRequestConfig = {
-        baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
-        auth: {
-          username: profile.profile.user,
-          password: profile.profile.password,
-        },
-      };
-      const allItemsResponse = await ProfileManagement.makeRequest(`/CICSResultCache/${cacheToken}/${start}/${increment}`, config);
-      if (allItemsResponse.status === 200) {
-        const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allItemsResponse.data);
-        if (jsonFromXml.response && jsonFromXml.response.records && jsonFromXml.response.records[resourceName.toLowerCase()]) {
-          const recordAttributes = jsonFromXml.response.records[resourceName.toLowerCase()];
-          const recordAttributesArr = toArray(recordAttributes);
-          const returnedResources = recordAttributesArr.map((item: { _attributes: any; }) => item._attributes);
-          return returnedResources;
+      const session = new Session({
+        protocol: profile.profile.protocol,
+        hostname: profile.profile.host,
+        port: profile.profile.port,
+        type: "basic",
+        user: profile.profile.user,
+        password: profile.profile.password,
+        rejectUnauthorized: profile.profile && 'rejectUnauthorized' in profile.profile ? profile.profile.rejectUnauthorized : true,
+      });
+      const allItemsresponse = await getCache(session, {
+        cacheToken,
+        startIndex: start,
+        count: increment,
+      });
+
+      if (allItemsresponse.response.resultsummary.api_response1_alt === "OK") {
+        if (allItemsresponse.response && allItemsresponse.response.records && allItemsresponse.response.records[resourceName.toLowerCase()]) {
+          const recordAttributes = allItemsresponse.response.records[resourceName.toLowerCase()];
+          return toArray(recordAttributes);
         }
       }
     } catch (error) {
