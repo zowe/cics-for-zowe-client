@@ -9,19 +9,21 @@
  *
  */
 
-import { Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { Session } from "@zowe/imperative";
+import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
-import cicsProfileMeta from "./profileDefinition";
-import * as https from "https";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
+import { toArray } from "./commandUtils";
+import cicsProfileMeta from "./profileDefinition";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
   private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
-  constructor() {}
+  constructor() { }
 
   public static apiDoesExist() {
     if (ProfileManagement.zoweExplorerAPI) {
@@ -73,63 +75,73 @@ export class ProfileManagement {
    * @returns Array of type InfoLoaded
    */
   public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
-    const config: AxiosRequestConfig = {
-      baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
-      auth: {
-        username: profile.profile.user,
-        password: profile.profile.password,
-      },
-    };
-    const infoLoaded: InfoLoaded[] = [];
 
-    https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
+    const session = new Session({
+      protocol: profile.profile.protocol,
+      hostname: profile.profile.host,
+      port: profile.profile.port,
+      type: "basic",
+      user: profile.profile.user,
+      password: profile.profile.password,
+      rejectUnauthorized: profile.profile && 'rejectUnauthorized' in profile.profile ? profile.profile.rejectUnauthorized : true,
+    });
+
+    const infoLoaded: InfoLoaded[] = [];
 
     if (profile.profile.cicsPlex) {
       if (profile.profile.regionName) {
         /**
          * Both Supplied, no searching required - Only load 1 region
          */
-        const checkIfSystemGroup = await ProfileManagement.makeRequest(
-          `/CICSRegionGroup/${profile.profile.cicsPlex}/${profile.profile.regionName}?CRITERIA=(GROUP=${profile.profile.regionName})`,
-          config
-        );
-        const regionGroupJson = ProfileManagement.cmciResponseXml2Json(checkIfSystemGroup.data);
+        let checkIfSystemGroup: ICMCIApiResponse;
+        try {
+          checkIfSystemGroup = await getResource(session, {
+            name: "CICSRegionGroup",
+            cicsPlex: profile.profile.cicsPlex,
+            regionName: profile.profile.regionName,
+            criteria: `GROUP=${profile.profile.regionName}`,
+          });
+        } catch (error) {
+          if (error instanceof imperative.ImperativeError) {
+            if (!error.mDetails.msg.toUpperCase().includes("NODATA")) {
+              throw error;
+            }
+          }
+        }
+
         if (
-          regionGroupJson.response.resultsummary &&
-          regionGroupJson.response.resultsummary._attributes &&
-          regionGroupJson.response.resultsummary._attributes.recordcount !== "0"
+          checkIfSystemGroup &&
+          checkIfSystemGroup.response.resultsummary &&
+          checkIfSystemGroup.response.resultsummary.recordcount !== "0"
         ) {
           // CICSGroup
-          const singleGroupResponse = await ProfileManagement.makeRequest(
-            `/CICSManagedRegion/${profile.profile.cicsPlex}/${profile.profile.regionName}`,
-            config
-          );
-          const jsonFromXml = ProfileManagement.cmciResponseXml2Json(singleGroupResponse.data);
-          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
+          const singleGroupResponse = await getResource(session, {
+            name: "CICSManagedRegion",
+            cicsPlex: profile.profile.cicsPlex,
+            regionName: profile.profile.regionName,
+          });
           infoLoaded.push({
             plexname: profile.profile.cicsPlex,
-            regions: [allRegions],
+            regions: toArray(singleGroupResponse.response.records.cicsmanagedregion),
             group: true,
           });
         } else {
           // Region
-          const singleRegionResponse = await ProfileManagement.makeRequest(
-            `/CICSManagedRegion/${profile.profile.cicsPlex}/${profile.profile.regionName}`,
-            config
-          );
-          const jsonFromXml = ProfileManagement.cmciResponseXml2Json(singleRegionResponse.data);
-          if (jsonFromXml.response.records && jsonFromXml.response.records.cicsmanagedregion) {
-            const singleRegion = jsonFromXml.response.records.cicsmanagedregion._attributes;
+          const singleRegionResponse = await getResource(session, {
+            name: "CICSManagedRegion",
+            cicsPlex: profile.profile.cicsPlex,
+            regionName: profile.profile.regionName,
+          });
+          if (singleRegionResponse.response.records && singleRegionResponse.response.records.cicsmanagedregion) {
             infoLoaded.push({
               plexname: profile.profile.cicsPlex,
-              regions: [singleRegion],
+              regions: toArray(singleRegionResponse.response.records.cicsmanagedregion),
               group: false,
             });
           } else {
             window.showErrorMessage(
               `Cannot find region ${profile.profile.regionName} in plex ${profile.profile.cicsPlex} for profile ${profile.name}`
             );
-            https.globalAgent.options.rejectUnauthorized = undefined;
             throw new Error("Region Not Found");
           }
         }
@@ -137,18 +149,18 @@ export class ProfileManagement {
         /**
          * Plex given - must search for regions
          */
-        const allRegionResponse = await ProfileManagement.makeRequest(`/CICSManagedRegion/${profile.profile.cicsPlex}`, config);
-        const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allRegionResponse.data);
-        if (jsonFromXml.response.records && jsonFromXml.response.records.cicsmanagedregion) {
-          const allRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
+        const allRegionResponse = await getResource(session, {
+          name: "CICSManagedRegion",
+          cicsPlex: profile.profile.cicsPlex,
+        });
+        if (allRegionResponse.response.records && allRegionResponse.response.records.cicsmanagedregion) {
           infoLoaded.push({
             plexname: profile.profile.cicsPlex,
-            regions: allRegions,
+            regions: toArray(allRegionResponse.response.records.cicsmanagedregion),
             group: false,
           });
         } else {
           window.showErrorMessage(`Cannot find plex ${profile.profile.cicsPlex} for profile ${profile.name}`);
-          https.globalAgent.options.rejectUnauthorized = undefined;
           throw new Error("Plex Not Found");
         }
       }
@@ -157,18 +169,18 @@ export class ProfileManagement {
         /**
          * Region but no plex - Single region system, use that
          */
-        const singleRegionResponse = await ProfileManagement.makeRequest(`/CICSRegion/${profile.profile.regionName}`, config);
-        const jsonFromXml = ProfileManagement.cmciResponseXml2Json(singleRegionResponse.data);
-        if (jsonFromXml.response.records && jsonFromXml.response.records.cicsregion) {
-          const singleRegion = jsonFromXml.response.records.cicsregion._attributes;
+        const singleRegionResponse = await getResource(session, {
+          name: "CICSRegion",
+          regionName: profile.profile.regionName,
+        });
+        if (singleRegionResponse.response.records && singleRegionResponse.response.records.cicsregion) {
           infoLoaded.push({
             plexname: null,
-            regions: [singleRegion],
+            regions: toArray(singleRegionResponse.response.records.cicsregion),
             group: false,
           });
         } else {
           window.showErrorMessage(`Cannot find region ${profile.profile.regionName} for profile ${profile.name}`);
-          https.globalAgent.options.rejectUnauthorized = undefined;
           throw new Error("Region Not Found");
         }
       } else {
@@ -176,14 +188,14 @@ export class ProfileManagement {
          * Nothing given - Test if plex and find all info
          */
         try {
-          const testIfPlexResponse = await ProfileManagement.makeRequest(`/CICSCICSPlex`, config);
-          if (testIfPlexResponse.status === 200) {
+          const testIfPlexResponse = await getResource(session, {
+            name: "CICSCICSPlex",
+          });
+          if (testIfPlexResponse.response.resultsummary.api_response1_alt === "OK") {
             // Plex
-            const jsonFromXml = ProfileManagement.cmciResponseXml2Json(testIfPlexResponse.data);
-            if (jsonFromXml.response.records && jsonFromXml.response.records.cicscicsplex) {
-              const returnedPlexes = jsonFromXml.response.records.cicscicsplex.map((item: { _attributes: any }) => item._attributes);
-              const uniqueReturnedPlexes = returnedPlexes.filter(
-                (plex: any, index: number) => index === returnedPlexes.findIndex((found: any) => found.plexname === plex.plexname)
+            if (testIfPlexResponse.response.records && testIfPlexResponse.response.records.cicscicsplex) {
+              const uniqueReturnedPlexes = testIfPlexResponse.response.records.cicscicsplex.filter(
+                (plex: any, index: number) => index === testIfPlexResponse.response.records.cicscicsplex.findIndex((found: any) => found.plexname === plex.plexname)
               );
               for (const plex of uniqueReturnedPlexes) {
                 try {
@@ -200,37 +212,32 @@ export class ProfileManagement {
             }
           } else {
             // Not Plex
-            const singleRegion = await ProfileManagement.makeRequest(`/CICSRegion`, config);
-            const jsonFromXml = ProfileManagement.cmciResponseXml2Json(singleRegion.data);
-            const returnedRegion = jsonFromXml.response.records.cicsregion._attributes;
+            const singleRegion = await getResource(session, {
+              name: "CICSRegion",
+            });
             infoLoaded.push({
               plexname: null,
-              regions: [returnedRegion],
+              regions: toArray(singleRegion.response.records.cicsregion),
               group: false,
             });
           }
         } catch (error) {
           // Not Plex - Could be error
           try {
-            const singleRegion = await ProfileManagement.makeRequest(`/CICSRegion`, config);
-            const jsonFromXml = JSON.parse(xml2json(singleRegion.data, { compact: true, spaces: 4 }));
-            if (!jsonFromXml) {
-              throw error;
-            }
-            const returnedRegion = jsonFromXml.response.records.cicsregion._attributes;
+            const singleRegion = await getResource(session, {
+              name: "CICSRegion",
+            });
             infoLoaded.push({
               plexname: null,
-              regions: [returnedRegion],
+              regions: toArray(singleRegion.response.records.cicsregion),
               group: false,
             });
           } catch (e2) {
-            https.globalAgent.options.rejectUnauthorized = undefined;
             throw e2;
           }
         }
       }
     }
-    https.globalAgent.options.rejectUnauthorized = undefined;
     return infoLoaded;
   }
 
@@ -240,52 +247,62 @@ export class ProfileManagement {
   public static async getRegionInfoInPlex(plex: CICSPlexTree) {
     try {
       const profile = plex.getProfile();
-      const config: AxiosRequestConfig = {
-        baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
-        auth: {
-          username: profile.profile.user,
-          password: profile.profile.password,
-        },
-      };
-      https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
-      const regionResponse = await ProfileManagement.makeRequest(`/CICSManagedRegion/${plex.getPlexName()}`, config);
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      if (regionResponse.status === 200) {
-        const jsonFromXml = ProfileManagement.cmciResponseXml2Json(regionResponse.data);
-        if (jsonFromXml.response.records && jsonFromXml.response.records.cicsmanagedregion) {
-          const returnedRegions = jsonFromXml.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
-          return returnedRegions;
+
+      const session = new Session({
+        protocol: profile.profile.protocol,
+        hostname: profile.profile.host,
+        port: profile.profile.port,
+        type: "basic",
+        user: profile.profile.user,
+        password: profile.profile.password,
+        rejectUnauthorized: profile.profile && 'rejectUnauthorized' in profile.profile ? profile.profile.rejectUnauthorized : true,
+      });
+
+      const regionResponse = await getResource(session, {
+        name: "CICSManagedRegion",
+        cicsPlex: plex.getPlexName(),
+      });
+      if (regionResponse.response.resultsummary.api_response1_alt === "OK") {
+        if (regionResponse.response.records && regionResponse.response.records.cicsmanagedregion) {
+          return regionResponse.response.records.cicsmanagedregion;
         }
       }
     } catch (error) {
       console.log(error);
-      window.showErrorMessage(`Cannot find plex ${plex.getPlexName()} for profile ${plex.getParent().label}`);
-      throw new Error("Plex Not Found");
+      if (error instanceof imperative.ImperativeError) {
+        if (error.mDetails.msg.includes("NOTAVAILABLE")) {
+          window.showErrorMessage(`No regions found for plex ${plex.getPlexName()} with profile ${plex.getParent().label}`);
+          throw new Error("No regions found");
+        }
+      }
+      window.showErrorMessage(`Error retrieving ManagedRegions for plex ${plex.getPlexName()} with profile ${plex.getParent().label}`, error.message);
+      throw new Error("Error retrieving ManagedRegions");
     }
   }
 
   public static async generateCacheToken(profile: imperative.IProfileLoaded, plexName: string, resourceName: string, criteria?: string, group?: string) {
     try {
-      const config: AxiosRequestConfig = {
-        baseURL: `${profile.profile.protocol}://${profile.profile.host}:${profile.profile.port}/CICSSystemManagement`,
-        auth: {
-          username: profile.profile.user,
-          password: profile.profile.password,
-        },
-        params: {
-          OVERRIDEWARNINGCOUNT: "YES",
-          CRITERIA: criteria,
-          NODISCARD: "",
-          SUMMONLY: "",
-        },
-      };
-      https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
-      const allProgramsResponse = await ProfileManagement.makeRequest(`/${resourceName}/${plexName}${group ? `/${group}` : ""}`, config);
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      if (allProgramsResponse.status === 200) {
-        const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allProgramsResponse.data);
-        if (jsonFromXml.response && jsonFromXml.response.resultsummary) {
-          const resultsSummary = jsonFromXml.response.resultsummary._attributes;
+      const session = new Session({
+        protocol: profile.profile.protocol,
+        hostname: profile.profile.host,
+        port: profile.profile.port,
+        type: "basic",
+        user: profile.profile.user,
+        password: profile.profile.password,
+        rejectUnauthorized: profile.profile && 'rejectUnauthorized' in profile.profile ? profile.profile.rejectUnauthorized : true,
+      });
+      const allProgramsResponse = await getResource(session, {
+        name: resourceName,
+        cicsPlex: plexName,
+        ...group ? { regionName: group } : {},
+        queryParams: {
+          summonly: true,
+          nodiscard: true,
+        }
+      });
+      if (allProgramsResponse.response.resultsummary.api_response1_alt === "OK") {
+        if (allProgramsResponse.response && allProgramsResponse.response.resultsummary) {
+          const resultsSummary = allProgramsResponse.response.resultsummary;
           return { cacheToken: resultsSummary.cachetoken, recordCount: resultsSummary.recordcount };
         }
       }
@@ -304,15 +321,13 @@ export class ProfileManagement {
           password: profile.profile.password,
         },
       };
-      https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
       const allItemsResponse = await ProfileManagement.makeRequest(`/CICSResultCache/${cacheToken}/${start}/${increment}`, config);
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (allItemsResponse.status === 200) {
         const jsonFromXml = ProfileManagement.cmciResponseXml2Json(allItemsResponse.data);
         if (jsonFromXml.response && jsonFromXml.response.records && jsonFromXml.response.records[resourceName.toLowerCase()]) {
           const recordAttributes = jsonFromXml.response.records[resourceName.toLowerCase()];
-          const recordAttributesArr = Array.isArray(recordAttributes) ? recordAttributes : [recordAttributes];
-          const returnedResources = recordAttributesArr.map((item: { _attributes: any }) => item._attributes);
+          const recordAttributesArr = toArray(recordAttributes);
+          const returnedResources = recordAttributesArr.map((item: { _attributes: any; }) => item._attributes);
           return returnedResources;
         }
       }
