@@ -24,7 +24,6 @@ import {
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { isTheia, openConfigFile } from "../utils/workspaceUtils";
-import { addProfileHtml } from "../utils/webviewHTML";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
@@ -114,10 +113,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             // get all profiles of all types including zosmf
             const profiles = configInstance.getAllProfiles();
             if (!profiles.length) {
-              window.showErrorMessage("No profiles found in config file. Create a new config file or add a profile to get started");
+              window.showErrorMessage("No profiles found in config file. Please update Team Configuration file.");
             }
-            const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName);
-            const filePath = currentProfile?.profLoc.osLoc?.[0] ?? "";
+            const currentProfile =
+                profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
+            const filePath =
+                currentProfile === null
+                    ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
+                    : (currentProfile?.profLoc.osLoc?.[0] ?? "");
             await openConfigFile(filePath);
           } else {
             let profileToLoad;
@@ -136,7 +139,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           }
         }
       } else {
-        window.showInformationMessage("No Profiles Found... Opening Profile Creation Form");
+        window.showInformationMessage("No profiles found in config file. Please update Team Configuration file.");
         //  Create New Profile Form should appear
         this.createNewProfile();
       }
@@ -481,7 +484,13 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       }
     } else {
       //  Initialize new team configuration file
-      commands.executeCommand("zowe.all.config.init");
+      const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
+         ignoreFocusOut: true,
+         placeHolder: "Create a New Team Configuration File",
+      });
+      if (response) {
+         commands.executeCommand("zowe.all.config.init");
+      }
     }
   }
 
@@ -550,38 +559,24 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     }
   }
 
-  async updateSession(session: CICSSessionTree) {
-    await ProfileManagement.profilesCacheRefresh();
-    const profileToUpdate = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString()!, "cics");
-
-    const message = {
-      name: profileToUpdate.name,
-      profile: {
-        name: profileToUpdate.name,
-        ...profileToUpdate.profile,
-      },
-    };
-    await this.updateSessionHelper(session, message);
-  }
-
-  async updateSessionHelper(session: CICSSessionTree, messageToUpdate?: imperative.IUpdateProfile) {
-    const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-    const panel: WebviewPanel = window.createWebviewPanel("zowe", `Update CICS Profile`, column || 1, { enableScripts: true });
-    panel.webview.html = addProfileHtml(messageToUpdate);
-    await panel.webview.onDidReceiveMessage(async (message) => {
-      try {
-        panel.dispose();
-        const profile = await ProfileManagement.updateProfile(message);
-        const position = this.loadedProfiles.indexOf(session);
+    async updateSession(session: CICSSessionTree) {
         await ProfileManagement.profilesCacheRefresh();
-        const updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.profile.name, "cics");
-        await this.removeSession(session, updatedProfile, position);
-      } catch (error) {
-        // @ts-ignore
-        window.showErrorMessage(error);
-      }
-    });
-  }
+        const profileCache = await ProfileManagement.getProfilesCache();
+        const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
+        const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
+        await this.updateSessionHelper(currentProfile);
+    }
+
+    async updateSessionHelper(profile?: imperative.IProfAttrs) {
+        const response = await window.showQuickPick([{ label: "Edit CICS Profile" }], {
+            ignoreFocusOut: true,
+            placeHolder: "Create a New Team Configuration File",
+        });
+        if (response) {
+            const filePath = profile?.profLoc.osLoc?.[0] ?? "";
+            await openConfigFile(filePath);
+        }
+    }
 
   getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
     return element;
