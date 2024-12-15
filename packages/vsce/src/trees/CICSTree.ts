@@ -119,7 +119,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
             const filePath =
                   currentProfile === null
-                  ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
+                    ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
                     : (currentProfile?.profLoc.osLoc?.[0] ?? "");
             await openConfigFile(filePath);
           } else {
