@@ -118,8 +118,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             const currentProfile =
                 profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
             const filePath =
-                currentProfile === null
-                    ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
+                  currentProfile === null
+                  ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
                     : (currentProfile?.profLoc.osLoc?.[0] ?? "");
             await openConfigFile(filePath);
           } else {
@@ -485,11 +485,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     } else {
       //  Initialize new team configuration file
       const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
-         ignoreFocusOut: true,
-         placeHolder: "Create a New Team Configuration File",
+        ignoreFocusOut: true,
+        placeHolder: "Create a New Team Configuration File",
       });
       if (response) {
-         commands.executeCommand("zowe.all.config.init");
+        commands.executeCommand("zowe.all.config.init");
       }
     }
   }
@@ -559,24 +559,24 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     }
   }
 
-    async updateSession(session: CICSSessionTree) {
-        await ProfileManagement.profilesCacheRefresh();
-        const profileCache = await ProfileManagement.getProfilesCache();
-        const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
-        const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
-        await this.updateSessionHelper(currentProfile);
-    }
+  async updateSession(session: CICSSessionTree) {
+    await ProfileManagement.profilesCacheRefresh();
+    const profileCache = await ProfileManagement.getProfilesCache();
+    const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
+    const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
+    await this.updateSessionHelper(currentProfile);
+  }
 
-    async updateSessionHelper(profile?: imperative.IProfAttrs) {
-        const response = await window.showQuickPick([{ label: "Edit CICS Profile" }], {
-            ignoreFocusOut: true,
-            placeHolder: "Create a New Team Configuration File",
-        });
-        if (response) {
-            const filePath = profile?.profLoc.osLoc?.[0] ?? "";
-            await openConfigFile(filePath);
-        }
+  async updateSessionHelper(profile?: imperative.IProfAttrs) {
+    const response = await window.showQuickPick([{ label: "Edit CICS Profile" }], {
+      ignoreFocusOut: true,
+      placeHolder: "Create a New Team Configuration File",
+    });
+    if (response) {
+      const filePath = profile?.profLoc.osLoc?.[0] ?? "";
+      await openConfigFile(filePath);
     }
+  }
 
   getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
     return element;
