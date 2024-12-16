@@ -25,7 +25,7 @@ export class Utils {
    * @param {string} resourceName - CMCI resource name
    * @param {IGetResourceUriOptions} options - CMCI resource options
    */
-  public static getResourceUri(resourceName: string, options?: IGetResourceUriOptions) : string {
+  public static getResourceUri(resourceName: string, options?: IGetResourceUriOptions): string {
     ImperativeExpect.toBeDefinedAndNonBlank(resourceName, "CICS Resource name", "CICS resource name is required");
 
     let delimiter = "?"; // initial delimiter
@@ -35,20 +35,42 @@ export class Utils {
 
     let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resourceName}/${cicsPlex}${region}`;
 
-    if (options != null) {
-      if (options.criteria != null && options.criteria.length > 0) {
-        const addParentheses = options.criteria.charAt(0) !== '(';
+    if (options && options.criteria) {
+      cmciResource += `${delimiter}${CicsCmciConstants.CRITERIA}=${this.enforceParentheses(encodeURIComponent(options.criteria))}`;
+      delimiter = "&";
+    }
 
-        cmciResource = cmciResource + delimiter + "CRITERIA=" + (addParentheses ? "(": "") +
-        encodeURIComponent(options.criteria) + (addParentheses ? ")": "") ;
-        delimiter = "&";
-      }
+    if (options && options.parameter) {
+      cmciResource += `${delimiter}PARAMETER=${encodeURIComponent(options.parameter)}`;
+      delimiter = "&";
+    }
 
-      if (options.parameter != null && options.parameter.length > 0) {
-        cmciResource = cmciResource + delimiter + "PARAMETER=" + encodeURIComponent(options.parameter);
-      }
+    if (options && options.queryParams && options.queryParams.summonly) {
+      cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
+      delimiter = "&";
+    }
+
+    if (options && options.queryParams && options.queryParams.nodiscard) {
+      cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
+      delimiter = "&";
+    }
+
+    if (options && options.queryParams && options.queryParams.overrideWarningCount) {
+      cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
+      delimiter = "&";
     }
 
     return cmciResource;
+  }
+
+  public static enforceParentheses(input: string): string {
+    if (!input.startsWith('(') && !input.endsWith(')')) {
+      return `(${input})`;
+    } else if (input.startsWith('(') && !input.endsWith(')')) {
+      return `${input})`;
+    } else if (!input.startsWith('(') && input.endsWith(')')) {
+      return `(${input}`;
+    }
+    return input;
   }
 }

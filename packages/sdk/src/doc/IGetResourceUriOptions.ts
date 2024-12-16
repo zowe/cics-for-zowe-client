@@ -9,6 +9,8 @@
  *
  */
 
+import { IResourceQueryParams } from "./IResourceQueryParms";
+
 export interface IGetResourceUriOptions {
 
   /**
@@ -39,4 +41,9 @@ export interface IGetResourceUriOptions {
     *    "CSDGROUP(D*)"
     */
   parameter?: string;
+
+  /**
+   *  Query parameters to be used in the HTTP request
+   */
+  queryParams?: IResourceQueryParams;
 }
