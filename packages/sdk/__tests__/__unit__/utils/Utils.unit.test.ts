@@ -223,5 +223,195 @@ describe("Utils - getResourceUri", () => {
       expect(error).toBeUndefined();
       expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?CRITERIA=(NAME%3Dtest1)&PARAMETER=PARAM%3Dtest2");
     });
+
+    it("should be able to get a resource uri with SUMMONLY specified", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            summonly: true,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY");
+    });
+
+    it("should be able to get a resource uri with SUMMONLY specified to false", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            summonly: false,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+    });
+
+    it("should be able to get a resource uri with NODISCARD specified", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            nodiscard: true,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?NODISCARD");
+    });
+
+    it("should be able to get a resource uri with NODISCARD specified", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            nodiscard: false,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+    });
+
+    it("should be able to get a resource uri with OVERRIDEWARNINGCOUNT specified", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            overrideWarningCount: true,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?OVERRIDEWARNINGCOUNT");
+    });
+
+    it("should be able to get a resource uri with OVERRIDEWARNINGCOUNT specified to false", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            overrideWarningCount: false,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+    });
+
+    it("should be able to get a resource uri with all query params specified", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          queryParams: {
+            summonly: true,
+            nodiscard: true,
+            overrideWarningCount: true,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT");
+    });
+
+    it("should be able to get a resource uri with all query params specified and no context", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          queryParams: {
+            summonly: true,
+            nodiscard: true,
+            overrideWarningCount: true,
+          }
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT");
+    });
+  });
+});
+
+describe('Utils - enforceParentheses', () => {
+
+  it("should add brackets when none exist", () => {
+    const output = Utils.enforceParentheses("input");
+    expect(output).toEqual("(input)");
+  });
+
+  it("should add first bracket when end exists", () => {
+    const output = Utils.enforceParentheses("input with spaces)");
+    expect(output).toEqual("(input with spaces)");
+  });
+
+  it("should add last bracket when first exists", () => {
+    const output = Utils.enforceParentheses("(input with spec1@| characters");
+    expect(output).toEqual("(input with spec1@| characters)");
+  });
+
+  it("should do nothing when both brackets exist", () => {
+    const output = Utils.enforceParentheses("(fully covered)");
+    expect(output).toEqual("(fully covered)");
+  });
+
+  it("should do nothing when multiple brackets exist", () => {
+    const output = Utils.enforceParentheses("((()))");
+    expect(output).toEqual("((()))");
   });
 });
