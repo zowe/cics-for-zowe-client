@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- BugFix: Initializing new Team Configuration File. [#166](https://github.com/zowe/cics-for-zowe-client/pull/166)
+- BugFix: Initializing new Team Configuration File. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)
 
 ## `3.0.2`
 

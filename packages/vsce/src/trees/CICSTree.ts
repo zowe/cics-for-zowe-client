@@ -88,7 +88,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       // No cics profiles needed beforhand for team config method
       if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
         const profileNameToLoad = await window.showQuickPick(
-          [{ label: "\uFF0B Edit CICS Profile..." }].concat(
+          [{ label: "\u270F Edit Team Configuration File" }].concat(
             allCICSProfileNames
               .filter((name) => {
                 for (const loadedProfile of this.loadedProfiles) {
@@ -104,17 +104,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           ),
           {
             ignoreFocusOut: true,
-            placeHolder: "Load Profile or Create New Profile",
+            placeHolder: "Edit Team Configuration File",
           }
         );
         if (profileNameToLoad) {
           // If Create New CICS Profile option chosen
-          if (profileNameToLoad.label.includes("\uFF0B")) {
+          if (profileNameToLoad.label.includes("\u270F")) {
             // get all profiles of all types including zosmf
             const profiles = configInstance.getAllProfiles();
-            if (!profiles.length) {
-              window.showErrorMessage("No profiles found in config file. Please update Team Configuration file.");
-            }
             const currentProfile =
                 profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
             const filePath =
@@ -139,7 +136,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           }
         }
       } else {
-        window.showInformationMessage("No profiles found in config file. Please update Team Configuration file.");
         //  Create New Profile Form should appear
         this.createNewProfile();
       }
