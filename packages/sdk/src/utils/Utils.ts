@@ -30,12 +30,10 @@ export class Utils {
 
     let delimiter = "?"; // initial delimiter
 
-    const cicsPlex = (options && options.cicsPlex) == null ? "" : options.cicsPlex + CicsCmciConstants.SEPERATOR;
+    const cicsPlex = (options && options.cicsPlex) == null ? "" : `${options.cicsPlex}/`;
     const region = (options && options.regionName) == null ? "" : options.regionName;
 
-    let cmciResource = CicsCmciConstants.SEPERATOR + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-                      CicsCmciConstants.SEPERATOR + resourceName + CicsCmciConstants.SEPERATOR +
-                      cicsPlex + region;
+    let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resourceName}/${cicsPlex}${region}`;
 
     if (options != null) {
       if (options.criteria != null && options.criteria.length > 0) {

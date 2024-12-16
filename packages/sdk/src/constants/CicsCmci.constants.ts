@@ -94,9 +94,4 @@ export const CicsCmciConstants: { [key: string]: any } = {
      */
   CICS_CMCI_EXTERNAL_RESOURCES: ["CICSLocalTransaction", "CICSRemoteTransaction", "CICSDefinitionTransaction", "CICSLocalFile"],
 
-  /**
-     * SEPERATOR token
-     */
-  SEPERATOR: "/",
-
 };
