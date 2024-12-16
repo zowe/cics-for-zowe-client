@@ -166,7 +166,7 @@ describe("CMCI - Add csdGroup to list", () => {
     it("should be able to add a csdGroup to list without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.regionName +
-            "?CRITERIA=NAME=='" + addToListParms.name + "'";
+            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 
@@ -179,7 +179,7 @@ describe("CMCI - Add csdGroup to list", () => {
       addToListParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.cicsPlex + "/" + addToListParms.regionName +
-            "?CRITERIA=NAME=='" + addToListParms.name + "'";
+            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 
@@ -192,7 +192,7 @@ describe("CMCI - Add csdGroup to list", () => {
       addToListParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
             CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.cicsPlex + "/" + addToListParms.regionName +
-            "?CRITERIA=NAME=='" + addToListParms.name + "'";
+            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 

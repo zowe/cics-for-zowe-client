@@ -12,7 +12,8 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms } from "../../doc";
+import { Utils } from "../../utils";
+import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Discard a program installed in CICS through CMCI REST API
@@ -30,10 +31,14 @@ export async function discardProgram(session: AbstractSession, parms: IProgramPa
 
   Logger.getAppLogger().debug("Attempting to discard a program with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(PROGRAM=" + parms.name + ")";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `PROGRAM=${parms.name}`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_PROGRAM_RESOURCE, options);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
 
@@ -53,10 +58,14 @@ export async function discardTransaction(session: AbstractSession, parms: ITrans
 
   Logger.getAppLogger().debug("Attempting to discard a transaction with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_LOCAL_TRANSACTION + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=(TRANID=" + parms.name + ")";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `(TRANID=${parms.name})`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_LOCAL_TRANSACTION, options);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
 
@@ -66,9 +75,13 @@ export async function discardUrimap(session: AbstractSession, parms: IURIMapParm
 
   Logger.getAppLogger().debug("Attempting to discard a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_URIMAP + "/" + cicsPlex +
-        `${parms.regionName}?CRITERIA=(NAME='${parms.name}')`;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `(NAME=${parms.name})`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_URIMAP, options);
+
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }

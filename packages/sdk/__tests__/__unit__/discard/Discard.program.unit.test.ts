@@ -129,7 +129,7 @@ describe("CMCI - Discard program", () => {
     it("should be able to discard a program without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + discardParms.name + ")";
 
       response = await discardProgram(dummySession, discardParms);
 
@@ -142,7 +142,7 @@ describe("CMCI - Discard program", () => {
       discardParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "//" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + discardParms.name + ")";
 
       response = await discardProgram(dummySession, discardParms);
 
@@ -155,7 +155,7 @@ describe("CMCI - Discard program", () => {
       discardParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(PROGRAM=" + discardParms.name + ")";
+                "?CRITERIA=(PROGRAM%3D" + discardParms.name + ")";
 
       response = await discardProgram(dummySession, discardParms);
 

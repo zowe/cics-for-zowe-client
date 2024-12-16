@@ -12,7 +12,8 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
+import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms, IGetResourceUriOptions } from "../../doc";
+import { Utils } from "../../utils";
 
 /**
  * Define a new program resource to CICS through CMCI REST API
@@ -49,9 +50,12 @@ export function defineProgram(session: AbstractSession, parms: IProgramParms): P
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_PROGRAM, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
@@ -93,10 +97,12 @@ export function defineTransaction(session: AbstractSession, parms: ITransactionP
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex +
-        parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_TRANSACTION, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
     [], requestBody) as any;
 }
@@ -124,9 +130,12 @@ export function defineUrimapServer(session: AbstractSession, parms: IURIMapParms
   const requestBody: any = buildUrimapRequestBody(parms, "server");
   requestBody.request.create.attributes.$.program = parms.programName;
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
@@ -150,9 +159,12 @@ export function defineUrimapClient(session: AbstractSession, parms: IURIMapParms
   Logger.getAppLogger().debug("Attempting to define a client URIMap with the following parameters:\n%s", JSON.stringify(parms));
   const requestBody: any = buildUrimapRequestBody(parms, "client");
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
@@ -179,9 +191,12 @@ export function defineUrimapPipeline(session: AbstractSession, parms: IURIMapPar
   const requestBody: any = buildUrimapRequestBody(parms, "pipeline");
   requestBody.request.create.attributes.$.pipeline = parms.pipelineName;
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
@@ -305,10 +320,12 @@ export function defineWebservice(session: AbstractSession, parms: IWebServicePar
     }
   };
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex +
-        parms.regionName;
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_WEBSERVICE, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
     [], requestBody) as any;
 }

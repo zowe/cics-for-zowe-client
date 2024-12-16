@@ -12,7 +12,8 @@
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, ICSDGroupParms } from "../../doc";
+import { Utils } from "../../utils";
+import { ICMCIApiResponse, ICSDGroupParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Add a new CSD Group resource to a CSD List in CICS through CMCI REST API
@@ -31,10 +32,13 @@ export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParm
 
   Logger.getAppLogger().debug("Attempting to add a CSD Group to a CSD List with the following parameters:\n%s", JSON.stringify(parms));
 
-  const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
-  const cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        CicsCmciConstants.CICS_CSDGROUP + "/" + cicsPlex + parms.regionName +
-        "?CRITERIA=NAME=='" + parms.name + "'";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `NAME=='${parms.name}'`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CSDGROUP, options);
 
   const requestBody: any = {
     request: {
