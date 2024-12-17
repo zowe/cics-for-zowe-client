@@ -65,6 +65,7 @@ describe("Test suite for CICSProgramTree", () => {
   beforeEach(() => {
     getIconPathInResourcesMock.mockReturnValue(iconPath);
     sut = new CICSProgramTree(cicsRegionTreeMock as any as CICSRegionTree);
+    expect(getIconPathInResourcesMock).toHaveBeenCalledWith("folder-closed-dark.svg", "folder-closed-light.svg");
   });
 
   afterEach(() => {
@@ -97,6 +98,7 @@ describe("Test suite for CICSProgramTree", () => {
       expect(getDefaultProgramFilter).toHaveBeenCalled();
       expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
+      expect(getIconPathInResourcesMock).toHaveBeenCalledWith("folder-open-dark.svg", "folder-open-light.svg");
     });
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
@@ -108,6 +110,7 @@ describe("Test suite for CICSProgramTree", () => {
       expect(toEscapedCriteriaString).toHaveBeenCalled();
       expect(sut.activeFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
+      expect(getIconPathInResourcesMock).toHaveBeenCalledWith("folder-open-dark.svg", "folder-open-light.svg");
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {

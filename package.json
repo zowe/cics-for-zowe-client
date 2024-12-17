@@ -49,6 +49,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-html-reporter": "^3.7.1",
     "jest-junit": "^16.0.0",
+    "jest-mock-vscode": "^4.0.4",
     "jest-stare": "^2.5.0",
     "madge": "^6.0.0",
     "npm-lockfile": "^4.0.0",
