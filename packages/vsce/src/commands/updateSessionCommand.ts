@@ -24,7 +24,7 @@ export function getUpdateSessionCommand(tree: CICSTree, treeview: TreeView<any>)
       return;
     }
     const configInstance = await ProfileManagement.getConfigInstance();
-    if (configInstance.usingTeamConfig) {
+    if (configInstance.getTeamConfig().exists) {
       try {
         const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(allSelectedNodes[allSelectedNodes.length - 1].label);
         if (currentProfile) {
