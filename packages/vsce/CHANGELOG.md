@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 
-## Recent Changes
+## `3.1.1`
 
  - BugFix: CICS extension 3.1.0 will not load correctly. [#174](https://github.com/zowe/cics-for-zowe-client/issues/174)
 
