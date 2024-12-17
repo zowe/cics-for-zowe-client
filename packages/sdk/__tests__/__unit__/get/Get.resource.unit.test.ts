@@ -26,13 +26,6 @@ describe("CMCI - Get resource", () => {
   const criteria = "program=D*";
   const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
-  const resourceParms: IResourceParms = {
-    regionName: region,
-    name: resource,
-    criteria,
-    cicsPlex: undefined
-  };
-
   const dummySession = new Session({
     user: "fake",
     password: "fake",
@@ -43,11 +36,19 @@ describe("CMCI - Get resource", () => {
   let error: any;
   let response: any;
   let endPoint: string;
+  let resourceParms: IResourceParms;
+
 
   describe("validation", () => {
     beforeEach(() => {
       response = undefined;
       error = undefined;
+      resourceParms = {
+        regionName: region,
+        name: resource,
+        criteria: undefined,
+        cicsPlex: undefined
+      };
     });
 
     it("should throw error if no parms are defined", async () => {
@@ -77,21 +78,6 @@ describe("CMCI - Get resource", () => {
       expect(error.message).toContain("CICS resource name is required");
     });
 
-    it("should throw error if CICS Region name is not defined", async () => {
-      try {
-        response = await getResource(dummySession, {
-          regionName: undefined,
-          name: "fake"
-        });
-      } catch (err) {
-        error = err;
-      }
-
-      expect(response).toBeUndefined();
-      expect(error).toBeDefined();
-      expect(error.message).toContain("CICS region name is required");
-    });
-
     it("should throw error if resource name is missing", async () => {
       try {
         response = await getResource(dummySession, {
@@ -106,21 +92,6 @@ describe("CMCI - Get resource", () => {
       expect(error).toBeDefined();
       expect(error.message).toContain("Required parameter 'CICS Resource name' must not be blank");
     });
-
-    it("should throw error if CICS Region name is missing", async () => {
-      try {
-        response = await getResource(dummySession, {
-          regionName: "",
-          name: "fake"
-        });
-      } catch (err) {
-        error = err;
-      }
-
-      expect(response).toBeUndefined();
-      expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
-    });
   });
 
   describe("success scenarios", () => {
@@ -130,13 +101,49 @@ describe("CMCI - Get resource", () => {
     beforeEach(() => {
       response = undefined;
       error = undefined;
+      resourceParms = {
+        regionName: region,
+        name: resource,
+        criteria: undefined,
+        cicsPlex: undefined
+      };
       deleteSpy.mockClear();
       deleteSpy.mockResolvedValue(content);
     });
 
+    it("should be able to get a resource without CICS Region name being defined", async () => {
+      try {
+        resourceParms.regionName = undefined;
+        response = await getResource(dummySession, resourceParms);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+       resource + "/";
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should be able to get a resource without CICS Region name being specified", async () => {
+      try {
+        resourceParms.regionName = "";
+        response = await getResource(dummySession, resourceParms);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
+       resource + "/";
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
     it("should be able to get a resource without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-                "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
+                "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 

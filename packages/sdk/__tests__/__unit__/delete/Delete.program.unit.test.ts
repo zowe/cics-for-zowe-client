@@ -173,7 +173,7 @@ describe("CMCI - Delete program", () => {
     it("should be able to delete a program without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -186,7 +186,7 @@ describe("CMCI - Delete program", () => {
       deleteParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -199,7 +199,7 @@ describe("CMCI - Delete program", () => {
       deleteParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region +
-                `?CRITERIA=(NAME=${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 

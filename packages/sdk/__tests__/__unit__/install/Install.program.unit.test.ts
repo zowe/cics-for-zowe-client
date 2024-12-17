@@ -177,7 +177,7 @@ describe("CMCI - Install program", () => {
     it("should be able to install a program without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installProgram(dummySession, installParms);
 
@@ -190,7 +190,7 @@ describe("CMCI - Install program", () => {
       installParms.cicsPlex = "";
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installProgram(dummySession, installParms);
 
@@ -203,7 +203,7 @@ describe("CMCI - Install program", () => {
       installParms.cicsPlex = cicsPlex;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
                 CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(NAME=" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
+                "?CRITERIA=(NAME%3D" + installParms.name + ")&PARAMETER=CSDGROUP(" + installParms.csdGroup + ")";
 
       response = await installProgram(dummySession, installParms);
 
