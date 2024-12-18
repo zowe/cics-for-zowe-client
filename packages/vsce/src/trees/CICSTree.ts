@@ -24,7 +24,6 @@ import {
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { isTheia, openConfigFile } from "../utils/workspaceUtils";
-import { addProfileHtml } from "../utils/webviewHTML";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
@@ -85,18 +84,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       const configInstance = await ProfileManagement.getConfigInstance();
       const allCICSProfiles = (await ProfileManagement.getProfilesCache().getProfileInfo()).getAllProfiles("cics");
       // const allCICSProfiles = await ProfileManagement.getProfilesCache().getProfiles('cics');
-      if (!allCICSProfiles) {
-        if (!configInstance.getTeamConfig().exists) {
-          window.showErrorMessage(`Could not find any CICS profiles`);
-          return;
-        }
-        window.showInformationMessage(`Could not find any CICS profiles`);
-      }
       const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
       // No cics profiles needed beforhand for team config method
       if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
         const profileNameToLoad = await window.showQuickPick(
-          [{ label: "\uFF0B Create New CICS Profile..." }].concat(
+          [{ label: "\u270F Edit Team Configuration File" }].concat(
             allCICSProfileNames
               .filter((name) => {
                 for (const loadedProfile of this.loadedProfiles) {
@@ -112,24 +104,19 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           ),
           {
             ignoreFocusOut: true,
-            placeHolder: "Load Profile or Create New Profile",
+            placeHolder: "Edit Team Configuration File",
           }
         );
         if (profileNameToLoad) {
           // If Create New CICS Profile option chosen
-          if (profileNameToLoad.label.includes("\uFF0B")) {
-            if (configInstance.getTeamConfig().exists) {
-              // get all profiles of all types including zosmf
-              const profiles = configInstance.getAllProfiles();
-              if (!profiles.length) {
-                window.showErrorMessage("No profiles found in config file. Create a new config file or add a profile to get started");
-              }
-              const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName);
-              const filePath = currentProfile?.profLoc.osLoc?.[0] ?? "";
-              await openConfigFile(filePath);
-            } else {
-              await this.createNewProfile();
-            }
+          if (profileNameToLoad.label.includes("\u270F")) {
+            // get all profiles of all types including zosmf
+            const profiles = configInstance.getAllProfiles();
+            const currentProfile =
+                profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
+            const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
+            const filePath = currentProfile === null ? teamConfigFilePath : (currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath);
+            await openConfigFile(filePath);
           } else {
             let profileToLoad;
             // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
@@ -147,7 +134,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           }
         }
       } else {
-        window.showInformationMessage("No Profiles Found... Opening Profile Creation Form");
         //  Create New Profile Form should appear
         this.createNewProfile();
       }
@@ -491,28 +477,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         window.showErrorMessage(error);
       }
     } else {
-      const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-      const panel: WebviewPanel = window.createWebviewPanel("zowe", `Create CICS Profile`, column || 1, { enableScripts: true });
-      panel.webview.html = addProfileHtml();
-      panel.webview.onDidReceiveMessage(async (message) => {
-        try {
-          panel.dispose();
-          const allCICSProfileNames = (await ProfileManagement.getProfilesCache().getProfileInfo())
-            .getAllProfiles("cics")
-            .map((profile) => profile.profName); //await ProfileManagement.getProfilesCache().getNamesForType('cics');
-          if (allCICSProfileNames.includes(message.name)) {
-            window.showErrorMessage(`Profile "${message.name}" already exists`);
-            return;
-          }
-          await ProfileManagement.createNewProfile(message);
-          await ProfileManagement.profilesCacheRefresh();
-          await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
-        } catch (error) {
-          console.log(error);
-          // @ts-ignore
-          window.showErrorMessage(error);
-        }
+      //  Initialize new team configuration file
+      const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
+        ignoreFocusOut: true,
+        placeHolder: "Create a New Team Configuration File",
       });
+      if (response) {
+        commands.executeCommand("zowe.all.config.init");
+      }
     }
   }
 
@@ -583,35 +555,23 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
   async updateSession(session: CICSSessionTree) {
     await ProfileManagement.profilesCacheRefresh();
-    const profileToUpdate = await ProfileManagement.getProfilesCache().loadNamedProfile(session.label?.toString()!, "cics");
-
-    const message = {
-      name: profileToUpdate.name,
-      profile: {
-        name: profileToUpdate.name,
-        ...profileToUpdate.profile,
-      },
-    };
-    await this.updateSessionHelper(session, message);
+    const profileCache = await ProfileManagement.getProfilesCache();
+    const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
+    const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
+    await this.updateSessionHelper(currentProfile);
   }
 
-  async updateSessionHelper(session: CICSSessionTree, messageToUpdate?: imperative.IUpdateProfile) {
-    const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-    const panel: WebviewPanel = window.createWebviewPanel("zowe", `Update CICS Profile`, column || 1, { enableScripts: true });
-    panel.webview.html = addProfileHtml(messageToUpdate);
-    await panel.webview.onDidReceiveMessage(async (message) => {
-      try {
-        panel.dispose();
-        const profile = await ProfileManagement.updateProfile(message);
-        const position = this.loadedProfiles.indexOf(session);
-        await ProfileManagement.profilesCacheRefresh();
-        const updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.profile.name, "cics");
-        await this.removeSession(session, updatedProfile, position);
-      } catch (error) {
-        // @ts-ignore
-        window.showErrorMessage(error);
-      }
+  async updateSessionHelper(profile: imperative.IProfAttrs) {
+    const response = await window.showQuickPick([{ label: "\u270F Edit CICS Profile" }], {
+      ignoreFocusOut: true,
+      placeHolder: "Create a New Team Configuration File",
     });
+    if (response) {
+      const configInstance = await ProfileManagement.getConfigInstance();
+      const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
+      const filePath = profile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
+      await openConfigFile(filePath);
+    }
   }
 
   getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
