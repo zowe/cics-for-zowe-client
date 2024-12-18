@@ -66,8 +66,7 @@ export class CICSLibraryTreeItem extends TreeItem {
         criteria: criteria,
       });
       const datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
-      this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${this.activeFilter ? ` (${this.activeFilter}) ` : " "
-        }[${datasetArray.length}]`;
+      this.label = this.buildLabel(datasetArray);
       for (const dataset of datasetArray) {
         const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
         this.addDataset(newDatasetItem);
@@ -78,9 +77,7 @@ export class CICSLibraryTreeItem extends TreeItem {
         window.showErrorMessage(`Resource Limit Exceeded - Set a datasets filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No datasets found`);
-        this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${
-          this.activeFilter ? ` (${this.activeFilter}) ` : " "
-        }[0]`;
+        this.label = this.buildLabel([]);
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
@@ -91,6 +88,16 @@ export class CICSLibraryTreeItem extends TreeItem {
         );
       }
     }
+  }
+
+  private buildLabel(arr?: any[]) {
+    let labelContent = this.library.name;
+    labelContent += this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : "";
+    labelContent += this.activeFilter ? ` (${this.activeFilter}) ` : " ";
+    if (arr) {
+      labelContent += `[${arr.length}]`;
+    }
+    return labelContent;
   }
 
   public clearFilter() {
