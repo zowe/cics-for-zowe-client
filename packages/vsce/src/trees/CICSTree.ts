@@ -117,7 +117,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             const filePath =
                   currentProfile === null
                     ? configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json"
-                    : (currentProfile?.profLoc.osLoc?.[0] ?? "");
+                    : (currentProfile.profLoc.osLoc?.[0]);
             await openConfigFile(filePath);
           } else {
             let profileToLoad;
@@ -569,7 +569,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       placeHolder: "Create a New Team Configuration File",
     });
     if (response) {
-      const filePath = profile?.profLoc.osLoc?.[0] ?? "";
+      const filePath = profile.profLoc.osLoc?.[0];
       await openConfigFile(filePath);
     }
   }
