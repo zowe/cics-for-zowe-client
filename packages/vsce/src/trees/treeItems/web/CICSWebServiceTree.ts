@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconPathInResources } from "../../../utils/profileUtils";
 export class CICSWebServiceTree extends TreeItem {
@@ -41,7 +40,6 @@ export class CICSWebServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const webserviceResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSWebService",
@@ -49,10 +47,7 @@ export class CICSWebServiceTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const webservicesArray = Array.isArray(webserviceResponse.response.records.cicswebservice)
-        ? webserviceResponse.response.records.cicswebservice
-        : [webserviceResponse.response.records.cicswebservice];
+      const webservicesArray = toArray(webserviceResponse.response.records.cicswebservice);
       this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${webservicesArray.length}]`;
       for (const webservice of webservicesArray) {
         const newWebServiceItem = new CICSWebServiceTreeItem(webservice, this.parentRegion, this);
@@ -61,7 +56,6 @@ export class CICSWebServiceTree extends TreeItem {
       }
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a Web Services filter to narrow search`);
       } else if (this.children.length === 0) {

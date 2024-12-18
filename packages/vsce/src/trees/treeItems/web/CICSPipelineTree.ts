@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconPathInResources } from "../../../utils/profileUtils";
 export class CICSPipelineTree extends TreeItem {
@@ -41,7 +40,6 @@ export class CICSPipelineTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const pipelineResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSPipeline",
@@ -49,10 +47,7 @@ export class CICSPipelineTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const pipelinesArray = Array.isArray(pipelineResponse.response.records.cicspipeline)
-        ? pipelineResponse.response.records.cicspipeline
-        : [pipelineResponse.response.records.cicspipeline];
+      const pipelinesArray = toArray(pipelineResponse.response.records.cicspipeline);
       this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;
       for (const pipeline of pipelinesArray) {
         const newPipelineItem = new CICSPipelineTreeItem(pipeline, this.parentRegion, this);
@@ -61,7 +56,6 @@ export class CICSPipelineTree extends TreeItem {
       }
       this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a Pipeline filter to narrow search`);
       } else if (this.children.length === 0) {
