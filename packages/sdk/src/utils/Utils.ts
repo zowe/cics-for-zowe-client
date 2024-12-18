@@ -12,6 +12,7 @@
 import { ImperativeExpect } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
 import { IGetResourceUriOptions } from "../doc";
+import { IResultCacheParms } from "../doc/IResultCacheParms";
 
 /**
  * Class for providing static utility methods
@@ -58,6 +59,34 @@ export class Utils {
     if (options && options.queryParams && options.queryParams.overrideWarningCount) {
       cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
       delimiter = "&";
+    }
+
+    return cmciResource;
+  }
+
+  public static getCacheUri(cacheToken: string, options?: IResultCacheParms): string {
+    ImperativeExpect.toBeDefinedAndNonBlank(cacheToken, "CICS Results Cache Token", "CICS Results Cache Token is required");
+
+    let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_RESULT_CACHE}/${cacheToken}`;
+
+    if (options && options.startIndex) {
+      cmciResource += `/${options.startIndex}`;
+
+      if (options.count) {
+        cmciResource += `/${options.count}`;
+      }
+    }
+
+    let delimiter = "?";
+
+    // Add NODISCARD unless explicitally told not to
+    if (!options || options.nodiscard == null || options.nodiscard === true) {
+      cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
+      delimiter = "&";
+    }
+
+    if (options && options.summonly) {
+      cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
     }
 
     return cmciResource;

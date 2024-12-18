@@ -9,14 +9,16 @@
  *
  */
 
-export * from "./add-to-list";
-export * from "./cache";
-export * from "./define";
-export * from "./delete";
-export * from "./disable";
-export * from "./discard";
-export * from "./enable";
-export * from "./get";
-export * from "./set";
-export * from "./install";
-export * from "./remove-from-list";
+import { IResourceQueryParams } from "./IResourceQueryParms";
+
+export interface IResultCacheParms extends IResourceQueryParams {
+  /**
+   * Index of first record to collect from the results cache
+   */
+  startIndex?: number;
+
+  /**
+   * Number of records to fetch from the cache
+   */
+  count?: number;
+}
