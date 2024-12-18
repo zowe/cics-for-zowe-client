@@ -561,7 +561,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     await this.updateSessionHelper(currentProfile);
   }
 
-  async updateSessionHelper(profile?: imperative.IProfAttrs) {
+  async updateSessionHelper(profile: imperative.IProfAttrs) {
     const response = await window.showQuickPick([{ label: "Edit CICS Profile" }], {
       ignoreFocusOut: true,
       placeHolder: "Create a New Team Configuration File",
