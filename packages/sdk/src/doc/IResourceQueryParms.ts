@@ -9,11 +9,17 @@
  *
  */
 
-import { IGetResourceUriOptions } from "./IGetResourceUriOptions";
-
-export interface IResourceParms extends IGetResourceUriOptions {
+export interface IResourceQueryParams {
   /**
-     * The name of the resource
-     */
-  name: string;
+   * Include SUMMONLY query parameter
+   */
+  summonly?: boolean;
+  /**
+   * Include NODISCARD query parameter
+   */
+  nodiscard?: boolean;
+  /**
+   * Include OVERRIDEWARNINGCOUNT query parameter
+   */
+  overrideWarningCount?: boolean;
 }

@@ -12,7 +12,7 @@
 /**
  * Constants to be used by the API
  */
-export const CicsCmciConstants: { [key: string]: any } = {
+export const CicsCmciConstants = {
   /**
      * Specifies the required part of the REST interface URI
      */
@@ -78,6 +78,11 @@ export const CicsCmciConstants: { [key: string]: any } = {
      * NODISCARD parameter
      */
   NO_DISCARD: "NODISCARD",
+
+  /**
+     * OVERRIDEWARNINGCOUNT parameter
+     */
+  OVERRIDE_WARNING_COUNT: "OVERRIDEWARNINGCOUNT",
 
   /**
      * CRITERIA parameter

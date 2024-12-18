@@ -6,6 +6,10 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - BugFix: Initializing new Team Configuration File. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)
 
+## `3.1.1`
+
+ - BugFix: CICS extension 3.1.0 will not load correctly. [#174](https://github.com/zowe/cics-for-zowe-client/issues/174)
+
 ## `3.0.2`
 
 - BugFix: Correcting condition to read team configuration file. [#160](https://github.com/zowe/cics-for-zowe-client/pull/160)

@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add optional query parameters on getResource SDK method. [#168](https://github.com/zowe/cics-for-zowe-client/issues/168)
+
 ## `6.1.0`
 
 - Enhancement: Made the region name optional on the getResource SDK method. [#162](https://github.com/zowe/cics-for-zowe-client/issues/162)

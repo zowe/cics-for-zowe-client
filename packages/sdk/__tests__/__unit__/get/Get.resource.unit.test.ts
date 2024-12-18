@@ -184,5 +184,74 @@ describe("CMCI - Get resource", () => {
       expect(response).toContain(content);
       expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
+
+    it("should be able to get a resource with SUMMONLY specified", async () => {
+      resourceParms.cicsPlex = "plex1";
+      resourceParms.regionName = "reg1";
+      resourceParms.queryParams = {
+        summonly: true,
+      };
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?SUMMONLY`;
+      response = await getResource(dummySession, resourceParms);
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should be able to get a resource with NODISCARD specified", async () => {
+      resourceParms.cicsPlex = "plex1";
+      resourceParms.regionName = "reg1";
+      resourceParms.queryParams = {
+        nodiscard: true,
+      };
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?NODISCARD`;
+      response = await getResource(dummySession, resourceParms);
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should be able to get a resource with OVERRIDEWARNINGCOUNT specified", async () => {
+      resourceParms.cicsPlex = "plex1";
+      resourceParms.regionName = "reg1";
+      resourceParms.queryParams = {
+        overrideWarningCount: true,
+      };
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?OVERRIDEWARNINGCOUNT`;
+      response = await getResource(dummySession, resourceParms);
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should be able to get a resource with all query params specified", async () => {
+      resourceParms.cicsPlex = "plex1";
+      resourceParms.regionName = "reg1";
+      resourceParms.queryParams = {
+        overrideWarningCount: true,
+        summonly: true,
+        nodiscard: true,
+      };
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`;
+      response = await getResource(dummySession, resourceParms);
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should be able to get a resource with no context and all query params specified", async () => {
+      resourceParms.cicsPlex = undefined;
+      resourceParms.regionName = undefined;
+      resourceParms.queryParams = {
+        overrideWarningCount: true,
+        summonly: true,
+        nodiscard: true,
+      };
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`;
+      response = await getResource(dummySession, resourceParms);
+
+      expect(response).toContain(content);
+      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
   });
 });
