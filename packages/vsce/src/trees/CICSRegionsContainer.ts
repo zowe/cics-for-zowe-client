@@ -89,11 +89,12 @@ export class CICSRegionsContainer extends TreeItem {
    * Count the number of total and active regions
    * @param regionsArray
    */
-  private addRegionsUtility(regionsArray: [any]) {
+  private addRegionsUtility(regionsArray: any[]) {
     let activeCount = 0;
     let totalCount = 0;
     const parentPlex = this.getParent();
-    const regionFilterRegex = this.activeFilter ? new RegExp(this.patternIntoRegex(this.activeFilter)) : ""; //parentPlex.getActiveFilter() ? RegExp(parentPlex.getActiveFilter()!) : undefined;
+    //parentPlex.getActiveFilter() ? RegExp(parentPlex.getActiveFilter()!) : undefined;
+    const regionFilterRegex = this.activeFilter ? new RegExp(this.patternIntoRegex(this.activeFilter)) : "";
     for (const region of regionsArray) {
       // If region filter exists then match it
       if (!regionFilterRegex || region.cicsname.match(regionFilterRegex)) {
