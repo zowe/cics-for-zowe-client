@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## Recent Changes
+## `6.2.0`
 
 - Enhancement: Add optional query parameters on getResource SDK method. [#168](https://github.com/zowe/cics-for-zowe-client/issues/168)
 - Enhancement: Add getCache method to SDK. [#169](https://github.com/zowe/cics-for-zowe-client/issues/169)
