@@ -9,8 +9,9 @@
  *
  */
 
-import { Utils } from "../../../src/utils";
 import { IGetResourceUriOptions } from "../../../src";
+import { IResultCacheParms } from "../../../src/doc/IResultCacheParms";
+import { Utils } from "../../../src/utils";
 
 describe("Utils - getResourceUri", () => {
 
@@ -413,5 +414,173 @@ describe('Utils - enforceParentheses', () => {
   it("should do nothing when multiple brackets exist", () => {
     const output = Utils.enforceParentheses("((()))");
     expect(output).toEqual("((()))");
+  });
+});
+
+describe("Utils - getCacheUri", () => {
+
+  let error: any;
+  let response: any;
+
+  describe("validation", () => {
+    beforeEach(() => {
+      response = undefined;
+      error = undefined;
+    });
+
+    it("should throw error if cacheToken is empty", async () => {
+      try {
+        response = Utils.getCacheUri("");
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toEqual("Expect Error: Required parameter 'CICS Results Cache Token' must not be blank");
+    });
+
+    it("should throw error if cacheToken is undefined", async () => {
+      try {
+        response = Utils.getCacheUri(undefined);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toEqual("Expect Error: CICS Results Cache Token is required");
+    });
+
+    it("should throw error if cacheToken is null", async () => {
+      try {
+        response = Utils.getCacheUri(null);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toEqual("Expect Error: CICS Results Cache Token is required");
+    });
+  });
+
+  describe("success scenarios", () => {
+
+    beforeEach(() => {
+      response = undefined;
+      error = undefined;
+    });
+
+    it("should be able to get a result cache uri with only the cache token specified", async () => {
+      try {
+        response = Utils.getCacheUri("abcdefg");
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdefg?NODISCARD");
+    });
+
+    it("should be able to get a result cache with the index specified", async () => {
+      try {
+
+        const options: IResultCacheParms = {
+          startIndex: 1
+        };
+
+        response = Utils.getCacheUri("abcdefgh", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdefgh/1?NODISCARD");
+    });
+
+    it("should be able to get a result cache with the count specified - ignored with no index", async () => {
+      try {
+        const options: IResultCacheParms = {
+          count: 20
+        };
+
+        response = Utils.getCacheUri("cachetoken", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/cachetoken?NODISCARD");
+    });
+
+    it("should be able to get a result cache with the index and count specified", async () => {
+      try {
+        const options: IResultCacheParms = {
+          startIndex: 10,
+          count: 20
+        };
+
+        response = Utils.getCacheUri("cachetoken", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/cachetoken/10/20?NODISCARD");
+    });
+
+    it("should be able to get a result cache with SUMMONLY", async () => {
+      try {
+        const options: IResultCacheParms = {
+          summonly: true,
+        };
+
+        response = Utils.getCacheUri("abcdef", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdef?NODISCARD&SUMMONLY");
+    });
+
+    it("should be able to get a result cache and with false NODISCARD", async () => {
+      try {
+        const options: IResultCacheParms = {
+          nodiscard: false
+        };
+
+        response = Utils.getCacheUri("abcdef", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdef");
+    });
+
+    it("should be able to get a result cache and with summonly but not nodiscard", async () => {
+      try {
+        const options: IResultCacheParms = {
+          summonly: true,
+          nodiscard: false,
+        };
+
+        response = Utils.getCacheUri("abcdef", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdef?SUMMONLY");
+    });
   });
 });
