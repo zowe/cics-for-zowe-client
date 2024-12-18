@@ -65,6 +65,11 @@ export const CicsCmciConstants = {
   CICS_CSDGROUP_IN_LIST: "CICSCSDGroupInList",
 
   /**
+     * Specifies the Result Cache part of the URI
+     */
+  CICS_RESULT_CACHE: "CICSResultCache",
+
+  /**
      * ORDERBY parameter
      */
   ORDER_BY: "ORDERBY",
