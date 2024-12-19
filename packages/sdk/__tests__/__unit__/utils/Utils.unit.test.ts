@@ -398,12 +398,12 @@ describe('Utils - enforceParentheses', () => {
 
   it("should add first bracket when end exists", () => {
     const output = Utils.enforceParentheses("input with spaces)");
-    expect(output).toEqual("(input with spaces)");
+    expect(output).toEqual("(input with spaces))");
   });
 
   it("should add last bracket when first exists", () => {
     const output = Utils.enforceParentheses("(input with spec1@| characters");
-    expect(output).toEqual("(input with spec1@| characters)");
+    expect(output).toEqual("(input with spec1@| characters");
   });
 
   it("should do nothing when both brackets exist", () => {
@@ -414,6 +414,11 @@ describe('Utils - enforceParentheses', () => {
   it("should do nothing when multiple brackets exist", () => {
     const output = Utils.enforceParentheses("((()))");
     expect(output).toEqual("((()))");
+  });
+
+  it("should add appropriate brackets", () => {
+    const output = Utils.enforceParentheses("NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)");
+    expect(output).toEqual("(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
   });
 });
 
