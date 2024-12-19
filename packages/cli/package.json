@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS Plug-in for Zowe CLI",
@@ -51,7 +51,7 @@
     "configurationModule": "lib/imperative.js"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "6.2.0"
+    "@zowe/cics-for-zowe-sdk": "6.2.1"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0"
