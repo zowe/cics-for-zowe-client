@@ -93,13 +93,6 @@ export class Utils {
   }
 
   public static enforceParentheses(input: string): string {
-    if (!input.startsWith('(') && !input.endsWith(')')) {
-      return `(${input})`;
-    } else if (input.startsWith('(') && !input.endsWith(')')) {
-      return `${input})`;
-    } else if (!input.startsWith('(') && input.endsWith(')')) {
-      return `(${input}`;
-    }
-    return input;
+    return input.startsWith("(") ? input : `(${input})`;
   }
 }
