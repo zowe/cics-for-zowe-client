@@ -337,7 +337,14 @@
       {
         "command": "cics-extension-for-zowe.showRegionParameters",
         "title": "Show SIT Parameters",
-        "category": "IBM CICS for Zowe Explorer"
+        "category": "IBM CICS for Zowe Explorer",
+        "enablement": "true"
+      },
+      {
+        "command": "cics-extension-for-zowe.showRegionParametersInactive",
+        "title": "Show SIT Parameters",
+        "category": "IBM CICS for Zowe Explorer",
+        "enablement": "false"
       },
       {
         "command": "cics-extension-for-zowe.enableProgram",
@@ -464,8 +471,13 @@
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsregion\\./",
+          "when": "view == cics-view && viewItem =~ /^cicsregion\\..*\\.active/",
           "command": "cics-extension-for-zowe.showRegionParameters",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsregion\\..*\\.inactive.*/",
+          "command": "cics-extension-for-zowe.showRegionParametersInactive",
           "group": ""
         },
         {
