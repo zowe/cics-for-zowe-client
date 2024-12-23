@@ -109,7 +109,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         };
 
         const quickpick = Gui.createQuickPick();
-        const addProfilePlaceholder = "Choose profile action for " + currentProfile + " profile";
+        const addProfilePlaceholder = "Choose user action for selected profile";
         quickpick.items = [editProfile, hideProfile, deleteProfile];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
