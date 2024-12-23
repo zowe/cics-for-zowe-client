@@ -125,7 +125,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           return;
         } else if (choice === editProfile) {
           for (const sessionTree of allSelectedNodes) {
-            await this.updateSession(sessionTree);
+            await this.updateSession(sessionTree, configInstance);
           }
         } else {
           const filePath = currentProfile.profLoc.osLoc[0];
@@ -659,29 +659,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
      * Update profile functionality for V1 profile configuration
      * @param session CICSSessions Tree
      */
-  async updateSession(session: CICSSessionTree) {
+  async updateSession(session: CICSSessionTree, configInstance: imperative.ProfileInfo) {
     await ProfileManagement.profilesCacheRefresh();
     const profileCache = await ProfileManagement.getProfilesCache();
     const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
     const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
-    await this.updateSessionHelper(currentProfile);
-  }
-
-  /**
-     * Helper method to open file config for selected profile
-     * @param profile instance of IProfAttrs
-     */
-  async updateSessionHelper(profile: imperative.IProfAttrs) {
-    const response = await window.showQuickPick([{ label: "\u270F Edit CICS Profile" }], {
-      ignoreFocusOut: true,
-      placeHolder: "Create a New Team Configuration File",
-    });
-    if (response) {
-      const configInstance = await ProfileManagement.getConfigInstance();
-      const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
-      const filePath = profile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
-      await openConfigFile(filePath);
-    }
+    const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
+    const filePath = currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
+    await openConfigFile(filePath);
   }
 
   /**
