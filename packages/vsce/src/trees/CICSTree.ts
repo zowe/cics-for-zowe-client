@@ -311,15 +311,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                           await configInstance.updateProperty({ ...upd, property: "rejectUnauthorized", value: false });
                           updatedProfile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profile.name);
                         } else {
-                          // flip rejectUnauthorized to false
-                          const message = {
-                            name: profile.name,
-                            profile: {
-                              ...profile.profile,
-                              rejectUnauthorized: false,
-                            },
-                          };
-                          const newProfile = await ProfileManagement.updateProfile(message);
                           await ProfileManagement.profilesCacheRefresh();
                           updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.name, "cics");
                         }
@@ -376,115 +367,13 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * and creates a profile.
    */
   async createNewProfile() {
-    if (isTheia()) {
-      const connnectionName = await Gui.showInputBox({
-        prompt: "Name of connection",
-        placeHolder: "e.g. my-cics-profile",
-        ignoreFocusOut: true,
-      });
-      if (!connnectionName) {
-        return;
-      }
-      const hostDetails = await Gui.showInputBox({
-        prompt: "Input protocol, host and port for connection",
-        placeHolder: "e.g. https://mycicshostname.com:12345",
-        ignoreFocusOut: true,
-      });
-
-      if (!hostDetails) {
-        return;
-      }
-
-      const splitHostDetails = hostDetails.split(":");
-
-      const protocol = splitHostDetails[0].toLowerCase();
-      if (!["http", "https"].includes(protocol)) {
-        return;
-      }
-
-      let host = splitHostDetails[1];
-      if (host.slice(0, 2) !== "//") {
-        return;
-      }
-      host = host.slice(2);
-
-      const port = parseInt(splitHostDetails[2]);
-      if (!port || isNaN(port)) {
-        return;
-      }
-
-      const username = await Gui.showInputBox({
-        prompt: "Input Username",
-        placeHolder: "e.g. user123",
-        ignoreFocusOut: true,
-      });
-      if (!username) {
-        return;
-      }
-
-      const userPassword = await Gui.showInputBox({
-        prompt: "Input Password",
-        placeHolder: "e.g. 12345678",
-        password: true,
-        ignoreFocusOut: true,
-      });
-      if (!userPassword) {
-        return;
-      }
-
-      const plexName = await Gui.showInputBox({
-        prompt: "Input Plex Name",
-        placeHolder: "e.g. PLEX123",
-        ignoreFocusOut: true,
-      });
-
-      const regionName = await Gui.showInputBox({
-        prompt: "Input Region Name",
-        placeHolder: "e.g. REGION123",
-        ignoreFocusOut: true,
-      });
-
-      const rejectUnauthorized = await Gui.showQuickPick(["True", "False"], {
-        placeHolder: "Reject Unauthorized",
-        ignoreFocusOut: true,
-      });
-      if (!rejectUnauthorized) {
-        return;
-      }
-      const message = {
-        profile: {
-          name: connnectionName,
-          host: host,
-          port: port,
-          user: username,
-          password: userPassword,
-          rejectUnauthorized: rejectUnauthorized === "True" ? true : false,
-          protocol: protocol,
-          cicsPlex: plexName.length === 0 ? undefined : plexName,
-          regionName: regionName.length === 0 ? undefined : regionName,
-        },
-        name: connnectionName,
-        type: "CICS",
-        overwrite: true,
-      };
-
-      try {
-        await ProfileManagement.createNewProfile(message);
-        await ProfileManagement.profilesCacheRefresh();
-        await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
-      } catch (error) {
-        // @ts-ignore
-        window.showErrorMessage(error);
-      }
-    } else {
-      //  Initialize new team configuration file
-      const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
-        ignoreFocusOut: true,
-        placeHolder: "Create a New Team Configuration File",
-      });
-      if (response) {
-        commands.executeCommand("zowe.all.config.init");
-      }
+    //  Initialize new team configuration file
+    const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
+      ignoreFocusOut: true,
+      placeHolder: "Create a New Team Configuration File",
+    });
+    if (response) {
+      commands.executeCommand("zowe.all.config.init");
     }
   }
 
@@ -498,60 +387,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  /**
-   * Delete profile functionality for V1 profile configuration
-   * @param sessions
-   */
-  async deleteSession(sessions: CICSSessionTree[]) {
-    let answer;
-    if (sessions.length === 1) {
-      answer = await window.showInformationMessage(
-        `Are you sure you want to delete the profile "${sessions[0].label?.toString()!}"`,
-        ...["Yes", "No"]
-      );
-    } else if (sessions.length > 1) {
-      answer = await window.showInformationMessage(
-        `Are you sure you want to delete the profiles "${sessions.map((sessionTree) => {
-          return sessionTree.label?.toString()!;
-        })}"`,
-        ...["Yes", "No"]
-      );
-    }
-    if (answer === "Yes") {
-      window.withProgress(
-        {
-          title: "Delete Profile",
-          location: ProgressLocation.Notification,
-          cancellable: true,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the delete command");
-          });
-          for (const index in sessions) {
-            progress.report({
-              message: `Deleting profile ${parseInt(index) + 1} of ${sessions.length}`,
-              increment: (parseInt(index) / sessions.length) * 100,
-            });
-            try {
-              await ProfileManagement.deleteProfile({
-                name: sessions[parseInt(index)].label?.toString()!,
-                rejectIfDependency: true,
-              });
-              const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-              await persistentStorage.removeLoadedCICSProfile(sessions[parseInt(index)].label.toString());
-
-              this.loadedProfiles = this.loadedProfiles.filter((profile) => profile !== sessions[parseInt(index)]);
-              this._onDidChangeTreeData.fire(undefined);
-            } catch (error) {
-              // @ts-ignore
-              window.showErrorMessage(error);
-            }
-          }
-        }
-      );
-    }
-  }
 
   async updateSession(session: CICSSessionTree) {
     await ProfileManagement.profilesCacheRefresh();

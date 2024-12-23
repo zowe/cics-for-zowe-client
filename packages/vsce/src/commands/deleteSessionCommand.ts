@@ -31,8 +31,6 @@ export function getDeleteSessionCommand(tree: CICSTree, treeview: TreeView<any>)
           const filePath = currentProfile.profLoc.osLoc ? currentProfile.profLoc.osLoc[0] : "";
           await openConfigFile(filePath);
         }
-      } else {
-        await tree.deleteSession(allSelectedNodes);
       }
     } catch (error) {
       window.showErrorMessage(
