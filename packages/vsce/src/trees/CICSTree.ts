@@ -590,10 +590,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     }
   }
 
-  async hideCommand(progress: vscode.Progress<T>, token: vscode.CancellationToken){
-    
-  }
-
   async removeSession(session: CICSSessionTree, profile?: imperative.IProfileLoaded, position?: number) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.removeLoadedCICSProfile(session.label.toString());
