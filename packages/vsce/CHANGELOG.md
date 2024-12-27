@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 ## Recent Changes
-- BugFix: Now the 'Show SIT Parameters' menu option is grayed out for inactive regions. [#167](https://github.com/zowe/cics-for-zowe-client/issues/167)
+- BugFix: Remove the 'Show SIT Parameters' menu option when a region is inactive. [#167](https://github.com/zowe/cics-for-zowe-client/issues/167)
 
 ## `3.2.0`
 
