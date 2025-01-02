@@ -14,8 +14,6 @@ const fsE = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
 
-const isPost = process.argv[2] === "post";
-
 // Workaround for https://github.com/npm/cli/issues/3466
 const rootDir = path.join(__dirname, "..");
 process.chdir(rootDir);
@@ -36,11 +34,6 @@ const cleanUp = () => {
     }
     fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
     fs.rmSync(path.join(rootDir, "npm-shrinkwrap.json"), { force: true });
-}
-
-if (isPost) {
-    cleanUp();
-    return;
 }
 
 if (fs.existsSync(path.join(cliPkgDir, "node_modules"))) {
@@ -72,8 +65,7 @@ try {
     ];
     fsE.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2));
 
-    // execCmd("npm pack --pack-destination=../../dist");
-} catch (err) {
+    execCmd("npm pack --pack-destination=../../dist");
+} finally {
     cleanUp();
-    throw err;
 }
