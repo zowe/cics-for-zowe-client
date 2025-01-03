@@ -9,14 +9,13 @@
  *
  */
 
-import { ProfilesCache, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import axios, { AxiosRequestConfig } from "axios";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
 import cicsProfileMeta from "./profileDefinition";
 import * as https from "https";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
-import { LoggerUtils } from "./loggerUtils";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -46,22 +45,6 @@ export class ProfileManagement {
   public static async profilesCacheRefresh() {
     const apiRegiser: Types.IApiRegisterClient = ProfileManagement.getExplorerApis();
     await ProfileManagement.getProfilesCache().refresh(apiRegiser);
-  }
-
-  public static async createNewProfile(formResponse: imperative.ISaveProfile) {
-    await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.save(formResponse);
-    await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
-  }
-
-  public static async updateProfile(formResponse: imperative.IUpdateProfile) {
-    const profile: imperative.IProfileUpdated = await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.update(formResponse);
-    await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
-    return profile;
-  }
-
-  public static async deleteProfile(formResponse: imperative.IDeleteProfile) {
-    await ProfileManagement.ProfilesCache.getCliProfileManager("cics")?.delete(formResponse);
-    await ProfileManagement.getExplorerApis().getExplorerExtenderApi().reloadProfiles();
   }
 
   public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
