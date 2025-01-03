@@ -464,7 +464,7 @@
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsregion\\./",
+          "when": "view == cics-view && viewItem =~ /cicsregion.*\\.active/",
           "command": "cics-extension-for-zowe.showRegionParameters",
           "group": ""
         },
