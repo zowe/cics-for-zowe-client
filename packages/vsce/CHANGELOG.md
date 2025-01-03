@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated commands to us Utils.getResourceURI. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
+
 ## `3.2.0`
 
 - BugFix: Initializing new Team Configuration File. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)
