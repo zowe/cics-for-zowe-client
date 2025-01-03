@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
@@ -110,18 +110,13 @@ async function enableTransaction(session: imperative.AbstractSession, parms: { n
     },
   };
 
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    CicsCmciConstants.CICS_LOCAL_TRANSACTION +
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(TRANID=" +
-    parms.name +
-    ")";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `TRANID='${parms.name}'`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_LOCAL_TRANSACTION, options);
 
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
