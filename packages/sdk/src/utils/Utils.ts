@@ -31,34 +31,36 @@ export class Utils {
 
     let delimiter = "?"; // initial delimiter
 
-    const cicsPlex = (options && options.cicsPlex) == null ? "" : `${options.cicsPlex}/`;
-    const region = (options && options.regionName) == null ? "" : options.regionName;
+    const cicsPlex = (options && options.cicsPlex) == null ? "" : `${encodeURIComponent(options.cicsPlex)}/`;
+    const region = (options && options.regionName) == null ? "" : encodeURIComponent(options.regionName);
 
     let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resourceName}/${cicsPlex}${region}`;
 
-    if (options && options.criteria) {
-      cmciResource += `${delimiter}${CicsCmciConstants.CRITERIA}=${this.enforceParentheses(encodeURIComponent(options.criteria))}`;
-      delimiter = "&";
-    }
+    if (options) {
+      if (options.criteria) {
+        cmciResource += `${delimiter}${CicsCmciConstants.CRITERIA}=${this.enforceParentheses(encodeURIComponent(options.criteria))}`;
+        delimiter = "&";
+      }
 
-    if (options && options.parameter) {
-      cmciResource += `${delimiter}PARAMETER=${encodeURIComponent(options.parameter)}`;
-      delimiter = "&";
-    }
+      if (options.parameter) {
+        cmciResource += `${delimiter}PARAMETER=${encodeURIComponent(options.parameter)}`;
+        delimiter = "&";
+      }
 
-    if (options && options.queryParams && options.queryParams.summonly) {
-      cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
-      delimiter = "&";
-    }
+      if (options.queryParams && options.queryParams.summonly) {
+        cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
+        delimiter = "&";
+      }
 
-    if (options && options.queryParams && options.queryParams.nodiscard) {
-      cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
-      delimiter = "&";
-    }
+      if (options.queryParams && options.queryParams.nodiscard) {
+        cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
+        delimiter = "&";
+      }
 
-    if (options && options.queryParams && options.queryParams.overrideWarningCount) {
-      cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
-      delimiter = "&";
+      if (options.queryParams && options.queryParams.overrideWarningCount) {
+        cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
+        delimiter = "&";
+      }
     }
 
     return cmciResource;
