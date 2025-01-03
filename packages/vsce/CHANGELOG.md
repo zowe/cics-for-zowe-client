@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Functional behaviour correction in CICS explorer to match ZE. [#179](https://github.com/zowe/cics-for-zowe-client/issues/179)
+
 ## `3.2.0`
 
 - BugFix: Initializing new Team Configuration File. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)

@@ -10,7 +10,7 @@
  */
 
 import { getDisableProgramCommand } from "./commands/disableCommands/disableProgramCommand";
-import { getRemoveSessionCommand } from "./commands/removeSessionCommand";
+import { getManageSessionCommand } from "./commands/manageSessionCommand";
 import { getEnableProgramCommand } from "./commands/enableCommands/enableProgramCommand";
 import { getAddSessionCommand } from "./commands/addSessionCommand";
 import { getNewCopyCommand } from "./commands/newCopyCommand";
@@ -49,8 +49,6 @@ import { getClearResourceFilterCommand } from "./commands/clearResourceFilterCom
 import { getFilterPlexResources } from "./commands/getFilterPlexResources";
 import { getClearPlexFilterCommand } from "./commands/clearPlexFilterCommand";
 import { getRefreshCommand } from "./commands/refreshCommand";
-import { getUpdateSessionCommand } from "./commands/updateSessionCommand";
-import { getDeleteSessionCommand } from "./commands/deleteSessionCommand";
 import { getDisableTransactionCommand } from "./commands/disableCommands/disableTransactionCommand";
 import { getEnableTransactionCommand } from "./commands/enableCommands/enableTransactionCommand";
 import { getEnableLocalFileCommand } from "./commands/enableCommands/enableLocalFileCommand";
@@ -480,9 +478,7 @@ export async function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     getAddSessionCommand(treeDataProv),
-    getRemoveSessionCommand(treeDataProv, treeview),
-    getUpdateSessionCommand(treeDataProv, treeview),
-    getDeleteSessionCommand(treeDataProv, treeview),
+    getManageSessionCommand(treeDataProv, treeview),
 
     getRefreshCommand(treeDataProv),
 
