@@ -10,12 +10,12 @@ module.exports = {
             }
         },
         {
-            name: "zowe-v1-lts",
-            channel: "zowe-v1-lts",
+            name: "zowe-v2-lts",
+            channel: "zowe-v2-lts",
             level: "patch",
             devDependencies: {
-                "@zowe/imperative": "zowe-v1-lts",
-                "@zowe/zowe-explorer-api": ["zowe-v1-lts", "@zowe:registry=https://registry.npmjs.org/"],
+                "@zowe/imperative": "zowe-v2-lts",
+                "@zowe/zowe-explorer-api": ["zowe-v2-lts", "@zowe:registry=https://registry.npmjs.org/"],
             }
         },
         {
