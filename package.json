@@ -7,7 +7,7 @@
   },
   "repository": "https://github.com/zowe/cics-for-zowe-client",
   "workspaces": [
-    "./packages/*"
+    "packages/*"
   ],
   "scripts": {
     "build": "turbo build",
