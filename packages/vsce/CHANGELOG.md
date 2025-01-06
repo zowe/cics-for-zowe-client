@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 
-## Recent Changes
+## `3.2.2`
 
 - Remove v1 deprecated code from the extension. [#184](https://github.com/zowe/cics-for-zowe-client/issues/184)
 
