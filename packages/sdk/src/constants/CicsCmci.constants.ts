@@ -100,8 +100,27 @@ export const CicsCmciConstants = {
   PARAMETER: "PARAMETER",
 
   /**
-     * The CICS CMCI external resource names
+     * The CICS CMCI transaction definition
      */
-  CICS_CMCI_EXTERNAL_RESOURCES: ["CICSLocalTransaction", "CICSRemoteTransaction", "CICSDefinitionTransaction", "CICSLocalFile"],
+  CICS_CMCI_TRANSACTION_DEFINITION: "CICSDefinitionTransaction",
 
+  /**
+     * The CICS CMCI local transaction
+     */
+  CICS_CMCI_LOCAL_TRANSACTION: "CICSLocalTransaction",
+
+  /**
+     * The CICS CMCI remote transaction
+     */
+  CICS_CMCI_REMOTE_TRANSACTION: "CICSRemoteTransaction",
+
+  /**
+     * The CICS CMCI local file
+     */
+  CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
+
+  /**
+     * CICSTask parameter
+     */
+  CICS_CMCI_TASK: "CICSTask"
 };

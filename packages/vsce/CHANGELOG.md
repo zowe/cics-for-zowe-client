@@ -2,6 +2,9 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated commands to use Utils.getResourceURI. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
 
 ## `3.2.2`
 
