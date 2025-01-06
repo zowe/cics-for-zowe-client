@@ -19,7 +19,7 @@ const rootDir = path.join(__dirname, "..");
 process.chdir(rootDir);
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
-const tempPkgJson = JSON.parse(fsE.readFileSync(pkgJsonFile, "utf-8"));
+const sdkPkgJson = JSON.parse(fsE.readFileSync(path.join(cliPkgDir, "../sdk/package.json"), "utf-8"));
 const npmInstallCmd = "npm install --ignore-scripts --workspaces=false";
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
 fsE.mkdirpSync("dist");
@@ -41,12 +41,12 @@ if (fs.existsSync(path.join(cliPkgDir, "node_modules"))) {
 }
 fsE.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 try {
-    // Install node_modules directly inside packages/cli
-    execCmd("npm run preshrinkwrap");
     try {
-        execCmd(`npm view @zowe/cics-for-zowe-sdk`);
+        // Install node_modules directly inside packages/cli
+        execCmd("npm run preshrinkwrap");
+        execCmd(`npm view @zowe/cics-for-zowe-sdk@${sdkPkgJson.version}`);
     } catch (err) {
-        const sdkTgzPath = path.relative(__dirname, "../dist/zowe-cics-for-zowe-sdk-" + tempPkgJson.version + ".tgz");
+        const sdkTgzPath = path.relative(__dirname, "../dist/zowe-cics-for-zowe-sdk-" + sdkPkgJson.version + ".tgz");
         execCmd(`${npmInstallCmd} ${sdkTgzPath}`);
     }
     execCmd(npmInstallCmd);
