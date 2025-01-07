@@ -1,6 +1,10 @@
 # Change Log
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
+## Recent Changes
+
+- Changed icons for: folder, local file, local transaction, program and task. Updated 16 icons for different status and themes. [#182](https://github.com/zowe/cics-for-zowe-client/pull/182)
+
 
 
 ## `3.2.2`
