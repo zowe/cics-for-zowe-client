@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -155,8 +155,13 @@ async function purgeTask(
     },
   };
 
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + "CICSTask" + "/" + cicsPlex + parms.regionName + "?CRITERIA=(TASK=" + parms.name + ")";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `TASK='${parms.name}'`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_TASK, options);
+
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

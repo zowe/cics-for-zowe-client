@@ -6,6 +6,9 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Changed icons for: folder, local file, local transaction, program and task. Updated 16 icons for different status and themes. [#182](https://github.com/zowe/cics-for-zowe-client/pull/182)
 
 
+## Recent Changes
+
+- BugFix: Updated commands to use Utils.getResourceURI. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
 
 ## `3.2.2`
 
