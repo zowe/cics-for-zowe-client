@@ -15,13 +15,14 @@ import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getIconPathInResources } from "../../../utils/profileUtils";
+import { getIconOpen } from "../../../utils/profileUtils";
+
 export class CICSPipelineTree extends TreeItem {
   children: CICSPipelineTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super("Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
     this.parentRegion = parentRegion;
@@ -59,7 +60,7 @@ export class CICSPipelineTree extends TreeItem {
         newPipelineItem.setLabel(newPipelineItem.label.toString().replace(pipeline.name, `${pipeline.name}`));
         this.addPipeline(newPipelineItem);
       }
-      this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      this.iconPath = getIconOpen(true);
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -67,6 +68,7 @@ export class CICSPipelineTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No Pipelines found`);
         this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
+        this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching Pipelines - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

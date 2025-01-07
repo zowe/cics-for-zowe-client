@@ -13,9 +13,9 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
-import { getIconPathInResources } from "../../utils/profileUtils";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 
 export class CICSLibraryTreeItem extends TreeItem {
   children: CICSLibraryDatasets[] = [];
@@ -28,7 +28,7 @@ export class CICSLibraryTreeItem extends TreeItem {
     library: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")
+    public iconPath = getIconOpen(false)
   ) {
     super(`${library.name}`, TreeItemCollapsibleState.Collapsed);
 
@@ -77,7 +77,7 @@ export class CICSLibraryTreeItem extends TreeItem {
         const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
         this.addDataset(newDatasetItem);
       }
-      this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      this.iconPath = getIconOpen(true);
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -87,6 +87,7 @@ export class CICSLibraryTreeItem extends TreeItem {
         this.label = `${this.library.name}${this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : ""}${
           this.activeFilter ? ` (${this.activeFilter}) ` : " "
         }[0]`;
+        this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching datasets - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
