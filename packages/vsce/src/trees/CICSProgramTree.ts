@@ -15,13 +15,14 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { getDefaultProgramFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/profileUtils";
+
 export class CICSProgramTree extends TreeItem {
   children: CICSProgramTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super("Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.parentRegion = parentRegion;
@@ -58,7 +59,7 @@ export class CICSProgramTree extends TreeItem {
         const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
         this.addProgram(newProgramItem);
       }
-      this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      this.iconPath = getIconOpen(true);
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -66,6 +67,7 @@ export class CICSProgramTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No programs found`);
         this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
+        this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

@@ -15,6 +15,7 @@ import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { ProfileManagement } from "./profileManagement";
+import { getIconOpen } from "./profileUtils";
 
 export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);
@@ -42,6 +43,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
           });
           regionContiner.clearChildren();
           await regionContiner.loadRegionsInCICSGroup(tree);
+          regionContiner.iconPath = getIconOpen(true);
           tree._onDidChangeTreeData.fire(undefined);
         }
       );
@@ -59,6 +61,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
         });
         regionContiner.clearChildren();
         await regionContiner.loadRegionsInPlex();
+        regionContiner.iconPath = getIconOpen(true);
         if (!regionContiner.getChildren().length) {
           window.showInformationMessage(`No regions found for plex ${parentPlex.getPlexName()}`);
         }

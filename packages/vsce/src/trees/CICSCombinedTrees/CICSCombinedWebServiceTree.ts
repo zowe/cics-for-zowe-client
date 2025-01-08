@@ -18,7 +18,7 @@ import { ViewMore } from "../treeItems/utils/ViewMore";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 import { CICSWebServiceTreeItem } from "../treeItems/web/treeItems/CICSWebServiceTreeItem";
 
 export class CICSCombinedWebServiceTree extends TreeItem {
@@ -29,7 +29,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("All Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedwebservicetree.`;
     this.parentPlex = parentPlex;
@@ -87,11 +87,11 @@ export class CICSCombinedWebServiceTree extends TreeItem {
                 count = parseInt(recordsCount);
               }
               this.addWebServicesUtil([], allWebServices, count);
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No Web Services found`);
               this.label = `All Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;

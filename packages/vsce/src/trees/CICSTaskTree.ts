@@ -14,7 +14,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/profileUtils";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
 
 export class CICSTaskTree extends TreeItem {
@@ -22,7 +22,7 @@ export class CICSTaskTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeTransactionFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super("Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.parentRegion = parentRegion;
@@ -70,7 +70,7 @@ export class CICSTaskTree extends TreeItem {
         );
         this.addTask(newTaskItem);
       }
-      this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      this.iconPath = getIconOpen(true);
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -78,6 +78,7 @@ export class CICSTaskTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No tasks found`);
         this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[0]`;
+        this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`

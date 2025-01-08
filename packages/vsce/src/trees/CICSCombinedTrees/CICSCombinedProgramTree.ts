@@ -20,7 +20,7 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 
 export class CICSCombinedProgramTree extends TreeItem {
   children: (CICSProgramTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -30,7 +30,7 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;
@@ -88,11 +88,11 @@ export class CICSCombinedProgramTree extends TreeItem {
                 count = parseInt(recordsCount);
               }
               this.addProgramsUtil([], allPrograms, count);
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No programs found`);
               this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;

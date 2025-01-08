@@ -10,7 +10,7 @@
  */
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/profileUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
 import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
@@ -22,7 +22,7 @@ export class CICSWebTree extends TreeItem {
   parentRegion: CICSRegionTree | undefined;
   //activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super("Web", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeweb.web`;
     this.parentRegion = parentRegion;
@@ -36,7 +36,7 @@ export class CICSWebTree extends TreeItem {
   }
 
   public loadContents() {
-    this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+    this.iconPath = getIconOpen(true);
   }
 
   public getChildren() {

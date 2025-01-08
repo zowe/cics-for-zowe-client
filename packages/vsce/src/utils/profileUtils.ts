@@ -11,7 +11,6 @@
 
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { join } from "path";
-import { CICSTree } from "../trees/CICSTree";
 import { window } from "vscode";
 import { ProfileManagement } from "./profileManagement";
 
@@ -51,7 +50,8 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
   return promptInfo;
 }
 
-export function setIconClosed(node: any, tree: CICSTree): void {
-  node.element.iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg");
-  tree._onDidChangeTreeData.fire(undefined);
+export function getIconOpen(open: boolean = true) {
+  return getIconPathInResources(
+    `folder-${open ? "open" : "closed"}-dark.svg`,
+    `folder-${open ? "open" : "closed"}-light.svg`);
 }

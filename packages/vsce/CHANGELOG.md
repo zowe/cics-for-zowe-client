@@ -1,14 +1,15 @@
 # Change Log
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
-## `3.2.3`
-
-- Changed icons for: folder, local file, local transaction, program and task. Updated 16 icons for different status and themes. [#182](https://github.com/zowe/cics-for-zowe-client/pull/182)
-
 
 ## Recent Changes
 
 - BugFix: Updated commands to use Utils.getResourceURI. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
+- BugFix: Regions icon updates when plex tree is expanded. [#194](https://github.com/zowe/cics-for-zowe-client/issues/194)
+
+## `3.2.3`
+
+- Changed icons for: folder, local file, local transaction, program and task. Updated 16 icons for different status and themes. [#182](https://github.com/zowe/cics-for-zowe-client/pull/182)
 
 ## `3.2.2`
 

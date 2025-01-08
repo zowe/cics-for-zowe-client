@@ -19,7 +19,7 @@ import { ViewMore } from "../treeItems/utils/ViewMore";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 
 export class CICSCombinedTCPIPServiceTree extends TreeItem {
   children: (CICSTCPIPServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -29,7 +29,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("All TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtcpipstree.`;
     this.parentPlex = parentPlex;
@@ -87,11 +87,11 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
                 count = parseInt(recordsCount);
               }
               this.addTCPIPSUtil([], allTCPIPS, count);
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No TCPIP Services found`);
               this.label = `All TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
