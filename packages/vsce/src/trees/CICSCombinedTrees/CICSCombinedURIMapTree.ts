@@ -48,9 +48,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the load");
-        });
+        token.onCancellationRequested(() => { });
         try {
           let criteria;
           if (this.activeFilter) {
@@ -66,7 +64,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
+            if (recordsCount) {
               let allURIMaps;
               if (recordsCount <= this.incrementCount) {
                 allURIMaps = await ProfileManagement.getCachedResources(
@@ -74,7 +72,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  parseInt(recordsCount, 10)
+                  recordsCount
                 );
               } else {
                 allURIMaps = await ProfileManagement.getCachedResources(
@@ -84,7 +82,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
                   1,
                   this.incrementCount
                 );
-                count = parseInt(recordsCount);
+                count = recordsCount;
               }
               this.addURIMapsUtil([], allURIMaps, count);
               this.iconPath = getIconOpen(true);
@@ -158,7 +156,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
-          const count = parseInt(recordsCount);
+          const count = recordsCount;
           const allURIMaps = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,
