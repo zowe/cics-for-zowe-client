@@ -15,6 +15,7 @@ import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconOpen } from "../../../utils/profileUtils";
+import { toArray } from "../../../utils/commandUtils";
 
 export class CICSTCPIPServiceTree extends TreeItem {
   children: CICSTCPIPServiceTreeItem[] = [];

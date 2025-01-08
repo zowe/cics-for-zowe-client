@@ -895,7 +895,6 @@
     "@zowe/cics-for-zowe-sdk": "6.2.4",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.0.3",
-    "axios": "^1.6.7",
     "xml-js": "~1.6.11"
   }
 }

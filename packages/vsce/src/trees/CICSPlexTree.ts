@@ -14,7 +14,6 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
