@@ -9,7 +9,7 @@
  *
  */
 
-import { getCache, getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
@@ -71,14 +71,17 @@ export class ProfileManagement {
 
   public static async regionIsGroup(session: Session, profile: imperative.IProfile): Promise<boolean> {
 
-    let checkIfSystemGroup: ICMCIApiResponse;
+    let isGroup = false;
     try {
-      checkIfSystemGroup = await getResource(session, {
+      const checkIfSystemGroup = await getResource(session, {
         name: "CICSRegionGroup",
         cicsPlex: profile.cicsPlex,
         regionName: profile.regionName,
         criteria: `GROUP=${profile.regionName}`,
       });
+      if (checkIfSystemGroup && checkIfSystemGroup.response.resultsummary.recordcount !== "0") {
+        isGroup = true;
+      }
     } catch (error) {
       if (error instanceof imperative.ImperativeError) {
         if (!error.mDetails.msg.toUpperCase().includes("NODATA")) {
@@ -87,7 +90,7 @@ export class ProfileManagement {
       }
     }
 
-    return checkIfSystemGroup?.response.resultsummary.recordcount !== "0";
+    return isGroup;
   }
 
   public static async isPlex(session: Session): Promise<string | null> {

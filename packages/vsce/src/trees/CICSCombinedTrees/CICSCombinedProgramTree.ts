@@ -20,7 +20,7 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
 import { imperative } from "@zowe/zowe-explorer-api";
 
 export class CICSCombinedProgramTree extends TreeItem {
