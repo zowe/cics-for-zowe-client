@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs enable on selected CICSProgram nodes.
@@ -99,7 +100,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-async function enableProgram(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string; }): Promise<ICMCIApiResponse> {
+async function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

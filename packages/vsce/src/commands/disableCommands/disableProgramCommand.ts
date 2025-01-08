@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -101,7 +102,7 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-function disableProgram(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+function disableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

@@ -18,6 +18,7 @@ import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils"
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
+import { ICommandParams } from "./ICommandParams";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -130,7 +131,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
  */
 async function purgeTask(
   session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string; },
+  parms: ICommandParams,
   purgeType: string
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {

@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { ICommandParams } from "../ICommandParams";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -95,7 +96,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
   });
 }
 
-async function enableLocalFile(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string }): Promise<ICMCIApiResponse> {
+async function enableLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

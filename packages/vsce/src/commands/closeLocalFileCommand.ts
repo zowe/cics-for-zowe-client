@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { ICommandParams } from "./ICommandParams";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -118,7 +119,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
 
 async function closeLocalFile(
   session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string; },
+  parms: ICommandParams,
   busyDecision: string
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {

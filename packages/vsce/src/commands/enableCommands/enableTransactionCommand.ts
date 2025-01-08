@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { ICommandParams } from "../ICommandParams";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -95,7 +96,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
   });
 }
 
-async function enableTransaction(session: imperative.AbstractSession, parms: { name: string; regionName: string; cicsPlex: string; }): Promise<ICMCIApiResponse> {
+async function enableTransaction(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {

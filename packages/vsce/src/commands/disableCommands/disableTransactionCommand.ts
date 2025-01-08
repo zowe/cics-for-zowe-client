@@ -18,6 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { ICommandParams } from "../ICommandParams";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -108,7 +109,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
 
 async function disableTransaction(
   session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string }
+  parms: ICommandParams
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
