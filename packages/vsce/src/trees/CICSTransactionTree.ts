@@ -13,9 +13,9 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -42,7 +42,6 @@ export class CICSTransactionTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const transactionResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSLocalTransaction",
@@ -50,10 +49,7 @@ export class CICSTransactionTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const transactionArray = Array.isArray(transactionResponse.response.records.cicslocaltransaction)
-        ? transactionResponse.response.records.cicslocaltransaction
-        : [transactionResponse.response.records.cicslocaltransaction];
+      const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
       for (const transaction of transactionArray) {
         const newTransactionItem = new CICSTransactionTreeItem(transaction, this.parentRegion, this);
@@ -61,7 +57,6 @@ export class CICSTransactionTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a transaction filter to narrow search`);

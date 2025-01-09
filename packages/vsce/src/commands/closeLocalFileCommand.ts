@@ -14,11 +14,11 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import * as https from "https";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { ICommandParams } from "./ICommandParams";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -52,8 +52,6 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
             });
             const currentNode = allSelectedNodes[parseInt(index)];
 
-            https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
             try {
               await closeLocalFile(
                 currentNode.parentRegion.parentSession.session,
@@ -64,20 +62,17 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
                 },
                 busyDecision
               );
-              https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
                 parentRegions.push(currentNode.parentRegion);
               }
             } catch (error) {
-              https.globalAgent.options.rejectUnauthorized = undefined;
               // @ts-ignore
               if (error.mMessage) {
                 // @ts-ignore
                 const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
 
                 window.showErrorMessage(
-                  `Perform CLOSE on local file "${
-                    allSelectedNodes[parseInt(index)].localFile.file
+                  `Perform CLOSE on local file "${allSelectedNodes[parseInt(index)].localFile.file
                   }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
                 );
               } else {
@@ -124,7 +119,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
 
 async function closeLocalFile(
   session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string },
+  parms: ICommandParams,
   busyDecision: string
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {

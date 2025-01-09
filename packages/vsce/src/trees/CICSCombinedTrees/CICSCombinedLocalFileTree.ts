@@ -66,7 +66,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
+            if (recordsCount) {
               let allLocalFiles;
               if (recordsCount <= this.incrementCount) {
                 allLocalFiles = await ProfileManagement.getCachedResources(
@@ -74,7 +74,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  parseInt(recordsCount, 10)
+                  recordsCount
                 );
               } else {
                 allLocalFiles = await ProfileManagement.getCachedResources(
@@ -84,7 +84,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
                   1,
                   this.incrementCount
                 );
-                count = parseInt(recordsCount);
+                count = recordsCount;
               }
               this.addLocalFilesUtil([], allLocalFiles, count);
               this.iconPath = getIconOpen(true);
@@ -148,7 +148,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
-          const count = parseInt(recordsCount);
+          const count = recordsCount;
           const allLocalFiles = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,

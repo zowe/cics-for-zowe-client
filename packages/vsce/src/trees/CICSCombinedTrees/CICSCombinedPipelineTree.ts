@@ -66,7 +66,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
+            if (recordsCount) {
               let allPipelines;
               if (recordsCount <= this.incrementCount) {
                 allPipelines = await ProfileManagement.getCachedResources(
@@ -74,7 +74,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  parseInt(recordsCount, 10)
+                  recordsCount
                 );
               } else {
                 allPipelines = await ProfileManagement.getCachedResources(
@@ -84,7 +84,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
                   1,
                   this.incrementCount
                 );
-                count = parseInt(recordsCount);
+                count = recordsCount;
               }
               this.addPipelinesUtil([], allPipelines, count);
               this.iconPath = getIconOpen(true);
@@ -153,7 +153,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
-          const count = parseInt(recordsCount);
+          const count = recordsCount;
           const allPipelines = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,

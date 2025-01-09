@@ -13,9 +13,9 @@ import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionTree } from "./CICSRegionTree";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
@@ -46,7 +46,6 @@ export class CICSLocalFileTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const localFileResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSLocalFile",
@@ -54,10 +53,7 @@ export class CICSLocalFileTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const localFileArray = Array.isArray(localFileResponse.response.records.cicslocalfile)
-        ? localFileResponse.response.records.cicslocalfile
-        : [localFileResponse.response.records.cicslocalfile];
+      const localFileArray = toArray(localFileResponse.response.records.cicslocalfile);
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;
       for (const localFile of localFileArray) {
         const newLocalFileItem = new CICSLocalFileTreeItem(localFile, this.parentRegion, this);
@@ -65,7 +61,6 @@ export class CICSLocalFileTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a local file filter to narrow search`);

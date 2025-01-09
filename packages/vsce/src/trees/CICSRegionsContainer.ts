@@ -16,7 +16,7 @@ import { CICSTree } from "./CICSTree";
 import { ProfileManagement } from "../utils/profileManagement";
 import { getIconOpen } from "../utils/profileUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -61,18 +61,14 @@ export class CICSRegionsContainer extends TreeItem {
   public async loadRegionsInCICSGroup(tree: CICSTree) {
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
-    https.globalAgent.options.rejectUnauthorized = plexProfile.profile.rejectUnauthorized;
     const session = parentPlex.getParent().getSession();
     const regionsObtained = await getResource(session, {
       name: "CICSManagedRegion",
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
-    https.globalAgent.options.rejectUnauthorized = undefined;
     this.clearChildren();
-    const regionsArray = Array.isArray(regionsObtained.response.records.cicsmanagedregion)
-      ? regionsObtained.response.records.cicsmanagedregion
-      : [regionsObtained.response.records.cicsmanagedregion];
+    const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
     this.addRegionsUtility(regionsArray);
     // Keep container open after label change
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
@@ -93,11 +89,12 @@ export class CICSRegionsContainer extends TreeItem {
    * Count the number of total and active regions
    * @param regionsArray
    */
-  private addRegionsUtility(regionsArray: [any]) {
+  private addRegionsUtility(regionsArray: any[]) {
     let activeCount = 0;
     let totalCount = 0;
     const parentPlex = this.getParent();
-    const regionFilterRegex = this.activeFilter ? new RegExp(this.patternIntoRegex(this.activeFilter)) : ""; //parentPlex.getActiveFilter() ? RegExp(parentPlex.getActiveFilter()!) : undefined;
+    //parentPlex.getActiveFilter() ? RegExp(parentPlex.getActiveFilter()!) : undefined;
+    const regionFilterRegex = this.activeFilter ? new RegExp(this.patternIntoRegex(this.activeFilter)) : "";
     for (const region of regionsArray) {
       // If region filter exists then match it
       if (!regionFilterRegex || region.cicsname.match(regionFilterRegex)) {

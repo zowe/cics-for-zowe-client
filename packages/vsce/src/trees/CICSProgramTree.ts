@@ -13,9 +13,9 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { getDefaultProgramFilter, toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSProgramTree extends TreeItem {
   children: CICSProgramTreeItem[] = [];
@@ -42,7 +42,6 @@ export class CICSProgramTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const programResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSProgram",
@@ -50,10 +49,7 @@ export class CICSProgramTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-      const programsArray = Array.isArray(programResponse.response.records.cicsprogram)
-        ? programResponse.response.records.cicsprogram
-        : [programResponse.response.records.cicsprogram];
+      const programsArray = toArray(programResponse.response.records.cicsprogram);
       this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {
         const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
@@ -61,7 +57,6 @@ export class CICSProgramTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a program filter to narrow search`);
       } else if (this.children.length === 0) {
