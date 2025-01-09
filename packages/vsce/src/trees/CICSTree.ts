@@ -154,10 +154,21 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
         const items: vscode.QuickPickItem[] = [];
 
         const profAllAttrs = profileInfo.getAllProfiles();
-        for (const pName of allCICSProfileNames) {
-          const osLocInfo = profileInfo.getOsLocInfo(profAllAttrs.find((p) => p.profName === pName));
-          items.push(new FilterDescriptor(this.getProfileIcon(osLocInfo)[0] + " " + pName));
-        }
+        allCICSProfileNames
+          .filter((name) => {
+            for (const loadedProfile of this.loadedProfiles) {
+              if (loadedProfile.label === name) {
+                return false;
+              }
+            }
+            return true;
+          })
+          .map((profileName) => {
+            const osLocInfo = profileInfo.getOsLocInfo(profAllAttrs.find((p) => p.profName === profileName));
+            items.push(new FilterDescriptor(this.getProfileIcon(osLocInfo)[0] + " " + profileName));
+            return { label: profileName };
+          });
+
         const quickpick = Gui.createQuickPick();
         const addProfilePlaceholder = vscode.l10n.t(`Choose "Create new..." to define or select a profile to add to the CICS tree`);
         quickpick.items = [configPick, configEdit, ...items];
