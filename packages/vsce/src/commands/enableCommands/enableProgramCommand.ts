@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
 import { ICommandParams } from "../ICommandParams";
+import constants from "../../utils/constants";
 
 /**
  * Performs enable on selected CICSProgram nodes.
@@ -40,13 +41,11 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the Enable");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
@@ -100,7 +99,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-async function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {
@@ -119,5 +118,5 @@ async function enableProgram(session: imperative.AbstractSession, parms: IComman
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_PROGRAM_RESOURCE, options);
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

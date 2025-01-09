@@ -9,16 +9,16 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation, workspace } from "vscode";
+import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
-import { ProfileManagement } from "../../utils/profileManagement";
-import { ViewMore } from "../treeItems/utils/ViewMore";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getIconOpen } from "../../utils/profileUtils";
+import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSWebServiceTreeItem } from "../treeItems/web/treeItems/CICSWebServiceTreeItem";
 
 export class CICSCombinedWebServiceTree extends TreeItem {

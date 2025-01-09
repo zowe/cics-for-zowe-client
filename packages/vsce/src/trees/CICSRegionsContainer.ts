@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation } from "vscode";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { ProfileManagement } from "../utils/profileManagement";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { ProfileManagement } from "../utils/profileManagement";
 import { getIconOpen } from "../utils/profileUtils";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSRegionsContainer extends TreeItem {
@@ -43,9 +43,7 @@ export class CICSRegionsContainer extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the filter");
-        });
+        token.onCancellationRequested(() => { });
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;

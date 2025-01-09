@@ -16,6 +16,7 @@ import { window } from "vscode";
 import { xml2json } from "xml-js";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
+import constants from "./constants";
 import cicsProfileMeta from "./profileDefinition";
 
 export class ProfileManagement {
@@ -329,7 +330,12 @@ export class ProfileManagement {
     return { cacheToken: null, recordCount: 0 };
   }
 
-  public static async getCachedResources(profile: imperative.IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
+  public static async getCachedResources(
+    profile: imperative.IProfileLoaded,
+    cacheToken: string,
+    resourceName: string,
+    start = 1,
+    increment = constants.RESOURCES_MAX) {
     const session = this.getSessionFromProfile(profile.profile);
     const allItemsresponse = await getCache(session, {
       cacheToken,

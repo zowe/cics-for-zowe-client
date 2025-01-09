@@ -16,7 +16,7 @@ export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>
 }
 
 export class FilterDescriptor implements QuickPickItem {
-  constructor(private text: string) {}
+  constructor(private text: string) { }
   get label(): string {
     return this.text;
   }
@@ -57,7 +57,7 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
     value: pattern,
   };
   if (!options2.validateInput) {
-    options2.validateInput = (value) => null;
+    options2.validateInput = (_value) => null;
   }
   pattern = (await window.showInputBox(options2)) || "";
   if (!pattern) {

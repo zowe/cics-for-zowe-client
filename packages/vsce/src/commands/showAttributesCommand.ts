@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, window, WebviewPanel, TreeView } from "vscode";
+import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
@@ -17,7 +17,6 @@ import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem"
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
-import { CICSTCPIPServiceTree } from "../trees/treeItems/web/CICSTCPIPServiceTree";
 import { CICSPipelineTreeItem } from "../trees/treeItems/web/treeItems/CICSPipelineTreeItem";
 import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
 import { CICSURIMapTreeItem } from "../trees/treeItems/web/treeItems/CICSURIMapTreeItem";
@@ -35,8 +34,10 @@ export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
     for (const programTreeItem of allSelectedNodes) {
       const program = programTreeItem.program;
       const attributeHeadings = Object.keys(program);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr>`;
+      webText += `<th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th>`;
+      webText += `</tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading]}</td></tr>`;
       }
@@ -65,8 +66,8 @@ export function getShowRegionAttributes(treeview: TreeView<any>) {
     for (const regionTree of allSelectedNodes) {
       const region = regionTree.region;
       const attributeHeadings = Object.keys(region);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..." /></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${region[heading]}</td></tr>`;
       }
@@ -93,8 +94,8 @@ export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
     for (const localFileTreeItem of allSelectedNodes) {
       const localFile = localFileTreeItem.localFile;
       const attributeHeadings = Object.keys(localFile);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading]}</td></tr>`;
       }
@@ -124,8 +125,8 @@ export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
     for (const localTransactionTreeItem of allSelectedNodes) {
       const transaction = localTransactionTreeItem.transaction;
       const attributeHeadings = Object.keys(transaction);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading]}</td></tr>`;
       }
@@ -156,8 +157,8 @@ export function getShowTaskAttributesCommand(treeview: TreeView<any>) {
     for (const localTaskTreeItem of allSelectedNodes) {
       const task = localTaskTreeItem.task;
       const attributeHeadings = Object.keys(task);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading]}</td></tr>`;
       }
@@ -184,8 +185,8 @@ export function getShowLibraryAttributesCommand(treeview: TreeView<any>) {
     for (const libraryTreeItem of allSelectedNodes) {
       const library = libraryTreeItem.library;
       const attributeHeadings = Object.keys(library);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${library[heading]}</td></tr>`;
       }
@@ -214,8 +215,8 @@ export function getShowLibraryDatasetsAttributesCommand(treeview: TreeView<any>)
     for (const datasetTreeItem of allSelectedNodes) {
       const dataset = datasetTreeItem.dataset;
       const attributeHeadings = Object.keys(dataset);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${dataset[heading]}</td></tr>`;
       }
@@ -244,8 +245,8 @@ export function getShowTCPIPServiceAttributesCommand(treeview: TreeView<any>) {
     for (const tcpipsTreeItem of allSelectedNodes) {
       const tcpips = tcpipsTreeItem.tcpips;
       const attributeHeadings = Object.keys(tcpips);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${tcpips[heading]}</td></tr>`;
       }
@@ -271,8 +272,8 @@ export function getShowURIMapAttributesCommand(treeview: TreeView<any>) {
     for (const urimapTreeItem of allSelectedNodes) {
       const urimap = urimapTreeItem.urimap;
       const attributeHeadings = Object.keys(urimap);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${urimap[heading]}</td></tr>`;
       }
@@ -298,8 +299,8 @@ export function getShowPipelineAttributesCommand(treeview: TreeView<any>) {
     for (const pipelineTreeItem of allSelectedNodes) {
       const pipeline = pipelineTreeItem.pipeline;
       const attributeHeadings = Object.keys(pipeline);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${pipeline[heading]}</td></tr>`;
       }
@@ -328,8 +329,8 @@ export function getShowWebServiceAttributesCommand(treeview: TreeView<any>) {
     for (const webServiceTreeItem of allSelectedNodes) {
       const webService = webServiceTreeItem.webservice;
       const attributeHeadings = Object.keys(webService);
-      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
+      let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
+      webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${webService[heading]}</td></tr>`;
       }

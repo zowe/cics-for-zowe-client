@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
-import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
 import { ICommandParams } from "../ICommandParams";
+import constants from "../../utils/constants";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -36,13 +37,11 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the Enable");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
@@ -96,7 +95,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
   });
 }
 
-async function enableTransaction(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableTransaction(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {
@@ -115,5 +114,5 @@ async function enableTransaction(session: imperative.AbstractSession, parms: ICo
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_LOCAL_TRANSACTION, options);
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

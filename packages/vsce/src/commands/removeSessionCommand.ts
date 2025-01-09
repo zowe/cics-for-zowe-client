@@ -13,6 +13,7 @@ import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
+import constants from "../utils/constants";
 
 export function getRemoveSessionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.removeSession", async (node) => {
@@ -28,13 +29,11 @@ export function getRemoveSessionCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the hide command");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Hiding ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           try {
             const currentNode = allSelectedNodes[parseInt(index)];

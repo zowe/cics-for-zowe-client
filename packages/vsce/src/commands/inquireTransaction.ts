@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, TreeItemCollapsibleState, TreeView, window } from "vscode";
+import { commands, TreeView, window } from "vscode";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
