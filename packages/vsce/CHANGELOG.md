@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## `3.2.4`
 
+- BugFix: Remove create profile gif from readme. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)
 - BugFix: Updated commands to use Utils.getResourceURI. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
 - BugFix: Regions icon updates when plex tree is expanded. [#194](https://github.com/zowe/cics-for-zowe-client/issues/194)
 - BugFix: Opening CICS connections prevents other Zowe sessions connecting. [#159](https://github.com/zowe/cics-for-zowe-client/issues/159)
