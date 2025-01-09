@@ -16,14 +16,14 @@ import { CICSProgramTree } from "../trees/CICSProgramTree";
 import { CICSTaskTree } from "../trees/CICSTaskTree";
 import { CICSTransactionTree } from "../trees/CICSTransactionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSTCPIPServiceTree } from "../trees/treeItems/web/CICSTCPIPServiceTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
+import { CICSPipelineTree } from "../trees/treeItems/web/CICSPipelineTree";
+import { CICSTCPIPServiceTree } from "../trees/treeItems/web/CICSTCPIPServiceTree";
+import { CICSURIMapTree } from "../trees/treeItems/web/CICSURIMapTree";
+import { CICSWebServiceTree } from "../trees/treeItems/web/CICSWebServiceTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
-import { CICSURIMapTree } from "../trees/treeItems/web/CICSURIMapTree";
-import { CICSPipelineTree } from "../trees/treeItems/web/CICSPipelineTree";
-import { CICSWebServiceTree } from "../trees/treeItems/web/CICSWebServiceTree";
 
 export function getFilterLibrariesCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterLibraries", async (node) => {
@@ -51,9 +51,7 @@ export function getFilterLibrariesCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of libraries");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -87,9 +85,7 @@ export function getFilterDatasetsCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of datasets");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -123,9 +119,7 @@ export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of programs");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -159,9 +153,7 @@ export function getFilterDatasetProgramsCommand(tree: CICSTree, treeview: TreeVi
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of programs");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -195,9 +187,7 @@ export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<an
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of local files");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -231,9 +221,7 @@ export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of tasks");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -267,9 +255,7 @@ export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of transactions");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -303,9 +289,7 @@ export function getFilterTCPIPSCommand(tree: CICSTree, treeview: TreeView<any>) 
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of TCPIP Services");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -339,9 +323,7 @@ export function getFilterURIMapsCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of URI Maps");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -375,9 +357,7 @@ export function getFilterPipelinesCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of Pipelines");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -411,9 +391,7 @@ export function getFilterWebServicesCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of Web Services");
-        });
+        token.onCancellationRequested(() => { });
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }

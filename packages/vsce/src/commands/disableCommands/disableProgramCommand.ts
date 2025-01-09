@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
-import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
 import { ICommandParams } from "../ICommandParams";
+import constants from "../../utils/constants";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -40,13 +41,11 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the Disable");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 

@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
-import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
 import { ICommandParams } from "../ICommandParams";
+import constants from "../../utils/constants";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -35,13 +36,11 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the Disable");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
@@ -59,10 +58,9 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
-              const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
+              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform DISABLE on Transaction "${
-                  allSelectedNodes[parseInt(index)].transaction.tranid
+                `Perform DISABLE on Transaction "${allSelectedNodes[parseInt(index)].transaction.tranid
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -107,7 +105,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
   });
 }
 
-async function disableTransaction(
+function disableTransaction(
   session: imperative.AbstractSession,
   parms: ICommandParams
 ): Promise<ICMCIApiResponse> {
@@ -129,5 +127,5 @@ async function disableTransaction(
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_LOCAL_TRANSACTION, options);
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

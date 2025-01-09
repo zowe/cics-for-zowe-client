@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
-import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
 import { ICommandParams } from "../ICommandParams";
+import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
+import constants from "../../utils/constants";
 
 export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
@@ -42,13 +43,11 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
           cancellable: true,
         },
         async (progress, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the Disable");
-          });
+          token.onCancellationRequested(() => { });
           for (const index in allSelectedNodes) {
             progress.report({
               message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-              increment: (parseInt(index) / allSelectedNodes.length) * 100,
+              increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
             });
             const currentNode = allSelectedNodes[parseInt(index)];
 
@@ -106,7 +105,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
   });
 }
 
-async function disableLocalFile(
+function disableLocalFile(
   session: imperative.AbstractSession,
   parms: ICommandParams,
   busyDecision: string
@@ -135,5 +134,5 @@ async function disableLocalFile(
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

@@ -12,12 +12,13 @@
 import { CicsCmciConstants, CicsCmciRestClient, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import constants from "../utils/constants";
 
 /**
  * Performs PHASE IN on selected CICSProgram nodes.
@@ -39,13 +40,11 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the Phase In");
-        });
+        token.onCancellationRequested(() => { });
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Phase In ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * 100,
+            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
@@ -63,7 +62,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
-              const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
+              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
                 `Perform PHASEIN on Program "${allSelectedNodes[parseInt(index)].program.program
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`

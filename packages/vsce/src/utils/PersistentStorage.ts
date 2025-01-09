@@ -10,6 +10,7 @@
  */
 
 import { ConfigurationTarget, workspace } from "vscode";
+import constants from "./constants";
 
 export class PersistentStorage {
   public schema: string;
@@ -292,7 +293,7 @@ export class PersistentStorage {
 
       this.mProgramSearchHistory.unshift(criteria);
 
-      if (this.mProgramSearchHistory.length > 10) {
+      if (this.mProgramSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mProgramSearchHistory.pop();
       }
       await this.updateProgramSearchHistory();
@@ -307,7 +308,7 @@ export class PersistentStorage {
 
       this.mLibrarySearchHistory.unshift(criteria);
 
-      if (this.mLibrarySearchHistory.length > 10) {
+      if (this.mLibrarySearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mLibrarySearchHistory.pop();
       }
       await this.updateLibrarySearchHistory();
@@ -322,7 +323,7 @@ export class PersistentStorage {
 
       this.mDatasetSearchHistory.unshift(criteria);
 
-      if (this.mDatasetSearchHistory.length > 10) {
+      if (this.mDatasetSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mDatasetSearchHistory.pop();
       }
       await this.updateDatasetSearchHistory();
@@ -337,7 +338,7 @@ export class PersistentStorage {
 
       this.mTransactionSearchHistory.unshift(criteria);
 
-      if (this.mTransactionSearchHistory.length > 10) {
+      if (this.mTransactionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mTransactionSearchHistory.pop();
       }
       await this.updateTransactionSearchHistory();
@@ -352,7 +353,7 @@ export class PersistentStorage {
 
       this.mLocalFileSearchHistory.unshift(criteria);
 
-      if (this.mLocalFileSearchHistory.length > 10) {
+      if (this.mLocalFileSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mLocalFileSearchHistory.pop();
       }
       await this.updateLocalFileSearchHistory();
@@ -367,7 +368,7 @@ export class PersistentStorage {
 
       this.mRegionSearchHistory.unshift(criteria);
 
-      if (this.mRegionSearchHistory.length > 10) {
+      if (this.mRegionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mRegionSearchHistory.pop();
       }
       await this.updateRegionSearchHistory();
@@ -393,7 +394,7 @@ export class PersistentStorage {
 
       this.mTCPIPSSearchHistory.unshift(criteria);
 
-      if (this.mTCPIPSSearchHistory.length > 10) {
+      if (this.mTCPIPSSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mTCPIPSSearchHistory.pop();
       }
       await this.updateTCPIPSSearchHistory();
@@ -408,7 +409,7 @@ export class PersistentStorage {
 
       this.mURIMapsSearchHistory.unshift(criteria);
 
-      if (this.mURIMapsSearchHistory.length > 10) {
+      if (this.mURIMapsSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mURIMapsSearchHistory.pop();
       }
       await this.updateURIMapsSearchHistory();
@@ -423,7 +424,7 @@ export class PersistentStorage {
 
       this.mPipelineSearchHistory.unshift(criteria);
 
-      if (this.mPipelineSearchHistory.length > 10) {
+      if (this.mPipelineSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mPipelineSearchHistory.pop();
       }
       await this.updatePipelineSearchHistory();
@@ -438,7 +439,7 @@ export class PersistentStorage {
 
       this.mWebServiceSearchHistory.unshift(criteria);
 
-      if (this.mWebServiceSearchHistory.length > 10) {
+      if (this.mWebServiceSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
         this.mWebServiceSearchHistory.pop();
       }
       await this.updateWebServiceSearchHistory();

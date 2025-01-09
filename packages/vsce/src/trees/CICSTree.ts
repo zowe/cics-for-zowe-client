@@ -10,25 +10,25 @@
  */
 
 import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
 import {
+  commands,
   Event,
   EventEmitter,
   ProgressLocation,
   ProviderResult,
   TreeDataProvider,
   TreeItem,
-  WebviewPanel,
-  window,
-  commands
+  window
 } from "vscode";
+import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { isTheia, openConfigFile } from "../utils/workspaceUtils";
+import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
+import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
-import { Gui, imperative } from "@zowe/zowe-explorer-api";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -112,7 +112,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             // get all profiles of all types including zosmf
             const profiles = configInstance.getAllProfiles();
             const currentProfile =
-                profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
+              profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
             const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
             const filePath = currentProfile === null ? teamConfigFilePath : (currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath);
             await openConfigFile(filePath);
@@ -120,7 +120,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             let profileToLoad;
             // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
             if (configInstance.getTeamConfig().exists) {
-              profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileNameToLoad.label); //ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, 'cics');
+              //ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, 'cics');
+              profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileNameToLoad.label);
             } else {
               await ProfileManagement.profilesCacheRefresh();
               profileToLoad = ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, "cics");
@@ -137,7 +138,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         this.createNewProfile();
       }
     } catch (error) {
-      console.log(error);
       window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
     }
   }
@@ -160,9 +160,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log(`Cancelling the loading of ${profile.name}`);
-        });
+        token.onCancellationRequested(() => { });
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -213,24 +211,20 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 rejectUnauthorized: profile.profile.rejectUnauthorized,
                 protocol: profile.profile.protocol,
               });
-              try {
-                const regionsObtained = await getResource(session, {
-                  name: "CICSRegion",
-                  regionName: item.regions[0].applid,
-                });
-                // 200 OK received
-                newSessionTree.setAuthorized();
-                const newRegionTree = new CICSRegionTree(
-                  item.regions[0].applid,
-                  regionsObtained.response.records.cicsregion,
-                  newSessionTree,
-                  undefined,
-                  newSessionTree
-                );
-                newSessionTree.addRegion(newRegionTree);
-              } catch (error) {
-                console.log(error);
-              }
+              const regionsObtained = await getResource(session, {
+                name: "CICSRegion",
+                regionName: item.regions[0].applid,
+              });
+              // 200 OK received
+              newSessionTree.setAuthorized();
+              const newRegionTree = new CICSRegionTree(
+                item.regions[0].applid,
+                regionsObtained.response.records.cicsregion,
+                newSessionTree,
+                undefined,
+                newSessionTree
+              );
+              newSessionTree.addRegion(newRegionTree);
             } else {
               if (item.group) {
                 const newPlexTree = new CICSPlexTree(item.plexname, profile, newSessionTree, profile.profile.regionName);
@@ -291,7 +285,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   // If re-expanding a profile that has an expired certificate
                   if (sessionTree) {
                     const decision = await window.showInformationMessage(
-                      `Warning: Your connection is not private (${error.code}) - would you still like to proceed to ${profile.profile.host} (unsafe)?`,
+                      `Warning: Your connection is not private (${error.code}) - ` +
+                      `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
                       ...["Yes", "No"]
                     );
                     if (decision) {
@@ -324,17 +319,17 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             } else if ("response" in error) {
               if (error.response !== "undefined" && error.response.status) {
                 switch (error.response.status) {
-                  case 401:
+                  case constants.HTTP_ERROR_UNAUTHORIZED:
                     window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
                     // set the unauthorized flag to true for reprompting of credentials.
                     newSessionTree.setUnauthorized();
                     // Replace old profile tree with new disconnected profile tree item
                     this.loadedProfiles.splice(position, 1, newSessionTree);
                     break;
-                  case 404:
+                  case constants.HTTP_ERROR_NOT_FOUND:
                     window.showErrorMessage(`Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`);
                     break;
-                  case 500:
+                  case constants.HTTP_ERROR_SERVER_ERROR:
                     window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
                     break;
                   default:
@@ -350,7 +345,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               }
             }
           }
-          console.log(error);
         }
       }
     );

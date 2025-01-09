@@ -11,7 +11,6 @@
 
 import { commands, ProgressLocation, window } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
-import { ProfileManagement } from "../utils/profileManagement";
 
 export function getRefreshCommand(tree: CICSTree) {
   return commands.registerCommand("cics-extension-for-zowe.refreshTree", async () => {
@@ -26,8 +25,6 @@ export function getRefreshCommand(tree: CICSTree) {
           await tree.refreshLoadedProfiles();
         }
       );
-    } catch (error) {
-      console.log(error);
     } finally {
       // window.withProgress({
       //   title: 'Refresh',

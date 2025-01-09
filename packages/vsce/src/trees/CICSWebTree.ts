@@ -53,7 +53,7 @@ export class CICSWebTree extends TreeItem {
     this.collapsibleState = TreeItemCollapsibleState.Expanded;*/
   }
 
-  public setFilter(newFilter: string) {
+  public setFilter(_newFilter: string) {
     /*this.activeFilter = newFilter;
     this.contextValue = `cicstreeweb.${this.activeFilter ? 'filtered' : 'unfiltered'}.web`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;*/

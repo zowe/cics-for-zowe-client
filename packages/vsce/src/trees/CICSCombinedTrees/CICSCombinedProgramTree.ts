@@ -9,19 +9,19 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation, workspace } from "vscode";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
-import { ProfileManagement } from "../../utils/profileManagement";
-import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
+import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
 import { imperative } from "@zowe/zowe-explorer-api";
+import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedProgramTree extends TreeItem {
   children: (CICSProgramTreeItem | ViewMore)[] | [TextTreeItem] | null;

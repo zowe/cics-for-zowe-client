@@ -9,75 +9,75 @@
  *
  */
 
-import { getDisableProgramCommand } from "./commands/disableCommands/disableProgramCommand";
-import { getRemoveSessionCommand } from "./commands/removeSessionCommand";
-import { getEnableProgramCommand } from "./commands/enableCommands/enableProgramCommand";
-import { getAddSessionCommand } from "./commands/addSessionCommand";
-import { getNewCopyCommand } from "./commands/newCopyCommand";
 import { ExtensionContext, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
-import { getPhaseInCommand } from "./commands/phaseInCommand";
+import { getAddSessionCommand } from "./commands/addSessionCommand";
+import { getClearPlexFilterCommand } from "./commands/clearPlexFilterCommand";
+import { getClearResourceFilterCommand } from "./commands/clearResourceFilterCommand";
+import { getCloseLocalFileCommand } from "./commands/closeLocalFileCommand";
+import { getDeleteSessionCommand } from "./commands/deleteSessionCommand";
+import { getDisableLocalFileCommand } from "./commands/disableCommands/disableLocalFileCommand";
+import { getDisableProgramCommand } from "./commands/disableCommands/disableProgramCommand";
+import { getDisableTransactionCommand } from "./commands/disableCommands/disableTransactionCommand";
+import { getEnableLocalFileCommand } from "./commands/enableCommands/enableLocalFileCommand";
+import { getEnableProgramCommand } from "./commands/enableCommands/enableProgramCommand";
+import { getEnableTransactionCommand } from "./commands/enableCommands/enableTransactionCommand";
 import {
-  getShowProgramAttributesCommand,
+  getFilterAllLibrariesCommand,
+  getFilterAllLocalFilesCommand,
+  getFilterAllPipelinesCommand,
+  getFilterAllProgramsCommand,
+  getFilterAllTasksCommand,
+  getFilterAllTCPIPServicesCommand,
+  getFilterAllTransactionsCommand,
+  getFilterAllURIMapsCommand,
+  getFilterAllWebServicesCommand,
+} from "./commands/filterAllResourceCommand";
+import {
+  getFilterDatasetProgramsCommand,
+  getFilterDatasetsCommand,
+  getFilterLibrariesCommand,
+  getFilterLocalFilesCommand,
+  getFilterPipelinesCommand,
+  getFilterProgramsCommand,
+  getFilterTasksCommand,
+  getFilterTCPIPSCommand,
+  getFilterTransactionCommand,
+  getFilterURIMapsCommand,
+  getFilterWebServicesCommand,
+} from "./commands/filterResourceCommands";
+import { getFilterPlexResources } from "./commands/getFilterPlexResources";
+import { getNewCopyCommand } from "./commands/newCopyCommand";
+import { getOpenLocalFileCommand } from "./commands/openLocalFileCommand";
+import { getPhaseInCommand } from "./commands/phaseInCommand";
+import { getRefreshCommand } from "./commands/refreshCommand";
+import { getRemoveSessionCommand } from "./commands/removeSessionCommand";
+import {
   getShowLibraryAttributesCommand,
   getShowLibraryDatasetsAttributesCommand,
-  getShowTCPIPServiceAttributesCommand,
-  getShowURIMapAttributesCommand,
-  getShowRegionAttributes,
-  getShowTransactionAttributesCommand,
   getShowLocalFileAttributesCommand,
-  getShowTaskAttributesCommand,
   getShowPipelineAttributesCommand,
+  getShowProgramAttributesCommand,
+  getShowRegionAttributes,
+  getShowTaskAttributesCommand,
+  getShowTCPIPServiceAttributesCommand,
+  getShowTransactionAttributesCommand,
+  getShowURIMapAttributesCommand,
   getShowWebServiceAttributesCommand,
 } from "./commands/showAttributesCommand";
 import { getShowRegionSITParametersCommand } from "./commands/showParameterCommand";
-import {
-  getFilterProgramsCommand,
-  getFilterDatasetProgramsCommand,
-  getFilterLibrariesCommand,
-  getFilterDatasetsCommand,
-  getFilterTransactionCommand,
-  getFilterLocalFilesCommand,
-  getFilterTasksCommand,
-  getFilterTCPIPSCommand,
-  getFilterURIMapsCommand,
-  getFilterPipelinesCommand,
-  getFilterWebServicesCommand,
-} from "./commands/filterResourceCommands";
-import { ProfileManagement } from "./utils/profileManagement";
-import { CICSTree } from "./trees/CICSTree";
-import { getClearResourceFilterCommand } from "./commands/clearResourceFilterCommand";
-import { getFilterPlexResources } from "./commands/getFilterPlexResources";
-import { getClearPlexFilterCommand } from "./commands/clearPlexFilterCommand";
-import { getRefreshCommand } from "./commands/refreshCommand";
 import { getUpdateSessionCommand } from "./commands/updateSessionCommand";
-import { getDeleteSessionCommand } from "./commands/deleteSessionCommand";
-import { getDisableTransactionCommand } from "./commands/disableCommands/disableTransactionCommand";
-import { getEnableTransactionCommand } from "./commands/enableCommands/enableTransactionCommand";
-import { getEnableLocalFileCommand } from "./commands/enableCommands/enableLocalFileCommand";
-import { getDisableLocalFileCommand } from "./commands/disableCommands/disableLocalFileCommand";
-import { getCloseLocalFileCommand } from "./commands/closeLocalFileCommand";
-import { getOpenLocalFileCommand } from "./commands/openLocalFileCommand";
-import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { viewMoreCommand } from "./commands/viewMoreCommand";
-import {
-  getFilterAllProgramsCommand,
-  getFilterAllLibrariesCommand,
-  getFilterAllTransactionsCommand,
-  getFilterAllLocalFilesCommand,
-  getFilterAllURIMapsCommand,
-  getFilterAllTCPIPServicesCommand,
-  getFilterAllTasksCommand,
-  getFilterAllPipelinesCommand,
-  getFilterAllWebServicesCommand,
-} from "./commands/filterAllResourceCommand";
 import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
 import { plexExpansionHandler, sessionExpansionHandler, regionContainerExpansionHandler } from "./utils/expansionHandler";
+import { CICSSessionTree } from "./trees/CICSSessionTree";
+import { CICSTree } from "./trees/CICSTree";
+import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
+import { Logger } from "@zowe/imperative";
+import { getInquireProgramCommand } from "./commands/inquireProgram";
 import { getInquireTransactionCommand } from "./commands/inquireTransaction";
 import { getPurgeTaskCommand } from "./commands/purgeTaskCommand";
-import { getInquireProgramCommand } from "./commands/inquireProgram";
-import { Logger } from "@zowe/imperative";
 
 /**
  * Initializes the extension
@@ -109,13 +109,13 @@ export async function activate(context: ExtensionContext) {
       }
       logger.debug("Zowe Explorer was modified for the CICS Extension.");
     } catch (error) {
-      console.log(error);
       logger.error("IBM CICS for Zowe Explorer was not initialized correctly");
       return;
     }
   } else {
     window.showErrorMessage(
-      "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
+      "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
+      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
     );
     return;
   }
@@ -130,17 +130,12 @@ export async function activate(context: ExtensionContext) {
   treeview.onDidExpandElement(async (node) => {
     // Profile node expanded
     if (node.element.contextValue.includes("cicssession.")) {
-      try {
-        await sessionExpansionHandler(node.element, treeDataProv);
-      } catch (error) {
-        console.log(error);
-      }
+      await sessionExpansionHandler(node.element, treeDataProv);
       // Plex node expanded
     } else if (node.element.contextValue.includes("cicsplex.")) {
       try {
         await plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        console.log(error);
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
           getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
@@ -159,9 +154,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of resources");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -176,9 +169,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of programs");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -194,9 +185,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of transactions");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -212,9 +201,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of local files");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -230,9 +217,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of tasks");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -293,9 +278,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of TCPIP services");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -311,9 +294,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of Web Services");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -329,9 +310,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of Pipelines");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
@@ -347,9 +326,7 @@ export async function activate(context: ExtensionContext) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of URIMaps");
-          });
+          token.onCancellationRequested(() => { });
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
         }
