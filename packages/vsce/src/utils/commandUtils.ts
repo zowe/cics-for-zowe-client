@@ -63,6 +63,6 @@ export function splitCmciErrorMessage(message: any) {
   return [resp, resp2, respAlt, eibfnAlt];
 }
 
-export function toArray<T>(input: T | [T]): [T] {
+export function toArray<T>(input: T | T[]): T[] {
   return Array.isArray(input) ? input : [input];
 }

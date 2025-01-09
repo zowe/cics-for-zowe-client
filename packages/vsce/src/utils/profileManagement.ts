@@ -220,12 +220,14 @@ export class ProfileManagement {
     if (isPlex) {
       try {
         const { response } = await getCache(session, { cacheToken: isPlex, nodiscard: false });
-        for (const plex of response.records.cicscicsplex || []) {
-          infoLoaded.push({
-            plexname: plex.plexname,
-            regions: [],
-            group: false,
-          });
+        if (response.records.cicscicsplex) {
+          for (const plex of toArray(response.records.cicscicsplex)) {
+            infoLoaded.push({
+              plexname: plex.plexname,
+              regions: [],
+              group: false,
+            });
+          }
         }
       } catch (error) {
         window.showErrorMessage(
