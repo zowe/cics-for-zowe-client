@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
@@ -120,18 +120,13 @@ async function openLocalFile(session: imperative.AbstractSession, parms: { name:
     },
   };
 
-  const cicsPlex = parms.cicsPlex === undefined ? "" : parms.cicsPlex + "/";
-  const cmciResource =
-    "/" +
-    CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-    "/" +
-    "CICSLocalFile" + //CicsCmciConstants.CICS_CMCI_EXTERNAL_RESOURCES[3]
-    "/" +
-    cicsPlex +
-    parms.regionName +
-    "?CRITERIA=(FILE=" +
-    parms.name +
-    ")";
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": parms.cicsPlex,
+    "regionName": parms.regionName,
+    "criteria": `FILE='${parms.name}'`
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
 
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

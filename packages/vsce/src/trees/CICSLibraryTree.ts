@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/profileUtils";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 
@@ -22,7 +22,7 @@ export class CICSLibraryTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super("Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.parentRegion = parentRegion;
@@ -59,7 +59,7 @@ export class CICSLibraryTree extends TreeItem {
         const newLibraryItem = new CICSLibraryTreeItem(library, this.parentRegion, this);
         this.addLibrary(newLibraryItem);
       }
-      this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      this.iconPath = getIconOpen(true);
     } catch (error) {
       https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -67,6 +67,7 @@ export class CICSLibraryTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No libraries found`);
         this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
+        this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching libraries - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

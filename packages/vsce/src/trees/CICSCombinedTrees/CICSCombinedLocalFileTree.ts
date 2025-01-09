@@ -19,7 +19,7 @@ import { CICSLocalFileTreeItem } from "../treeItems/CICSLocalFileTreeItem";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 
 export class CICSCombinedLocalFileTree extends TreeItem {
   children: (CICSLocalFileTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -29,7 +29,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("All Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlocalfiletree.`;
     this.parentPlex = parentPlex;
@@ -87,11 +87,11 @@ export class CICSCombinedLocalFileTree extends TreeItem {
                 count = parseInt(recordsCount);
               }
               this.addLocalFilesUtil([], allLocalFiles, count);
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No local files found`);
               this.label = `All Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;

@@ -104,13 +104,7 @@ const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
         },
       },
       required: [],
-    },
-    createProfileExamples: [
-      {
-        options: "cics123 --host zos123 --port 1490 --user ibmuser --password myp4ss",
-        description: "Create a cics profile named 'cics123' to connect to CICS at host zos123 and port 1490",
-      },
-    ],
+    }
   },
 ];
 

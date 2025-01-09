@@ -23,6 +23,11 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
       return;
     }
     for (const regionTree of allSelectedNodes) {
+      if (regionTree.contextValue.includes(".inactive")) {
+        // Ignore region if not active - required for the command palette.
+        continue;
+      }
+
       const db2transactionResponse = await getResource(regionTree.parentSession.session, {
         name: "CICSSystemParameter",
         regionName: regionTree.label,

@@ -115,6 +115,40 @@ describe("Utils - getResourceUri", () => {
       expect(response).toEqual("/CICSSystemManagement/resource1//region1");
     });
 
+    it("should be able to get a resource uri with the region containing #", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          "cicsPlex": "",
+          "regionName": "region#"
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1//region%23");
+    });
+
+    it("should be able to get a resource uri with the plex name containing #", async () => {
+      try {
+        const options: IGetResourceUriOptions = {
+          "cicsPlex": "cicsplex#",
+          "regionName": ""
+        };
+
+        response = Utils.getResourceUri("resource1", options);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(response).toBeDefined();
+      expect(error).toBeUndefined();
+      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex%23/");
+    });
+
     it("should be able to get a resource uri with the plex, region and resource names specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
@@ -417,8 +451,10 @@ describe('Utils - enforceParentheses', () => {
   });
 
   it("should add appropriate brackets", () => {
-    const output = Utils.enforceParentheses("NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)");
-    expect(output).toEqual("(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
+    const output = Utils.enforceParentheses(
+      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)");
+    expect(output).toEqual(
+      "(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
   });
 });
 

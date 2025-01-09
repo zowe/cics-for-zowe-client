@@ -68,7 +68,7 @@ import {
   getFilterAllPipelinesCommand,
   getFilterAllWebServicesCommand,
 } from "./commands/filterAllResourceCommand";
-import { getIconPathInResources, setIconClosed } from "./utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
 import { plexExpansionHandler, sessionExpansionHandler, regionContainerExpansionHandler } from "./utils/expansionHandler";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
@@ -423,57 +423,43 @@ export async function activate(context: ExtensionContext) {
 
       // Regions container folder node expanded
     } else if (node.element.contextValue.includes("cicsregionscontainer.")) {
-      node.element.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+      node.element.iconPath = getIconOpen(true);
       await regionContainerExpansionHandler(node.element, treeDataProv);
       treeDataProv._onDidChangeTreeData.fire(undefined);
     }
   });
 
   treeview.onDidCollapseElement((node) => {
-    if (node.element.contextValue.includes("cicsregionscontainer.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedprogramtree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedtransactiontree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedlocalfiletree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedtasktree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedlibrarytree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedtcpipstree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedurimapstree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedpipelinetree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicscombinedwebservicetree.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreeprogram.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreetransaction.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreelocalfile.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreetask.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreelibrary.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicslibrary.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreeweb.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreetcpips.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreepipeline.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreewebservice.")) {
-      setIconClosed(node, treeDataProv);
-    } else if (node.element.contextValue.includes("cicstreeurimaps.")) {
-      setIconClosed(node, treeDataProv);
+
+    const interestedContextValues = [
+      "cicsregionscontainer.",
+      "cicscombinedprogramtree.",
+      "cicscombinedtransactiontree.",
+      "cicscombinedlocalfiletree.",
+      "cicscombinedtasktree.",
+      "cicscombinedlibrarytree.",
+      "cicscombinedtcpipstree.",
+      "cicscombinedurimapstree.",
+      "cicscombinedpipelinetree.",
+      "cicscombinedwebservicetree.",
+      "cicstreeprogram.",
+      "cicstreetransaction.",
+      "cicstreelocalfile.",
+      "cicstreetask.",
+      "cicstreelibrary.",
+      "cicslibrary.",
+      "cicstreeweb.",
+      "cicstreetcpips.",
+      "cicstreepipeline.",
+      "cicstreewebservice.",
+      "cicstreeurimaps.",
+    ];
+
+    if (interestedContextValues.some(item => node.element.contextValue.includes(item))) {
+      node.element.iconPath = getIconOpen(false);
     }
     node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
+    treeDataProv._onDidChangeTreeData.fire(undefined);
   });
 
   context.subscriptions.push(

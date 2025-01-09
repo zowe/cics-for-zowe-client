@@ -14,7 +14,7 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
 import { ProfileManagement } from "../utils/profileManagement";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/profileUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import * as https from "https";
 
@@ -24,7 +24,7 @@ export class CICSRegionsContainer extends TreeItem {
   resourceFilters: any;
   activeFilter: string;
 
-  constructor(parent: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parent: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("Regions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicsregionscontainer.`;
     this.parent = parent;
@@ -49,7 +49,7 @@ export class CICSRegionsContainer extends TreeItem {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
-        this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+        this.iconPath = getIconOpen(true);
         tree._onDidChangeTreeData.fire(undefined);
         if (!this.children.length) {
           window.showInformationMessage(`No regions found for ${this.parent.getPlexName()}`);

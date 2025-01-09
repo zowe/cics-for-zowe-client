@@ -2,9 +2,13 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## `6.2.3`
+
+- BugFix: Removed bundled dependencies from npm package. [#192](https://github.com/zowe/cics-for-zowe-client/pull/192)
+
 ## `6.2.2`
 
-- BugFix: Removed bundled dependencies from npm package and restored the npm-shrinkwrap file. [#187](https://github.com/zowe/cics-for-zowe-client/pull/187)
+- BugFix: Restored the npm-shrinkwrap file in npm package. [#187](https://github.com/zowe/cics-for-zowe-client/pull/187)
 
 ## `6.0.0`
 

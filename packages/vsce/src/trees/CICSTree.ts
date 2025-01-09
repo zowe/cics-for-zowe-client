@@ -13,20 +13,9 @@ import * as vscode from "vscode";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import {
-  Event,
-  EventEmitter,
-  ProgressLocation,
-  ProviderResult,
-  TreeDataProvider,
-  TreeItem,
-  window,
-  commands,
-  TreeView
-} from "vscode";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { isTheia, openConfigFile } from "../utils/workspaceUtils";
+import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
@@ -34,7 +23,7 @@ import * as https from "https";
 import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
 import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 
-export class CICSTree implements TreeDataProvider<CICSSessionTree> {
+export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
     this.loadStoredProfileNames();
@@ -46,7 +35,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   public async refreshLoadedProfiles() {
     this.clearLoadedProfiles();
     await this.loadStoredProfileNames();
-    commands.executeCommand('workbench.actions.treeView.cics-view.collapseAll');
+    vscode.commands.executeCommand("workbench.actions.treeView.cics-view.collapseAll");
   }
   public clearLoadedProfiles() {
     this.loadedProfiles = [];
@@ -56,7 +45,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   /**
      * Searches profiles stored in persistent storage, retrieves information for that profile from
      * ZE's PorfilesCache API and then creates CICSSessionTrees with this information and adds
-     * these as children to the CICSTree (TreeDataProvider)
+     * these as children to the CICSTree (vscode.TreeDataProvider)
      */
   public async loadStoredProfileNames() {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
@@ -82,10 +71,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
      * @param treeview CICSTree View
      * *@param node current selected node
      */
-  async manageProfile(treeview: TreeView<any>, node: any) {
+  async manageProfile(treeview: vscode.TreeView<any>, node: any) {
     const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
-      window.showErrorMessage("No profile selected to delete");
+      vscode.window.showErrorMessage("No profile selected to manage");
       return;
     }
     try {
@@ -96,20 +85,20 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         );
 
         const deleteProfile: vscode.QuickPickItem = {
-          label: `$(trash) ${vscode.l10n.t("Delete Profile")}`,
-          description: vscode.l10n.t("Delete the selected Profile"),
+          label: `$(trash) ${vscode.l10n.t(`Delete Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: vscode.l10n.t(`Delete the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
         const hideProfile: vscode.QuickPickItem = {
-          label: `$(eye-closed) ${vscode.l10n.t("Hide Profile")}`,
-          description: vscode.l10n.t("Hide profile name from tree view"),
+          label: `$(eye-closed) ${vscode.l10n.t(`Hide Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: vscode.l10n.t(`Hide the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
         const editProfile: vscode.QuickPickItem = {
-          label: `$(pencil) ${vscode.l10n.t("Edit Profile")}`,
-          description: vscode.l10n.t("Update profile connection information"),
+          label: `$(pencil) ${vscode.l10n.t(`Edit Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: vscode.l10n.t(`Update the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
 
         const quickpick = Gui.createQuickPick();
-        const addProfilePlaceholder = "Choose user action for selected profile";
+        const addProfilePlaceholder = "Choose user action for selected profiles";
         quickpick.items = [editProfile, hideProfile, deleteProfile];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
@@ -134,7 +123,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         }
       }
     } catch (error) {
-      window.showErrorMessage(
+      vscode.window.showErrorMessage(
         `Something went wrong while managing the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
           /(\\n\t|\\n|\\t)/gm,
           " ",
@@ -182,7 +171,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           Gui.showMessage(debugMsg);
           return;
         } else if (choice === configPick) {
-          await this.createNewProfile();
+          vscode.commands.executeCommand("zowe.all.config.init");
           return;
         } else if (choice === configEdit) {
           await this.editZoweConfigFile();
@@ -193,11 +182,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         }
       } else {
         //  Create New Profile Form should appear
-        this.createNewProfile();
+        vscode.commands.executeCommand("zowe.all.config.init");
       }
     } catch (error) {
       console.log(error);
-      window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
+      vscode.window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
     }
   }
 
@@ -212,10 +201,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
     let newSessionTree: CICSSessionTree;
-    window.withProgress(
+    vscode.window.withProgress(
       {
         title: "Load profile",
-        location: ProgressLocation.Notification,
+        location: vscode.ProgressLocation.Notification,
         cancellable: true,
       },
       async (progress, token) => {
@@ -239,11 +228,13 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 }
                 profile = updatedProfile;
                 // Remove "user" and "password" from missing params array
-                missingParamters = missingParamters.filter((param) => userPass.indexOf(param) === -1 || userPass.indexOf(param) === -1);
+                missingParamters = missingParamters.filter(
+                  (param) => userPass.indexOf(param) === -1 || userPass.indexOf(param) === -1,
+                );
               }
               if (missingParamters.length) {
-                window.showInformationMessage(
-                  `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`
+                vscode.window.showInformationMessage(
+                  `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
                 );
                 return;
               }
@@ -287,7 +278,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   regionsObtained.response.records.cicsregion,
                   newSessionTree,
                   undefined,
-                  newSessionTree
+                  newSessionTree,
                 );
                 newSessionTree.addRegion(newRegionTree);
               } catch (error) {
@@ -320,7 +311,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         } catch (error) {
           https.globalAgent.options.rejectUnauthorized = undefined;
           // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"));
+          newSessionTree = new CICSSessionTree(
+            profile,
+            getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"),
+          );
           // If method was called when expanding profile
           if (sessionTree) {
             this.loadedProfiles.splice(position, 1, newSessionTree);
@@ -337,16 +331,24 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             if ("code" in error) {
               switch (error.code) {
                 case "ETIMEDOUT":
-                  window.showErrorMessage(`Error: connect ETIMEDOUT ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
+                  vscode.window.showErrorMessage(
+                    `Error: connect ETIMEDOUT ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
+                  );
                   break;
                 case "ENOTFOUND":
-                  window.showErrorMessage(`Error: getaddrinfo ENOTFOUND ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
+                  vscode.window.showErrorMessage(
+                    `Error: getaddrinfo ENOTFOUND ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
+                  );
                   break;
                 case "ECONNRESET":
-                  window.showErrorMessage(`Error: socket hang up ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
+                  vscode.window.showErrorMessage(
+                    `Error: socket hang up ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
+                  );
                   break;
                 case "EPROTO":
-                  window.showErrorMessage(`Error: write EPROTO ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
+                  vscode.window.showErrorMessage(
+                    `Error: write EPROTO ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
+                  );
                   break;
                 case "DEPTH_ZERO_SELF_SIGNED_CERT":
                 case "SELF_SIGNED_CERT_IN_CHAIN":
@@ -354,9 +356,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 case "CERT_HAS_EXPIRED":
                   // If re-expanding a profile that has an expired certificate
                   if (sessionTree) {
-                    const decision = await window.showInformationMessage(
+                    const decision = await vscode.window.showInformationMessage(
                       `Warning: Your connection is not private (${error.code}) - would you still like to proceed to ${profile.profile.host} (unsafe)?`,
-                      ...["Yes", "No"]
+                      ...["Yes", "No"],
                     );
                     if (decision) {
                       if (decision === "Yes") {
@@ -369,17 +371,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                           await configInstance.updateProperty({ ...upd, property: "rejectUnauthorized", value: false });
                           updatedProfile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profile.name);
                         } else {
-                          // flip rejectUnauthorized to false
-                          const message = {
-                            name: profile.name,
-                            profile: {
-                              ...profile.profile,
-                              rejectUnauthorized: false,
-                            },
-                          };
-                          const newProfile = await ProfileManagement.updateProfile(message);
                           await ProfileManagement.profilesCacheRefresh();
-                          updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.name, "cics");
+                          updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(
+                            profile.name,
+                            "cics",
+                          );
                         }
                         await this.removeSession(sessionTree, updatedProfile, position);
                       }
@@ -387,156 +383,50 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   }
                   break;
                 default:
-                  window.showErrorMessage(
+                  vscode.window.showErrorMessage(
                     `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                       error,
-                      Object.getOwnPropertyNames(error)
-                    ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+                      Object.getOwnPropertyNames(error),
+                    ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
                   );
               }
             } else if ("response" in error) {
               if (error.response !== "undefined" && error.response.status) {
                 switch (error.response.status) {
                   case 401:
-                    window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
+                    vscode.window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
                     // set the unauthorized flag to true for reprompting of credentials.
                     newSessionTree.setUnauthorized();
                     // Replace old profile tree with new disconnected profile tree item
                     this.loadedProfiles.splice(position, 1, newSessionTree);
                     break;
                   case 404:
-                    window.showErrorMessage(`Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`);
+                    vscode.window.showErrorMessage(
+                      `Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`,
+                    );
                     break;
                   case 500:
-                    window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
+                    vscode.window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
                     break;
                   default:
-                    window.showErrorMessage(`Error: Request failed with status code ${error.response.status} for Profile '${profile.name}'`);
+                    vscode.window.showErrorMessage(
+                      `Error: Request failed with status code ${error.response.status} for Profile '${profile.name}'`,
+                    );
                 }
               } else {
-                window.showErrorMessage(
+                vscode.window.showErrorMessage(
                   `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                     error,
-                    Object.getOwnPropertyNames(error)
-                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+                    Object.getOwnPropertyNames(error),
+                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
                 );
               }
             }
           }
           console.log(error);
         }
-      }
+      },
     );
-  }
-
-  /**
-     * Method for V1 profile configuration that provides UI for user to enter profile details
-     * and creates a profile.
-     */
-  async createNewProfile() {
-    if (isTheia()) {
-      const connnectionName = await Gui.showInputBox({
-        prompt: "Name of connection",
-        placeHolder: "e.g. my-cics-profile",
-        ignoreFocusOut: true,
-      });
-      if (!connnectionName) {
-        return;
-      }
-      const hostDetails = await Gui.showInputBox({
-        prompt: "Input protocol, host and port for connection",
-        placeHolder: "e.g. https://mycicshostname.com:12345",
-        ignoreFocusOut: true,
-      });
-
-      if (!hostDetails) {
-        return;
-      }
-
-      const splitHostDetails = hostDetails.split(":");
-
-      const protocol = splitHostDetails[0].toLowerCase();
-      if (!["http", "https"].includes(protocol)) {
-        return;
-      }
-
-      let host = splitHostDetails[1];
-      if (host.slice(0, 2) !== "//") {
-        return;
-      }
-      host = host.slice(2);
-
-      const port = parseInt(splitHostDetails[2]);
-      if (!port || isNaN(port)) {
-        return;
-      }
-
-      const username = await Gui.showInputBox({
-        prompt: "Input Username",
-        placeHolder: "e.g. user123",
-        ignoreFocusOut: true,
-      });
-      if (!username) {
-        return;
-      }
-
-      const userPassword = await Gui.showInputBox({
-        prompt: "Input Password",
-        placeHolder: "e.g. 12345678",
-        password: true,
-        ignoreFocusOut: true,
-      });
-      if (!userPassword) {
-        return;
-      }
-
-      const plexName = await Gui.showInputBox({
-        prompt: "Input Plex Name",
-        placeHolder: "e.g. PLEX123",
-        ignoreFocusOut: true,
-      });
-
-      const regionName = await Gui.showInputBox({
-        prompt: "Input Region Name",
-        placeHolder: "e.g. REGION123",
-        ignoreFocusOut: true,
-      });
-
-      const rejectUnauthorized = await Gui.showQuickPick(["True", "False"], {
-        placeHolder: "Reject Unauthorized",
-        ignoreFocusOut: true,
-      });
-      if (!rejectUnauthorized) {
-        return;
-      }
-      const message = {
-        profile: {
-          name: connnectionName,
-          host: host,
-          port: port,
-          user: username,
-          password: userPassword,
-          rejectUnauthorized: rejectUnauthorized === "True" ? true : false,
-          protocol: protocol,
-          cicsPlex: plexName.length === 0 ? undefined : plexName,
-          regionName: regionName.length === 0 ? undefined : regionName,
-        },
-        name: connnectionName,
-        type: "CICS",
-        overwrite: true,
-      };
-
-      try {
-        await ProfileManagement.createNewProfile(message);
-        await ProfileManagement.profilesCacheRefresh();
-        await this.loadProfile(ProfileManagement.getProfilesCache().loadNamedProfile(message.name, "cics"));
-      } catch (error) {
-        // @ts-ignore
-        window.showErrorMessage(error);
-      }
-    } else {
-      commands.executeCommand("zowe.all.config.init");
-    }
   }
 
   /**
@@ -580,7 +470,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         const currentNode = allSelectedNodes[parseInt(index)];
         await this.removeSession(currentNode);
       } catch (error) {
-        window.showErrorMessage(
+        vscode.window.showErrorMessage(
           `Something went wrong when hiding the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
             " ",
@@ -598,61 +488,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       await this.loadProfile(profile, position);
     }
     this._onDidChangeTreeData.fire(undefined);
-  }
-
-  /**
-     * Delete profile functionality for V1 profile configuration
-     * @param sessions
-     */
-  async deleteSession(sessions: CICSSessionTree[]) {
-    let answer;
-    if (sessions.length === 1) {
-      answer = await window.showInformationMessage(
-        `Are you sure you want to delete the profile "${sessions[0].label?.toString()!}"`,
-        ...["Yes", "No"]
-      );
-    } else if (sessions.length > 1) {
-      answer = await window.showInformationMessage(
-        `Are you sure you want to delete the profiles "${sessions.map((sessionTree) => {
-          return sessionTree.label?.toString()!;
-        })}"`,
-        ...["Yes", "No"]
-      );
-    }
-    if (answer === "Yes") {
-      window.withProgress(
-        {
-          title: "Delete Profile",
-          location: ProgressLocation.Notification,
-          cancellable: true,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the delete command");
-          });
-          for (const index in sessions) {
-            progress.report({
-              message: `Deleting profile ${parseInt(index) + 1} of ${sessions.length}`,
-              increment: (parseInt(index) / sessions.length) * 100,
-            });
-            try {
-              await ProfileManagement.deleteProfile({
-                name: sessions[parseInt(index)].label?.toString()!,
-                rejectIfDependency: true,
-              });
-              const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-              await persistentStorage.removeLoadedCICSProfile(sessions[parseInt(index)].label.toString());
-
-              this.loadedProfiles = this.loadedProfiles.filter((profile) => profile !== sessions[parseInt(index)]);
-              this._onDidChangeTreeData.fire(undefined);
-            } catch (error) {
-              // @ts-ignore
-              window.showErrorMessage(error);
-            }
-          }
-        }
-      );
-    }
   }
 
   /**
@@ -713,17 +548,17 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return ret;
   }
 
-  getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
+  getTreeItem(element: CICSSessionTree): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
-  getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
+  getChildren(element?: CICSSessionTree): vscode.ProviderResult<any[]> {
     return element === undefined ? this.loadedProfiles : element.children;
   }
 
-  getParent(element: any): ProviderResult<any> {
+  getParent(element: any): vscode.ProviderResult<any> {
     element.getParent();
   }
 
-  public _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
-  readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
+  public _onDidChangeTreeData: vscode.EventEmitter<any | undefined> = new vscode.EventEmitter<any | undefined>();
+  readonly onDidChangeTreeData: vscode.Event<any | undefined> = this._onDidChangeTreeData.event;
 }

@@ -20,7 +20,7 @@ import { CICSTransactionTreeItem } from "../treeItems/CICSTransactionTreeItem";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/profileUtils";
 
 export class CICSCombinedTransactionsTree extends TreeItem {
   children: (CICSTransactionTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -30,7 +30,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconPathInResources("folder-closed-dark.svg", "folder-closed-light.svg")) {
+  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
     super("All Local Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtransactiontree.`;
     this.parentPlex = parentPlex;
@@ -88,11 +88,11 @@ export class CICSCombinedTransactionsTree extends TreeItem {
                 count = parseInt(recordsCount);
               }
               this.addLocalTransactionsUtil([], allLocalTransactions, count);
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+              this.iconPath = getIconOpen(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No local transactions found`);
               this.label = `All Local Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
