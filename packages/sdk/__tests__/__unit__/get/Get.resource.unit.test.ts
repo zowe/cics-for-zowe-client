@@ -17,7 +17,7 @@ import {
   ICMCIApiResponse,
   IResourceParms
 } from "../../../src";
-import { ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
+import { nodataContent, nodataXmlResponse, ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {
 
@@ -253,6 +253,50 @@ describe("CMCI - Get resource", () => {
       response = await getResource(dummySession, resourceParms);
 
       expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should error when failOnNoData is true and data is not returned", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, true);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeDefined();
+      expect(`${error}`).toContain("1027");
+      expect(response).toBeUndefined();
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should not fail when failOnNoData is true and data is returned", async () => {
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      response = await getResource(dummySession, resourceParms, true);
+
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should not fail when failOnNoData is false and data is not returned", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, false);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeUndefined();
+      expect(response).toBeDefined();
+      expect(response).toEqual(nodataContent);
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
   });
