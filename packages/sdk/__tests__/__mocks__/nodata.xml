@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my.url.host:12345/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+  version="3.0" connect_version="0620">
+  <resultsummary api_source="CICSPlex SM" api_function="GET" api_response1="1027" api_response2="0"
+    api_response1_alt="NODATA" api_response2_alt="" recordcount="0" />
+</response>
