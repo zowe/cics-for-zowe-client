@@ -24,9 +24,15 @@ import { CicsCmciMessages } from "../constants/CicsCmci.messages";
 export class CicsCmciRestClient extends RestClient {
   /**
      * If the API request is successful, this value should be in
-     * api_response2 in  the resultsummary object in the response
+     * api_response1 in  the resultsummary object in the response
      */
   public static readonly CMCI_SUCCESS_RESPONSE_1 = "1024";
+
+  /**
+     * If the API request returns NODATA, this value should be in
+     * api_response1 in  the resultsummary object in the response
+     */
+  public static readonly CMCI_NODATA_RESPONSE_1 = "1027";
 
   /**
    * If the API request is successful, this value should be in
@@ -56,10 +62,10 @@ export class CicsCmciRestClient extends RestClient {
    * @throws {ImperativeError} verifyResponseCodes fails
    */
   public static async getExpectParsedXml(session: AbstractSession,
-    resource: string, reqHeaders: any[] = []): Promise<ICMCIApiResponse> {
+    resource: string, reqHeaders: any[] = [], failOnNoData: boolean = true): Promise<ICMCIApiResponse> {
     const data = await CicsCmciRestClient.getExpectString(session, resource, reqHeaders);
     const apiResponse = CicsCmciRestClient.parseStringSync(data);
-    return CicsCmciRestClient.verifyResponseCodes(apiResponse);
+    return CicsCmciRestClient.verifyResponseCodes(apiResponse, failOnNoData);
   }
 
   /**
@@ -180,17 +186,23 @@ export class CicsCmciRestClient extends RestClient {
    * @returns {ICMCIApiResponse} - the response if it was correct
    * @throws {ImperativeError} request did not get the expected codes
    */
-  private static verifyResponseCodes(apiResponse: ICMCIApiResponse): ICMCIApiResponse {
-    if (apiResponse.response != null && apiResponse.response.resultsummary != null
-      && apiResponse.response.resultsummary.api_response1 === CicsCmciRestClient.CMCI_SUCCESS_RESPONSE_1
-      && apiResponse.response.resultsummary.api_response2 === CicsCmciRestClient.CMCI_SUCCESS_RESPONSE_2) {
-      // expected return code and reason code specify
-      return apiResponse;
-    } else {
-      throw new ImperativeError({
-        msg: CicsCmciMessages.cmciRequestFailed.message + "\n" + TextUtils.prettyJson(apiResponse),
-      });
+  private static verifyResponseCodes(apiResponse: ICMCIApiResponse, failOnNoData: boolean = true): ICMCIApiResponse {
+
+    const okResponse1Codes = [
+      CicsCmciRestClient.CMCI_SUCCESS_RESPONSE_1
+    ];
+    if (!failOnNoData) {
+      okResponse1Codes.push(CicsCmciRestClient.CMCI_NODATA_RESPONSE_1);
     }
+
+    if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+      return apiResponse;
+    }
+
+    throw new ImperativeError({
+      msg: CicsCmciMessages.cmciRequestFailed.message + "\n" + TextUtils.prettyJson(apiResponse),
+    });
+
   }
 
   /**
