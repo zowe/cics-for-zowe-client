@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, TreeView, window } from "vscode";
+import { commands, TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 import { ViewMore } from "../trees/treeItems/utils/ViewMore";
 

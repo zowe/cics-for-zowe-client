@@ -12,13 +12,14 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
+import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import * as https from "https";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
+import { ICommandParams } from "./ICommandParams";
+import constants from "../utils/constants";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -45,17 +46,13 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
           cancellable: true,
         },
         async (progress, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the Purge");
-          });
+          token.onCancellationRequested(() => { });
           for (const index in allSelectedNodes) {
             progress.report({
               message: `Purging ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-              increment: (parseInt(index) / allSelectedNodes.length) * 100,
+              increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
             });
             const currentNode = allSelectedNodes[parseInt(index)];
-
-            https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
             try {
               await purgeTask(
@@ -67,19 +64,16 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                 },
                 purgeType
               );
-              https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
                 parentRegions.push(currentNode.parentRegion);
               }
             } catch (error) {
-              https.globalAgent.options.rejectUnauthorized = undefined;
               // @ts-ignore
               if (error.mMessage) {
                 // @ts-ignore
-                const [_, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
+                const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
                 window.showErrorMessage(
-                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${
-                    allSelectedNodes[parseInt(index)].task.task
+                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${allSelectedNodes[parseInt(index)].task.task
                   }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
                 );
               } else {
@@ -134,9 +128,9 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
  * @param purgeType
  * @returns
  */
-async function purgeTask(
+function purgeTask(
   session: imperative.AbstractSession,
-  parms: { name: string; regionName: string; cicsPlex: string },
+  parms: ICommandParams,
   purgeType: string
 ): Promise<ICMCIApiResponse> {
   const requestBody: any = {
@@ -163,5 +157,5 @@ async function purgeTask(
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_TASK, options);
 
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

@@ -88,9 +88,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
             cancellable: true,
           },
           async (_, token) => {
-            token.onCancellationRequested(() => {
-              console.log("Cancelling the loading of resources");
-            });
+            token.onCancellationRequested(() => { });
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
                 if (region.getIsActive()) {

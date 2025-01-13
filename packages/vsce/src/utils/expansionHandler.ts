@@ -38,9 +38,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of the regions");
-          });
+          token.onCancellationRequested(() => { });
           regionContiner.clearChildren();
           await regionContiner.loadRegionsInCICSGroup(tree);
           regionContiner.iconPath = getIconOpen(true);
@@ -56,9 +54,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the loading of regions");
-        });
+        token.onCancellationRequested(() => { });
         regionContiner.clearChildren();
         await regionContiner.loadRegionsInPlex();
         regionContiner.iconPath = getIconOpen(true);
@@ -86,9 +82,7 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of the region");
-          });
+          token.onCancellationRequested(() => { });
           await plex.loadOnlyRegion();
           tree._onDidChangeTreeData.fire(undefined);
         }

@@ -9,14 +9,14 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation, workspace } from "vscode";
+import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
-import { ProfileManagement } from "../../utils/profileManagement";
 import { ViewMore } from "../treeItems/utils/ViewMore";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getIconOpen } from "../../utils/profileUtils";
 import { CICSTaskTreeItem } from "../treeItems/CICSTaskTreeItem";
@@ -48,9 +48,7 @@ export class CICSCombinedTaskTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the load");
-        });
+        token.onCancellationRequested(() => { });
         try {
           let criteria;
           if (this.activeFilter) {
@@ -66,7 +64,7 @@ export class CICSCombinedTaskTree extends TreeItem {
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
+            if (recordsCount) {
               let allTasks;
               if (recordsCount <= this.incrementCount) {
                 allTasks = await ProfileManagement.getCachedResources(
@@ -74,7 +72,7 @@ export class CICSCombinedTaskTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  parseInt(recordsCount, 10)
+                  recordsCount
                 );
               } else {
                 allTasks = await ProfileManagement.getCachedResources(
@@ -84,7 +82,7 @@ export class CICSCombinedTaskTree extends TreeItem {
                   1,
                   this.incrementCount
                 );
-                count = parseInt(recordsCount);
+                count = recordsCount;
               }
               this.addTasksUtil([], allTasks, count);
               this.iconPath = getIconOpen(true);
@@ -153,7 +151,7 @@ export class CICSCombinedTaskTree extends TreeItem {
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
-          const count = parseInt(recordsCount);
+          const count = recordsCount;
           const allTasks = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,

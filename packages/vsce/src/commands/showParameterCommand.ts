@@ -9,10 +9,10 @@
  *
  */
 
-import { commands, window, WebviewPanel, TreeView } from "vscode";
+import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getParametersHtml } from "../utils/webviewHTML";
 
 export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
@@ -34,7 +34,6 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
         cicsPlex: regionTree.parentPlex ? regionTree.parentPlex!.getPlexName() : undefined,
         parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)",
       });
-      // let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th><th class="sourceHeading">Source<input type="text" id="searchBox" placeholder="Search Source..." /></th><th class="valueHeading">Value</th></tr></thead>`;
       let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>
         <th class="sourceHeading">Source
           <select id="filterSource" name="cars" id="cars">
@@ -48,8 +47,8 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
         <th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const systemParameter of db2transactionResponse.response.records.cicssystemparameter) {
-        const attributeHeadings = Object.keys(systemParameter);
-        webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th><td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
+        webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
+        webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
       }
       webText += "</tbody>";
       const webviewHTML = getParametersHtml(regionTree.getRegionName(), webText);

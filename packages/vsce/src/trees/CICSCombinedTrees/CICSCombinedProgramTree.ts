@@ -9,18 +9,19 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, ProgressLocation, workspace } from "vscode";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
-import { ProfileManagement } from "../../utils/profileManagement";
-import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
+import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedProgramTree extends TreeItem {
   children: (CICSProgramTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -49,9 +50,8 @@ export class CICSCombinedProgramTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => {
-          console.log("Cancelling the load");
-        });
+        token.onCancellationRequested(() => { });
+        let recordsCount: number;
         try {
           let criteria;
           if (this.activeFilter) {
@@ -66,8 +66,8 @@ export class CICSCombinedProgramTree extends TreeItem {
             this.getParent().getGroupName()
           );
           if (cacheTokenInfo) {
-            const recordsCount = cacheTokenInfo.recordCount;
-            if (parseInt(recordsCount, 10)) {
+            recordsCount = cacheTokenInfo.recordCount;
+            if (recordsCount) {
               let allPrograms;
               if (recordsCount <= this.incrementCount) {
                 allPrograms = await ProfileManagement.getCachedResources(
@@ -75,7 +75,7 @@ export class CICSCombinedProgramTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  parseInt(recordsCount, 10)
+                  recordsCount
                 );
               } else {
                 allPrograms = await ProfileManagement.getCachedResources(
@@ -85,7 +85,7 @@ export class CICSCombinedProgramTree extends TreeItem {
                   1,
                   this.incrementCount
                 );
-                count = parseInt(recordsCount);
+                count = recordsCount;
               }
               this.addProgramsUtil([], allPrograms, count);
               this.iconPath = getIconOpen(true);
@@ -99,12 +99,20 @@ export class CICSCombinedProgramTree extends TreeItem {
             }
           }
         } catch (error) {
-          window.showErrorMessage(
-            `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
-          );
+          if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
+            this.children = [];
+            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            tree._onDidChangeTreeData.fire(undefined);
+            window.showInformationMessage(`No programs found`);
+            this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
+          } else {
+            window.showErrorMessage(
+              `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " "
+              )}`
+            );
+          }
         }
       }
     );
@@ -155,7 +163,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
-          const count = parseInt(recordsCount);
+          const count = recordsCount;
           const allPrograms = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,

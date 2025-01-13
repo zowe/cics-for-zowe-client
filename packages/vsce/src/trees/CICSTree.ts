@@ -9,21 +9,34 @@
  *
  */
 
-import * as vscode from "vscode";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import {
+  commands,
+  Event,
+  EventEmitter,
+  ProgressLocation,
+  ProviderResult,
+  TreeDataProvider,
+  TreeItem,
+  window,
+  TreeView,
+  QuickPickItem,
+  l10n,
+  QuickPickOptions,
+} from "vscode";
+import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
-import * as https from "https";
-import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
-import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 
-export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
+export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
     this.loadStoredProfileNames();
@@ -35,7 +48,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   public async refreshLoadedProfiles() {
     this.clearLoadedProfiles();
     await this.loadStoredProfileNames();
-    vscode.commands.executeCommand("workbench.actions.treeView.cics-view.collapseAll");
+    commands.executeCommand("workbench.actions.treeView.cics-view.collapseAll");
   }
   public clearLoadedProfiles() {
     this.loadedProfiles = [];
@@ -43,10 +56,10 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Searches profiles stored in persistent storage, retrieves information for that profile from
-     * ZE's PorfilesCache API and then creates CICSSessionTrees with this information and adds
-     * these as children to the CICSTree (vscode.TreeDataProvider)
-     */
+   * Searches profiles stored in persistent storage, retrieves information for that profile from
+   * ZE's PorfilesCache API and then creates CICSSessionTrees with this information and adds
+   * these as children to the CICSTree (TreeDataProvider)
+   */
   public async loadStoredProfileNames() {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await ProfileManagement.profilesCacheRefresh();
@@ -67,34 +80,32 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Provides user with user actions and allows them to manage the selected profile
-     * @param treeview CICSTree View
-     * *@param node current selected node
-     */
-  async manageProfile(treeview: vscode.TreeView<any>, node: any) {
+   * Provides user with user actions and allows them to manage the selected profile
+   * @param treeview CICSTree View
+   * *@param node current selected node
+   */
+  async manageProfile(treeview: TreeView<any>, node: any) {
     const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
-      vscode.window.showErrorMessage("No profile selected to manage");
+      window.showErrorMessage("No profile selected to manage");
       return;
     }
     try {
       const configInstance = await ProfileManagement.getConfigInstance();
       if (configInstance.getTeamConfig().exists) {
-        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(
-          allSelectedNodes[allSelectedNodes.length - 1].label,
-        );
+        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(allSelectedNodes[allSelectedNodes.length - 1].label);
 
-        const deleteProfile: vscode.QuickPickItem = {
-          label: `$(trash) ${vscode.l10n.t(`Delete Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: vscode.l10n.t(`Delete the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        const deleteProfile: QuickPickItem = {
+          label: `$(trash) ${l10n.t(`Delete Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Delete the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
-        const hideProfile: vscode.QuickPickItem = {
-          label: `$(eye-closed) ${vscode.l10n.t(`Hide Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: vscode.l10n.t(`Hide the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        const hideProfile: QuickPickItem = {
+          label: `$(eye-closed) ${l10n.t(`Hide Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Hide the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
-        const editProfile: vscode.QuickPickItem = {
-          label: `$(pencil) ${vscode.l10n.t(`Edit Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: vscode.l10n.t(`Update the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        const editProfile: QuickPickItem = {
+          label: `$(pencil) ${l10n.t(`Edit Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Update the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
         };
 
         const quickpick = Gui.createQuickPick();
@@ -105,7 +116,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
         quickpick.show();
         const choice = await Gui.resolveQuickPick(quickpick);
         quickpick.hide();
-        const debugMsg = vscode.l10n.t(`Profile selection has been cancelled.`);
+        const debugMsg = l10n.t(`Profile selection has been cancelled.`);
         if (!choice) {
           Gui.showMessage(debugMsg);
           return;
@@ -123,7 +134,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
         }
       }
     } catch (error) {
-      vscode.window.showErrorMessage(
+      window.showErrorMessage(
         `Something went wrong while managing the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
           /(\\n\t|\\n|\\t)/gm,
           " ",
@@ -133,9 +144,9 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     *
-     * Provides user with prompts and allows them to add a profile after clicking the '+' button
-     */
+   *
+   * Provides user with prompts and allows them to add a profile after clicking the '+' button
+   */
   async addProfile() {
     try {
       //const allCICSProfileNames = await ProfileManagement.getProfilesCache().getNamesForType('cics');
@@ -151,7 +162,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
 
         const configPick = new FilterDescriptor("\uFF0B " + createNewConfig);
         const configEdit = new FilterDescriptor("\u270F " + editConfig);
-        const items: vscode.QuickPickItem[] = [];
+        const items: QuickPickItem[] = [];
 
         const profAllAttrs = profileInfo.getAllProfiles();
         allCICSProfileNames
@@ -170,19 +181,19 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
           });
 
         const quickpick = Gui.createQuickPick();
-        const addProfilePlaceholder = vscode.l10n.t(`Choose "Create new..." to define or select a profile to add to the CICS tree`);
+        const addProfilePlaceholder = l10n.t(`Choose "Create new..." to define or select a profile to add to the CICS tree`);
         quickpick.items = [configPick, configEdit, ...items];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
         quickpick.show();
         const choice = await Gui.resolveQuickPick(quickpick);
         quickpick.hide();
-        const debugMsg = vscode.l10n.t(`Profile selection has been cancelled.`);
+        const debugMsg = l10n.t(`Profile selection has been cancelled.`);
         if (!choice) {
           Gui.showMessage(debugMsg);
           return;
         } else if (choice === configPick) {
-          vscode.commands.executeCommand("zowe.all.config.init");
+          commands.executeCommand("zowe.all.config.init");
           return;
         } else if (choice === configEdit) {
           await this.editZoweConfigFile();
@@ -193,35 +204,33 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
         }
       } else {
         //  Create New Profile Form should appear
-        vscode.commands.executeCommand("zowe.all.config.init");
+        commands.executeCommand("zowe.all.config.init");
       }
     } catch (error) {
       console.log(error);
-      vscode.window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
+      window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
     }
   }
 
   /**
-     *
-     * @param profile
-     * @param position number that's passed in when updating or expanding profile - needed
-     * to replace position of current CICSSessionTree.
-     * @param sessionTree current CICSSessionTree only passed in if expanding a profile
-     */
+   *
+   * @param profile
+   * @param position number that's passed in when updating or expanding profile - needed
+   * to replace position of current CICSSessionTree.
+   * @param sessionTree current CICSSessionTree only passed in if expanding a profile
+   */
   async loadProfile(profile?: imperative.IProfileLoaded, position?: number | undefined, sessionTree?: CICSSessionTree) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
     let newSessionTree: CICSSessionTree;
-    vscode.window.withProgress(
+    window.withProgress(
       {
         title: "Load profile",
-        location: vscode.ProgressLocation.Notification,
+        location: ProgressLocation.Notification,
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log(`Cancelling the loading of ${profile.name}`);
-        });
+        token.onCancellationRequested(() => {});
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -239,12 +248,10 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
                 }
                 profile = updatedProfile;
                 // Remove "user" and "password" from missing params array
-                missingParamters = missingParamters.filter(
-                  (param) => userPass.indexOf(param) === -1 || userPass.indexOf(param) === -1,
-                );
+                missingParamters = missingParamters.filter((param) => userPass.indexOf(param) === -1);
               }
               if (missingParamters.length) {
-                vscode.window.showInformationMessage(
+                window.showInformationMessage(
                   `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
                 );
                 return;
@@ -274,28 +281,20 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
                 rejectUnauthorized: profile.profile.rejectUnauthorized,
                 protocol: profile.profile.protocol,
               });
-              try {
-                https.globalAgent.options.rejectUnauthorized = profile.profile.rejectUnauthorized;
-
-                const regionsObtained = await getResource(session, {
-                  name: "CICSRegion",
-                  regionName: item.regions[0].applid,
-                });
-                // 200 OK received
-                newSessionTree.setAuthorized();
-                https.globalAgent.options.rejectUnauthorized = undefined;
-                const newRegionTree = new CICSRegionTree(
-                  item.regions[0].applid,
-                  regionsObtained.response.records.cicsregion,
-                  newSessionTree,
-                  undefined,
-                  newSessionTree,
-                );
-                newSessionTree.addRegion(newRegionTree);
-              } catch (error) {
-                https.globalAgent.options.rejectUnauthorized = undefined;
-                console.log(error);
-              }
+              const regionsObtained = await getResource(session, {
+                name: "CICSRegion",
+                regionName: item.regions[0].applid,
+              });
+              // 200 OK received
+              newSessionTree.setAuthorized();
+              const newRegionTree = new CICSRegionTree(
+                item.regions[0].applid,
+                regionsObtained.response.records.cicsregion,
+                newSessionTree,
+                undefined,
+                newSessionTree,
+              );
+              newSessionTree.addRegion(newRegionTree);
             } else {
               if (item.group) {
                 const newPlexTree = new CICSPlexTree(item.plexname, profile, newSessionTree, profile.profile.regionName);
@@ -320,12 +319,8 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
           }
           this._onDidChangeTreeData.fire(undefined);
         } catch (error) {
-          https.globalAgent.options.rejectUnauthorized = undefined;
           // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(
-            profile,
-            getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"),
-          );
+          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"));
           // If method was called when expanding profile
           if (sessionTree) {
             this.loadedProfiles.splice(position, 1, newSessionTree);
@@ -342,24 +337,16 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
             if ("code" in error) {
               switch (error.code) {
                 case "ETIMEDOUT":
-                  vscode.window.showErrorMessage(
-                    `Error: connect ETIMEDOUT ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
-                  );
+                  window.showErrorMessage(`Error: connect ETIMEDOUT ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
                   break;
                 case "ENOTFOUND":
-                  vscode.window.showErrorMessage(
-                    `Error: getaddrinfo ENOTFOUND ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
-                  );
+                  window.showErrorMessage(`Error: getaddrinfo ENOTFOUND ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
                   break;
                 case "ECONNRESET":
-                  vscode.window.showErrorMessage(
-                    `Error: socket hang up ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
-                  );
+                  window.showErrorMessage(`Error: socket hang up ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
                   break;
                 case "EPROTO":
-                  vscode.window.showErrorMessage(
-                    `Error: write EPROTO ${profile.profile.host}:${profile.profile.port} (${profile.name})`,
-                  );
+                  window.showErrorMessage(`Error: write EPROTO ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
                   break;
                 case "DEPTH_ZERO_SELF_SIGNED_CERT":
                 case "SELF_SIGNED_CERT_IN_CHAIN":
@@ -367,8 +354,9 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
                 case "CERT_HAS_EXPIRED":
                   // If re-expanding a profile that has an expired certificate
                   if (sessionTree) {
-                    const decision = await vscode.window.showInformationMessage(
-                      `Warning: Your connection is not private (${error.code}) - would you still like to proceed to ${profile.profile.host} (unsafe)?`,
+                    const decision = await window.showInformationMessage(
+                      `Warning: Your connection is not private (${error.code}) - ` +
+                        `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
                       ...["Yes", "No"],
                     );
                     if (decision) {
@@ -383,10 +371,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
                           updatedProfile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profile.name);
                         } else {
                           await ProfileManagement.profilesCacheRefresh();
-                          updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(
-                            profile.name,
-                            "cics",
-                          );
+                          updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.name, "cics");
                         }
                         await this.removeSession(sessionTree, updatedProfile, position);
                       }
@@ -394,7 +379,7 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
                   }
                   break;
                 default:
-                  vscode.window.showErrorMessage(
+                  window.showErrorMessage(
                     `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                       error,
                       Object.getOwnPropertyNames(error),
@@ -404,28 +389,24 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
             } else if ("response" in error) {
               if (error.response !== "undefined" && error.response.status) {
                 switch (error.response.status) {
-                  case 401:
-                    vscode.window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
+                  case constants.HTTP_ERROR_UNAUTHORIZED:
+                    window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
                     // set the unauthorized flag to true for reprompting of credentials.
                     newSessionTree.setUnauthorized();
                     // Replace old profile tree with new disconnected profile tree item
                     this.loadedProfiles.splice(position, 1, newSessionTree);
                     break;
-                  case 404:
-                    vscode.window.showErrorMessage(
-                      `Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`,
-                    );
+                  case constants.HTTP_ERROR_NOT_FOUND:
+                    window.showErrorMessage(`Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`);
                     break;
-                  case 500:
-                    vscode.window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
+                  case constants.HTTP_ERROR_SERVER_ERROR:
+                    window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
                     break;
                   default:
-                    vscode.window.showErrorMessage(
-                      `Error: Request failed with status code ${error.response.status} for Profile '${profile.name}'`,
-                    );
+                    window.showErrorMessage(`Error: Request failed with status code ${error.response.status} for Profile '${profile.name}'`);
                 }
               } else {
-                vscode.window.showErrorMessage(
+                window.showErrorMessage(
                   `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                     error,
                     Object.getOwnPropertyNames(error),
@@ -434,15 +415,14 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
               }
             }
           }
-          console.log(error);
         }
       },
     );
   }
 
   /**
-     * Allows user to edit a configuration file based on global or project level context
-     */
+   * Allows user to edit a configuration file based on global or project level context
+   */
   async editZoweConfigFile() {
     let rootPath = FileManagement.getZoweDir();
     const workspaceDir = ZoweVsCodeExtension.workspaceRoot;
@@ -458,9 +438,9 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Allows user to load an existing file from persistance area instead of creating a new profile.
-     * @param label name of the selected profile
-     */
+   * Allows user to load an existing file from persistance area instead of creating a new profile.
+   * @param label name of the selected profile
+   */
   async loadExistingProfile(label: string) {
     label = label.split(/ (.*)/)[1];
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
@@ -472,16 +452,16 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Method for V1 profile configuration that provides UI for user to hide a selected profile.
-     * @param allSelectedNodes array of selected nodes
-     */
+   * Method for V1 profile configuration that provides UI for user to hide a selected profile.
+   * @param allSelectedNodes array of selected nodes
+   */
   async hideZoweConfigFile(allSelectedNodes: any[]) {
     for (const index in allSelectedNodes) {
       try {
         const currentNode = allSelectedNodes[parseInt(index)];
         await this.removeSession(currentNode);
       } catch (error) {
-        vscode.window.showErrorMessage(
+        window.showErrorMessage(
           `Something went wrong when hiding the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
             " ",
@@ -502,9 +482,9 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Update profile functionality for V1 profile configuration
-     * @param session CICSSessions Tree
-     */
+   * Update profile functionality for V1 profile configuration
+   * @param session CICSSessions Tree
+   */
   async updateSession(session: CICSSessionTree, configInstance: imperative.ProfileInfo) {
     await ProfileManagement.profilesCacheRefresh();
     const profileCache = await ProfileManagement.getProfilesCache();
@@ -516,23 +496,23 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Method for V1 profile configuration that returns the context of a configuration file.
-     * @param action string create or edit
-     */
+   * Method for V1 profile configuration that returns the context of a configuration file.
+   * @param action string create or edit
+   */
   private async getConfigLocationPrompt(action: string): Promise<string> {
     let placeHolderText: string;
     if (action === "create") {
-      placeHolderText = vscode.l10n.t("Select the location where the config file will be initialized");
+      placeHolderText = l10n.t("Select the location where the config file will be initialized");
     } else {
-      placeHolderText = vscode.l10n.t("Select the location of the config file to edit");
+      placeHolderText = l10n.t("Select the location of the config file to edit");
     }
-    const quickPickOptions: vscode.QuickPickOptions = {
+    const quickPickOptions: QuickPickOptions = {
       placeHolder: placeHolderText,
       ignoreFocusOut: true,
       canPickMany: false,
     };
-    const globalText = vscode.l10n.t("Global: in the Zowe home directory");
-    const projectText = vscode.l10n.t("Project: in the current working directory");
+    const globalText = l10n.t("Global: in the Zowe home directory");
+    const projectText = l10n.t("Project: in the current working directory");
     const location = await Gui.showQuickPick([globalText, projectText], quickPickOptions);
     // call check for existing and prompt here
     switch (location) {
@@ -544,9 +524,9 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-     * Method that returns the icon based on global or local context.
-     * @param osLocInfo physical location of of profile on OS
-     */
+   * Method that returns the icon based on global or local context.
+   * @param osLocInfo physical location of of profile on OS
+   */
   private getProfileIcon(osLocInfo: imperative.IProfLocOsLoc[]): string[] {
     const ret: string[] = [];
     for (const loc of osLocInfo ?? []) {
@@ -559,17 +539,17 @@ export class CICSTree implements vscode.TreeDataProvider<CICSSessionTree> {
     return ret;
   }
 
-  getTreeItem(element: CICSSessionTree): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
     return element;
   }
-  getChildren(element?: CICSSessionTree): vscode.ProviderResult<any[]> {
+  getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
     return element === undefined ? this.loadedProfiles : element.children;
   }
 
-  getParent(element: any): vscode.ProviderResult<any> {
+  getParent(element: any): ProviderResult<any> {
     element.getParent();
   }
 
-  public _onDidChangeTreeData: vscode.EventEmitter<any | undefined> = new vscode.EventEmitter<any | undefined>();
-  readonly onDidChangeTreeData: vscode.Event<any | undefined> = this._onDidChangeTreeData.event;
+  public _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
+  readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
 }

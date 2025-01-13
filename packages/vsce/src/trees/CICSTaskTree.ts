@@ -12,10 +12,10 @@
 import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
+import { toArray } from "../utils/commandUtils";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -46,7 +46,6 @@ export class CICSTaskTree extends TreeItem {
     }
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
 
       const taskResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSTASK",
@@ -54,11 +53,8 @@ export class CICSTaskTree extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
 
-      const tasksArray = Array.isArray(taskResponse.response.records.cicstask)
-        ? taskResponse.response.records.cicstask
-        : [taskResponse.response.records.cicstask];
+      const tasksArray = toArray(taskResponse.response.records.cicstask);
       this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[${tasksArray.length}]`;
       for (const task of tasksArray) {
         const newTaskItem = new CICSTaskTreeItem(task, this.parentRegion, this);
@@ -72,7 +68,6 @@ export class CICSTaskTree extends TreeItem {
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a task filter to narrow search`);
       } else if (this.children.length === 0) {
