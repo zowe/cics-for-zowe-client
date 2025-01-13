@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconByStatus } from "../../utils/profileUtils";
 
 export class CICSProgramTreeItem extends TreeItem {
   program: any;
@@ -22,7 +22,7 @@ export class CICSProgramTreeItem extends TreeItem {
     program: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("program-dark.svg", "program-light.svg")
+    public readonly iconPath = getIconByStatus("PROGRAM", program)
   ) {
     super(
       `${program.program}${

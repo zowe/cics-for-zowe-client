@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconByStatus } from "../../utils/profileUtils";
 
 export class CICSTaskTreeItem extends TreeItem {
   task: any;
@@ -22,11 +22,7 @@ export class CICSTaskTreeItem extends TreeItem {
     task: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = task.runstatus === "RUNNING"
-      ? getIconPathInResources("task-running-dark.svg", "task-running-light.svg")
-      : task.runstatus === "SUSPENDED"
-        ? getIconPathInResources("task-suspended-dark.svg", "task-suspended-light.svg")
-        : getIconPathInResources("task-dispatched-dark.svg", "task-dispatched-light.svg")
+    public readonly iconPath = getIconByStatus("TASK", task)
   ) {
     super(`${task.task}`, TreeItemCollapsibleState.None);
 
