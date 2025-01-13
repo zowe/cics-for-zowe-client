@@ -113,7 +113,7 @@ export async function activate(context: ExtensionContext) {
   } else {
     window.showErrorMessage(
       "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
+      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
     );
     return;
   }
@@ -136,7 +136,7 @@ export async function activate(context: ExtensionContext) {
       } catch (error) {
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"),
+          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
         );
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);
@@ -155,7 +155,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
       // Programs folder node expanded
@@ -170,7 +170,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -186,7 +186,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -202,7 +202,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -218,7 +218,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -233,7 +233,7 @@ export async function activate(context: ExtensionContext) {
         async () => {
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -248,7 +248,7 @@ export async function activate(context: ExtensionContext) {
         async () => {
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -263,7 +263,7 @@ export async function activate(context: ExtensionContext) {
         async () => {
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -279,7 +279,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -295,7 +295,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -311,7 +311,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -327,7 +327,7 @@ export async function activate(context: ExtensionContext) {
           token.onCancellationRequested(() => {});
           await node.element.loadContents();
           treeDataProv._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
       node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
 
@@ -431,7 +431,7 @@ export async function activate(context: ExtensionContext) {
       "cicstreeurimaps.",
     ];
 
-    if (interestedContextValues.some((item) => node.element.contextValue.includes(item))) {
+    if (interestedContextValues.some(item => node.element.contextValue.includes(item))) {
       node.element.iconPath = getIconOpen(false);
     }
     node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
@@ -503,6 +503,6 @@ export async function activate(context: ExtensionContext) {
     viewMoreCommand(treeDataProv, treeview),
 
     getInquireTransactionCommand(treeDataProv, treeview),
-    getInquireProgramCommand(treeDataProv, treeview),
+    getInquireProgramCommand(treeDataProv, treeview)
   );
 }
