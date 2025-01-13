@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconByStatus } from "../../utils/profileUtils";
+import { getIconByStatus } from "../../utils/iconUtils";
 
 export class CICSLocalFileTreeItem extends TreeItem {
   localFile: any;

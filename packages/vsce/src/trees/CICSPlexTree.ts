@@ -18,7 +18,7 @@ import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgram
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconPathInResources } from "../utils/iconUtils";
 import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
 import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";

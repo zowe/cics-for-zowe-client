@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../../../CICSRegionTree";
-import { getIconPathInResources } from "../../../../utils/profileUtils";
+import { getIconPathInResources } from "../../../../utils/iconUtils";
 
 export class CICSWebServiceTreeItem extends TreeItem {
   webservice: any;

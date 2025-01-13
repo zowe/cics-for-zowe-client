@@ -30,7 +30,8 @@ import {
 import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
+import { missingSessionParameters, promptCredentials } from "../utils/profileUtils";
+import { getIconPathInResources } from "../utils/iconUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";

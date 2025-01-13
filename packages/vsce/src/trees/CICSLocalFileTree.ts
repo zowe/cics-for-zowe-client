@@ -14,7 +14,7 @@ import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSLocalFileTree extends TreeItem {

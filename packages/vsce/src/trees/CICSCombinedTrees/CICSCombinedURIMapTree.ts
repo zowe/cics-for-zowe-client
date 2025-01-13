@@ -17,7 +17,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSURIMapTreeItem } from "../treeItems/web/treeItems/CICSURIMapTreeItem";
 

@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { toArray } from "../utils/commandUtils";

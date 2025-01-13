@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconPathInResources } from "../../utils/iconUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";

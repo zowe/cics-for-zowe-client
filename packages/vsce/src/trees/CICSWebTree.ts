@@ -10,7 +10,7 @@
  */
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
 import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
