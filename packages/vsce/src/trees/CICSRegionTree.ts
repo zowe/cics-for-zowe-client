@@ -15,7 +15,7 @@ import { CICSTransactionTree } from "./CICSTransactionTree";
 import { CICSLocalFileTree } from "./CICSLocalFileTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconPathInResources } from "../utils/iconUtils";
 import { CICSTaskTree } from "./CICSTaskTree";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSWebTree } from "./CICSWebTree";

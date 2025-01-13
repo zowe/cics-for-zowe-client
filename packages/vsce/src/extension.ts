@@ -14,7 +14,7 @@ import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { CICSTree } from "./trees/CICSTree";
 import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
 import { ProfileManagement } from "./utils/profileManagement";
-import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "./utils/iconUtils";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { Logger } from "@zowe/imperative";

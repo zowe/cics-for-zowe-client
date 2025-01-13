@@ -15,7 +15,7 @@ import { ProfileManagement } from "../utils/profileManagement";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSRegionsContainer extends TreeItem {

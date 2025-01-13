@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconPathInResources } from "../utils/iconUtils";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];

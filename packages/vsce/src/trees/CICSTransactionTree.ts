@@ -14,7 +14,7 @@ import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSTransactionTree extends TreeItem {
