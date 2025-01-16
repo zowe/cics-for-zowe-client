@@ -56,9 +56,7 @@ export class CICSPlexTree extends TreeItem {
     this.resourceFilters = {};
     this.activeFilter = undefined;
     this.groupName = group;
-    this.iconPath = group
-      ? getIconPathInResources("cics-system-group-dark.svg ", "cics-system-group-light.svg ")
-      : getIconPathInResources("cics-plex-dark.svg", "cics-plex-light.svg");
+    this.iconPath = group ? getIconPathInResources("cics-system-group") : getIconPathInResources("cics-plex");
   }
 
   public addRegion(region: CICSRegionTree) {
@@ -81,7 +79,7 @@ export class CICSPlexTree extends TreeItem {
       regionsObtained.response.records.cicsregion,
       this.getParent(),
       this,
-      this
+      this,
     );
     this.clearChildren();
     this.addRegion(newRegionTree);

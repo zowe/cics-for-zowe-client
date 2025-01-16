@@ -34,7 +34,7 @@ export class CICSRegionTree extends TreeItem {
     parentSession: CICSSessionTree,
     parentPlex: CICSPlexTree | undefined,
     directParent: any,
-    public iconPath = getIconPathInResources("region-dark.svg", "region-light.svg")
+    public iconPath = getIconPathInResources("region"),
   ) {
     super(regionName, TreeItemCollapsibleState.Collapsed);
     this.region = region;
@@ -54,7 +54,7 @@ export class CICSRegionTree extends TreeItem {
     if (!this.isActive) {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
-      this.iconPath = getIconPathInResources("region-dark-disabled.svg", "region-light-disabled.svg");
+      this.iconPath = getIconPathInResources("region-disabled");
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";

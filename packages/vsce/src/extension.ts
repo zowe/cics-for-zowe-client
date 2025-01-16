@@ -119,10 +119,7 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        const newSessionTree = new CICSSessionTree(
-          node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
-        );
+        const newSessionTree = new CICSSessionTree(node.element.getParent().profile, getIconPathInResources("profile-disconnected"));
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }

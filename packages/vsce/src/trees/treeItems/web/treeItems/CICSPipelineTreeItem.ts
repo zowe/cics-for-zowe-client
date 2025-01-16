@@ -22,7 +22,7 @@ export class CICSPipelineTreeItem extends TreeItem {
     pipeline: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("program-dark.svg", "program-light.svg")
+    public readonly iconPath = getIconPathInResources("program"),
   ) {
     super(`${pipeline.name}`, TreeItemCollapsibleState.None);
 
