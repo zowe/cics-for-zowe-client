@@ -30,7 +30,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Remove v1 deprecated code from the extension. [#184](https://github.com/zowe/cics-for-zowe-client/issues/184)
 
 ## `3.2.1`
-
 - BugFix: Remove the 'Show SIT Parameters' menu option when a region is inactive. [#167](https://github.com/zowe/cics-for-zowe-client/issues/167)
 
 ## `3.2.0`

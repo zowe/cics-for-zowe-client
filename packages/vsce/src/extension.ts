@@ -147,7 +147,6 @@ export async function activate(context: ExtensionContext) {
   });
 
   treeview.onDidCollapseElement((node) => {
-
     const interestedContextValues = [
       "cicsregionscontainer.",
       "cicscombinedprogramtree.",
