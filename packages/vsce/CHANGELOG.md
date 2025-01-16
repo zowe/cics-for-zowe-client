@@ -6,6 +6,10 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - Added `Manage Profile` option for CICS profiles. [#179](https://github.com/zowe/cics-for-zowe-client/issues/179)
 
+## `3.2.6`
+
+- BugFix: Inform user no resources found when filtering trees. [#200](https://github.com/zowe/cics-for-zowe-client/issues/200)
+
 ## `3.2.5`
 
 - BugFix: Remove create profile gif from readme. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)

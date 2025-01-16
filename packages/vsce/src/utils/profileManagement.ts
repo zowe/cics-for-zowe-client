@@ -312,21 +312,29 @@ export class ProfileManagement {
     group?: string
   ): Promise<{ cacheToken: string; recordCount: number; }> {
     const session = this.getSessionFromProfile(profile.profile);
-    const allProgramsResponse = await getResource(session, {
-      name: resourceName,
-      cicsPlex: plexName,
-      ...group ? { regionName: group } : {},
-      criteria: criteria,
-      queryParams: {
-        summonly: true,
-        nodiscard: true,
-        overrideWarningCount: true,
+    try {
+      const allProgramsResponse = await getResource(session, {
+        name: resourceName,
+        cicsPlex: plexName,
+        ...group ? { regionName: group } : {},
+        criteria: criteria,
+        queryParams: {
+          summonly: true,
+          nodiscard: true,
+          overrideWarningCount: true,
+        }
+      });
+      if (allProgramsResponse.response.resultsummary.api_response1_alt === "OK") {
+        if (allProgramsResponse.response && allProgramsResponse.response.resultsummary) {
+          const resultsSummary = allProgramsResponse.response.resultsummary;
+          return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
+        }
       }
-    });
-    if (allProgramsResponse.response.resultsummary.api_response1_alt === "OK") {
-      if (allProgramsResponse.response && allProgramsResponse.response.resultsummary) {
-        const resultsSummary = allProgramsResponse.response.resultsummary;
-        return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
+    } catch (error) {
+      if (error instanceof imperative.ImperativeError) {
+        if (!error.mDetails.msg.toUpperCase().includes("NODATA")) {
+          throw error;
+        }
       }
     }
     return { cacheToken: null, recordCount: 0 };
