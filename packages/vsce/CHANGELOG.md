@@ -1,5 +1,5 @@
 # Change Log
-
+- Updated status icons for local transactions, local files, tasks and programs. [#203](https://github.com/zowe/cics-for-zowe-client/issues/203)
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 ## `3.2.6`
@@ -10,7 +10,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - BugFix: Remove create profile gif from readme. [#33](https://github.com/zowe/cics-for-zowe-client/issues/33)
 - BugFix: Handle getCache returning non-array. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
-- Updated status icons for local transactions, local files, tasks and programs. [#203](https://github.com/zowe/cics-for-zowe-client/issues/203)
 
 ## `3.2.4`
 
