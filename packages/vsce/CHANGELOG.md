@@ -1,7 +1,11 @@
 # Change Log
-- Updated status icons for local transactions, local files, tasks and programs. [#203](https://github.com/zowe/cics-for-zowe-client/issues/203)
+
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Updated status icons for local transactions, local files, tasks and programs. [#203](https://github.com/zowe/cics-for-zowe-client/issues/203)
+  
 ## `3.2.6`
 
 - BugFix: Inform user no resources found when filtering trees. [#200](https://github.com/zowe/cics-for-zowe-client/issues/200)
