@@ -451,7 +451,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-   * Method for V1 profile configuration that provides UI for user to hide a selected profile.
+   * Method for profile configuration that provides UI for user to hide a selected profile.
    * @param allSelectedNodes array of selected nodes
    */
   async hideZoweConfigFile(allSelectedNodes: any[]) {
@@ -481,7 +481,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-   * Update profile functionality for V1 profile configuration
+   * Update profile functionality for profile configuration
    * @param session CICSSessions Tree
    */
   async updateSession(session: CICSSessionTree, configInstance: imperative.ProfileInfo) {
@@ -495,7 +495,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   /**
-   * Method for V1 profile configuration that returns the context of a configuration file.
+   * Method for profile configuration that returns the context of a configuration file.
    * @param action string create or edit
    */
   private async getConfigLocationPrompt(action: string): Promise<string> {
