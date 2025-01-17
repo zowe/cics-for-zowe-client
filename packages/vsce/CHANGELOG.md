@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.3.0`
 
 - Added `Manage Profile` option for CICS profiles. [#179](https://github.com/zowe/cics-for-zowe-client/issues/179)
 
