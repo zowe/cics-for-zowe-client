@@ -1,8 +1,8 @@
 import { getIconByStatus, getIconOpen, getIconPathInResources, getIconRootName } from "../../../src/utils/iconUtils";
 
 const iconPath = {
-  light: "/program-light.svg",
-  dark: "/program-dark.svg",
+  light: "program-light.svg",
+  dark: "program-dark.svg",
 };
 
 describe("Test suite for iconUtils", () => {
