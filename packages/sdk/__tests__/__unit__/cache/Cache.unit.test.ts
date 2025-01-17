@@ -115,7 +115,7 @@ describe("CMCI - Get Cache", () => {
         "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], true);
     });
 
     it("should be able to get a result cache with SUMMONLY", async () => {
@@ -132,7 +132,7 @@ describe("CMCI - Get Cache", () => {
         "&" + CicsCmciConstants.SUMM_ONLY;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], true);
     });
 
     it("should be able to get a result cache with start index", async () => {
@@ -149,7 +149,7 @@ describe("CMCI - Get Cache", () => {
         "10?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], true);
     });
 
     it("should be able to get a result cache with start index and count", async () => {
@@ -167,7 +167,7 @@ describe("CMCI - Get Cache", () => {
         "15/5?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], true);
     });
 
     it("should be able to get a result cache without NODISCARD", async () => {
@@ -183,7 +183,7 @@ describe("CMCI - Get Cache", () => {
         "/" + cacheParms.cacheToken;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], true);
     });
   });
 });

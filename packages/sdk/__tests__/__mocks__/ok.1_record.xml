@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my.url.host:12345/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+  version="3.0" connect_version="0620">
+  <resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
+    recordcount="1" displayed_recordcount="1" />
+  <records>
+    <cicsmanagedregion _keydata="C9E8C3E6C5D7E6F1" actvtime="" ainsfail="CONTINUE" applid="REGION1"
+      autoinst="NEVER" bastrace="00000000" botrsupd="1" chetrace="00000000" cicsname="REGION1"
+      cicssamp="0" cicsstate="ACTIVE" cmasname="MYCMAS" comtrace="00000000" connsamp="0"
+      cpsmver="0620" dattrace="00000000" daylghtsv="NO" dbxsamp="0" desc="my region"
+      filesamp="0" glblsamp="0" host="" jrnlsamp="0" knltrace="00000000" mastrace="00000000"
+      mastype="LOCAL" monstatus="NO" msgtrace="00000000" mxtaction="" mxtsev="HS" networkid=""
+      nrmaction="" nrmsev="N_A" port="" pricmas="" progsamp="0" quetrace="00000000" readrs="200"
+      retention="0" rtastatus="SAM" rtatrace="00000000" samaction="" samsev="VHS" sdmaction=""
+      sdmsev="VHS" secbypass="NO" seccmdchk="NO" secreschk="NO" sosaction="" sossev="HS"
+      srvtrace="00000000" stlaction="" stlsev="VHS" tdmaction="" tdmsev="HW" tdqsamp="0"
+      termsamp="0" tmezone="Z" tmezoneo="0" toprsupd="5" toptrace="00000000" transamp="0"
+      tratrace="00000000" updaters="15" wlmopten="DISABLED" wlmqmode="ALL" wlmstatus="NO"
+      wlmthrsh="60" wlmtrace="00000000" />
+  </records>
+</response>
