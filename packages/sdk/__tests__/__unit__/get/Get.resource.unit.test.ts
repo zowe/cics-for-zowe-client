@@ -17,14 +17,14 @@ import {
   ICMCIApiResponse,
   IResourceParms
 } from "../../../src";
+import { ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {
 
-  const resource = "resource";
-  const region = "region";
-  const cicsPlex = "plex";
+  const resource = "CICSCICSPlex";
+  const region = "REGION1";
+  const cicsPlex = "PLEX01";
   const criteria = "program=D*";
-  const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
   const dummySession = new Session({
     user: "fake",
@@ -33,8 +33,8 @@ describe("CMCI - Get resource", () => {
     port: 1490
   });
 
-  let error: any;
-  let response: any;
+  let error: Error | undefined;
+  let response: ICMCIApiResponse | undefined;
   let endPoint: string;
   let resourceParms: IResourceParms;
 
@@ -53,6 +53,7 @@ describe("CMCI - Get resource", () => {
 
     it("should throw error if no parms are defined", async () => {
       try {
+        // @ts-ignore - Not allowed to pass undefined here
         response = await getResource(dummySession, undefined);
       } catch (err) {
         error = err;
@@ -60,13 +61,14 @@ describe("CMCI - Get resource", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toMatch(/(Cannot read).*undefined/);
+      expect(error?.message).toMatch(/(Cannot read).*undefined/);
     });
 
     it("should throw error if resource name is not defined", async () => {
       try {
         response = await getResource(dummySession, {
           regionName: "fake",
+          // @ts-ignore - Not allowed to pass undefined here
           name: undefined,
         });
       } catch (err) {
@@ -75,7 +77,7 @@ describe("CMCI - Get resource", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS resource name is required");
+      expect(error?.message).toContain("CICS resource name is required");
     });
 
     it("should throw error if resource name is missing", async () => {
@@ -90,13 +92,13 @@ describe("CMCI - Get resource", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Resource name' must not be blank");
+      expect(error?.message).toContain("Required parameter 'CICS Resource name' must not be blank");
     });
   });
 
   describe("success scenarios", () => {
 
-    const deleteSpy = jest.spyOn(CicsCmciRestClient, "getExpectParsedXml").mockResolvedValue(content);
+    const getExpectStringMock = jest.spyOn(CicsCmciRestClient, "getExpectString").mockResolvedValue(ok2RecordsXmlResponse);
 
     beforeEach(() => {
       response = undefined;
@@ -107,8 +109,8 @@ describe("CMCI - Get resource", () => {
         criteria: undefined,
         cicsPlex: undefined
       };
-      deleteSpy.mockClear();
-      deleteSpy.mockResolvedValue(content);
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(ok2RecordsXmlResponse);
     });
 
     it("should be able to get a resource without CICS Region name being defined", async () => {
@@ -120,10 +122,10 @@ describe("CMCI - Get resource", () => {
       }
 
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-       resource + "/";
+        resource + "/";
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource without CICS Region name being specified", async () => {
@@ -135,54 +137,54 @@ describe("CMCI - Get resource", () => {
       }
 
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-       resource + "/";
+        resource + "/";
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource without cicsPlex specified", async () => {
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-                "/" + region;
+        "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource without criteria specified", async () => {
       resourceParms.criteria = undefined;
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-                "/" + region;
+        "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with cicsPlex specified and criteria not specified", async () => {
       resourceParms.cicsPlex = cicsPlex;
       resourceParms.criteria = undefined;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +  resource +
-                "/" + cicsPlex + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
+        "/" + cicsPlex + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with criteria specified", async () => {
       resourceParms.cicsPlex = undefined;
       resourceParms.criteria = criteria;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +  resource +
-                "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
+        "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with SUMMONLY specified", async () => {
@@ -194,8 +196,8 @@ describe("CMCI - Get resource", () => {
       endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?SUMMONLY`;
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with NODISCARD specified", async () => {
@@ -207,8 +209,8 @@ describe("CMCI - Get resource", () => {
       endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?NODISCARD`;
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with OVERRIDEWARNINGCOUNT specified", async () => {
@@ -220,8 +222,8 @@ describe("CMCI - Get resource", () => {
       endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?OVERRIDEWARNINGCOUNT`;
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with all query params specified", async () => {
@@ -235,8 +237,8 @@ describe("CMCI - Get resource", () => {
       endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/plex1/reg1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`;
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource with no context and all query params specified", async () => {
@@ -250,8 +252,8 @@ describe("CMCI - Get resource", () => {
       endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`;
       response = await getResource(dummySession, resourceParms);
 
-      expect(response).toContain(content);
-      expect(deleteSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
   });
 });
