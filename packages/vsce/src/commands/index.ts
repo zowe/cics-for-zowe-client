@@ -18,7 +18,7 @@ import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
-import { getDeleteSessionCommand } from "./deleteSessionCommand";
+import { getManageSessionCommand } from "./manageSessionCommand";
 import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
@@ -29,19 +29,14 @@ import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-import { getRemoveSessionCommand } from "./removeSessionCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
-import { getUpdateSessionCommand } from "./updateSessionCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => {
-
   return [
     getAddSessionCommand(treeDataProv),
-    getRemoveSessionCommand(treeDataProv, treeview),
-    getUpdateSessionCommand(treeDataProv, treeview),
-    getDeleteSessionCommand(treeDataProv, treeview),
+    getManageSessionCommand(treeDataProv, treeview),
 
     getRefreshCommand(treeDataProv),
 
@@ -106,5 +101,4 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
   ];
-
 };

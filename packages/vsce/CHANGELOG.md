@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Added `Manage Profile` option for CICS profiles. [#179](https://github.com/zowe/cics-for-zowe-client/issues/179)
+
 ## `3.2.6`
 
 - BugFix: Inform user no resources found when filtering trees. [#200](https://github.com/zowe/cics-for-zowe-client/issues/200)
@@ -34,7 +38,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## `3.1.1`
 
- - BugFix: CICS extension 3.1.0 will not load correctly. [#174](https://github.com/zowe/cics-for-zowe-client/issues/174)
+- BugFix: CICS extension 3.1.0 will not load correctly. [#174](https://github.com/zowe/cics-for-zowe-client/issues/174)
 
 ## `3.0.2`
 

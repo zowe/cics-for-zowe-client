@@ -394,18 +394,8 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.removeSession",
-        "title": "Hide Profile",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.updateSession",
-        "title": "Update Profile",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.deleteSession",
-        "title": "Delete Profile",
+        "command": "cics-extension-for-zowe.manageSession",
+        "title": "Manage Profile",
         "category": "IBM CICS for Zowe Explorer"
       },
       {
@@ -730,18 +720,8 @@
         },
         {
           "when": "view == cics-view && viewItem =~ /^cicssession.*/",
-          "command": "cics-extension-for-zowe.removeSession",
-          "title": "Remove Session"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicssession.*/",
-          "command": "cics-extension-for-zowe.updateSession",
-          "title": "Update Session"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicssession.*/",
-          "command": "cics-extension-for-zowe.deleteSession",
-          "title": "Delete Session"
+          "command": "cics-extension-for-zowe.manageSession",
+          "title": "Manage Session"
         },
         {
           "when": "view == cics-view && viewItem =~ /^cicstask.*/",

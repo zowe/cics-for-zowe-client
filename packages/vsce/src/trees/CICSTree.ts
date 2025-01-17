@@ -9,8 +9,10 @@
  *
  */
 
+import { FilterDescriptor } from "../utils/filterUtils";
+import { findSelectedNodes } from "../utils/commandUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
+import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import {
   commands,
   Event,
@@ -19,7 +21,11 @@ import {
   ProviderResult,
   TreeDataProvider,
   TreeItem,
-  window
+  window,
+  TreeView,
+  QuickPickItem,
+  l10n,
+  QuickPickOptions,
 } from "vscode";
 import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
@@ -74,6 +80,70 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   /**
+   * Provides user with user actions and allows them to manage the selected profile
+   * @param treeview CICSTree View
+   * *@param node current selected node
+   */
+  async manageProfile(treeview: TreeView<any>, node: any) {
+    const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      window.showErrorMessage("No profile selected to manage");
+      return;
+    }
+    try {
+      const configInstance = await ProfileManagement.getConfigInstance();
+      if (configInstance.getTeamConfig().exists) {
+        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(allSelectedNodes[allSelectedNodes.length - 1].label);
+
+        const deleteProfile: QuickPickItem = {
+          label: `$(trash) ${l10n.t(`Delete Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Delete the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        };
+        const hideProfile: QuickPickItem = {
+          label: `$(eye-closed) ${l10n.t(`Hide Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Hide the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        };
+        const editProfile: QuickPickItem = {
+          label: `$(pencil) ${l10n.t(`Edit Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
+          description: l10n.t(`Update the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+        };
+
+        const quickpick = Gui.createQuickPick();
+        const addProfilePlaceholder = "Choose user action for selected profiles";
+        quickpick.items = [editProfile, hideProfile, deleteProfile];
+        quickpick.placeholder = addProfilePlaceholder;
+        quickpick.ignoreFocusOut = true;
+        quickpick.show();
+        const choice = await Gui.resolveQuickPick(quickpick);
+        quickpick.hide();
+        const debugMsg = l10n.t(`Profile selection has been cancelled.`);
+        if (!choice) {
+          Gui.showMessage(debugMsg);
+          return;
+        } else if (choice === hideProfile) {
+          this.hideZoweConfigFile(allSelectedNodes);
+          return;
+        } else if (choice === editProfile) {
+          for (const sessionTree of allSelectedNodes) {
+            await this.updateSession(sessionTree, configInstance);
+          }
+        } else {
+          const filePath = currentProfile.profLoc.osLoc[0];
+          await openConfigFile(filePath);
+          return;
+        }
+      }
+    } catch (error) {
+      window.showErrorMessage(
+        `Something went wrong while managing the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+          /(\\n\t|\\n|\\t)/gm,
+          " ",
+        )}`,
+      );
+    }
+  }
+
+  /**
    *
    * Provides user with prompts and allows them to add a profile after clicking the '+' button
    */
@@ -81,61 +151,60 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     try {
       //const allCICSProfileNames = await ProfileManagement.getProfilesCache().getNamesForType('cics');
       const configInstance = await ProfileManagement.getConfigInstance();
-      const allCICSProfiles = (await ProfileManagement.getProfilesCache().getProfileInfo()).getAllProfiles("cics");
+      const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
+      const allCICSProfiles = profileInfo.getAllProfiles("cics");
       // const allCICSProfiles = await ProfileManagement.getProfilesCache().getProfiles('cics');
       const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
       // No cics profiles needed beforhand for team config method
       if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
-        const profileNameToLoad = await window.showQuickPick(
-          [{ label: "\u270F Edit Team Configuration File" }].concat(
-            allCICSProfileNames
-              .filter((name) => {
-                for (const loadedProfile of this.loadedProfiles) {
-                  if (loadedProfile.label === name) {
-                    return false;
-                  }
-                }
-                return true;
-              })
-              .map((profileName) => {
-                return { label: profileName };
-              })
-          ),
-          {
-            ignoreFocusOut: true,
-            placeHolder: "Edit Team Configuration File",
-          }
-        );
-        if (profileNameToLoad) {
-          // If Create New CICS Profile option chosen
-          if (profileNameToLoad.label.includes("\u270F")) {
-            // get all profiles of all types including zosmf
-            const profiles = configInstance.getAllProfiles();
-            const currentProfile =
-              profiles.length > 0 ? await ProfileManagement.getProfilesCache().getProfileFromConfig(profiles[0].profName) : null;
-            const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
-            const filePath = currentProfile === null ? teamConfigFilePath : (currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath);
-            await openConfigFile(filePath);
-          } else {
-            let profileToLoad;
-            // TODO: Just use loadNamedProfile once the method is configured to v2 profiles
-            if (configInstance.getTeamConfig().exists) {
-              //ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, 'cics');
-              profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileNameToLoad.label);
-            } else {
-              await ProfileManagement.profilesCacheRefresh();
-              profileToLoad = ProfileManagement.getProfilesCache().loadNamedProfile(profileNameToLoad.label, "cics");
+        const createNewConfig = "Create a New Team Configuration File";
+        const editConfig = "Edit Team Configuration File";
+
+        const configPick = new FilterDescriptor("\uFF0B " + createNewConfig);
+        const configEdit = new FilterDescriptor("\u270F " + editConfig);
+        const items: QuickPickItem[] = [];
+
+        const profAllAttrs = profileInfo.getAllProfiles();
+        allCICSProfileNames
+          .filter((name) => {
+            for (const loadedProfile of this.loadedProfiles) {
+              if (loadedProfile.label === name) {
+                return false;
+              }
             }
-            const newSessionTree = new CICSSessionTree(profileToLoad);
-            this.loadedProfiles.push(newSessionTree);
-            const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-            await persistentStorage.addLoadedCICSProfile(profileNameToLoad.label);
-            this._onDidChangeTreeData.fire(undefined);
-          }
+            return true;
+          })
+          .map((profileName) => {
+            const osLocInfo = profileInfo.getOsLocInfo(profAllAttrs.find((p) => p.profName === profileName));
+            items.push(new FilterDescriptor(this.getProfileIcon(osLocInfo)[0] + " " + profileName));
+            return { label: profileName };
+          });
+
+        const quickpick = Gui.createQuickPick();
+        const addProfilePlaceholder = l10n.t(`Choose "Create new..." to define or select a profile to add to the CICS tree`);
+        quickpick.items = [configPick, configEdit, ...items];
+        quickpick.placeholder = addProfilePlaceholder;
+        quickpick.ignoreFocusOut = true;
+        quickpick.show();
+        const choice = await Gui.resolveQuickPick(quickpick);
+        quickpick.hide();
+        const debugMsg = l10n.t(`Profile selection has been cancelled.`);
+        if (!choice) {
+          Gui.showMessage(debugMsg);
+          return;
+        } else if (choice === configPick) {
+          commands.executeCommand("zowe.all.config.init");
+          return;
+        } else if (choice === configEdit) {
+          await this.editZoweConfigFile();
+          return;
+        } else {
+          await this.loadExistingProfile(choice.label);
+          return;
         }
       } else {
         //  Create New Profile Form should appear
-        this.createNewProfile();
+        commands.executeCommand("zowe.all.config.init");
       }
     } catch (error) {
       window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
@@ -160,7 +229,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -178,7 +247,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 }
                 profile = updatedProfile;
                 // Remove "user" and "password" from missing params array
-                missingParamters = missingParamters.filter((param) => userPass.indexOf(param) === -1 || userPass.indexOf(param) === -1);
+                missingParamters = missingParamters.filter((param) => userPass.indexOf(param) === -1);
               }
               if (missingParamters.length) {
                 window.showInformationMessage(
@@ -286,7 +355,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   if (sessionTree) {
                     const decision = await window.showInformationMessage(
                       `Warning: Your connection is not private (${error.code}) - ` +
-                      `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
+                        `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
                       ...["Yes", "No"]
                     );
                     if (decision) {
@@ -346,22 +415,58 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             }
           }
         }
-      }
+      },
     );
   }
 
   /**
-   * Method for V1 profile configuration that provides UI for user to enter profile details
-   * and creates a profile.
+   * Allows user to edit a configuration file based on global or project level context
    */
-  async createNewProfile() {
-    //  Initialize new team configuration file
-    const response = await window.showQuickPick([{ label: "\uFF0B Create a New Team Configuration File" }], {
-      ignoreFocusOut: true,
-      placeHolder: "Create a New Team Configuration File",
-    });
-    if (response) {
-      commands.executeCommand("zowe.all.config.init");
+  async editZoweConfigFile() {
+    let rootPath = FileManagement.getZoweDir();
+    const workspaceDir = ZoweVsCodeExtension.workspaceRoot;
+    const choice = await this.getConfigLocationPrompt("edit");
+    if (choice === "global") {
+      await openConfigFile(rootPath + "/zowe.config.json");
+    } else if (choice === "project") {
+      rootPath = workspaceDir.uri.fsPath;
+      await openConfigFile(rootPath + "/zowe.config.json");
+    } else {
+      return;
+    }
+  }
+
+  /**
+   * Allows user to load an existing file from persistance area instead of creating a new profile.
+   * @param label name of the selected profile
+   */
+  async loadExistingProfile(label: string) {
+    label = label.split(/ (.*)/)[1];
+    const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
+    const newSessionTree = new CICSSessionTree(profileToLoad);
+    this.loadedProfiles.push(newSessionTree);
+    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
+    await persistentStorage.addLoadedCICSProfile(label);
+    this._onDidChangeTreeData.fire(undefined);
+  }
+
+  /**
+   * Method for profile configuration that provides UI for user to hide a selected profile.
+   * @param allSelectedNodes array of selected nodes
+   */
+  async hideZoweConfigFile(allSelectedNodes: any[]) {
+    for (const index in allSelectedNodes) {
+      try {
+        const currentNode = allSelectedNodes[parseInt(index)];
+        await this.removeSession(currentNode);
+      } catch (error) {
+        window.showErrorMessage(
+          `Something went wrong when hiding the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+            /(\\n\t|\\n|\\t)/gm,
+            " ",
+          )}`,
+        );
+      }
     }
   }
 
@@ -375,26 +480,62 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-
-  async updateSession(session: CICSSessionTree) {
+  /**
+   * Update profile functionality for profile configuration
+   * @param session CICSSessions Tree
+   */
+  async updateSession(session: CICSSessionTree, configInstance: imperative.ProfileInfo) {
     await ProfileManagement.profilesCacheRefresh();
     const profileCache = await ProfileManagement.getProfilesCache();
     const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
     const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
-    await this.updateSessionHelper(currentProfile);
+    const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
+    const filePath = currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
+    await openConfigFile(filePath);
   }
 
-  async updateSessionHelper(profile: imperative.IProfAttrs) {
-    const response = await window.showQuickPick([{ label: "\u270F Edit CICS Profile" }], {
-      ignoreFocusOut: true,
-      placeHolder: "Create a New Team Configuration File",
-    });
-    if (response) {
-      const configInstance = await ProfileManagement.getConfigInstance();
-      const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
-      const filePath = profile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
-      await openConfigFile(filePath);
+  /**
+   * Method for profile configuration that returns the context of a configuration file.
+   * @param action string create or edit
+   */
+  private async getConfigLocationPrompt(action: string): Promise<string> {
+    let placeHolderText: string;
+    if (action === "create") {
+      placeHolderText = l10n.t("Select the location where the config file will be initialized");
+    } else {
+      placeHolderText = l10n.t("Select the location of the config file to edit");
     }
+    const quickPickOptions: QuickPickOptions = {
+      placeHolder: placeHolderText,
+      ignoreFocusOut: true,
+      canPickMany: false,
+    };
+    const globalText = l10n.t("Global: in the Zowe home directory");
+    const projectText = l10n.t("Project: in the current working directory");
+    const location = await Gui.showQuickPick([globalText, projectText], quickPickOptions);
+    // call check for existing and prompt here
+    switch (location) {
+      case globalText:
+        return "global";
+      case projectText:
+        return "project";
+    }
+  }
+
+  /**
+   * Method that returns the icon based on global or local context.
+   * @param osLocInfo physical location of of profile on OS
+   */
+  private getProfileIcon(osLocInfo: imperative.IProfLocOsLoc[]): string[] {
+    const ret: string[] = [];
+    for (const loc of osLocInfo ?? []) {
+      if (loc.global) {
+        ret.push("$(home)");
+      } else {
+        ret.push("$(folder)");
+      }
+    }
+    return ret;
   }
 
   getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
