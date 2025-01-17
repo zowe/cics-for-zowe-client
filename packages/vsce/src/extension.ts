@@ -121,7 +121,7 @@ export async function activate(context: ExtensionContext) {
       } catch (error) {
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
+          getIconPathInResources("profile-disconnected")
         );
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);

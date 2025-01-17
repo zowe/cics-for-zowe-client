@@ -28,7 +28,7 @@ export class CICSLibraryDatasets extends TreeItem {
     dataset: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getIconPathInResources("library-dark.svg", "library-light.svg")
+    public iconPath = getIconPathInResources("library")
   ) {
     super(`${dataset.dsname}`, TreeItemCollapsibleState.Collapsed);
 

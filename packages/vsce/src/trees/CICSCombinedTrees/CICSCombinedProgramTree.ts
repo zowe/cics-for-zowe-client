@@ -101,7 +101,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         } catch (error) {
           if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
             this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            this.iconPath = getIconPathInResources("folder-open");
             tree._onDidChangeTreeData.fire(undefined);
             window.showInformationMessage(`No programs found`);
             this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
