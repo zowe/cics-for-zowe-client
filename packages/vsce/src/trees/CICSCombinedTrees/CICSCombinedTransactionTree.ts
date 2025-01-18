@@ -19,7 +19,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSTransactionTreeItem } from "../treeItems/CICSTransactionTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedTransactionsTree extends TreeItem {

@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getIconOpen } from "../utils/iconUtils";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
 import { toArray } from "../utils/commandUtils";
 

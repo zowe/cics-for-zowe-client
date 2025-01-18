@@ -19,7 +19,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "../../utils/iconUtils";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
@@ -101,7 +101,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         } catch (error) {
           if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
             this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            this.iconPath = getIconPathInResources("folder-open");
             tree._onDidChangeTreeData.fire(undefined);
             window.showInformationMessage(`No programs found`);
             this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;

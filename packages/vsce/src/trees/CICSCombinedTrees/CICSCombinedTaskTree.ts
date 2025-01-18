@@ -18,7 +18,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getIconOpen } from "../../utils/iconUtils";
 import { CICSTaskTreeItem } from "../treeItems/CICSTaskTreeItem";
 
 export class CICSCombinedTaskTree extends TreeItem {

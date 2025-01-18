@@ -15,7 +15,7 @@ import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { ProfileManagement } from "./profileManagement";
-import { getIconOpen } from "./profileUtils";
+import { getIconOpen } from "./iconUtils";
 
 export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);

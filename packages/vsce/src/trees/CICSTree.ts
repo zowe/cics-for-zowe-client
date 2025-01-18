@@ -30,7 +30,8 @@ import {
 import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { getIconPathInResources, missingSessionParameters, promptCredentials } from "../utils/profileUtils";
+import { missingSessionParameters, promptCredentials } from "../utils/profileUtils";
+import { getIconPathInResources } from "../utils/iconUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
@@ -266,7 +267,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           }
           const plexInfo: InfoLoaded[] = await ProfileManagement.getPlexInfo(profile);
           // Initialise session tree
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-dark.svg", "profile-light.svg"));
+          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile"));
           // For each InfoLoaded object - happens if there are multiple plexes
           for (const item of plexInfo) {
             // No plex
@@ -319,7 +320,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           this._onDidChangeTreeData.fire(undefined);
         } catch (error) {
           // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"));
+          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected"));
           // If method was called when expanding profile
           if (sessionTree) {
             this.loadedProfiles.splice(position, 1, newSessionTree);

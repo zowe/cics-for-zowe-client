@@ -14,7 +14,7 @@ import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { CICSTree } from "./trees/CICSTree";
 import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
 import { ProfileManagement } from "./utils/profileManagement";
-import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
+import { getIconOpen, getIconPathInResources } from "./utils/iconUtils";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { Logger } from "@zowe/imperative";
@@ -121,7 +121,7 @@ export async function activate(context: ExtensionContext) {
       } catch (error) {
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
+          getIconPathInResources("profile-disconnected")
         );
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);

@@ -10,7 +10,6 @@
  */
 
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
-import { join } from "path";
 import { window } from "vscode";
 import { ProfileManagement } from "./profileManagement";
 
@@ -25,14 +24,7 @@ export function missingSessionParameters(profileProfile: any): (string | undefin
   return missing;
 }
 
-export function getIconPathInResources(iconFileNameLight: string, iconFileNameDark: string): { light: string; dark: string } {
-  return {
-    // We bundle the extension into a single `dist/extension.js`
-    // `__dirname/../resources/imgs === `/path/to/dist/../resources/imgs`
-    light: join(__dirname, "..", "resources", "imgs", iconFileNameLight),
-    dark: join(__dirname, "..", "resources", "imgs", iconFileNameDark),
-  };
-}
+
 
 export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {
@@ -48,10 +40,4 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
     window.showInformationMessage("Input credentials operation Cancelled");
   }
   return promptInfo;
-}
-
-export function getIconOpen(open: boolean = true) {
-  return getIconPathInResources(
-    `folder-${open ? "open" : "closed"}-dark.svg`,
-    `folder-${open ? "open" : "closed"}-light.svg`);
 }

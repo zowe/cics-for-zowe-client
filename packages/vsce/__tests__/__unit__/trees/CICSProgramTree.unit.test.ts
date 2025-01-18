@@ -22,7 +22,7 @@ import CustomError from "../../__utils__/CustomError";
 jest.mock("@zowe/cics-for-zowe-sdk");
 const zoweSdk = require("@zowe/cics-for-zowe-sdk");
 
-jest.mock("../../../src/utils/profileUtils", () => {
+jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconOpen: getIconOpenMock };
 });
 jest.mock("../../../src/trees/treeItems/CICSProgramTreeItem");
