@@ -1,8 +1,8 @@
 import { getIconByStatus, getIconOpen, getIconPathInResources, getIconRootName } from "../../../src/utils/iconUtils";
 
 const iconPath = {
-  light: "program-light.svg",
-  dark: "program-dark.svg",
+  light: "program-dark.svg",
+  dark: "program-light.svg",
 };
 
 describe("Test suite for iconUtils", () => {
@@ -17,13 +17,13 @@ describe("Test suite for iconUtils", () => {
   describe("Test suite for getIconOpen", () => {
     it("Should return icon path for folder open when true", () => {
       const result = getIconOpen(true);
-      expect(result.dark).toContain("folder-open-dark");
-      expect(result.light).toContain("folder-open-light");
+      expect(result.dark).toContain("folder-open-light");
+      expect(result.light).toContain("folder-open-dark");
     });
     it("Should return icon path for folder closed when false", () => {
       const result = getIconOpen(false);
-      expect(result.dark).toContain("folder-closed-dark");
-      expect(result.light).toContain("folder-closed-light");
+      expect(result.dark).toContain("folder-closed-light");
+      expect(result.light).toContain("folder-closed-dark");
     });
   });
 
