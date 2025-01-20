@@ -50,7 +50,7 @@ Ensure that you meet the following prerequisites before you use the extension:
 
 - Load profiles directly from a locally installed Zowe instance.
 - Create new CICS profiles and connect to them.
-- Work with a tree structure of resources including programs, local transactions and local files within a CICSplexes and CICS regions.
+- Work with a tree structure of resources including programs, local transactions and local files within CICSplexes and CICS regions.
 - Perform actions such as `Enable`, `Disable`, `New Copy` and `Phase In` directly from the UI.
 - Perform additional actions on local files including `Open` and `Close` directly from the UI.
 - Perform a `Purge` on Tasks with the option to select from a `Purge` or `Force Purge`.
