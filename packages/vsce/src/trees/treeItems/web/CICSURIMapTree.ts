@@ -14,7 +14,7 @@ import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getIconOpen } from "../../../utils/iconUtils";
+import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
 
 export class CICSURIMapTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSURIMapTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("URI Maps", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSURIMapTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const urimapResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSURIMap",
         regionName: this.parentRegion.getRegionName(),
@@ -54,24 +56,24 @@ export class CICSURIMapTree extends TreeItem {
       for (const urimap of urimapArray) {
         const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
         newURIMapItem.setLabel(
-          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`)
+          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`),
         );
         this.addURIMAP(newURIMapItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a URIMap filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No URI Maps found`);
         this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching URI Maps - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }

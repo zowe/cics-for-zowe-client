@@ -15,7 +15,7 @@ import { CICSTransactionTree } from "./CICSTransactionTree";
 import { CICSLocalFileTree } from "./CICSLocalFileTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
-import { getIconPathInResources } from "../utils/iconUtils";
+import { getIconByStatus } from "../utils/iconUtils";
 import { CICSTaskTree } from "./CICSTaskTree";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSWebTree } from "./CICSWebTree";
@@ -28,14 +28,7 @@ export class CICSRegionTree extends TreeItem {
   directParent: any;
   isActive: true | false;
 
-  constructor(
-    regionName: string,
-    region: any,
-    parentSession: CICSSessionTree,
-    parentPlex: CICSPlexTree | undefined,
-    directParent: any,
-    public iconPath = getIconPathInResources("region")
-  ) {
+  constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
     super(regionName, TreeItemCollapsibleState.Collapsed);
     this.region = region;
     this.contextValue = `cicsregion.${regionName}`;
@@ -50,11 +43,11 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.isActive = region.cicsstatus === "ACTIVE" ? true : false;
     }
-
+    this.iconPath = getIconByStatus("REGION", this);
     if (!this.isActive) {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
-      this.iconPath = getIconPathInResources("region-disabled");
+      this.iconPath = getIconByStatus("REGION", this);
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";

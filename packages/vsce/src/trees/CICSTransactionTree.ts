@@ -14,7 +14,7 @@ import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/iconUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSTransactionTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSTransactionTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSTransactionTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const transactionResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSLocalTransaction",
         regionName: this.parentRegion.getRegionName(),
@@ -55,7 +57,7 @@ export class CICSTransactionTree extends TreeItem {
         const newTransactionItem = new CICSTransactionTreeItem(transaction, this.parentRegion, this);
         this.addTransaction(newTransactionItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -64,13 +66,13 @@ export class CICSTransactionTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No transactions found`);
         this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching transaction - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }

@@ -18,7 +18,7 @@ import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgram
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
-import { getIconPathInResources } from "../utils/iconUtils";
+import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
 import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
@@ -56,7 +56,7 @@ export class CICSPlexTree extends TreeItem {
     this.resourceFilters = {};
     this.activeFilter = undefined;
     this.groupName = group;
-    this.iconPath = group ? getIconPathInResources("cics-system-group") : getIconPathInResources("cics-plex");
+    this.iconPath = group ? getIconFilePathFromName("cics-system-group") : getIconFilePathFromName("cics-plex");
   }
 
   public addRegion(region: CICSRegionTree) {
@@ -79,7 +79,7 @@ export class CICSPlexTree extends TreeItem {
       regionsObtained.response.records.cicsregion,
       this.getParent(),
       this,
-      this
+      this,
     );
     this.clearChildren();
     this.addRegion(newRegionTree);

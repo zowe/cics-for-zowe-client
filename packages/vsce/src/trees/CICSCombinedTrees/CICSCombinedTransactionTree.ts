@@ -19,7 +19,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSTransactionTreeItem } from "../treeItems/CICSTransactionTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/iconUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedTransactionsTree extends TreeItem {
@@ -30,7 +30,10 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All Local Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtransactiontree.`;
     this.parentPlex = parentPlex;
@@ -49,7 +52,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -61,7 +64,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -73,7 +76,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allLocalTransactions = await ProfileManagement.getCachedResources(
@@ -81,16 +84,16 @@ export class CICSCombinedTransactionsTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addLocalTransactionsUtil([], allLocalTransactions, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No local transactions found`);
               this.label = `All Local Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -100,18 +103,20 @@ export class CICSCombinedTransactionsTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching local transactions - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+              " ",
+            )}`,
           );
         }
-      }
+      },
     );
   }
 
   public addLocalTransactionsUtil(newChildren: (CICSTransactionTreeItem | ViewMore)[], allLocalTransactions: any, count: number | undefined) {
     for (const transaction of allLocalTransactions) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === transaction.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -142,7 +147,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
           this.parentPlex.getProfile(),
           this.parentPlex.getPlexName(),
           this.constant,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -153,19 +158,19 @@ export class CICSCombinedTransactionsTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allLocalTransactions) {
             // @ts-ignore
             this.addLocalTransactionsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTransactionTreeItem) ?? []) as CICSTransactionTreeItem[],
               allLocalTransactions,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

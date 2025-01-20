@@ -11,7 +11,7 @@
 
 import { join } from "path";
 
-export function getIconPathInResources(iconFileName: string): { light: string; dark: string } {
+export function getIconFilePathFromName(iconFileName: string): { light: string; dark: string } {
   return {
     // We bundle the extension into a single `dist/extension.js`
     // `__dirname/../resources/imgs === `/path/to/dist/../resources/imgs`
@@ -20,8 +20,8 @@ export function getIconPathInResources(iconFileName: string): { light: string; d
   };
 }
 
-export function getIconOpen(open: boolean = true) {
-  return getIconPathInResources(`folder-${open ? "open" : "closed"}`);
+export function getFolderIcon(open: boolean = true) {
+  return getIconFilePathFromName(`folder-${open ? "open" : "closed"}`);
 }
 
 export function getIconRootName(resourceType: string, resourceTreeItem: any) {
@@ -44,9 +44,11 @@ export function getIconRootName(resourceType: string, resourceTreeItem: any) {
         : resourceTreeItem.runstatus === "SUSPENDED"
           ? "task-suspended"
           : "task-dispatched";
+    case "REGION":
+      return resourceTreeItem.isActive ? "region" : "region-disabled";
   }
 }
 
 export function getIconByStatus(resourceType: string, resourceTreeItem: any) {
-  return getIconPathInResources(getIconRootName(resourceType, resourceTreeItem));
+  return getIconFilePathFromName(getIconRootName(resourceType, resourceTreeItem));
 }

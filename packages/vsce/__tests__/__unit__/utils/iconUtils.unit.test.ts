@@ -1,4 +1,4 @@
-import { getIconByStatus, getIconOpen, getIconPathInResources, getIconRootName } from "../../../src/utils/iconUtils";
+import { getIconByStatus, getFolderIcon, getIconFilePathFromName, getIconRootName } from "../../../src/utils/iconUtils";
 
 const iconPath = {
   light: "program-dark.svg",
@@ -8,20 +8,20 @@ const iconPath = {
 describe("Test suite for iconUtils", () => {
   describe("Test suite for getIconPathResources", () => {
     it("Should return icon path for dark and light theme", () => {
-      const result = getIconPathInResources("program");
+      const result = getIconFilePathFromName("program");
       expect(result.dark).toContain(iconPath.dark);
       expect(result.light).toContain(iconPath.light);
     });
   });
 
-  describe("Test suite for getIconOpen", () => {
+  describe("Test suite for getFolderIcon", () => {
     it("Should return icon path for folder open when true", () => {
-      const result = getIconOpen(true);
+      const result = getFolderIcon(true);
       expect(result.dark).toContain("folder-open-light");
       expect(result.light).toContain("folder-open-dark");
     });
     it("Should return icon path for folder closed when false", () => {
-      const result = getIconOpen(false);
+      const result = getFolderIcon(false);
       expect(result.dark).toContain("folder-closed-light");
       expect(result.light).toContain("folder-closed-dark");
     });
@@ -34,6 +34,7 @@ describe("Test suite for iconUtils", () => {
       openstatus: "",
       enablestatus: "",
       runstatus: "",
+      isActive: true,
     };
     it("Should return program-disabled for PROGRAM resource with DISABLED status", () => {
       resourceTreeItem.status = "DISABLED";
@@ -93,6 +94,15 @@ describe("Test suite for iconUtils", () => {
       resourceTreeItem.runstatus = "DISPATCHED";
       const result = getIconRootName("TASK", resourceTreeItem);
       expect(result).toBe("task-dispatched");
+    });
+    it("Should return region for REGION resource with isActive as true", () => {
+      const result = getIconRootName("REGION", resourceTreeItem);
+      expect(result).toBe("region");
+    });
+    it("Should return region-disabled for REGION resource with isActive as false", () => {
+      resourceTreeItem.isActive = false;
+      const result = getIconRootName("REGION", resourceTreeItem);
+      expect(result).toBe("region-disabled");
     });
   });
 

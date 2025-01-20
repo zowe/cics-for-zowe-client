@@ -31,7 +31,7 @@ import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { missingSessionParameters, promptCredentials } from "../utils/profileUtils";
-import { getIconPathInResources } from "../utils/iconUtils";
+import { getIconFilePathFromName } from "../utils/iconUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
@@ -49,7 +49,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   public async refreshLoadedProfiles() {
     this.clearLoadedProfiles();
     await this.loadStoredProfileNames();
-    commands.executeCommand('workbench.actions.treeView.cics-view.collapseAll');
+    commands.executeCommand("workbench.actions.treeView.cics-view.collapseAll");
   }
   public clearLoadedProfiles() {
     this.loadedProfiles = [];
@@ -252,7 +252,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               }
               if (missingParamters.length) {
                 window.showInformationMessage(
-                  `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`
+                  `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
                 );
                 return;
               }
@@ -267,7 +267,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           }
           const plexInfo: InfoLoaded[] = await ProfileManagement.getPlexInfo(profile);
           // Initialise session tree
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile"));
+          newSessionTree = new CICSSessionTree(profile, getIconFilePathFromName("profile"));
           // For each InfoLoaded object - happens if there are multiple plexes
           for (const item of plexInfo) {
             // No plex
@@ -292,7 +292,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 regionsObtained.response.records.cicsregion,
                 newSessionTree,
                 undefined,
-                newSessionTree
+                newSessionTree,
               );
               newSessionTree.addRegion(newRegionTree);
             } else {
@@ -320,7 +320,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           this._onDidChangeTreeData.fire(undefined);
         } catch (error) {
           // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected"));
+          newSessionTree = new CICSSessionTree(profile, getIconFilePathFromName("profile-disconnected"));
           // If method was called when expanding profile
           if (sessionTree) {
             this.loadedProfiles.splice(position, 1, newSessionTree);
@@ -357,7 +357,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                     const decision = await window.showInformationMessage(
                       `Warning: Your connection is not private (${error.code}) - ` +
                         `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
-                      ...["Yes", "No"]
+                      ...["Yes", "No"],
                     );
                     if (decision) {
                       if (decision === "Yes") {
@@ -382,8 +382,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   window.showErrorMessage(
                     `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                       error,
-                      Object.getOwnPropertyNames(error)
-                    ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+                      Object.getOwnPropertyNames(error),
+                    ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
                   );
               }
             } else if ("response" in error) {
@@ -409,8 +409,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 window.showErrorMessage(
                   `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
                     error,
-                    Object.getOwnPropertyNames(error)
-                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+                    Object.getOwnPropertyNames(error),
+                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
                 );
               }
             }

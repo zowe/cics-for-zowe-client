@@ -14,7 +14,7 @@ import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getIconOpen } from "../../../utils/iconUtils";
+import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
 
 export class CICSTCPIPServiceTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSTCPIPServiceTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSTCPIPServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const tcpipsResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSTCPIPService",
         regionName: this.parentRegion.getRegionName(),
@@ -54,24 +56,24 @@ export class CICSTCPIPServiceTree extends TreeItem {
       for (const tcpips of tcpipservicesArray) {
         const newTCPIPServiceItem = new CICSTCPIPServiceTreeItem(tcpips, this.parentRegion, this);
         newTCPIPServiceItem.setLabel(
-          newTCPIPServiceItem.label.toString().replace(tcpips.name, `${tcpips.name} [Port #${newTCPIPServiceItem.tcpips.port}]`)
+          newTCPIPServiceItem.label.toString().replace(tcpips.name, `${tcpips.name} [Port #${newTCPIPServiceItem.tcpips.port}]`),
         );
         this.addTCPIPS(newTCPIPServiceItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a TCPIPService filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No TCPIP Services found`);
         this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching TCPIP services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }

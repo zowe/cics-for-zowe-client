@@ -18,7 +18,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/iconUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { CICSTaskTreeItem } from "../treeItems/CICSTaskTreeItem";
 
 export class CICSCombinedTaskTree extends TreeItem {
@@ -29,7 +29,10 @@ export class CICSCombinedTaskTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtasktree.`;
     this.parentPlex = parentPlex;
@@ -48,7 +51,7 @@ export class CICSCombinedTaskTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -60,7 +63,7 @@ export class CICSCombinedTaskTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +75,7 @@ export class CICSCombinedTaskTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allTasks = await ProfileManagement.getCachedResources(
@@ -80,16 +83,16 @@ export class CICSCombinedTaskTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addTasksUtil([], allTasks, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No tasks found`);
               this.label = `All Tasks${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -97,10 +100,10 @@ export class CICSCombinedTaskTree extends TreeItem {
           }
         } catch (error) {
           window.showErrorMessage(
-            `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+            `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
           );
         }
-      }
+      },
     );
   }
 
@@ -110,7 +113,9 @@ export class CICSCombinedTaskTree extends TreeItem {
   public addTasksUtil(newChildren: (CICSTaskTreeItem | ViewMore)[], allTasks: any, count: number | undefined) {
     for (const task of allTasks) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === task.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -119,7 +124,7 @@ export class CICSCombinedTaskTree extends TreeItem {
       taskTree.setLabel(
         taskTree.label
           .toString()
-          .replace(task.task, `${task.task} - ${task.tranid} (${task.eyu_cicsname})${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`)
+          .replace(task.task, `${task.task} - ${task.tranid} (${task.eyu_cicsname})${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`),
       );
       newChildren.push(taskTree);
     }
@@ -146,7 +151,7 @@ export class CICSCombinedTaskTree extends TreeItem {
           this.parentPlex.getProfile(),
           this.parentPlex.getPlexName(),
           this.constant,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -157,7 +162,7 @@ export class CICSCombinedTaskTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allTasks) {
             // @ts-ignore
@@ -165,7 +170,7 @@ export class CICSCombinedTaskTree extends TreeItem {
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

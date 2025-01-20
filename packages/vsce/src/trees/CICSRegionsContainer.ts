@@ -15,7 +15,7 @@ import { ProfileManagement } from "../utils/profileManagement";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { getIconOpen } from "../utils/iconUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSRegionsContainer extends TreeItem {
@@ -24,7 +24,10 @@ export class CICSRegionsContainer extends TreeItem {
   resourceFilters: any;
   activeFilter: string;
 
-  constructor(parent: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parent: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("Regions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicsregionscontainer.`;
     this.parent = parent;
@@ -43,16 +46,16 @@ export class CICSRegionsContainer extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
         tree._onDidChangeTreeData.fire(undefined);
         if (!this.children.length) {
           window.showInformationMessage(`No regions found for ${this.parent.getPlexName()}`);
         }
-      }
+      },
     );
   }
 
