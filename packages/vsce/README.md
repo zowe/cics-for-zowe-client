@@ -67,7 +67,7 @@ CICS profiles are stored with other Zowe profiles in team configuration JSON fil
 
 CICS profiles inherit properties from base profiles in the same way as Zowe profiles. Secure storage for credentials also uses the Zowe profile mechanism with `secure` arrays and `autoStore`.
 
-The profile defines a connection which must point to a CICS region's CICS Management Client Interface (CMCI) TCP/IP host name and port number. The region can be a WUI server in a CICSplex or a stand-alone System Management Single Server (SMSS) region.
+The profile defines a connection which must point to a CICS region's CICS Management Client Interface (CMCI) TCP/IP host name and port number. CMCI could be hosted by a WUI in a CICSplex or by a stand-alone System Management Single Server (SMSS) region.
 
 #### Creating or updating a CICS profile
 
@@ -91,8 +91,8 @@ Here's an example of a CICS profile entry in the config file; the host, port, an
             "port": replace-with-port-number,
             "rejectUnauthorized": true,
             "protocol": "http",
-            "cicsPlex": "replace-with-plex-name",
-            "regionName": "replace-with-region-name"
+            "cicsPlex": "optionally-replace-with-plex-name",
+            "regionName": "optionally-replace-with-region-name"
       }
    },
    ...
@@ -105,7 +105,7 @@ To show more than one CICS profile in the tree, select the **+** button and choo
 
 #### Additional details for making the connection
 
-If you are connecting to a CICSplex, you can specify the `cicsPlex` or `regionName` properties to scope the set of CICSplexes or CICS regions shown in the CICS tree. Instead of a region name, you may also enter a CICS System Group.
+If you are connecting to a CICSplex, you can optionally specify the `cicsPlex` or `regionName` properties to scope the set of CICSplexes or CICS regions shown in the CICS tree. Instead of a region name, you may also enter a CICS System Group.
 
 Configuring a CICS region for CMCI is a system programmer task and more details can be found in [Setting up CMCI with CICSPlex SM](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-setting-up-cicsplex-sm) or
 [Setting up CMCI in a stand-alone CICS region](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-setting-up-in-single-cics-region). If your CMCI connection is configured to use a self-signed certificate that your PC's trust store doesn't recognize, see [Untrusted TLS certificates](#untrusted-tls-certificates)
