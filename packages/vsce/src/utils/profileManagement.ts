@@ -13,7 +13,6 @@ import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
-import { xml2json } from "xml-js";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
@@ -52,10 +51,6 @@ export class ProfileManagement {
   public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
     const mProfileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
     return mProfileInfo;
-  }
-
-  public static cmciResponseXml2Json(data: string) {
-    return JSON.parse(xml2json(data, { compact: true, spaces: 4 }));
   }
 
   public static getSessionFromProfile(profile: imperative.IProfile): Session {
