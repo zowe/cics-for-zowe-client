@@ -12,30 +12,40 @@
 const getIconOpenMock = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import * as filterUtils from "../../../src/utils/filterUtils";
+import { CICSLocalFileTreeItem } from "../../../src/trees/treeItems/CICSLocalFileTreeItem";
+
+import { CICSLocalFileTree } from "../../../src/trees/CICSLocalFileTree";
 import CustomError from "../../__utils__/CustomError";
-import { CICSLibraryTree } from "../../../src/trees/CICSLibraryTree";
-import { CICSLibraryTreeItem } from "../../../src/trees/treeItems/CICSLibraryTreeItem";
+import * as vscode from "vscode";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/trees/treeItems/CICSLibraryTreeItem");
+jest.mock("../../../src/trees/treeItems/CICSLocalFileTreeItem");
 jest.mock("../../../src/utils/profileUtils", () => {
   return { getIconOpen: getIconOpenMock };
 });
 
+
+
 const getResourceMock = globalMocks.getResourceMock;
-const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString
-const CICSLibraryTreeItemMock = {};
-const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicsprogram");
+const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
+const CICSLocalFileTreeItemMock = {};
+const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicslocalfile");
 const record = [{ prop: "test1" }, { prop: "test2" }];
 
-describe("Test suite for CICSLibraryTree", () => {
-  let sut: CICSLibraryTree;
+const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
+const get = jest.fn();
+const workspaceConfiguration = {
+  get: get,
+  update: jest.fn(),
+};
+
+describe("Test suite for CICSLocalFileTree", () => {
+  let sut: CICSLocalFileTree;
 
   beforeEach(() => {
     getIconOpenMock.mockReturnValue(treeResourceMock.iconPath);
-    sut = new CICSLibraryTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
+    sut = new CICSLocalFileTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
     expect(getIconOpenMock).toHaveBeenCalledWith(false);
   });
 
@@ -43,9 +53,9 @@ describe("Test suite for CICSLibraryTree", () => {
     jest.resetAllMocks();
   });
 
-  describe("Test suite for addLibrary()", () => {
-    it("Should add CICSProgramTreeItem into library", () => {
-      sut.addLibrary(CICSLibraryTreeItemMock as any as CICSLibraryTreeItem);
+  describe("Test suite for addProgram()", () => {
+    it("Should add CICSLocalFileTreeItem into localFile", () => {
+      sut.addLocalFile(CICSLocalFileTreeItemMock as any as CICSLocalFileTreeItem);
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -53,31 +63,35 @@ describe("Test suite for CICSLibraryTree", () => {
   describe("Test suite for loadContents()", () => {
     beforeEach(() => {
       getResourceMock.mockImplementation(async () => globalMocks.ICMCIApiResponseMock);
+      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
     });
     afterEach(() => {
-      getResourceMock.mockClear();
       jest.resetAllMocks();
     });
 
-    it("Should add newLibraryItem into the addLibrary() and activeFilter is undefined", async () => {
+    it("Should add newProgramItem into the addProgram() and activeFilter is undefined", async () => {
       globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
+      get.mockReturnValue(treeResourceMock.defaultCriteria);
 
       await sut.loadContents();
+      expect(workspaceMock).toHaveBeenCalled();
       expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
       expect(getIconOpenMock).toHaveBeenCalledWith(true);
     });
 
-    it("Should add newLibraryItem into the addLibrary() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
+    it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
       sut.activeFilter = "Active";
       globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.responseRecords.toLowerCase()] = record;
-      toEscapedCriteriaString.mockReturnValueOnce("LIBRARY");
+      toEscapedCriteriaString.mockReturnValueOnce("PROGRAM");
+      get.mockReturnValue([]);
 
       await sut.loadContents();
       expect(toEscapedCriteriaString).toHaveBeenCalled();
       expect(sut.activeFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
       expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(workspaceMock).toHaveBeenCalledTimes(2);
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {
@@ -91,7 +105,7 @@ describe("Test suite for CICSLibraryTree", () => {
 
       await sut.loadContents();
       expect(getResourceMock).toHaveBeenCalled();
-      expect(sut.label).toEqual("Libraries [0]");
+      expect(sut.label).toEqual("Local Files [0]");
     });
   });
 
@@ -101,7 +115,7 @@ describe("Test suite for CICSLibraryTree", () => {
 
       sut.clearFilter();
       expect(sut.activeFilter).toBeUndefined();
-      expect(sut.contextValue).toEqual("cicstreelibrary.unfiltered.libraries");
+      expect(sut.contextValue).toEqual("cicstreelocalfile.unfiltered.localFiles");
     });
   });
 
@@ -109,7 +123,7 @@ describe("Test suite for CICSLibraryTree", () => {
     it("Should set active filter and set contextValue to filtered", () => {
       sut.setFilter("ActiveFilter");
       expect(sut.activeFilter).toEqual("ActiveFilter");
-      expect(sut.contextValue).toEqual("cicstreelibrary.filtered.libraries");
+      expect(sut.contextValue).toEqual("cicstreelocalfile.filtered.localFiles");
     });
   });
 
