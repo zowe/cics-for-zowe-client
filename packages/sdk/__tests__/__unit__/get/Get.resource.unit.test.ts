@@ -98,7 +98,7 @@ describe("CMCI - Get resource", () => {
 
   describe("success scenarios", () => {
 
-    const getExpectStringMock = jest.spyOn(CicsCmciRestClient, "getExpectString").mockResolvedValue(ok2RecordsXmlResponse);
+    const getExpectStringMock = jest.spyOn(CicsCmciRestClient, "getExpectString");
 
     beforeEach(() => {
       response = undefined;
