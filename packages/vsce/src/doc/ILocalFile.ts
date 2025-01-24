@@ -28,3 +28,7 @@ export const buildLocalFileContext = (localFile: ILocalFile) => {
   return `cicslocalfile.${localFile.enablestatus.trim().toLowerCase()}.${localFile.openstatus.trim().toLowerCase()}.${localFile.file}`;
 };
 
+export const buildLocalFileIconName = (localFile: ILocalFile) => {
+  return `local-file`;
+};
+

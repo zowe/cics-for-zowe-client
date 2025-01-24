@@ -21,3 +21,7 @@ export const buildTransactionLabel = (transaction: ITransaction) => {
 export const buildTransactionContext = (transaction: ITransaction) => {
   return `cicstransaction.${transaction.status.toLowerCase()}.${transaction.tranid}`;
 };
+
+export const buildTransactionIconName = (transaction: ITransaction) => {
+  return `local-transaction`;
+};

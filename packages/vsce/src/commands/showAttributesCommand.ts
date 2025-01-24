@@ -12,12 +12,12 @@
 import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { ILocalFile } from "../doc/ILocalFile";
 import { IProgram } from "../doc/IProgram";
+import { ITask } from "../doc/ITask";
 import { ITransaction } from "../doc/ITransaction";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
 import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
-import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { CICSPipelineTreeItem } from "../trees/treeItems/web/treeItems/CICSPipelineTreeItem";
 import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
 import { CICSURIMapTreeItem } from "../trees/treeItems/web/treeItems/CICSURIMapTreeItem";
@@ -150,18 +150,18 @@ export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
 ///@@@@@@@@@@@@@@ doesnt fit because actvtyid value is too long - edit css
 export function getShowTaskAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showTaskAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ITask>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Task selected");
       return;
     }
     for (const localTaskTreeItem of allSelectedNodes) {
-      const task = localTaskTreeItem.task;
+      const task = localTaskTreeItem.resource;
       const attributeHeadings = Object.keys(task);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading as keyof ITask]}</td></tr>`;
       }
       webText += "</tbody>";
 

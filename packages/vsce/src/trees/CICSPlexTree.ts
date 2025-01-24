@@ -30,7 +30,6 @@ export class CICSPlexTree extends TreeItem {
   children: (
     | CICSRegionTree
     | CICSCombinedResourceTree<IResource>
-    | CICSCombinedTaskTree
     | CICSCombinedLibraryTree
     | CICSRegionsContainer
     | CICSCombinedTCPIPServiceTree
@@ -159,7 +158,7 @@ export class CICSPlexTree extends TreeItem {
     this.children.push(new CICSCombinedResourceTree(this, resources.program));
     this.children.push(new CICSCombinedResourceTree(this, resources.transaction));
     this.children.push(new CICSCombinedResourceTree(this, resources.localFile));
-    this.children.push(new CICSCombinedTaskTree(this));
+    this.children.push(new CICSCombinedResourceTree(this, resources.task));
     this.children.push(new CICSCombinedLibraryTree(this));
     this.children.push(new CICSCombinedTCPIPServiceTree(this));
     this.children.push(new CICSCombinedURIMapTree(this));

@@ -1,7 +1,8 @@
-import { getDefaultLocalFileFilter, getDefaultProgramFilter, getDefaultTransactionFilter } from "../utils/filterUtils";
-import { buildLocalFileContext, buildLocalFileLabel } from "./ILocalFile";
-import { buildProgramContext, buildProgramLabel } from "./IProgram";
-import { buildTransactionContext, buildTransactionLabel } from "./ITransaction";
+import { getDefaultLocalFileFilter, getDefaultProgramFilter, getDefaultTaskFilter, getDefaultTransactionFilter } from "../utils/filterUtils";
+import { buildLocalFileContext, buildLocalFileIconName, buildLocalFileLabel } from "./ILocalFile";
+import { buildProgramContext, buildProgramIconName, buildProgramLabel } from "./IProgram";
+import { buildTaskContext, buildTaskIconName, buildTaskLabel } from "./ITask";
+import { buildTransactionContext, buildTransactionIconName, buildTransactionLabel } from "./ITransaction";
 
 export interface IResource { }
 
@@ -11,12 +12,12 @@ export interface IResourceMeta {
   contextPrefix: string;
   combinedContextPrefix: string;
   filterAttribute: string;
-  iconFilePrefix: string;
   regionNameAttribute: string;
   primaryKeyAttribute: string;
   getDefaultFilter: () => Promise<string>;
   getLabel: (resource: IResource) => string;
   getContext: (resource: IResource) => string;
+  getIconName: (resource: IResource) => string;
 }
 
 const resources = {
@@ -26,12 +27,12 @@ const resources = {
     contextPrefix: "cicstreeprogram",
     combinedContextPrefix: "cicscombinedprogramtree",
     filterAttribute: "PROGRAM",
-    iconFilePrefix: "program",
     regionNameAttribute: "eyu_cicsname",
     primaryKeyAttribute: "program",
     getDefaultFilter: getDefaultProgramFilter,
     getLabel: buildProgramLabel,
     getContext: buildProgramContext,
+    getIconName: buildProgramIconName,
   },
   transaction: {
     humanReadableName: "Transactions",
@@ -39,12 +40,12 @@ const resources = {
     contextPrefix: "cicstreetransaction",
     combinedContextPrefix: "cicscombinedtransactiontree",
     filterAttribute: "tranid",
-    iconFilePrefix: "local-transaction",
     regionNameAttribute: "eyu_cicsname",
     primaryKeyAttribute: "tranid",
     getDefaultFilter: getDefaultTransactionFilter,
     getLabel: buildTransactionLabel,
     getContext: buildTransactionContext,
+    getIconName: buildTransactionIconName,
   },
   localFile: {
     humanReadableName: "Local Files",
@@ -52,12 +53,25 @@ const resources = {
     contextPrefix: "cicstreelocalfile",
     combinedContextPrefix: "cicscombinedlocalfiletree",
     filterAttribute: "file",
-    iconFilePrefix: "local-file",
     regionNameAttribute: "eyu_cicsname",
     primaryKeyAttribute: "file",
     getDefaultFilter: getDefaultLocalFileFilter,
     getLabel: buildLocalFileLabel,
     getContext: buildLocalFileContext,
+    getIconName: buildLocalFileIconName,
+  },
+  task: {
+    humanReadableName: "Tasks",
+    resourceName: "CICSTask",
+    contextPrefix: "cicstreetask",
+    combinedContextPrefix: "cicscombinedtasktree",
+    filterAttribute: "tranid",
+    regionNameAttribute: "eyu_cicsname",
+    primaryKeyAttribute: "task",
+    getDefaultFilter: getDefaultTaskFilter,
+    getLabel: buildTaskLabel,
+    getContext: buildTaskContext,
+    getIconName: buildTaskIconName,
   },
 };
 

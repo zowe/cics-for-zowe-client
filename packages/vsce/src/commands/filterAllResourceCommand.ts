@@ -13,7 +13,6 @@ import { commands, TreeView, window } from "vscode";
 import { CICSCombinedLibraryTree } from "../trees/CICSCombinedTrees/CICSCombinedLibraryTree";
 import { CICSCombinedPipelineTree } from "../trees/CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSCombinedTCPIPServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
 import { CICSCombinedURIMapTree } from "../trees/CICSCombinedTrees/CICSCombinedURIMapTree";
 import { CICSCombinedWebServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedWebServiceTree";
@@ -51,7 +50,7 @@ export function getFilterAllTasksCommand(tree: CICSTree, treeview: TreeView<any>
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedTaskTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Tasks' tree selected");

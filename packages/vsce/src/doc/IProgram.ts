@@ -23,3 +23,7 @@ export const buildProgramLabel = (program: IProgram) => {
 export const buildProgramContext = (program: IProgram) => {
   return `cicsprogram.${program.status.trim().toLowerCase()}.${program.program}`;
 };
+
+export const buildProgramIconName = (program: IProgram) => {
+  return `program`;
+};

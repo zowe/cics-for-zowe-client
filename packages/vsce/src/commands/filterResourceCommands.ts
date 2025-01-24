@@ -12,10 +12,10 @@
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { ILocalFile } from "../doc/ILocalFile";
 import { IProgram } from "../doc/IProgram";
+import { ITask } from "../doc/ITask";
 import { ITransaction } from "../doc/ITransaction";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSResourceTree } from "../trees/CICSResourceTree";
-import { CICSTaskTree } from "../trees/CICSTaskTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
@@ -199,10 +199,10 @@ export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<an
 export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterTasks", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSTaskTree;
+    let chosenNode: CICSResourceTree<ITask>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSTaskTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS task tree selected");
