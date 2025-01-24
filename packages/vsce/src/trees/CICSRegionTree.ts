@@ -8,20 +8,29 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSProgramTree } from "./CICSProgramTree";
-import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSLocalFileTree } from "./CICSLocalFileTree";
-import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSPlexTree } from "./CICSPlexTree";
 import { getIconPathInResources } from "../utils/profileUtils";
-import { CICSTaskTree } from "./CICSTaskTree";
 import { CICSLibraryTree } from "./CICSLibraryTree";
+import { CICSLocalFileTree } from "./CICSLocalFileTree";
+import { CICSPlexTree } from "./CICSPlexTree";
+import { CICSProgramTree } from "./CICSProgramTree";
+import { CICSSessionTree } from "./CICSSessionTree";
+import { CICSTaskTree } from "./CICSTaskTree";
+import { CICSTransactionTree } from "./CICSTransactionTree";
 import { CICSWebTree } from "./CICSWebTree";
 
 export class CICSRegionTree extends TreeItem {
-  children: [CICSProgramTree, CICSTransactionTree, CICSLocalFileTree, CICSTaskTree, CICSLibraryTree, CICSWebTree] | null;
+  children:
+    | [
+        CICSProgramTree,
+        CICSTransactionTree,
+        CICSLocalFileTree,
+        CICSTaskTree,
+        CICSLibraryTree,
+        CICSWebTree,
+      ]
+    | null;
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -34,7 +43,10 @@ export class CICSRegionTree extends TreeItem {
     parentSession: CICSSessionTree,
     parentPlex: CICSPlexTree | undefined,
     directParent: any,
-    public iconPath = getIconPathInResources("region-dark.svg", "region-light.svg")
+    public iconPath = getIconPathInResources(
+      "region-dark.svg",
+      "region-light.svg",
+    ),
   ) {
     super(regionName, TreeItemCollapsibleState.Collapsed);
     this.region = region;
@@ -54,7 +66,10 @@ export class CICSRegionTree extends TreeItem {
     if (!this.isActive) {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
-      this.iconPath = getIconPathInResources("region-dark-disabled.svg", "region-light-disabled.svg");
+      this.iconPath = getIconPathInResources(
+        "region-dark-disabled.svg",
+        "region-light-disabled.svg",
+      );
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";

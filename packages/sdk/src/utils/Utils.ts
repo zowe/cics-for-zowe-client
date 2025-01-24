@@ -8,8 +8,8 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ImperativeExpect } from "@zowe/imperative";
+
 import { CicsCmciConstants } from "../constants";
 import { IGetResourceUriOptions } from "../doc";
 import { IResultCacheParms } from "../doc/IResultCacheParms";
@@ -20,19 +20,29 @@ import { IResultCacheParms } from "../doc/IResultCacheParms";
  * @class Utils
  */
 export class Utils {
-
   /**
    * Get uri for requesting a resources in CICS through CMCI REST API
    * @param {string} resourceName - CMCI resource name
    * @param {IGetResourceUriOptions} options - CMCI resource options
    */
-  public static getResourceUri(resourceName: string, options?: IGetResourceUriOptions): string {
-    ImperativeExpect.toBeDefinedAndNonBlank(resourceName, "CICS Resource name", "CICS resource name is required");
+  public static getResourceUri(
+    resourceName: string,
+    options?: IGetResourceUriOptions,
+  ): string {
+    ImperativeExpect.toBeDefinedAndNonBlank(
+      resourceName,
+      "CICS Resource name",
+      "CICS resource name is required",
+    );
 
     let delimiter = "?"; // initial delimiter
 
-    const cicsPlex = options?.cicsPlex == null ? "" : `${encodeURIComponent(options.cicsPlex)}/`;
-    const region = options?.regionName == null ? "" : encodeURIComponent(options.regionName);
+    const cicsPlex =
+      options?.cicsPlex == null
+        ? ""
+        : `${encodeURIComponent(options.cicsPlex)}/`;
+    const region =
+      options?.regionName == null ? "" : encodeURIComponent(options.regionName);
 
     let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resourceName}/${cicsPlex}${region}`;
 
@@ -64,8 +74,15 @@ export class Utils {
     return cmciResource;
   }
 
-  public static getCacheUri(cacheToken: string, options?: IResultCacheParms): string {
-    ImperativeExpect.toBeDefinedAndNonBlank(cacheToken, "CICS Results Cache Token", "CICS Results Cache Token is required");
+  public static getCacheUri(
+    cacheToken: string,
+    options?: IResultCacheParms,
+  ): string {
+    ImperativeExpect.toBeDefinedAndNonBlank(
+      cacheToken,
+      "CICS Results Cache Token",
+      "CICS Results Cache Token is required",
+    );
 
     let cmciResource = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_RESULT_CACHE}/${cacheToken}`;
 

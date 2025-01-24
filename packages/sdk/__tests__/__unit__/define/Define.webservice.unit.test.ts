@@ -8,12 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, IWebServiceParms, defineWebservice, ICMCIApiResponse } from "../../../src";
+
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  ICMCIApiResponse,
+  IWebServiceParms,
+  defineWebservice,
+} from "../../../src";
 
 describe("CMCI - Define web service", () => {
-
   const websvc = "websvc";
   const group = "group";
   const pipeline = "pipeline";
@@ -22,21 +27,21 @@ describe("CMCI - Define web service", () => {
   const cicsPlex = "plex";
   const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
-  const defineParms: IWebServiceParms  = {
+  const defineParms: IWebServiceParms = {
     name: websvc,
     pipelineName: pipeline,
     wsBind,
     validation: false,
     regionName: region,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -69,7 +74,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -88,7 +93,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -107,7 +112,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: undefined,
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -126,7 +131,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: undefined,
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -134,7 +139,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS web service binding file is required");
+      expect(error.message).toContain(
+        "CICS web service binding file is required",
+      );
     });
 
     it("should throw error if web service validation is not defined", async () => {
@@ -145,7 +152,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: undefined,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -153,7 +160,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS web service validation is required");
+      expect(error.message).toContain(
+        "CICS web service validation is required",
+      );
     });
 
     it("should throw error if CICS Region name is not defined", async () => {
@@ -164,7 +173,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: undefined
+          regionName: undefined,
         });
       } catch (err) {
         error = err;
@@ -183,7 +192,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -191,7 +200,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Web service name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Web service name' must not be blank",
+      );
     });
 
     it("should throw error if CSD group is missing", async () => {
@@ -202,7 +213,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -210,7 +221,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group' must not be blank",
+      );
     });
 
     it("should throw error if web service pipeline name is missing", async () => {
@@ -221,7 +234,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "",
           wsBind: "fake",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -229,7 +242,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Pipeline name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Pipeline name' must not be blank",
+      );
     });
 
     it("should throw error if web service binding file is missing", async () => {
@@ -240,7 +255,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "",
           validation: false,
-          regionName: "fake"
+          regionName: "fake",
         });
       } catch (err) {
         error = err;
@@ -248,7 +263,9 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Web service binding file' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Web service binding file' must not be blank",
+      );
     });
 
     it("should throw error if CICS Region name is missing", async () => {
@@ -259,7 +276,7 @@ describe("CMCI - Define web service", () => {
           pipelineName: "fake",
           wsBind: "fake",
           validation: false,
-          regionName: ""
+          regionName: "",
         });
       } catch (err) {
         error = err;
@@ -267,19 +284,20 @@ describe("CMCI - Define web service", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Region name' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
@@ -287,14 +305,16 @@ describe("CMCI - Define web service", () => {
               csdgroup: group,
               pipeline,
               wsbind: wsBind,
-              validation: "no"
-            }
-          }
-        }
-      }
+              validation: "no",
+            },
+          },
+        },
+      },
     };
 
-    const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
+    const defineSpy = jest
+      .spyOn(CicsCmciRestClient, "postExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -304,38 +324,70 @@ describe("CMCI - Define web service", () => {
     });
 
     it("should be able to define a web service without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE +
+        "/" +
+        region;
 
       response = await defineWebservice(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a web service with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "//" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE +
+        "//" +
+        region;
 
       response = await defineWebservice(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a web service with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex +"/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE +
+        "/" +
+        cicsPlex +
+        "/" +
+        region;
 
       response = await defineWebservice(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
   });
 });

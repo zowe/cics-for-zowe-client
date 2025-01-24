@@ -8,13 +8,11 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { IGetResourceUriOptions } from "../../../src";
 import { IResultCacheParms } from "../../../src/doc/IResultCacheParms";
 import { Utils } from "../../../src/utils";
 
 describe("Utils - getResourceUri", () => {
-
   let error: any;
   let response: any;
 
@@ -33,7 +31,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: Required parameter 'CICS Resource name' must not be blank");
+      expect(error.message).toEqual(
+        "Expect Error: Required parameter 'CICS Resource name' must not be blank",
+      );
     });
 
     it("should throw error if resourceName is undefined", async () => {
@@ -45,7 +45,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: CICS resource name is required");
+      expect(error.message).toEqual(
+        "Expect Error: CICS resource name is required",
+      );
     });
 
     it("should throw error if resourceName is null", async () => {
@@ -57,12 +59,13 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: CICS resource name is required");
+      expect(error.message).toEqual(
+        "Expect Error: CICS resource name is required",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
     beforeEach(() => {
       response = undefined;
       error = undefined;
@@ -82,10 +85,9 @@ describe("Utils - getResourceUri", () => {
 
     it("should be able to get a resource uri with the cicsplex and resource name specified", async () => {
       try {
-
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": ""
+          cicsPlex: "cicsplex1",
+          regionName: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -101,8 +103,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the region and resource names specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "",
-          "regionName": "region1"
+          cicsPlex: "",
+          regionName: "region1",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -118,8 +120,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the region containing #", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "",
-          "regionName": "region#"
+          cicsPlex: "",
+          regionName: "region#",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -135,8 +137,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the plex name containing #", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex#",
-          "regionName": ""
+          cicsPlex: "cicsplex#",
+          regionName: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -152,8 +154,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the plex, region and resource names specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -163,15 +165,17 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with the criteria is unspecified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": ""
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -181,15 +185,17 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with the criteria is specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "NAME=test"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "NAME=test",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -199,16 +205,18 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?CRITERIA=(NAME%3Dtest)");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?CRITERIA=(NAME%3Dtest)",
+      );
     });
 
     it("should be able to get a resource uri with the parameter is unspecified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "",
-          "parameter": ""
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
+          parameter: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -218,16 +226,18 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with the parameter is specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "",
-          "parameter": "PARAM=test"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
+          parameter: "PARAM=test",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -237,16 +247,18 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?PARAMETER=PARAM%3Dtest");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?PARAMETER=PARAM%3Dtest",
+      );
     });
 
     it("should be able to get a resource uri when both criteria and parameter are specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "NAME=test1",
-          "parameter": "PARAM=test2"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "NAME=test1",
+          parameter: "PARAM=test2",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -256,7 +268,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?CRITERIA=(NAME%3Dtest1)&PARAMETER=PARAM%3Dtest2");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?CRITERIA=(NAME%3Dtest1)&PARAMETER=PARAM%3Dtest2",
+      );
     });
 
     it("should be able to get a resource uri with SUMMONLY specified", async () => {
@@ -266,7 +280,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             summonly: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -276,7 +290,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY",
+      );
     });
 
     it("should be able to get a resource uri with SUMMONLY specified to false", async () => {
@@ -286,7 +302,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             summonly: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -296,7 +312,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with NODISCARD specified", async () => {
@@ -306,7 +324,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             nodiscard: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -316,7 +334,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?NODISCARD");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?NODISCARD",
+      );
     });
 
     it("should be able to get a resource uri with NODISCARD specified", async () => {
@@ -326,7 +346,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             nodiscard: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -336,7 +356,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with OVERRIDEWARNINGCOUNT specified", async () => {
@@ -346,7 +368,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -356,7 +378,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?OVERRIDEWARNINGCOUNT");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?OVERRIDEWARNINGCOUNT",
+      );
     });
 
     it("should be able to get a resource uri with OVERRIDEWARNINGCOUNT specified to false", async () => {
@@ -366,7 +390,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             overrideWarningCount: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -376,7 +400,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1",
+      );
     });
 
     it("should be able to get a resource uri with all query params specified", async () => {
@@ -388,7 +414,7 @@ describe("Utils - getResourceUri", () => {
             summonly: true,
             nodiscard: true,
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -398,7 +424,9 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/cicsplex1/region1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT",
+      );
     });
 
     it("should be able to get a resource uri with all query params specified and no context", async () => {
@@ -408,7 +436,7 @@ describe("Utils - getResourceUri", () => {
             summonly: true,
             nodiscard: true,
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -418,13 +446,14 @@ describe("Utils - getResourceUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/resource1/?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT");
+      expect(response).toEqual(
+        "/CICSSystemManagement/resource1/?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT",
+      );
     });
   });
 });
 
-describe('Utils - enforceParentheses', () => {
-
+describe("Utils - enforceParentheses", () => {
   it("should add brackets when none exist", () => {
     const output = Utils.enforceParentheses("input");
     expect(output).toEqual("(input)");
@@ -452,14 +481,15 @@ describe('Utils - enforceParentheses', () => {
 
   it("should add appropriate brackets", () => {
     const output = Utils.enforceParentheses(
-      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)");
+      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
+    );
     expect(output).toEqual(
-      "(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
+      "(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))",
+    );
   });
 });
 
 describe("Utils - getCacheUri", () => {
-
   let error: any;
   let response: any;
 
@@ -478,7 +508,9 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: Required parameter 'CICS Results Cache Token' must not be blank");
+      expect(error.message).toEqual(
+        "Expect Error: Required parameter 'CICS Results Cache Token' must not be blank",
+      );
     });
 
     it("should throw error if cacheToken is undefined", async () => {
@@ -490,7 +522,9 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: CICS Results Cache Token is required");
+      expect(error.message).toEqual(
+        "Expect Error: CICS Results Cache Token is required",
+      );
     });
 
     it("should throw error if cacheToken is null", async () => {
@@ -502,12 +536,13 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toEqual("Expect Error: CICS Results Cache Token is required");
+      expect(error.message).toEqual(
+        "Expect Error: CICS Results Cache Token is required",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
     beforeEach(() => {
       response = undefined;
       error = undefined;
@@ -522,14 +557,15 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdefg?NODISCARD");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/abcdefg?NODISCARD",
+      );
     });
 
     it("should be able to get a result cache with the index specified", async () => {
       try {
-
         const options: IResultCacheParms = {
-          startIndex: 1
+          startIndex: 1,
         };
 
         response = Utils.getCacheUri("abcdefgh", options);
@@ -539,13 +575,15 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdefgh/1?NODISCARD");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/abcdefgh/1?NODISCARD",
+      );
     });
 
     it("should be able to get a result cache with the count specified - ignored with no index", async () => {
       try {
         const options: IResultCacheParms = {
-          count: 20
+          count: 20,
         };
 
         response = Utils.getCacheUri("cachetoken", options);
@@ -555,14 +593,16 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/cachetoken?NODISCARD");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/cachetoken?NODISCARD",
+      );
     });
 
     it("should be able to get a result cache with the index and count specified", async () => {
       try {
         const options: IResultCacheParms = {
           startIndex: 10,
-          count: 20
+          count: 20,
         };
 
         response = Utils.getCacheUri("cachetoken", options);
@@ -572,7 +612,9 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/cachetoken/10/20?NODISCARD");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/cachetoken/10/20?NODISCARD",
+      );
     });
 
     it("should be able to get a result cache with SUMMONLY", async () => {
@@ -588,13 +630,15 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdef?NODISCARD&SUMMONLY");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/abcdef?NODISCARD&SUMMONLY",
+      );
     });
 
     it("should be able to get a result cache and with false NODISCARD", async () => {
       try {
         const options: IResultCacheParms = {
-          nodiscard: false
+          nodiscard: false,
         };
 
         response = Utils.getCacheUri("abcdef", options);
@@ -621,7 +665,9 @@ describe("Utils - getCacheUri", () => {
 
       expect(response).toBeDefined();
       expect(error).toBeUndefined();
-      expect(response).toEqual("/CICSSystemManagement/CICSResultCache/abcdef?SUMMONLY");
+      expect(response).toEqual(
+        "/CICSSystemManagement/CICSResultCache/abcdef?SUMMONLY",
+      );
     });
   });
 });

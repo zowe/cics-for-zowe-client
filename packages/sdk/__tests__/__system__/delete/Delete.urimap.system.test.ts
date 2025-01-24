@@ -8,12 +8,18 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+
+import {
+  IURIMapParms,
+  defineUrimapClient,
+  defineUrimapPipeline,
+  defineUrimapServer,
+  deleteUrimap,
+} from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineUrimapServer, defineUrimapClient, defineUrimapPipeline, deleteUrimap, IURIMapParms } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -22,11 +28,10 @@ let session: Session;
 let certificate: string;
 
 describe("CICS Delete URImap", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_delete_urimap",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -40,7 +45,7 @@ describe("CICS Delete URImap", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 
@@ -55,7 +60,8 @@ describe("CICS Delete URImap", () => {
     let response;
 
     const urimapNameSuffixLength = 4;
-    const urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+    const urimapName =
+      "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
     options.name = urimapName;
     options.path = "fake";
@@ -85,7 +91,8 @@ describe("CICS Delete URImap", () => {
     let response;
 
     const urimapNameSuffixLength = 4;
-    const urimapName = "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+    const urimapName =
+      "AAAA" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
     options.name = urimapName;
     options.path = "fake";
@@ -115,7 +122,8 @@ describe("CICS Delete URImap", () => {
     let response;
 
     const urimapNameSuffixLength = 3;
-    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+    const urimapName =
+      "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
     options.name = urimapName;
     options.path = "fake";
@@ -144,7 +152,8 @@ describe("CICS Delete URImap", () => {
     let response;
 
     const urimapNameSuffixLength = 3;
-    const urimapName = "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
+    const urimapName =
+      "X" + generateRandomAlphaNumericString(urimapNameSuffixLength);
 
     options.name = urimapName;
     options.path = "fake";
@@ -164,7 +173,9 @@ describe("CICS Delete URImap", () => {
 
     expect(error).toBeTruthy();
     expect(response).toBeFalsy();
-    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain(
+      "Did not receive the expected response from CMCI REST API",
+    );
     expect(error.message).toContain("INVALIDPARM");
   });
 
@@ -192,7 +203,9 @@ describe("CICS Delete URImap", () => {
 
     expect(error).toBeTruthy();
     expect(response).toBeFalsy();
-    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain(
+      "Did not receive the expected response from CMCI REST API",
+    );
     expect(error.message).toContain("NODATA");
   });
 });

@@ -8,9 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { IHandlerParameters, Session } from "@zowe/imperative";
+
 import { ICMCIApiResponse } from "../../../../src";
 import { ProgramDefinition } from "../../../../src/install/program/Program.definition";
 import ProgramHandler from "../../../../src/install/program/Program.handler";
@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "install", "program"],
   definition: ProgramDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("InstallProgramHandler", () => {
@@ -46,9 +46,14 @@ describe("InstallProgramHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: {
+        api_response1: "1024",
+        api_response2: "0",
+        recordcount: "0",
+        displayed_recordcount: "0",
+      },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Install, "installProgram");
@@ -61,7 +66,7 @@ describe("InstallProgramHandler", () => {
   it("should call the installProgram api", async () => {
     const handler = new ProgramHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       programName,
@@ -72,7 +77,7 @@ describe("InstallProgramHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -87,13 +92,13 @@ describe("InstallProgramHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: programName,
         csdGroup,
-        regionName
-      }
+        regionName,
+      },
     );
   });
 });

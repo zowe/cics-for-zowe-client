@@ -17,7 +17,6 @@ const fs = require("fs");
     // turn the license file into a multi line comment
     const header =
         fs.readFileSync("LICENSE_HEADER", "utf-8") +
-        require("os").EOL +
         require("os").EOL;
     let alreadyContainedCopyright = 0;
 

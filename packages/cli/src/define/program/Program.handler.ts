@@ -8,15 +8,20 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { defineProgram, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { CicsBaseHandler } from "../../CicsBaseHandler";
+import { ICMCIApiResponse, defineProgram } from "@zowe/cics-for-zowe-sdk";
+import {
+  AbstractSession,
+  IHandlerParameters,
+  ITaskWithStatus,
+  TaskStage,
+} from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
+import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DEFINE.RESOURCES.PROGRAM;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings)
+  .DEFINE.RESOURCES.PROGRAM;
 
 /**
  * Command handler for defining CICS programs via CMCI
@@ -25,23 +30,28 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class ProgramHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
+  public async processWithSession(
+    params: IHandlerParameters,
+    session: AbstractSession,
+  ): Promise<ICMCIApiResponse> {
     const status: ITaskWithStatus = {
       statusMessage: "Defining program to CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await defineProgram(session, {
       name: params.arguments.programName,
       csdGroup: params.arguments.csdGroup,
       regionName: params.arguments.regionName,
-      cicsPlex: params.arguments.cicsPlex
+      cicsPlex: params.arguments.cicsPlex,
     });
 
-    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);
+    params.response.console.log(
+      strings.MESSAGES.SUCCESS,
+      params.arguments.programName,
+    );
     return response;
   }
 }

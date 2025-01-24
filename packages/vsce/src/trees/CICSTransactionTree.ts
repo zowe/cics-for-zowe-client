@@ -8,21 +8,27 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
 import { toArray } from "../utils/commandUtils";
+import {
+  getDefaultTransactionFilter,
+  toEscapedCriteriaString,
+} from "../utils/filterUtils";
+import { getIconOpen } from "../utils/profileUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.parentRegion = parentRegion;
@@ -42,24 +48,36 @@ export class CICSTransactionTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const transactionResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLocalTransaction",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
+      const transactionResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSLocalTransaction",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const transactionArray = toArray(
+        transactionResponse.response.records.cicslocaltransaction,
+      );
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
       for (const transaction of transactionArray) {
-        const newTransactionItem = new CICSTransactionTreeItem(transaction, this.parentRegion, this);
+        const newTransactionItem = new CICSTransactionTreeItem(
+          transaction,
+          this.parentRegion,
+          this,
+        );
         this.addTransaction(newTransactionItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a transaction filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a transaction filter to narrow search`,
+        );
         // @ts-ignore
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No transactions found`);
@@ -67,10 +85,10 @@ export class CICSTransactionTree extends TreeItem {
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching transaction - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching transaction - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

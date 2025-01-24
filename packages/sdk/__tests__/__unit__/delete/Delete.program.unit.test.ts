@@ -8,18 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
+
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  deleteProgram,
   ICMCIApiResponse,
-  IProgramParms
+  IProgramParms,
+  deleteProgram,
 } from "../../../src";
 
 describe("CMCI - Delete program", () => {
-
   const program = "program";
   const region = "region";
   const cicsPlex = "plex";
@@ -30,14 +29,14 @@ describe("CMCI - Delete program", () => {
     regionName: region,
     name: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -83,7 +82,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: undefined,
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -99,7 +98,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: undefined,
           csdGroup: "fake",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -115,7 +114,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -123,7 +122,9 @@ describe("CMCI - Delete program", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Program name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Program name' must not be blank",
+      );
     });
 
     it("should throw error if CSD group is missing", async () => {
@@ -131,7 +132,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "fake",
           csdGroup: "",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -139,7 +140,9 @@ describe("CMCI - Delete program", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group' must not be blank",
+      );
     });
 
     it("should throw error if CICS Region name is missing", async () => {
@@ -147,7 +150,7 @@ describe("CMCI - Delete program", () => {
         response = await deleteProgram(dummySession, {
           regionName: "",
           csdGroup: "fake",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -155,13 +158,16 @@ describe("CMCI - Delete program", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Region name' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
-    const deleteSpy = jest.spyOn(CicsCmciRestClient, "deleteExpectParsedXml").mockResolvedValue(content);
+    const deleteSpy = jest
+      .spyOn(CicsCmciRestClient, "deleteExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -171,9 +177,14 @@ describe("CMCI - Delete program", () => {
     });
 
     it("should be able to delete a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -184,9 +195,14 @@ describe("CMCI - Delete program", () => {
 
     it("should be able to delete a program with cicsPlex specified but empty string", async () => {
       deleteParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "//" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 
@@ -197,9 +213,16 @@ describe("CMCI - Delete program", () => {
 
     it("should be able to delete a program with cicsPlex specified", async () => {
       deleteParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_PROGRAM +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteProgram(dummySession, deleteParms);
 

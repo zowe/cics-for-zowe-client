@@ -8,30 +8,35 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, ICSDGroupParms, addCSDGroupToList, ICMCIApiResponse } from "../../../src";
+
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  ICMCIApiResponse,
+  ICSDGroupParms,
+  addCSDGroupToList,
+} from "../../../src";
 
 describe("CMCI - Add csdGroup to list", () => {
-
   const region = "region";
   const group = "group";
   const cicsPlex = "plex";
   const list = "list";
   const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
-  const addToListParms: ICSDGroupParms  = {
+  const addToListParms: ICSDGroupParms = {
     regionName: region,
     name: group,
     csdList: list,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -61,7 +66,7 @@ describe("CMCI - Add csdGroup to list", () => {
         response = await addCSDGroupToList(dummySession, {
           regionName: "fake",
           name: undefined,
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -77,7 +82,7 @@ describe("CMCI - Add csdGroup to list", () => {
         response = await addCSDGroupToList(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdList: undefined
+          csdList: undefined,
         });
       } catch (err) {
         error = err;
@@ -93,7 +98,7 @@ describe("CMCI - Add csdGroup to list", () => {
         response = await addCSDGroupToList(dummySession, {
           regionName: undefined,
           name: "fake",
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -109,7 +114,7 @@ describe("CMCI - Add csdGroup to list", () => {
         response = await addCSDGroupToList(dummySession, {
           regionName: "fake",
           name: "",
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -117,7 +122,9 @@ describe("CMCI - Add csdGroup to list", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group Name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group Name' must not be blank",
+      );
     });
 
     it("should throw error if CSD List is missing", async () => {
@@ -125,7 +132,7 @@ describe("CMCI - Add csdGroup to list", () => {
         response = await addCSDGroupToList(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdList: ""
+          csdList: "",
         });
       } catch (err) {
         error = err;
@@ -133,11 +140,12 @@ describe("CMCI - Add csdGroup to list", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD List' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD List' must not be blank",
+      );
     });
   });
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         action: {
@@ -147,14 +155,16 @@ describe("CMCI - Add csdGroup to list", () => {
           parameter: {
             $: {
               name: "TO_CSDLIST",
-              value: "list"
-            }
-          }
-        }
-      }
+              value: "list",
+            },
+          },
+        },
+      },
     };
 
-    const defineSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
+    const defineSpy = jest
+      .spyOn(CicsCmciRestClient, "putExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -164,41 +174,81 @@ describe("CMCI - Add csdGroup to list", () => {
     });
 
     it("should be able to add a csdGroup to list without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.regionName +
-            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP +
+        "/" +
+        addToListParms.regionName +
+        "?CRITERIA=(NAME%3D%3D'" +
+        addToListParms.name +
+        "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to add a csdGroup to list with cicsPlex specified but empty string", async () => {
       addToListParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.cicsPlex + "/" + addToListParms.regionName +
-            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP +
+        "/" +
+        addToListParms.cicsPlex +
+        "/" +
+        addToListParms.regionName +
+        "?CRITERIA=(NAME%3D%3D'" +
+        addToListParms.name +
+        "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to add a csdGroup to list with cicsPlex specified", async () => {
       addToListParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP + "/" + addToListParms.cicsPlex + "/" + addToListParms.regionName +
-            "?CRITERIA=(NAME%3D%3D'" + addToListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP +
+        "/" +
+        addToListParms.cicsPlex +
+        "/" +
+        addToListParms.regionName +
+        "?CRITERIA=(NAME%3D%3D'" +
+        addToListParms.name +
+        "')";
 
       response = await addCSDGroupToList(dummySession, addToListParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
   });
 });

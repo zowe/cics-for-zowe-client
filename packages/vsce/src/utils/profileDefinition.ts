@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { imperative } from "@zowe/zowe-explorer-api";
 
 const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
@@ -98,14 +97,17 @@ const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
             description: "Specifies CMCI protocol (http or https).",
             type: "string",
             defaultValue: "https",
-            allowableValues: { values: ["http", "https"], caseSensitive: false },
+            allowableValues: {
+              values: ["http", "https"],
+              caseSensitive: false,
+            },
             group: "Cics Connection Options",
           },
         },
       },
       required: [],
-    }
+    },
   },
 ];
 
-export default cicsProfileMeta ;
+export default cicsProfileMeta;

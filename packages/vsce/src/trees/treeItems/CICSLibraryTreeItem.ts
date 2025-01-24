@@ -8,14 +8,14 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
+import { toArray } from "../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { getIconOpen } from "../../utils/profileUtils";
-import { toArray } from "../../utils/commandUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
 
 export class CICSLibraryTreeItem extends TreeItem {
   children: CICSLibraryDatasets[] = [];
@@ -28,7 +28,7 @@ export class CICSLibraryTreeItem extends TreeItem {
     library: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getIconOpen(false)
+    public iconPath = getIconOpen(false),
   ) {
     super(`${library.name}`, TreeItemCollapsibleState.Collapsed);
 
@@ -58,33 +58,45 @@ export class CICSLibraryTreeItem extends TreeItem {
 
     this.children = [];
     try {
-
-      const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "cicslibrarydatasetname",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
+      const libraryResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "cicslibrarydatasetname",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const datasetArray = toArray(
+        libraryResponse.response.records.cicslibrarydatasetname,
+      );
       this.label = this.buildLabel(datasetArray);
       for (const dataset of datasetArray) {
-        const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
+        const newDatasetItem = new CICSLibraryDatasets(
+          dataset,
+          this.parentRegion,
+          this,
+        ); //this=CICSLibraryTreeItem
         this.addDataset(newDatasetItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a datasets filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a datasets filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No datasets found`);
         this.label = this.buildLabel([]);
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching datasets - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching datasets - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }
@@ -92,7 +104,9 @@ export class CICSLibraryTreeItem extends TreeItem {
 
   private buildLabel(arr?: any[]) {
     let labelContent = this.library.name;
-    labelContent += this.parentRegion.parentPlex ? ` (${this.library.eyu_cicsname})` : "";
+    labelContent += this.parentRegion.parentPlex
+      ? ` (${this.library.eyu_cicsname})`
+      : "";
     labelContent += this.activeFilter ? ` (${this.activeFilter}) ` : " ";
     if (arr) {
       labelContent += `[${arr.length}]`;

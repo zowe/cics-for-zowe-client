@@ -8,11 +8,21 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import {
+  ITestEnvironment,
+  TestEnvironment,
+  runCliScript,
+} from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { defineProgram, deleteProgram, discardProgram, installProgram, IProgramParms } from "../../../../src";
+
+import {
+  IProgramParms,
+  defineProgram,
+  deleteProgram,
+  discardProgram,
+  installProgram,
+} from "../../../../src";
+import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -25,12 +35,11 @@ let password: string;
 let ru: boolean;
 
 describe("CICS refresh program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "refresh_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -47,7 +56,8 @@ describe("CICS refresh program command", () => {
       port,
       type: "basic",
       rejectUnauthorized: ru,
-      protocol: TEST_ENVIRONMENT.systemTestProperties.cics.protocol as any || "https",
+      protocol:
+        (TEST_ENVIRONMENT.systemTestProperties.cics.protocol as any) || "https",
     });
   });
 
@@ -55,9 +65,12 @@ describe("CICS refresh program command", () => {
     await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
   });
 
-
   it("should be able to display the help", () => {
-    const output = runCliScript(__dirname + "/__scripts__/refresh_program_help.sh", TEST_ENVIRONMENT, []);
+    const output = runCliScript(
+      __dirname + "/__scripts__/refresh_program_help.sh",
+      TEST_ENVIRONMENT,
+      [],
+    );
     expect(output.stderr.toString()).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toMatchSnapshot();
@@ -66,18 +79,23 @@ describe("CICS refresh program command", () => {
   it("should be able to successfully refresh a program with basic options", async () => {
     // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
     const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
+    const programName =
+      "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
 
     const options: IProgramParms = {
       name: programName,
       csdGroup,
-      regionName
+      regionName,
     };
 
     await defineProgram(session, options);
     await installProgram(session, options);
 
-    const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [programName, regionName]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/refresh_program.sh",
+      TEST_ENVIRONMENT,
+      [programName, regionName],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -88,7 +106,11 @@ describe("CICS refresh program command", () => {
   });
 
   it("should get a syntax error if program name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, ["", "FAKERGN"]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/refresh_program.sh",
+      TEST_ENVIRONMENT,
+      ["", "FAKERGN"],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("Missing Positional Argument");
@@ -99,24 +121,23 @@ describe("CICS refresh program command", () => {
   it("should be able to successfully refresh a program with profile options", async () => {
     // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
     const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
+    const programName =
+      "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
 
     const options: IProgramParms = {
       name: programName,
       csdGroup,
-      regionName
+      regionName,
     };
 
     await defineProgram(session, options);
     await installProgram(session, options);
 
-    const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT,
-      [programName,
-        regionName,
-        host,
-        port,
-        user,
-        password]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/refresh_program.sh",
+      TEST_ENVIRONMENT,
+      [programName, regionName, host, port, user, password],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);

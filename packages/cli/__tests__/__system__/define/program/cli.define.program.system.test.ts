@@ -8,12 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import {
+  ITestEnvironment,
+  TestEnvironment,
+  runCliScript,
+} from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
 import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
-import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -25,12 +29,11 @@ let password: string;
 let protocol: string;
 let rejectUnauthorized: boolean;
 describe("CICS define program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "define_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -39,7 +42,8 @@ describe("CICS define program command", () => {
     user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
     password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
     protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
+    rejectUnauthorized =
+      TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
   });
 
   afterAll(async () => {
@@ -56,16 +60,22 @@ describe("CICS define program command", () => {
       user: cicsProperties.user,
       password: cicsProperties.password,
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`,
+    );
   };
 
   it("should be able to display the help", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_program_help.sh", TEST_ENVIRONMENT, []);
+    const output = runCliScript(
+      __dirname + "/__scripts__/define_program_help.sh",
+      TEST_ENVIRONMENT,
+      [],
+    );
     expect(output.stderr.toString()).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toMatchSnapshot();
@@ -73,8 +83,13 @@ describe("CICS define program command", () => {
 
   it("should be able to successfully define a program with basic options", async () => {
     const programNameSuffixLength = 4;
-    const programName = "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
-    const output = runCliScript(__dirname + "/__scripts__/define_program.sh", TEST_ENVIRONMENT, [programName, csdGroup, regionName]);
+    const programName =
+      "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
+    const output = runCliScript(
+      __dirname + "/__scripts__/define_program.sh",
+      TEST_ENVIRONMENT,
+      [programName, csdGroup, regionName],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -83,7 +98,11 @@ describe("CICS define program command", () => {
   });
 
   it("should get a syntax error if program name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_program.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKERGN"]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/define_program.sh",
+      TEST_ENVIRONMENT,
+      ["", "FAKEGRP", "FAKERGN"],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("program");
@@ -92,7 +111,11 @@ describe("CICS define program command", () => {
   });
 
   it("should get a syntax error if CSD group is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_program.sh", TEST_ENVIRONMENT, ["FAKEPGM", "", "FAKERGN"]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/define_program.sh",
+      TEST_ENVIRONMENT,
+      ["FAKEPGM", "", "FAKERGN"],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("csdGroup");
@@ -101,9 +124,13 @@ describe("CICS define program command", () => {
 
   it("should be able to successfully define a program using profile options", async () => {
     const programNameSuffixLength = 4;
-    const programName = "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
-    const output = runCliScript(__dirname + "/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
+    const programName =
+      "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
+    const output = runCliScript(
+      __dirname + "/__scripts__/define_program_fully_qualified.sh",
+      TEST_ENVIRONMENT,
+      [
+        programName,
         csdGroup,
         regionName,
         host,
@@ -111,12 +138,13 @@ describe("CICS define program command", () => {
         user,
         password,
         protocol,
-        rejectUnauthorized]);
+        rejectUnauthorized,
+      ],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
     await deleteProgram(programName);
   });
-
 });

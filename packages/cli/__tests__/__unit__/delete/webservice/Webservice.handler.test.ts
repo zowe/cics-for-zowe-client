@@ -8,9 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { IHandlerParameters, Session } from "@zowe/imperative";
+
 import { ICMCIApiResponse } from "../../../../src";
 import { WebServiceDefinition } from "../../../../src/delete/webservice/Webservice.definition";
 import WebServiceHandler from "../../../../src/delete/webservice/Webservice.handler";
@@ -33,12 +33,12 @@ const PROFILE_MAP = {
   user,
   password,
   protocol,
-  rejectUnauthorized
+  rejectUnauthorized,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "delete", "webservice"],
   definition: WebServiceDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DeleteWebserviceHandler", () => {
@@ -48,9 +48,14 @@ describe("DeleteWebserviceHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: {
+        api_response1: "1024",
+        api_response2: "0",
+        recordcount: "0",
+        displayed_recordcount: "0",
+      },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Delete, "deleteWebservice");
@@ -63,7 +68,7 @@ describe("DeleteWebserviceHandler", () => {
   it("should call the deleteWebservice api", async () => {
     const handler = new WebServiceHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       webserviceName,
@@ -74,7 +79,7 @@ describe("DeleteWebserviceHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -89,13 +94,13 @@ describe("DeleteWebserviceHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: webserviceName,
         csdGroup,
-        regionName
-      }
+        regionName,
+      },
     );
   });
 });

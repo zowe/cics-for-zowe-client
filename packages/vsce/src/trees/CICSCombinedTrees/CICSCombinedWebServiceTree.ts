@@ -8,16 +8,22 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import {
+  ProgressLocation,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+  workspace,
+} from "vscode";
 
-import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
+import { getIconOpen } from "../../utils/profileUtils";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSWebServiceTreeItem } from "../treeItems/web/treeItems/CICSWebServiceTreeItem";
 
@@ -29,14 +35,23 @@ export class CICSCombinedWebServiceTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("All Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedwebservicetree.`;
     this.parentPlex = parentPlex;
-    this.children = [new TextTreeItem("Use the search button to display web services", "applyfiltertext.")];
+    this.children = [
+      new TextTreeItem(
+        "Use the search button to display web services",
+        "applyfiltertext.",
+      ),
+    ];
     this.activeFilter = undefined;
     this.currentCount = 0;
-    this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allWebServices.recordCountIncrement")}`;
+    this.incrementCount =
+      +`${workspace.getConfiguration().get("zowe.cics.allWebServices.recordCountIncrement")}`;
     this.constant = "CICSWebService";
   }
 
@@ -48,7 +63,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -60,7 +75,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +87,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allWebServices = await ProfileManagement.getCachedResources(
@@ -80,7 +95,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
@@ -97,26 +112,49 @@ export class CICSCombinedWebServiceTree extends TreeItem {
           }
         } catch (error) {
           await window.showErrorMessage(
-            `Something went wrong when fetching web services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+            `Something went wrong when fetching web services - ${JSON.stringify(
+              error,
+              Object.getOwnPropertyNames(error),
+            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
           );
         }
-      }
+      },
     );
   }
 
-  public addWebServicesUtil(newChildren: (CICSWebServiceTreeItem | ViewMore)[], allWebServices: any, count: number | undefined) {
+  public addWebServicesUtil(
+    newChildren: (CICSWebServiceTreeItem | ViewMore)[],
+    allWebServices: any,
+    count: number | undefined,
+  ) {
     for (const webservice of allWebServices) {
       // Regions container must exist if all web services tree exists
-      const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      const regionsContainer = this.parentPlex.children.filter(
+        (child) => child instanceof CICSRegionsContainer,
+      )?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
-        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === webservice.eyu_cicsname)?.[0] as CICSRegionTree;
-      const webserviceTree = new CICSWebServiceTreeItem(webservice, parentRegion, this);
-      webserviceTree.setLabel(webserviceTree.label.toString().replace(webservice.name, `${webservice.name} (${webservice.eyu_cicsname})`));
+        .filter(
+          (child) =>
+            child instanceof CICSRegionTree &&
+            child.getRegionName() === webservice.eyu_cicsname,
+        )?.[0] as CICSRegionTree;
+      const webserviceTree = new CICSWebServiceTreeItem(
+        webservice,
+        parentRegion,
+        this,
+      );
+      webserviceTree.setLabel(
+        webserviceTree.label
+          .toString()
+          .replace(
+            webservice.name,
+            `${webservice.name} (${webservice.eyu_cicsname})`,
+          ),
+      );
       newChildren.push(webserviceTree);
     }
     if (!count) {
@@ -125,7 +163,12 @@ export class CICSCombinedWebServiceTree extends TreeItem {
     this.currentCount = newChildren.length;
     this.label = `All Web Services ${this.activeFilter ? `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
     if (count !== this.currentCount) {
-      newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count - this.currentCount)));
+      newChildren.push(
+        new ViewMore(
+          this,
+          Math.min(this.incrementCount, count - this.currentCount),
+        ),
+      );
     }
     this.children = newChildren;
   }
@@ -147,7 +190,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -158,19 +201,21 @@ export class CICSCombinedWebServiceTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allWebServices) {
             // @ts-ignore
             this.addWebServicesUtil(
-              (this.getChildren()?.filter((child) => child instanceof CICSWebServiceTreeItem) ?? []) as CICSWebServiceTreeItem[],
+              (this.getChildren()?.filter(
+                (child) => child instanceof CICSWebServiceTreeItem,
+              ) ?? []) as CICSWebServiceTreeItem[],
               allWebServices,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 
@@ -189,7 +234,9 @@ export class CICSCombinedWebServiceTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children ? this.children.filter((child) => !(child instanceof TextTreeItem)) : [];
+    return this.children
+      ? this.children.filter((child) => !(child instanceof TextTreeItem))
+      : [];
   }
 
   public getActiveFilter() {

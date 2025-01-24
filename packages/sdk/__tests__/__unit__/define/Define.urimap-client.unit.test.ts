@@ -8,12 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, IURIMapParms, defineUrimapClient, ICMCIApiResponse } from "../../../src";
+
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  ICMCIApiResponse,
+  IURIMapParms,
+  defineUrimapClient,
+} from "../../../src";
 
 describe("CMCI - Define client URIMap", () => {
-
   const urimap = "urimap";
   const path = "path";
   const host = "host";
@@ -26,21 +31,21 @@ describe("CMCI - Define client URIMap", () => {
   const authenticate = "BASIC";
   const certificate = "CERT01";
 
-  const defineParms: IURIMapParms  = {
+  const defineParms: IURIMapParms = {
     regionName: region,
     name: urimap,
     path,
     host,
     scheme,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -73,7 +78,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -92,7 +97,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -111,7 +116,7 @@ describe("CMCI - Define client URIMap", () => {
           path: undefined,
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -130,7 +135,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: undefined,
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -149,7 +154,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -168,7 +173,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -187,7 +192,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -195,7 +200,9 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Name' must not be blank",
+      );
     });
 
     it("should throw error if CSD group is missing", async () => {
@@ -206,7 +213,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -214,7 +221,9 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group' must not be blank",
+      );
     });
 
     it("should throw error if URIMap path is missing", async () => {
@@ -225,7 +234,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "",
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -233,7 +242,9 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Path' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Path' must not be blank",
+      );
     });
 
     it("should throw error if URIMap host is missing", async () => {
@@ -244,7 +255,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -252,7 +263,9 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Host' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Host' must not be blank",
+      );
     });
 
     it("should throw error if URIMap scheme is missing", async () => {
@@ -263,7 +276,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -271,7 +284,9 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Scheme' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Scheme' must not be blank",
+      );
     });
 
     it("should throw error if CICS Region name is missing", async () => {
@@ -282,7 +297,7 @@ describe("CMCI - Define client URIMap", () => {
           path: "fake",
           host: "fake",
           scheme: "http",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -290,19 +305,20 @@ describe("CMCI - Define client URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Region name' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
@@ -312,14 +328,16 @@ describe("CMCI - Define client URIMap", () => {
               host,
               scheme,
               usage: "client",
-              status: "ENABLED"
-            }
-          }
-        }
-      }
+              status: "ENABLED",
+            },
+          },
+        },
+      },
     };
 
-    const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
+    const defineSpy = jest
+      .spyOn(CicsCmciRestClient, "postExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -329,46 +347,85 @@ describe("CMCI - Define client URIMap", () => {
     });
 
     it("should be able to define a URIMap without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        region;
 
       response = await defineUrimapClient(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "//" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "//" +
+        region;
 
       response = await defineUrimapClient(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        cicsPlex +
+        "/" +
+        region;
 
       response = await defineUrimapClient(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with optional parameters specified", async () => {
       defineParms.description = description;
       defineParms.authenticate = authenticate;
       defineParms.certificate = certificate;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        cicsPlex +
+        "/" +
+        region;
       requestBody.request.create.attributes.$.description = description;
       requestBody.request.create.attributes.$.authenticate = authenticate;
       requestBody.request.create.attributes.$.certificate = certificate;
@@ -377,7 +434,12 @@ describe("CMCI - Define client URIMap", () => {
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
   });
 });

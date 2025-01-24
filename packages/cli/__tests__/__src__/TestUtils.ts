@@ -16,7 +16,10 @@
  *                               (generate a string 'up to' length characters long)
  * @returns {string} the random string
  */
-export function generateRandomAlphaNumericString(length: number, upToLength: boolean = false): string {
+export function generateRandomAlphaNumericString(
+  length: number,
+  upToLength: boolean = false,
+): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   if (upToLength) {

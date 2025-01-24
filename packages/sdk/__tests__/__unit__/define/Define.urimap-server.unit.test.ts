@@ -8,12 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, IURIMapParms, defineUrimapServer, ICMCIApiResponse } from "../../../src";
+
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  ICMCIApiResponse,
+  IURIMapParms,
+  defineUrimapServer,
+} from "../../../src";
 
 describe("CMCI - Define server URIMap", () => {
-
   const urimap = "urimap";
   const path = "path";
   const host = "host";
@@ -26,7 +31,7 @@ describe("CMCI - Define server URIMap", () => {
   const description = "description";
   const tcpipservice = "TCPIPSRV";
 
-  const defineParms: IURIMapParms  = {
+  const defineParms: IURIMapParms = {
     regionName: region,
     name: urimap,
     path,
@@ -34,14 +39,14 @@ describe("CMCI - Define server URIMap", () => {
     scheme,
     programName: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -75,7 +80,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -95,7 +100,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -115,7 +120,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -135,7 +140,7 @@ describe("CMCI - Define server URIMap", () => {
           host: undefined,
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -155,7 +160,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: undefined,
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -175,7 +180,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -195,7 +200,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -215,7 +220,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -223,7 +228,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Name' must not be blank",
+      );
     });
 
     it("should throw error if CSD group is missing", async () => {
@@ -235,7 +242,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -243,7 +250,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group' must not be blank",
+      );
     });
 
     it("should throw error if URIMap path is missing", async () => {
@@ -255,7 +264,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -263,7 +272,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Path' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Path' must not be blank",
+      );
     });
 
     it("should throw error if URIMap host is missing", async () => {
@@ -275,7 +286,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -283,7 +294,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Host' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Host' must not be blank",
+      );
     });
 
     it("should throw error if URIMap scheme is missing", async () => {
@@ -295,7 +308,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -303,7 +316,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Scheme' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Scheme' must not be blank",
+      );
     });
 
     it("should throw error if CICS Region name is missing", async () => {
@@ -315,7 +330,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -323,7 +338,9 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Region name' must not be blank",
+      );
     });
 
     it("should throw error if program name is missing", async () => {
@@ -335,7 +352,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -343,19 +360,20 @@ describe("CMCI - Define server URIMap", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS URIMap Program name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS URIMap Program name' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
@@ -366,14 +384,16 @@ describe("CMCI - Define server URIMap", () => {
               scheme,
               program,
               usage: "server",
-              status: "ENABLED"
-            }
-          }
-        }
-      }
+              status: "ENABLED",
+            },
+          },
+        },
+      },
     };
 
-    const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
+    const defineSpy = jest
+      .spyOn(CicsCmciRestClient, "postExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -383,45 +403,84 @@ describe("CMCI - Define server URIMap", () => {
     });
 
     it("should be able to define a URIMap without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "//" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "//" +
+        region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        cicsPlex +
+        "/" +
+        region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
 
     it("should be able to define a URIMap with optional parameters specified", async () => {
       defineParms.description = description;
       defineParms.tcpipservice = tcpipservice;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        cicsPlex +
+        "/" +
+        region;
       requestBody.request.create.attributes.$.description = description;
       requestBody.request.create.attributes.$.tcpipservice = tcpipservice;
 
@@ -429,7 +488,12 @@ describe("CMCI - Define server URIMap", () => {
 
       // expect(response.success).toBe(true);
       expect(response).toContain(content);
-      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(defineSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
   });
 });

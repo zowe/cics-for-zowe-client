@@ -8,12 +8,11 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { CicsSession } from "../CicsSession";
 import { ICommandDefinition } from "@zowe/imperative";
-import { ResourceDefinition } from "./resource/Resource.definition";
 
 import i18nTypings from "../-strings-/en";
+import { CicsSession } from "../CicsSession";
+import { ResourceDefinition } from "./resource/Resource.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).GET;
@@ -32,10 +31,8 @@ const definition: ICommandDefinition = {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

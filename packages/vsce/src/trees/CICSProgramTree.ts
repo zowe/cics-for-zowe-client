@@ -8,21 +8,27 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { getDefaultProgramFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
 import { toArray } from "../utils/commandUtils";
+import {
+  getDefaultProgramFilter,
+  toEscapedCriteriaString,
+} from "../utils/filterUtils";
+import { getIconOpen } from "../utils/profileUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
 
 export class CICSProgramTree extends TreeItem {
   children: CICSProgramTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.parentRegion = parentRegion;
@@ -42,33 +48,45 @@ export class CICSProgramTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const programResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSProgram",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const programsArray = toArray(programResponse.response.records.cicsprogram);
+      const programResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSProgram",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const programsArray = toArray(
+        programResponse.response.records.cicsprogram,
+      );
       this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {
-        const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
+        const newProgramItem = new CICSProgramTreeItem(
+          program,
+          this.parentRegion,
+          this,
+        );
         this.addProgram(newProgramItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a program filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a program filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No programs found`);
         this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching programs - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

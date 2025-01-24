@@ -8,9 +8,13 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { AbstractSession, ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import {
+  AbstractSession,
+  ICommandHandler,
+  IHandlerParameters,
+} from "@zowe/imperative";
+
 import { CicsSession } from "./CicsSession";
 
 /**
@@ -19,15 +23,19 @@ import { CicsSession } from "./CicsSession";
  */
 export abstract class CicsBaseHandler implements ICommandHandler {
   /**
-     * This will grab the cics profile and create a session before calling the subclass
-     * {@link CicsBaseHandler#processWithSession} method.
-     *
-     * @param {IHandlerParameters} commandParameters Command parameters sent by imperative.
-     *
-     * @returns {Promise<void>}
-     */
+   * This will grab the cics profile and create a session before calling the subclass
+   * {@link CicsBaseHandler#processWithSession} method.
+   *
+   * @param {IHandlerParameters} commandParameters Command parameters sent by imperative.
+   *
+   * @returns {Promise<void>}
+   */
   public async process(commandParameters: IHandlerParameters) {
-    const session = await CicsSession.createSessCfgFromArgs(commandParameters.arguments, true, commandParameters);
+    const session = await CicsSession.createSessCfgFromArgs(
+      commandParameters.arguments,
+      true,
+      commandParameters,
+    );
 
     const response = await this.processWithSession(commandParameters, session);
 
@@ -38,16 +46,16 @@ export abstract class CicsBaseHandler implements ICommandHandler {
   }
 
   /**
-     * This is called by the {@link CicsBaseHandler#process} after it creates a session. Should
-     * be used so that every class does not have to instantiate the session object.
-     *
-     * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
-     * @param {AbstractSession} session The session object generated from the cics profile.
-     *
-     * @returns {Promise<ICMCIApiResponse>} The response from the underlying cics api call.
-     */
+   * This is called by the {@link CicsBaseHandler#process} after it creates a session. Should
+   * be used so that every class does not have to instantiate the session object.
+   *
+   * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
+   * @param {AbstractSession} session The session object generated from the cics profile.
+   *
+   * @returns {Promise<ICMCIApiResponse>} The response from the underlying cics api call.
+   */
   public abstract processWithSession(
     commandParameters: IHandlerParameters,
-    session: AbstractSession
+    session: AbstractSession,
   ): Promise<ICMCIApiResponse>;
 }

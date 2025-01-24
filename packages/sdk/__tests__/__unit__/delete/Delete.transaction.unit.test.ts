@@ -8,18 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
+
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  deleteTransaction,
   ICMCIApiResponse,
-  ITransactionParms
+  ITransactionParms,
+  deleteTransaction,
 } from "../../../src";
 
 describe("CMCI - Discard transaction", () => {
-
   const transaction = "transaction";
   const program = "program";
   const region = "region";
@@ -27,19 +26,19 @@ describe("CMCI - Discard transaction", () => {
   const cicsPlex = "plex";
   const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
-  const deleteParms: ITransactionParms  = {
+  const deleteParms: ITransactionParms = {
     regionName: region,
     name: transaction,
     programName: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -86,7 +85,7 @@ describe("CMCI - Discard transaction", () => {
         response = await deleteTransaction(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -103,7 +102,7 @@ describe("CMCI - Discard transaction", () => {
           regionName: undefined,
           name: "fake",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -120,7 +119,7 @@ describe("CMCI - Discard transaction", () => {
           regionName: "fake",
           name: "",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -128,7 +127,9 @@ describe("CMCI - Discard transaction", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Transaction name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Transaction name' must not be blank",
+      );
     });
 
     it("should throw error if CSD group is missing", async () => {
@@ -136,7 +137,7 @@ describe("CMCI - Discard transaction", () => {
         response = await deleteTransaction(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -144,7 +145,9 @@ describe("CMCI - Discard transaction", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS CSD Group' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS CSD Group' must not be blank",
+      );
     });
 
     it("should throw error if CICS Region name is missing", async () => {
@@ -153,7 +156,7 @@ describe("CMCI - Discard transaction", () => {
           regionName: "",
           name: "fake",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -161,13 +164,16 @@ describe("CMCI - Discard transaction", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Region name' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Region name' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
-    const deleteSpy = jest.spyOn(CicsCmciRestClient, "deleteExpectParsedXml").mockResolvedValue(content);
+    const deleteSpy = jest
+      .spyOn(CicsCmciRestClient, "deleteExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -177,9 +183,14 @@ describe("CMCI - Discard transaction", () => {
     });
 
     it("should be able to delete a transaction without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteTransaction(dummySession, deleteParms);
 
@@ -190,9 +201,14 @@ describe("CMCI - Discard transaction", () => {
 
     it("should be able to delete a transaction with cicsPlex specified but empty string", async () => {
       deleteParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "//" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "//" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteTransaction(dummySession, deleteParms);
 
@@ -203,9 +219,16 @@ describe("CMCI - Discard transaction", () => {
 
     it("should be able to delete a transaction with cicsPlex specified", async () => {
       deleteParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_TRANSACTION + "/" + cicsPlex + "/" + region +
-                `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_TRANSACTION +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteTransaction(dummySession, deleteParms);
 

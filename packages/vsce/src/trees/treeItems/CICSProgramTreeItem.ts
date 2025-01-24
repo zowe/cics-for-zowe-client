@@ -8,10 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconPathInResources } from "../../utils/profileUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSProgramTreeItem extends TreeItem {
   program: any;
@@ -22,19 +22,25 @@ export class CICSProgramTreeItem extends TreeItem {
     program: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("program-dark.svg", "program-light.svg")
+    public readonly iconPath = getIconPathInResources(
+      "program-dark.svg",
+      "program-light.svg",
+    ),
   ) {
     super(
       `${program.program}${
-        program.status.toLowerCase() === "disabled" && parseInt(program.newcopycnt)
+        program.status.toLowerCase() === "disabled" &&
+        parseInt(program.newcopycnt)
           ? ` (New copy count: ${program.newcopycnt}) (Disabled)`
-          : program.status.toLowerCase() === "disabled" && !parseInt(program.newcopycnt)
+          : program.status.toLowerCase() === "disabled" &&
+              !parseInt(program.newcopycnt)
             ? ` (Disabled)`
-            : program.status.toLowerCase() !== "disabled" && parseInt(program.newcopycnt)
+            : program.status.toLowerCase() !== "disabled" &&
+                parseInt(program.newcopycnt)
               ? ` (New copy count: ${program.newcopycnt})`
               : ""
       }`,
-      TreeItemCollapsibleState.None
+      TreeItemCollapsibleState.None,
     );
 
     this.program = program;

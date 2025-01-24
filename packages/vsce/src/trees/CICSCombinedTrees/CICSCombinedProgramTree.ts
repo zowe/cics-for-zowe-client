@@ -8,19 +8,25 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { imperative } from "@zowe/zowe-explorer-api";
+import {
+  ProgressLocation,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+  workspace,
+} from "vscode";
+
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
+import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedProgramTree extends TreeItem {
@@ -31,14 +37,23 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;
-    this.children = [new TextTreeItem("Use the search button to display programs", "applyfiltertext.")];
+    this.children = [
+      new TextTreeItem(
+        "Use the search button to display programs",
+        "applyfiltertext.",
+      ),
+    ];
     this.activeFilter = undefined;
     this.currentCount = 0;
-    this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allPrograms.recordCountIncrement")}`;
+    this.incrementCount =
+      +`${workspace.getConfiguration().get("zowe.cics.allPrograms.recordCountIncrement")}`;
     this.constant = CicsCmciConstants.CICS_PROGRAM_RESOURCE;
   }
 
@@ -50,7 +65,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         let recordsCount: number;
         try {
           let criteria;
@@ -63,7 +78,7 @@ export class CICSCombinedProgramTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             recordsCount = cacheTokenInfo.recordCount;
@@ -75,7 +90,7 @@ export class CICSCombinedProgramTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allPrograms = await ProfileManagement.getCachedResources(
@@ -83,7 +98,7 @@ export class CICSCombinedProgramTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
@@ -99,35 +114,60 @@ export class CICSCombinedProgramTree extends TreeItem {
             }
           }
         } catch (error) {
-          if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
+          if (
+            error instanceof imperative.ImperativeError &&
+            error.mDetails.msg.includes("NOTAVAILABLE")
+          ) {
             this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            this.iconPath = getIconPathInResources(
+              "folder-open-dark.svg",
+              "folder-open-light.svg",
+            );
             tree._onDidChangeTreeData.fire(undefined);
             window.showInformationMessage(`No programs found`);
             this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
           } else {
             window.showErrorMessage(
-              `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
+              `Something went wrong when fetching programs - ${JSON.stringify(
+                error,
+                Object.getOwnPropertyNames(error),
+              ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
             );
           }
         }
-      }
+      },
     );
   }
 
-  public addProgramsUtil(newChildren: (CICSProgramTreeItem | ViewMore)[], allPrograms: any, count: number | undefined) {
+  public addProgramsUtil(
+    newChildren: (CICSProgramTreeItem | ViewMore)[],
+    allPrograms: any,
+    count: number | undefined,
+  ) {
     for (const program of allPrograms) {
       // Regions container must exist if all programs tree exists
-      const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      const regionsContainer = this.parentPlex.children.filter(
+        (child) => child instanceof CICSRegionsContainer,
+      )?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
-        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0] as CICSRegionTree;
+        .filter(
+          (child) =>
+            child instanceof CICSRegionTree &&
+            child.getRegionName() === program.eyu_cicsname,
+        )?.[0] as CICSRegionTree;
       const progamTree = new CICSProgramTreeItem(program, parentRegion, this);
-      progamTree.setLabel(progamTree.label.toString().replace(program.program, `${program.program} (${program.eyu_cicsname})`));
+      progamTree.setLabel(
+        progamTree.label
+          .toString()
+          .replace(
+            program.program,
+            `${program.program} (${program.eyu_cicsname})`,
+          ),
+      );
       newChildren.push(progamTree);
     }
     if (!count) {
@@ -136,7 +176,12 @@ export class CICSCombinedProgramTree extends TreeItem {
     this.currentCount = newChildren.length;
     this.label = `All Programs ${this.activeFilter ? `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
     if (count !== this.currentCount) {
-      newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count - this.currentCount)));
+      newChildren.push(
+        new ViewMore(
+          this,
+          Math.min(this.incrementCount, count - this.currentCount),
+        ),
+      );
     }
     this.children = newChildren;
   }
@@ -158,7 +203,7 @@ export class CICSCombinedProgramTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -169,19 +214,21 @@ export class CICSCombinedProgramTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allPrograms) {
             // @ts-ignore
             this.addProgramsUtil(
-              (this.getChildren()?.filter((child) => child instanceof CICSProgramTreeItem) ?? []) as CICSProgramTreeItem[],
+              (this.getChildren()?.filter(
+                (child) => child instanceof CICSProgramTreeItem,
+              ) ?? []) as CICSProgramTreeItem[],
               allPrograms,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 
@@ -200,7 +247,9 @@ export class CICSCombinedProgramTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children ? this.children.filter((child) => !(child instanceof TextTreeItem)) : [];
+    return this.children
+      ? this.children.filter((child) => !(child instanceof TextTreeItem))
+      : [];
   }
 
   public getActiveFilter() {

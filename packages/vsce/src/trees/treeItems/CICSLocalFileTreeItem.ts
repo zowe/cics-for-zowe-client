@@ -8,10 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconPathInResources } from "../../utils/profileUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSLocalFileTreeItem extends TreeItem {
   localFile: any;
@@ -23,23 +23,31 @@ export class CICSLocalFileTreeItem extends TreeItem {
     localFile: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("local-file-dark.svg", "local-file-light.svg")
+    public readonly iconPath = getIconPathInResources(
+      "local-file-dark.svg",
+      "local-file-light.svg",
+    ),
   ) {
     super(
       `${localFile.file} ${
-        localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() === "closed"
+        localFile.enablestatus.toLowerCase() === "disabled" &&
+        localFile.openstatus.toLowerCase() === "closed"
           ? "(Disabled) (Closed)"
-          : localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() !== "closed"
+          : localFile.enablestatus.toLowerCase() === "disabled" &&
+              localFile.openstatus.toLowerCase() !== "closed"
             ? "(Disabled)"
-            : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() === "closed"
+            : localFile.enablestatus.toLowerCase() === "unenabled" &&
+                localFile.openstatus.toLowerCase() === "closed"
               ? "(Unenabled) (Closed)"
-              : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() !== "closed"
+              : localFile.enablestatus.toLowerCase() === "unenabled" &&
+                  localFile.openstatus.toLowerCase() !== "closed"
                 ? "(Unenabled)"
-                : localFile.enablestatus.toLowerCase() === "enabled" && localFile.openstatus.toLowerCase() === "closed"
+                : localFile.enablestatus.toLowerCase() === "enabled" &&
+                    localFile.openstatus.toLowerCase() === "closed"
                   ? "(Closed)"
                   : ""
       }`,
-      TreeItemCollapsibleState.None
+      TreeItemCollapsibleState.None,
     );
     this.localFile = localFile;
     this.contextValue = `cicslocalfile.${localFile.enablestatus.toLowerCase()}.${localFile.openstatus.toLowerCase()}.${localFile.file}`;

@@ -8,8 +8,8 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ConfigurationTarget, workspace } from "vscode";
+
 import constants from "./constants";
 
 export class PersistentStorage {
@@ -17,14 +17,18 @@ export class PersistentStorage {
   private static readonly programSearchHistory: string = "programSearchHistory";
   private static readonly librarySearchHistory: string = "librarySearchHistory";
   private static readonly datasetSearchHistory: string = "datasetSearchHistory";
-  private static readonly transactionSearchHistory: string = "transactionSearchHistory";
-  private static readonly localFileSearchHistory: string = "localFileSearchHistory";
+  private static readonly transactionSearchHistory: string =
+    "transactionSearchHistory";
+  private static readonly localFileSearchHistory: string =
+    "localFileSearchHistory";
   private static readonly regionSearchHistory: string = "regionSearchHistory";
   private static readonly loadedCICSProfile: string = "loadedCICSProfile";
   private static readonly tcpipsSearchHistory: string = "tcpipsSearchHistory";
   private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
-  private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
-  private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
+  private static readonly pipelineSearchHistory: string =
+    "pipelineSearchHistory";
+  private static readonly webserviceSearchHistory: string =
+    "webserviceSearchHistory";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -57,17 +61,39 @@ export class PersistentStorage {
     let webserviceSearchHistoryLines: string[] | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
-      programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
-      librarySearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.librarySearchHistory);
-      datasetSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.datasetSearchHistory);
-      transactionSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.transactionSearchHistory);
-      localFileSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.localFileSearchHistory);
-      regionSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.regionSearchHistory);
-      loadedCICSProfileLines = workspace.getConfiguration(this.schema).get(PersistentStorage.loadedCICSProfile);
-      tcpipsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.tcpipsSearchHistory);
-      urimapsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.urimapsSearchHistory);
-      pipelineSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.pipelineSearchHistory);
-      webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
+      programSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.programSearchHistory);
+      librarySearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.librarySearchHistory);
+      datasetSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.datasetSearchHistory);
+      transactionSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.transactionSearchHistory);
+      localFileSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.localFileSearchHistory);
+      regionSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.regionSearchHistory);
+      loadedCICSProfileLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.loadedCICSProfile);
+      tcpipsSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.tcpipsSearchHistory);
+      urimapsSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.urimapsSearchHistory);
+      pipelineSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.pipelineSearchHistory);
+      webserviceSearchHistoryLines = workspace
+        .getConfiguration(this.schema)
+        .get(PersistentStorage.webserviceSearchHistory);
     }
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
@@ -208,92 +234,129 @@ export class PersistentStorage {
   private async updateProgramSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.programSearchHistory] = this.mProgramSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.programSearchHistory] =
+        this.mProgramSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateLibrarySearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.librarySearchHistory] = this.mLibrarySearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.librarySearchHistory] =
+        this.mLibrarySearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateDatasetSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.datasetSearchHistory] = this.mDatasetSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.datasetSearchHistory] =
+        this.mDatasetSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateTransactionSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.transactionSearchHistory] = this.mTransactionSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.transactionSearchHistory] =
+        this.mTransactionSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateLocalFileSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.localFileSearchHistory] = this.mLocalFileSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.localFileSearchHistory] =
+        this.mLocalFileSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateRegionSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.regionSearchHistory] = this.mRegionSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.regionSearchHistory] =
+        this.mRegionSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateLoadedCICSProfile(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.loadedCICSProfile] = this.mLoadedCICSProfile;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateTCPIPSSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.tcpipsSearchHistory] = this.mTCPIPSSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.tcpipsSearchHistory] =
+        this.mTCPIPSSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
   private async updateURIMapsSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.urimapsSearchHistory] = this.mURIMapsSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.urimapsSearchHistory] =
+        this.mURIMapsSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
 
   private async updatePipelineSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.pipelineSearchHistory] = this.mPipelineSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.pipelineSearchHistory] =
+        this.mPipelineSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
 
   private async updateWebServiceSearchHistory(): Promise<void> {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
-      settings[PersistentStorage.webserviceSearchHistory] = this.mWebServiceSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+      settings[PersistentStorage.webserviceSearchHistory] =
+        this.mWebServiceSearchHistory;
+      await workspace
+        .getConfiguration()
+        .update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
 
   public async addProgramSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mProgramSearchHistory = this.mProgramSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mProgramSearchHistory = this.mProgramSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mProgramSearchHistory.unshift(criteria);
 
-      if (this.mProgramSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mProgramSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mProgramSearchHistory.pop();
       }
       await this.updateProgramSearchHistory();
@@ -302,13 +365,18 @@ export class PersistentStorage {
 
   public async addLibrarySearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mLibrarySearchHistory = this.mLibrarySearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mLibrarySearchHistory = this.mLibrarySearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mLibrarySearchHistory.unshift(criteria);
 
-      if (this.mLibrarySearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mLibrarySearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mLibrarySearchHistory.pop();
       }
       await this.updateLibrarySearchHistory();
@@ -317,13 +385,18 @@ export class PersistentStorage {
 
   public async addDatasetSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mDatasetSearchHistory = this.mDatasetSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mDatasetSearchHistory = this.mDatasetSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mDatasetSearchHistory.unshift(criteria);
 
-      if (this.mDatasetSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mDatasetSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mDatasetSearchHistory.pop();
       }
       await this.updateDatasetSearchHistory();
@@ -332,13 +405,18 @@ export class PersistentStorage {
 
   public async addTransactionSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mTransactionSearchHistory = this.mTransactionSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mTransactionSearchHistory = this.mTransactionSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mTransactionSearchHistory.unshift(criteria);
 
-      if (this.mTransactionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mTransactionSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mTransactionSearchHistory.pop();
       }
       await this.updateTransactionSearchHistory();
@@ -347,13 +425,18 @@ export class PersistentStorage {
 
   public async addLocalFileSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mLocalFileSearchHistory = this.mLocalFileSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mLocalFileSearchHistory = this.mLocalFileSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mLocalFileSearchHistory.unshift(criteria);
 
-      if (this.mLocalFileSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mLocalFileSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mLocalFileSearchHistory.pop();
       }
       await this.updateLocalFileSearchHistory();
@@ -362,13 +445,18 @@ export class PersistentStorage {
 
   public async addRegionSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mRegionSearchHistory = this.mRegionSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mRegionSearchHistory = this.mRegionSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mRegionSearchHistory.unshift(criteria);
 
-      if (this.mRegionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mRegionSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mRegionSearchHistory.pop();
       }
       await this.updateRegionSearchHistory();
@@ -388,13 +476,18 @@ export class PersistentStorage {
 
   public async addTCPIPSSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mTCPIPSSearchHistory = this.mTCPIPSSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mTCPIPSSearchHistory = this.mTCPIPSSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mTCPIPSSearchHistory.unshift(criteria);
 
-      if (this.mTCPIPSSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mTCPIPSSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mTCPIPSSearchHistory.pop();
       }
       await this.updateTCPIPSSearchHistory();
@@ -403,13 +496,18 @@ export class PersistentStorage {
 
   public async addURIMapsSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mURIMapsSearchHistory = this.mURIMapsSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mURIMapsSearchHistory = this.mURIMapsSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mURIMapsSearchHistory.unshift(criteria);
 
-      if (this.mURIMapsSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mURIMapsSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mURIMapsSearchHistory.pop();
       }
       await this.updateURIMapsSearchHistory();
@@ -418,13 +516,18 @@ export class PersistentStorage {
 
   public async addPipelineSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mPipelineSearchHistory = this.mPipelineSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mPipelineSearchHistory = this.mPipelineSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mPipelineSearchHistory.unshift(criteria);
 
-      if (this.mPipelineSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mPipelineSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mPipelineSearchHistory.pop();
       }
       await this.updatePipelineSearchHistory();
@@ -433,13 +536,18 @@ export class PersistentStorage {
 
   public async addWebServiceSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
-      this.mWebServiceSearchHistory = this.mWebServiceSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
+      this.mWebServiceSearchHistory = this.mWebServiceSearchHistory.filter(
+        (element) => {
+          return element.trim() !== criteria.trim();
+        },
+      );
 
       this.mWebServiceSearchHistory.unshift(criteria);
 
-      if (this.mWebServiceSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      if (
+        this.mWebServiceSearchHistory.length >
+        constants.PERSISTENT_STORAGE_MAX_LENGTH
+      ) {
         this.mWebServiceSearchHistory.pop();
       }
       await this.updateWebServiceSearchHistory();

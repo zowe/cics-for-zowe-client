@@ -8,8 +8,8 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSLocalFileTree } from "../trees/CICSLocalFileTree";
 import { CICSProgramTree } from "../trees/CICSProgramTree";
@@ -24,50 +24,100 @@ import { CICSURIMapTree } from "../trees/treeItems/web/CICSURIMapTree";
 import { CICSWebServiceTree } from "../trees/treeItems/web/CICSWebServiceTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 
-export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.clearFilter", async (node) => {
-    const allSelectedProgramTreeNodes = findSelectedNodes(treeview, CICSProgramTree, node);
-    const allSelectedTransactionTreeNodes = findSelectedNodes(treeview, CICSTransactionTree, node);
-    const allSelectedLocalFileTreeNodes = findSelectedNodes(treeview, CICSLocalFileTree, node);
-    const allSelectedTaskTreeNodes = findSelectedNodes(treeview, CICSTaskTree, node);
-    const allSelectedLibraryTreeNodes = findSelectedNodes(treeview, CICSLibraryTree, node);
-    const allSelectedDatasetTreeNodes = findSelectedNodes(treeview, CICSLibraryTreeItem, node);
-    const allSelectedDatasetProgramTreeNodes = findSelectedNodes(treeview, CICSLibraryDatasets, node);
-    const allSelectedTCPIPServicesTreeNodes = findSelectedNodes(treeview, CICSTCPIPServiceTree, node);
-    const allSelectedURIMapsTreeNodes = findSelectedNodes(treeview, CICSURIMapTree, node);
-    const allSelectedWebServiceTreeNodes = findSelectedNodes(treeview, CICSWebServiceTree, node);
-    const allSelectedPipelineTreeNodes = findSelectedNodes(treeview, CICSPipelineTree, node);
-    const allSelectedNodes = [
-      ...allSelectedProgramTreeNodes,
-      ...allSelectedTransactionTreeNodes,
-      ...allSelectedLocalFileTreeNodes,
-      ...allSelectedTaskTreeNodes,
-      ...allSelectedLibraryTreeNodes,
-      ...allSelectedDatasetTreeNodes,
-      ...allSelectedDatasetProgramTreeNodes,
-      ...allSelectedTCPIPServicesTreeNodes,
-      ...allSelectedURIMapsTreeNodes,
-      ...allSelectedPipelineTreeNodes,
-      ...allSelectedWebServiceTreeNodes,
-    ];
-    if (!allSelectedNodes || !allSelectedNodes.length) {
-      await window.showErrorMessage("No CICS resource tree selected");
-      return;
-    }
-    for (const selectedNode of allSelectedNodes) {
-      selectedNode.clearFilter();
-      window.withProgress(
-        {
-          title: "Loading Resources",
-          location: ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async (_, token) => {
-          token.onCancellationRequested(() => { });
-          await selectedNode.loadContents();
-          tree._onDidChangeTreeData.fire(undefined);
-        }
+export function getClearResourceFilterCommand(
+  tree: CICSTree,
+  treeview: TreeView<any>,
+) {
+  return commands.registerCommand(
+    "cics-extension-for-zowe.clearFilter",
+    async (node) => {
+      const allSelectedProgramTreeNodes = findSelectedNodes(
+        treeview,
+        CICSProgramTree,
+        node,
       );
-    }
-  });
+      const allSelectedTransactionTreeNodes = findSelectedNodes(
+        treeview,
+        CICSTransactionTree,
+        node,
+      );
+      const allSelectedLocalFileTreeNodes = findSelectedNodes(
+        treeview,
+        CICSLocalFileTree,
+        node,
+      );
+      const allSelectedTaskTreeNodes = findSelectedNodes(
+        treeview,
+        CICSTaskTree,
+        node,
+      );
+      const allSelectedLibraryTreeNodes = findSelectedNodes(
+        treeview,
+        CICSLibraryTree,
+        node,
+      );
+      const allSelectedDatasetTreeNodes = findSelectedNodes(
+        treeview,
+        CICSLibraryTreeItem,
+        node,
+      );
+      const allSelectedDatasetProgramTreeNodes = findSelectedNodes(
+        treeview,
+        CICSLibraryDatasets,
+        node,
+      );
+      const allSelectedTCPIPServicesTreeNodes = findSelectedNodes(
+        treeview,
+        CICSTCPIPServiceTree,
+        node,
+      );
+      const allSelectedURIMapsTreeNodes = findSelectedNodes(
+        treeview,
+        CICSURIMapTree,
+        node,
+      );
+      const allSelectedWebServiceTreeNodes = findSelectedNodes(
+        treeview,
+        CICSWebServiceTree,
+        node,
+      );
+      const allSelectedPipelineTreeNodes = findSelectedNodes(
+        treeview,
+        CICSPipelineTree,
+        node,
+      );
+      const allSelectedNodes = [
+        ...allSelectedProgramTreeNodes,
+        ...allSelectedTransactionTreeNodes,
+        ...allSelectedLocalFileTreeNodes,
+        ...allSelectedTaskTreeNodes,
+        ...allSelectedLibraryTreeNodes,
+        ...allSelectedDatasetTreeNodes,
+        ...allSelectedDatasetProgramTreeNodes,
+        ...allSelectedTCPIPServicesTreeNodes,
+        ...allSelectedURIMapsTreeNodes,
+        ...allSelectedPipelineTreeNodes,
+        ...allSelectedWebServiceTreeNodes,
+      ];
+      if (!allSelectedNodes || !allSelectedNodes.length) {
+        await window.showErrorMessage("No CICS resource tree selected");
+        return;
+      }
+      for (const selectedNode of allSelectedNodes) {
+        selectedNode.clearFilter();
+        window.withProgress(
+          {
+            title: "Loading Resources",
+            location: ProgressLocation.Notification,
+            cancellable: false,
+          },
+          async (_, token) => {
+            token.onCancellationRequested(() => {});
+            await selectedNode.loadContents();
+            tree._onDidChangeTreeData.fire(undefined);
+          },
+        );
+      }
+    },
+  );
 }

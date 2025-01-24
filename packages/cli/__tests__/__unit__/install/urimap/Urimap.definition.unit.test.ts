@@ -8,12 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics install urimap", () => {
-  it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/install/urimap/Urimap.definition").UrimapDefinition;
+  it("should not have changed", () => {
+    const definition: ICommandDefinition =
+      require("../../../../src/install/urimap/Urimap.definition").UrimapDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

@@ -8,9 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { IHandlerParameters, Session } from "@zowe/imperative";
+
 import { ICMCIApiResponse } from "../../../../src";
 import { TransactionDefinition } from "../../../../src/define/transaction/Transaction.definition";
 import TransactionHandler from "../../../../src/define/transaction/Transaction.handler";
@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "transaction"],
   definition: TransactionDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DefineTransactionHandler", () => {
@@ -47,9 +47,14 @@ describe("DefineTransactionHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: {
+        api_response1: "1024",
+        api_response2: "0",
+        recordcount: "0",
+        displayed_recordcount: "0",
+      },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineTransaction");
@@ -62,7 +67,7 @@ describe("DefineTransactionHandler", () => {
   it("should call the defineTransaction api", async () => {
     const handler = new TransactionHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       transactionName,
@@ -74,7 +79,7 @@ describe("DefineTransactionHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -89,14 +94,14 @@ describe("DefineTransactionHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: transactionName,
         programName,
         csdGroup,
-        regionName
-      }
+        regionName,
+      },
     );
   });
 });

@@ -8,13 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics refresh program", () => {
   const REFRESH_RESOURCES = 1;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/refresh/Refresh.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(REFRESH_RESOURCES);

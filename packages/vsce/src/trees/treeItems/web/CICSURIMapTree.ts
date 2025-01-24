@@ -8,21 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconOpen } from "../../../utils/profileUtils";
-import { toArray } from "../../../utils/commandUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 
 export class CICSURIMapTree extends TreeItem {
   children: CICSURIMapTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("URI Maps", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.parentRegion = parentRegion;
@@ -42,36 +45,51 @@ export class CICSURIMapTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const urimapResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSURIMap",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
+      const urimapResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSURIMap",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
       const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
       for (const urimap of urimapArray) {
-        const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
+        const newURIMapItem = new CICSURIMapTreeItem(
+          urimap,
+          this.parentRegion,
+          this,
+        );
         newURIMapItem.setLabel(
-          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`)
+          newURIMapItem.label
+            .toString()
+            .replace(
+              urimap.name,
+              `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`,
+            ),
         );
         this.addURIMAP(newURIMapItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a URIMap filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a URIMap filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No URI Maps found`);
         this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching URI Maps - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching URI Maps - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

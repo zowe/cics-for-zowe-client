@@ -8,22 +8,21 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeView } from "vscode";
 
-import * as disableCommands from './disableCommands';
-import * as enableCommands from './enableCommands';
-
-import { TreeView } from 'vscode';
-import { CICSTree } from '../trees/CICSTree';
+import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
-import { getManageSessionCommand } from "./manageSessionCommand";
+import * as disableCommands from "./disableCommands";
+import * as enableCommands from "./enableCommands";
 import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
+import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
@@ -33,7 +32,10 @@ import * as showAttributesCommands from "./showAttributesCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 
-export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => {
+export const getCommands = (
+  treeDataProv: CICSTree,
+  treeview: TreeView<any>,
+) => {
   return [
     getAddSessionCommand(treeDataProv),
     getManageSessionCommand(treeDataProv, treeview),
@@ -70,7 +72,10 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
     getShowRegionSITParametersCommand(treeview),
 
     filterResourceCommands.getFilterProgramsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterDatasetProgramsCommand(treeDataProv, treeview),
+    filterResourceCommands.getFilterDatasetProgramsCommand(
+      treeDataProv,
+      treeview,
+    ),
     filterResourceCommands.getFilterLibrariesCommand(treeDataProv, treeview),
     filterResourceCommands.getFilterDatasetsCommand(treeDataProv, treeview),
     filterResourceCommands.getFilterTransactionCommand(treeDataProv, treeview),
@@ -81,15 +86,39 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
     filterResourceCommands.getFilterPipelinesCommand(treeDataProv, treeview),
     filterResourceCommands.getFilterWebServicesCommand(treeDataProv, treeview),
 
-    filterAllResourceCommands.getFilterAllProgramsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLibrariesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllWebServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllPipelinesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTransactionsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLocalFilesCommand(treeDataProv, treeview),
+    filterAllResourceCommands.getFilterAllProgramsCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllLibrariesCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllWebServicesCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllPipelinesCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllTransactionsCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllLocalFilesCommand(
+      treeDataProv,
+      treeview,
+    ),
     filterAllResourceCommands.getFilterAllTasksCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTCPIPServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllURIMapsCommand(treeDataProv, treeview),
+    filterAllResourceCommands.getFilterAllTCPIPServicesCommand(
+      treeDataProv,
+      treeview,
+    ),
+    filterAllResourceCommands.getFilterAllURIMapsCommand(
+      treeDataProv,
+      treeview,
+    ),
 
     getFilterPlexResources(treeDataProv, treeview),
 

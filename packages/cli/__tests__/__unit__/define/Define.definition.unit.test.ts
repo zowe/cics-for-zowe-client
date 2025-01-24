@@ -8,13 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define program", () => {
   const DEFINE_RESOURCES = 6;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/define/Define.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(DEFINE_RESOURCES);
