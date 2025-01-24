@@ -8,12 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
+
 import { CicsCmciConstants } from "../../constants";
+import {
+  ICMCIApiResponse,
+  ICSDGroupParms,
+  IGetResourceUriOptions,
+} from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, ICSDGroupParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Add a new CSD Group resource to a CSD List in CICS through CMCI REST API
@@ -25,20 +29,41 @@ import { ICMCIApiResponse, ICSDGroupParms, IGetResourceUriOptions } from "../../
  * @throws {ImperativeError} CICS CSD List not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS CSD Group Name", "CICS CSD Group Name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdList, "CICS CSD List", "CICS CSD List is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function addCSDGroupToList(
+  session: AbstractSession,
+  parms: ICSDGroupParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS CSD Group Name",
+    "CICS CSD Group Name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdList,
+    "CICS CSD List",
+    "CICS CSD List is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to add a CSD Group to a CSD List with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to add a CSD Group to a CSD List with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=='${parms.name}'`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=='${parms.name}'`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CSDGROUP, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_CSDGROUP,
+    options,
+  );
 
   const requestBody: any = {
     request: {
@@ -49,11 +74,16 @@ export function addCSDGroupToList(session: AbstractSession, parms: ICSDGroupParm
         parameter: {
           $: {
             name: "TO_CSDLIST",
-            value: parms.csdList
-          }
-        }
-      }
-    }
+            value: parms.csdList,
+          },
+        },
+      },
+    },
   };
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  ) as any;
 }

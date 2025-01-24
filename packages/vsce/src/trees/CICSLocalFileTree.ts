@@ -8,21 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
-import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { CICSRegionTree } from "./CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+
+import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
-import { toArray } from "../utils/commandUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.parentRegion = parentRegion;
@@ -35,7 +38,9 @@ export class CICSLocalFileTree extends TreeItem {
   public async loadContents() {
     let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.localFile.filter")}`;
     if (!defaultCriteria || defaultCriteria.length === 0) {
-      await workspace.getConfiguration().update("zowe.cics.localFile.filter", "file=*");
+      await workspace
+        .getConfiguration()
+        .update("zowe.cics.localFile.filter", "file=*");
       defaultCriteria = "file=*";
     }
     let criteria;
@@ -46,24 +51,36 @@ export class CICSLocalFileTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const localFileResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLocalFile",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const localFileArray = toArray(localFileResponse.response.records.cicslocalfile);
+      const localFileResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSLocalFile",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const localFileArray = toArray(
+        localFileResponse.response.records.cicslocalfile,
+      );
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;
       for (const localFile of localFileArray) {
-        const newLocalFileItem = new CICSLocalFileTreeItem(localFile, this.parentRegion, this);
+        const newLocalFileItem = new CICSLocalFileTreeItem(
+          localFile,
+          this.parentRegion,
+          this,
+        );
         this.addLocalFile(newLocalFileItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a local file filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a local file filter to narrow search`,
+        );
         // @ts-ignore
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No local files found`);
@@ -71,10 +88,10 @@ export class CICSLocalFileTree extends TreeItem {
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching local files - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

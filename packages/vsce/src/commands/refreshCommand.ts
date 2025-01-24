@@ -8,63 +8,66 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { ProgressLocation, commands, window } from "vscode";
 
-import { commands, ProgressLocation, window } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 
 export function getRefreshCommand(tree: CICSTree) {
-  return commands.registerCommand("cics-extension-for-zowe.refreshTree", async () => {
-    try {
-      await window.withProgress(
-        {
-          title: "Refreshing",
-          location: ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async () => {
-          await tree.refreshLoadedProfiles();
-        }
-      );
-    } finally {
-      // window.withProgress({
-      //   title: 'Refresh',
-      //   location: ProgressLocation.Notification,
-      //   cancellable: true
-      // }, async (progress, token) => {
-      //   token.onCancellationRequested(() => {
-      //     console.log("Cancelling the refresh");
-      //   });
-      //   for (const index in tree.loadedProfiles) {
-      //     progress.report({
-      //       message: `Refreshing session ${parseInt(index) + 1} of ${tree.loadedProfiles.length}`,
-      //       increment: (parseInt(index) / tree.loadedProfiles.length) * 100,
-      //     });
-      //     let sessionTree = tree.loadedProfiles[parseInt(index)];
+  return commands.registerCommand(
+    "cics-extension-for-zowe.refreshTree",
+    async () => {
+      try {
+        await window.withProgress(
+          {
+            title: "Refreshing",
+            location: ProgressLocation.Notification,
+            cancellable: false,
+          },
+          async () => {
+            await tree.refreshLoadedProfiles();
+          },
+        );
+      } finally {
+        // window.withProgress({
+        //   title: 'Refresh',
+        //   location: ProgressLocation.Notification,
+        //   cancellable: true
+        // }, async (progress, token) => {
+        //   token.onCancellationRequested(() => {
+        //     console.log("Cancelling the refresh");
+        //   });
+        //   for (const index in tree.loadedProfiles) {
+        //     progress.report({
+        //       message: `Refreshing session ${parseInt(index) + 1} of ${tree.loadedProfiles.length}`,
+        //       increment: (parseInt(index) / tree.loadedProfiles.length) * 100,
+        //     });
+        //     let sessionTree = tree.loadedProfiles[parseInt(index)];
 
-      //     sessionTree.collapsibleState = TreeItemCollapsibleState.Collapsed;
+        //     sessionTree.collapsibleState = TreeItemCollapsibleState.Collapsed;
 
-      //     for (const sessionChild of sessionTree.children) {
-      //       // sessionchhild is plex tree or region tree
-      //       if (sessionChild instanceof CICSPlexTree) {
-      //         // plex tree -> .children is region trees
-      //         for (const region of sessionChild.children) {
-      //           for (const child of region.children!) {
-      //             if (child instanceof CICSProgramTree) {
-      //               await child.loadContents();
-      //             }
-      //           }
-      //         }
-      //       } else {
-      //         // region tree
-      //         for (const child of sessionChild.children!) {
-      //           await child.loadContents();
-      //         }
-      //       }
-      //     }
-      //   }
-      // });
-      tree._onDidChangeTreeData.fire(undefined);
-      window.showInformationMessage("Refreshed");
-    }
-  });
+        //     for (const sessionChild of sessionTree.children) {
+        //       // sessionchhild is plex tree or region tree
+        //       if (sessionChild instanceof CICSPlexTree) {
+        //         // plex tree -> .children is region trees
+        //         for (const region of sessionChild.children) {
+        //           for (const child of region.children!) {
+        //             if (child instanceof CICSProgramTree) {
+        //               await child.loadContents();
+        //             }
+        //           }
+        //         }
+        //       } else {
+        //         // region tree
+        //         for (const child of sessionChild.children!) {
+        //           await child.loadContents();
+        //         }
+        //       }
+        //     }
+        //   }
+        // });
+        tree._onDidChangeTreeData.fire(undefined);
+        window.showInformationMessage("Refreshed");
+      }
+    },
+  );
 }

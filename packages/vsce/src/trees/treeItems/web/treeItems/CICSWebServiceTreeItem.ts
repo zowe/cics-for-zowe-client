@@ -8,10 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../../../CICSRegionTree";
 import { getIconPathInResources } from "../../../../utils/profileUtils";
+import { CICSRegionTree } from "../../../CICSRegionTree";
 
 export class CICSWebServiceTreeItem extends TreeItem {
   webservice: any;
@@ -22,7 +22,10 @@ export class CICSWebServiceTreeItem extends TreeItem {
     webservice: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("program-dark.svg", "program-light.svg")
+    public readonly iconPath = getIconPathInResources(
+      "program-dark.svg",
+      "program-light.svg",
+    ),
   ) {
     super(`${webservice.name}`, TreeItemCollapsibleState.None);
 

@@ -11,31 +11,30 @@
 
 export interface ITransactionParms {
   /**
-     * The name of the transaction to define
-     * Up to four characters long
-     */
+   * The name of the transaction to define
+   * Up to four characters long
+   */
   name: string;
 
   /**
-     * The name of the program to associate to the transaction
-     * Up to eight characters long
-     */
+   * The name of the program to associate to the transaction
+   * Up to eight characters long
+   */
   programName?: string;
 
   /**
-     * CSD group for the transaction
-     * Up to eight characters long
-     */
+   * CSD group for the transaction
+   * Up to eight characters long
+   */
   csdGroup?: string;
 
   /**
-     * The name of the CICS region to define the transaction to
-     */
+   * The name of the CICS region to define the transaction to
+   */
   regionName: string;
 
   /**
-     * CICS Plex to define the new transaction to
-     */
+   * CICS Plex to define the new transaction to
+   */
   cicsPlex?: string;
-
 }

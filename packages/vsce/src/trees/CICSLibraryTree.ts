@@ -8,21 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { getIconOpen } from "../utils/profileUtils";
-import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
-import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
 import { toArray } from "../utils/commandUtils";
+import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { getIconOpen } from "../utils/profileUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 
 export class CICSLibraryTree extends TreeItem {
   children: CICSLibraryTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.parentRegion = parentRegion;
@@ -42,33 +45,45 @@ export class CICSLibraryTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLibrary",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const librariesArray = toArray(libraryResponse.response.records.cicslibrary);
+      const libraryResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSLibrary",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const librariesArray = toArray(
+        libraryResponse.response.records.cicslibrary,
+      );
       this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${librariesArray.length}]`;
       for (const library of librariesArray) {
-        const newLibraryItem = new CICSLibraryTreeItem(library, this.parentRegion, this);
+        const newLibraryItem = new CICSLibraryTreeItem(
+          library,
+          this.parentRegion,
+          this,
+        );
         this.addLibrary(newLibraryItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a library filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a library filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No libraries found`);
         this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching libraries - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching libraries - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

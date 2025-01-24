@@ -8,10 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconPathInResources } from "../../utils/profileUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSTransactionTreeItem extends TreeItem {
   transaction: any;
@@ -23,9 +23,15 @@ export class CICSTransactionTreeItem extends TreeItem {
     transaction: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("local-transaction-dark.svg", "local-transaction-light.svg")
+    public readonly iconPath = getIconPathInResources(
+      "local-transaction-dark.svg",
+      "local-transaction-light.svg",
+    ),
   ) {
-    super(`${transaction.tranid} ${transaction.status.toLowerCase() === "disabled" ? "(Disabled)" : ""}`, TreeItemCollapsibleState.None);
+    super(
+      `${transaction.tranid} ${transaction.status.toLowerCase() === "disabled" ? "(Disabled)" : ""}`,
+      TreeItemCollapsibleState.None,
+    );
     this.transaction = transaction;
     this.contextValue = `cicstransaction.${transaction.status.toLowerCase()}.${transaction.tranid}`;
     this.parentRegion = parentRegion;

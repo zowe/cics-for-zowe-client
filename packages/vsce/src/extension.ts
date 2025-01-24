@@ -8,17 +8,25 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { Logger } from "@zowe/imperative";
+import {
+  ExtensionContext,
+  ProgressLocation,
+  TreeItemCollapsibleState,
+  window,
+} from "vscode";
 
-import { ExtensionContext, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
+import { getCommands } from "./commands";
 import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { CICSTree } from "./trees/CICSTree";
-import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
+import {
+  plexExpansionHandler,
+  regionContainerExpansionHandler,
+  sessionExpansionHandler,
+} from "./utils/expansionHandler";
 import { ProfileManagement } from "./utils/profileManagement";
 import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
-
-import { Logger } from "@zowe/imperative";
-import { getCommands } from "./commands";
 
 /**
  * Initializes the extension
@@ -30,10 +38,14 @@ export async function activate(context: ExtensionContext) {
   const logger = Logger.getAppLogger();
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
-    window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
+    window.showErrorMessage(
+      "Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed",
+    );
     return;
   } else if (zeVersion[0] !== "3") {
-    window.showErrorMessage(`Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`);
+    window.showErrorMessage(
+      `Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`,
+    );
     return;
   }
   if (ProfileManagement.apiDoesExist()) {
@@ -56,7 +68,7 @@ export async function activate(context: ExtensionContext) {
   } else {
     window.showErrorMessage(
       "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
+        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
     );
     return;
   }
@@ -76,18 +88,21 @@ export async function activate(context: ExtensionContext) {
   };
 
   const expandResourceTree = (node: any) => {
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: "Loading resources...",
-      cancellable: true
-    }, async (_progress, _token) => {
-      await node.element.loadContents();
-      node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
-      treeDataProv._onDidChangeTreeData.fire(undefined);
-    });
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Loading resources...",
+        cancellable: true,
+      },
+      async (_progress, _token) => {
+        await node.element.loadContents();
+        node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+        treeDataProv._onDidChangeTreeData.fire(undefined);
+      },
+    );
   };
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void; } = {
+  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
     cicscombinedprogramtree: expandCombinedTree,
     cicscombinedtransactiontree: expandCombinedTree,
     cicscombinedlocalfiletree: expandCombinedTree,
@@ -121,9 +136,16 @@ export async function activate(context: ExtensionContext) {
       } catch (error) {
         const newSessionTree = new CICSSessionTree(
           node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
+          getIconPathInResources(
+            "profile-disconnected-dark.svg",
+            "profile-disconnected-light.svg",
+          ),
         );
-        treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
+        treeDataProv.loadedProfiles.splice(
+          treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()),
+          1,
+          newSessionTree,
+        );
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
     },
@@ -132,22 +154,19 @@ export async function activate(context: ExtensionContext) {
       node.element.iconPath = getIconOpen(true);
       regionContainerExpansionHandler(node.element, treeDataProv);
       treeDataProv._onDidChangeTreeData.fire(undefined);
-    }
+    },
   };
 
   treeview.onDidExpandElement((node) => {
-
     const contextValue = node.element.contextValue;
     const initialContext = contextValue.split(".")[0];
 
     if (initialContext in contextMap) {
       contextMap[initialContext](node);
     }
-
   });
 
   treeview.onDidCollapseElement((node) => {
-
     const interestedContextValues = [
       "cicsregionscontainer.",
       "cicscombinedprogramtree.",
@@ -172,7 +191,11 @@ export async function activate(context: ExtensionContext) {
       "cicstreeurimaps.",
     ];
 
-    if (interestedContextValues.some(item => node.element.contextValue.includes(item))) {
+    if (
+      interestedContextValues.some((item) =>
+        node.element.contextValue.includes(item),
+      )
+    ) {
       node.element.iconPath = getIconOpen(false);
     }
     node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;

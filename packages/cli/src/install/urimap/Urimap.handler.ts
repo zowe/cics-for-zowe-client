@@ -8,15 +8,20 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, installUrimap } from "@zowe/cics-for-zowe-sdk";
-import { CicsBaseHandler } from "../../CicsBaseHandler";
+import {
+  AbstractSession,
+  IHandlerParameters,
+  ITaskWithStatus,
+  TaskStage,
+} from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
+import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).INSTALL.RESOURCES.URIMAP;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings)
+  .INSTALL.RESOURCES.URIMAP;
 
 /**
  * Command handler for installing CICS URIMaps via CMCI
@@ -26,22 +31,27 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).IN
  */
 
 export default class UrimapHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
+  public async processWithSession(
+    params: IHandlerParameters,
+    session: AbstractSession,
+  ): Promise<ICMCIApiResponse> {
     const status: ITaskWithStatus = {
       statusMessage: "Installing URIMAP from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await installUrimap(session, {
       name: params.arguments.urimapName,
       csdGroup: params.arguments.csdGroup,
-      regionName: params.arguments.regionName
+      regionName: params.arguments.regionName,
     });
 
-    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
+    params.response.console.log(
+      strings.MESSAGES.SUCCESS,
+      params.arguments.urimapName,
+    );
     return response;
   }
 }

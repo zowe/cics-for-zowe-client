@@ -8,11 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics define webservice", () => {
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const path = "../../../../src/define/webservice/Webservice.definition";
     const definition: ICommandDefinition = require(path).WebServiceDefinition;
     expect(definition).toBeDefined();

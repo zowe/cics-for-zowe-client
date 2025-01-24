@@ -8,32 +8,31 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
+
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  disableUrimap,
   ICMCIApiResponse,
   IURIMapParms,
+  disableUrimap,
 } from "../../../src";
 
 describe("CMCI - Disable urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
   const disableParms: IURIMapParms = {
     regionName: region,
-    name: urimap
+    name: urimap,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -75,7 +74,9 @@ describe("CMCI - Disable urimap", () => {
   });
 
   describe("success scenarios", () => {
-    const disableSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
+    const disableSpy = jest
+      .spyOn(CicsCmciRestClient, "putExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -87,24 +88,34 @@ describe("CMCI - Disable urimap", () => {
     });
 
     it("should be able to disable a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_URIMAP + "/" + region +
-            `?CRITERIA=(NAME%3D${disableParms.name})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_URIMAP +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${disableParms.name})`;
       requestBody = {
         request: {
           update: {
             attributes: {
               $: {
-                ENABLESTATUS: "DISABLED"
-              }
-            }
-          }
-        }
+                ENABLESTATUS: "DISABLED",
+              },
+            },
+          },
+        },
       };
 
       response = await disableUrimap(dummySession, disableParms);
       expect(response).toContain(content);
-      expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(disableSpy).toHaveBeenCalledWith(
+        dummySession,
+        endPoint,
+        [],
+        requestBody,
+      );
     });
   });
 });

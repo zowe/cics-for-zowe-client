@@ -8,11 +8,15 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import {
+  Types,
+  ZoweVsCodeExtension,
+  imperative,
+} from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
+
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
@@ -20,9 +24,11 @@ import cicsProfileMeta from "./profileDefinition";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
-  private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
+  private static ProfilesCache = ProfileManagement.zoweExplorerAPI
+    .getExplorerExtenderApi()
+    .getProfilesCache();
 
-  constructor() { }
+  constructor() {}
 
   public static apiDoesExist() {
     if (ProfileManagement.zoweExplorerAPI) {
@@ -32,7 +38,9 @@ export class ProfileManagement {
   }
 
   public static async registerCICSProfiles() {
-    await ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().initForZowe("cics", cicsProfileMeta);
+    await ProfileManagement.zoweExplorerAPI
+      .getExplorerExtenderApi()
+      .initForZowe("cics", cicsProfileMeta);
   }
 
   public static getExplorerApis() {
@@ -44,12 +52,14 @@ export class ProfileManagement {
   }
 
   public static async profilesCacheRefresh() {
-    const apiRegiser: Types.IApiRegisterClient = ProfileManagement.getExplorerApis();
+    const apiRegiser: Types.IApiRegisterClient =
+      ProfileManagement.getExplorerApis();
     await ProfileManagement.getProfilesCache().refresh(apiRegiser);
   }
 
   public static async getConfigInstance(): Promise<imperative.ProfileInfo> {
-    const mProfileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
+    const mProfileInfo =
+      await ProfileManagement.getProfilesCache().getProfileInfo();
     return mProfileInfo;
   }
 
@@ -61,12 +71,15 @@ export class ProfileManagement {
       type: "basic",
       user: profile.user,
       password: profile.password,
-      rejectUnauthorized: 'rejectUnauthorized' in profile ? profile.rejectUnauthorized : true,
+      rejectUnauthorized:
+        "rejectUnauthorized" in profile ? profile.rejectUnauthorized : true,
     });
   }
 
-  public static async regionIsGroup(session: Session, profile: imperative.IProfile): Promise<boolean> {
-
+  public static async regionIsGroup(
+    session: Session,
+    profile: imperative.IProfile,
+  ): Promise<boolean> {
     let isGroup = false;
     try {
       const checkIfSystemGroup = await getResource(session, {
@@ -75,7 +88,10 @@ export class ProfileManagement {
         regionName: profile.regionName,
         criteria: `GROUP=${profile.regionName}`,
       });
-      if (checkIfSystemGroup && checkIfSystemGroup.response.resultsummary.recordcount !== "0") {
+      if (
+        checkIfSystemGroup &&
+        checkIfSystemGroup.response.resultsummary.recordcount !== "0"
+      ) {
         isGroup = true;
       }
     } catch (error) {
@@ -96,10 +112,11 @@ export class ProfileManagement {
         queryParams: {
           summonly: true,
           nodiscard: true,
-        }
+        },
       });
-      return response.resultsummary.api_response1_alt === "OK" ?
-        response.resultsummary.cachetoken : null;
+      return response.resultsummary.api_response1_alt === "OK"
+        ? response.resultsummary.cachetoken
+        : null;
     } catch (error) {
       if (error instanceof imperative.RestClientError) {
         if (`${error.mDetails.errorCode}` === "404") {
@@ -117,8 +134,10 @@ export class ProfileManagement {
     }
   }
 
-  public static async regionPlexProvided(session: Session, profile: imperative.IProfile): Promise<InfoLoaded[]> {
-
+  public static async regionPlexProvided(
+    session: Session,
+    profile: imperative.IProfile,
+  ): Promise<InfoLoaded[]> {
     const infoLoaded: InfoLoaded[] = [];
 
     try {
@@ -136,7 +155,7 @@ export class ProfileManagement {
         });
       } else {
         window.showErrorMessage(
-          `Cannot find region ${profile.regionName} in plex ${profile.cicsPlex} for profile ${profile.name}`
+          `Cannot find region ${profile.regionName} in plex ${profile.cicsPlex} for profile ${profile.name}`,
         );
         throw new Error("Region Not Found");
       }
@@ -145,8 +164,11 @@ export class ProfileManagement {
         window.showErrorMessage(
           `${error.causeErrors.code} - ${error.causeErrors.message}`,
         );
-      } else if (error instanceof imperative.ImperativeError && (
-        error.mDetails.msg.toUpperCase().includes("INVALIDATA") || error.mDetails.msg.toUpperCase().includes("INVALIDPARM"))) {
+      } else if (
+        error instanceof imperative.ImperativeError &&
+        (error.mDetails.msg.toUpperCase().includes("INVALIDATA") ||
+          error.mDetails.msg.toUpperCase().includes("INVALIDPARM"))
+      ) {
         window.showErrorMessage(
           `Plex ${profile.cicsPlex} and Region ${profile.regionName} not found - ${JSON.stringify(error)}`,
         );
@@ -161,8 +183,10 @@ export class ProfileManagement {
     return infoLoaded;
   }
 
-  public static async plexProvided(session: Session, profile: imperative.IProfile): Promise<InfoLoaded[]> {
-
+  public static async plexProvided(
+    session: Session,
+    profile: imperative.IProfile,
+  ): Promise<InfoLoaded[]> {
     const infoLoaded: InfoLoaded[] = [];
 
     const { response } = await getResource(session, {
@@ -177,15 +201,19 @@ export class ProfileManagement {
         group: false,
       });
     } else {
-      window.showErrorMessage(`Cannot find plex ${profile.cicsPlex} for profile ${profile.name}`);
+      window.showErrorMessage(
+        `Cannot find plex ${profile.cicsPlex} for profile ${profile.name}`,
+      );
       throw new Error("Plex Not Found");
     }
 
     return infoLoaded;
   }
 
-  public static async regionProvided(session: Session, profile: imperative.IProfile): Promise<InfoLoaded[]> {
-
+  public static async regionProvided(
+    session: Session,
+    profile: imperative.IProfile,
+  ): Promise<InfoLoaded[]> {
     const infoLoaded: InfoLoaded[] = [];
 
     const { response } = await getResource(session, {
@@ -208,13 +236,15 @@ export class ProfileManagement {
   }
 
   public static async noneProvided(session: Session): Promise<InfoLoaded[]> {
-
     const infoLoaded: InfoLoaded[] = [];
 
     const isPlex = await this.isPlex(session);
     if (isPlex) {
       try {
-        const { response } = await getCache(session, { cacheToken: isPlex, nodiscard: false });
+        const { response } = await getCache(session, {
+          cacheToken: isPlex,
+          nodiscard: false,
+        });
         if (response.records.cicscicsplex) {
           for (const plex of toArray(response.records.cicscicsplex)) {
             infoLoaded.push({
@@ -264,8 +294,9 @@ export class ProfileManagement {
    * @param profile
    * @returns Array of type InfoLoaded
    */
-  public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
-
+  public static async getPlexInfo(
+    profile: imperative.IProfileLoaded,
+  ): Promise<InfoLoaded[]> {
     const session = this.getSessionFromProfile(profile.profile);
 
     if (profile.profile.cicsPlex && profile.profile.regionName) {
@@ -293,8 +324,13 @@ export class ProfileManagement {
         return toArray(response.records.cicsmanagedregion);
       }
     } catch (error) {
-      if (error instanceof imperative.ImperativeError && !error.mDetails.msg.includes("NOTAVAILABLE")) {
-        window.showErrorMessage(`Error retrieving ManagedRegions for plex ${plex.getPlexName()} with profile ${plex.getParent().label} - ${error}`);
+      if (
+        error instanceof imperative.ImperativeError &&
+        !error.mDetails.msg.includes("NOTAVAILABLE")
+      ) {
+        window.showErrorMessage(
+          `Error retrieving ManagedRegions for plex ${plex.getPlexName()} with profile ${plex.getParent().label} - ${error}`,
+        );
       }
     }
   }
@@ -304,25 +340,33 @@ export class ProfileManagement {
     plexName: string,
     resourceName: string,
     criteria?: string,
-    group?: string
-  ): Promise<{ cacheToken: string; recordCount: number; }> {
+    group?: string,
+  ): Promise<{ cacheToken: string; recordCount: number }> {
     const session = this.getSessionFromProfile(profile.profile);
     try {
       const allProgramsResponse = await getResource(session, {
         name: resourceName,
         cicsPlex: plexName,
-        ...group ? { regionName: group } : {},
+        ...(group ? { regionName: group } : {}),
         criteria: criteria,
         queryParams: {
           summonly: true,
           nodiscard: true,
           overrideWarningCount: true,
-        }
+        },
       });
-      if (allProgramsResponse.response.resultsummary.api_response1_alt === "OK") {
-        if (allProgramsResponse.response && allProgramsResponse.response.resultsummary) {
+      if (
+        allProgramsResponse.response.resultsummary.api_response1_alt === "OK"
+      ) {
+        if (
+          allProgramsResponse.response &&
+          allProgramsResponse.response.resultsummary
+        ) {
           const resultsSummary = allProgramsResponse.response.resultsummary;
-          return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
+          return {
+            cacheToken: resultsSummary.cachetoken,
+            recordCount: parseInt(resultsSummary.recordcount, 10),
+          };
         }
       }
     } catch (error) {
@@ -340,7 +384,8 @@ export class ProfileManagement {
     cacheToken: string,
     resourceName: string,
     start = 1,
-    increment = constants.RESOURCES_MAX) {
+    increment = constants.RESOURCES_MAX,
+  ) {
     const session = this.getSessionFromProfile(profile.profile);
     const allItemsresponse = await getCache(session, {
       cacheToken,
@@ -349,8 +394,13 @@ export class ProfileManagement {
     });
 
     if (allItemsresponse.response.resultsummary.api_response1_alt === "OK") {
-      if (allItemsresponse.response && allItemsresponse.response.records && allItemsresponse.response.records[resourceName.toLowerCase()]) {
-        const recordAttributes = allItemsresponse.response.records[resourceName.toLowerCase()];
+      if (
+        allItemsresponse.response &&
+        allItemsresponse.response.records &&
+        allItemsresponse.response.records[resourceName.toLowerCase()]
+      ) {
+        const recordAttributes =
+          allItemsresponse.response.records[resourceName.toLowerCase()];
         return toArray(recordAttributes);
       }
     }

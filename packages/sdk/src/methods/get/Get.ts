@@ -8,9 +8,13 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { ICMCIApiResponse, IGetResourceUriOptions, IResourceParms } from "../../doc";
+
+import {
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  IResourceParms,
+} from "../../doc";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
@@ -24,10 +28,20 @@ import { Utils } from "../../utils";
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function getResource(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Resource name", "CICS resource name is required");
+export async function getResource(
+  session: AbstractSession,
+  parms: IResourceParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Resource name",
+    "CICS resource name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to get resource(s) with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to get resource(s) with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
     cicsPlex: parms.cicsPlex,

@@ -8,17 +8,23 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import {
+  ProgressLocation,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+  workspace,
+} from "vscode";
 
-import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
+import { getIconOpen } from "../../utils/profileUtils";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { CICSLibraryTreeItem } from "../treeItems/CICSLibraryTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedLibraryTree extends TreeItem {
@@ -29,14 +35,23 @@ export class CICSCombinedLibraryTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("All Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlibrarytree.`;
     this.parentPlex = parentPlex;
-    this.children = [new TextTreeItem("Use the search button to display libraries", "applyfiltertext.")];
+    this.children = [
+      new TextTreeItem(
+        "Use the search button to display libraries",
+        "applyfiltertext.",
+      ),
+    ];
     this.activeFilter = undefined;
     this.currentCount = 0;
-    this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allLibraries.recordCountIncrement")}`;
+    this.incrementCount =
+      +`${workspace.getConfiguration().get("zowe.cics.allLibraries.recordCountIncrement")}`;
     this.constant = "CICSLibrary";
   }
 
@@ -48,7 +63,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -60,7 +75,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +87,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allLibraries = await ProfileManagement.getCachedResources(
@@ -80,7 +95,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
@@ -97,25 +112,41 @@ export class CICSCombinedLibraryTree extends TreeItem {
           }
         } catch (error) {
           window.showErrorMessage(
-            `Something went wrong when fetching libraries - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+            `Something went wrong when fetching libraries - ${JSON.stringify(
+              error,
+              Object.getOwnPropertyNames(error),
+            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
           );
         }
-      }
+      },
     );
   }
 
-  public addLibrariesUtil(newChildren: (CICSLibraryTreeItem | ViewMore)[], allLibraries: any, count: number | undefined) {
+  public addLibrariesUtil(
+    newChildren: (CICSLibraryTreeItem | ViewMore)[],
+    allLibraries: any,
+    count: number | undefined,
+  ) {
     for (const library of allLibraries) {
-      const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      const regionsContainer = this.parentPlex.children.filter(
+        (child) => child instanceof CICSRegionsContainer,
+      )?.[0];
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
-        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === library.eyu_cicsname)?.[0] as CICSRegionTree;
+        .filter(
+          (child) =>
+            child instanceof CICSRegionTree &&
+            child.getRegionName() === library.eyu_cicsname,
+        )?.[0] as CICSRegionTree;
       const libraryTree = new CICSLibraryTreeItem(library, parentRegion, this);
-      libraryTree.setLabel(libraryTree.label.toString().replace(library.name, `${library.name} (${library.eyu_cicsname})`));
+      libraryTree.setLabel(
+        libraryTree.label
+          .toString()
+          .replace(library.name, `${library.name} (${library.eyu_cicsname})`),
+      );
       newChildren.push(libraryTree);
     }
     if (!count) {
@@ -124,7 +155,12 @@ export class CICSCombinedLibraryTree extends TreeItem {
     this.currentCount = newChildren.length;
     this.label = `All Libraries ${this.activeFilter ? `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
     if (count !== this.currentCount) {
-      newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count - this.currentCount)));
+      newChildren.push(
+        new ViewMore(
+          this,
+          Math.min(this.incrementCount, count - this.currentCount),
+        ),
+      );
     }
     this.children = newChildren;
   }
@@ -146,7 +182,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -157,19 +193,21 @@ export class CICSCombinedLibraryTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allLibraries) {
             // @ts-ignore
             this.addLibrariesUtil(
-              (this.getChildren()?.filter((child) => child instanceof CICSLibraryTreeItem) ?? []) as CICSLibraryTreeItem[],
+              (this.getChildren()?.filter(
+                (child) => child instanceof CICSLibraryTreeItem,
+              ) ?? []) as CICSLibraryTreeItem[],
               allLibraries,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 
@@ -188,7 +226,9 @@ export class CICSCombinedLibraryTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children ? this.children.filter((child) => !(child instanceof TextTreeItem)) : [];
+    return this.children
+      ? this.children.filter((child) => !(child instanceof TextTreeItem))
+      : [];
   }
 
   public getActiveFilter() {

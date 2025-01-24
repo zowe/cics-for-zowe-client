@@ -8,14 +8,23 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { join } from "path";
 import { window } from "vscode";
+
 import { ProfileManagement } from "./profileManagement";
 
-export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
-  const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
+export function missingSessionParameters(
+  profileProfile: any,
+): (string | undefined)[] {
+  const params = [
+    "host",
+    "port",
+    "user",
+    "password",
+    "rejectUnauthorized",
+    "protocol",
+  ];
   const missing: (string | undefined)[] = [];
   for (const value of params) {
     if (profileProfile[value] === undefined) {
@@ -25,7 +34,10 @@ export function missingSessionParameters(profileProfile: any): (string | undefin
   return missing;
 }
 
-export function getIconPathInResources(iconFileNameLight: string, iconFileNameDark: string): { light: string; dark: string } {
+export function getIconPathInResources(
+  iconFileNameLight: string,
+  iconFileNameDark: string,
+): { light: string; dark: string } {
   return {
     // We bundle the extension into a single `dist/extension.js`
     // `__dirname/../resources/imgs === `/path/to/dist/../resources/imgs`
@@ -34,16 +46,22 @@ export function getIconPathInResources(iconFileNameLight: string, iconFileNameDa
   };
 }
 
-export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
+export async function promptCredentials(
+  sessionName: string,
+  rePrompt?: boolean,
+): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {
   //   requireKeytar: () => getSecurityModules("keytar", isTheia())!,
   // });
   // await mProfileInfo.readProfilesFromDisk();
   // ProfilesCache.createConfigInstance(mProfileInfo);
-  const promptInfo = await ZoweVsCodeExtension.updateCredentials({
-    sessionName,
-    rePrompt,
-  }, ProfileManagement.getExplorerApis());
+  const promptInfo = await ZoweVsCodeExtension.updateCredentials(
+    {
+      sessionName,
+      rePrompt,
+    },
+    ProfileManagement.getExplorerApis(),
+  );
   if (!promptInfo) {
     window.showInformationMessage("Input credentials operation Cancelled");
   }
@@ -53,5 +71,6 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
 export function getIconOpen(open: boolean = true) {
   return getIconPathInResources(
     `folder-${open ? "open" : "closed"}-dark.svg`,
-    `folder-${open ? "open" : "closed"}-light.svg`);
+    `folder-${open ? "open" : "closed"}-light.svg`,
+  );
 }

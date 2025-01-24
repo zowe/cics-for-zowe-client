@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { IResourceQueryParams } from "./IResourceQueryParms";
 
 export interface IResultCacheParms extends IResourceQueryParams {

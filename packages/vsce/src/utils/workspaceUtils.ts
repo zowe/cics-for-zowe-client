@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { env, extensions, window, workspace } from "vscode";
 
 export function isTheia(): boolean {

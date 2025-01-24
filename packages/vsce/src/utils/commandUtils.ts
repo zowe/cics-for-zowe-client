@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { TreeView } from "vscode";
 
 /**
@@ -18,7 +17,11 @@ import { TreeView } from "vscode";
  * @param clickedNode - Node that was clicked right before the command was executed
  * @return Array of selected nodes in the treeview.
  */
-export function findSelectedNodes(treeview: TreeView<any>, instanceOf: any, clickedNode?: any) {
+export function findSelectedNodes(
+  treeview: TreeView<any>,
+  instanceOf: any,
+  clickedNode?: any,
+) {
   const selection = treeview.selection;
   let allSelectedNodes = [];
   if (clickedNode) {
@@ -28,11 +31,15 @@ export function findSelectedNodes(treeview: TreeView<any>, instanceOf: any, clic
       //if user right clicks the node other than selected node
       allSelectedNodes = [clickedNode];
     }
-    allSelectedNodes = allSelectedNodes.filter((selectedNode) => selectedNode instanceof instanceOf);
+    allSelectedNodes = allSelectedNodes.filter(
+      (selectedNode) => selectedNode instanceof instanceOf,
+    );
   }
   // executed from command palette
   else if (selection.length) {
-    allSelectedNodes = selection.filter((node: any) => node && node instanceof instanceOf);
+    allSelectedNodes = selection.filter(
+      (node: any) => node && node instanceof instanceOf,
+    );
   }
   return allSelectedNodes;
 }

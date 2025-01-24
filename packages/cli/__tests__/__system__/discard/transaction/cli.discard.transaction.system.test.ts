@@ -8,12 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import {
+  ITestEnvironment,
+  TestEnvironment,
+  runCliScript,
+} from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
 import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
-import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
 
 const programName = "program1";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -27,12 +31,11 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 describe("CICS discard transaction command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "discard_transaction",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -41,7 +44,8 @@ describe("CICS discard transaction command", () => {
     user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
     password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
     protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
+    rejectUnauthorized =
+      TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
   });
 
   afterAll(async () => {
@@ -58,44 +62,61 @@ describe("CICS discard transaction command", () => {
       user: cicsProperties.user,
       password: cicsProperties.password,
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${CicsCmciConstants.CICS_DEFINITION_TRANSACTION}/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${transactionName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`,
+    );
   };
 
   it("should be able to display the help", () => {
-    const output = runCliScript(__dirname + "/__scripts__/discard_transaction_help.sh", TEST_ENVIRONMENT, []);
+    const output = runCliScript(
+      __dirname + "/__scripts__/discard_transaction_help.sh",
+      TEST_ENVIRONMENT,
+      [],
+    );
     expect(output.stderr.toString()).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toMatchSnapshot();
   });
 
   it("should be able to successfully discard a transaction with basic options", async () => {
-
     // Get a random transaction name
     const transactionNameSuffixLength = 3;
-    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+    const transactionName =
+      "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
     // Define the transaction
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction.sh", TEST_ENVIRONMENT,
-      [transactionName, programName, csdGroup, regionName]);
+    let output = runCliScript(
+      __dirname + "/../../define/transaction/__scripts__/define_transaction.sh",
+      TEST_ENVIRONMENT,
+      [transactionName, programName, csdGroup, regionName],
+    );
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
     // Install defined transaction
-    output = runCliScript(__dirname + "/../../install/transaction/__scripts__/install_transaction.sh", TEST_ENVIRONMENT,
-      [transactionName, csdGroup, regionName]);
+    output = runCliScript(
+      __dirname +
+        "/../../install/transaction/__scripts__/install_transaction.sh",
+      TEST_ENVIRONMENT,
+      [transactionName, csdGroup, regionName],
+    );
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/discard_transaction.sh", TEST_ENVIRONMENT, [transactionName, regionName]);
+    output = runCliScript(
+      __dirname + "/__scripts__/discard_transaction.sh",
+      TEST_ENVIRONMENT,
+      [transactionName, regionName],
+    );
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -105,7 +126,11 @@ describe("CICS discard transaction command", () => {
   });
 
   it("should get a syntax error if transaction name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/discard_transaction.sh", TEST_ENVIRONMENT, ["", "FAKERGN"]);
+    const output = runCliScript(
+      __dirname + "/__scripts__/discard_transaction.sh",
+      TEST_ENVIRONMENT,
+      ["", "FAKERGN"],
+    );
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("Missing Positional Argument");
@@ -114,14 +139,18 @@ describe("CICS discard transaction command", () => {
   });
 
   it("should be able to successfully discard a transaction with profile options", async () => {
-
     // Get a random transaction name
     const transactionNameSuffixLength = 3;
-    const transactionName = "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
+    const transactionName =
+      "X" + generateRandomAlphaNumericString(transactionNameSuffixLength);
 
     // Define the transaction
-    let output = runCliScript(__dirname + "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
+    let output = runCliScript(
+      __dirname +
+        "/../../define/transaction/__scripts__/define_transaction_fully_qualified.sh",
+      TEST_ENVIRONMENT,
+      [
+        transactionName,
         programName,
         csdGroup,
         regionName,
@@ -130,16 +159,21 @@ describe("CICS discard transaction command", () => {
         user,
         password,
         protocol,
-        rejectUnauthorized
-      ]);
+        rejectUnauthorized,
+      ],
+    );
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
     // Install defined transaction
-    output = runCliScript(__dirname + "/../../install/transaction/__scripts__/install_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
+    output = runCliScript(
+      __dirname +
+        "/../../install/transaction/__scripts__/install_transaction_fully_qualified.sh",
+      TEST_ENVIRONMENT,
+      [
+        transactionName,
         csdGroup,
         regionName,
         host,
@@ -147,21 +181,28 @@ describe("CICS discard transaction command", () => {
         user,
         password,
         protocol,
-        rejectUnauthorized]);
+        rejectUnauthorized,
+      ],
+    );
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/discard_transaction_fully_qualified.sh", TEST_ENVIRONMENT,
-      [transactionName,
+    output = runCliScript(
+      __dirname + "/__scripts__/discard_transaction_fully_qualified.sh",
+      TEST_ENVIRONMENT,
+      [
+        transactionName,
         regionName,
         host,
         port,
         user,
         password,
         protocol,
-        rejectUnauthorized]);
+        rejectUnauthorized,
+      ],
+    );
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);

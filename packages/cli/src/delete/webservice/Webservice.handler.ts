@@ -8,15 +8,20 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, deleteWebservice } from "@zowe/cics-for-zowe-sdk";
-import { CicsBaseHandler } from "../../CicsBaseHandler";
+import {
+  AbstractSession,
+  IHandlerParameters,
+  ITaskWithStatus,
+  TaskStage,
+} from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
+import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE.RESOURCES.URIMAP;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings)
+  .DELETE.RESOURCES.URIMAP;
 
 /**
  * Command handler for deleting CICS web services via CMCI
@@ -26,14 +31,16 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  */
 
 export default class WebServiceHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
+  public async processWithSession(
+    params: IHandlerParameters,
+    session: AbstractSession,
+  ): Promise<ICMCIApiResponse> {
     const status: ITaskWithStatus = {
       statusMessage: "Deleting web service from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await deleteWebservice(session, {
       name: params.arguments.webserviceName,
@@ -41,7 +48,10 @@ export default class WebServiceHandler extends CicsBaseHandler {
       regionName: params.arguments.regionName,
     });
 
-    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.webserviceName);
+    params.response.console.log(
+      strings.MESSAGES.SUCCESS,
+      params.arguments.webserviceName,
+    );
     return response;
   }
 }

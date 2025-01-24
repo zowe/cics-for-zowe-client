@@ -8,40 +8,41 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
+
+import i18nTypings from "../-strings-/en";
+import { CicsSession } from "../CicsSession";
 import { ProgramDefinition } from "./program/Program.definition";
 import { TransactionDefinition } from "./transaction/Transaction.definition";
 import { UrimapDefinition } from "./urimap/Urimap.definition";
 import { WebServiceDefinition } from "./webservice/Webservice.definition";
 
-import i18nTypings from "../-strings-/en";
-import { CicsSession } from "../CicsSession";
-
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).DELETE;
+const strings = (require("../-strings-/en").default as typeof i18nTypings)
+  .DELETE;
 
 /**
  * Definition for the "delete" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "delete", aliases: ["del"],
+  name: "delete",
+  aliases: ["del"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [ProgramDefinition,
+  children: [
+    ProgramDefinition,
     TransactionDefinition,
     UrimapDefinition,
-    WebServiceDefinition],
+    WebServiceDefinition,
+  ],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

@@ -8,8 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
 export class ViewMore extends TreeItem {
   parent: any;

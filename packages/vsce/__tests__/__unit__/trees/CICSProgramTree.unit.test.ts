@@ -1,3 +1,12 @@
+import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+
+import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
+import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
+import * as filterUtils from "../../../src/utils/filterUtils";
+import CustomError from "../../__utils__/CustomError";
+
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -10,14 +19,6 @@
  */
 
 const getIconOpenMock = jest.fn();
-
-import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
-import * as filterUtils from "../../../src/utils/filterUtils";
-import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
-import CustomError from "../../__utils__/CustomError";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const zoweSdk = require("@zowe/cics-for-zowe-sdk");
@@ -51,10 +52,16 @@ const getResourceMock = jest.spyOn(zoweSdk, "getResource");
 const iconPath = "/icon/path";
 const resourceName = "testResource";
 const cicsprogram = "cicsprogram";
-const value = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
+const value =
+  "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
 const ICMCIApiResponseMock: ICMCIApiResponse = {
   response: {
-    resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+    resultsummary: {
+      api_response1: "1024",
+      api_response2: "0",
+      recordcount: "0",
+      displayed_recordcount: "0",
+    },
     records: {},
   },
 };
@@ -83,7 +90,9 @@ describe("Test suite for CICSProgramTree", () => {
     let getDefaultProgramFilter: jest.SpyInstance;
 
     beforeEach(() => {
-      getDefaultProgramFilter = jest.spyOn(filterUtils, "getDefaultProgramFilter").mockResolvedValueOnce(value);
+      getDefaultProgramFilter = jest
+        .spyOn(filterUtils, "getDefaultProgramFilter")
+        .mockResolvedValueOnce(value);
       getResourceMock.mockImplementation(async () => ICMCIApiResponseMock);
     });
     afterEach(() => {
@@ -92,7 +101,10 @@ describe("Test suite for CICSProgramTree", () => {
     });
 
     it("Should add newProgramItem into the addProgram() and activeFilter is undefined", async () => {
-      ICMCIApiResponseMock.response.records[resourceName.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
+      ICMCIApiResponseMock.response.records[resourceName.toLowerCase()] = [
+        { prop: "test1" },
+        { prop: "test2" },
+      ];
 
       await sut.loadContents();
       expect(getDefaultProgramFilter).toHaveBeenCalled();
@@ -103,8 +115,13 @@ describe("Test suite for CICSProgramTree", () => {
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
       sut.activeFilter = "Active";
-      ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
-      const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString").mockReturnValueOnce("PROGRAM");
+      ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [
+        { prop: "test1" },
+        { prop: "test2" },
+      ];
+      const toEscapedCriteriaString = jest
+        .spyOn(filterUtils, "toEscapedCriteriaString")
+        .mockReturnValueOnce("PROGRAM");
 
       await sut.loadContents();
       expect(toEscapedCriteriaString).toHaveBeenCalled();
@@ -114,7 +131,9 @@ describe("Test suite for CICSProgramTree", () => {
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {
-      getResourceMock.mockRejectedValue(new CustomError("Error in the method exceeded a resource limit"));
+      getResourceMock.mockRejectedValue(
+        new CustomError("Error in the method exceeded a resource limit"),
+      );
       await sut.loadContents();
       expect(getResourceMock).toHaveBeenCalled();
     });

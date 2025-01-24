@@ -8,12 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+
+import {
+  IWebServiceParms,
+  defineWebservice,
+  deleteWebservice,
+} from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineWebservice, deleteWebservice, IWebServiceParms } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -21,11 +25,10 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Define web service", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_define_webservice",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -38,7 +41,7 @@ describe("CICS Define web service", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 
@@ -53,7 +56,8 @@ describe("CICS Define web service", () => {
     let response;
 
     const websvcNameSuffixLength = 4;
-    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+    const websvcName =
+      "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
     options.name = websvcName;
     options.pipelineName = "AAAA1234";
@@ -79,7 +83,8 @@ describe("CICS Define web service", () => {
     let response;
 
     const websvcNameSuffixLength = 4;
-    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+    const websvcName =
+      "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
     options.name = websvcName;
     options.pipelineName = "AAAA1234";
@@ -96,7 +101,9 @@ describe("CICS Define web service", () => {
 
     expect(error).toBeTruthy();
     expect(response).toBeFalsy();
-    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain(
+      "Did not receive the expected response from CMCI REST API",
+    );
     expect(error.message).toContain("INVALIDPARM");
   });
 
@@ -105,7 +112,8 @@ describe("CICS Define web service", () => {
     let response;
 
     const websvcNameSuffixLength = 4;
-    const websvcName = "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
+    const websvcName =
+      "AAAA" + generateRandomAlphaNumericString(websvcNameSuffixLength);
 
     options.name = websvcName;
     options.pipelineName = "AAAA1234";
@@ -134,7 +142,9 @@ describe("CICS Define web service", () => {
 
     expect(error).toBeTruthy();
     expect(response).toBeFalsy();
-    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain(
+      "Did not receive the expected response from CMCI REST API",
+    );
     expect(error.message).toContain("DUPRES");
     await deleteWebservice(session, options);
   });

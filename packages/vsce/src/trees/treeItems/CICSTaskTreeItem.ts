@@ -8,10 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconPathInResources } from "../../utils/profileUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSTaskTreeItem extends TreeItem {
   task: any;
@@ -23,10 +23,19 @@ export class CICSTaskTreeItem extends TreeItem {
     parentRegion: CICSRegionTree,
     directParent: any,
     public readonly iconPath = task.runstatus === "RUNNING"
-      ? getIconPathInResources("task-running-dark.svg", "task-running-light.svg")
+      ? getIconPathInResources(
+          "task-running-dark.svg",
+          "task-running-light.svg",
+        )
       : task.runstatus === "SUSPENDED"
-        ? getIconPathInResources("task-suspended-dark.svg", "task-suspended-light.svg")
-        : getIconPathInResources("task-dispatched-dark.svg", "task-dispatched-light.svg")
+        ? getIconPathInResources(
+            "task-suspended-dark.svg",
+            "task-suspended-light.svg",
+          )
+        : getIconPathInResources(
+            "task-dispatched-dark.svg",
+            "task-dispatched-light.svg",
+          ),
   ) {
     super(`${task.task}`, TreeItemCollapsibleState.None);
 

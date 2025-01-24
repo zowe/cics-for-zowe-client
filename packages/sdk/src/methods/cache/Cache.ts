@@ -8,17 +8,27 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+
 import { ICMCIApiResponse } from "../../doc";
 import { ICacheParms } from "../../doc/ICacheParms";
 import { IResultCacheParms } from "../../doc/IResultCacheParms";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
-export async function getCache(session: AbstractSession, parms: ICacheParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.cacheToken, "CICS Result Cache Token", "CICS Result Cache Token is required");
-  Logger.getAppLogger().debug("Attempting to get cache with the following parameters:\n%s", JSON.stringify(parms));
+export async function getCache(
+  session: AbstractSession,
+  parms: ICacheParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.cacheToken,
+    "CICS Result Cache Token",
+    "CICS Result Cache Token is required",
+  );
+  Logger.getAppLogger().debug(
+    "Attempting to get cache with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IResultCacheParms = {
     count: parms.count,

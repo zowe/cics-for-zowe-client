@@ -8,12 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics get resource", () => {
-  it ("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/get/resource/Resource.definition").ResourceDefinition;
+  it("should not have changed", () => {
+    const definition: ICommandDefinition =
+      require("../../../../src/get/resource/Resource.definition").ResourceDefinition;
     expect(definition).toBeDefined();
     delete definition.handler;
     expect(definition).toMatchSnapshot();

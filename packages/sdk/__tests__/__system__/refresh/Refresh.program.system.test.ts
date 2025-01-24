@@ -8,12 +8,19 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+
+import {
+  IProgramParms,
+  defineProgram,
+  deleteProgram,
+  discardProgram,
+  installProgram,
+  programNewcopy,
+} from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineProgram, deleteProgram, discardProgram, installProgram, IProgramParms, programNewcopy } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -21,11 +28,10 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Refresh program", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_refresh_program",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -38,7 +44,7 @@ describe("CICS Refresh program", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 
@@ -54,7 +60,8 @@ describe("CICS Refresh program", () => {
 
     // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
     const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
+    const programName =
+      "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
 
     options.name = programName;
     options.csdGroup = csdGroup;
@@ -80,7 +87,8 @@ describe("CICS Refresh program", () => {
     let response;
 
     const programNameSuffixLength = 4;
-    const programName = "AAAA" + generateRandomAlphaNumericString(programNameSuffixLength);
+    const programName =
+      "AAAA" + generateRandomAlphaNumericString(programNameSuffixLength);
 
     options.name = programName;
     options.csdGroup = csdGroup;
@@ -94,7 +102,9 @@ describe("CICS Refresh program", () => {
 
     expect(error).toBeTruthy();
     expect(response).toBeFalsy();
-    expect(error.message).toContain("Did not receive the expected response from CMCI REST API");
+    expect(error.message).toContain(
+      "Did not receive the expected response from CMCI REST API",
+    );
     expect(error.message).toContain("INVALIDPARM");
   });
 });

@@ -8,15 +8,20 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, defineUrimapClient } from "@zowe/cics-for-zowe-sdk";
-import { CicsBaseHandler } from "../../CicsBaseHandler";
+import {
+  AbstractSession,
+  IHandlerParameters,
+  ITaskWithStatus,
+  TaskStage,
+} from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
+import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DEFINE.RESOURCES.URIMAP;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings)
+  .DEFINE.RESOURCES.URIMAP;
 
 /**
  * Command handler for defining CICS URIMaps via CMCI
@@ -25,14 +30,16 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  * @implements {ICommandHandler}
  */
 export default class UrimapClientHandler extends CicsBaseHandler {
-  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
+  public async processWithSession(
+    params: IHandlerParameters,
+    session: AbstractSession,
+  ): Promise<ICMCIApiResponse> {
     const status: ITaskWithStatus = {
       statusMessage: "Defining URIMAP of type Client to CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await defineUrimapClient(session, {
       name: params.arguments.urimapName,
@@ -45,10 +52,13 @@ export default class UrimapClientHandler extends CicsBaseHandler {
       regionName: params.arguments.regionName,
       cicsPlex: params.arguments.cicsPlex,
       authenticate: params.arguments.authenticate,
-      certificate: params.arguments.certificate
+      certificate: params.arguments.certificate,
     });
 
-    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
+    params.response.console.log(
+      strings.MESSAGES.SUCCESS,
+      params.arguments.urimapName,
+    );
     return response;
   }
 }

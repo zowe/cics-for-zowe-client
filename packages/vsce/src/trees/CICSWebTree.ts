@@ -8,21 +8,31 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { getIconOpen } from "../utils/profileUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
-import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
 import { CICSPipelineTree } from "./treeItems/web/CICSPipelineTree";
+import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
+import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
 import { CICSWebServiceTree } from "./treeItems/web/CICSWebServiceTree";
 
 export class CICSWebTree extends TreeItem {
-  children: [CICSTCPIPServiceTree, CICSURIMapTree, CICSPipelineTree, CICSWebServiceTree] | null;
+  children:
+    | [
+        CICSTCPIPServiceTree,
+        CICSURIMapTree,
+        CICSPipelineTree,
+        CICSWebServiceTree,
+      ]
+    | null;
   parentRegion: CICSRegionTree | undefined;
   //activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Web", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeweb.web`;
     this.parentRegion = parentRegion;

@@ -8,12 +8,17 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
+
 import { CicsCmciConstants } from "../../constants";
+import {
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  IProgramParms,
+  IURIMapParms,
+} from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, IProgramParms, IURIMapParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Install a program definition to CICS through CMCI REST API
@@ -26,32 +31,58 @@ import { ICMCIApiResponse, IProgramParms, IURIMapParms, IGetResourceUriOptions }
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export function installProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function installProgram(
+  session: AbstractSession,
+  parms: IProgramParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Program name",
+    "CICS program name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to install a program with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to install a program with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
   const requestBody: any = {
     request: {
       action: {
         $: {
           name: "CSDINSTALL",
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria":  `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_PROGRAM, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_PROGRAM,
+    options,
+  );
 
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody) as any;
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  ) as any;
 }
 
 /**
@@ -65,33 +96,58 @@ export function installProgram(session: AbstractSession, parms: IProgramParms): 
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export function installTransaction(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Transaction name", "CICS transaction name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function installTransaction(
+  session: AbstractSession,
+  parms: IProgramParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Transaction name",
+    "CICS transaction name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to install a transaction with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to install a transaction with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
   const requestBody: any = {
     request: {
       action: {
         $: {
           name: "CSDINSTALL",
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria":  `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_TRANSACTION, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_TRANSACTION,
+    options,
+  );
 
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource,
-    [], requestBody) as any;
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  ) as any;
 }
 
 /**
@@ -106,31 +162,57 @@ export function installTransaction(session: AbstractSession, parms: IProgramParm
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
 
-export function installUrimap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD group", "CICS CSD group name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export function installUrimap(
+  session: AbstractSession,
+  parms: IURIMapParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS URIMap name",
+    "CICS URIMap name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD group",
+    "CICS CSD group name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to install a URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to install a URIMap with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria":  `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_URIMAP,
+    options,
+  );
 
   const requestBody: any = {
     request: {
       action: {
         $: {
           name: "CSDINSTALL",
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  );
 }

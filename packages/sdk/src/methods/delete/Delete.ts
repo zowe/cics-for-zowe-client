@@ -8,12 +8,19 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
+
 import { CicsCmciConstants } from "../../constants";
+import {
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  IProgramParms,
+  ITransactionParms,
+  IURIMapParms,
+  IWebServiceParms,
+} from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Delete a program installed in CICS through CMCI REST API
@@ -25,21 +32,42 @@ import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebS
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function deleteProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export async function deleteProgram(
+  session: AbstractSession,
+  parms: IProgramParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Program name",
+    "CICS program name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to delete a program with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to delete a program with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_PROGRAM, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_PROGRAM,
+    options,
+  );
 
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
@@ -54,21 +82,42 @@ export async function deleteProgram(session: AbstractSession, parms: IProgramPar
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function deleteTransaction(session: AbstractSession, parms: ITransactionParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Transaction name", "CICS transaction name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export async function deleteTransaction(
+  session: AbstractSession,
+  parms: ITransactionParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Transaction name",
+    "CICS transaction name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to delete a transaction with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to delete a transaction with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_TRANSACTION, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_TRANSACTION,
+    options,
+  );
 
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
@@ -84,21 +133,42 @@ export async function deleteTransaction(session: AbstractSession, parms: ITransa
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function deleteUrimap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export async function deleteUrimap(
+  session: AbstractSession,
+  parms: IURIMapParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS URIMap name",
+    "CICS URIMap name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to delete a URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to delete a URIMap with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_URIMAP,
+    options,
+  );
 
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }
@@ -114,21 +184,42 @@ export async function deleteUrimap(session: AbstractSession, parms: IURIMapParms
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function deleteWebservice(session: AbstractSession, parms: IWebServiceParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Web service name", "CICS Web service name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export async function deleteWebservice(
+  session: AbstractSession,
+  parms: IWebServiceParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS Web service name",
+    "CICS Web service name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.csdGroup,
+    "CICS CSD Group",
+    "CICS CSD group is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to delete a web service with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to delete a web service with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_WEBSERVICE, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_DEFINITION_WEBSERVICE,
+    options,
+  );
 
   return CicsCmciRestClient.deleteExpectParsedXml(session, cmciResource, []);
 }

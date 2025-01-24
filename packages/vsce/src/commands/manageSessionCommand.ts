@@ -8,10 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { TreeView, commands } from "vscode";
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 
-export function getManageSessionCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.manageSession", async (node) => tree.manageProfile(treeview, node));
+export function getManageSessionCommand(
+  tree: CICSTree,
+  treeview: TreeView<any>,
+) {
+  return commands.registerCommand(
+    "cics-extension-for-zowe.manageSession",
+    async (node) => tree.manageProfile(treeview, node),
+  );
 }

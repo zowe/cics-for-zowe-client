@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { resolve } from "path";
 
 // The test results directory name - all tests results - logs, test home dirs,

@@ -8,102 +8,145 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  Utils,
+} from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
+
 import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import { ICommandParams } from "./ICommandParams";
+import {
+  findSelectedNodes,
+  splitCmciErrorMessage,
+} from "../utils/commandUtils";
 import constants from "../utils/constants";
+import { ICommandParams } from "./ICommandParams";
 
-export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
-      await window.showErrorMessage("No CICS local file selected");
-      return;
-    }
-    const parentRegions: CICSRegionTree[] = [];
-    await window.withProgress(
-      {
-        title: "Open",
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => { });
-        for (const index in allSelectedNodes) {
-          progress.report({
-            message: `Opening ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
-          });
-          const currentNode = allSelectedNodes[parseInt(index)];
-
-          try {
-            await openLocalFile(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.localFile.file,
-              regionName: currentNode.parentRegion.label,
-              cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
+export function getOpenLocalFileCommand(
+  tree: CICSTree,
+  treeview: TreeView<any>,
+) {
+  return commands.registerCommand(
+    "cics-extension-for-zowe.openLocalFile",
+    async (clickedNode) => {
+      const allSelectedNodes = findSelectedNodes(
+        treeview,
+        CICSLocalFileTreeItem,
+        clickedNode,
+      );
+      if (!allSelectedNodes || !allSelectedNodes.length) {
+        await window.showErrorMessage("No CICS local file selected");
+        return;
+      }
+      const parentRegions: CICSRegionTree[] = [];
+      await window.withProgress(
+        {
+          title: "Open",
+          location: ProgressLocation.Notification,
+          cancellable: true,
+        },
+        async (progress, token) => {
+          token.onCancellationRequested(() => {});
+          for (const index in allSelectedNodes) {
+            progress.report({
+              message: `Opening ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
+              increment:
+                (parseInt(index) / allSelectedNodes.length) *
+                constants.PERCENTAGE_MAX,
             });
-            if (!parentRegions.includes(currentNode.parentRegion)) {
-              parentRegions.push(currentNode.parentRegion);
-            }
-          } catch (error) {
-            // @ts-ignore
-            if (error.mMessage) {
+            const currentNode = allSelectedNodes[parseInt(index)];
+
+            try {
+              await openLocalFile(
+                currentNode.parentRegion.parentSession.session,
+                {
+                  name: currentNode.localFile.file,
+                  regionName: currentNode.parentRegion.label,
+                  cicsPlex: currentNode.parentRegion.parentPlex
+                    ? currentNode.parentRegion.parentPlex.getPlexName()
+                    : undefined,
+                },
+              );
+              if (!parentRegions.includes(currentNode.parentRegion)) {
+                parentRegions.push(currentNode.parentRegion);
+              }
+            } catch (error) {
               // @ts-ignore
-              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-              window.showErrorMessage(
-                `Perform OPEN on local file "${allSelectedNodes[parseInt(index)].localFile.file
-                }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
-              );
-            } else {
-              window.showErrorMessage(
-                `Something went wrong when performing an OPEN - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-        }
-        for (const parentRegion of parentRegions) {
-          try {
-            const localFileTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
-            // Only load contents if the tree is expanded
-            if (localFileTree.collapsibleState === 2) {
-              await localFileTree.loadContents();
-            }
-            // if node is in a plex and the plex contains the region container tree
-            if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
-                child.contextValue.includes("cicscombinedlocalfiletree.")
-              )[0] as CICSCombinedLocalFileTree;
-              if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
-                await allLocalFileTreeTree.loadContents(tree);
+              if (error.mMessage) {
+                // @ts-ignore
+                const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(
+                  error.mMessage,
+                );
+                window.showErrorMessage(
+                  `Perform OPEN on local file "${
+                    allSelectedNodes[parseInt(index)].localFile.file
+                  }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`,
+                );
+              } else {
+                window.showErrorMessage(
+                  `Something went wrong when performing an OPEN - ${JSON.stringify(
+                    error,
+                    Object.getOwnPropertyNames(error),
+                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
+                );
               }
             }
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when reloading local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
           }
-        }
-        tree._onDidChangeTreeData.fire(undefined);
-      }
-    );
-  });
+          for (const parentRegion of parentRegions) {
+            try {
+              const localFileTree = parentRegion.children.filter((child: any) =>
+                child.contextValue.includes("cicstreelocalfile."),
+              )[0];
+              // Only load contents if the tree is expanded
+              if (localFileTree.collapsibleState === 2) {
+                await localFileTree.loadContents();
+              }
+              // if node is in a plex and the plex contains the region container tree
+              if (
+                parentRegion.parentPlex &&
+                parentRegion.parentPlex.children.some(
+                  (child) => child instanceof CICSRegionsContainer,
+                )
+              ) {
+                const allLocalFileTreeTree =
+                  parentRegion.parentPlex.children.filter((child: any) =>
+                    child.contextValue.includes("cicscombinedlocalfiletree."),
+                  )[0] as CICSCombinedLocalFileTree;
+                if (
+                  allLocalFileTreeTree.collapsibleState === 2 &&
+                  allLocalFileTreeTree.getActiveFilter()
+                ) {
+                  await allLocalFileTreeTree.loadContents(tree);
+                }
+              }
+            } catch (error) {
+              window.showErrorMessage(
+                `Something went wrong when reloading local files - ${JSON.stringify(
+                  error,
+                  Object.getOwnPropertyNames(error),
+                ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
+              );
+            }
+          }
+          tree._onDidChangeTreeData.fire(undefined);
+        },
+      );
+    },
+  );
 }
 
-function openLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function openLocalFile(
+  session: imperative.AbstractSession,
+  parms: ICommandParams,
+): Promise<ICMCIApiResponse> {
   const requestBody: any = {
     request: {
       action: {
@@ -115,12 +158,20 @@ function openLocalFile(session: imperative.AbstractSession, parms: ICommandParam
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `FILE='${parms.name}'`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `FILE='${parms.name}'`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+    options,
+  );
 
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  );
 }

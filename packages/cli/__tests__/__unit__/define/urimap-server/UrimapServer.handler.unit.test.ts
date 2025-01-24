@@ -8,9 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { IHandlerParameters, Session } from "@zowe/imperative";
+
 import { ICMCIApiResponse } from "../../../../src";
 import { UrimapServerDefinition } from "../../../../src/define/urimap-server/UrimapServer.definition";
 import UrimapServerHandler from "../../../../src/define/urimap-server/UrimapServer.handler";
@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "urimap-server"],
   definition: UrimapServerDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DefineUrimapServerHandler", () => {
@@ -53,9 +53,14 @@ describe("DefineUrimapServerHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: {
+        api_response1: "1024",
+        api_response2: "0",
+        recordcount: "0",
+        displayed_recordcount: "0",
+      },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineUrimapServer");
@@ -68,7 +73,7 @@ describe("DefineUrimapServerHandler", () => {
   it("should call the defineUrimapServer api", async () => {
     const handler = new UrimapServerHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -86,7 +91,7 @@ describe("DefineUrimapServerHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -101,7 +106,7 @@ describe("DefineUrimapServerHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
@@ -114,8 +119,8 @@ describe("DefineUrimapServerHandler", () => {
         cicsPlex,
         enable,
         tcpipservice,
-        description: undefined
-      }
+        description: undefined,
+      },
     );
   });
 });

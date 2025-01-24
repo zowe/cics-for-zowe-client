@@ -8,21 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getIconOpen } from "../../../utils/profileUtils";
-import { toArray } from "../../../utils/commandUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 
 export class CICSWebServiceTree extends TreeItem {
   children: CICSWebServiceTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
     this.parentRegion = parentRegion;
@@ -42,34 +45,50 @@ export class CICSWebServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const webserviceResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSWebService",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
-      const webservicesArray = toArray(webserviceResponse.response.records.cicswebservice);
+      const webserviceResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSWebService",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
+      const webservicesArray = toArray(
+        webserviceResponse.response.records.cicswebservice,
+      );
       this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${webservicesArray.length}]`;
       for (const webservice of webservicesArray) {
-        const newWebServiceItem = new CICSWebServiceTreeItem(webservice, this.parentRegion, this);
-        newWebServiceItem.setLabel(newWebServiceItem.label.toString().replace(webservice.name, `${webservice.name}`));
+        const newWebServiceItem = new CICSWebServiceTreeItem(
+          webservice,
+          this.parentRegion,
+          this,
+        );
+        newWebServiceItem.setLabel(
+          newWebServiceItem.label
+            .toString()
+            .replace(webservice.name, `${webservice.name}`),
+        );
         this.addWebService(newWebServiceItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a Web Services filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a Web Services filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No Web Services found`);
         this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching Web Services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+          `Something went wrong when fetching Web Services - ${JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+          ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }

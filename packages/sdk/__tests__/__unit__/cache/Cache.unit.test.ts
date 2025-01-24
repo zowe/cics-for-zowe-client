@@ -8,14 +8,14 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { Session } from "@zowe/imperative";
+
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  getCache,
+  ICMCIApiResponse,
   ICacheParms,
-  ICMCIApiResponse
+  getCache,
 } from "../../../src";
 
 describe("CMCI - Get Cache", () => {
@@ -30,21 +30,20 @@ describe("CMCI - Get Cache", () => {
         cachetoken: "E0252A3D2292C613",
         displayed_recordcount: "1",
       },
-      records: []
-    }
+      records: [],
+    },
   };
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
   let response: any;
   let endPoint: string;
   let cacheParms: ICacheParms;
-
 
   describe("validation", () => {
     beforeEach(() => {
@@ -85,13 +84,16 @@ describe("CMCI - Get Cache", () => {
 
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("Required parameter 'CICS Result Cache Token' must not be blank");
+      expect(error.message).toContain(
+        "Required parameter 'CICS Result Cache Token' must not be blank",
+      );
     });
   });
 
   describe("success scenarios", () => {
-
-    const cmciGetSpy = jest.spyOn(CicsCmciRestClient, "getExpectParsedXml").mockResolvedValue(content);
+    const cmciGetSpy = jest
+      .spyOn(CicsCmciRestClient, "getExpectParsedXml")
+      .mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
@@ -110,9 +112,15 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
@@ -126,10 +134,17 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD +
-        "&" + CicsCmciConstants.SUMM_ONLY;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD +
+        "&" +
+        CicsCmciConstants.SUMM_ONLY;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
@@ -143,10 +158,16 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "/" +
-        "10?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "/" +
+        "10?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
@@ -161,10 +182,16 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "/" +
-        "15/5?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "/" +
+        "15/5?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
@@ -178,9 +205,13 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);

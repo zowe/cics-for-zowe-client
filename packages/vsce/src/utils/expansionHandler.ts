@@ -8,8 +8,8 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { ProgressLocation, window } from "vscode";
+
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
@@ -17,15 +17,28 @@ import { CICSTree } from "../trees/CICSTree";
 import { ProfileManagement } from "./profileManagement";
 import { getIconOpen } from "./profileUtils";
 
-export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
-  const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);
+export async function sessionExpansionHandler(
+  session: CICSSessionTree,
+  tree: CICSTree,
+) {
+  const profile =
+    await ProfileManagement.getProfilesCache().getLoadedProfConfig(
+      session.label?.toString()!,
+    );
   if (profile == null) {
     throw new Error("sessionExpansionHandler: Profile is not defined");
   }
-  await tree.loadProfile(profile, tree.getLoadedProfiles().indexOf(session), session);
+  await tree.loadProfile(
+    profile,
+    tree.getLoadedProfiles().indexOf(session),
+    session,
+  );
 }
 
-export function regionContainerExpansionHandler(regionContiner: CICSRegionsContainer, tree: CICSTree) {
+export function regionContainerExpansionHandler(
+  regionContiner: CICSRegionsContainer,
+  tree: CICSTree,
+) {
   const parentPlex = regionContiner.getParent();
   const plexProfile = parentPlex.getProfile();
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
@@ -38,12 +51,12 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           regionContiner.clearChildren();
           await regionContiner.loadRegionsInCICSGroup(tree);
           regionContiner.iconPath = getIconOpen(true);
           tree._onDidChangeTreeData.fire(undefined);
-        }
+        },
       );
     }
   } else {
@@ -54,15 +67,17 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         regionContiner.clearChildren();
         await regionContiner.loadRegionsInPlex();
         regionContiner.iconPath = getIconOpen(true);
         if (!regionContiner.getChildren().length) {
-          window.showInformationMessage(`No regions found for plex ${parentPlex.getPlexName()}`);
+          window.showInformationMessage(
+            `No regions found for plex ${parentPlex.getPlexName()}`,
+          );
         }
         tree._onDidChangeTreeData.fire(undefined);
-      }
+      },
     );
   }
   tree._onDidChangeTreeData.fire(undefined);
@@ -82,10 +97,10 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           await plex.loadOnlyRegion();
           tree._onDidChangeTreeData.fire(undefined);
-        }
+        },
       );
       // CICSGroup
     } else {
@@ -113,7 +128,11 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
  * @param plex plex tree node from where to start the search
  * @returns CICSRegionsContainer
  */
-function findRegionsContainerFromPlex(plex: CICSPlexTree): CICSRegionsContainer {
-  const regionsContainer = plex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0] as CICSRegionsContainer;
+function findRegionsContainerFromPlex(
+  plex: CICSPlexTree,
+): CICSRegionsContainer {
+  const regionsContainer = plex.children.filter(
+    (child) => child instanceof CICSRegionsContainer,
+  )?.[0] as CICSRegionsContainer;
   return regionsContainer;
 }

@@ -8,15 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import {
+  InputBoxOptions,
+  QuickPick,
+  QuickPickItem,
+  window,
+  workspace,
+} from "vscode";
 
-import { InputBoxOptions, QuickPick, QuickPickItem, window, workspace } from "vscode";
-
-export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>): Promise<QuickPickItem | undefined> {
-  return new Promise<QuickPickItem | undefined>((c) => quickpick.onDidAccept(() => c(quickpick.activeItems[0])));
+export async function resolveQuickPickHelper(
+  quickpick: QuickPick<QuickPickItem>,
+): Promise<QuickPickItem | undefined> {
+  return new Promise<QuickPickItem | undefined>((c) =>
+    quickpick.onDidAccept(() => c(quickpick.activeItems[0])),
+  );
 }
 
 export class FilterDescriptor implements QuickPickItem {
-  constructor(private text: string) { }
+  constructor(private text: string) {}
   get label(): string {
     return this.text;
   }
@@ -28,9 +37,14 @@ export class FilterDescriptor implements QuickPickItem {
   }
 }
 
-export async function getPatternFromFilter(resourceName: string, resourceHistory: string[]) {
+export async function getPatternFromFilter(
+  resourceName: string,
+  resourceHistory: string[],
+) {
   let pattern: string = "";
-  const createPick = new FilterDescriptor(`\uFF0B Create New ${resourceName} Filter (use a comma to separate multiple patterns e.g. LG*,I*)`);
+  const createPick = new FilterDescriptor(
+    `\uFF0B Create New ${resourceName} Filter (use a comma to separate multiple patterns e.g. LG*,I*)`,
+  );
   const items = resourceHistory.map((loadedFilter) => {
     return { label: loadedFilter };
   });
@@ -77,9 +91,10 @@ export async function getDefaultProgramFilter() {
       .getConfiguration()
       .update(
         "zowe.cics.program.filter",
-        "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)"
+        "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
       );
-    defaultCriteria = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
+    defaultCriteria =
+      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
   }
   return defaultCriteria;
 }
@@ -87,13 +102,21 @@ export async function getDefaultProgramFilter() {
 export async function getDefaultTransactionFilter() {
   let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.transaction.filter")}`;
   if (!defaultCriteria || defaultCriteria.length === 0) {
-    await workspace.getConfiguration().update("zowe.cics.transaction.filter", "NOT (program=DFH* OR program=EYU*)");
+    await workspace
+      .getConfiguration()
+      .update(
+        "zowe.cics.transaction.filter",
+        "NOT (program=DFH* OR program=EYU*)",
+      );
     defaultCriteria = "NOT (program=DFH* OR program=EYU*)";
   }
   return defaultCriteria;
 }
 
-export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {
+export function toEscapedCriteriaString(
+  activeFilter: string,
+  attribute: string,
+): string {
   // returns a string as an escaped_criteria_string suitable for the criteria
   // query parameter for a CMCI request.
   let criteria;

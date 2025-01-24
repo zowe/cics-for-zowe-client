@@ -8,12 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSPlexTree } from "./CICSPlexTree";
 import { imperative } from "@zowe/zowe-explorer-api";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+
 import { getIconPathInResources } from "../utils/profileUtils";
+import { CICSPlexTree } from "./CICSPlexTree";
+import { CICSRegionTree } from "./CICSRegionTree";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -21,7 +21,13 @@ export class CICSSessionTree extends TreeItem {
   profile: any;
   isUnauthorized: boolean | undefined;
 
-  constructor(profile: any, public readonly iconPath = getIconPathInResources("profile-unverified-dark.svg", "profile-unverified-light.svg")) {
+  constructor(
+    profile: any,
+    public readonly iconPath = getIconPathInResources(
+      "profile-unverified-dark.svg",
+      "profile-unverified-light.svg",
+    ),
+  ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;

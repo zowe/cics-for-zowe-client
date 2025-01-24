@@ -8,12 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
+
 import { CicsCmciConstants } from "../../constants";
+import {
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  IURIMapParms,
+} from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, IURIMapParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Enable a URIMap installed in CICS through CMCI REST API
@@ -27,30 +31,52 @@ import { ICMCIApiResponse, IURIMapParms, IGetResourceUriOptions } from "../../do
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
 
-export async function enableUrimap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS URIMap name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+export async function enableUrimap(
+  session: AbstractSession,
+  parms: IURIMapParms,
+): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.name,
+    "CICS URIMap name",
+    "CICS URIMap name is required",
+  );
+  ImperativeExpect.toBeDefinedAndNonBlank(
+    parms.regionName,
+    "CICS Region name",
+    "CICS region name is required",
+  );
 
-  Logger.getAppLogger().debug("Attempting to enable a URIMap with the following parameters:\n%s", JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    "Attempting to enable a URIMap with the following parameters:\n%s",
+    JSON.stringify(parms),
+  );
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
   };
 
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_URIMAP, options);
+  const cmciResource = Utils.getResourceUri(
+    CicsCmciConstants.CICS_URIMAP,
+    options,
+  );
 
   const requestBody: any = {
     request: {
       update: {
         attributes: {
           $: {
-            ENABLESTATUS: "ENABLED"
-          }
-        }
-      }
-    }
+            ENABLESTATUS: "ENABLED",
+          },
+        },
+      },
+    },
   };
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(
+    session,
+    cmciResource,
+    [],
+    requestBody,
+  );
 }

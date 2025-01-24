@@ -8,21 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+
+import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
-import { toArray } from "../utils/commandUtils";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeTransactionFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getIconOpen(false),
+  ) {
     super("Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.parentRegion = parentRegion;
@@ -35,24 +38,33 @@ export class CICSTaskTree extends TreeItem {
   public async loadContents() {
     let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.tasks.filter")}`;
     if (!defaultCriteria || defaultCriteria.length === 0) {
-      await workspace.getConfiguration().update("zowe.cics.tasks.filter", "(TRANID=*)");
+      await workspace
+        .getConfiguration()
+        .update("zowe.cics.tasks.filter", "(TRANID=*)");
       defaultCriteria = "(TRANID=*)";
     }
     let criteria;
     if (this.activeTransactionFilter) {
-      criteria = toEscapedCriteriaString(this.activeTransactionFilter, "TRANID");
+      criteria = toEscapedCriteriaString(
+        this.activeTransactionFilter,
+        "TRANID",
+      );
     } else {
       criteria = defaultCriteria;
     }
     this.children = [];
     try {
-
-      const taskResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSTASK",
-        regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
-      });
+      const taskResponse = await getResource(
+        this.parentRegion.parentSession.session,
+        {
+          name: "CICSTASK",
+          regionName: this.parentRegion.getRegionName(),
+          cicsPlex: this.parentRegion.parentPlex
+            ? this.parentRegion.parentPlex.getPlexName()
+            : undefined,
+          criteria: criteria,
+        },
+      );
 
       const tasksArray = toArray(taskResponse.response.records.cicstask);
       this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[${tasksArray.length}]`;
@@ -62,21 +74,26 @@ export class CICSTaskTree extends TreeItem {
         newTaskItem.setLabel(
           newTaskItem.label
             .toString()
-            .replace(task.task, `${task.task} - ${task.tranid}${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`)
+            .replace(
+              task.task,
+              `${task.task} - ${task.tranid}${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`,
+            ),
         );
         this.addTask(newTaskItem);
       }
       this.iconPath = getIconOpen(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a task filter to narrow search`);
+        window.showErrorMessage(
+          `Resource Limit Exceeded - Set a task filter to narrow search`,
+        );
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No tasks found`);
         this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[0]`;
         this.iconPath = getIconOpen(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+          `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
         );
       }
     }
