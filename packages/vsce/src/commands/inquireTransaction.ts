@@ -9,9 +9,8 @@
  *
  */
 
+import { ITask, ITransaction } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
-import { ITask } from "../doc/ITask";
-import { ITransaction } from "../doc/ITransaction";
 import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";

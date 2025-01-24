@@ -9,20 +9,21 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
+import { IResource } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import IResourceMeta from "../../doc/IResourceMeta";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { IResource, IResourceMeta } from "../../doc/IResourceTypes";
 import { getIconByStatus } from "../../utils/iconUtils";
 
 export class CICSResourceTreeItem<T extends IResource> extends TreeItem {
   resource: T;
-  resourceMeta: IResourceMeta;
+  resourceMeta: IResourceMeta<T>;
   parentRegion: CICSRegionTree;
   directParent: any;
 
   constructor(
     resource: T,
-    resourceMeta: IResourceMeta,
+    resourceMeta: IResourceMeta<T>,
     parentRegion: CICSRegionTree,
     directParent: any
   ) {

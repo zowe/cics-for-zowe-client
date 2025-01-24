@@ -9,11 +9,8 @@
  *
  */
 
+import { ILocalFile, IProgram, ITask, ITransaction } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { ILocalFile } from "../doc/ILocalFile";
-import { IProgram } from "../doc/IProgram";
-import { ITask } from "../doc/ITask";
-import { ITransaction } from "../doc/ITransaction";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSResourceTree } from "../trees/CICSResourceTree";
 import { CICSTree } from "../trees/CICSTree";

@@ -9,10 +9,9 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, IGetResourceUriOptions, IProgram, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { IProgram } from "../doc/IProgram";
 import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";

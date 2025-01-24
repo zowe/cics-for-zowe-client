@@ -9,9 +9,9 @@
  *
  */
 
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { getResource, IResource } from "@zowe/cics-for-zowe-sdk";
 import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { IResource, IResourceMeta } from "../doc/IResourceTypes";
+import IResourceMeta from "../doc/IResourceMeta";
 import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getIconOpen } from "../utils/profileUtils";
@@ -24,9 +24,9 @@ export class CICSResourceTree<T extends IResource> extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  resourceMeta: IResourceMeta;
+  resourceMeta: IResourceMeta<T>;
 
-  constructor(resourceMeta: IResourceMeta, parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(resourceMeta: IResourceMeta<T>, parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
     super(resourceMeta.humanReadableName, TreeItemCollapsibleState.Collapsed);
     this.contextValue = `${resourceMeta.contextPrefix}.${this.activeFilter ? "filtered" : "unfiltered"}.${resourceMeta.resourceName}`;
     this.parentRegion = parentRegion;

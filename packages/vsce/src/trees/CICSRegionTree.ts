@@ -13,8 +13,8 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { getIconByStatus } from "../utils/iconUtils";
-import { IRegion } from "../doc/IRegion";
-import resources, { IResource } from "../doc/IResourceTypes";
+import { IRegion, IResource } from "@zowe/cics-for-zowe-sdk";
+import { LocalFileMeta, ProgramMeta, TaskMeta, TransactionMeta } from "../doc";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSResourceTree } from "./CICSResourceTree";
 import { CICSWebTree } from "./CICSWebTree";
@@ -51,10 +51,10 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.contextValue += ".active";
       this.children = [
-        new CICSResourceTree(resources.program, this),
-        new CICSResourceTree(resources.transaction, this),
-        new CICSResourceTree(resources.localFile, this),
-        new CICSResourceTree(resources.task, this),
+        new CICSResourceTree(ProgramMeta, this),
+        new CICSResourceTree(TransactionMeta, this),
+        new CICSResourceTree(LocalFileMeta, this),
+        new CICSResourceTree(TaskMeta, this),
         new CICSLibraryTree(this),
         new CICSWebTree(this),
       ];

@@ -11,12 +11,13 @@
 
 const getFolderIconMock = jest.fn();
 
+import { ICMCIApiResponse, IProgram } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
+import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
+import { CICSResourceTree } from "../../../src/trees/CICSResourceTree";
+import { CICSResourceTreeItem } from "../../../src/trees/treeItems/CICSResourceTreeItem";
 import * as filterUtils from "../../../src/utils/filterUtils";
-import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
 import CustomError from "../../__utils__/CustomError";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
@@ -25,7 +26,7 @@ const zoweSdk = require("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getFolderIcon: getFolderIconMock };
 });
-jest.mock("../../../src/trees/treeItems/CICSProgramTreeItem");
+jest.mock("../../../src/trees/treeItems/CICSResourceTreeItem");
 
 const imperativeSession = new imperative.Session({
   user: "user",
@@ -59,11 +60,11 @@ const ICMCIApiResponseMock: ICMCIApiResponse = {
 };
 
 describe("Test suite for CICSProgramTree", () => {
-  let sut: CICSProgramTree;
+  let sut: CICSResourceTree<IProgram>;
 
   beforeEach(() => {
     getFolderIconMock.mockReturnValue(iconPath);
-    sut = new CICSProgramTree(cicsRegionTreeMock as any as CICSRegionTree);
+    sut = new CICSResourceTree<IProgram>(ProgramMeta, cicsRegionTreeMock as any as CICSRegionTree);
     expect(getFolderIconMock).toHaveBeenCalledWith(false);
   });
 
@@ -73,7 +74,7 @@ describe("Test suite for CICSProgramTree", () => {
 
   describe("Test suite for addProgram()", () => {
     it("Should add CICSProgramTreeItem into program", () => {
-      sut.addProgram(CICSProgramTreeItemMock as any as CICSProgramTreeItem);
+      sut.addResource(CICSProgramTreeItemMock as any as CICSResourceTreeItem<IProgram>);
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -82,7 +83,7 @@ describe("Test suite for CICSProgramTree", () => {
     let getDefaultProgramFilter: jest.SpyInstance;
 
     beforeEach(() => {
-      getDefaultProgramFilter = jest.spyOn(filterUtils, "getDefaultProgramFilter").mockResolvedValueOnce(value);
+      getDefaultProgramFilter = jest.spyOn(filterUtils, "getDefaultFilter").mockResolvedValueOnce(value);
       getResourceMock.mockImplementation(async () => ICMCIApiResponseMock);
     });
     afterEach(() => {
@@ -133,7 +134,7 @@ describe("Test suite for CICSProgramTree", () => {
 
       sut.clearFilter();
       expect(sut.activeFilter).toBeUndefined();
-      expect(sut.contextValue).toEqual("cicstreeprogram.unfiltered.programs");
+      expect(sut.contextValue).toEqual("cicstreeprogram.unfiltered.CICSProgram");
     });
   });
 
@@ -141,7 +142,7 @@ describe("Test suite for CICSProgramTree", () => {
     it("Should set active filter and set contextValue to filtered", () => {
       sut.setFilter("ActiveFilter");
       expect(sut.activeFilter).toEqual("ActiveFilter");
-      expect(sut.contextValue).toEqual("cicstreeprogram.filtered.programs");
+      expect(sut.contextValue).toEqual("cicstreeprogram.filtered.CICSProgram");
     });
   });
 
