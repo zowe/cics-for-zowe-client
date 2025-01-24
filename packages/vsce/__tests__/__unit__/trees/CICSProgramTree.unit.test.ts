@@ -1,12 +1,3 @@
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-
-import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
-import * as filterUtils from "../../../src/utils/filterUtils";
-import CustomError from "../../__utils__/CustomError";
-
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -17,8 +8,16 @@ import CustomError from "../../__utils__/CustomError";
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 const getIconOpenMock = jest.fn();
+
+import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+
+import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
+import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
+import * as filterUtils from "../../../src/utils/filterUtils";
+import CustomError from "../../__utils__/CustomError";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const zoweSdk = require("@zowe/cics-for-zowe-sdk");

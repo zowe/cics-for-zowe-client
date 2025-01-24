@@ -1,4 +1,4 @@
-/*
+/**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-v20.html
@@ -8,7 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
 const original = jest.requireActual("@zowe/cli-test-utils") as any;
 const nodePath = require("path");
 original.PROJECT_ROOT_DIR = nodePath.join(__dirname, "..", "..");
