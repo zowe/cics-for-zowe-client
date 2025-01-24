@@ -9,21 +9,22 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { ILocalFile } from "../../doc/ILocalFile";
+import { CICSCombinedResourceTree } from "../../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
+import { CICSResourceTreeItem } from "../../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { ICommandParams } from "../ICommandParams";
 import constants from "../../utils/constants";
+import { ICommandParams } from "../ICommandParams";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
+    const allSelectedNodes: CICSResourceTreeItem<ILocalFile>[] = findSelectedNodes(treeview, CICSResourceTreeItem, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Local File selected");
       return;
@@ -47,8 +48,8 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
 
           try {
             await enableLocalFile(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.localFile.file,
-              regionName: currentNode.parentRegion.label,
+              name: currentNode.resource.file,
+              regionName: currentNode.parentRegion.region.applid,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
             if (!parentRegions.includes(currentNode.parentRegion)) {
@@ -75,7 +76,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
               const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedlocalfiletree.")
-              )[0] as CICSCombinedLocalFileTree;
+              )[0] as CICSCombinedResourceTree<ILocalFile>;
               if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
                 await allLocalFileTreeTree.loadContents(tree);
               }

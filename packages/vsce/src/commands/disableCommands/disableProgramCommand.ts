@@ -9,17 +9,18 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { IProgram } from "../../doc/IProgram";
+import { CICSCombinedResourceTree } from "../../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
+import { CICSResourceTreeItem } from "../../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
-import { ICommandParams } from "../ICommandParams";
 import constants from "../../utils/constants";
+import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -28,12 +29,12 @@ import constants from "../../utils/constants";
  */
 export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableProgram", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
+    const allSelectedNodes: CICSResourceTreeItem<IProgram>[] = findSelectedNodes(treeview, CICSResourceTreeItem<IProgram>, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+    const parentRegions = new Set<CICSRegionTree>();
     await window.withProgress(
       {
         title: "Disable",
@@ -52,15 +53,12 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
 
           try {
             await disableProgram(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.program.program,
-              regionName: currentNode.parentRegion.label,
+              name: currentNode.resource.program,
+              regionName: currentNode.parentRegion.region.applid,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
-            if (!parentRegions.includes(currentNode.parentRegion)) {
-              parentRegions.push(currentNode.parentRegion);
-            }
+            parentRegions.add(currentNode.parentRegion);
           } catch (error) {
-            // @ts-ignore
             window.showErrorMessage(
               `Something went wrong when performing a disable - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
                 /(\\n\t|\\n|\\t)/gm,
@@ -81,7 +79,7 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
               const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedprogramtree.")
-              )[0] as CICSCombinedProgramTree;
+              )[0] as CICSCombinedResourceTree<IProgram>;
               if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
                 await allProgramsTree.loadContents(tree);
               }

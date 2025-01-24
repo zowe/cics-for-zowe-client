@@ -9,29 +9,27 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSSessionTree } from "./CICSSessionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import resources, { IResource } from "../doc/IResourceTypes";
 import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
+import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
+import { CICSCombinedResourceTree } from "./CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
 import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
-import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
+
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSSessionTree } from "./CICSSessionTree";
 
 export class CICSPlexTree extends TreeItem {
   children: (
     | CICSRegionTree
-    | CICSCombinedProgramTree
-    | CICSCombinedTransactionsTree
-    | CICSCombinedLocalFileTree
+    | CICSCombinedResourceTree<IResource>
     | CICSCombinedTaskTree
     | CICSCombinedLibraryTree
     | CICSRegionsContainer
@@ -158,9 +156,9 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addNewCombinedTrees() {
-    this.children.push(new CICSCombinedProgramTree(this));
-    this.children.push(new CICSCombinedTransactionsTree(this));
-    this.children.push(new CICSCombinedLocalFileTree(this));
+    this.children.push(new CICSCombinedResourceTree(this, resources.program));
+    this.children.push(new CICSCombinedResourceTree(this, resources.transaction));
+    this.children.push(new CICSCombinedResourceTree(this, resources.localFile));
     this.children.push(new CICSCombinedTaskTree(this));
     this.children.push(new CICSCombinedLibraryTree(this));
     this.children.push(new CICSCombinedTCPIPServiceTree(this));

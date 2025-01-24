@@ -10,11 +10,12 @@
  */
 
 import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ILocalFile } from "../doc/ILocalFile";
+import { IProgram } from "../doc/IProgram";
+import { ITransaction } from "../doc/ITransaction";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
-import { CICSLocalFileTree } from "../trees/CICSLocalFileTree";
-import { CICSProgramTree } from "../trees/CICSProgramTree";
+import { CICSResourceTree } from "../trees/CICSResourceTree";
 import { CICSTaskTree } from "../trees/CICSTaskTree";
-import { CICSTransactionTree } from "../trees/CICSTransactionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
@@ -96,10 +97,10 @@ export function getFilterDatasetsCommand(tree: CICSTree, treeview: TreeView<any>
 export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterPrograms", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSProgramTree;
+    let chosenNode: CICSResourceTree<IProgram>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSProgramTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS program tree selected");
@@ -164,10 +165,10 @@ export function getFilterDatasetProgramsCommand(tree: CICSTree, treeview: TreeVi
 export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterLocalFiles", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSLocalFileTree;
+    let chosenNode: CICSResourceTree<ILocalFile>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSLocalFileTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS local file tree selected");
@@ -232,10 +233,10 @@ export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
 export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterTransactions", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSTransactionTree;
+    let chosenNode: CICSResourceTree<ITransaction>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSTransactionTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS transaction tree selected");

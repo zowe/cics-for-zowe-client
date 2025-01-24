@@ -9,126 +9,142 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { IResource, IResourceMeta } from "../../doc/IResourceTypes";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
 import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
-import { CICSTransactionTreeItem } from "../treeItems/CICSTransactionTreeItem";
+import { CICSResourceTreeItem } from "../treeItems/CICSResourceTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
-export class CICSCombinedTransactionsTree extends TreeItem {
-  children: (CICSTransactionTreeItem | ViewMore)[] | [TextTreeItem] | null;
+export class CICSCombinedResourceTree<T extends IResource> extends TreeItem {
+  children: (CICSResourceTreeItem<T> | ViewMore)[] | [TextTreeItem] | null;
   parentPlex: CICSPlexTree;
   activeFilter: string | undefined;
   currentCount: number;
   incrementCount: number;
-  constant: string;
+  resourceMeta: IResourceMeta;
 
-  constructor(
-    parentPlex: CICSPlexTree,
-    public iconPath = getFolderIcon(false),
-  ) {
-    super("All Local Transactions", TreeItemCollapsibleState.Collapsed);
-    this.contextValue = `cicscombinedtransactiontree.`;
+  constructor(parentPlex: CICSPlexTree, resourceMeta: IResourceMeta, public iconPath = getFolderIcon(false)) {
+    super(`All ${resourceMeta.humanReadableName}`, TreeItemCollapsibleState.Collapsed);
+    this.resourceMeta = resourceMeta;
+    this.contextValue = `${resourceMeta.combinedContextPrefix}.`;
     this.parentPlex = parentPlex;
-    this.children = [new TextTreeItem("Use the search button to display local transactions", "applyfiltertext.")];
+    this.children = [new TextTreeItem("Use the search button to display resources", "applyfiltertext.")];
     this.activeFilter = undefined;
     this.currentCount = 0;
-    this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allTransactions.recordCountIncrement")}`;
-    this.constant = CicsCmciConstants.CICS_LOCAL_TRANSACTION;
+    this.incrementCount = +`${workspace.getConfiguration().get(
+      `zowe.cics.all${resourceMeta.humanReadableName.replaceAll(" ", "")}.recordCountIncrement`
+    )}`;
   }
 
   public async loadContents(tree: CICSTree) {
     await window.withProgress(
       {
-        title: "Loading Local Transactions",
+        title: "Loading Resources",
         location: ProgressLocation.Notification,
         cancellable: true,
       },
       async (_, token) => {
         token.onCancellationRequested(() => {});
+        let recordsCount: number;
         try {
           let criteria;
           if (this.activeFilter) {
-            criteria = toEscapedCriteriaString(this.activeFilter, "tranid");
+            criteria = toEscapedCriteriaString(this.activeFilter, this.resourceMeta.filterAttribute);
           }
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
             this.parentPlex.getPlexName(),
-            this.constant,
+            this.resourceMeta.resourceName,
             criteria,
             this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
-            const recordsCount = cacheTokenInfo.recordCount;
+            recordsCount = cacheTokenInfo.recordCount;
             if (recordsCount) {
-              let allLocalTransactions;
+              let allResources;
               if (recordsCount <= this.incrementCount) {
-                allLocalTransactions = await ProfileManagement.getCachedResources(
+                allResources = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
                   cacheTokenInfo.cacheToken,
-                  this.constant,
+                  this.resourceMeta.resourceName,
                   1,
                   recordsCount,
                 );
               } else {
-                allLocalTransactions = await ProfileManagement.getCachedResources(
+                allResources = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
                   cacheTokenInfo.cacheToken,
-                  this.constant,
+                  this.resourceMeta.resourceName,
                   1,
                   this.incrementCount,
                 );
                 count = recordsCount;
               }
-              this.addLocalTransactionsUtil([], allLocalTransactions, count);
+              this.addResourcesUtil([], allResources, count);
               this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
               this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
-              window.showInformationMessage(`No local transactions found`);
-              this.label = `All Local Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
+              window.showInformationMessage(`No resources found`);
+              this.label = `All ${this.resourceMeta.humanReadableName}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
             }
           }
         } catch (error) {
-          window.showErrorMessage(
-            `Something went wrong when fetching local transactions - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " ",
-            )}`,
-          );
+          if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
+            this.children = [];
+            this.iconPath = getFolderIcon(true);
+            tree._onDidChangeTreeData.fire(undefined);
+            window.showInformationMessage(`No resources found`);
+            this.label = `All ${this.resourceMeta.humanReadableName}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
+          } else {
+            window.showErrorMessage(
+              `Something went wrong when fetching resources - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " ",
+              )}`,
+            );
+          }
         }
       },
     );
   }
 
-  public addLocalTransactionsUtil(newChildren: (CICSTransactionTreeItem | ViewMore)[], allLocalTransactions: any, count: number | undefined) {
-    for (const transaction of allLocalTransactions) {
+  public addResourcesUtil(newChildren: (CICSResourceTreeItem<T> | ViewMore)[], allResources: T[], count: number | undefined) {
+    for (const resource of allResources) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
       if (regionsContainer == null) {
         continue;
       }
       const parentRegion = regionsContainer
         .getChildren()!
-        .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === transaction.eyu_cicsname)?.[0] as CICSRegionTree;
-      const transactionTree = new CICSTransactionTreeItem(transaction, parentRegion, this);
-      transactionTree.setLabel(transactionTree.label.toString().replace(transaction.tranid, `${transaction.tranid} (${transaction.eyu_cicsname})`));
-      newChildren.push(transactionTree);
+        .filter((child) =>
+          child instanceof CICSRegionTree &&
+          child.getRegionName() === resource[this.resourceMeta.regionNameAttribute as keyof T])?.[0] as CICSRegionTree;
+      const resourceTree = new CICSResourceTreeItem<T>(resource, this.resourceMeta, parentRegion, this);
+      resourceTree.setLabel(
+        resourceTree.label.toString().replace(
+          `${resource[this.resourceMeta.primaryKeyAttribute as keyof T]}`,
+          `${resource[this.resourceMeta.primaryKeyAttribute as keyof T]} (${resource[this.resourceMeta.regionNameAttribute as keyof T]})`
+        ));
+      newChildren.push(resourceTree);
     }
     if (!count) {
       count = newChildren.length;
     }
     this.currentCount = newChildren.length;
-    this.label = `All Local Transactions ${this.activeFilter ? `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
+    this.label = `All ${this.resourceMeta.humanReadableName} ${this.activeFilter ?
+      `(${this.activeFilter}) ` : " "}[${this.currentCount} of ${count}]`;
     if (count !== this.currentCount) {
       newChildren.push(new ViewMore(this, Math.min(this.incrementCount, count - this.currentCount)));
     }
@@ -138,34 +154,38 @@ export class CICSCombinedTransactionsTree extends TreeItem {
   public async addMoreCachedResources(tree: CICSTree) {
     await window.withProgress(
       {
-        title: "Loading more local transactions",
+        title: "Loading more resources",
         location: ProgressLocation.Notification,
         cancellable: false,
       },
       async () => {
+        let criteria;
+        if (this.activeFilter) {
+          criteria = toEscapedCriteriaString(this.activeFilter, this.resourceMeta.filterAttribute);
+        }
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
           this.parentPlex.getPlexName(),
-          this.constant,
+          this.resourceMeta.resourceName,
+          criteria,
           this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
           const recordsCount = cacheTokenInfo.recordCount;
           const count = recordsCount;
-          const allLocalTransactions = await ProfileManagement.getCachedResources(
+          const allResources = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
             cacheTokenInfo.cacheToken,
-            this.constant,
+            this.resourceMeta.resourceName,
             this.currentCount + 1,
             this.incrementCount,
           );
-          if (allLocalTransactions) {
-            // @ts-ignore
-            this.addLocalTransactionsUtil(
-              (this.getChildren()?.filter((child) => child instanceof CICSTransactionTreeItem) ?? []) as CICSTransactionTreeItem[],
-              allLocalTransactions,
-              count,
+          if (allResources) {
+            this.addResourcesUtil(
+              (this.getChildren()?.filter((child) => child instanceof CICSResourceTreeItem) ?? []) as CICSResourceTreeItem<T>[],
+              allResources,
+              count
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
@@ -176,15 +196,15 @@ export class CICSCombinedTransactionsTree extends TreeItem {
 
   public clearFilter() {
     this.activeFilter = undefined;
-    this.label = `All Local Transactions`;
-    this.contextValue = `cicscombinedtransactiontree.unfiltered`;
+    this.label = `All ${this.resourceMeta.humanReadableName}`;
+    this.contextValue = `${this.resourceMeta.combinedContextPrefix}.unfiltered`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
     this.activeFilter = newFilter;
-    this.label = `All Local Transactions (${this.activeFilter})`;
-    this.contextValue = `cicscombinedtransactiontree.filtered`;
+    this.label = `All ${this.resourceMeta.humanReadableName} (${this.activeFilter})`;
+    this.contextValue = `${this.resourceMeta.combinedContextPrefix}.filtered`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 

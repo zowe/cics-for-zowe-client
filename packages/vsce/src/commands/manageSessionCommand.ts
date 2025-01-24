@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { commands, TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 
 export function getManageSessionCommand(tree: CICSTree, treeview: TreeView<any>) {
