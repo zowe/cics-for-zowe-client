@@ -10,13 +10,14 @@
  */
 
 import { commands, TreeView, WebviewPanel, window } from "vscode";
+import { ILocalFile } from "../doc/ILocalFile";
+import { IProgram } from "../doc/IProgram";
+import { ITransaction } from "../doc/ITransaction";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
-import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
-import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
+import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
 import { CICSPipelineTreeItem } from "../trees/treeItems/web/treeItems/CICSPipelineTreeItem";
 import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
 import { CICSURIMapTreeItem } from "../trees/treeItems/web/treeItems/CICSURIMapTreeItem";
@@ -26,20 +27,20 @@ import { getAttributesHtml } from "../utils/webviewHTML";
 
 export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showProgramAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<IProgram>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
     for (const programTreeItem of allSelectedNodes) {
-      const program = programTreeItem.program;
+      const program = programTreeItem.resource;
       const attributeHeadings = Object.keys(program);
       let webText = `<thead><tr>`;
       webText += `<th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th>`;
       webText += `</tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading as keyof IProgram]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -86,18 +87,18 @@ export function getShowRegionAttributes(treeview: TreeView<any>) {
 
 export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLocalFileAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ILocalFile>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS local file selected");
       return;
     }
     for (const localFileTreeItem of allSelectedNodes) {
-      const localFile = localFileTreeItem.localFile;
+      const localFile = localFileTreeItem.resource;
       const attributeHeadings = Object.keys(localFile);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading as keyof ILocalFile]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -117,18 +118,18 @@ export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
 
 export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showTransactionAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ITransaction>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS transaction selected");
       return;
     }
     for (const localTransactionTreeItem of allSelectedNodes) {
-      const transaction = localTransactionTreeItem.transaction;
+      const transaction = localTransactionTreeItem.resource;
       const attributeHeadings = Object.keys(transaction);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading as keyof ITransaction]}</td></tr>`;
       }
       webText += "</tbody>";
 

@@ -9,26 +9,27 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { ILocalFile } from "../../doc/ILocalFile";
+import { CICSCombinedResourceTree } from "../../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
+import { CICSResourceTreeItem } from "../../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { ICommandParams } from "../ICommandParams";
-import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import constants from "../../utils/constants";
+import { ICommandParams } from "../ICommandParams";
 
 export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
+    const allSelectedNodes: CICSResourceTreeItem<ILocalFile>[] = findSelectedNodes(treeview, CICSResourceTreeItem, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS local file selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+    const parentRegions = new Set<CICSRegionTree>();
     let busyDecision = await window.showInformationMessage(
       `Choose one of the following for the file busy condition`,
       ...["Wait", "No Wait", "Force"]
@@ -55,15 +56,13 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
               await disableLocalFile(
                 currentNode.parentRegion.parentSession.session,
                 {
-                  name: currentNode.localFile.file,
-                  regionName: currentNode.parentRegion.label,
+                  name: currentNode.resource.file,
+                  regionName: currentNode.parentRegion.region.applid,
                   cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
                 },
                 busyDecision
               );
-              if (!parentRegions.includes(currentNode.parentRegion)) {
-                parentRegions.push(currentNode.parentRegion);
-              }
+              parentRegions.add(currentNode.parentRegion);
             } catch (error) {
               window.showErrorMessage(
                 `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -84,7 +83,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
               if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
                 const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
                   child.contextValue.includes("cicscombinedlocalfiletree.")
-                )[0] as CICSCombinedLocalFileTree;
+                )[0] as CICSCombinedResourceTree<ILocalFile>;
                 if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
                   await allLocalFileTreeTree.loadContents(tree);
                 }

@@ -9,17 +9,17 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { ICommandParams } from "./ICommandParams";
+import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import constants from "../utils/constants";
+import { ICommandParams } from "./ICommandParams";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -29,7 +29,7 @@ import constants from "../utils/constants";
  */
 export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.purgeTask", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, clickedNode);
+    const allSelectedNodes: CICSTaskTreeItem[] = findSelectedNodes(treeview, CICSTaskTreeItem, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS task selected");
       return;
@@ -59,7 +59,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                 currentNode.parentRegion.parentSession.session,
                 {
                   name: currentNode.task.task,
-                  regionName: currentNode.parentRegion.label,
+                  regionName: currentNode.parentRegion.region.applid,
                   cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
                 },
                 purgeType

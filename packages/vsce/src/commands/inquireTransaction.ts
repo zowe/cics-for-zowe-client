@@ -10,11 +10,12 @@
  */
 
 import { commands, TreeView, window } from "vscode";
+import { ITransaction } from "../doc/ITransaction";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSTransactionTree } from "../trees/CICSTransactionTree";
+import { CICSResourceTree } from "../trees/CICSResourceTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
@@ -24,7 +25,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
  */
 export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireTransaction", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, node) as CICSTaskTreeItem[];
+    const allSelectedNodes: CICSTaskTreeItem[] = findSelectedNodes(treeview, CICSTaskTreeItem, node) as CICSTaskTreeItem[];
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS Task selected");
       return;
@@ -48,7 +49,8 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
     }
     // Comma separated filter
     const pattern = tranids.join(", ");
-    const localTransactionTree = resourceFolders.filter((child) => child instanceof CICSTransactionTree)[0] as CICSTransactionTree;
+    const localTransactionTree = resourceFolders.filter(
+      (child) => child instanceof CICSResourceTree && child.resourceMeta.filterAttribute === "tranid")[0] as CICSResourceTree<ITransaction>;
     localTransactionTree.setFilter(pattern);
     await localTransactionTree.loadContents();
     tree._onDidChangeTreeData.fire(undefined);

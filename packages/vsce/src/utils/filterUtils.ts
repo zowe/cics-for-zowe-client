@@ -93,6 +93,15 @@ export async function getDefaultTransactionFilter() {
   return defaultCriteria;
 }
 
+export async function getDefaultLocalFileFilter() {
+  let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.localFile.filter")}`;
+  if (!defaultCriteria || defaultCriteria.length === 0) {
+    await workspace.getConfiguration().update("zowe.cics.localFile.filter", "file=*");
+    defaultCriteria = "file=*";
+  }
+  return defaultCriteria;
+}
+
 export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {
   // returns a string as an escaped_criteria_string suitable for the criteria
   // query parameter for a CMCI request.

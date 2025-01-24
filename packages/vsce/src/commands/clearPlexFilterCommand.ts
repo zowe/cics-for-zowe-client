@@ -9,11 +9,48 @@
  *
  */
 
+import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, TreeView, window } from "vscode";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
+
+const doClear = async (region: CICSRegionTree, context: string) => {
+  const treeToClear = region.children.filter((child: any) => child.contextValue.includes(`${context}.`))[0];
+  treeToClear.clearFilter();
+  await treeToClear.loadContents();
+};
+
+const clearResourcesMethodMap: { [key: string]: (region: CICSRegionTree) => Promise<void>; } = {
+  "Programs": async (region: CICSRegionTree) => doClear(region, "cicstreeprogram"),
+  "Local Transactions": async (region: CICSRegionTree) => doClear(region, "cicstreetransaction"),
+  "Local Files": async (region: CICSRegionTree) => doClear(region, "cicstreelocalfile"),
+  "Tasks": async (region: CICSRegionTree) => doClear(region, "cicstreetask"),
+  "Libraries": async (region: CICSRegionTree) => doClear(region, "cicstreelibrary"),
+  "TCPIP Services": async (region: CICSRegionTree) => doClear(region, "cicstreetcpips"),
+  "URI Maps": async (region: CICSRegionTree) => doClear(region, "cicstreeurimaps"),
+  "All": async (region: CICSRegionTree) => {
+    for (const child of region.children) {
+      child.clearFilter();
+      await child.loadContents();
+    }
+  },
+};
+
+const getResourceToClear = async (profile: imperative.IProfile) => {
+  let clearOptions = ["Programs", "Local Transactions", "Local Files", "Tasks", "Libraries", "All"];
+  if (profile.regionName && profile.cicsPlex) {
+    clearOptions = ["Regions", ...clearOptions];
+  }
+
+  const resourceToClear = await window.showQuickPick(clearOptions);
+  if (!resourceToClear) {
+    window.showInformationMessage("No option selected");
+    return null;
+  }
+  return resourceToClear;
+};
 
 /**
  * Clear filter for a Regions Container (previously this was available on a plex)
@@ -23,7 +60,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
  */
 export function getClearPlexFilterCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.clearPlexFilter", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSRegionsContainer, node);
+    const allSelectedNodes: CICSRegionsContainer[] = findSelectedNodes(treeview, CICSRegionsContainer, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICSPlex tree selected");
       return;
@@ -31,64 +68,20 @@ export function getClearPlexFilterCommand(tree: CICSTree, treeview: TreeView<any
     for (const selectedNode of allSelectedNodes) {
       const plex = selectedNode.getParent();
       const plexProfile = plex.getProfile();
-      let resourceToClear;
-      if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
-        resourceToClear = await window.showQuickPick(["Programs", "Local Transactions", "Local Files", "Tasks", "Libraries", "All"]);
-      } else {
-        resourceToClear = await window.showQuickPick(["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries", "All"]);
-      }
-      if (!resourceToClear) {
-        window.showInformationMessage("No option selected");
-        return;
-      }
+
+      const resourceToClear = await getResourceToClear(plexProfile.profile);
+
       if ((resourceToClear === "Regions" || resourceToClear === "All") && !(plexProfile.profile.regionName && plexProfile.profile.cicsPlex)) {
         selectedNode.filterRegions("*", tree);
       }
-      if (resourceToClear !== "Regions") {
+
+      if (resourceToClear && resourceToClear !== "Regions") {
         for (const region of selectedNode.children) {
-          if (region instanceof CICSRegionTree) {
-            if (region.getIsActive()) {
-              if (region.children) {
-                let treeToClear;
-                if (resourceToClear === "Programs") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "Local Transactions") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "Local Files") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "Tasks") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreetask."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "Libraries") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreelibrary."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "TCPIP Services") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreetcpips."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "URI Maps") {
-                  treeToClear = region.children.filter((child: any) => child.contextValue.includes("cicstreeurimaps."))[0];
-                  treeToClear.clearFilter();
-                  await treeToClear.loadContents();
-                } else if (resourceToClear === "All") {
-                  for (const child of region.children) {
-                    child.clearFilter();
-                    await child.loadContents();
-                  }
-                }
-              }
-            }
+          if (region instanceof CICSRegionTree && region.getIsActive() && region.children && resourceToClear in clearResourcesMethodMap) {
+            clearResourcesMethodMap[resourceToClear](region);
           }
-          tree._onDidChangeTreeData.fire(undefined);
         }
+        tree._onDidChangeTreeData.fire(undefined);
       }
     }
   });

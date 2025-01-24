@@ -13,12 +13,14 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconFilePathFromName } from "../../utils/iconUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { IProgram } from "../../doc/IProgram";
+import resources from "../../doc/IResourceTypes";
 import { toArray } from "../../utils/commandUtils";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { CICSResourceTreeItem } from "./CICSResourceTreeItem";
 
 export class CICSLibraryDatasets extends TreeItem {
-  children: CICSProgramTreeItem[] = [];
+  children: CICSResourceTreeItem<IProgram>[] = [];
   dataset: any;
   parentRegion: CICSRegionTree;
   directParent: any;
@@ -42,7 +44,7 @@ export class CICSLibraryDatasets extends TreeItem {
     this.label = newlabel;
   }
 
-  public addProgram(program: CICSProgramTreeItem) {
+  public addProgram(program: CICSResourceTreeItem<IProgram>) {
     this.children.push(program);
   }
 
@@ -68,7 +70,7 @@ export class CICSLibraryDatasets extends TreeItem {
       const programsArray = toArray(datasetResponse.response.records.cicsprogram);
       this.label = `${this.dataset.dsname}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {
-        const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
+        const newProgramItem = new CICSResourceTreeItem<IProgram>(program as IProgram, resources.program, this.parentRegion, this);
         this.addProgram(newProgramItem);
       }
     } catch (error) {

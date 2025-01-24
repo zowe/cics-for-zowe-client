@@ -10,19 +10,19 @@
  */
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSProgramTree } from "./CICSProgramTree";
-import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSLocalFileTree } from "./CICSLocalFileTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { getIconByStatus } from "../utils/iconUtils";
 import { CICSTaskTree } from "./CICSTaskTree";
+import { IRegion } from "../doc/IRegion";
+import resources, { IResource } from "../doc/IResourceTypes";
 import { CICSLibraryTree } from "./CICSLibraryTree";
+import { CICSResourceTree } from "./CICSResourceTree";
 import { CICSWebTree } from "./CICSWebTree";
 
 export class CICSRegionTree extends TreeItem {
-  children: [CICSProgramTree, CICSTransactionTree, CICSLocalFileTree, CICSTaskTree, CICSLibraryTree, CICSWebTree] | null;
-  region: any;
+  children: (CICSResourceTree<IResource> | CICSTaskTree | CICSLibraryTree | CICSWebTree)[] | null;
+  region: IRegion;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
   directParent: any;
@@ -52,9 +52,9 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.contextValue += ".active";
       this.children = [
-        new CICSProgramTree(this),
-        new CICSTransactionTree(this),
-        new CICSLocalFileTree(this),
+        new CICSResourceTree(resources.program, this),
+        new CICSResourceTree(resources.transaction, this),
+        new CICSResourceTree(resources.localFile, this),
         new CICSTaskTree(this),
         new CICSLibraryTree(this),
         new CICSWebTree(this),

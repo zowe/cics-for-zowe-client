@@ -10,13 +10,19 @@
  */
 
 import { commands, TreeView, window } from "vscode";
-import { CICSCombinedTransactionsTree } from "../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { IProgram } from "../doc/IProgram";
+import { IResource } from "../doc/IResourceTypes";
+import { ITransaction } from "../doc/ITransaction";
+import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
+import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
-import { CICSProgramTree } from "../trees/CICSProgramTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { CICSResourceTree } from "../trees/CICSResourceTree";
+import { CICSTaskTree } from "../trees/CICSTaskTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
+import { CICSWebTree } from "../trees/CICSWebTree";
+import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
 
 /**
@@ -24,13 +30,15 @@ import { findSelectedNodes } from "../utils/commandUtils";
  */
 export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireProgram", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, node) as CICSTransactionTreeItem[];
+    const allSelectedNodes: CICSResourceTreeItem<IProgram>[] =
+      findSelectedNodes(treeview, CICSResourceTreeItem, node) as CICSResourceTreeItem<IProgram>[];
+
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS Transaction selected");
       return;
     }
-    let resourceFolders;
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedTransactionsTree) {
+    let resourceFolders: (CICSResourceTree<IResource> | CICSTaskTree | CICSLibraryTree | CICSWebTree)[];
+    if (allSelectedNodes[0].getParent() instanceof CICSCombinedResourceTree) {
       const cicsPlex: CICSPlexTree = allSelectedNodes[0].getParent().getParent();
       const regionsContainer = cicsPlex.getChildren().filter((child) => child instanceof CICSRegionsContainer)[0];
       //@ts-ignore
@@ -43,17 +51,17 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
     }
     const tranids = [];
     for (const localTransactionTreeItem of allSelectedNodes) {
-      const transaction = localTransactionTreeItem.transaction;
+      const transaction = localTransactionTreeItem.resource as ITransaction;
       tranids.push(transaction["program"]);
     }
     // Comma separated filter
     const pattern = tranids.join(", ");
-    const programTree = resourceFolders.filter((child) => child instanceof CICSProgramTree)[0] as CICSProgramTree;
+    const programTree = resourceFolders.filter((child) => child instanceof CICSResourceTree)[0];
     programTree.setFilter(pattern);
     await programTree.loadContents();
     tree._onDidChangeTreeData.fire(undefined);
 
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedTransactionsTree) {
+    if (allSelectedNodes[0].getParent() instanceof CICSCombinedResourceTree) {
       const nodeToExpand: any = programTree;
 
       // TODO: Ideal situation would be to do await treeview.reveal(nodeToExpand), however this is resulting in an error,

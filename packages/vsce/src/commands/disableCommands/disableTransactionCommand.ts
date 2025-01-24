@@ -9,21 +9,22 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
+import { ITransaction } from "../../doc/ITransaction";
+import { CICSCombinedResourceTree } from "../../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
+import { CICSResourceTreeItem } from "../../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
-import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
-import { ICommandParams } from "../ICommandParams";
 import constants from "../../utils/constants";
+import { ICommandParams } from "../ICommandParams";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, clickedNode);
+    const allSelectedNodes: CICSResourceTreeItem<ITransaction>[] = findSelectedNodes(treeview, CICSResourceTreeItem, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Transaction selected");
       return;
@@ -47,8 +48,8 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
 
           try {
             await disableTransaction(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.transaction.tranid,
-              regionName: currentNode.parentRegion.label,
+              name: currentNode.resource.tranid,
+              regionName: currentNode.parentRegion.region.applid,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
             if (!parentRegions.includes(currentNode.parentRegion)) {
@@ -60,7 +61,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform DISABLE on Transaction "${allSelectedNodes[parseInt(index)].transaction.tranid
+                `Perform DISABLE on Transaction "${allSelectedNodes[parseInt(index)].resource.tranid
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -85,7 +86,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
               const allTransactionTree = parentRegion.parentPlex.children.filter((child: any) =>
                 child.contextValue.includes("cicscombinedtransactiontree.")
-              )[0] as CICSCombinedTransactionsTree;
+              )[0] as CICSCombinedResourceTree<ITransaction>;
               if (allTransactionTree.collapsibleState === 2 && allTransactionTree.getActiveFilter()) {
                 await allTransactionTree.loadContents(tree);
               }

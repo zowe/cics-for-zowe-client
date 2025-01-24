@@ -11,12 +11,10 @@
 
 import { commands, TreeView, window } from "vscode";
 import { CICSCombinedLibraryTree } from "../trees/CICSCombinedTrees/CICSCombinedLibraryTree";
-import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
 import { CICSCombinedPipelineTree } from "../trees/CICSCombinedTrees/CICSCombinedPipelineTree";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
 import { CICSCombinedTCPIPServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
-import { CICSCombinedTransactionsTree } from "../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedURIMapTree } from "../trees/CICSCombinedTrees/CICSCombinedURIMapTree";
 import { CICSCombinedWebServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedWebServiceTree";
 import { CICSTree } from "../trees/CICSTree";
@@ -29,7 +27,7 @@ export function getFilterAllProgramsCommand(tree: CICSTree, treeview: TreeView<a
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedProgramTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Programs' tree selected");
@@ -125,7 +123,7 @@ export function getFilterAllTransactionsCommand(tree: CICSTree, treeview: TreeVi
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedTransactionsTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Transactions' tree selected");
@@ -149,7 +147,7 @@ export function getFilterAllLocalFilesCommand(tree: CICSTree, treeview: TreeView
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedLocalFileTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Local Files' tree selected");

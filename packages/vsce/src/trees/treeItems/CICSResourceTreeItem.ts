@@ -11,26 +11,31 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { IResource, IResourceMeta } from "../../doc/IResourceTypes";
 import { getIconByStatus } from "../../utils/iconUtils";
 
-export class CICSTransactionTreeItem extends TreeItem {
-  transaction: any;
+export class CICSResourceTreeItem<T extends IResource> extends TreeItem {
+  resource: T;
+  resourceMeta: IResourceMeta;
   parentRegion: CICSRegionTree;
   directParent: any;
-  transactionName: string;
 
   constructor(
-    transaction: any,
+    resource: T,
+    resourceMeta: IResourceMeta,
     parentRegion: CICSRegionTree,
-    directParent: any,
-    public readonly iconPath = getIconByStatus("TRANSACTION", transaction)
+    directParent: any
   ) {
-    super(`${transaction.tranid} ${transaction.status.toLowerCase() === "disabled" ? "(Disabled)" : ""}`, TreeItemCollapsibleState.None);
-    this.transaction = transaction;
-    this.contextValue = `cicstransaction.${transaction.status.toLowerCase()}.${transaction.tranid}`;
+    super(
+      resourceMeta.getLabel(resource),
+      TreeItemCollapsibleState.None
+    );
+
+    this.resource = resource;
     this.parentRegion = parentRegion;
     this.directParent = directParent;
-    this.transactionName = transaction.tranid;
+    this.contextValue = resourceMeta.getContext(resource);
+    this.iconPath = getIconByStatus(resourceMeta.resourceName, this);
   }
 
   public setLabel(newLabel: string) {

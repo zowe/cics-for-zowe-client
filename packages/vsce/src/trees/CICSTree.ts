@@ -38,10 +38,13 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
+
   loadedProfiles: CICSSessionTree[] = [];
+
   constructor() {
     this.loadStoredProfileNames();
   }
+
   public getLoadedProfiles() {
     return this.loadedProfiles;
   }
@@ -51,6 +54,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     await this.loadStoredProfileNames();
     commands.executeCommand("workbench.actions.treeView.cics-view.collapseAll");
   }
+
   public clearLoadedProfiles() {
     this.loadedProfiles = [];
     this._onDidChangeTreeData.fire(undefined);
@@ -62,21 +66,20 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * these as children to the CICSTree (TreeDataProvider)
    */
   public async loadStoredProfileNames() {
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await ProfileManagement.profilesCacheRefresh();
-    // Retrieve previously added profiles from persistent storage
-    for (const profilename of persistentStorage.getLoadedCICSProfile()) {
-      try {
-        const profileToLoad = await ProfileManagement.getProfilesCache().loadNamedProfile(profilename, "cics");
-        // avoid accidental repeats
-        if (!this.loadedProfiles.filter((sessionTree) => sessionTree.label === profilename).length) {
-          const newSessionTree = new CICSSessionTree(profileToLoad);
-          this.loadedProfiles.push(newSessionTree);
+    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
+    const uniqueProfileNamesToLoad = [...new Set(persistentStorage.getLoadedCICSProfile())];
+
+    this.loadedProfiles = uniqueProfileNamesToLoad.flatMap(
+      (profileName: string) => {
+        try {
+          const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
+          return [new CICSSessionTree(profile)];
+        } catch (error) {
+          return [];
         }
-      } catch {
-        continue;
       }
-    }
+    );
     this._onDidChangeTreeData.fire(undefined);
   }
 
@@ -222,7 +225,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -348,8 +351,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   if (sessionTree) {
                     const decision = await window.showInformationMessage(
                       `Warning: Your connection is not private (${error.code}) - ` +
-                        `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
-                      ...["Yes", "No"],
+                      `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
+                      ...["Yes", "No"]
                     );
                     if (decision) {
                       if (decision === "Yes") {
@@ -500,6 +503,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
     return element;
   }
+
   getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
     return element === undefined ? this.loadedProfiles : element.children;
   }
