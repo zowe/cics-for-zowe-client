@@ -13,6 +13,7 @@ export * from "./ICacheParms";
 export * from "./ICMCIApiResponse";
 export * from "./ICMCIResponseResultSummary";
 export * from "./ICSDGroupParms";
+export * from "./IGetResourceUriOptions";
 export * from "./IProgramParms";
 export * from "./IResourceParms";
 export * from "./IResourceQueryParms";
@@ -20,4 +21,5 @@ export * from "./IResultCacheParms";
 export * from "./ITransactionParms";
 export * from "./IURIMapParms";
 export * from "./IWebServiceParms";
-export * from "./IGetResourceUriOptions";
+export * from "./resources";
+
