@@ -9,9 +9,10 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
-import { IResource, IResourceMeta } from "../../doc/IResourceTypes";
+import IResourceMeta from "../../doc/IResourceMeta";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
@@ -29,9 +30,9 @@ export class CICSCombinedResourceTree<T extends IResource> extends TreeItem {
   activeFilter: string | undefined;
   currentCount: number;
   incrementCount: number;
-  resourceMeta: IResourceMeta;
+  resourceMeta: IResourceMeta<T>;
 
-  constructor(parentPlex: CICSPlexTree, resourceMeta: IResourceMeta, public iconPath = getFolderIcon(false)) {
+  constructor(parentPlex: CICSPlexTree, resourceMeta: IResourceMeta<T>, public iconPath = getFolderIcon(false)) {
     super(`All ${resourceMeta.humanReadableName}`, TreeItemCollapsibleState.Collapsed);
     this.resourceMeta = resourceMeta;
     this.contextValue = `${resourceMeta.combinedContextPrefix}.`;
@@ -130,12 +131,12 @@ export class CICSCombinedResourceTree<T extends IResource> extends TreeItem {
         .getChildren()!
         .filter((child) =>
           child instanceof CICSRegionTree &&
-          child.getRegionName() === resource[this.resourceMeta.regionNameAttribute as keyof T])?.[0] as CICSRegionTree;
+          child.getRegionName() === resource.eyu_cicsname)?.[0] as CICSRegionTree;
       const resourceTree = new CICSResourceTreeItem<T>(resource, this.resourceMeta, parentRegion, this);
       resourceTree.setLabel(
         resourceTree.label.toString().replace(
           `${resource[this.resourceMeta.primaryKeyAttribute as keyof T]}`,
-          `${resource[this.resourceMeta.primaryKeyAttribute as keyof T]} (${resource[this.resourceMeta.regionNameAttribute as keyof T]})`
+          `${resource[this.resourceMeta.primaryKeyAttribute as keyof T]} (${resource.eyu_cicsname})`
         ));
       newChildren.push(resourceTree);
     }

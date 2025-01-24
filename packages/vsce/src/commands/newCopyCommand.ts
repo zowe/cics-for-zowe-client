@@ -9,9 +9,8 @@
  *
  */
 
-import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
+import { IProgram, programNewcopy } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { IProgram } from "../doc/IProgram";
 import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";

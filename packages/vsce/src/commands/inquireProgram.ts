@@ -9,10 +9,8 @@
  *
  */
 
+import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
-import { IProgram } from "../doc/IProgram";
-import { IResource } from "../doc/IResourceTypes";
-import { ITransaction } from "../doc/ITransaction";
 import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSPlexTree } from "../trees/CICSPlexTree";

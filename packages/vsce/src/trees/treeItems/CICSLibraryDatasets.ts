@@ -12,9 +12,8 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconFilePathFromName } from "../../utils/iconUtils";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { IProgram } from "../../doc/IProgram";
-import resources from "../../doc/IResourceTypes";
+import { getResource, IProgram } from "@zowe/cics-for-zowe-sdk";
+import { ProgramMeta } from "../../doc/ProgramMeta";
 import { toArray } from "../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { CICSResourceTreeItem } from "./CICSResourceTreeItem";
@@ -70,7 +69,7 @@ export class CICSLibraryDatasets extends TreeItem {
       const programsArray = toArray(datasetResponse.response.records.cicsprogram);
       this.label = `${this.dataset.dsname}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
       for (const program of programsArray) {
-        const newProgramItem = new CICSResourceTreeItem<IProgram>(program as IProgram, resources.program, this.parentRegion, this);
+        const newProgramItem = new CICSResourceTreeItem<IProgram>(program as IProgram, ProgramMeta, this.parentRegion, this);
         this.addProgram(newProgramItem);
       }
     } catch (error) {

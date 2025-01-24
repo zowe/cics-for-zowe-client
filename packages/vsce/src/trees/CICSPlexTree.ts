@@ -9,13 +9,12 @@
  *
  */
 
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { getIconFilePathFromName } from "../utils/iconUtils";
-import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
+import { getResource, IResource } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import resources, { IResource } from "../doc/IResourceTypes";
+import { LocalFileMeta, ProgramMeta, TaskMeta, TransactionMeta } from "../doc";
 import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
 import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedResourceTree } from "./CICSCombinedTrees/CICSCombinedResourceTree";
@@ -155,10 +154,10 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addNewCombinedTrees() {
-    this.children.push(new CICSCombinedResourceTree(this, resources.program));
-    this.children.push(new CICSCombinedResourceTree(this, resources.transaction));
-    this.children.push(new CICSCombinedResourceTree(this, resources.localFile));
-    this.children.push(new CICSCombinedResourceTree(this, resources.task));
+    this.children.push(new CICSCombinedResourceTree(this, ProgramMeta));
+    this.children.push(new CICSCombinedResourceTree(this, TransactionMeta));
+    this.children.push(new CICSCombinedResourceTree(this, LocalFileMeta));
+    this.children.push(new CICSCombinedResourceTree(this, TaskMeta));
     this.children.push(new CICSCombinedLibraryTree(this));
     this.children.push(new CICSCombinedTCPIPServiceTree(this));
     this.children.push(new CICSCombinedURIMapTree(this));
