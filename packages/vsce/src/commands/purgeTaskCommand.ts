@@ -12,11 +12,12 @@
 import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
+import { ITask } from "../doc/ITask";
+import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
+import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import constants from "../utils/constants";
 import { ICommandParams } from "./ICommandParams";
@@ -29,7 +30,7 @@ import { ICommandParams } from "./ICommandParams";
  */
 export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.purgeTask", async (clickedNode) => {
-    const allSelectedNodes: CICSTaskTreeItem[] = findSelectedNodes(treeview, CICSTaskTreeItem, clickedNode);
+    const allSelectedNodes: CICSResourceTreeItem<ITask>[] = findSelectedNodes(treeview, CICSResourceTreeItem, clickedNode);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS task selected");
       return;
@@ -58,7 +59,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               await purgeTask(
                 currentNode.parentRegion.parentSession.session,
                 {
-                  name: currentNode.task.task,
+                  name: currentNode.resource.task,
                   regionName: currentNode.parentRegion.region.applid,
                   cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
                 },
@@ -73,7 +74,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                 // @ts-ignore
                 const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
                 window.showErrorMessage(
-                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${allSelectedNodes[parseInt(index)].task.task
+                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${allSelectedNodes[parseInt(index)].resource.task
                   }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
                 );
               } else {
@@ -98,8 +99,8 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               // same task item in a CICS combined task tree of the same profile
               if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
                 const allTaskTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
-                  child.contextValue.includes("cicscombinedlocalfiletree.")
-                )[0] as CICSCombinedTaskTree;
+                  child.contextValue.includes("cicscombinedtasktree.")
+                )[0] as CICSCombinedResourceTree<ITask>;
                 // If allTasksTree is open
                 if (allTaskTreeTree.collapsibleState === 2 && allTaskTreeTree.getActiveFilter()) {
                   await allTaskTreeTree.loadContents(tree);

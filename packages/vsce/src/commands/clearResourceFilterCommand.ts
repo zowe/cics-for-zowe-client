@@ -12,7 +12,6 @@
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
 import { CICSResourceTree } from "../trees/CICSResourceTree";
-import { CICSTaskTree } from "../trees/CICSTaskTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
@@ -25,7 +24,6 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.clearFilter", async (node) => {
     const allSelectedResourceTreeNodes = findSelectedNodes(treeview, CICSResourceTree, node);
-    const allSelectedTaskTreeNodes = findSelectedNodes(treeview, CICSTaskTree, node);
     const allSelectedLibraryTreeNodes = findSelectedNodes(treeview, CICSLibraryTree, node);
     const allSelectedDatasetTreeNodes = findSelectedNodes(treeview, CICSLibraryTreeItem, node);
     const allSelectedDatasetProgramTreeNodes = findSelectedNodes(treeview, CICSLibraryDatasets, node);
@@ -35,7 +33,6 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
     const allSelectedPipelineTreeNodes = findSelectedNodes(treeview, CICSPipelineTree, node);
     const allSelectedNodes = [
       ...allSelectedResourceTreeNodes,
-      ...allSelectedTaskTreeNodes,
       ...allSelectedLibraryTreeNodes,
       ...allSelectedDatasetTreeNodes,
       ...allSelectedDatasetProgramTreeNodes,

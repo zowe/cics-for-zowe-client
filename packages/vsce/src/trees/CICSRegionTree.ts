@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { getIconByStatus } from "../utils/iconUtils";
-import { CICSTaskTree } from "./CICSTaskTree";
 import { IRegion } from "../doc/IRegion";
 import resources, { IResource } from "../doc/IResourceTypes";
 import { CICSLibraryTree } from "./CICSLibraryTree";
@@ -21,7 +20,7 @@ import { CICSResourceTree } from "./CICSResourceTree";
 import { CICSWebTree } from "./CICSWebTree";
 
 export class CICSRegionTree extends TreeItem {
-  children: (CICSResourceTree<IResource> | CICSTaskTree | CICSLibraryTree | CICSWebTree)[] | null;
+  children: (CICSResourceTree<IResource> | CICSLibraryTree | CICSWebTree)[] | null;
   region: IRegion;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -55,7 +54,7 @@ export class CICSRegionTree extends TreeItem {
         new CICSResourceTree(resources.program, this),
         new CICSResourceTree(resources.transaction, this),
         new CICSResourceTree(resources.localFile, this),
-        new CICSTaskTree(this),
+        new CICSResourceTree(resources.task, this),
         new CICSLibraryTree(this),
         new CICSWebTree(this),
       ];
