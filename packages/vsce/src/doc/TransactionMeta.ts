@@ -13,6 +13,9 @@ export const TransactionMeta: ResourceMeta<ITransaction> = {
   filterAttribute: "tranid",
   primaryKeyAttribute: "tranid",
 
+  persistentStorageKey: "transaction",
+  persistentStorageAllKey: "allTransactions",
+
   getDefaultFilter: async function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.TRANSACTION_FILTER);
   },

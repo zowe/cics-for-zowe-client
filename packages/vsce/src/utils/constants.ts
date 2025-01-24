@@ -63,5 +63,21 @@ export default {
       ID: "zowe.cics.tasks.filter",
       DEFAULT: "TRANID=*",
     },
+    TCPIP_FILTER: {
+      ID: "zowe.cics.tcpips.filter",
+      DEFAULT: "name=*",
+    },
+    URIMAP_FILTER: {
+      ID: "zowe.cics.urimaps.filter",
+      DEFAULT: "name=*",
+    },
+    PIPELINE_FILTER: {
+      ID: "zowe.cics.pipelines.filter",
+      DEFAULT: "name=*",
+    },
+    WEBSERVICE_FILTER: {
+      ID: "zowe.cics.webservices.filter",
+      DEFAULT: "name=*",
+    },
   }
 };

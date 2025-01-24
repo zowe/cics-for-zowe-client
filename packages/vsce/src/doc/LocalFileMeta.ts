@@ -13,6 +13,9 @@ export const LocalFileMeta: ResourceMeta<ILocalFile> = {
   filterAttribute: "file",
   primaryKeyAttribute: "file",
 
+  persistentStorageKey: "localFile",
+  persistentStorageAllKey: "allLocalFiles",
+
   getDefaultFilter: async function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.LOCAL_FILE_FILTER);
   },

@@ -8,6 +8,9 @@ export interface ResourceMeta<T> {
   filterAttribute: string;
   primaryKeyAttribute: string;
 
+  persistentStorageKey: string;
+  persistentStorageAllKey: string;
+
   getDefaultFilter(): Promise<string>;
   getLabel(resource: T): string;
   getContext(resource: T): string;

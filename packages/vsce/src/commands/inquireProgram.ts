@@ -18,7 +18,6 @@ import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSResourceTree } from "../trees/CICSResourceTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSWebTree } from "../trees/CICSWebTree";
 import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
 
@@ -34,7 +33,7 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
       window.showErrorMessage("No CICS Transaction selected");
       return;
     }
-    let resourceFolders: (CICSResourceTree<IResource> | CICSLibraryTree | CICSWebTree)[];
+    let resourceFolders: (CICSResourceTree<IResource> | CICSLibraryTree)[];
     if (allSelectedNodes[0].getParent() instanceof CICSCombinedResourceTree) {
       const cicsPlex: CICSPlexTree = allSelectedNodes[0].getParent().getParent();
       const regionsContainer = cicsPlex.getChildren().filter((child) => child instanceof CICSRegionsContainer)[0];
