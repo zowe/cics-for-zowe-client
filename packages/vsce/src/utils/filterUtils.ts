@@ -71,8 +71,8 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
 }
 
 export async function getDefaultFilter(params: { ID: string, DEFAULT: string; }): Promise<string> {
-  let defaultCriteria = `${await workspace.getConfiguration().get(params.ID)}`;
-  if (!defaultCriteria || defaultCriteria.length === 0) {
+  let defaultCriteria: string = await workspace.getConfiguration().get(params.ID);
+  if (!defaultCriteria || `${defaultCriteria}`.length === 0) {
     await workspace.getConfiguration().update(params.ID, params.DEFAULT);
     defaultCriteria = params.DEFAULT;
   }

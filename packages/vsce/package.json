@@ -785,6 +785,30 @@
           "description": "Default filter criteria for Library",
           "scope": "window"
         },
+        "zowe.cics.tcpips.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for TCPIP Services",
+          "scope": "window"
+        },
+        "zowe.cics.urimaps.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for URIMaps",
+          "scope": "window"
+        },
+        "zowe.cics.pipelines.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Pipelines",
+          "scope": "window"
+        },
+        "zowe.cics.webservices.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Web Services",
+          "scope": "window"
+        },
         "zowe.cics.allPrograms.recordCountIncrement": {
           "type": "number",
           "default": 500,

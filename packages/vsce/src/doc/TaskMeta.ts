@@ -13,6 +13,10 @@ export const TaskMeta: ResourceMeta<ITask> = {
   filterAttribute: "tranid",
   primaryKeyAttribute: "task",
 
+  persistentStorageKey: "tasks",
+  persistentStorageAllKey: "allTasks",
+
+
   getDefaultFilter: async function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.PROGRAM_FILTER);
   },

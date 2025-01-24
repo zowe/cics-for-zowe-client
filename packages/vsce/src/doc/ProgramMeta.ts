@@ -13,6 +13,9 @@ export const ProgramMeta: ResourceMeta<IProgram> = {
   filterAttribute: "PROGRAM",
   primaryKeyAttribute: "program",
 
+  persistentStorageKey: "program",
+  persistentStorageAllKey: "allPrograms",
+
   getDefaultFilter: async function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.PROGRAM_FILTER);
   },

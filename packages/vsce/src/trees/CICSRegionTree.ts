@@ -14,13 +14,14 @@ import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { getIconByStatus } from "../utils/iconUtils";
 import { IRegion, IResource } from "@zowe/cics-for-zowe-sdk";
-import { LocalFileMeta, ProgramMeta, TaskMeta, TransactionMeta } from "../doc";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSResourceTree } from "./CICSResourceTree";
-import { CICSWebTree } from "./CICSWebTree";
+import { LocalFileMeta, PipelineMeta, ProgramMeta, TaskMeta, TransactionMeta, URIMapMeta } from "../doc";
+import { TCPIPMeta } from "../doc/TCPIPMeta";
+import { WebServiceMeta } from "../doc/WebServiceMeta";
 
 export class CICSRegionTree extends TreeItem {
-  children: (CICSResourceTree<IResource> | CICSLibraryTree | CICSWebTree)[] | null;
+  children: (CICSResourceTree<IResource> | CICSLibraryTree)[] | null;
   region: IRegion;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -56,7 +57,11 @@ export class CICSRegionTree extends TreeItem {
         new CICSResourceTree(LocalFileMeta, this),
         new CICSResourceTree(TaskMeta, this),
         new CICSLibraryTree(this),
-        new CICSWebTree(this),
+        // new CICSWebTree(this),
+        new CICSResourceTree(TCPIPMeta, this),
+        new CICSResourceTree(URIMapMeta, this),
+        new CICSResourceTree(PipelineMeta, this),
+        new CICSResourceTree(WebServiceMeta, this),
       ];
     }
   }

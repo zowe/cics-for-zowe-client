@@ -41,7 +41,7 @@ export class CICSCombinedResourceTree<T extends IResource> extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get(
-      `zowe.cics.all${resourceMeta.humanReadableName.replaceAll(" ", "")}.recordCountIncrement`
+      `zowe.cics.${resourceMeta.persistentStorageAllKey}.recordCountIncrement`
     )}`;
   }
 
