@@ -37,7 +37,7 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
     - [Checking the source of an error](#checking-the-source-of-an-error)
     - [Filing an issue](#filing-an-issue)
 
-## Software Requirements
+## Software requirements
 
 Ensure that you meet the following prerequisites before you use the extension:
 
@@ -79,7 +79,7 @@ The profile defines a connection which must point to a CICS region's CICS Manage
 
 4. Select the **+** button in the **CICS** tree and click the newly created profile to load it into view.
 
-The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection: **[correct?]**
+The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
 
 ```
 "profiles": {
@@ -134,7 +134,7 @@ Expand a CICS region to show folders for the resource types `Programs`, `Transac
 
 The list of resources are pre-filtered to exclude many of the IBM-supplied items; these default filters are configured in the settings for the CICS extension.
 
-Use the **Search** icon <img src="/packages/vsce/docs/images/resource-filter.png" width="16px"/> against a resource type to apply a filter. This can be an exact resource name or can include wildcards. The search history is saved so you can recall previous searches.
+Use the **Filter** icon <img src="/packages/vsce/docs/images/resource-filter.png" width="16px"/> against a resource type to apply a filter. This can be an exact resource name or can include wildcards. The filter history is saved so you can recall previous filters.
 
 To reset the filter to its initial criteria, use the **Clear Filter** icon <img src="/packages/vsce/docs/images/resource-filter-clear.png" width="16px"/> against the resource type. If you want to see all resources in a region (including IBM supplied ones) you can use `\*` as a filter.
 
@@ -142,11 +142,11 @@ To reset the filter to its initial criteria, use the **Clear Filter** icon <img 
 <img src="/packages/vsce/docs/images/region-filter.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
 </p>
 
-**Tip:** To apply multiple filters, separate entries with a comma. You can append any filter with an `\*`, which indicates wildcard searching.
+**Tip:** To apply multiple filters, separate entries with a comma. You can append any filter with an `\*`, which indicates wildcard filtering.
 
 ### Show and filter resources in a plex
 
-In the same way as filtering resources in a region, you can apply a filter on resources in a plex. Use the **Filter** and **Clear Filter** buttons against the Regions tree element to manage filters across the whole set of regions and resources. **[Should "filter" and "clear filter" be "search" and "clear search"? the icons looks like "search" icons rather than "filter" icons. From what I see, seems like we're using "search" and "filter" interchangeably and we should use only one of these terms.]**
+In the same way as filtering resources in a region, you can apply a filter on resources in a plex. Use the **Filter** and **Clear Filter** buttons against the Regions tree element to manage filters across the whole set of regions and resources.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/plex-filter.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
@@ -156,15 +156,15 @@ In the same way as filtering resources in a region, you can apply a filter on re
 
 CICSplexes contain an `All Programs`, `All Local Transactions`, `All Local Files`, and `All Tasks` trees which show resources from all regions in the plex.
 
-To view resources under these trees, use the **Search** icon <img src="/packages/vsce/docs/images/resource-filter.png" width="16px"/> inline with the tree and apply a filter.
+To view resources under these trees, use the **Filter** icon <img src="/packages/vsce/docs/images/resource-filter.png" width="16px"/> inline with the tree and apply a filter.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/all-resources.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
 </p>
 
-If the applied filter results in more than 500 records, either change the filter to narrow down the search, or click the `view X more ...` item to retrieve 'X' more resources.
+If the applied filter results in more than 500 records, either change the filter to narrow down the result set, or click the `view X more ...` item to retrieve 'X' more resources.
 
-**Tip:** The default 500 count can be modified via the `Record Count Increment` property in Settings (UI). **[What does "(UI)" mean here? I don't see it in the screenshot.]**
+**Tip:** The default 500 count can be modified via the `Record Count Increment` property in the settings for the CICS extension.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/record-count-increment.png" alt="Zowe CICS Explorer Record Count Increment in Setting UI" width="700px"/>
@@ -188,7 +188,7 @@ Right-click against a program, local transaction, or local file to open the pop-
 
 ### New Copy and Phase In
 
-Use `New Copy` <img src="/packages/vsce/docs/images/program-newcopy-action.png" width="16px"/> and `Phase In` <img src="/packages/vsce/docs/images/program-phasein-action.png" width="16px"/> actions against a CICS program to get the CICS region to load a fresh of **[is there a word missing here? "a fresh of" what?]** the selected program into memory. This could be after you have edited a COBOL program source and successfully compiled it into a load library so that you can test your change.
+Use `New Copy` <img src="/packages/vsce/docs/images/program-newcopy-action.png" width="16px"/> and `Phase In` <img src="/packages/vsce/docs/images/program-phasein-action.png" width="16px"/> actions against a CICS program to refresh the program only if it is not currently in use (NEWCOPY), or to use the new version of the module for all future requests (PHASEIN). This could be after you have edited a COBOL program source and successfully compiled it into a load library so that you can test your change.
 
 The `newcopycnt` for a program which is greater than zero is shown next to the program item in the CICS resource tree.
 
@@ -236,7 +236,7 @@ Expand libraries of a region to view specific data sets belonging to a library. 
 
 ### View four CICS web resources under the web folder
 
-Expand the Web folder to view TCPIP Services, URI Maps, Pipelines, and Web Services. Each of these resources can be expanded and allows for right-click functionality on the specific resource to execute the `Show Attributes` command. Use the **Search** icon to filter down specific resources by applying a filter.
+Expand the Web folder to view TCPIP Services, URI Maps, Pipelines, and Web Services. Each of these resources can be expanded and allows for right-click functionality on the specific resource to execute the `Show Attributes` command. Use the **Filter** icon to filter down specific resources by applying a filter.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/webResources.gif" alt="Zowe CICS Explorer Web resources under the Web folder" width="600px"/>
