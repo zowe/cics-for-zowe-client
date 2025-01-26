@@ -188,7 +188,7 @@ Right-click against a program, local transaction, or local file to open the pop-
 
 ### New Copy and Phase In
 
-Use `New Copy` <img src="/packages/vsce/docs/images/program-newcopy-action.png" width="16px"/> and `Phase In` <img src="/packages/vsce/docs/images/program-phasein-action.png" width="16px"/> actions against a CICS program to refresh the program only if it is not currently in use (NEWCOPY), or to use the new version of the module for all future requests (PHASEIN). This could be after you have edited a COBOL program source and successfully compiled it into a load library so that you can test your change.
+Use `New Copy` <img src="/packages/vsce/docs/images/program-newcopy-action.png" width="16px"/> and `Phase In` <img src="/packages/vsce/docs/images/program-phasein-action.png" width="16px"/> actions against a CICS program to refresh the program only if it is not currently in use (New Copy), or to use the new version of the module for all future requests (Phase In). This could be after you have edited a COBOL program source and successfully compiled it into a load library so that you can test your change.
 
 The `newcopycnt` for a program which is greater than zero is shown next to the program item in the CICS resource tree.
 
