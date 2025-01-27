@@ -14,7 +14,7 @@ import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getIconOpen } from "../../../utils/profileUtils";
+import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
 
 export class CICSWebServiceTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSWebServiceTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSWebServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const webserviceResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSWebService",
         regionName: this.parentRegion.getRegionName(),
@@ -56,20 +58,20 @@ export class CICSWebServiceTree extends TreeItem {
         newWebServiceItem.setLabel(newWebServiceItem.label.toString().replace(webservice.name, `${webservice.name}`));
         this.addWebService(newWebServiceItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a Web Services filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No Web Services found`);
         this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching Web Services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }

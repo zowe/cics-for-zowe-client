@@ -17,7 +17,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSURIMapTreeItem } from "../treeItems/web/treeItems/CICSURIMapTreeItem";
 
@@ -29,7 +29,10 @@ export class CICSCombinedURIMapTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All URI Maps", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedurimapstree.`;
     this.parentPlex = parentPlex;
@@ -48,7 +51,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -60,7 +63,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +75,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allURIMaps = await ProfileManagement.getCachedResources(
@@ -80,16 +83,16 @@ export class CICSCombinedURIMapTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addURIMapsUtil([], allURIMaps, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No URI Maps found`);
               this.label = `All URI Maps ${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -99,11 +102,11 @@ export class CICSCombinedURIMapTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching URI Maps - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+              " ",
+            )}`,
           );
         }
-      }
+      },
     );
   }
 
@@ -111,7 +114,9 @@ export class CICSCombinedURIMapTree extends TreeItem {
     for (const urimaps of allURIMaps) {
       // Regions container must exist if all URI Maps tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === urimaps.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -119,7 +124,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
       urimapsTree.setLabel(
         urimapsTree.label
           .toString()
-          .replace(urimaps.name, `${urimaps.name} (${urimaps.eyu_cicsname}) [${urimapsTree.urimap.scheme}] (${urimapsTree.urimap.path})`)
+          .replace(urimaps.name, `${urimaps.name} (${urimaps.eyu_cicsname}) [${urimapsTree.urimap.scheme}] (${urimapsTree.urimap.path})`),
       );
       newChildren.push(urimapsTree);
     }
@@ -151,7 +156,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -162,19 +167,19 @@ export class CICSCombinedURIMapTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allURIMaps) {
             // @ts-ignore
             this.addURIMapsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSURIMapTreeItem) ?? []) as CICSURIMapTreeItem[],
               allURIMaps,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

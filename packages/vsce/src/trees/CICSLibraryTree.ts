@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import { getIconOpen } from "../utils/profileUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { toArray } from "../utils/commandUtils";
@@ -22,7 +22,7 @@ export class CICSLibraryTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getFolderIcon(false)) {
     super("Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.parentRegion = parentRegion;
@@ -55,14 +55,14 @@ export class CICSLibraryTree extends TreeItem {
         const newLibraryItem = new CICSLibraryTreeItem(library, this.parentRegion, this);
         this.addLibrary(newLibraryItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a library filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No libraries found`);
         this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching libraries - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

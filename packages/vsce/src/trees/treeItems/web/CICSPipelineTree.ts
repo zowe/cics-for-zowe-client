@@ -14,7 +14,7 @@ import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getIconOpen } from "../../../utils/profileUtils";
+import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
 
 export class CICSPipelineTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSPipelineTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSPipelineTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const pipelineResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSPipeline",
         regionName: this.parentRegion.getRegionName(),
@@ -56,20 +58,20 @@ export class CICSPipelineTree extends TreeItem {
         newPipelineItem.setLabel(newPipelineItem.label.toString().replace(pipeline.name, `${pipeline.name}`));
         this.addPipeline(newPipelineItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a Pipeline filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No Pipelines found`);
         this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching Pipelines - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }
