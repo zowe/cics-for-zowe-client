@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { getFolderIcon } from "../../utils/iconUtils";
 import { toArray } from "../../utils/commandUtils";
 
@@ -47,11 +46,11 @@ export class CICSLibraryTreeItem extends TreeItem {
   }
 
   public async loadContents() {
-    const defaultCriteria = "(DSNAME=*)";
+    const defaultCriteria = `(LIBRARY=${this.library.name})`;
     let criteria;
 
     if (this.activeFilter) {
-      criteria = toEscapedCriteriaString(this.activeFilter, "DSNAME");
+      criteria = `(LIBRARY=${this.library.name} AND DSNAME=${this.activeFilter})`;
     } else {
       criteria = defaultCriteria;
     }
