@@ -9,7 +9,7 @@
  *
  */
 
-const getIconOpenMock = jest.fn();
+const getFolderIconMock = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSLocalFileTreeItem } from "../../../src/trees/treeItems/CICSLocalFileTreeItem";
@@ -21,11 +21,9 @@ import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/trees/treeItems/CICSLocalFileTreeItem");
-jest.mock("../../../src/utils/profileUtils", () => {
-  return { getIconOpen: getIconOpenMock };
+jest.mock("../../../src/utils/iconUtils", () => {
+  return { getFolderIcon: getFolderIconMock };
 });
-
-
 
 const getResourceMock = globalMocks.getResourceMock;
 const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
@@ -44,9 +42,9 @@ describe("Test suite for CICSLocalFileTree", () => {
   let sut: CICSLocalFileTree;
 
   beforeEach(() => {
-    getIconOpenMock.mockReturnValue(treeResourceMock.iconPath);
+    getFolderIconMock.mockReturnValue(treeResourceMock.iconPath);
     sut = new CICSLocalFileTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
-    expect(getIconOpenMock).toHaveBeenCalledWith(false);
+    expect(getFolderIconMock).toHaveBeenCalledWith(false);
   });
 
   afterEach(() => {
@@ -77,7 +75,7 @@ describe("Test suite for CICSLocalFileTree", () => {
       expect(workspaceMock).toHaveBeenCalled();
       expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
     });
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
@@ -90,7 +88,7 @@ describe("Test suite for CICSLocalFileTree", () => {
       expect(toEscapedCriteriaString).toHaveBeenCalled();
       expect(sut.activeFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
       expect(workspaceMock).toHaveBeenCalledTimes(2);
     });
 
