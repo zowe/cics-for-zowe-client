@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconPathInResources } from "../../utils/profileUtils";
+import { getIconByStatus } from "../../utils/iconUtils";
 
 export class CICSLocalFileTreeItem extends TreeItem {
   localFile: any;
@@ -23,7 +23,7 @@ export class CICSLocalFileTreeItem extends TreeItem {
     localFile: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("local-file-dark.svg", "local-file-light.svg")
+    public readonly iconPath = getIconByStatus("LOCAL_FILE", localFile)
   ) {
     super(
       `${localFile.file} ${

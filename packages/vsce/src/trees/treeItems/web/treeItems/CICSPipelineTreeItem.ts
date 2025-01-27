@@ -11,7 +11,7 @@
 
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "../../../CICSRegionTree";
-import { getIconPathInResources } from "../../../../utils/profileUtils";
+import { getIconFilePathFromName } from "../../../../utils/iconUtils";
 
 export class CICSPipelineTreeItem extends TreeItem {
   pipeline: any;
@@ -22,7 +22,7 @@ export class CICSPipelineTreeItem extends TreeItem {
     pipeline: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconPathInResources("program-dark.svg", "program-light.svg")
+    public readonly iconPath = getIconFilePathFromName("program"),
   ) {
     super(`${pipeline.name}`, TreeItemCollapsibleState.None);
 

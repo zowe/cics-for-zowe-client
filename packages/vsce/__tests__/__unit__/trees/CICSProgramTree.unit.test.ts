@@ -9,7 +9,7 @@
  *
  */
 
-const getIconOpenMock = jest.fn();
+const getFolderIconMock = jest.fn();
 
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
@@ -22,8 +22,8 @@ import CustomError from "../../__utils__/CustomError";
 jest.mock("@zowe/cics-for-zowe-sdk");
 const zoweSdk = require("@zowe/cics-for-zowe-sdk");
 
-jest.mock("../../../src/utils/profileUtils", () => {
-  return { getIconOpen: getIconOpenMock };
+jest.mock("../../../src/utils/iconUtils", () => {
+  return { getFolderIcon: getFolderIconMock };
 });
 jest.mock("../../../src/trees/treeItems/CICSProgramTreeItem");
 
@@ -63,9 +63,9 @@ describe("Test suite for CICSProgramTree", () => {
   let sut: CICSProgramTree;
 
   beforeEach(() => {
-    getIconOpenMock.mockReturnValue(iconPath);
+    getFolderIconMock.mockReturnValue(iconPath);
     sut = new CICSProgramTree(cicsRegionTreeMock as any as CICSRegionTree);
-    expect(getIconOpenMock).toHaveBeenCalledWith(false);
+    expect(getFolderIconMock).toHaveBeenCalledWith(false);
   });
 
   afterEach(() => {
@@ -98,7 +98,7 @@ describe("Test suite for CICSProgramTree", () => {
       expect(getDefaultProgramFilter).toHaveBeenCalled();
       expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
     });
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
@@ -110,7 +110,7 @@ describe("Test suite for CICSProgramTree", () => {
       expect(toEscapedCriteriaString).toHaveBeenCalled();
       expect(sut.activeFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {

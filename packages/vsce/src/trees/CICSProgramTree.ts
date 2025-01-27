@@ -14,7 +14,7 @@ import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getDefaultProgramFilter, toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSProgramTree extends TreeItem {
@@ -22,7 +22,10 @@ export class CICSProgramTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.parentRegion = parentRegion;
@@ -42,7 +45,6 @@ export class CICSProgramTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const programResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSProgram",
         regionName: this.parentRegion.getRegionName(),
@@ -55,20 +57,20 @@ export class CICSProgramTree extends TreeItem {
         const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
         this.addProgram(newProgramItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a program filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No programs found`);
         this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " "
-          )}`
+            " ",
+          )}`,
         );
       }
     }

@@ -19,7 +19,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSProgramTreeItem } from "../treeItems/CICSProgramTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen, getIconPathInResources } from "../../utils/profileUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
@@ -31,7 +31,10 @@ export class CICSCombinedProgramTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All Programs", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedprogramtree.`;
     this.parentPlex = parentPlex;
@@ -50,7 +53,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         let recordsCount: number;
         try {
           let criteria;
@@ -63,7 +66,7 @@ export class CICSCombinedProgramTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             recordsCount = cacheTokenInfo.recordCount;
@@ -75,7 +78,7 @@ export class CICSCombinedProgramTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allPrograms = await ProfileManagement.getCachedResources(
@@ -83,16 +86,16 @@ export class CICSCombinedProgramTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addProgramsUtil([], allPrograms, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No programs found`);
               this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -101,7 +104,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         } catch (error) {
           if (error instanceof imperative.ImperativeError && error.mDetails.msg.includes("NOTAVAILABLE")) {
             this.children = [];
-            this.iconPath = getIconPathInResources("folder-open-dark.svg", "folder-open-light.svg");
+            this.iconPath = getFolderIcon(true);
             tree._onDidChangeTreeData.fire(undefined);
             window.showInformationMessage(`No programs found`);
             this.label = `All Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -109,12 +112,12 @@ export class CICSCombinedProgramTree extends TreeItem {
             window.showErrorMessage(
               `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
                 /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
+                " ",
+              )}`,
             );
           }
         }
-      }
+      },
     );
   }
 
@@ -122,7 +125,9 @@ export class CICSCombinedProgramTree extends TreeItem {
     for (const program of allPrograms) {
       // Regions container must exist if all programs tree exists
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === program.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -158,7 +163,7 @@ export class CICSCombinedProgramTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -169,19 +174,19 @@ export class CICSCombinedProgramTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allPrograms) {
             // @ts-ignore
             this.addProgramsUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSProgramTreeItem) ?? []) as CICSProgramTreeItem[],
               allPrograms,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

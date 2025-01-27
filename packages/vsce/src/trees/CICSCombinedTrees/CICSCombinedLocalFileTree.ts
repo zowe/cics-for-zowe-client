@@ -18,7 +18,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSLocalFileTreeItem } from "../treeItems/CICSLocalFileTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedLocalFileTree extends TreeItem {
@@ -29,7 +29,10 @@ export class CICSCombinedLocalFileTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlocalfiletree.`;
     this.parentPlex = parentPlex;
@@ -48,7 +51,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         let criteria;
         if (this.activeFilter) {
           criteria = toEscapedCriteriaString(this.activeFilter, "file");
@@ -60,7 +63,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +75,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allLocalFiles = await ProfileManagement.getCachedResources(
@@ -80,16 +83,16 @@ export class CICSCombinedLocalFileTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addLocalFilesUtil([], allLocalFiles, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No local files found`);
               this.label = `All Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -99,18 +102,20 @@ export class CICSCombinedLocalFileTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+              " ",
+            )}`,
           );
         }
-      }
+      },
     );
   }
 
   public addLocalFilesUtil(newChildren: (CICSLocalFileTreeItem | ViewMore)[], allLocalFiles: any, count: number | undefined) {
     for (const localfile of allLocalFiles) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === localfile.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -141,7 +146,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
           this.parentPlex.getProfile(),
           this.parentPlex.getPlexName(),
           this.constant,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -152,19 +157,19 @@ export class CICSCombinedLocalFileTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allLocalFiles) {
             // @ts-ignore
             this.addLocalFilesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSLocalFileTreeItem) ?? []) as CICSLocalFileTreeItem[],
               allLocalFiles,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

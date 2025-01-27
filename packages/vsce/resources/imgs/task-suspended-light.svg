@@ -3,19 +3,10 @@
   <defs>
     <style>
       .cls-1 {
-        fill: none;
-        stroke: #e9bb5d;
-        stroke-linecap: round;
-        stroke-miterlimit: 10;
-        stroke-width: 2px;
-      }
-
-      .cls-2 {
         fill: #f3f3f4;
       }
     </style>
   </defs>
-  <polygon class="cls-2" points="12.13 13.1 12.13 12.1 8.87 12.1 8.87 13.1 6.11 11.5 8.87 9.9 8.87 10.9 12.13 10.9 12.13 9.9 14.89 11.5 12.13 13.1"/>
-  <line class="cls-1" x1="6" y1="9" x2="6" y2="4"/>
-  <line class="cls-1" x1="9.96" y1="9" x2="9.96" y2="4"/>
+  <path class="cls-1" d="M6.14,12.62c-.5,0-.9-.4-.9-.9v-7.44c0-.5.4-.9.9-.9s.9.4.9.9v7.44c0,.5-.4.9-.9.9Z"/>
+  <path class="cls-1" d="M11.14,12.62c-.5,0-.9-.4-.9-.9v-7.44c0-.5.4-.9.9-.9s.9.4.9.9v7.44c0,.5-.4.9-.9.9Z"/>
 </svg>

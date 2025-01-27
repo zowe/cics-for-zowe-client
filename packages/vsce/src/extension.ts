@@ -14,7 +14,7 @@ import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { CICSTree } from "./trees/CICSTree";
 import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
 import { ProfileManagement } from "./utils/profileManagement";
-import { getIconOpen, getIconPathInResources } from "./utils/profileUtils";
+import { getFolderIcon, getIconFilePathFromName } from "./utils/iconUtils";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { Logger } from "@zowe/imperative";
@@ -56,7 +56,7 @@ export async function activate(context: ExtensionContext) {
   } else {
     window.showErrorMessage(
       "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
+        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
     );
     return;
   }
@@ -76,18 +76,21 @@ export async function activate(context: ExtensionContext) {
   };
 
   const expandResourceTree = (node: any) => {
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: "Loading resources...",
-      cancellable: true
-    }, async (_progress, _token) => {
-      await node.element.loadContents();
-      node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
-      treeDataProv._onDidChangeTreeData.fire(undefined);
-    });
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Loading resources...",
+        cancellable: true,
+      },
+      async (_progress, _token) => {
+        await node.element.loadContents();
+        node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
+        treeDataProv._onDidChangeTreeData.fire(undefined);
+      },
+    );
   };
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void; } = {
+  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
     cicscombinedprogramtree: expandCombinedTree,
     cicscombinedtransactiontree: expandCombinedTree,
     cicscombinedlocalfiletree: expandCombinedTree,
@@ -119,35 +122,29 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        const newSessionTree = new CICSSessionTree(
-          node.element.getParent().profile,
-          getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg")
-        );
+        const newSessionTree = new CICSSessionTree(node.element.getParent().profile, getIconFilePathFromName("profile-disconnected"));
         treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
     },
 
     cicsregionscontainer: (node: any) => {
-      node.element.iconPath = getIconOpen(true);
+      node.element.iconPath = getFolderIcon(true);
       regionContainerExpansionHandler(node.element, treeDataProv);
       treeDataProv._onDidChangeTreeData.fire(undefined);
-    }
+    },
   };
 
   treeview.onDidExpandElement((node) => {
-
     const contextValue = node.element.contextValue;
     const initialContext = contextValue.split(".")[0];
 
     if (initialContext in contextMap) {
       contextMap[initialContext](node);
     }
-
   });
 
   treeview.onDidCollapseElement((node) => {
-
     const interestedContextValues = [
       "cicsregionscontainer.",
       "cicscombinedprogramtree.",
@@ -172,8 +169,8 @@ export async function activate(context: ExtensionContext) {
       "cicstreeurimaps.",
     ];
 
-    if (interestedContextValues.some(item => node.element.contextValue.includes(item))) {
-      node.element.iconPath = getIconOpen(false);
+    if (interestedContextValues.some((item) => node.element.contextValue.includes(item))) {
+      node.element.iconPath = getFolderIcon(false);
     }
     node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
     treeDataProv._onDidChangeTreeData.fire(undefined);

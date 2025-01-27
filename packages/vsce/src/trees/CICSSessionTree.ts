@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { getIconPathInResources } from "../utils/profileUtils";
+import { getIconFilePathFromName } from "../utils/iconUtils";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -21,7 +21,10 @@ export class CICSSessionTree extends TreeItem {
   profile: any;
   isUnauthorized: boolean | undefined;
 
-  constructor(profile: any, public readonly iconPath = getIconPathInResources("profile-unverified-dark.svg", "profile-unverified-light.svg")) {
+  constructor(
+    profile: any,
+    public readonly iconPath = getIconFilePathFromName("profile-unverified"),
+  ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;

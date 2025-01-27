@@ -18,7 +18,7 @@ import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSTree } from "../CICSTree";
 import { CICSLibraryTreeItem } from "../treeItems/CICSLibraryTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getIconOpen } from "../../utils/profileUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 
 export class CICSCombinedLibraryTree extends TreeItem {
@@ -29,7 +29,10 @@ export class CICSCombinedLibraryTree extends TreeItem {
   incrementCount: number;
   constant: string;
 
-  constructor(parentPlex: CICSPlexTree, public iconPath = getIconOpen(false)) {
+  constructor(
+    parentPlex: CICSPlexTree,
+    public iconPath = getFolderIcon(false),
+  ) {
     super("All Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedlibrarytree.`;
     this.parentPlex = parentPlex;
@@ -48,7 +51,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
         cancellable: true,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         try {
           let criteria;
           if (this.activeFilter) {
@@ -60,7 +63,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName()
+            this.getParent().getGroupName(),
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -72,7 +75,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount
+                  recordsCount,
                 );
               } else {
                 allLibraries = await ProfileManagement.getCachedResources(
@@ -80,16 +83,16 @@ export class CICSCombinedLibraryTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount
+                  this.incrementCount,
                 );
                 count = recordsCount;
               }
               this.addLibrariesUtil([], allLibraries, count);
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
             } else {
               this.children = [];
-              this.iconPath = getIconOpen(true);
+              this.iconPath = getFolderIcon(true);
               tree._onDidChangeTreeData.fire(undefined);
               window.showInformationMessage(`No libraries found`);
               this.label = `All Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${recordsCount}]`;
@@ -99,18 +102,20 @@ export class CICSCombinedLibraryTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching libraries - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+              " ",
+            )}`,
           );
         }
-      }
+      },
     );
   }
 
   public addLibrariesUtil(newChildren: (CICSLibraryTreeItem | ViewMore)[], allLibraries: any, count: number | undefined) {
     for (const library of allLibraries) {
       const regionsContainer = this.parentPlex.children.filter((child) => child instanceof CICSRegionsContainer)?.[0];
-      if (regionsContainer == null) { continue; }
+      if (regionsContainer == null) {
+        continue;
+      }
       const parentRegion = regionsContainer
         .getChildren()!
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === library.eyu_cicsname)?.[0] as CICSRegionTree;
@@ -146,7 +151,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName()
+          this.getParent().getGroupName(),
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -157,19 +162,19 @@ export class CICSCombinedLibraryTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount
+            this.incrementCount,
           );
           if (allLibraries) {
             // @ts-ignore
             this.addLibrariesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSLibraryTreeItem) ?? []) as CICSLibraryTreeItem[],
               allLibraries,
-              count
+              count,
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      }
+      },
     );
   }
 

@@ -14,7 +14,7 @@ import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 
 export class CICSLocalFileTree extends TreeItem {
@@ -22,7 +22,7 @@ export class CICSLocalFileTree extends TreeItem {
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(parentRegion: CICSRegionTree, public iconPath = getFolderIcon(false)) {
     super("Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.parentRegion = parentRegion;
@@ -59,7 +59,7 @@ export class CICSLocalFileTree extends TreeItem {
         const newLocalFileItem = new CICSLocalFileTreeItem(localFile, this.parentRegion, this);
         this.addLocalFile(newLocalFileItem);
       }
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
     } catch (error) {
       // @ts-ignore
       if (error.mMessage!.includes("exceeded a resource limit")) {
@@ -68,7 +68,7 @@ export class CICSLocalFileTree extends TreeItem {
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No local files found`);
         this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
