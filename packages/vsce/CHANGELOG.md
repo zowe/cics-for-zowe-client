@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Updated status icons for local transactions, local files, tasks and programs. [#203](https://github.com/zowe/cics-for-zowe-client/issues/203)
+- BugFix: Display correct LibraryDatasets under the Library resource trees. [#212](https://github.com/zowe/cics-for-zowe-client/issues/212)
 
 ## `3.3.0`
 
