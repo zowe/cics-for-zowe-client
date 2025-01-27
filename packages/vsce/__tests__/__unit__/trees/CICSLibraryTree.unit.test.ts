@@ -9,10 +9,9 @@
  *
  */
 
-const getIconOpenMock = jest.fn();
+const getFolderIconMock = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import * as filterUtils from "../../../src/utils/filterUtils";
 import CustomError from "../../__utils__/CustomError";
 import { CICSLibraryTree } from "../../../src/trees/CICSLibraryTree";
 import { CICSLibraryTreeItem } from "../../../src/trees/treeItems/CICSLibraryTreeItem";
@@ -20,12 +19,12 @@ import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/trees/treeItems/CICSLibraryTreeItem");
-jest.mock("../../../src/utils/profileUtils", () => {
-  return { getIconOpen: getIconOpenMock };
+jest.mock("../../../src/utils/iconUtils", () => {
+  return { getFolderIcon: getFolderIconMock };
 });
 
 const getResourceMock = globalMocks.getResourceMock;
-const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString
+const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
 const CICSLibraryTreeItemMock = {};
 const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicsprogram");
 const record = [{ prop: "test1" }, { prop: "test2" }];
@@ -34,9 +33,9 @@ describe("Test suite for CICSLibraryTree", () => {
   let sut: CICSLibraryTree;
 
   beforeEach(() => {
-    getIconOpenMock.mockReturnValue(treeResourceMock.iconPath);
+    getFolderIconMock.mockReturnValue(treeResourceMock.iconPath);
     sut = new CICSLibraryTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
-    expect(getIconOpenMock).toHaveBeenCalledWith(false);
+    expect(getFolderIconMock).toHaveBeenCalledWith(false);
   });
 
   afterEach(() => {
@@ -65,7 +64,7 @@ describe("Test suite for CICSLibraryTree", () => {
       await sut.loadContents();
       expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
     });
 
     it("Should add newLibraryItem into the addLibrary() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
@@ -77,7 +76,7 @@ describe("Test suite for CICSLibraryTree", () => {
       expect(toEscapedCriteriaString).toHaveBeenCalled();
       expect(sut.activeFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
-      expect(getIconOpenMock).toHaveBeenCalledWith(true);
+      expect(getFolderIconMock).toHaveBeenCalledWith(true);
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {
