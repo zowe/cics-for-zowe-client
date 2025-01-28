@@ -14,18 +14,21 @@ import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import IResourceMeta from "../../doc/IResourceMeta";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconFilePathFromName } from "../../utils/iconUtils";
+import { CICSCombinedResourceTree } from "../CICSCombinedTrees/CICSCombinedResourceTree";
+import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
+import { CICSResourceTree } from "../CICSResourceTree";
 
 export class CICSResourceTreeItem<T extends IResource> extends TreeItem {
   resource: T;
   resourceMeta: IResourceMeta<T>;
   parentRegion: CICSRegionTree;
-  directParent: any;
+  directParent: CICSCombinedResourceTree<T> | CICSLibraryDatasets | CICSResourceTree<T>;
 
   constructor(
     resource: T,
     resourceMeta: IResourceMeta<T>,
     parentRegion: CICSRegionTree,
-    directParent: any
+    directParent: CICSCombinedResourceTree<T> | CICSLibraryDatasets | CICSResourceTree<T>
   ) {
     super(
       resourceMeta.getLabel(resource),
