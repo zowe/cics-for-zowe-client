@@ -1,17 +1,17 @@
-# CICS Extension Installation
+# IBM CICS for Zowe Explorer Extension Installation
 
 ## Requirements
 
-- VSSode
-- Zowe Explorer (optional - the Zowe Explorer will be added as part of the install if it isn't already present in VSCode.
+- VS Code
+- Zowe Explorer (optional - the Zowe Explorer will be added as part of the install if it isn't already present in VS Code.
 
 ## Installation
 
 ### From VSIX File
 
-1. Download Zowe.cics-extension-for-zowe-2.x.x.vsix to your PC that has VS Code already installed.
+1. Download Zowe.cics-extension-for-zowe-3.x.x.vsix to your PC that has VS Code already installed.
 
-2. Open the Extensions icon in the side bar, navigate to the ... menu, press **Install from VSIX ...** and select the downloaded `Zowe.cics-extension-for-zowe-2.x.x.vsix` file.
+2. Open the Extensions icon in the side bar, navigate to the ... menu, press **Install from VSIX ...** and select the downloaded `Zowe.cics-extension-for-zowe-3.x.x.vsix` file.
 
 <p align="center">
 <img src="./images/zowe-cics-explorer-install.gif" alt="Installing Zowe CICS Explorer" width="700px"/> 

@@ -1,18 +1,18 @@
-# CICS Extension Uninstallation
+# IBM CICS for Zowe Explorer Extension Uninstallation
 
 ## Requirements
 
-- VScode
-- Installed Zowe Explorer Extension for CICS
+- VS Code
+- Installed IBM CICS for Zowe Explorer Extension
 
 ## Uninstallation
 
-### From VSCode Extensions Tab
+### From VS Code Extensions Tab
 
-1. Navigate to Extensions tab of the VSCode application
+1. Navigate to the Extensions tab of the VS Code application
 
-2. Find `Zowe Explorer Extension For CICS` and click it
+2. Find `IBM CICS for Zowe Explorer` and select it
 
-3. A panel should open. Click `Uninstall at the top of the screen`
+3. Choose `Uninstall` at the top of the screen
 
-4. A reload may be required. If a button appears saying such, click it and the extension will no longer be installed
+4. You may need to restart VS Code for the uninstallation to fully complete.
