@@ -27,7 +27,7 @@ export const LocalFileMeta: ResourceMeta<ILocalFile> = {
   persistentStorageKey: "localFile",
   persistentStorageAllKey: "allLocalFiles",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.LOCAL_FILE_FILTER);
   },
 
@@ -51,9 +51,16 @@ export const LocalFileMeta: ResourceMeta<ILocalFile> = {
     return `cicslocalfile.${localFile.enablestatus.trim().toLowerCase()}.${localFile.openstatus.trim().toLowerCase()}.${localFile.file}`;
   },
 
-  getIconName: function (_localFile: ILocalFile): string {
-    return `local-file`;
-  }
+  getIconName: function (localFile: ILocalFile): string {
+    let iconName = `local-file`;
+    if (localFile.enablestatus.trim().toUpperCase() === "DISABLED") {
+      iconName += `-disabled`;
+    }
+    if (localFile.openstatus.trim().toUpperCase() === "CLOSED") {
+      iconName += `-closed`;
+    }
 
+    return iconName;
+  }
 };
 

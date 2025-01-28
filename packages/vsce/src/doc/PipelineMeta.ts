@@ -27,7 +27,7 @@ export const PipelineMeta: ResourceMeta<IPipeline> = {
   persistentStorageKey: "pipelines",
   persistentStorageAllKey: "allPipelines",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.PIPELINE_FILTER);
   },
 

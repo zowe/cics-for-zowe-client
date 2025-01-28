@@ -27,7 +27,7 @@ export const ProgramMeta: ResourceMeta<IProgram> = {
   persistentStorageKey: "program",
   persistentStorageAllKey: "allPrograms",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.PROGRAM_FILTER);
   },
 
@@ -47,8 +47,12 @@ export const ProgramMeta: ResourceMeta<IProgram> = {
     return `cicsprogram.${program.status.trim().toLowerCase()}.${program.program}`;
   },
 
-  getIconName: function (_program: IProgram): string {
-    return `program`;
+  getIconName: function (program: IProgram): string {
+    let iconName = `program`;
+    if (program.status.trim().toUpperCase() === "DISABLED") {
+      iconName += `-disabled`;
+    }
+    return iconName;
   }
 
 };

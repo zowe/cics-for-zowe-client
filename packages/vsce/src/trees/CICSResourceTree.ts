@@ -14,7 +14,7 @@ import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
 import IResourceMeta from "../doc/IResourceMeta";
 import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { getIconOpen } from "../utils/profileUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSResourceTreeItem } from "./treeItems/CICSResourceTreeItem";
 
@@ -26,7 +26,7 @@ export class CICSResourceTree<T extends IResource> extends TreeItem {
 
   resourceMeta: IResourceMeta<T>;
 
-  constructor(resourceMeta: IResourceMeta<T>, parentRegion: CICSRegionTree, public iconPath = getIconOpen(false)) {
+  constructor(resourceMeta: IResourceMeta<T>, parentRegion: CICSRegionTree, public iconPath = getFolderIcon(false)) {
     super(resourceMeta.humanReadableName, TreeItemCollapsibleState.Collapsed);
     this.contextValue = `${resourceMeta.contextPrefix}.${this.activeFilter ? "filtered" : "unfiltered"}.${resourceMeta.resourceName}`;
     this.parentRegion = parentRegion;
@@ -67,7 +67,7 @@ export class CICSResourceTree<T extends IResource> extends TreeItem {
         this.addResource(newResourceItem);
       }
 
-      this.iconPath = getIconOpen(true);
+      this.iconPath = getFolderIcon(true);
 
     } catch (error) {
       if (error.mMessage?.includes("exceeded a resource limit")) {
@@ -76,7 +76,7 @@ export class CICSResourceTree<T extends IResource> extends TreeItem {
         window.showInformationMessage(`No ${this.resourceMeta.humanReadableName} found`);
 
         this.label = `${this.resourceMeta.humanReadableName}${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
-        this.iconPath = getIconOpen(true);
+        this.iconPath = getFolderIcon(true);
 
       } else {
         window.showErrorMessage(
