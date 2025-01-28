@@ -283,7 +283,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               // 200 OK received
               newSessionTree.setAuthorized();
               const newRegionTree = new CICSRegionTree(
-                item.regions[0].applid,
                 regionsObtained.response.records.cicsregion,
                 newSessionTree,
                 undefined,

@@ -63,7 +63,6 @@ export class CICSPlexTree extends TreeItem {
       regionName: plexProfile.profile.regionName,
     });
     const newRegionTree = new CICSRegionTree(
-      plexProfile.profile.regionName,
       regionsObtained.response.records.cicsregion,
       this.getParent(),
       this,
