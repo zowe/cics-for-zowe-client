@@ -10,7 +10,7 @@
  */
 
 import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
-import { Session } from "@zowe/imperative";
+import { Session, SessConstants } from "@zowe/imperative";
 import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
 import { xml2json } from "xml-js";
@@ -18,7 +18,6 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
 import cicsProfileMeta from "./profileDefinition";
-import { SessConstants } from "@zowe/imperative";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
