@@ -12,26 +12,33 @@
 import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
-import { getIconByStatus } from "../utils/iconUtils";
+import { getIconFilePathFromName } from "../utils/iconUtils";
 import { IRegion, IResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSResourceTree } from "./CICSResourceTree";
 import { LocalFileMeta, PipelineMeta, ProgramMeta, TaskMeta, TransactionMeta, URIMapMeta } from "../doc";
 import { TCPIPMeta } from "../doc/TCPIPMeta";
 import { WebServiceMeta } from "../doc/WebServiceMeta";
+import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { RegionMeta } from "../doc/RegionMeta";
 
 export class CICSRegionTree extends TreeItem {
   children: (CICSResourceTree<IResource> | CICSLibraryTree)[] | null;
   region: IRegion;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
-  directParent: any;
+  directParent: CICSPlexTree | CICSRegionsContainer | CICSSessionTree;
   isActive: true | false;
 
-  constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
-    super(regionName, TreeItemCollapsibleState.Collapsed);
+  constructor(
+    region: IRegion,
+    parentSession: CICSSessionTree,
+    parentPlex: CICSPlexTree | undefined,
+    directParent: CICSPlexTree | CICSRegionsContainer | CICSSessionTree
+  ) {
+    super(RegionMeta.getLabel(region), TreeItemCollapsibleState.Collapsed);
     this.region = region;
-    this.contextValue = `cicsregion.${regionName}`;
+    this.contextValue = RegionMeta.getContext(region);
     this.parentSession = parentSession;
     this.directParent = directParent;
     if (parentPlex) {
@@ -43,14 +50,8 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.isActive = region.cicsstatus === "ACTIVE" ? true : false;
     }
-    this.iconPath = getIconByStatus("REGION", this);
-    if (!this.isActive) {
-      this.children = null;
-      this.collapsibleState = TreeItemCollapsibleState.None;
-      this.iconPath = getIconByStatus("REGION", this);
-      this.contextValue += ".inactive";
-    } else {
-      this.contextValue += ".active";
+    this.iconPath = getIconFilePathFromName(RegionMeta.getIconName(region));
+    if (this.isActive) {
       this.children = [
         new CICSResourceTree(ProgramMeta, this),
         new CICSResourceTree(TransactionMeta, this),
@@ -63,6 +64,10 @@ export class CICSRegionTree extends TreeItem {
         new CICSResourceTree(PipelineMeta, this),
         new CICSResourceTree(WebServiceMeta, this),
       ];
+    } else {
+      this.children = null;
+      this.collapsibleState = TreeItemCollapsibleState.None;
+      this.iconPath = getIconFilePathFromName(RegionMeta.getIconName(region));
     }
   }
 

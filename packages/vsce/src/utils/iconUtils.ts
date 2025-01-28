@@ -23,14 +23,3 @@ export function getIconFilePathFromName(iconFileName: string): { light: string; 
 export function getFolderIcon(open: boolean = true) {
   return getIconFilePathFromName(`folder-${open ? "open" : "closed"}`);
 }
-
-export function getIconRootName(resourceType: string, resourceTreeItem: any) {
-  switch (resourceType) {
-    case "REGION":
-      return resourceTreeItem.isActive ? "region" : "region-disabled";
-  }
-}
-
-export function getIconByStatus(resourceType: string, resourceTreeItem: any) {
-  return getIconFilePathFromName(getIconRootName(resourceType, resourceTreeItem));
-}
