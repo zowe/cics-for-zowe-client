@@ -35,6 +35,7 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { SessConstants } from "@zowe/imperative";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -264,23 +265,17 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               profile = updatedProfile;
             }
           }
-          const plexInfo: InfoLoaded[] = await ProfileManagement.getPlexInfo(profile);
+
           // Initialise session tree
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-dark.svg", "profile-light.svg"));
+          newSessionTree = new CICSSessionTree(profile, undefined, getIconPathInResources("profile-dark.svg", "profile-light.svg"));
+
+          const plexInfo: InfoLoaded[] = await ProfileManagement.getPlexInfo(profile, newSessionTree.getSession());
+
           // For each InfoLoaded object - happens if there are multiple plexes
           for (const item of plexInfo) {
             // No plex
             if (item.plexname === null) {
-              const session = new imperative.Session({
-                type: "basic",
-                hostname: profile.profile.host,
-                port: Number(profile.profile.port),
-                user: profile.profile.user,
-                password: profile.profile.password,
-                rejectUnauthorized: profile.profile.rejectUnauthorized,
-                protocol: profile.profile.protocol,
-              });
-              const regionsObtained = await getResource(session, {
+              const regionsObtained = await getResource(newSessionTree.getSession(), {
                 name: "CICSRegion",
                 regionName: item.regions[0].applid,
               });
@@ -319,7 +314,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           this._onDidChangeTreeData.fire(undefined);
         } catch (error) {
           // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(profile, getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"));
+          newSessionTree = new CICSSessionTree(profile, undefined, getIconPathInResources("profile-disconnected-dark.svg", "profile-disconnected-light.svg"));
           // If method was called when expanding profile
           if (sessionTree) {
             this.loadedProfiles.splice(position, 1, newSessionTree);

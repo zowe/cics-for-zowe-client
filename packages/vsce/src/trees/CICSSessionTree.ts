@@ -14,6 +14,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { getIconPathInResources } from "../utils/profileUtils";
+import { Session, SessConstants } from "@zowe/imperative";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -21,19 +22,26 @@ export class CICSSessionTree extends TreeItem {
   profile: any;
   isUnauthorized: boolean | undefined;
 
-  constructor(profile: any, public readonly iconPath = getIconPathInResources("profile-unverified-dark.svg", "profile-unverified-light.svg")) {
+  constructor(profile: any, session?: Session, public readonly iconPath = getIconPathInResources("profile-unverified-dark.svg", "profile-unverified-light.svg")) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;
-    this.session = new imperative.Session({
-      type: "basic",
-      hostname: profile.profile!.host,
-      port: Number(profile.profile!.port),
-      user: profile.profile!.user || "",
-      password: profile.profile!.password || "",
-      rejectUnauthorized: profile.profile!.rejectUnauthorized,
-      protocol: profile.profile!.protocol,
-    });
+    if (session) {
+      this.session = session;
+    } else {
+      this.session = new imperative.Session({
+        type: profile.profile.useMFA ? SessConstants.AUTH_TYPE_TOKEN : SessConstants.AUTH_TYPE_BASIC,
+        storeCookie: profile.profile.useMFA,
+        tokenType: profile.profile.useMFA ? SessConstants.TOKEN_TYPE_LTPA : null,
+        hostname: profile.profile!.host,
+        port: Number(profile.profile!.port),
+        user: profile.profile!.user || "",
+        password: profile.profile!.password || "",
+        rejectUnauthorized: profile.profile!.rejectUnauthorized,
+        protocol: profile.profile!.protocol,
+      });
+    }
+
     this.profile = profile;
     this.isUnauthorized = undefined;
   }

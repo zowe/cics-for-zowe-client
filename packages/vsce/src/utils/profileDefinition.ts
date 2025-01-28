@@ -102,6 +102,17 @@ const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
             group: "Cics Connection Options",
           },
         },
+        useMFA: {
+          type: "boolean",
+          optionDefinition: {
+            name: "use-mfa",
+            aliases: ["ult"],
+            description: "Use MFA for authorization.",
+            type: "boolean",
+            defaultValue: false,
+            group: "Cics Connection Options",
+          },
+        },
       },
       required: [],
     }

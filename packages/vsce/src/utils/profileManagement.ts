@@ -18,6 +18,7 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
 import cicsProfileMeta from "./profileDefinition";
+import { SessConstants } from "@zowe/imperative";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -63,7 +64,9 @@ export class ProfileManagement {
       protocol: profile.protocol,
       hostname: profile.host,
       port: profile.port,
-      type: "basic",
+      type: profile.useMFA ? SessConstants.AUTH_TYPE_TOKEN : SessConstants.AUTH_TYPE_BASIC,
+      storeCookie: profile.useMFA,
+      tokenType: profile.useMFA ? SessConstants.TOKEN_TYPE_LTPA : null,
       user: profile.user,
       password: profile.password,
       rejectUnauthorized: 'rejectUnauthorized' in profile ? profile.rejectUnauthorized : true,
@@ -269,9 +272,7 @@ export class ProfileManagement {
    * @param profile
    * @returns Array of type InfoLoaded
    */
-  public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
-
-    const session = this.getSessionFromProfile(profile.profile);
+  public static async getPlexInfo(profile: imperative.IProfileLoaded, session: Session): Promise<InfoLoaded[]> {
 
     if (profile.profile.cicsPlex && profile.profile.regionName) {
       return this.regionPlexProvided(session, profile.profile);
