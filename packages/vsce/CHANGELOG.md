@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - BugFix: Update documentation to reflect changes to fully support V3 profiles. [#209](https://github.com/zowe/cics-for-zowe-client/issues/209)
+- Moved web-based resources in tree out of `Web` folder inline with others.
 
 ## `3.3.1`
 
