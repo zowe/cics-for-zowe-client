@@ -38,13 +38,13 @@ export const RegionMeta: ResourceMeta<IRegion> = {
 
   getContext: function (region: IRegion): string {
 
-    let activeContext = `.active`;
+    let activeContext = `active`;
 
     const cicsstate = region.cicsstate?.trim().toUpperCase();
     const cicsstatus = region.cicsstatus?.trim().toUpperCase();
 
     if ((cicsstate && cicsstate === "INACTIVE") || (cicsstatus && cicsstatus === "INACTIVE")) {
-      activeContext = `.inactive`;
+      activeContext = `inactive`;
     }
 
     return `cicsregion.${region.applid.trim().toLowerCase()}.${activeContext}`;
