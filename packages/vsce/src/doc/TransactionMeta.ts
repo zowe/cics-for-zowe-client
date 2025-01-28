@@ -27,7 +27,7 @@ export const TransactionMeta: ResourceMeta<ITransaction> = {
   persistentStorageKey: "transaction",
   persistentStorageAllKey: "allTransactions",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.TRANSACTION_FILTER);
   },
 
@@ -45,8 +45,12 @@ export const TransactionMeta: ResourceMeta<ITransaction> = {
     return `cicstransaction.${transaction.status.toLowerCase()}.${transaction.tranid}`;
   },
 
-  getIconName: function (_transaction: ITransaction): string {
-    return `local-transaction`;
+  getIconName: function (transaction: ITransaction): string {
+    let iconName = `local-transaction`;
+    if (transaction.status.trim().toUpperCase() === "DISABLED") {
+      iconName += `-disabled`;
+    }
+    return iconName;
   }
 
 };

@@ -27,7 +27,7 @@ export const URIMapMeta: ResourceMeta<IUriMap> = {
   persistentStorageKey: "urimaps",
   persistentStorageAllKey: "allURIMaps",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.URIMAP_FILTER);
   },
 

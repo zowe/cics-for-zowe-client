@@ -27,7 +27,7 @@ export const TCPIPMeta: ResourceMeta<ITCPIP> = {
   persistentStorageKey: "tcpips",
   persistentStorageAllKey: "allTCPIPS",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.TCPIP_FILTER);
   },
 

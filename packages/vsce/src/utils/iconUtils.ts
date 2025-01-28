@@ -26,30 +26,7 @@ export function getFolderIcon(open: boolean = true) {
 
 export function getIconRootName(resourceType: string, resourceTreeItem: any) {
   switch (resourceType) {
-    case "PROGRAM":
-    case "CICSProgram":
-      return resourceTreeItem.status === "DISABLED" ? "program-disabled" : "program";
-    case "TRANSACTION":
-    case "CICSLocalTransaction":
-      return resourceTreeItem.status === "DISABLED" ? "local-transaction-disabled" : "local-transaction";
-    case "LOCAL_FILE":
-    case "CICSLocalFile":
-      return resourceTreeItem.openstatus === "CLOSED" && resourceTreeItem.enablestatus === "DISABLED"
-        ? "local-file-disabled-closed"
-        : resourceTreeItem.openstatus === "CLOSED"
-          ? "local-file-closed"
-          : resourceTreeItem.enablestatus === "DISABLED"
-            ? "local-file-disabled"
-            : "local-file";
-    case "TASK":
-    case "CICSTask":
-      return resourceTreeItem.runstatus === "RUNNING"
-        ? "task-running"
-        : resourceTreeItem.runstatus === "SUSPENDED"
-          ? "task-suspended"
-          : "task-dispatched";
     case "REGION":
-    case "CICSRegion":
       return resourceTreeItem.isActive ? "region" : "region-disabled";
   }
 }

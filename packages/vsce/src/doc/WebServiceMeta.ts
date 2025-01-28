@@ -27,7 +27,7 @@ export const WebServiceMeta: ResourceMeta<IWebService> = {
   persistentStorageKey: "webservices",
   persistentStorageAllKey: "allWebServices",
 
-  getDefaultFilter: async function (): Promise<string> {
+  getDefaultFilter: function (): Promise<string> {
     return getDefaultFilter(constants.PERSISTENT_STORAGE.WEBSERVICE_FILTER);
   },
 

@@ -13,7 +13,7 @@ import { IResource } from "@zowe/cics-for-zowe-sdk";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import IResourceMeta from "../../doc/IResourceMeta";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconByStatus } from "../../utils/iconUtils";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
 
 export class CICSResourceTreeItem<T extends IResource> extends TreeItem {
   resource: T;
@@ -36,7 +36,7 @@ export class CICSResourceTreeItem<T extends IResource> extends TreeItem {
     this.parentRegion = parentRegion;
     this.directParent = directParent;
     this.contextValue = resourceMeta.getContext(resource);
-    this.iconPath = getIconByStatus(resourceMeta.resourceName, this);
+    this.iconPath = getIconFilePathFromName(resourceMeta.getIconName(resource));
   }
 
   public setLabel(newLabel: string) {

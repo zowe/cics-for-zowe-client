@@ -28,8 +28,8 @@ export const TaskMeta: ResourceMeta<ITask> = {
   persistentStorageAllKey: "allTasks",
 
 
-  getDefaultFilter: async function (): Promise<string> {
-    return getDefaultFilter(constants.PERSISTENT_STORAGE.PROGRAM_FILTER);
+  getDefaultFilter: function (): Promise<string> {
+    return getDefaultFilter(constants.PERSISTENT_STORAGE.TASK_FILTER);
   },
 
   getLabel: function (task: ITask): string {
@@ -47,12 +47,19 @@ export const TaskMeta: ResourceMeta<ITask> = {
   },
 
   getIconName: function (task: ITask): string {
-    if (task.runstatus.trim().toUpperCase() === "RUNNING") {
-      return `task-running`;
-    } else if (task.runstatus.trim().toUpperCase() === "SUSPENDED") {
-      return `task-suspended`;
+    let iconName = `task`;
+    switch (task.runstatus.trim().toUpperCase()) {
+      case "RUNNING":
+        iconName += `-running`;
+        break;
+      case "SUSPENDED":
+        iconName += `-suspended`;
+        break;
+      case "DISPATCHED":
+        iconName += `-dispatched`;
+        break;
     }
-    return `task-dispatched`;
+    return iconName;
   }
 
 };
