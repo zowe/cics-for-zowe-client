@@ -55,6 +55,15 @@
         }
       },
       {
+        "command": "cics-extension-for-zowe.toggleResources",
+        "title": "Toggle resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
+      },
+      {
         "command": "cics-extension-for-zowe.refreshTree",
         "title": "Refresh",
         "category": "IBM CICS for Zowe Explorer",
@@ -417,6 +426,11 @@
     "menus": {
       "view/title": [
         {
+          "command": "cics-extension-for-zowe.toggleResources",
+          "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
           "command": "cics-extension-for-zowe.refreshTree",
           "when": "view == cics-view",
           "group": "navigation"
@@ -750,7 +764,12 @@
             "programSearchHistory": [],
             "transactionSearchHistory": [],
             "localFileSearchHistory": [],
-            "loadedCICSProfile": []
+            "loadedCICSProfile": [],
+            "visibleResources": [
+              "CICSProgram",
+              "CICSLocalTransaction",
+              "CICSLocalFile"
+            ]
           },
           "description": "Zowe CICS Extension History",
           "scope": "window"
@@ -896,6 +915,7 @@
     "@vscode/vsce": "^2.32.0"
   },
   "dependencies": {
+    "@vscode-elements/react-elements": "^0.8.0",
     "@zowe/cics-for-zowe-sdk": "6.2.4",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.0.3"

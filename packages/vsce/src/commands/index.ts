@@ -12,7 +12,7 @@
 import * as disableCommands from './disableCommands';
 import * as enableCommands from './enableCommands';
 
-import { TreeView } from 'vscode';
+import { ExtensionContext, TreeView } from 'vscode';
 import { CICSTree } from '../trees/CICSTree';
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
@@ -32,8 +32,9 @@ import { getRefreshCommand } from "./refreshCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
+import { getToggleResourcesCommand } from './toggleResourcesCommand';
 
-export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => {
+export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
     getAddSessionCommand(treeDataProv),
     getManageSessionCommand(treeDataProv, treeview),
@@ -100,5 +101,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
+
+    getToggleResourcesCommand(context),
   ];
 };

@@ -10,9 +10,8 @@
  */
 import { VscodeButton, VscodeCheckbox } from "@vscode-elements/react-elements";
 import { useEffect, useState } from "preact/hooks";
-import PersistentVSCodeAPI from "src/PersistentVSCodeAPI";
 
-const vscodeApi = PersistentVSCodeAPI.getVSCodeAPI();
+const vscodeApi = acquireVsCodeApi();
 
 export function App() {
 
