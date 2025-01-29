@@ -899,7 +899,7 @@
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "echo 'Nothing to check'",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts --ignore-pattern src/webviews",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "tsup --watch",

@@ -44,12 +44,12 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "/Users/andrew/Documents/dev/cics-for-zowe-client/node_modules/@vscode/codicons/dist/codicon.css",
-          dest: "/Users/andrew/Documents/dev/cics-for-zowe-client/packages/vsce/src/webviews/dist/codicons/",
+          src: path.resolve(__dirname, "..", "..", "..", "..", "node_modules/@vscode/codicons/dist/codicon.css"),
+          dest: path.resolve(__dirname, "..", "..", "..", "..", "packages/vsce/src/webviews/dist/codicons/"),
         },
         {
-          src: "/Users/andrew/Documents/dev/cics-for-zowe-client/node_modules/@vscode/codicons/dist/codicon.ttf",
-          dest: "/Users/andrew/Documents/dev/cics-for-zowe-client/packages/vsce/src/webviews/dist/codicons/",
+          src: path.resolve(__dirname, "..", "..", "..", "..", "node_modules/@vscode/codicons/dist/codicon.ttf"),
+          dest: path.resolve(__dirname, "..", "..", "..", "..", "packages/vsce/src/webviews/dist/codicons/"),
         },
       ],
     }),

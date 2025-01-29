@@ -14,7 +14,7 @@
     "clean": "rimraf dist || true",
     "package": "node -e \"fs.accessSync(path.join(__dirname, 'dist'))\" && echo \"webviews: nothing to package.\" || npm run build",
     "test": "echo \"webviews: nothing to test\"",
-    "lint": "echo \"webviews: nothing to lint.\"",
+    "lint": "eslint src",
     "lint:html": "echo \"webviews: nothing to lint.\"",
     "pretty": "echo \"webviews: nothing to pretty.\"",
     "madge": "echo \"webviews: nothing to madge.\""
