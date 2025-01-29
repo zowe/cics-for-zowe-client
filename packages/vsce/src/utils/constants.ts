@@ -79,5 +79,9 @@ export default {
       ID: "zowe.cics.webservices.filter",
       DEFAULT: "name=*",
     },
+    LIBRARY_FILTER: {
+      ID: "zowe.cics.library.filter",
+      DEFAULT: "name=*",
+    },
   }
 };

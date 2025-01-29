@@ -11,22 +11,24 @@
 
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { getResource, ILibrary } from "@zowe/cics-for-zowe-sdk";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
 import { getFolderIcon } from "../../utils/iconUtils";
 import { toArray } from "../../utils/commandUtils";
+import { CICSLibraryTree } from "../CICSLibraryTree";
+import { CICSCombinedLibraryTree } from "../CICSCombinedTrees/CICSCombinedLibraryTree";
 
 export class CICSLibraryTreeItem extends TreeItem {
   children: CICSLibraryDatasets[] = [];
-  library: any;
+  library: ILibrary;
   parentRegion: CICSRegionTree;
-  directParent: any;
+  directParent: CICSLibraryTree | CICSCombinedLibraryTree;
   activeFilter: string | undefined = undefined;
 
   constructor(
-    library: any,
+    library: ILibrary,
     parentRegion: CICSRegionTree,
-    directParent: any,
+    directParent: CICSLibraryTree | CICSCombinedLibraryTree,
     public iconPath = getFolderIcon(false),
   ) {
     super(`${library.name}`, TreeItemCollapsibleState.Collapsed);
