@@ -1,0 +1,37 @@
+{
+  "name": "webviews",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0-SNAPSHOT",
+  "main": "index.js",
+  "license": "EPL-2.0",
+  "scripts": {
+    "dev": "vite build --watch --config ./vite.config.js",
+    "build": "tsc && vite build",
+    "watch": "vite build --watch",
+    "preview": "vite preview",
+    "fresh-clone": "npm run clean && rimraf node_modules",
+    "clean": "rimraf dist || true",
+    "package": "node -e \"fs.accessSync(path.join(__dirname, 'dist'))\" && echo \"webviews: nothing to package.\" || npm run build",
+    "test": "echo \"webviews: nothing to test\"",
+    "lint": "echo \"webviews: nothing to lint.\"",
+    "lint:html": "echo \"webviews: nothing to lint.\"",
+    "pretty": "echo \"webviews: nothing to pretty.\"",
+    "madge": "echo \"webviews: nothing to madge.\""
+  },
+  "dependencies": {
+    "@types/vscode-webview": "^1.57.1",
+    "@vscode/codicons": "^0.0.36",
+    "@vscode/webview-ui-toolkit": "^1.2.2",
+    "es-toolkit": "^1.16.0",
+    "preact": "^10.16.0",
+    "preact-render-to-string": "^6.5.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "typescript": "^5.3.3",
+    "vite": "^4.5.5",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-plugin-static-copy": "^0.17.1"
+  }
+}
