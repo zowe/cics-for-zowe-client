@@ -13,7 +13,6 @@ const getFolderIconMock = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSLocalFileTreeItem } from "../../../src/trees/treeItems/CICSLocalFileTreeItem";
-
 import { CICSLocalFileTree } from "../../../src/trees/CICSLocalFileTree";
 import CustomError from "../../__utils__/CustomError";
 import * as vscode from "vscode";
