@@ -49,7 +49,6 @@ const cicsRegionTreeMock = {
 const CICSProgramTreeItemMock = {};
 const getResourceMock = jest.spyOn(zoweSdk, "getResource");
 const iconPath = "/icon/path";
-const resourceName = "testResource";
 const cicsprogram = "cicsprogram";
 const value = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
 const ICMCIApiResponseMock: ICMCIApiResponse = {
@@ -92,7 +91,7 @@ describe("Test suite for CICSProgramTree", () => {
     });
 
     it("Should add newProgramItem into the addProgram() and activeFilter is undefined", async () => {
-      ICMCIApiResponseMock.response.records[resourceName.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
+      ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
 
       await sut.loadContents();
       expect(getDefaultProgramFilter).toHaveBeenCalled();

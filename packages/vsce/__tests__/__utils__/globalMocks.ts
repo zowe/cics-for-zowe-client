@@ -1,7 +1,18 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
-
+import { IProfile } from "@zowe/imperative";
 
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
 export const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString");
@@ -16,9 +27,26 @@ export const imperativeSession = new imperative.Session({
   rejectUnauthorized: false,
 });
 
+const IProfileMock: IProfile = {
+  cicsPlex: "PLEXX",
+  regionName: "IYK2ZXXX",
+};
+
+const profile: imperative.IProfileLoaded = {
+  message: "",
+  type: "type",
+  failNotFound: false,
+  profile: IProfileMock,
+};
+
+export const CICSPlexTree = {
+  getProfile: () => profile,
+  getParent: () => CICSSessionTreeMock,
+};
+
 export const CICSSessionTreeMock = {
   session: imperativeSession,
-  getSession: () => imperativeSession
+  getSession: () => imperativeSession,
 };
 
 export const cicsRegionTreeMock = {
@@ -36,11 +64,10 @@ export const ICMCIApiResponseMock: ICMCIApiResponse = {
   },
 };
 
-export function getDummyTreeResources(resourceName: string, defaultCriteria: string, responseRecords: string, iconPath?: string) {
+export function getDummyTreeResources(resourceName: string, defaultCriteria: string, iconPath?: string) {
   return {
     iconPath: iconPath ? "/icon/path" : iconPath,
     resourceName: resourceName,
     defaultCriteria: defaultCriteria,
-    responseRecords: responseRecords,
   };
 }

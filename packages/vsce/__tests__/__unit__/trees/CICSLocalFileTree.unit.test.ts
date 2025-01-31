@@ -27,7 +27,7 @@ jest.mock("../../../src/utils/iconUtils", () => {
 const getResourceMock = globalMocks.getResourceMock;
 const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
 const CICSLocalFileTreeItemMock = {};
-const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicslocalfile");
+const treeResourceMock = globalMocks.getDummyTreeResources("cicslocalfile", "fileName*");
 const record = [{ prop: "test1" }, { prop: "test2" }];
 
 const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
@@ -79,7 +79,7 @@ describe("Test suite for CICSLocalFileTree", () => {
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
       sut.activeFilter = "Active";
-      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.responseRecords.toLowerCase()] = record;
+      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
       toEscapedCriteriaString.mockReturnValueOnce("PROGRAM");
       get.mockReturnValue([]);
 

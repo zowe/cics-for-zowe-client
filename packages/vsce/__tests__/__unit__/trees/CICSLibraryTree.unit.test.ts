@@ -26,7 +26,7 @@ jest.mock("../../../src/utils/iconUtils", () => {
 const getResourceMock = globalMocks.getResourceMock;
 const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
 const CICSLibraryTreeItemMock = {};
-const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicsprogram");
+const treeResourceMock = globalMocks.getDummyTreeResources("cicslibrary", "fileName*");
 const record = [{ prop: "test1" }, { prop: "test2" }];
 
 describe("Test suite for CICSLibraryTree", () => {
@@ -69,7 +69,7 @@ describe("Test suite for CICSLibraryTree", () => {
 
     it("Should add newLibraryItem into the addLibrary() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
       sut.activeFilter = "Active";
-      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.responseRecords.toLowerCase()] = record;
+      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
       toEscapedCriteriaString.mockReturnValueOnce("LIBRARY");
 
       await sut.loadContents();
