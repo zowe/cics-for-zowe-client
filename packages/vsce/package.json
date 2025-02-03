@@ -36,6 +36,15 @@
   ],
   "contributes": {
     "viewsWelcome": [],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "zowe",
+          "title": "IBM CICS for Zowe Explorer",
+          "icon": "resources/zowe.svg"
+        }
+      ]
+    },
     "views": {
       "zowe": [
         {
@@ -865,11 +874,23 @@
     "test": "npm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
-    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "test:e2e": "cd __tests__/__e2e__/ && wdio run ./wdio.conf.ts"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/vscode": "~1.53.0",
-    "@vscode/vsce": "^2.32.0"
+    "@vscode/vsce": "^2.32.0",
+    "@wdio/cli": "^8.41.0",
+    "@wdio/cucumber-framework": "^8.41.0",
+    "@wdio/local-runner": "^8.41.0",
+    "@wdio/spec-reporter": "^8.41.0",
+    "@wdio/types": "^8.41.0",
+    "wdio": "^6.0.1",
+    "wdio-junit-reporter": "^0.4.4",
+    "wdio-vscode-service": "^6.1.2",
+    "wdio-wait-for": "^3.0.11",
+    "webdriverio": "^8.41.0"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.2.4",

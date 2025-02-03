@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "types": ["node", "@wdio/globals/types", "expect-webdriverio", "@wdio/cucumber-framework", "wdio-vscode-service", "jest"]
+  },
+  "include": [
+    "test",
+    "wdio.conf.ts",
+    "features",
+    "./step_definitions/**/*.steps.ts",
+    "../../__common__/*.wdio.ts",
+    "../../__common__/*.wdio.conf.ts",
+    "./wdio.conf.ts",
+    "../../node_modules/vscode/vscode.d.ts",
+    "../../node_modules/vscode/lib/*"
+  ],
+  "exclude": [],
+  "extends": "../../tsconfig.json"
+}
