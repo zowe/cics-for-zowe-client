@@ -68,7 +68,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for loadRegionsInCICSGroup", () => {
     beforeEach(() => {
-      getResourceMock.mockImplementation(async () => globalMocks.ICMCIApiResponseMock);
+      getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
     });
     afterEach(() => {
       getResourceMock.mockClear();

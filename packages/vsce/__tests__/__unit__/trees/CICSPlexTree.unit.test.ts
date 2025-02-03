@@ -123,7 +123,7 @@ describe("Test suite for CICSLocalFileTree", () => {
 
   describe("Test suite for loadContents()", () => {
     beforeEach(() => {
-      getResourceMock.mockImplementation(async () => globalMocks.ICMCIApiResponseMock);
+      getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
     });
     afterEach(() => {
       getResourceMock.mockClear();
