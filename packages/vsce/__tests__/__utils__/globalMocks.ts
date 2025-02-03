@@ -14,6 +14,7 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
 import { IProfile } from "@zowe/imperative";
 
+jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
 export const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString");
 export const getResourceMock = jest.spyOn(zoweSdkMock, "getResource");

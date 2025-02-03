@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 const getFolderIconMock = jest.fn();
 const getRegionInfoInPlexMock = jest.fn();
 
@@ -16,7 +17,6 @@ import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSTree } from "../../../src/trees/CICSTree";
 import * as vscode from "vscode";
 import * as globalMocks from "../../__utils__/globalMocks";
-import { ProfileManagement } from "../../../src/utils/profileManagement";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/utils/iconUtils", () => {
@@ -93,7 +93,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
   });
 
-  describe("Test suite for filterRegions", () => {
+  describe("Test suite for loadRegionsInPlex", () => {
     beforeEach(() => {
       getRegionInfoInPlexMock.mockResolvedValueOnce(record);
     });
@@ -101,7 +101,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       getRegionInfoInPlexMock.mockClear();
     });
 
-    it("Should", async () => {
+    it("Should load all regions of plex", async () => {
       await sut.loadRegionsInPlex();
       
       expect(getRegionInfoInPlexMock).toHaveBeenCalledTimes(1);
