@@ -10,39 +10,52 @@
  */
 
 const getFolderIconMock = jest.fn();
+const setLabel = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import { CICSLocalFileTreeItem } from "../../../src/trees/treeItems/CICSLocalFileTreeItem";
-import { CICSLocalFileTree } from "../../../src/trees/CICSLocalFileTree";
-import CustomError from "../../__utils__/CustomError";
-import * as vscode from "vscode";
+import { CICSTaskTree } from "../../../src/trees/CICSTaskTree";
 import * as globalMocks from "../../__utils__/globalMocks";
+import { CICSTaskTreeItem } from "../../../src/trees/treeItems/CICSTaskTreeItem";
+import * as vscode from "vscode";
+import CustomError from "../../__utils__/CustomError";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/trees/treeItems/CICSLocalFileTreeItem");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getFolderIcon: getFolderIconMock };
 });
+jest.mock("../../../src/trees/treeItems/CICSTaskTreeItem", () => ({
+  get CICSTaskTreeItem() {
+    return jest.fn().mockImplementation(() => {
+      return {
+        setLabel: () => {
+          this.label = "label";
+        },
+        label: "Label",
+      };
+    });
+  },
+}));
 
 const getResourceMock = globalMocks.getResourceMock;
-const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
-const CICSLocalFileTreeItemMock = {};
-const treeResourceMock = globalMocks.getDummyTreeResources("cicslocalfile", "fileName*");
-const record = [{ prop: "test1" }, { prop: "test2" }];
-
+const treeResourceMock = globalMocks.getDummyTreeResources("cicstask", "fileName*");
+const cicsTaskTreeItemMock = {};
 const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
 const get = jest.fn();
 const workspaceConfiguration = {
   get: get,
   update: jest.fn(),
+  isFile: jest.fn().mockReturnValue(true),
 };
+const record = [{ prop: "test1" }, { prop: "test2" }];
+const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
 
-describe("Test suite for CICSLocalFileTree", () => {
-  let sut: CICSLocalFileTree;
+describe("Test suite for CICSTaskTree", () => {
+  let sut: CICSTaskTree;
 
   beforeEach(() => {
     getFolderIconMock.mockReturnValue(treeResourceMock.iconPath);
-    sut = new CICSLocalFileTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
+
+    sut = new CICSTaskTree(globalMocks.cicsRegionTreeMock as any as CICSRegionTree);
     expect(getFolderIconMock).toHaveBeenCalledWith(false);
   });
 
@@ -50,9 +63,9 @@ describe("Test suite for CICSLocalFileTree", () => {
     jest.resetAllMocks();
   });
 
-  describe("Test suite for addProgram()", () => {
-    it("Should add CICSLocalFileTreeItem into localFile", () => {
-      sut.addLocalFile(CICSLocalFileTreeItemMock as any as CICSLocalFileTreeItem);
+  describe("Test suite for addLibrary()", () => {
+    it("Should add CICSProgramTreeItem into library", () => {
+      sut.addTask(cicsTaskTreeItemMock as any as CICSTaskTreeItem);
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -61,34 +74,37 @@ describe("Test suite for CICSLocalFileTree", () => {
     beforeEach(() => {
       getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
       workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+      get.mockReturnValue(treeResourceMock.defaultCriteria);
     });
     afterEach(() => {
+      getResourceMock.mockClear();
       jest.resetAllMocks();
     });
 
-    it("Should add newProgramItem into the addProgram() and activeFilter is undefined", async () => {
+    it("Should add newCICSTaskTreeItem into the addTask() and activeTransactionFilter is undefined", async () => {
       globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
-      get.mockReturnValue(treeResourceMock.defaultCriteria);
 
       await sut.loadContents();
-      expect(workspaceMock).toHaveBeenCalled();
-      expect(sut.activeFilter).toBeUndefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
       expect(getFolderIconMock).toHaveBeenCalledWith(true);
+      expect(sut.activeTransactionFilter).toBeUndefined();
+      expect(workspaceMock).toHaveBeenCalledTimes(1);
+      expect(sut.label).toBe("Tasks [2]");
     });
 
-    it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
-      sut.activeFilter = "Active";
+    it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeTransactionFilter is defined", async () => {
+      sut.activeTransactionFilter = "Active";
       globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
       toEscapedCriteriaString.mockReturnValueOnce("PROGRAM");
       get.mockReturnValue([]);
 
       await sut.loadContents();
       expect(toEscapedCriteriaString).toHaveBeenCalled();
-      expect(sut.activeFilter).toBeDefined();
+      expect(sut.activeTransactionFilter).toBeDefined();
       expect(sut.children.length).toBeGreaterThanOrEqual(1);
       expect(getFolderIconMock).toHaveBeenCalledWith(true);
       expect(workspaceMock).toHaveBeenCalledTimes(2);
+      expect(sut.label).toBe("Tasks (Active) [2]");
     });
 
     it("Should throw exception when error.mMessage includes {exceeded a resource limit}", async () => {
@@ -102,37 +118,31 @@ describe("Test suite for CICSLocalFileTree", () => {
 
       await sut.loadContents();
       expect(getResourceMock).toHaveBeenCalled();
-      expect(sut.label).toEqual("Local Files [0]");
+      expect(sut.label).toEqual("Tasks [0]");
     });
   });
 
   describe("Test suite for clearFilter", () => {
     it("Should clear active filter to undefined and set contextValue to unfiltered", () => {
-      sut.activeFilter = "Active";
+      sut.activeTransactionFilter = "Active";
 
       sut.clearFilter();
-      expect(sut.activeFilter).toBeUndefined();
-      expect(sut.contextValue).toEqual("cicstreelocalfile.unfiltered.localFiles");
+      expect(sut.activeTransactionFilter).toBeUndefined();
+      expect(sut.contextValue).toEqual("cicstreetask.unfiltered.tasks");
     });
   });
 
   describe("Test suite for setFilter", () => {
     it("Should set active filter and set contextValue to filtered", () => {
       sut.setFilter("ActiveFilter");
-      expect(sut.activeFilter).toEqual("ActiveFilter");
-      expect(sut.contextValue).toEqual("cicstreelocalfile.filtered.localFiles");
+      expect(sut.activeTransactionFilter).toEqual("ActiveFilter");
+      expect(sut.contextValue).toEqual("cicstreetask.filtered.tasks");
     });
   });
 
   describe("Test suite for getFilter", () => {
     it("Should return activeFilter object", () => {
-      expect(sut.getFilter()).toBe(sut.activeFilter);
-    });
-  });
-
-  describe("Test suite for getParent", () => {
-    it("Should return parentRegion object", () => {
-      expect(sut.getParent()).toBe(sut.parentRegion);
+      expect(sut.getFilter()).toBe(sut.activeTransactionFilter);
     });
   });
 });
