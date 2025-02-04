@@ -719,7 +719,7 @@
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicssession.*/",
+          "when": "view == cics-view && viewItem =~ /^cicssession.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.manageSession",
           "title": "Manage Session"
         },
