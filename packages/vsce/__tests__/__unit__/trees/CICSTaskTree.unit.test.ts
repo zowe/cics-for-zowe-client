@@ -10,7 +10,6 @@
  */
 
 const getFolderIconMock = jest.fn();
-const setLabel = jest.fn();
 
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSTaskTree } from "../../../src/trees/CICSTaskTree";
