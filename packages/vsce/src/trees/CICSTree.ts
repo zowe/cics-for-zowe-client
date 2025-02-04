@@ -85,32 +85,27 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param treeview CICSTree View
    * *@param node current selected node
    */
-  async manageProfile(treeview: TreeView<any>, node: any) {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSSessionTree, node);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
-      window.showErrorMessage("No profile selected to manage");
-      return;
-    }
+  async manageProfile(treeview: TreeView<any>, node: CICSSessionTree) {
     try {
       const configInstance = await ProfileManagement.getConfigInstance();
       if (configInstance.getTeamConfig().exists) {
-        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(allSelectedNodes[allSelectedNodes.length - 1].label);
+        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(String(node.label));
 
         const deleteProfile: QuickPickItem = {
-          label: `$(trash) ${l10n.t(`Delete Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: l10n.t(`Delete the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+          label: `$(trash) ${l10n.t(`Delete Profile`)}`,
+          description: l10n.t(`Delete the selected Profile`),
         };
         const hideProfile: QuickPickItem = {
-          label: `$(eye-closed) ${l10n.t(`Hide Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: l10n.t(`Hide the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+          label: `$(eye-closed) ${l10n.t(`Hide Profile`)}`,
+          description: l10n.t(`Hide the selected Profile`),
         };
         const editProfile: QuickPickItem = {
-          label: `$(pencil) ${l10n.t(`Edit Profile${allSelectedNodes.length > 1 ? "s" : ""}`)}`,
-          description: l10n.t(`Update the selected Profile${allSelectedNodes.length > 1 ? "s" : ""}`),
+          label: `$(pencil) ${l10n.t(`Edit Profile`)}`,
+          description: l10n.t(`Update the selected Profile`),
         };
 
         const quickpick = Gui.createQuickPick();
-        const addProfilePlaceholder = "Choose user action for selected profiles";
+        const addProfilePlaceholder = "Choose user action for selected profile";
         quickpick.items = [editProfile, hideProfile, deleteProfile];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
@@ -122,13 +117,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           Gui.showMessage(debugMsg);
           return;
         } else if (choice === hideProfile) {
-          this.hideZoweConfigFile(allSelectedNodes);
+          await this.removeSession(node);
           return;
-        } else if (choice === editProfile) {
-          for (const sessionTree of allSelectedNodes) {
-            await this.updateSession(sessionTree, configInstance);
-          }
         } else {
+          // editProfile or deleteProfile
           const filePath = currentProfile.profLoc.osLoc[0];
           await openConfigFile(filePath);
           return;
@@ -451,26 +443,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  /**
-   * Method for profile configuration that provides UI for user to hide a selected profile.
-   * @param allSelectedNodes array of selected nodes
-   */
-  async hideZoweConfigFile(allSelectedNodes: any[]) {
-    for (const index in allSelectedNodes) {
-      try {
-        const currentNode = allSelectedNodes[parseInt(index)];
-        await this.removeSession(currentNode);
-      } catch (error) {
-        window.showErrorMessage(
-          `Something went wrong when hiding the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-            /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
-        );
-      }
-    }
-  }
-
   async removeSession(session: CICSSessionTree, profile?: imperative.IProfileLoaded, position?: number) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.removeLoadedCICSProfile(session.label.toString());
@@ -479,20 +451,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       await this.loadProfile(profile, position);
     }
     this._onDidChangeTreeData.fire(undefined);
-  }
-
-  /**
-   * Update profile functionality for profile configuration
-   * @param session CICSSessions Tree
-   */
-  async updateSession(session: CICSSessionTree, configInstance: imperative.ProfileInfo) {
-    await ProfileManagement.profilesCacheRefresh();
-    const profileCache = await ProfileManagement.getProfilesCache();
-    const profileToUpdate = profileCache.loadNamedProfile(session.label?.toString()!, "cics");
-    const currentProfile = await profileCache.getProfileFromConfig(profileToUpdate.name);
-    const teamConfigFilePath = configInstance.getTeamConfig().opts.homeDir + "/zowe.config.json";
-    const filePath = currentProfile?.profLoc.osLoc?.[0] ?? teamConfigFilePath;
-    await openConfigFile(filePath);
   }
 
   /**
