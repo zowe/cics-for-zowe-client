@@ -16,11 +16,10 @@ import { getIconFilePathFromName } from "../utils/iconUtils";
 import { IRegion, IResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSResourceTree } from "./CICSResourceTree";
-import { LocalFileMeta, PipelineMeta, ProgramMeta, TaskMeta, TransactionMeta, URIMapMeta } from "../doc";
-import { TCPIPMeta } from "../doc/TCPIPMeta";
-import { WebServiceMeta } from "../doc/WebServiceMeta";
+import { getMetas } from "../doc";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { RegionMeta } from "../doc/RegionMeta";
+import { PersistentStorage } from "../utils/PersistentStorage";
 
 export class CICSRegionTree extends TreeItem {
   children: (CICSResourceTree<IResource> | CICSLibraryTree)[] | null;
@@ -52,18 +51,22 @@ export class CICSRegionTree extends TreeItem {
     }
     this.iconPath = getIconFilePathFromName(RegionMeta.getIconName(region));
     if (this.isActive) {
+
+      const pers = new PersistentStorage("zowe.cics.persistent");
+
+      const visibles = pers.getVisibleResources();
+      const availableMetas = getMetas();
+
       this.children = [
-        new CICSResourceTree(ProgramMeta, this),
-        new CICSResourceTree(TransactionMeta, this),
-        new CICSResourceTree(LocalFileMeta, this),
-        new CICSResourceTree(TaskMeta, this),
-        new CICSLibraryTree(this),
-        // new CICSWebTree(this),
-        new CICSResourceTree(TCPIPMeta, this),
-        new CICSResourceTree(URIMapMeta, this),
-        new CICSResourceTree(PipelineMeta, this),
-        new CICSResourceTree(WebServiceMeta, this),
+        ...availableMetas.filter((meta) => visibles.includes(meta.resourceName)).map((meta) => {
+          if (meta.resourceName === "CICSLibrary") {
+            return new CICSLibraryTree(this);
+          }
+          // @ts-ignore
+          return new CICSResourceTree(meta, this);
+        }),
       ];
+
     } else {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;

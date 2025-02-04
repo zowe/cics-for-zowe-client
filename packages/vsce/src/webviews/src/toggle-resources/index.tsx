@@ -8,17 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+import { render } from "preact";
+import { App } from "./App";
 
-
-export * from './ILibrary';
-export * from './ILocalFile';
-export * from './IPipeline';
-export * from './IProgram';
-export * from './IRegion';
-export * from './IResource';
-export * from './ITask';
-export * from './ITCPIP';
-export * from './ITransaction';
-export * from './IUriMap';
-export * from './IWebService';
-
+render(<App />, document.getElementById("webviewRoot")!);

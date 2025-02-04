@@ -9,6 +9,27 @@
  *
  */
 
+import { LibraryMeta } from "./LibraryMeta";
+import { LocalFileMeta } from "./LocalFileMeta";
+import { PipelineMeta } from "./PipelineMeta";
+import { ProgramMeta } from "./ProgramMeta";
+import { TaskMeta } from "./TaskMeta";
+import { TCPIPMeta } from "./TCPIPMeta";
+import { TransactionMeta } from "./TransactionMeta";
+import { URIMapMeta } from "./URIMapMeta";
+
+export const getMetas = () => {
+  return [
+    LocalFileMeta,
+    PipelineMeta,
+    ProgramMeta,
+    TaskMeta,
+    TCPIPMeta,
+    TransactionMeta,
+    URIMapMeta,
+    LibraryMeta
+  ];
+};
 
 export * from "./IResourceMeta";
 export * from "./LocalFileMeta";
@@ -18,4 +39,4 @@ export * from "./TaskMeta";
 export * from "./TCPIPMeta";
 export * from "./TransactionMeta";
 export * from "./URIMapMeta";
-
+export * from "./LibraryMeta";

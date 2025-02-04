@@ -9,16 +9,12 @@
  *
  */
 
+import { WebviewApi } from "vscode-webview";
 
-export * from './ILibrary';
-export * from './ILocalFile';
-export * from './IPipeline';
-export * from './IProgram';
-export * from './IRegion';
-export * from './IResource';
-export * from './ITask';
-export * from './ITCPIP';
-export * from './ITransaction';
-export * from './IUriMap';
-export * from './IWebService';
+export default class PersistentVSCodeAPI {
+  private static vscodeAPI = acquireVsCodeApi();
 
+  public static getVSCodeAPI(): WebviewApi<unknown> {
+    return this.vscodeAPI;
+  }
+}
