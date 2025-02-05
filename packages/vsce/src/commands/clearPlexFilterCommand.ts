@@ -39,7 +39,7 @@ const clearResourcesMethodMap: { [key: string]: (region: CICSRegionTree) => Prom
 };
 
 const getResourceToClear = async (profile: imperative.IProfile) => {
-  let clearOptions = ["Programs", "Local Transactions", "Local Files", "Tasks", "Libraries", "All"];
+  let clearOptions = ["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries", "All"];
   if (profile.regionName && profile.cicsPlex) {
     clearOptions = ["Regions", ...clearOptions];
   }
@@ -81,8 +81,8 @@ export function getClearPlexFilterCommand(tree: CICSTree, treeview: TreeView<any
             clearResourcesMethodMap[resourceToClear](region);
           }
         }
-        tree._onDidChangeTreeData.fire(undefined);
       }
+      tree._onDidChangeTreeData.fire(undefined);
     }
   });
 }
