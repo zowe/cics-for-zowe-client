@@ -96,8 +96,10 @@ export const config: Options.Testrunner = {
         userSettings: {
           "editor.fontSize": 14,
           "extensions.ignoreRecommendations": true,
-          extensionDependencies: ["Zowe.vscode-extension-for-zowe"],
-          args: ["--install-extension Zowe.vscode-extension-for-zowe"],
+        },
+        vscodeArgs: {
+          "disable-extensions": false,
+          "install-extension": "Zowe.vscode-extension-for-zowe",
         },
       },
     },

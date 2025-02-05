@@ -1,11 +1,12 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { getCICSContainer, paneDivForTree } from "../../../__common__/shared.wdio";
+import { getCICSContainer, paneDivForTree, installZowe } from "../../../__common__/shared.wdio";
 
 //
 // Scenario: User opens and closes the Team Configuration
 //
 
 Given(/^a user who is looking at the CICS client$/, async () => {
+  //installZowe();
   const cicsContainer = await getCICSContainer();
   const cicsView = await cicsContainer.openView();
   await expect(cicsView).toBeDefined();
@@ -13,6 +14,7 @@ Given(/^a user who is looking at the CICS client$/, async () => {
 });
 
 When(/^user is trying to Create a New Team Configuration file$/, async () => {
+  //installZowe();
   const dsPane = await paneDivForTree();
   const plusIcon = await dsPane.getAction(`Create a CICS Profile`);
   await expect(plusIcon).toBeDefined();
