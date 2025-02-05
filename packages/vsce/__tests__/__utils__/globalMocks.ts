@@ -19,6 +19,15 @@ export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
 export const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString");
 export const getResourceMock = jest.spyOn(zoweSdkMock, "getResource");
 
+export const CICSProfileMock = {
+  host: "hostname",
+  port: "123",
+  user: "a",
+  password: "b",
+  rejectUnauthorized: false,
+  protocol: "http",
+};
+
 export const imperativeSession = new imperative.Session({
   user: "user",
   password: "pwd",
