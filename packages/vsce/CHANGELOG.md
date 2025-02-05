@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.3.2`
 
 - BugFix: Editing profile results in exception - removed ability to multi-select profiles. [#222](https://github.com/zowe/cics-for-zowe-client/issues/222)
 - BugFix: Update documentation to reflect changes to fully support V3 profiles. [#209](https://github.com/zowe/cics-for-zowe-client/issues/209)
