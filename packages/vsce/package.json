@@ -15,10 +15,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:cics-extension-for-zowe.addSession",
-    "onView:cics-view"
-  ],
+  "activationEvents": [],
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
   ],
@@ -737,6 +734,216 @@
           "when": "view == cics-view && viewItem =~ /^cicstask.*/",
           "command": "cics-extension-for-zowe.purgeTask",
           "group": "000_zowecics_main@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "cics-extension-for-zowe.addSession",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.refreshTree",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.newCopyProgram",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPrograms",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterDatasetPrograms",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterLibraries",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterDatasets",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTCPIPServices",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterURIMaps",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPipelines",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterWebServices",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTransactions",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTasks",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterLocalFiles",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPlexResources",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllPrograms",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllLibraries",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllPipelines",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllWebServices",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTCPIPServices",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllURIMaps",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTransactions",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllLocalFiles",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTasks",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearPlexFilter",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showProgramAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLibraryAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLibraryDatasetsAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTCPIPServiceAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showURIMapAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTransactionAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLocalFileAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTaskAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showPipelineAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showWebServiceAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showRegionAttributes",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.showRegionParameters",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableProgram",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableProgram",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableTransaction",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableTransaction",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableLocalFile",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableLocalFile",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableLibrary",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.closeLocalFile",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.openLocalFile",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.phaseInCommand",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.manageSession",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.inquireTransaction",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.inquireProgram",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.purgeTask",
+          "when": "never"
         }
       ]
     },
