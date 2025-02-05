@@ -8,7 +8,24 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
+import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { imperative } from "@zowe/zowe-explorer-api";
+
 const profilesCacheRefreshMock = jest.fn();
+profilesCacheRefreshMock.mockReturnValue(["prof1", "prof2"]);
+const getProfilesCacheMock = jest.fn();
+getProfilesCacheMock.mockReturnValue({
+  loadNamedProfile: (name: string, type?: string): imperative.IProfileLoaded => {
+    return {
+      failNotFound: false,
+      message: "",
+      type: "cics",
+      name: name,
+      profile: CICSProfileMock
+    };
+  }
+});
 
 import { CICSTree } from "../../../src/trees/CICSTree";
 
@@ -24,15 +41,39 @@ jest.mock("../../../src/utils/PersistentStorage", () => ({
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     profilesCacheRefresh: profilesCacheRefreshMock,
+    getProfilesCache: getProfilesCacheMock,
   },
 }));
 
 describe("Test suite for CICSTree", () => {
   let sut: CICSTree;
+
   beforeEach(() => {
     sut = new CICSTree();
   });
-  it("Should run the test", () => {
-    expect(true).toBeTruthy();
+
+  it("Should have children", () => {
+    expect(sut.loadedProfiles).toBeDefined();
+    expect(sut.loadedProfiles).toHaveLength(2);
+  });
+
+  it("Should getLoadedProfiles", () => {
+    const loadedProfs = sut.getLoadedProfiles();
+    expect(loadedProfs).toBeDefined();
+    expect(loadedProfs).toHaveLength(2);
+  });
+
+  it("Should clear profiles", () => {
+    const loadedProfs = sut.getLoadedProfiles();
+    expect(loadedProfs).toBeDefined();
+    expect(loadedProfs).toHaveLength(2);
+
+    sut.clearLoadedProfiles();
+    expect(sut.loadedProfiles).toBeDefined();
+    expect(sut.loadedProfiles).toHaveLength(0);
+  });
+
+  it("Should return the children", () => {
+    expect(sut.getChildren()).toHaveLength(2);
   });
 });
