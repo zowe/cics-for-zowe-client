@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Remove duplicates plexes from the session tree. [#227](https://github.com/zowe/cics-for-zowe-client/issues/227)
+
 ## `3.3.2`
 
 - BugFix: Editing profile results in exception - removed ability to multi-select profiles. [#222](https://github.com/zowe/cics-for-zowe-client/issues/222)

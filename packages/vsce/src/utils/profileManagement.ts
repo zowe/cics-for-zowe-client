@@ -216,13 +216,19 @@ export class ProfileManagement {
       try {
         const { response } = await getCache(session, { cacheToken: isPlex, nodiscard: false });
         if (response.records.cicscicsplex) {
+
+          const plexes = new Set<string>();
           for (const plex of toArray(response.records.cicscicsplex)) {
+            plexes.add(plex.plexname);
+          }
+
+          [...plexes].forEach((plexname) => {
             infoLoaded.push({
-              plexname: plex.plexname,
+              plexname,
               regions: [],
               group: false,
             });
-          }
+          });
         }
       } catch (error) {
         window.showErrorMessage(
