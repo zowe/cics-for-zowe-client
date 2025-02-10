@@ -9,10 +9,15 @@
  *
  */
 
-import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
+import {
+  CicsCmciConstants,
+  CicsCmciRestError,
+  getCache,
+  getResource,
+  IResourceQueryParams
+} from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { imperative, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import { window } from "vscode";
+import { Gui, imperative, MessageSeverity, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
@@ -53,6 +58,25 @@ export class ProfileManagement {
     return mProfileInfo;
   }
 
+  public static formatRestClientError(error: imperative.RestClientError) {
+
+    let errorMessage = ``;
+
+    if (error.errorCode) {
+      errorMessage = `${error.errorCode} - `;
+    } else if (error.causeErrors?.code) {
+      errorMessage = `${error.causeErrors.code} - `;
+    }
+
+    if (error.causeErrors?.message) {
+      errorMessage += `${error.causeErrors.message}`;
+    } else if (error.additionalDetails) {
+      errorMessage += `${error.additionalDetails}`;
+    }
+
+    return errorMessage;
+  }
+
   public static getSessionFromProfile(profile: imperative.IProfile): Session {
     return new Session({
       protocol: profile.protocol,
@@ -65,25 +89,46 @@ export class ProfileManagement {
     });
   }
 
+  public static async runGetResource({ session, resourceName, profile, params }: {
+    session: Session,
+    resourceName: string,
+    profile?: imperative.IProfile,
+    params?: { criteria?: string, parameter?: string; queryParams?: IResourceQueryParams; };
+  }) {
+    const { response } = await getResource(session, {
+      name: resourceName,
+      ...profile?.regionName && { regionName: profile.regionName },
+      ...profile?.cicsPlex && { cicsPlex: profile.cicsPlex },
+      ...params?.criteria && { criteria: params.criteria },
+      ...params?.parameter && { parameter: params.parameter },
+      ...params?.queryParams && { queryParams: params.queryParams },
+    }, { failOnNoData: false, useCICSCmciRestError: true });
+    return response;
+  }
+
   public static async regionIsGroup(session: Session, profile: imperative.IProfile): Promise<boolean> {
 
     let isGroup = false;
     try {
-      const checkIfSystemGroup = await getResource(session, {
-        name: "CICSRegionGroup",
-        cicsPlex: profile.cicsPlex,
-        regionName: profile.regionName,
-        criteria: `GROUP=${profile.regionName}`,
+      const { resultsummary } = await this.runGetResource({
+        session,
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION_GROUP,
+        profile,
+        params: { criteria: `GROUP=${profile.regionName}`, queryParams: { summonly: true, nodiscard: false } }
       });
-      if (checkIfSystemGroup && checkIfSystemGroup.response.resultsummary.recordcount !== "0") {
-        isGroup = true;
-      }
+
+      isGroup = resultsummary.recordcount !== "0";
     } catch (error) {
-      if (error instanceof imperative.ImperativeError) {
-        if (!error.mDetails.msg.toUpperCase().includes("NODATA")) {
-          throw error;
-        }
+      let errorMessage = `Error requesting region groups - ${JSON.stringify(error)}`;
+      if (error instanceof CicsCmciRestError) {
+        errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting Region groups.`;
+      } else if (error instanceof imperative.ImperativeError) {
+        errorMessage = `${error.errorCode} requesting Region groups.`;
       }
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
+      throw error;
     }
 
     return isGroup;
@@ -91,28 +136,33 @@ export class ProfileManagement {
 
   public static async isPlex(session: Session): Promise<string | null> {
     try {
-      const { response } = await getResource(session, {
-        name: "CICSCICSPlex",
-        queryParams: {
-          summonly: true,
-          nodiscard: true,
+      const { resultsummary } = await this.runGetResource({
+        session,
+        resourceName: CicsCmciConstants.CICS_CMCI_CICS_PLEX,
+        params: {
+          queryParams: {
+            summonly: true,
+            nodiscard: true,
+          }
         }
       });
-      return response.resultsummary.api_response1_alt === "OK" ?
-        response.resultsummary.cachetoken : null;
+      return resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? resultsummary.cachetoken : null;
+
     } catch (error) {
+
+      let errorMessage = `Error requesting CICSCICSPlex`;
+
       if (error instanceof imperative.RestClientError) {
-        if (`${error.mDetails.errorCode}` === "404") {
+        if (`${error.mDetails.errorCode}` === `${constants.HTTP_ERROR_NOT_FOUND}` || `${error.errorCode}` === `${constants.HTTP_ERROR_NOT_FOUND}`) {
+          // Not a failure, just means it's not a Plex
           return null;
         }
-        window.showErrorMessage(
-          `${error.causeErrors.code} - ${error.causeErrors.message}`,
-        );
-      } else {
-        window.showErrorMessage(
-          `Error getting CICSCICSPlex resource - ${JSON.stringify(error)}`,
-        );
+        errorMessage = this.formatRestClientError(error);
       }
+
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
       throw error;
     }
   }
@@ -122,39 +172,36 @@ export class ProfileManagement {
     const infoLoaded: InfoLoaded[] = [];
 
     try {
-      const { response } = await getResource(session, {
-        name: "CICSManagedRegion",
-        cicsPlex: profile.cicsPlex,
-        regionName: profile.regionName,
+      const { records } = await this.runGetResource({
+        session,
+        resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
+        profile,
       });
 
-      if (response.records?.cicsmanagedregion) {
+      if (records?.cicsmanagedregion) {
         infoLoaded.push({
           plexname: profile.cicsPlex,
-          regions: toArray(response.records.cicsmanagedregion),
+          regions: toArray(records.cicsmanagedregion),
           group: await this.regionIsGroup(session, profile),
         });
       } else {
-        window.showErrorMessage(
-          `Cannot find region ${profile.regionName} in plex ${profile.cicsPlex} for profile ${profile.name}`
-        );
-        throw new Error("Region Not Found");
+        Gui.showMessage(`Cannot find region ${profile.regionName} in plex ${profile.cicsPlex} for profile ${profile.name}`, {
+          severity: MessageSeverity.ERROR,
+        });
       }
     } catch (error) {
+      let errorMessage = `Error requesting CICSManagedRegion - ${JSON.stringify(error)}`;
       if (error instanceof imperative.RestClientError) {
-        window.showErrorMessage(
-          `${error.causeErrors.code} - ${error.causeErrors.message}`,
-        );
-      } else if (error instanceof imperative.ImperativeError && (
-        error.mDetails.msg.toUpperCase().includes("INVALIDATA") || error.mDetails.msg.toUpperCase().includes("INVALIDPARM"))) {
-        window.showErrorMessage(
-          `Plex ${profile.cicsPlex} and Region ${profile.regionName} not found - ${JSON.stringify(error)}`,
-        );
-      } else {
-        window.showErrorMessage(
-          `Error getting CICSManagedRegion resource - ${JSON.stringify(error)}`,
-        );
+        errorMessage = this.formatRestClientError(error);
+      } else if (
+        error instanceof CicsCmciRestError && (
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA)) {
+        errorMessage = `Plex ${profile.cicsPlex} and Region ${profile.regionName} not found.`;
       }
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
       throw error;
     }
 
@@ -165,20 +212,41 @@ export class ProfileManagement {
 
     const infoLoaded: InfoLoaded[] = [];
 
-    const { response } = await getResource(session, {
-      name: "CICSManagedRegion",
-      cicsPlex: profile.cicsPlex,
-    });
+    try {
 
-    if (response.records?.cicsmanagedregion) {
-      infoLoaded.push({
-        plexname: profile.cicsPlex,
-        regions: toArray(response.records.cicsmanagedregion),
-        group: false,
+      const { records } = await this.runGetResource({
+        session,
+        profile,
+        resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
       });
-    } else {
-      window.showErrorMessage(`Cannot find plex ${profile.cicsPlex} for profile ${profile.name}`);
-      throw new Error("Plex Not Found");
+
+      if (records?.cicsmanagedregion) {
+        infoLoaded.push({
+          plexname: profile.cicsPlex,
+          regions: toArray(records.cicsmanagedregion),
+          group: false,
+        });
+      } else {
+        Gui.showMessage(`Cannot find plex ${profile.cicsPlex} for profile ${profile.name}`, {
+          severity: MessageSeverity.ERROR,
+        });
+      }
+    } catch (error) {
+      let errorMessage = `Error requesting CICSManagedRegion - ${JSON.stringify(error)}`;
+      if (
+        error instanceof CicsCmciRestError && (
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA)) {
+        errorMessage = `CICSplex ${profile.cicsPlex} not found.`;
+      } else if (error instanceof CicsCmciRestError) {
+        errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting CICSManagedRegions.`;
+      } else if (error instanceof imperative.RestClientError) {
+        errorMessage = this.formatRestClientError(error);
+      }
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
+      throw error;
     }
 
     return infoLoaded;
@@ -188,20 +256,40 @@ export class ProfileManagement {
 
     const infoLoaded: InfoLoaded[] = [];
 
-    const { response } = await getResource(session, {
-      name: "CICSRegion",
-      regionName: profile.regionName,
-    });
-
-    if (response.records.cicsregion) {
-      infoLoaded.push({
-        plexname: null,
-        regions: toArray(response.records.cicsregion),
-        group: false,
+    try {
+      const { records } = await this.runGetResource({
+        session,
+        profile,
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION,
       });
-    } else {
-      window.showErrorMessage(`Cannot find region ${profile.regionName}`);
-      throw new Error("Region Not Found");
+
+      if (records?.cicsregion) {
+        infoLoaded.push({
+          plexname: null,
+          regions: toArray(records.cicsregion),
+          group: false,
+        });
+      } else {
+        Gui.showMessage(`Cannot find region ${profile.regionName}`, {
+          severity: MessageSeverity.ERROR,
+        });
+      }
+    } catch (error) {
+      let errorMessage = `Error requesting CICSRegion - ${JSON.stringify(error)}`;
+      if (
+        error instanceof CicsCmciRestError && (
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA)) {
+        errorMessage = `Region ${profile.regionName} not found.`;
+      } else if (error instanceof CicsCmciRestError) {
+        errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting CICSRegion.`;
+      } else if (error instanceof imperative.RestClientError) {
+        errorMessage = this.formatRestClientError(error);
+      }
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
+      throw error;
     }
 
     return infoLoaded;
@@ -225,33 +313,34 @@ export class ProfileManagement {
           }
         }
       } catch (error) {
-        window.showErrorMessage(
-          `Error retrieving cache - ${JSON.stringify(error)}`,
-        );
+        Gui.showMessage(`Error retrieving cache - ${JSON.stringify(error)}`, {
+          severity: MessageSeverity.ERROR,
+        });
         throw error;
       }
     } else {
       try {
-        const singleRegion = await getResource(session, {
-          name: "CICSRegion",
+        const { records } = await this.runGetResource({
+          session,
+          resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         });
-        infoLoaded.push({
-          plexname: null,
-          regions: toArray(singleRegion.response.records.cicsregion),
-          group: false,
-        });
-      } catch (error) {
-        if (error instanceof imperative.RestClientError) {
-          if (`${error.mDetails.errorCode}` === "404") {
-            window.showErrorMessage(
-              `CMCI Endpoint not found - ${error.mDetails.protocol}://${error.mDetails.host}:${error.mDetails.port}${error.mDetails.resource}`,
-            );
-          }
-        } else {
-          window.showErrorMessage(
-            `Error making request - ${JSON.stringify(error)}`,
-          );
+        if (records?.cicsregion) {
+          infoLoaded.push({
+            plexname: null,
+            regions: toArray(records.cicsregion),
+            group: false,
+          });
         }
+      } catch (error) {
+        let errorMessage = `Error requesting CICSRegion - ${JSON.stringify(error)}`;
+        if (error instanceof CicsCmciRestError) {
+          errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting CICSRegion.`;
+        } else if (error instanceof imperative.RestClientError) {
+          errorMessage = this.formatRestClientError(error);
+        }
+        Gui.showMessage(errorMessage, {
+          severity: MessageSeverity.ERROR,
+        });
         throw error;
       }
     }
@@ -285,17 +374,28 @@ export class ProfileManagement {
   public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
     try {
       const session = this.getSessionFromProfile(plex.getProfile().profile);
-      const { response } = await getResource(session, {
-        name: "CICSManagedRegion",
-        cicsPlex: plex.getPlexName(),
+      const { resultsummary, records } = await this.runGetResource({
+        session,
+        resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
+        profile: { cicsPlex: plex.getPlexName() }
       });
-      if (response.resultsummary.api_response1_alt === "OK") {
-        return toArray(response.records.cicsmanagedregion);
+      if (resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && records?.cicsmanagedregion) {
+        return toArray(records.cicsmanagedregion);
       }
     } catch (error) {
-      if (error instanceof imperative.ImperativeError && !error.mDetails.msg.includes("NOTAVAILABLE")) {
-        window.showErrorMessage(`Error retrieving ManagedRegions for plex ${plex.getPlexName()} with profile ${plex.getParent().label} - ${error}`);
+      let errorMessage = `Error requesting CICSManagedRegion - ${JSON.stringify(error)}`;
+      if (error instanceof CicsCmciRestError) {
+        if (error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
+          return [];
+        }
+        errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting CICSManagedRegion.`;
+      } else if (error instanceof imperative.RestClientError) {
+        errorMessage = this.formatRestClientError(error);
       }
+      Gui.showMessage(errorMessage, {
+        severity: MessageSeverity.ERROR,
+      });
+      throw error;
     }
   }
 
@@ -308,7 +408,7 @@ export class ProfileManagement {
   ): Promise<{ cacheToken: string; recordCount: number; }> {
     const session = this.getSessionFromProfile(profile.profile);
     try {
-      const allProgramsResponse = await getResource(session, {
+      const { response } = await getResource(session, {
         name: resourceName,
         cicsPlex: plexName,
         ...group ? { regionName: group } : {},
@@ -318,18 +418,14 @@ export class ProfileManagement {
           nodiscard: true,
           overrideWarningCount: true,
         }
-      });
-      if (allProgramsResponse.response.resultsummary.api_response1_alt === "OK") {
-        if (allProgramsResponse.response && allProgramsResponse.response.resultsummary) {
-          const resultsSummary = allProgramsResponse.response.resultsummary;
-          return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
-        }
+      }, { failOnNoData: false, useCICSCmciRestError: true });
+      if (response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}`) {
+        const resultsSummary = response.resultsummary;
+        return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
       }
     } catch (error) {
-      if (error instanceof imperative.ImperativeError) {
-        if (!error.mDetails.msg.toUpperCase().includes("NODATA")) {
-          throw error;
-        }
+      if (!(error instanceof CicsCmciRestError) || error.RESPONSE_1 === CicsCmciConstants.RESPONSE_1_CODES.NODATA) {
+        throw error;
       }
     }
     return { cacheToken: null, recordCount: 0 };

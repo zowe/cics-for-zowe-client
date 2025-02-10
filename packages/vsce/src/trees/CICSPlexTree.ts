@@ -169,8 +169,10 @@ export class CICSPlexTree extends TreeItem {
     this.children.push(new CICSCombinedPipelineTree(this));
   }
 
-  public addRegionContainer() {
-    this.children.push(new CICSRegionsContainer(this));
+  public addRegionContainer(): CICSRegionsContainer {
+    const regionContainer = new CICSRegionsContainer(this);
+    this.children.push(regionContainer);
+    return regionContainer;
   }
 
   public getGroupName() {
