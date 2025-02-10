@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Show CMCI error response codes when failing to make requests. [#220](https://github.com/zowe/cics-for-zowe-client/issues/220)
+
 ## `3.3.2`
 
 - BugFix: Editing profile results in exception - removed ability to multi-select profiles. [#222](https://github.com/zowe/cics-for-zowe-client/issues/222)
