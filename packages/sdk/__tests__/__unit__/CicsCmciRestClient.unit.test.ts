@@ -13,9 +13,9 @@ import { IImperativeError, RestClient, Session } from "@zowe/imperative";
 import { CicsCmciRestClient } from "../../src";
 
 describe("CicsCmciRestClient tests", () => {
-  const dummySession = new Session({hostname: "dummy"});
-  const testEndpoint = "testing";
-  const dummyHeaders = [{testEndpoint}];
+  const dummySession = new Session({ hostname: "dummy" });
+  const testEndpoint = "/CICSSystemManagement/testing";
+  const dummyHeaders = [{ testEndpoint }];
 
   const restClientExpect = jest.spyOn(RestClient, "getExpectString");
 
@@ -40,11 +40,11 @@ describe("CicsCmciRestClient tests", () => {
                 "</food>\n" +
                 "</breakfast_menu>" +
             "</response>";
-    const breakfastMenuJson = {
+    const breakfastMenuJson: any = {
       response: {
         resultsummary: {
           api_response1: "1024",
-          api_response2: "0"
+          api_response2: "0",
         },
         breakfast_menu: {
           food: [

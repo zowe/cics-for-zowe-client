@@ -54,6 +54,7 @@ describe("CMCI - Get Cache", () => {
 
     it("should throw error if no parms are defined", async () => {
       try {
+        // @ts-ignore - cannot be undefined
         response = await getCache(dummySession, undefined);
       } catch (err) {
         error = err;
@@ -66,6 +67,7 @@ describe("CMCI - Get Cache", () => {
 
     it("should throw error if cache token is not defined", async () => {
       try {
+        // @ts-ignore - cacheToken cannot be undefined
         response = await getCache(dummySession, { cacheToken: undefined });
       } catch (err) {
         error = err;
@@ -115,7 +117,7 @@ describe("CMCI - Get Cache", () => {
         "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
 
     it("should be able to get a result cache with SUMMONLY", async () => {
@@ -132,7 +134,7 @@ describe("CMCI - Get Cache", () => {
         "&" + CicsCmciConstants.SUMM_ONLY;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
 
     it("should be able to get a result cache with start index", async () => {
@@ -149,7 +151,7 @@ describe("CMCI - Get Cache", () => {
         "10?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
 
     it("should be able to get a result cache with start index and count", async () => {
@@ -167,7 +169,7 @@ describe("CMCI - Get Cache", () => {
         "15/5?" + CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
 
     it("should be able to get a result cache without NODISCARD", async () => {
@@ -183,7 +185,7 @@ describe("CMCI - Get Cache", () => {
         "/" + cacheParms.cacheToken;
 
       expect(response).toEqual(content);
-      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, []);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
   });
 });

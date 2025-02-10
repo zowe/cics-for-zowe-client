@@ -9,15 +9,16 @@
  *
  */
 
-import { Session } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
+  CicsCmciRestError,
   getResource,
   ICMCIApiResponse,
   IResourceParms
 } from "../../../src";
-import { ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
+import { nodataContent, nodataXmlResponse, ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {
 
@@ -33,7 +34,7 @@ describe("CMCI - Get resource", () => {
     port: 1490
   });
 
-  let error: Error | undefined;
+  let error: Error | CicsCmciRestError | undefined;
   let response: ICMCIApiResponse | undefined;
   let endPoint: string;
   let resourceParms: IResourceParms;
@@ -253,6 +254,91 @@ describe("CMCI - Get resource", () => {
       response = await getResource(dummySession, resourceParms);
 
       expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should error when failOnNoData is true and data is not returned", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, { failOnNoData: true });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeDefined();
+      expect(`${error}`).toContain("1027");
+      expect(response).toBeUndefined();
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should not fail when failOnNoData is true and data is returned", async () => {
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      response = await getResource(dummySession, resourceParms, { failOnNoData: true });
+
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should not fail when failOnNoData is false and data is not returned", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, { failOnNoData: false });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeUndefined();
+      expect(response).toBeDefined();
+      expect(response).toEqual(nodataContent);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should provide a CicsCmciRestError when requestOptions.useCICSCmciRestError is true", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, { useCICSCmciRestError: true });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeDefined();
+      expect(response).toBeUndefined();
+      expect(error).toBeInstanceOf(CicsCmciRestError);
+      if (error instanceof CicsCmciRestError) {
+        expect(error.RESPONSE_1).toEqual(1027);
+        expect(error.RESPONSE_1_ALT).toEqual("NODATA");
+      }
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should provide a ImperativeError when requestOptions.useCICSCmciRestError is false", async () => {
+
+      getExpectStringMock.mockClear();
+      getExpectStringMock.mockResolvedValue(nodataXmlResponse);
+
+      endPoint = `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/${resource}/REGION1`;
+      try {
+        response = await getResource(dummySession, resourceParms, { useCICSCmciRestError: false });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeDefined();
+      expect(response).toBeUndefined();
+      expect(error).toBeInstanceOf(ImperativeError);
+      expect(error?.message).toContain("Did not receive the expected response from CMCI REST API");
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
   });
