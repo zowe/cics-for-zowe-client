@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add requestOptions to getResource and getCache method. [#220](https://github.com/zowe/cics-for-zowe-client/issues/220)
+
 ## `6.2.4`
 
 - BugFix: URI encoding the region and cicsplex names. [#178](https://github.com/zowe/cics-for-zowe-client/issues/178)
