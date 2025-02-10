@@ -17,7 +17,7 @@ export const ok1RecordXmlResponse = readFileSync(join(__dirname, "ok.1_record.xm
 export const ok2RecordsXmlResponse = readFileSync(join(__dirname, "ok.2_records.xml")).toString();
 export const okCacheXmlResponse = readFileSync(join(__dirname, "ok.cache.xml")).toString();
 
-export const okContent1Record = {
+export const okContent1Record: any = {
   response: {
     xmlns: "http://www.ibm.com/xmlns/prod/CICS/smw2int",
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -108,7 +108,7 @@ export const okContent1Record = {
   },
 };
 
-export const okCache = {
+export const okCache: any = {
   response: {
     xmlns: "http://www.ibm.com/xmlns/prod/CICS/smw2int",
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -126,7 +126,7 @@ export const okCache = {
   },
 };
 
-export const okContent2Records = {
+export const okContent2Records: any = {
   response: {
     xmlns: "http://www.ibm.com/xmlns/prod/CICS/smw2int",
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -180,7 +180,7 @@ export const okContent2Records = {
   },
 };
 
-export const nodataContent = {
+export const nodataContent: any = {
   response: {
     xmlns: "http://www.ibm.com/xmlns/prod/CICS/smw2int",
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -196,5 +196,8 @@ export const nodataContent = {
       api_response2_alt: "",
       recordcount: "0",
     },
+    records: {
+      cicscicsplex: [],
+    }
   },
 };
