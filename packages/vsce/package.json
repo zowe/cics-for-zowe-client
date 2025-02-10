@@ -865,11 +865,24 @@
     "test": "npm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
-    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "test:e2e": "tsc -p ./ && extest install-from-marketplace zowe.vscode-extension-for-zowe -s ~/.vscode-test-resources -e ~/.cics && extest setup-and-run './lib/ui-test/*.test.js' -s ~/.vscode-test-resources --install_dependencies"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^3.0.1",
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.1",
     "@types/vscode": "~1.53.0",
-    "@vscode/vsce": "^2.32.0"
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@vscode/vsce": "^2.32.0",
+    "chai": "^4.4.1",
+    "eslint": "^9.19.0",
+    "eslint-define-config": "^2.1.0",
+    "mocha": "^11.1.0",
+    "node-fetch": "^2.6.1",
+    "typescript": "^5.7.3",
+    "vscode-extension-tester": "^8.11.0"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.2.4",
