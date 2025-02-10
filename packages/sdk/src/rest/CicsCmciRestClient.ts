@@ -11,8 +11,11 @@
 
 import { AbstractSession, IImperativeError, ImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
 import { Builder, Parser } from "xml2js";
-import { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
+import { CicsCmciConstants } from "../constants";
 import { CicsCmciMessages } from "../constants/CicsCmci.messages";
+import { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
+import { ICMCIRequestOptions } from "../doc/ICMCIRequestOptions";
+import { CicsCmciRestError } from "./CicsCmciRestError";
 
 /**
  * Wrapper for invoke CICS CMCI API through the RestClient to perform common error
@@ -24,7 +27,7 @@ import { CicsCmciMessages } from "../constants/CicsCmci.messages";
 export class CicsCmciRestClient extends RestClient {
   /**
      * If the API request is successful, this value should be in
-     * api_response2 in  the resultsummary object in the response
+     * api_response1 in  the resultsummary object in the response
      */
   public static readonly CMCI_SUCCESS_RESPONSE_1 = "1024";
 
@@ -56,10 +59,15 @@ export class CicsCmciRestClient extends RestClient {
    * @throws {ImperativeError} verifyResponseCodes fails
    */
   public static async getExpectParsedXml(session: AbstractSession,
-    resource: string, reqHeaders: any[] = []): Promise<ICMCIApiResponse> {
+    resource: string, reqHeaders: any[] = [], requestOptions?: ICMCIRequestOptions): Promise<ICMCIApiResponse> {
     const data = await CicsCmciRestClient.getExpectString(session, resource, reqHeaders);
-    const apiResponse = CicsCmciRestClient.parseStringSync(data);
-    return CicsCmciRestClient.verifyResponseCodes(apiResponse);
+    const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
+    if (requestOptions?.failOnNoData === false && !apiResponse.response.records) {
+      const resourceName = resource.split(`${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/`)[1].split("/")[0].toLowerCase();
+      apiResponse.response.records = {};
+      apiResponse.response.records[resourceName] = [];
+    }
+    return CicsCmciRestClient.verifyResponseCodes(apiResponse, requestOptions);
   }
 
   /**
@@ -180,17 +188,27 @@ export class CicsCmciRestClient extends RestClient {
    * @returns {ICMCIApiResponse} - the response if it was correct
    * @throws {ImperativeError} request did not get the expected codes
    */
-  private static verifyResponseCodes(apiResponse: ICMCIApiResponse): ICMCIApiResponse {
-    if (apiResponse.response != null && apiResponse.response.resultsummary != null
-      && apiResponse.response.resultsummary.api_response1 === CicsCmciRestClient.CMCI_SUCCESS_RESPONSE_1
-      && apiResponse.response.resultsummary.api_response2 === CicsCmciRestClient.CMCI_SUCCESS_RESPONSE_2) {
-      // expected return code and reason code specify
-      return apiResponse;
-    } else {
-      throw new ImperativeError({
-        msg: CicsCmciMessages.cmciRequestFailed.message + "\n" + TextUtils.prettyJson(apiResponse),
-      });
+  private static verifyResponseCodes(apiResponse: ICMCIApiResponse, requestOptions?: ICMCIRequestOptions): ICMCIApiResponse {
+
+    const okResponse1Codes = [
+      `${CicsCmciConstants.RESPONSE_1_CODES.OK}`,
+    ];
+    if (requestOptions?.failOnNoData === false) {
+      okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
+
+    if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+      return apiResponse;
+    }
+
+    if (requestOptions?.useCICSCmciRestError) {
+      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary);
+    }
+
+    throw new ImperativeError({
+      msg: CicsCmciMessages.cmciRequestFailed.message + "\n" + TextUtils.prettyJson(apiResponse),
+    });
+
   }
 
   /**

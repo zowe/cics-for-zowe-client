@@ -53,6 +53,26 @@ export const CicsCmciConstants = {
      */
   CICS_URIMAP: "CICSURIMap",
 
+  /*
+     * Specifies the required part of the REST interface URI to access Region Groups
+     */
+  CICS_CMCI_REGION_GROUP: "CICSRegionGroup",
+
+  /*
+     * Specifies the required part of the REST interface URI to access CICS Plexes
+     */
+  CICS_CMCI_CICS_PLEX: "CICSCICSPlex",
+
+  /*
+     * Specifies the required part of the REST interface URI to access Managed Regions
+     */
+  CICS_CMCI_MANAGED_REGION: "CICSManagedRegion",
+
+  /*
+     * Specifies the required part of the REST interface URI to access Regions
+     */
+  CICS_CMCI_REGION: "CICSRegion",
+
   /**
      * Specifies the required part of the REST interface URI to access CSD Group definitions
      */
@@ -127,5 +147,35 @@ export const CicsCmciConstants = {
   /**
      * CICSTask parameter
      */
-  CICS_CMCI_TASK: "CICSTask"
+  CICS_CMCI_TASK: "CICSTask",
+
+  /**
+     * CICS CMCI Response 1 Codes
+     */
+  RESPONSE_1_CODES: {
+    /**
+     * CMCI RESP 1 Code for OK
+     */
+    OK: 1024,
+
+    /**
+     * CMCI RESP 1 Code for NODATA
+     */
+    NODATA: 1027,
+
+    /**
+     * CMCI RESP 1 Code for INVALIDPARM
+     */
+    INVALIDPARM: 1028,
+
+    /**
+     * CMCI RESP 1 Code for NOTAVAILABLE
+     */
+    NOTAVAILABLE: 1034,
+
+    /**
+     * CMCI RESP 1 Code for INVALIDDATA
+     */
+    INVALIDDATA: 1041,
+  }
 };
