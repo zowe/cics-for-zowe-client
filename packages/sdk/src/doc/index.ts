@@ -11,6 +11,7 @@
 
 export * from "./ICacheParms";
 export * from "./ICMCIApiResponse";
+export * from "./ICMCIRequestOptions";
 export * from "./ICMCIResponseResultSummary";
 export * from "./ICSDGroupParms";
 export * from "./IProgramParms";

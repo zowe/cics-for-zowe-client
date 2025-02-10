@@ -10,3 +10,4 @@
  */
 
 export * from "./CicsCmciRestClient";
+export * from "./CicsCmciRestError";
