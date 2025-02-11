@@ -15,13 +15,22 @@
  * limitations under the License.
  */
 
-import { ActivityBar, ExtensionsViewItem, ExtensionsViewSection, VSBrowser, WebDriver, InputBox, QuickPickItem } from "vscode-extension-tester";
+import {
+  ActivityBar,
+  ExtensionsViewItem,
+  ExtensionsViewSection,
+  VSBrowser,
+  WebDriver,
+  InputBox,
+  QuickPickItem,
+  DefaultTreeSection,
+} from "vscode-extension-tester";
 import { expect } from "chai";
 import { By } from "selenium-webdriver";
 
 // sample test code on how to look for an extension
 describe("CICS view tests", () => {
-  let cicsForZoweExtension: ExtensionsViewSection;
+  let cicsTree: DefaultTreeSection;
   let browser: VSBrowser;
   let driver: WebDriver;
   let quickPick: InputBox;
@@ -40,25 +49,27 @@ describe("CICS view tests", () => {
 
     // we want to find the hello-world extension (this project)
     // first we need a view section, best place to get started is the 'Installed' section
-    cicsForZoweExtension = sections[3] as ExtensionsViewSection;
+    cicsTree = sections[3] as DefaultTreeSection;
   });
 
   it("Title Check", async () => {
     // title part usually only contains the title of the view
     // but it can also have action buttons
-    const title = await cicsForZoweExtension.getTitle();
+    const title = await cicsTree.getTitle();
     expect(title).equals("cics");
   });
 
   it("Create a plus button clickable test", async () => {
     // title part usually only contains the title of the view
     // but it can also have action buttons
-    const plusIcon = await cicsForZoweExtension.getAction(`Create a CICS Profile`);
-    await expect(plusIcon).exist;
+    await cicsTree.expand();
+    const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
+    plusIcon.takeScreenshot();
+    expect(plusIcon).exist;
     plusIcon.click();
 
     const qp = await browser.driver.wait(async function () {
-      return await browser.driver.  findElement(By.id(".quick-input-widget")).isDisplayed;
+      return browser.driver.findElement(By.id(".quick-input-widget")).isDisplayed;
     }, 15000);
 
     expect(qp).true;
