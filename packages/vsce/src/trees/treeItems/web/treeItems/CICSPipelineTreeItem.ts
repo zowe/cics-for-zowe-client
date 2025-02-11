@@ -22,7 +22,7 @@ export class CICSPipelineTreeItem extends TreeItem {
     pipeline: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("program"),
+    public readonly iconPath = getIconFilePathFromName("pipeline"),
   ) {
     super(`${pipeline.name}`, TreeItemCollapsibleState.None);
 

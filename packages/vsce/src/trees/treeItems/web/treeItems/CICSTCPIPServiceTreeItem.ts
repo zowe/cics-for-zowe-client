@@ -22,7 +22,7 @@ export class CICSTCPIPServiceTreeItem extends TreeItem {
     tcpips: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("program"),
+    public readonly iconPath = getIconFilePathFromName("tcp-ip-service"),
   ) {
     super(`${tcpips.name}`, TreeItemCollapsibleState.None);
 
