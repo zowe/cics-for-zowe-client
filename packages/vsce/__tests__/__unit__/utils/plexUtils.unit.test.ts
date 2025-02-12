@@ -33,7 +33,7 @@ function getPlexInfo(plexname: string, status: string, mpstatus: string, accesst
 }
 
 
-describe("Profile Utils tests", () => {
+describe("Plex Utils tests", () => {
   describe("compareCicsplexes", () => {
     it("should return 15 for active plex with mpstatus yes and accesstype local", () => {
       const plex = getPlexInfo("PLEX", "ACTIVE", "YES", "LOCAL");

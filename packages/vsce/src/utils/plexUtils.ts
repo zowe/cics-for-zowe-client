@@ -9,8 +9,6 @@
  *
  */
 
-import { string } from "yargs";
-
 export interface ICicsPlexInfo {
   _keydata: string;
   accesstype: string,
