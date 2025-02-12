@@ -20,7 +20,7 @@ export function filterCicsplexByConstraints(cicscicsplex: any[]) {
 
   for (const plex of cicscicsplex) {
     const plexname: string = plex["plexname"];
-    let cicsplex = allcicsplexes.get(plexname);
+    const cicsplex = allcicsplexes.get(plexname);
     if (!cicsplex) {
       allcicsplexes.set(plexname, plex);
     }
