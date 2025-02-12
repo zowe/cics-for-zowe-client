@@ -134,7 +134,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
     });
 
-    it("should return an array of 3 plex", () => {
+    it("should return an array of 3 plexes", () => {
       const plexes = [
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
         getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'),
@@ -152,6 +152,63 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'));
       expect(allplexes.get("PLEX3#")).toEqual(
         getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'));
+    });
+    it("should return an array of 4 plexes", () => {
+      const plexes = [
+        getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX1", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "YES", "LOCAL"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX2", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "YES", "LOCAL"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX3", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "YES", "LOCAL"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT")
+      ];
+
+      const allplexes = filterCicsplexByConstraints(plexes);
+
+      expect(allplexes.size).toEqual(4);
+      expect(allplexes.get("PLEX1")).toEqual(
+        getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX2")).toEqual(
+        getPlexInfo("PLEX2", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX3")).toEqual(
+        getPlexInfo("PLEX3", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX4")).toEqual(
+        getPlexInfo("PLEX4", "ACTIVE", "YES", "LOCAL"));
+
     });
   });
 });
