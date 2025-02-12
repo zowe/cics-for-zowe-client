@@ -26,7 +26,7 @@ export interface ICicsPlexInfo {
   transitcmas: string,
   transitcnt: string,
   updaters: string
-};
+}
 
 export function evaluateCicsPlex(plex: ICicsPlexInfo): number {
   return  (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
