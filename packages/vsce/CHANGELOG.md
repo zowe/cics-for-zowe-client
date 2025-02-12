@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.3.3`
 - BugFix: Duplicate CICSplex exist when connecting to a multi-CMAS system. [#227](https://github.com/zowe/cics-for-zowe-client/issues/227)
 - Enhancement: Show CMCI error response codes when failing to make requests. [#220](https://github.com/zowe/cics-for-zowe-client/issues/220)
 
