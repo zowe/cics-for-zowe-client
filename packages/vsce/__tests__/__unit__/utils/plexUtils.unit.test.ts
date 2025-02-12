@@ -153,6 +153,7 @@ describe("Plex Utils tests", () => {
       expect(allplexes.get("PLEX3#")).toEqual(
         getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'));
     });
+
     it("should return an array of 4 plexes", () => {
       const plexes = [
         getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"),
