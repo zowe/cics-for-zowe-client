@@ -22,6 +22,7 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
 import cicsProfileMeta from "./profileDefinition";
+import { filterCicsplexByConstraints } from "./plexUtils";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -304,13 +305,15 @@ export class ProfileManagement {
       try {
         const { response } = await getCache(session, { cacheToken: isPlex, nodiscard: false });
         if (response.records.cicscicsplex) {
-          for (const plex of toArray(response.records.cicscicsplex)) {
+          const cicscicsplexs = filterCicsplexByConstraints(toArray(response.records.cicscicsplex));
+
+          cicscicsplexs.forEach((value: {}, key: string) => {
             infoLoaded.push({
-              plexname: plex.plexname,
+              plexname: key,
               regions: [],
               group: false,
             });
-          }
+          });
         }
       } catch (error) {
         Gui.showMessage(`Error retrieving cache - ${JSON.stringify(error)}`, {
