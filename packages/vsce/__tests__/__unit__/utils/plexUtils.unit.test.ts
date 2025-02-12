@@ -9,148 +9,149 @@
  *
  */
 
-import * as profileUtils from "../../../src/utils/plexUtils";
+import {ICicsPlexInfo, evaluateCicsPlex, filterCicsplexByConstraints} from "../../../src/utils/plexUtils";
+
+function getPlexInfo(plexname: string, status: string, mpstatus: string, accesstype: string) {
+  const plex: ICicsPlexInfo =
+  {
+    _keydata: "",
+    accesstype: accesstype,
+    botrsupd: "",
+    cmasname: "",
+    mpstatus: mpstatus,
+    plexname: plexname,
+    readrs: "",
+    rspoolid: "",
+    status: status,
+    sysid: "",
+    toprsupd: "",
+    transitcmas: "",
+    transitcnt: "",
+    updaters: ""
+  };
+  return plex;
+}
+
 
 describe("Profile Utils tests", () => {
   describe("compareCicsplexes", () => {
     it("should return 15 for active plex with mpstatus yes and accesstype local", () => {
-      const plex = {
-        status: "ACTIVE",
-        mpstatus: "YES",
-        accesstype: "LOCAL"
-      };
+      const plex = getPlexInfo("PLEX", "ACTIVE", "YES", "LOCAL");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(15);
     });
 
     it("should return 8 for plex for plex with inactive status", () => {
-      const plex = {
-        status: "INACTIVE",
-        mpstatus: "YES",
-        accesstype: "LOCAL"
-      };
+      const plex = getPlexInfo("PLEX", "INACTIVE", "YES", "LOCAL");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(8);
     });
 
     it("should return 12 when plex has mpstatus NO", () => {
-      const plex = {
-        status: "ACTIVE",
-        mpstatus: "NO",
-        accesstype: "LOCAL"
-      };
+      const plex = getPlexInfo("PLEX", "ACTIVE", "NO", "LOCAL");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(12);
     });
 
     it("should return 10 when plex has accesstype ADJACENT", () => {
-      const plex = {
-        status: "ACTIVE",
-        mpstatus: "YES",
-        accesstype: "ADJACENT"
-      };
+      const plex = getPlexInfo("PLEX", "ACTIVE", "YES", "ADJACENT");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(10);
     });
 
     it("should return 7 when plex has mpstatus NO and accesstype os adjacent", () => {
-      const plex = {
-        status: "ACTIVE",
-        mpstatus: "NO",
-        accesstype: "ADJACENT"
-      };
+      const plex = getPlexInfo("PLEX", "ACTIVE", "NO", "ADJACENT");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(7);
     });
 
     it("should return 0 as plex is inactive, mpstatus no and accesstype adjacent", () => {
-      const plex = {
-        status: "INACTIVE",
-        mpstatus: "NO",
-        accesstype: "ADJACENTL"
-      };
+      const plex = getPlexInfo("PLEX", "INACTIVE", "NO", "ADJACENT");
 
-      const response = profileUtils.evaluateCicsPlex(plex);
+      const response = evaluateCicsPlex(plex);
       expect(response).toEqual(0);
     });
   });
 
   describe("filterCicsplexByConstraints", () => {
-    it("should return an array of 2 plexes as both are valid", () => {
+    it("should return a map of 2 plexes as both are valid", () => {
       const plexes = [
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX2', status: 'ACTIVE'}
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
+        getPlexInfo("PLEX2", 'ACTIVE', 'YES', 'LOCAL')
       ];
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
       expect(allplexes.size).toEqual(2);
     });
 
-    it("should return an array of 1 plex as one in inactive both are valid", () => {
-      const expected = {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'};
+    it("should return a map of 1 plex as one in inactive both are valid", () => {
+      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL');
       const plexes = [
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'INACTIVE'},
+        getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL'),
         expected
       ];
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(expected);
     });
 
-    it("should return an array of 1 plex even though both are inactive", () => {
+    it("should return a map of 1 plex even though both are inactive", () => {
+      const expected = getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL');
       const plexes = [
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'INACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'INACTIVE'}
+        expected,
+        getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL')
       ];
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
       expect(allplexes.size).toEqual(1);
-      expect(allplexes.get("PLEX1")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'INACTIVE'});
+      expect(allplexes.get("PLEX1")).toEqual(expected);
     });
 
-    it("should return an array of 1 plex as one of the plexes has mpstatus NO", () => {
+    it("should return a map of 1 plex as one of the plexes has mpstatus NO", () => {
+      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL');
       const plexes = [
-        {accesstype: 'LOCAL', mpstatus: 'NO', plexname: 'PLEX1', status: 'ACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'}
+        getPlexInfo("PLEX1", 'ACTIVE', 'NO', 'LOCAL'),
+        expected
       ];
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'});
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
     });
 
-    it("should return an array of 1 plex as one of the plexes has accesstype ADJACENT", () => {
+    it("should return a map of 1 plex as one of the plexes has accesstype ADJACENT", () => {
+      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL')
       const plexes = [
-        {accesstype: 'ADJACENT', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'}
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'ADJACENT'),
+        expected
       ];
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'});
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
     });
 
     it("should return an array of 3 plex", () => {
       const plexes = [
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'NO', plexname: 'PLEX2#', status: 'ACTIVE'},
-        {accesstype: 'ADJACENT', mpstatus: 'YES', plexname: 'PLEX2#', status: 'ACTIVE'},
-        {accesstype: 'LOCAL', mpstatus: 'NO', plexname: 'PLEX3#', status: 'ACTIVE'},
-        {accesstype: 'ADJACENT', mpstatus: 'YES', plexname: 'PLEX3#', status: 'ACTIVE'}
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
+        getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'),
+        getPlexInfo("PLEX2#", 'ACTIVE', 'YES', 'ADJACENT'),
+        getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'),
+        getPlexInfo("PLEX3#", 'ACTIVE', 'YES', 'ADJACENT')
       ];
 
-      const allplexes = profileUtils.filterCicsplexByConstraints(plexes);
+      const allplexes = filterCicsplexByConstraints(plexes);
+
       expect(allplexes.size).toEqual(3);
       expect(allplexes.get("PLEX1")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'YES', plexname: 'PLEX1', status: 'ACTIVE'});
+        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
       expect(allplexes.get("PLEX2#")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'NO', plexname: 'PLEX2#', status: 'ACTIVE'});
+        getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'));
       expect(allplexes.get("PLEX3#")).toEqual(
-        {accesstype: 'LOCAL', mpstatus: 'NO', plexname: 'PLEX3#', status: 'ACTIVE'});
+        getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'));
     });
   });
 });

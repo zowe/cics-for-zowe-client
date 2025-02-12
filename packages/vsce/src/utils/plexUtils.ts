@@ -9,20 +9,37 @@
  *
  */
 
-export function evaluateCicsPlex(plex: any): number {
-  return  (plex["status"] === "ACTIVE" && 7) + (plex["accesstype"] === "LOCAL" && 5) + (plex["mpstatus"] === "YES" && 3);
+import { string } from "yargs";
+
+export interface ICicsPlexInfo {
+  _keydata: string;
+  accesstype: string,
+  botrsupd: string,
+  cmasname: string,
+  mpstatus: string,
+  plexname: string,
+  readrs: string,
+  rspoolid: string,
+  status: string,
+  sysid: string,
+  toprsupd: string,
+  transitcmas: string,
+  transitcnt: string,
+  updaters: string
+};
+
+export function evaluateCicsPlex(plex: ICicsPlexInfo): number {
+  return  (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
 }
 
-export function filterCicsplexByConstraints(cicscicsplex: any[]) {
-
-  const allcicsplexes = new Map<string, any>();
+export function filterCicsplexByConstraints(cicscicsplex: ICicsPlexInfo[]) {
+  const allcicsplexes = new Map<string, ICicsPlexInfo>();
   cicscicsplex.sort((a, b) => evaluateCicsPlex(b) - evaluateCicsPlex(a));
 
   for (const plex of cicscicsplex) {
-    const plexname: string = plex["plexname"];
-    const cicsplex = allcicsplexes.get(plexname);
+    const cicsplex = allcicsplexes.get(plex.plexname);
     if (!cicsplex) {
-      allcicsplexes.set(plexname, plex);
+      allcicsplexes.set(plex.plexname, plex);
     }
   }
 
