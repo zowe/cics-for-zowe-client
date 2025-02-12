@@ -26,20 +26,17 @@ export interface ICicsPlexInfo {
   updaters: string
 }
 
-export function evaluateCicsPlex(plex: ICicsPlexInfo): number {
+export function scoreCicsPlexByStatus(plex: ICicsPlexInfo): number {
   return  (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
 }
 
 // pick the highest scoring cicsplexes if there are duplicates
-export function filterCicsplexByConstraints(cicscicsplex: ICicsPlexInfo[]) {
+export function getBestCICSplexes(cicscicsplex: ICicsPlexInfo[]) {
   const allcicsplexes = new Map<string, ICicsPlexInfo>();
-  cicscicsplex.sort((a, b) => evaluateCicsPlex(b) - evaluateCicsPlex(a));
+  cicscicsplex.sort((a, b) => scoreCicsPlexByStatus(a) - scoreCicsPlexByStatus(b));
 
   for (const plex of cicscicsplex) {
-    const cicsplex = allcicsplexes.get(plex.plexname);
-    if (!cicsplex) {
-      allcicsplexes.set(plex.plexname, plex);
-    }
+    allcicsplexes.set(plex.plexname, plex);
   }
 
   return allcicsplexes;

@@ -9,7 +9,7 @@
  *
  */
 
-import {ICicsPlexInfo, evaluateCicsPlex, filterCicsplexByConstraints} from "../../../src/utils/plexUtils";
+import {ICicsPlexInfo, scoreCicsPlexByStatus, getBestCICSplexes} from "../../../src/utils/plexUtils";
 
 function getPlexInfo(plexname: string, status: string, mpstatus: string, accesstype: string) {
   const plex: ICicsPlexInfo =
@@ -38,53 +38,53 @@ describe("Plex Utils tests", () => {
     it("should return 15 for active plex with mpstatus yes and accesstype local", () => {
       const plex = getPlexInfo("PLEX", "ACTIVE", "YES", "LOCAL");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(15);
     });
 
     it("should return 8 for plex for plex with inactive status", () => {
       const plex = getPlexInfo("PLEX", "INACTIVE", "YES", "LOCAL");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(8);
     });
 
     it("should return 12 when plex has mpstatus NO", () => {
       const plex = getPlexInfo("PLEX", "ACTIVE", "NO", "LOCAL");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(12);
     });
 
     it("should return 10 when plex has accesstype ADJACENT", () => {
       const plex = getPlexInfo("PLEX", "ACTIVE", "YES", "ADJACENT");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(10);
     });
 
     it("should return 7 when plex has mpstatus NO and accesstype os adjacent", () => {
       const plex = getPlexInfo("PLEX", "ACTIVE", "NO", "ADJACENT");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(7);
     });
 
     it("should return 0 as plex is inactive, mpstatus no and accesstype adjacent", () => {
       const plex = getPlexInfo("PLEX", "INACTIVE", "NO", "ADJACENT");
 
-      const response = evaluateCicsPlex(plex);
+      const response = scoreCicsPlexByStatus(plex);
       expect(response).toEqual(0);
     });
   });
 
-  describe("filterCicsplexByConstraints", () => {
+  describe("getBestCICSplexes", () => {
     it("should return a map of 2 plexes as both are valid", () => {
       const plexes = [
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
         getPlexInfo("PLEX2", 'ACTIVE', 'YES', 'LOCAL')
       ];
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(2);
     });
 
@@ -94,7 +94,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL'),
         expected
       ];
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(expected);
     });
@@ -105,7 +105,7 @@ describe("Plex Utils tests", () => {
         expected,
         getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL')
       ];
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(expected);
     });
@@ -116,7 +116,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX1", 'ACTIVE', 'NO', 'LOCAL'),
         expected
       ];
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
@@ -128,7 +128,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'ADJACENT'),
         expected
       ];
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(
         getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
@@ -143,7 +143,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX3#", 'ACTIVE', 'YES', 'ADJACENT')
       ];
 
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
 
       expect(allplexes.size).toEqual(3);
       expect(allplexes.get("PLEX1")).toEqual(
@@ -198,7 +198,7 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT")
       ];
 
-      const allplexes = filterCicsplexByConstraints(plexes);
+      const allplexes = getBestCICSplexes(plexes);
 
       expect(allplexes.size).toEqual(4);
       expect(allplexes.get("PLEX1")).toEqual(
