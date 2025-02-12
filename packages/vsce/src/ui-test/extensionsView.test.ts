@@ -42,14 +42,8 @@ describe("CICS view tests", () => {
 
     // open the extensions view
     const view = await (await new ActivityBar().getViewControl("Zowe Explorer"))?.openView();
-    const sections = await view.getContent().getSections();
-    await view?.getDriver().wait(async function () {
-      return sections.length > 0;
-    });
-
-    // we want to find the hello-world extension (this project)
-    // first we need a view section, best place to get started is the 'Installed' section
-    cicsTree = sections[3] as DefaultTreeSection;
+    cicsTree = await view.getContent().getSection("cics");
+    console.log(cicsTree);
   });
 
   it("Title Check", async () => {
@@ -66,7 +60,7 @@ describe("CICS view tests", () => {
     const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
     plusIcon.takeScreenshot();
     expect(plusIcon).exist;
-    plusIcon.click();
+    await plusIcon.click();
 
     const qp = await browser.driver.wait(async function () {
       return browser.driver.findElement(By.id(".quick-input-widget")).isDisplayed;
