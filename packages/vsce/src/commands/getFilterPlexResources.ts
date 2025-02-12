@@ -16,6 +16,39 @@ import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
 
+
+const getSearchHistory = (persistentStorage: PersistentStorage, resourceToFilter: string): string[] | null => {
+
+  const searchHistoryMap = {
+    "Programs": () => { return persistentStorage.getProgramSearchHistory(); },
+    "Local Transactions": () => { return persistentStorage.getTransactionSearchHistory(); },
+    "Local Files": () => { return persistentStorage.getLocalFileSearchHistory(); },
+    "Tasks": () => { return persistentStorage.getTransactionSearchHistory(); },
+    "Libraries": () => { return persistentStorage.getLibrarySearchHistory(); },
+    "Regions": () => { return persistentStorage.getRegionSearchHistory(); },
+  };
+
+  if (resourceToFilter in searchHistoryMap) {
+    return searchHistoryMap[resourceToFilter as keyof typeof searchHistoryMap]();
+  }
+
+  window.showInformationMessage("No Selection Made");
+  return null;
+
+};
+
+const addSearchHistory = async (persistentStorage: PersistentStorage, resourceToFilter: string, pattern: string) => {
+  const searchHistoryMap = {
+    "Programs": async () => { await persistentStorage.addProgramSearchHistory(pattern); },
+    "Local Transactions": async () => { await persistentStorage.addTransactionSearchHistory(pattern); },
+    "Local Files": async () => { await persistentStorage.addLocalFileSearchHistory(pattern); },
+    "Regions": async () => { await persistentStorage.addRegionSearchHistory(pattern); },
+    "Tasks": async () => { await persistentStorage.addTransactionSearchHistory(pattern); },
+    "Libraries": async () => { await persistentStorage.addLibrarySearchHistory(pattern); },
+  };
+  await searchHistoryMap[resourceToFilter as keyof typeof searchHistoryMap]();
+};
+
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
  * @param tree
@@ -36,45 +69,18 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     }
     const plex = chosenNode.getParent();
     const plexProfile = plex.getProfile();
-    let resourceToFilter: any;
+    let resourceToFilter: string;
     if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
       resourceToFilter = await window.showQuickPick(["Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
     } else {
       resourceToFilter = await window.showQuickPick(["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
     }
+
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    let resourceHistory;
-    if (resourceToFilter === "Programs") {
-      resourceHistory = persistentStorage.getProgramSearchHistory();
-    } else if (resourceToFilter === "Local Transactions") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
-    } else if (resourceToFilter === "Local Files") {
-      resourceHistory = persistentStorage.getLocalFileSearchHistory();
-    } else if (resourceToFilter === "Tasks") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
-    } else if (resourceToFilter === "Libraries") {
-      resourceHistory = persistentStorage.getLibrarySearchHistory();
-    } else if (resourceToFilter === "Regions") {
-      resourceHistory = persistentStorage.getRegionSearchHistory();
-    } else {
-      window.showInformationMessage("No Selection Made");
-      return;
-    }
+    const resourceHistory = getSearchHistory(persistentStorage, resourceToFilter);
     const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
     if (pattern) {
-      if (resourceToFilter === "Programs") {
-        await persistentStorage.addProgramSearchHistory(pattern);
-      } else if (resourceToFilter === "Local Transactions") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
-      } else if (resourceToFilter === "Local Files") {
-        await persistentStorage.addLocalFileSearchHistory(pattern);
-      } else if (resourceToFilter === "Regions") {
-        await persistentStorage.addRegionSearchHistory(pattern);
-      } else if (resourceToFilter === "Tasks") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
-      } else if (resourceToFilter === "Libraries") {
-        await persistentStorage.addLibrarySearchHistory(pattern);
-      }
+      await addSearchHistory(persistentStorage, resourceToFilter, pattern);
 
       chosenNode.collapsibleState = TreeItemCollapsibleState.Expanded;
 

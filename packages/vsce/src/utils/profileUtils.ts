@@ -24,8 +24,6 @@ export function missingSessionParameters(profileProfile: any): (string | undefin
   return missing;
 }
 
-
-
 export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {
   //   requireKeytar: () => getSecurityModules("keytar", isTheia())!,

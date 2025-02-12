@@ -45,4 +45,39 @@ export default {
    * HTTP return code for Server Error
    */
   HTTP_ERROR_SERVER_ERROR: 500,
+
+  PERSISTENT_STORAGE: {
+    PROGRAM_FILTER: {
+      ID: "zowe.cics.program.filter",
+      DEFAULT: "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
+    },
+    TRANSACTION_FILTER: {
+      ID: "zowe.cics.transaction.filter",
+      DEFAULT: "NOT (program=DFH* OR program=EYU*)",
+    },
+    LOCAL_FILE_FILTER: {
+      ID: "zowe.cics.localFile.filter",
+      DEFAULT: "file=*",
+    },
+    TASK_FILTER: {
+      ID: "zowe.cics.tasks.filter",
+      DEFAULT: "TRANID=*",
+    },
+    TCPIP_FILTER: {
+      ID: "zowe.cics.tcpips.filter",
+      DEFAULT: "name=*",
+    },
+    URIMAP_FILTER: {
+      ID: "zowe.cics.urimaps.filter",
+      DEFAULT: "name=*",
+    },
+    PIPELINE_FILTER: {
+      ID: "zowe.cics.pipelines.filter",
+      DEFAULT: "name=*",
+    },
+    WEBSERVICE_FILTER: {
+      ID: "zowe.cics.webservices.filter",
+      DEFAULT: "name=*",
+    },
+  }
 };

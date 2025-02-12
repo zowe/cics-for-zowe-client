@@ -9,52 +9,53 @@
  *
  */
 
-const getIconByStatusMock = jest.fn();
-
+import { IRegion } from "@zowe/cics-for-zowe-sdk";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
-jest.mock("../../../src/trees/CICSProgramTree");
-jest.mock("../../../src/trees/CICSTransactionTree");
-jest.mock("../../../src/trees/CICSLocalFileTree");
-jest.mock("../../../src/trees/CICSTaskTree");
-jest.mock("../../../src/trees/CICSLibraryTree");
-jest.mock("../../../src/trees/CICSWebTree");
+jest.mock("../../../src/trees/CICSResourceTree");
 
-jest.mock("../../../src/utils/iconUtils", () => {
-  return { getIconByStatus: getIconByStatusMock };
-});
-
-const region = {
+const region: IRegion = {
   cicsname: "cics",
   cicsstate: "ACTIVE",
   applid: "APPLID",
+  cicsstatus: "ACTIVE",
+  eyu_cicsname: "APPLID"
 };
-const region_disable = {
+const region_disable: IRegion = {
   cicsname: "cics",
-  cicsstate: "DISABLE",
+  cicsstate: "INACTIVE",
+  applid: "applid",
+  cicsstatus: "INACTIVE",
+  eyu_cicsname: "applid"
 };
-const region_undefined = {
+const region_undefined: IRegion = {
   cicsname: "cics",
+  cicsstate: "INACTIVE",
+  applid: "applid",
+  cicsstatus: "INACTIVE",
+  eyu_cicsname: "applid"
 };
-const treeResourceMock = globalMocks.getDummyTreeResources("cicsregion", "");
 
 describe("Test suite for CICSRegionTree", () => {
   let sut: CICSRegionTree;
 
   beforeEach(() => {
-    getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
     sut = new CICSRegionTree(
-      "regionName",
       region,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      "Parent",
+      globalMocks.CICSPlexTree as any as CICSPlexTree,
     );
 
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
+    expect(sut.iconPath).toHaveProperty("light");
+    expect(sut.iconPath).toHaveProperty("dark");
+    // @ts-ignore
+    expect(sut.iconPath?.light).toContain("region-dark.svg");
+    // @ts-ignore
+    expect(sut.iconPath?.dark).toContain("region-light.svg");
     expect(sut.isActive).toBeTruthy();
   });
 
@@ -62,29 +63,37 @@ describe("Test suite for CICSRegionTree", () => {
     jest.resetAllMocks();
   });
 
-  it("Should load region Tree when cicsstate is DISABLED", () => {
+  it("Should load region Tree when cicsstate is INACTIVE", () => {
     sut = new CICSRegionTree(
-      "regionName",
       region_disable,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region,
+      globalMocks.CICSPlexTree as any as CICSPlexTree,
     );
 
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
+    expect(sut.iconPath).toHaveProperty("light");
+    expect(sut.iconPath).toHaveProperty("dark");
+    // @ts-ignore
+    expect(sut.iconPath?.light).toContain("region-disabled-dark.svg");
+    // @ts-ignore
+    expect(sut.iconPath?.dark).toContain("region-disabled-light.svg");
     expect(sut.isActive).toBeFalsy();
   });
 
   it("Should load region Tree when cicsstate is ACTIVE", () => {
     sut = new CICSRegionTree(
-      "regionName",
       region_undefined,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region,
+      globalMocks.CICSPlexTree as any as CICSPlexTree,
     );
 
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
+    expect(sut.iconPath).toHaveProperty("light");
+    expect(sut.iconPath).toHaveProperty("dark");
+    // @ts-ignore
+    expect(sut.iconPath?.light).toContain("region-disabled-dark.svg");
+    // @ts-ignore
+    expect(sut.iconPath?.dark).toContain("region-disabled-light.svg");
     expect(sut.isActive).toBeFalsy();
   });
 
@@ -98,7 +107,7 @@ describe("Test suite for CICSRegionTree", () => {
   });
 
   it("Should return parent", () => {
-    expect(sut.getParent()).toBe("Parent");
+    expect(sut.getParent()).toBe(globalMocks.CICSPlexTree);
   });
 
   it("Should return isActive", () => {

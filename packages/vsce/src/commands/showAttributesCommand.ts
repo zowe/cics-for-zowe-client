@@ -9,37 +9,31 @@
  *
  */
 
+import { ILocalFile, IPipeline, IProgram, ITask, ITCPIP, ITransaction, IUriMap, IWebService } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
-import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
-import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
-import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
-import { CICSPipelineTreeItem } from "../trees/treeItems/web/treeItems/CICSPipelineTreeItem";
-import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
-import { CICSURIMapTreeItem } from "../trees/treeItems/web/treeItems/CICSURIMapTreeItem";
-import { CICSWebServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSWebServiceTreeItem";
+import { CICSResourceTreeItem } from "../trees/treeItems/CICSResourceTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getAttributesHtml } from "../utils/webviewHTML";
 
 export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showProgramAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<IProgram>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
     for (const programTreeItem of allSelectedNodes) {
-      const program = programTreeItem.program;
+      const program = programTreeItem.resource;
       const attributeHeadings = Object.keys(program);
       let webText = `<thead><tr>`;
       webText += `<th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th>`;
       webText += `</tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading as keyof IProgram]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -86,18 +80,18 @@ export function getShowRegionAttributes(treeview: TreeView<any>) {
 
 export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLocalFileAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ILocalFile>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS local file selected");
       return;
     }
     for (const localFileTreeItem of allSelectedNodes) {
-      const localFile = localFileTreeItem.localFile;
+      const localFile = localFileTreeItem.resource;
       const attributeHeadings = Object.keys(localFile);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading as keyof ILocalFile]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -117,18 +111,18 @@ export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
 
 export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showTransactionAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ITransaction>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS transaction selected");
       return;
     }
     for (const localTransactionTreeItem of allSelectedNodes) {
-      const transaction = localTransactionTreeItem.transaction;
+      const transaction = localTransactionTreeItem.resource;
       const attributeHeadings = Object.keys(transaction);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading as keyof ITransaction]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -149,18 +143,18 @@ export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
 ///@@@@@@@@@@@@@@ doesnt fit because actvtyid value is too long - edit css
 export function getShowTaskAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showTaskAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ITask>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Task selected");
       return;
     }
     for (const localTaskTreeItem of allSelectedNodes) {
-      const task = localTaskTreeItem.task;
+      const task = localTaskTreeItem.resource;
       const attributeHeadings = Object.keys(task);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading as keyof ITask]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -237,18 +231,18 @@ export function getShowLibraryDatasetsAttributesCommand(treeview: TreeView<any>)
 
 export function getShowTCPIPServiceAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showTCPIPServiceAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTCPIPServiceTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<ITCPIP>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS TCPIP Service selected");
       return;
     }
     for (const tcpipsTreeItem of allSelectedNodes) {
-      const tcpips = tcpipsTreeItem.tcpips;
+      const tcpips = tcpipsTreeItem.resource;
       const attributeHeadings = Object.keys(tcpips);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${tcpips[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${tcpips[heading as keyof ITCPIP]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -264,18 +258,18 @@ export function getShowTCPIPServiceAttributesCommand(treeview: TreeView<any>) {
 
 export function getShowURIMapAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showURIMapAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSURIMapTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<IUriMap>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS URIMap selected");
       return;
     }
     for (const urimapTreeItem of allSelectedNodes) {
-      const urimap = urimapTreeItem.urimap;
+      const urimap = urimapTreeItem.resource;
       const attributeHeadings = Object.keys(urimap);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${urimap[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${urimap[heading as keyof IUriMap]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -291,18 +285,18 @@ export function getShowURIMapAttributesCommand(treeview: TreeView<any>) {
 
 export function getShowPipelineAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showPipelineAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSPipelineTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<IPipeline>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Pipeline selected");
       return;
     }
     for (const pipelineTreeItem of allSelectedNodes) {
-      const pipeline = pipelineTreeItem.pipeline;
+      const pipeline = pipelineTreeItem.resource;
       const attributeHeadings = Object.keys(pipeline);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${pipeline[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${pipeline[heading as keyof IPipeline]}</td></tr>`;
       }
       webText += "</tbody>";
 
@@ -321,18 +315,18 @@ export function getShowPipelineAttributesCommand(treeview: TreeView<any>) {
 
 export function getShowWebServiceAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showWebServiceAttributes", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSWebServiceTreeItem, node);
+    const allSelectedNodes: CICSResourceTreeItem<IWebService>[] = findSelectedNodes(treeview, CICSResourceTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS Web Service selected");
       return;
     }
     for (const webServiceTreeItem of allSelectedNodes) {
-      const webService = webServiceTreeItem.webservice;
+      const webService = webServiceTreeItem.resource;
       const attributeHeadings = Object.keys(webService);
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
       webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${webService[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${webService[heading as keyof IWebService]}</td></tr>`;
       }
       webText += "</tbody>";
 

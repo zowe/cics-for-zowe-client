@@ -70,25 +70,11 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
   return pattern.replace(/\s/g, "");
 }
 
-export async function getDefaultProgramFilter() {
-  let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.program.filter")}`;
-  if (!defaultCriteria || defaultCriteria.length === 0) {
-    await workspace
-      .getConfiguration()
-      .update(
-        "zowe.cics.program.filter",
-        "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)"
-      );
-    defaultCriteria = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
-  }
-  return defaultCriteria;
-}
-
-export async function getDefaultTransactionFilter() {
-  let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.transaction.filter")}`;
-  if (!defaultCriteria || defaultCriteria.length === 0) {
-    await workspace.getConfiguration().update("zowe.cics.transaction.filter", "NOT (program=DFH* OR program=EYU*)");
-    defaultCriteria = "NOT (program=DFH* OR program=EYU*)";
+export async function getDefaultFilter(params: { ID: string, DEFAULT: string; }): Promise<string> {
+  let defaultCriteria: string = await workspace.getConfiguration().get(params.ID);
+  if (!defaultCriteria || `${defaultCriteria}`.length === 0) {
+    await workspace.getConfiguration().update(params.ID, params.DEFAULT);
+    defaultCriteria = params.DEFAULT;
   }
   return defaultCriteria;
 }

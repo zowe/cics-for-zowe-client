@@ -9,19 +9,13 @@
  *
  */
 
+import { ILocalFile, IPipeline, IProgram, ITask, ITCPIP, ITransaction, IUriMap, IWebService } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSLibraryTree } from "../trees/CICSLibraryTree";
-import { CICSLocalFileTree } from "../trees/CICSLocalFileTree";
-import { CICSProgramTree } from "../trees/CICSProgramTree";
-import { CICSTaskTree } from "../trees/CICSTaskTree";
-import { CICSTransactionTree } from "../trees/CICSTransactionTree";
+import { CICSResourceTree } from "../trees/CICSResourceTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
-import { CICSPipelineTree } from "../trees/treeItems/web/CICSPipelineTree";
-import { CICSTCPIPServiceTree } from "../trees/treeItems/web/CICSTCPIPServiceTree";
-import { CICSURIMapTree } from "../trees/treeItems/web/CICSURIMapTree";
-import { CICSWebServiceTree } from "../trees/treeItems/web/CICSWebServiceTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
 
@@ -96,10 +90,10 @@ export function getFilterDatasetsCommand(tree: CICSTree, treeview: TreeView<any>
 export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterPrograms", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSProgramTree;
+    let chosenNode: CICSResourceTree<IProgram>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSProgramTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS program tree selected");
@@ -164,10 +158,10 @@ export function getFilterDatasetProgramsCommand(tree: CICSTree, treeview: TreeVi
 export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterLocalFiles", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSLocalFileTree;
+    let chosenNode: CICSResourceTree<ILocalFile>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSLocalFileTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS local file tree selected");
@@ -198,10 +192,10 @@ export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<an
 export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterTasks", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSTaskTree;
+    let chosenNode: CICSResourceTree<ITask>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSTaskTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS task tree selected");
@@ -232,10 +226,10 @@ export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
 export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterTransactions", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSTransactionTree;
+    let chosenNode: CICSResourceTree<ITransaction>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSTransactionTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS transaction tree selected");
@@ -266,10 +260,10 @@ export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<a
 export function getFilterTCPIPSCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterTCPIPServices", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSTCPIPServiceTree;
+    let chosenNode: CICSResourceTree<ITCPIP>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSTCPIPServiceTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS TCPIP Service tree selected");
@@ -300,10 +294,10 @@ export function getFilterTCPIPSCommand(tree: CICSTree, treeview: TreeView<any>) 
 export function getFilterURIMapsCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterURIMaps", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSURIMapTree;
+    let chosenNode: CICSResourceTree<IUriMap>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSURIMapTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS URI Maps tree selected");
@@ -334,10 +328,10 @@ export function getFilterURIMapsCommand(tree: CICSTree, treeview: TreeView<any>)
 export function getFilterPipelinesCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterPipelines", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSPipelineTree;
+    let chosenNode: CICSResourceTree<IPipeline>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSPipelineTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS Pipelines tree selected");
@@ -368,10 +362,10 @@ export function getFilterPipelinesCommand(tree: CICSTree, treeview: TreeView<any
 export function getFilterWebServicesCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterWebServices", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: CICSWebServiceTree;
+    let chosenNode: CICSResourceTree<IWebService>;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSWebServiceTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS Web Services tree selected");

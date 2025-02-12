@@ -11,14 +11,7 @@
 
 import { commands, TreeView, window } from "vscode";
 import { CICSCombinedLibraryTree } from "../trees/CICSCombinedTrees/CICSCombinedLibraryTree";
-import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSCombinedPipelineTree } from "../trees/CICSCombinedTrees/CICSCombinedPipelineTree";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSCombinedTCPIPServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
-import { CICSCombinedTransactionsTree } from "../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSCombinedURIMapTree } from "../trees/CICSCombinedTrees/CICSCombinedURIMapTree";
-import { CICSCombinedWebServiceTree } from "../trees/CICSCombinedTrees/CICSCombinedWebServiceTree";
+import { CICSCombinedResourceTree } from "../trees/CICSCombinedTrees/CICSCombinedResourceTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
@@ -29,7 +22,7 @@ export function getFilterAllProgramsCommand(tree: CICSTree, treeview: TreeView<a
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedProgramTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Programs' tree selected");
@@ -53,7 +46,7 @@ export function getFilterAllTasksCommand(tree: CICSTree, treeview: TreeView<any>
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedTaskTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Tasks' tree selected");
@@ -101,7 +94,7 @@ export function getFilterAllTCPIPServicesCommand(tree: CICSTree, treeview: TreeV
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedTCPIPServiceTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All TCPIP Services' tree selected");
@@ -125,7 +118,7 @@ export function getFilterAllTransactionsCommand(tree: CICSTree, treeview: TreeVi
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedTransactionsTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Transactions' tree selected");
@@ -149,7 +142,7 @@ export function getFilterAllLocalFilesCommand(tree: CICSTree, treeview: TreeView
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedLocalFileTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Local Files' tree selected");
@@ -173,7 +166,7 @@ export function getFilterAllURIMapsCommand(tree: CICSTree, treeview: TreeView<an
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedURIMapTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All URI Maps' tree selected");
@@ -197,7 +190,7 @@ export function getFilterAllPipelinesCommand(tree: CICSTree, treeview: TreeView<
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedPipelineTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Pipelines' tree selected");
@@ -221,7 +214,7 @@ export function getFilterAllWebServicesCommand(tree: CICSTree, treeview: TreeVie
     let chosenNode;
     if (node) {
       chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedWebServiceTree) {
+    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSCombinedResourceTree) {
       chosenNode = selection[selection.length - 1];
     } else {
       window.showErrorMessage("No CICS 'All Web Services' tree selected");
