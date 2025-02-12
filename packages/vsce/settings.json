@@ -4,5 +4,6 @@
   "git.autoRepositoryDetection": false,
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.remoteIndicator.showExtensionRecommendations": false,
-  "extensions.ignoreRecommendations": true
+  "extensions.ignoreRecommendations": true,
+  "zowe.security.secureCredentialsEnabled": false
 }

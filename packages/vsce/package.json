@@ -866,7 +866,7 @@
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
-    "test:e2e": "tsc -p ./ && extest get-vscode -s ~/.vscode-test-resources-2 -c 1.93.1 -t stable && extest get-chromedriver -s ~/.vscode-test-resources-2 && extest install-from-marketplace zowe.vscode-extension-for-zowe -s ~/.vscode-test-resources-2  && extest setup-and-run './lib/ui-test/*.test.js' -s ~/.vscode-test-resources-2 -e /Users/chinmaydas/Documents/temp2 --code_version max --code_settings settings.json"
+    "test:e2e": "tsc -p ./ && extest get-vscode -s .cics -c 1.93.1 && extest get-chromedriver -s .cics && extest install-from-marketplace zowe.vscode-extension-for-zowe -s .cics -e .cics && extest setup-and-run './lib/ui-test/*.test.js' -s .cics -e .cics --code_version max --code_settings settings.json"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^3.0.1",
