@@ -30,6 +30,7 @@ export function evaluateCicsPlex(plex: ICicsPlexInfo): number {
   return  (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
 }
 
+// pick the highest scoring cicsplexes if there are duplicates
 export function filterCicsplexByConstraints(cicscicsplex: ICicsPlexInfo[]) {
   const allcicsplexes = new Map<string, ICicsPlexInfo>();
   cicscicsplex.sort((a, b) => evaluateCicsPlex(b) - evaluateCicsPlex(a));
