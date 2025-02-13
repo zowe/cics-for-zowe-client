@@ -56,7 +56,7 @@ export async function activate(context: ExtensionContext) {
   } else {
     window.showErrorMessage(
       "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
+      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
     );
     return;
   }
@@ -90,7 +90,7 @@ export async function activate(context: ExtensionContext) {
     );
   };
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
+  const contextMap: { [key: string]: (node: any) => Promise<void> | void; } = {
     cicscombinedprogramtree: expandCombinedTree,
     cicscombinedtransactiontree: expandCombinedTree,
     cicscombinedlocalfiletree: expandCombinedTree,
@@ -161,7 +161,6 @@ export async function activate(context: ExtensionContext) {
       "cicstreelocalfile.",
       "cicstreetask.",
       "cicstreelibrary.",
-      "cicslibrary.",
       "cicstreeweb.",
       "cicstreetcpips.",
       "cicstreepipeline.",

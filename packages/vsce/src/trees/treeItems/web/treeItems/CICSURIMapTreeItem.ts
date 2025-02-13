@@ -22,7 +22,7 @@ export class CICSURIMapTreeItem extends TreeItem {
     urimap: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("program"),
+    public readonly iconPath = getIconFilePathFromName("uri-map"),
   ) {
     super(`${urimap.name}`, TreeItemCollapsibleState.None);
 

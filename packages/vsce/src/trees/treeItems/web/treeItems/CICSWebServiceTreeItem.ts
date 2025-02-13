@@ -22,7 +22,7 @@ export class CICSWebServiceTreeItem extends TreeItem {
     webservice: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("program"),
+    public readonly iconPath = getIconFilePathFromName("web-service"),
   ) {
     super(`${webservice.name}`, TreeItemCollapsibleState.None);
 

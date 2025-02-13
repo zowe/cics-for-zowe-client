@@ -13,7 +13,7 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
-import { getFolderIcon } from "../../utils/iconUtils";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
 import { toArray } from "../../utils/commandUtils";
 
 export class CICSLibraryTreeItem extends TreeItem {
@@ -27,7 +27,7 @@ export class CICSLibraryTreeItem extends TreeItem {
     library: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getIconFilePathFromName("library"),
   ) {
     super(`${library.name}`, TreeItemCollapsibleState.Collapsed);
 
@@ -69,14 +69,12 @@ export class CICSLibraryTreeItem extends TreeItem {
         const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
         this.addDataset(newDatasetItem);
       }
-      this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a datasets filter to narrow search`);
       } else if (this.children.length === 0) {
         window.showInformationMessage(`No datasets found`);
         this.label = this.buildLabel([]);
-        this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
           `Something went wrong when fetching datasets - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
