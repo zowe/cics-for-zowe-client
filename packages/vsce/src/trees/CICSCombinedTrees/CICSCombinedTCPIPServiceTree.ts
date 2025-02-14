@@ -60,6 +60,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -72,6 +73,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allTCPIPS = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -80,6 +82,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
               } else {
                 allTCPIPS = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -151,6 +154,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
         }
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
@@ -162,6 +166,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
           const count = recordsCount;
           const allTCPIPS = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -205,5 +210,9 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

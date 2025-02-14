@@ -11,10 +11,11 @@
 
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { runGetResource } from "../../utils/resourceUtils";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
-import { getIconFilePathFromName } from "../../utils/iconUtils";
+
 import { toArray } from "../../utils/commandUtils";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
 
 export class CICSLibraryTreeItem extends TreeItem {
   children: CICSLibraryDatasets[] = [];
@@ -57,11 +58,12 @@ export class CICSLibraryTreeItem extends TreeItem {
 
     this.children = [];
     try {
-      const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "cicslibrarydatasetname",
+      const libraryResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "cicslibrarydatasetname",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: { criteria: criteria },
       });
       const datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
       this.label = this.buildLabel(datasetArray);

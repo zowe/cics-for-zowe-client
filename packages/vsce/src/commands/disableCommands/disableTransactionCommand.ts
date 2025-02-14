@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
@@ -20,6 +20,7 @@ import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUti
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
 import { ICommandParams } from "../ICommandParams";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -109,7 +110,13 @@ function disableTransaction(
   session: imperative.AbstractSession,
   parms: ICommandParams
 ): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `PROGRAM='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -117,15 +124,5 @@ function disableTransaction(
         },
       },
     },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `TRANID='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_LOCAL_TRANSACTION, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  });
 }

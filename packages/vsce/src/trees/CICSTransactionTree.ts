@@ -12,10 +12,10 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -45,11 +45,12 @@ export class CICSTransactionTree extends TreeItem {
     }
     this.children = [];
     try {
-      const transactionResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLocalTransaction",
+      const transactionResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSLocalTransaction",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;

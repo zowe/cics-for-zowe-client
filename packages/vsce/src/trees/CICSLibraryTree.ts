@@ -11,11 +11,11 @@
 
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getFolderIcon } from "../utils/iconUtils";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
 
 export class CICSLibraryTree extends TreeItem {
   children: CICSLibraryTreeItem[] = [];
@@ -42,13 +42,14 @@ export class CICSLibraryTree extends TreeItem {
     }
     this.children = [];
     try {
-
-      const libraryResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLibrary",
+      const libraryResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSLibrary",
+        cicsPlex:  this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria}
       });
+
       const librariesArray = toArray(libraryResponse.response.records.cicslibrary);
       this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${librariesArray.length}]`;
       for (const library of librariesArray) {

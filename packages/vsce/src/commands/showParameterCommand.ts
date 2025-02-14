@@ -9,11 +9,11 @@
  *
  */
 
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getParametersHtml } from "../utils/webviewHTML";
+import { runGetResource } from "../utils/resourceUtils";
 
 export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node) => {
@@ -28,11 +28,12 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
         continue;
       }
 
-      const db2transactionResponse = await getResource(regionTree.parentSession.session, {
-        name: "CICSSystemParameter",
+      const { response } = await runGetResource({
+        session: regionTree.parentSession.session,
+        resourceName: "CICSSystemParameter",
         regionName: regionTree.label,
         cicsPlex: regionTree.parentPlex ? regionTree.parentPlex!.getPlexName() : undefined,
-        parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)",
+        params: { parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)" },
       });
       let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>
         <th class="sourceHeading">Source
@@ -46,7 +47,7 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
         </th>
         <th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
-      for (const systemParameter of db2transactionResponse.response.records.cicssystemparameter) {
+      for (const systemParameter of response.records.cicssystemparameter) {
         webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
         webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
       }

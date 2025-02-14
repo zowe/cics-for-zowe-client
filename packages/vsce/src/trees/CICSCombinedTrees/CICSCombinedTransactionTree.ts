@@ -61,6 +61,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -73,6 +74,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allLocalTransactions = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -81,6 +83,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
               } else {
                 allLocalTransactions = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -145,6 +148,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
       async () => {
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           this.getParent().getGroupName(),
@@ -155,6 +159,7 @@ export class CICSCombinedTransactionsTree extends TreeItem {
           const count = recordsCount;
           const allLocalTransactions = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -198,5 +203,9 @@ export class CICSCombinedTransactionsTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

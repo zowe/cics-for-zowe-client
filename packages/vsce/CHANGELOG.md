@@ -4,9 +4,11 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Create icons for library and Web resources. [#229](https://github.com/zowe/cics-for-zowe-client/issues/229)
+- Enhancement: Use LTPA tokens to allow CMCI "sessions". [#217](https://github.com/zowe/
+- Enhancement: Create icons for library and Web resources. [#229](https://github.com/zowe/
 
 ## `3.3.3`
+
 - BugFix: Duplicate CICSplex exist when connecting to a multi-CMAS system. [#227](https://github.com/zowe/cics-for-zowe-client/issues/227)
 - Enhancement: Show CMCI error response codes when failing to make requests. [#220](https://github.com/zowe/cics-for-zowe-client/issues/220)
 

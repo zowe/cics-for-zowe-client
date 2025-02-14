@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { runGetResource } from "../../../utils/resourceUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
@@ -45,11 +45,12 @@ export class CICSTCPIPServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-      const tcpipsResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSTCPIPService",
+      const tcpipsResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSTCPIPService",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const tcpipservicesArray = toArray(tcpipsResponse.response.records.cicstcpipservice);
       this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${tcpipservicesArray.length}]`;

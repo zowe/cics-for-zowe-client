@@ -87,7 +87,8 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await sut.loadRegionsInCICSGroup(CICSTreeMock as any as CICSTree);
 
-      expect(getResourceMock).toHaveBeenCalledWith(sut.getParent().getParent().getSession(), testData);
+      expect(getResourceMock).toHaveBeenCalledWith(sut.getParent().getParent().getSession(), testData,
+      { failOnNoData: false, useCICSCmciRestError: true });
       expect(sut.label).toBe("Regions (cics) [1/1]");
       expect(sut.collapsibleState).toBe(2);
     });
@@ -103,7 +104,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
     it("Should load all regions of plex", async () => {
       await sut.loadRegionsInPlex();
-      
+
       expect(getRegionInfoInPlexMock).toHaveBeenCalledTimes(1);
       expect(sut.label).toBe("Regions [2/2]");
       expect(sut.collapsibleState).toBe(2);

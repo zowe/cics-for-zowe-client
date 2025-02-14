@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
@@ -18,6 +18,7 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
+import { runPutResource } from "../utils/resourceUtils";
 import constants from "../utils/constants";
 
 /**
@@ -110,7 +111,13 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
 }
 
 async function performPhaseIn(session: imperative.AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string; }) {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `PROGRAM='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -118,15 +125,5 @@ async function performPhaseIn(session: imperative.AbstractSession, parms: { cics
         },
       },
     },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `PROGRAM='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_PROGRAM_RESOURCE, options);
-
-  return (await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody)) as any;
+  });
 }

@@ -10,7 +10,6 @@
  */
 
 import { ExtensionContext, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
-import { CICSSessionTree } from "./trees/CICSSessionTree";
 import { CICSTree } from "./trees/CICSTree";
 import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
 import { ProfileManagement } from "./utils/profileManagement";
@@ -122,8 +121,7 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        const newSessionTree = new CICSSessionTree(node.element.getParent().profile, getIconFilePathFromName("profile-disconnected"));
-        treeDataProv.loadedProfiles.splice(treeDataProv.getLoadedProfiles().indexOf(node.element.getParent()), 1, newSessionTree);
+        node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
     },

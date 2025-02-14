@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
@@ -20,6 +20,7 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { ICommandParams } from "../ICommandParams";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -102,7 +103,13 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
 }
 
 function disableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `PROGRAM='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -110,15 +117,5 @@ function disableProgram(session: imperative.AbstractSession, parms: ICommandPara
         },
       },
     },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `PROGRAM='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_PROGRAM_RESOURCE, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  });
 }
