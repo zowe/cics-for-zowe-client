@@ -12,6 +12,7 @@
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
 import { ProfileManagement } from "./profileManagement";
+import { CICSSessionTree } from "../trees/CICSSessionTree";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
   const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
@@ -24,7 +25,40 @@ export function missingSessionParameters(profileProfile: any): (string | undefin
   return missing;
 }
 
+export function missingUsernamePassword(missingParamters: any): boolean {
+  if (missingParamters.length > 0) {
+    const userPass = ["user", "password"];
+    if (missingParamters.includes(userPass[0]) || missingParamters.includes(userPass[1])) {
+      return true;
+    }
+  }
 
+  return false;
+}
+
+export async function updateProfile(profile?: imperative.IProfileLoaded, sessionTree?: CICSSessionTree): Promise<imperative.IProfileLoaded> {
+  let missingParamters = missingSessionParameters(profile.profile);
+  if (missingUsernamePassword(missingParamters) ||
+  // If profile is expanded and it previously had 401 error code
+   (sessionTree && sessionTree.getIsUnauthorized())) {
+
+    const updatedProfile = await promptCredentials(profile.name, true);
+    if (updatedProfile) {
+      profile = updatedProfile;
+      // Remove "user" and "password" from missing params array
+      missingParamters = missingParamters.filter((param) => ["user", "password"].indexOf(param) === -1);
+    }
+
+    if (missingParamters.length) {
+      window.showInformationMessage(
+        `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
+      );
+    } else {
+      return profile;
+    }
+  }
+  return undefined;
+}
 
 export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {

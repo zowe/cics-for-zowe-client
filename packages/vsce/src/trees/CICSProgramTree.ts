@@ -12,10 +12,11 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { getDefaultProgramFilter, toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSProgramTree extends TreeItem {
   children: CICSProgramTreeItem[] = [];
@@ -45,11 +46,12 @@ export class CICSProgramTree extends TreeItem {
     }
     this.children = [];
     try {
-      const programResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSProgram",
+      const programResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const programsArray = toArray(programResponse.response.records.cicsprogram);
       this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;

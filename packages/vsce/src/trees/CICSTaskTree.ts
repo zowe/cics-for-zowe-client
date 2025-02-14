@@ -11,11 +11,12 @@
 
 import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -49,11 +50,12 @@ export class CICSTaskTree extends TreeItem {
     }
     this.children = [];
     try {
-      const taskResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSTASK",
+      const taskResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: CicsCmciConstants.CICS_CMCI_TASK,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
 
       const tasksArray = toArray(taskResponse.response.records.cicstask);

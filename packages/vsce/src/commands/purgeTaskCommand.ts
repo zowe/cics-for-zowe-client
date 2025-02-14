@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
@@ -19,6 +19,7 @@ import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { ICommandParams } from "./ICommandParams";
+import { runPutResource } from "../utils/resourceUtils";
 import constants from "../utils/constants";
 
 /**
@@ -133,7 +134,13 @@ function purgeTask(
   parms: ICommandParams,
   purgeType: string
 ): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_CMCI_TASK,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `TASK='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -147,15 +154,5 @@ function purgeTask(
         },
       },
     },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `TASK='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_TASK, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  });
 }

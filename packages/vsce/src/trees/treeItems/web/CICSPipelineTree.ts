@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { runGetResource } from "../../../utils/resourceUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
@@ -45,11 +45,12 @@ export class CICSPipelineTree extends TreeItem {
     }
     this.children = [];
     try {
-      const pipelineResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSPipeline",
+      const pipelineResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSPipeline",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const pipelinesArray = toArray(pipelineResponse.response.records.cicspipeline);
       this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;

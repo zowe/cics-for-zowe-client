@@ -22,7 +22,7 @@ export async function sessionExpansionHandler(session: CICSSessionTree, tree: CI
   if (profile == null) {
     throw new Error("sessionExpansionHandler: Profile is not defined");
   }
-  await tree.loadProfile(profile, tree.getLoadedProfiles().indexOf(session), session);
+  await tree.loadProfile(profile, session);
 }
 
 export function regionContainerExpansionHandler(regionContiner: CICSRegionsContainer, tree: CICSTree) {

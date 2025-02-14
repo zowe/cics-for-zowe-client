@@ -12,7 +12,7 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { runGetResource } from "../../../utils/resourceUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
@@ -45,11 +45,12 @@ export class CICSURIMapTree extends TreeItem {
     }
     this.children = [];
     try {
-      const urimapResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSURIMap",
+      const urimapResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSURIMap",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;

@@ -60,6 +60,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
         try {
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -72,6 +73,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allLocalFiles = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -80,6 +82,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
               } else {
                 allLocalFiles = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -144,6 +147,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
       async () => {
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           this.getParent().getGroupName(),
@@ -154,6 +158,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
           const count = recordsCount;
           const allLocalFiles = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -197,5 +202,9 @@ export class CICSCombinedLocalFileTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

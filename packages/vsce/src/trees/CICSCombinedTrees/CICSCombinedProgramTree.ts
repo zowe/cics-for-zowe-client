@@ -63,6 +63,7 @@ export class CICSCombinedProgramTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -75,6 +76,7 @@ export class CICSCombinedProgramTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allPrograms = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -83,6 +85,7 @@ export class CICSCombinedProgramTree extends TreeItem {
               } else {
                 allPrograms = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -160,6 +163,7 @@ export class CICSCombinedProgramTree extends TreeItem {
         }
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
@@ -171,6 +175,7 @@ export class CICSCombinedProgramTree extends TreeItem {
           const count = recordsCount;
           const allPrograms = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -214,5 +219,9 @@ export class CICSCombinedProgramTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem } from "vscode";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
@@ -25,6 +24,8 @@ import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTC
 import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
 import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
+import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSPlexTree extends TreeItem {
   children: (
@@ -69,8 +70,9 @@ export class CICSPlexTree extends TreeItem {
   public async loadOnlyRegion() {
     const plexProfile = this.getProfile();
     const session = this.getParent().getSession();
-    const regionsObtained = await getResource(session, {
-      name: "CICSRegion",
+    const regionsObtained = await runGetResource({
+      session: session,
+      resourceName: CicsCmciConstants.CICS_CMCI_REGION,
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
@@ -177,5 +179,9 @@ export class CICSPlexTree extends TreeItem {
 
   public getGroupName() {
     return this.groupName;
+  }
+
+  getSession() {
+    return this.parent.getSession();
   }
 }

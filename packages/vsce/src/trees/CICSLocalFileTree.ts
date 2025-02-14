@@ -11,11 +11,11 @@
 
 import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
@@ -47,11 +47,12 @@ export class CICSLocalFileTree extends TreeItem {
     this.children = [];
     try {
 
-      const localFileResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSLocalFile",
+      const localFileResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSLocalFile",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria},
       });
       const localFileArray = toArray(localFileResponse.response.records.cicslocalfile);
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;

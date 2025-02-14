@@ -12,10 +12,10 @@
 import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 import { CICSRegionTree } from "../../CICSRegionTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
+import { runGetResource } from "../../../utils/resourceUtils";
 
 export class CICSWebServiceTree extends TreeItem {
   children: CICSWebServiceTreeItem[] = [];
@@ -45,12 +45,14 @@ export class CICSWebServiceTree extends TreeItem {
     }
     this.children = [];
     try {
-      const webserviceResponse = await getResource(this.parentRegion.parentSession.session, {
-        name: "CICSWebService",
+      const webserviceResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "CICSWebService",
+        cicsPlex:  this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         regionName: this.parentRegion.getRegionName(),
-        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        criteria: criteria,
+        params: {criteria: criteria}
       });
+
       const webservicesArray = toArray(webserviceResponse.response.records.cicswebservice);
       this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${webservicesArray.length}]`;
       for (const webservice of webservicesArray) {
