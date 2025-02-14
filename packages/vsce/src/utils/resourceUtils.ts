@@ -70,7 +70,7 @@ export async function runPutResource({ session, resourceName, regionName, cicsPl
 
       const cmciResource = Utils.getResourceUri(resourceName, options);
 
-      return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+      return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
     } catch (error){
       count++;
       if (count <= 1 &&
