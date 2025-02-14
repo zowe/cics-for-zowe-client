@@ -20,6 +20,7 @@ import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSTCPIPServiceTreeItem } from "../treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSCombinedTCPIPServiceTree extends TreeItem {
   children: (CICSTCPIPServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -40,7 +41,8 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allTCPIPS.recordCountIncrement")}`;
-    this.constant = "CICSTCPIPService";
+    this.constant = CicsCmciConstants.CICS_DEFINITION_TCPIPSERVICE;
+
   }
 
   public async loadContents(tree: CICSTree) {

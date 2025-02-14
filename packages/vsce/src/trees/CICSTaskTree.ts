@@ -16,6 +16,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
 import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -51,7 +52,7 @@ export class CICSTaskTree extends TreeItem {
     try {
       const taskResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSTASK",
+        resourceName: CicsCmciConstants.CICS_CMCI_TASK,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: {criteria: criteria},

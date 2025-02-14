@@ -16,6 +16,7 @@ import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 import { toArray } from "../../utils/commandUtils";
 import { runGetResource } from "../../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSLibraryDatasets extends TreeItem {
   children: CICSProgramTreeItem[] = [];
@@ -60,7 +61,7 @@ export class CICSLibraryDatasets extends TreeItem {
     try {
       const datasetResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSProgram",
+        resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: {criteria: criteria},

@@ -16,6 +16,7 @@ import { runGetResource } from "../../../utils/resourceUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
 import { toArray } from "../../../utils/commandUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSTCPIPServiceTree extends TreeItem {
   children: CICSTCPIPServiceTreeItem[] = [];
@@ -47,7 +48,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
     try {
       const tcpipsResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSTCPIPService",
+        resourceName: CicsCmciConstants.CICS_DEFINITION_TCPIPSERVICE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: {criteria: criteria},

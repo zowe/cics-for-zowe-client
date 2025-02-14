@@ -16,6 +16,7 @@ import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/f
 import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -47,7 +48,7 @@ export class CICSTransactionTree extends TreeItem {
     try {
       const transactionResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSLocalTransaction",
+        resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: {criteria: criteria},

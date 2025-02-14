@@ -35,6 +35,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { getErrorCode } from "../utils/errorUtils";
 import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -259,7 +260,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
                 const regionsObtained = await runGetResource({
                   session: sessionTree.getSession(),
-                  resourceName: "CICSRegion",
+                  resourceName: CicsCmciConstants.CICS_CMCI_REGION,
                   regionName: item.regions[0].applid,
                 });
 

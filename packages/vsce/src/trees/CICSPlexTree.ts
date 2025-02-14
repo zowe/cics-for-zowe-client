@@ -25,6 +25,7 @@ import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTr
 import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
 import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
 import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSPlexTree extends TreeItem {
   children: (
@@ -71,7 +72,7 @@ export class CICSPlexTree extends TreeItem {
     const session = this.getParent().getSession();
     const regionsObtained = await runGetResource({
       session: session,
-      resourceName: "CICSRegion",
+      resourceName: CicsCmciConstants.CICS_CMCI_REGION,
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });

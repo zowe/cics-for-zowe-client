@@ -14,6 +14,7 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getParametersHtml } from "../utils/webviewHTML";
 import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node) => {
@@ -30,7 +31,7 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
 
       const { response } = await runGetResource({
         session: regionTree.parentSession.session,
-        resourceName: "CICSSystemParameter",
+        resourceName: CicsCmciConstants.CICS_SYSTEM_PARAMETER,
         regionName: regionTree.label,
         cicsPlex: regionTree.parentPlex ? regionTree.parentPlex!.getPlexName() : undefined,
         params: { parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)" },
