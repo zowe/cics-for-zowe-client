@@ -4,8 +4,8 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Use LTPA tokens to allow CMCI "sessions". [#217](https://github.com/zowe/
-- Enhancement: Create icons for library and Web resources. [#229](https://github.com/zowe/
+- Enhancement:Use LTPA tokens to allow CMCI "sessions" [#217](https://github.com/zowe/cics-for-zowe-client/issues/217)
+- Enhancement: Create icons for library and Web resources. [#229](https://github.com/zowe/cics-for-zowe-client/issues/229)
 
 ## `3.3.3`
 
