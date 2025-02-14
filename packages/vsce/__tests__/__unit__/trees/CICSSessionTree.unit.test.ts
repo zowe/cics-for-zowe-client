@@ -11,7 +11,6 @@
 
 const getIconFilePathFromNameMock = jest.fn();
 
-import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
@@ -29,7 +28,6 @@ const profile = {
 };
 describe("Test suite for CICSSessionTree", () => {
   let sut: CICSSessionTree;
-  let ses: imperative.Session;
 
   describe("Validation", () => {
 
