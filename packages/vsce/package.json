@@ -889,13 +889,15 @@
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",
-    "vsce": "^2.15.0"
+    "@vscode/vsce": "^3.2.2"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "5.0.6",
     "@zowe/zowe-explorer-api": "^2.18.0",
-    "axios": "^1.6.7",
+    "axios": "^1.7.9",
     "https": "~1.0.0",
+    "syncpack": "^13.0.2",
+    "tsup": "^8.3.6",
     "xml-js": "~1.6.11"
   }
 }
