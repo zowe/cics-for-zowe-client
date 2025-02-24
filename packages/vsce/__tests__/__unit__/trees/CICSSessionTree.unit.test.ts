@@ -21,7 +21,7 @@ jest.mock("@zowe/zowe-explorer-api");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconFilePathFromName: getIconFilePathFromNameMock };
 });
-const cisutreeMock = jest.fn();
+const cicstreeMock = jest.fn();
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
 const profile = {
   profile: { user: "user", password: "pwd", hostname: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 },
@@ -45,13 +45,13 @@ describe("Test suite for CICSSessionTree", () => {
 
     describe("Test suite for addRegion", () => {
       it("should push CICSRegionTree object into children", () => {
-        sut.addRegion(cisutreeMock as any as CICSRegionTree);
+        sut.addRegion(cicstreeMock as any as CICSRegionTree);
         expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
       });
     });
     describe("Test suite for addPlex", () => {
       it("should push CICSPlexTree object into children", () => {
-        sut.addPlex(cisutreeMock as any as CICSPlexTree);
+        sut.addPlex(cicstreeMock as any as CICSPlexTree);
         expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
       });
     });
