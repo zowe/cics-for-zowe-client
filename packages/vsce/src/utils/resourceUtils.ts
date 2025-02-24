@@ -27,29 +27,38 @@ export async function runGetResource({ session, resourceName, regionName, cicsPl
   cicsPlex?: string,
   params?: { criteria?: string, parameter?: string; queryParams?: IResourceQueryParams; };
 }) {
-  let count = 0;
-  while (count <= 1) {
-    try {
-      const response = await getResource(session, {
-        name: resourceName,
-        ...regionName && { regionName: regionName},
-        ...cicsPlex && { cicsPlex: cicsPlex },
-        ...params?.criteria && { criteria: params.criteria },
-        ...params?.parameter && { parameter: params.parameter },
-        ...params?.queryParams && { queryParams: params.queryParams },
-      },
-      { failOnNoData: false, useCICSCmciRestError: true });
-      return response;
-    } catch (error){
-      count++;
-      if (count <= 1 &&
-        getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED && session.ISession.tokenValue) {
-        session.ISession.tokenValue = null;
-        continue;
-      }
+  const resourceParams = {
+    name: resourceName,
+    ...regionName && { regionName: regionName},
+    ...cicsPlex && { cicsPlex: cicsPlex },
+    ...params?.criteria && { criteria: params.criteria },
+    ...params?.parameter && { parameter: params.parameter },
+    ...params?.queryParams && { queryParams: params.queryParams },
+  };
+  const requestOptions = {
+    failOnNoData: false,
+    useCICSCmciRestError: true
+  };
+
+  try {
+    // First attempt
+    return await getResource(
+      session,
+      resourceParams,
+      requestOptions);
+  } catch (error){
+    // Make sure the error is not caused by the ltpa token expiring
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
       throw error;
     }
   }
+
+  // Making a second attempt as ltpa token has expired
+  session.ISession.tokenValue = null;
+  return await getResource(
+    session,
+    resourceParams,
+    requestOptions);
 }
 
 export async function runPutResource({ session, resourceName, regionName, cicsPlex, params }: {
@@ -59,26 +68,25 @@ export async function runPutResource({ session, resourceName, regionName, cicsPl
   cicsPlex?: string,
   params?: { criteria?: string, parameter?: string; queryParams?: IResourceQueryParams; };
 }, requestBody: any) {
-  let count = 0;
-  while (count <= 1) {
-    try {
-      const options: IGetResourceUriOptions = {
-        "cicsPlex": cicsPlex,
-        "regionName": regionName,
-        ...params
-      };
 
-      const cmciResource = Utils.getResourceUri(resourceName, options);
+  const options: IGetResourceUriOptions = {
+    "cicsPlex": cicsPlex,
+    "regionName": regionName,
+    ...params
+  };
+  const cmciResource = Utils.getResourceUri(resourceName, options);
 
-      return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
-    } catch (error){
-      count++;
-      if (count <= 1 &&
-        getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED && session.ISession.tokenValue) {
-        session.ISession.tokenValue = null;
-        continue;
-      }
+  try {
+    // First attempt
+    return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  } catch (error){
+    // Make sure the error is not caused by the ltpa token expiring
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
       throw error;
     }
   }
+
+  // Making a second attempt as ltpa token has expired
+  session.ISession.tokenValue = null;
+  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
