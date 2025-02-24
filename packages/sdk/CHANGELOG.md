@@ -5,7 +5,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## Recent Changes
 
-- Enhancement: Use LTPA tokens to allow CMCI "sessions". [#217](https://github.com/zowe/cics-for-zowe-client/issues/217)
+- Enhancement: Added CICS resource names to available constants. [#217](https://github.com/zowe/cics-for-zowe-client/issues/217)
 
 ## `6.3.3`
 
