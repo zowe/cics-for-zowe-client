@@ -115,7 +115,7 @@ function disableTransaction(
     resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
     cicsPlex: parms.cicsPlex,
     regionName: parms.regionName,
-    params: {"criteria": `PROGRAM='${parms.name}'`}
+    params: {"criteria": `TRANID='${parms.name}'`}
   }, {
     request: {
       action: {
