@@ -19,7 +19,7 @@ export const CicsCmciConstants = {
   CICS_SYSTEM_MANAGEMENT: "CICSSystemManagement",
 
   /**
-     * Specifies the required part of the REST interface URI to access initialization parameter
+     * Specifies the required part of the REST interface URI to access system initialization parameters
      */
   CICS_SYSTEM_PARAMETER: "CICSSystemParameter",
 
