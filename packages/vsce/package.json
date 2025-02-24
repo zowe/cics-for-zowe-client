@@ -335,6 +335,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.showRegionLogs",
+        "title": "Show Logs",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.showRegionParameters",
         "title": "Show SIT Parameters",
         "category": "IBM CICS for Zowe Explorer"
@@ -451,6 +456,11 @@
         {
           "when": "view == cics-view && viewItem =~ /^cicsregion\\./",
           "command": "cics-extension-for-zowe.showRegionAttributes",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /cicsregion.*\\.active/",
+          "command": "cics-extension-for-zowe.showRegionLogs",
           "group": ""
         },
         {
