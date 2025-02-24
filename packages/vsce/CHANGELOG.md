@@ -2,9 +2,14 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add context menu on a region to show the region's logs [#56](https://github.com/zowe/cics-for-zowe-client/issues/56)
+
 ## `3.5.0`
- - Flatten web resource tree [#251] https://github.com/zowe/cics-for-zowe-client/issues/251
- - Enhancement: Added logging support to the CICS VS Code extension. [#250](https://github.com/zowe/cics-for-zowe-client/issues/250)
+
+- Flatten web resource tree [#251] https://github.com/zowe/cics-for-zowe-client/issues/251
+- Enhancement: Added logging support to the CICS VS Code extension. [#250](https://github.com/zowe/cics-for-zowe-client/issues/250)
 
 ## `3.4.0`
 
