@@ -107,7 +107,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
 function openLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource({
     session: session,
-    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+    resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
     cicsPlex: parms.cicsPlex,
     regionName: parms.regionName,
     params: {"criteria": `FILE='${parms.name}'`}
