@@ -59,9 +59,9 @@ export const CicsCmciConstants = {
   CICS_DEFINITION_WEBSERVICE: "CICSDefinitionWebService",
 
   /**
-     * Specifies the required part of the REST interface URI to access tcp/ip service definitions
+     * Specifies the required part of the REST interface URI to access tcp/ip service resources
      */
-  CICS_DEFINITION_TCPIPSERVICE: "CICSTCPIPService",
+  CICS_TCPIPSERVICE_RESOURCE: "CICSTCPIPService",
 
   /*
      * Specifies the required part of the REST interface URI to access URIMaps

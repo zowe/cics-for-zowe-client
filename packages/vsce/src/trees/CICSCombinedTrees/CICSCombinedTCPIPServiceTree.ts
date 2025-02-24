@@ -41,7 +41,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allTCPIPS.recordCountIncrement")}`;
-    this.constant = CicsCmciConstants.CICS_DEFINITION_TCPIPSERVICE;
+    this.constant = CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE;
 
   }
 

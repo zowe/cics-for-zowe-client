@@ -48,7 +48,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
     try {
       const tcpipsResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: CicsCmciConstants.CICS_DEFINITION_TCPIPSERVICE,
+        resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: {criteria: criteria},
