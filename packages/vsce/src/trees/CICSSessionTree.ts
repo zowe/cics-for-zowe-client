@@ -71,7 +71,7 @@ export class CICSSessionTree extends TreeItem {
 
   public setAuthorized() {
     this.isUnauthorized = false;
-    this.iconPath = getIconFilePathFromName("profile-unverified");
+    this.iconPath = getIconFilePathFromName("profile");
   }
 
   public getIsUnauthorized() {

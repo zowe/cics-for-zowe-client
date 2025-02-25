@@ -232,28 +232,23 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           if (configInstance.getTeamConfig().exists) {
             // Initialise session tree
             let plexInfo: InfoLoaded[];
-            let retry = 0;
-            while (retry <= 1) {
-              try {
-                plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
-                break;
-              } catch (error) {
-                if (retry === 0 && getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
-                  retry++;
-                  const newProfile = await updateProfile(profile, sessionTree);
+            try {
+              plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+            } catch (error) {
+              if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
+                const newProfile = await updateProfile(profile, sessionTree);
 
-                  if (!newProfile) {
-                    return;
-                  }
-                  profile = newProfile;
-
-                } else {
-                  throw error;
+                if (!newProfile) {
+                  return;
                 }
+                profile = newProfile;
+              } else {
+                throw error;
               }
             }
 
             // For each InfoLoaded object - happens if there are multiple plexes
+            sessionTree.clearChildren();
             for (const item of plexInfo) {
               // No plex
               if (item.plexname === null) {
@@ -273,7 +268,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   undefined,
                   sessionTree,
                 );
-                sessionTree.clearChildren();
                 sessionTree.addRegion(newRegionTree);
               } else {
                 if (item.group) {
