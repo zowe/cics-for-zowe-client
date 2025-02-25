@@ -234,15 +234,19 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             let plexInfo: InfoLoaded[];
             try {
               plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+              sessionTree.setAuthorized();
             } catch (error) {
               if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
                 sessionTree.setUnauthorized();
                 const newProfile = await updateProfile(profile, sessionTree);
 
                 if (!newProfile) {
-                  return;
+                  throw error;
                 }
+
                 profile = newProfile;
+                plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+                sessionTree.setAuthorized();
               } else {
                 throw error;
               }
@@ -261,7 +265,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                 });
 
                 // 200 OK received
-                sessionTree.setAuthorized();
                 const newRegionTree = new CICSRegionTree(
                   item.regions[0].applid,
                   regionsObtained.response.records.cicsregion,
