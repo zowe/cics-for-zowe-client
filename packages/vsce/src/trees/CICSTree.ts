@@ -10,8 +10,6 @@
  */
 
 import { FilterDescriptor } from "../utils/filterUtils";
-import { findSelectedNodes } from "../utils/commandUtils";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import {
   commands,
@@ -30,12 +28,14 @@ import {
 import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { missingSessionParameters, promptCredentials } from "../utils/profileUtils";
-import { getIconFilePathFromName } from "../utils/iconUtils";
+import { updateProfile } from "../utils/profileUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { getErrorCode } from "../utils/errorUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -211,10 +211,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * to replace position of current CICSSessionTree.
    * @param sessionTree current CICSSessionTree only passed in if expanding a profile
    */
-  async loadProfile(profile?: imperative.IProfileLoaded, position?: number | undefined, sessionTree?: CICSSessionTree) {
+  async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
-    let newSessionTree: CICSSessionTree;
+
     window.withProgress(
       {
         title: "Load profile",
@@ -230,183 +230,67 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         try {
           const configInstance = await ProfileManagement.getConfigInstance();
           if (configInstance.getTeamConfig().exists) {
-            let missingParamters = missingSessionParameters(profile.profile);
-            if (missingParamters.length) {
-              const userPass = ["user", "password"];
-              if (missingParamters.includes(userPass[0]) || missingParamters.includes(userPass[1])) {
-                const updatedProfile = await promptCredentials(profile.name, true);
-                if (!updatedProfile) {
-                  return;
-                }
-                profile = updatedProfile;
-                // Remove "user" and "password" from missing params array
-                missingParamters = missingParamters.filter((param) => userPass.indexOf(param) === -1);
-              }
-              if (missingParamters.length) {
-                window.showInformationMessage(
-                  `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
-                );
-                return;
-              }
-              // If profile is expanded and it previously had 401 error code
-            } else if (sessionTree && sessionTree.getIsUnauthorized()) {
-              const updatedProfile = await promptCredentials(profile.name, true);
-              if (!updatedProfile) {
-                return;
-              }
-              profile = updatedProfile;
-            }
-          }
-          const plexInfo: InfoLoaded[] = await ProfileManagement.getPlexInfo(profile);
-          // Initialise session tree
-          newSessionTree = new CICSSessionTree(profile, getIconFilePathFromName("profile"));
-          // For each InfoLoaded object - happens if there are multiple plexes
-          for (const item of plexInfo) {
-            // No plex
-            if (item.plexname === null) {
-              const session = new imperative.Session({
-                type: "basic",
-                hostname: profile.profile.host,
-                port: Number(profile.profile.port),
-                user: profile.profile.user,
-                password: profile.profile.password,
-                rejectUnauthorized: profile.profile.rejectUnauthorized,
-                protocol: profile.profile.protocol,
-              });
-              const regionsObtained = await getResource(session, {
-                name: "CICSRegion",
-                regionName: item.regions[0].applid,
-              });
-              // 200 OK received
-              newSessionTree.setAuthorized();
-              const newRegionTree = new CICSRegionTree(
-                item.regions[0].applid,
-                regionsObtained.response.records.cicsregion,
-                newSessionTree,
-                undefined,
-                newSessionTree,
-              );
-              newSessionTree.addRegion(newRegionTree);
-            } else {
-              if (item.group) {
-                const newPlexTree = new CICSPlexTree(item.plexname, profile, newSessionTree, profile.profile.regionName);
-                newPlexTree.setLabel(`${item.plexname} - ${profile.profile.regionName}`);
-                newSessionTree.addPlex(newPlexTree);
-              } else {
-                //Plex
-                const newPlexTree = new CICSPlexTree(item.plexname, profile, newSessionTree);
-                newSessionTree.addPlex(newPlexTree);
-              }
-            }
-          }
-          // If method was called when expanding profile
-          if (sessionTree) {
-            this.loadedProfiles.splice(position, 1, newSessionTree);
-          }
-          // If method was called when updating profile
-          else if (position || position === 0) {
-            this.loadedProfiles.splice(position, 0, newSessionTree);
-          } else {
-            this.loadedProfiles.push(newSessionTree);
-          }
-          this._onDidChangeTreeData.fire(undefined);
-        } catch (error) {
-          // Change session tree icon to disconnected upon error
-          newSessionTree = new CICSSessionTree(profile, getIconFilePathFromName("profile-disconnected"));
-          // If method was called when expanding profile
-          if (sessionTree) {
-            this.loadedProfiles.splice(position, 1, newSessionTree);
-          }
-          // If method was called when updating profile
-          else if (position || position === 0) {
-            this.loadedProfiles.splice(position, 0, newSessionTree);
-          } else {
-            this.loadedProfiles.push(newSessionTree);
-          }
-          this._onDidChangeTreeData.fire(undefined);
+            // Initialise session tree
+            let plexInfo: InfoLoaded[];
+            try {
+              plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+              sessionTree.setAuthorized();
+            } catch (error) {
+              if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
+                sessionTree.setUnauthorized();
+                const newProfile = await updateProfile(profile, sessionTree);
 
-          if (typeof error === "object") {
-            if ("code" in error) {
-              switch (error.code) {
-                case "ETIMEDOUT":
-                  window.showErrorMessage(`Error: connect ETIMEDOUT ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
-                  break;
-                case "ENOTFOUND":
-                  window.showErrorMessage(`Error: getaddrinfo ENOTFOUND ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
-                  break;
-                case "ECONNRESET":
-                  window.showErrorMessage(`Error: socket hang up ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
-                  break;
-                case "EPROTO":
-                  window.showErrorMessage(`Error: write EPROTO ${profile.profile.host}:${profile.profile.port} (${profile.name})`);
-                  break;
-                case "DEPTH_ZERO_SELF_SIGNED_CERT":
-                case "SELF_SIGNED_CERT_IN_CHAIN":
-                case "ERR_TLS_CERT_ALTNAME_INVALID":
-                case "CERT_HAS_EXPIRED":
-                  // If re-expanding a profile that has an expired certificate
-                  if (sessionTree) {
-                    const decision = await window.showInformationMessage(
-                      `Warning: Your connection is not private (${error.code}) - ` +
-                        `would you still like to proceed to ${profile.profile.host} (unsafe)?`,
-                      ...["Yes", "No"],
-                    );
-                    if (decision) {
-                      if (decision === "Yes") {
-                        const configInstance = await ProfileManagement.getConfigInstance();
-                        let updatedProfile;
-                        if (configInstance.getTeamConfig().exists) {
-                          const upd = { profileName: profile.name, profileType: "cics" };
-                          //   const configInstance = await ProfileManagement.getConfigInstance();
-                          // flip rejectUnauthorized to false
-                          await configInstance.updateProperty({ ...upd, property: "rejectUnauthorized", value: false });
-                          updatedProfile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profile.name);
-                        } else {
-                          await ProfileManagement.profilesCacheRefresh();
-                          updatedProfile = await ProfileManagement.getProfilesCache().loadNamedProfile(profile.name, "cics");
-                        }
-                        await this.removeSession(sessionTree, updatedProfile, position);
-                      }
-                    }
-                  }
-                  break;
-                default:
-                  window.showErrorMessage(
-                    `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
-                      error,
-                      Object.getOwnPropertyNames(error),
-                    ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
-                  );
-              }
-            } else if ("response" in error) {
-              if (error.response !== "undefined" && error.response.status) {
-                switch (error.response.status) {
-                  case constants.HTTP_ERROR_UNAUTHORIZED:
-                    window.showErrorMessage(`Error: Request failed with status code 401 for Profile '${profile.name}'`);
-                    // set the unauthorized flag to true for reprompting of credentials.
-                    newSessionTree.setUnauthorized();
-                    // Replace old profile tree with new disconnected profile tree item
-                    this.loadedProfiles.splice(position, 1, newSessionTree);
-                    break;
-                  case constants.HTTP_ERROR_NOT_FOUND:
-                    window.showErrorMessage(`Error: Request failed with status code 404 for Profile '${profile.name}' - Not Found`);
-                    break;
-                  case constants.HTTP_ERROR_SERVER_ERROR:
-                    window.showErrorMessage(`Error: Request failed with status code 500 for Profile '${profile.name}'`);
-                    break;
-                  default:
-                    window.showErrorMessage(`Error: Request failed with status code ${error.response.status} for Profile '${profile.name}'`);
+                if (!newProfile) {
+                  throw error;
                 }
+
+                profile = newProfile;
+                plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+                sessionTree.setAuthorized();
               } else {
-                window.showErrorMessage(
-                  `Error: An error has occurred ${profile.profile.host}:${profile.profile.port} (${profile.name}) - ${JSON.stringify(
-                    error,
-                    Object.getOwnPropertyNames(error),
-                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
-                );
+                throw error;
               }
             }
+
+            // For each InfoLoaded object - happens if there are multiple plexes
+            sessionTree.clearChildren();
+            for (const item of plexInfo) {
+              // No plex
+              if (item.plexname === null) {
+
+                const regionsObtained = await runGetResource({
+                  session: sessionTree.getSession(),
+                  resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+                  regionName: item.regions[0].applid,
+                });
+
+                // 200 OK received
+                const newRegionTree = new CICSRegionTree(
+                  item.regions[0].applid,
+                  regionsObtained.response.records.cicsregion,
+                  sessionTree,
+                  undefined,
+                  sessionTree,
+                );
+                sessionTree.addRegion(newRegionTree);
+              } else {
+                if (item.group) {
+                  const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree, profile.profile.regionName);
+                  newPlexTree.setLabel(`${item.plexname} - ${profile.profile.regionName}`);
+                  sessionTree.addPlex(newPlexTree);
+                } else {
+                  //Plex
+                  const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree);
+                  sessionTree.addPlex(newPlexTree);
+                }
+              }
+            }
+            this._onDidChangeTreeData.fire(undefined);
           }
+        } catch (error) {
+          sessionTree.setUnauthorized();
+          sessionTree.setIsExpanded(false);
+          this._onDidChangeTreeData.fire(undefined);
         }
       },
     );
@@ -443,13 +327,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  async removeSession(session: CICSSessionTree, profile?: imperative.IProfileLoaded, position?: number) {
+  async removeSession(session: CICSSessionTree) {
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.removeLoadedCICSProfile(session.label.toString());
     this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
-    if (profile && position !== undefined) {
-      await this.loadProfile(profile, position);
-    }
     this._onDidChangeTreeData.fire(undefined);
   }
 

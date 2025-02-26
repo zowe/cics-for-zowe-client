@@ -60,6 +60,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -72,6 +73,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allURIMaps = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -80,6 +82,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
               } else {
                 allURIMaps = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -153,6 +156,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
         }
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
@@ -164,6 +168,7 @@ export class CICSCombinedURIMapTree extends TreeItem {
           const count = recordsCount;
           const allURIMaps = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -207,5 +212,9 @@ export class CICSCombinedURIMapTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
@@ -19,6 +19,7 @@ import { CICSTree } from "../trees/CICSTree";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { ICommandParams } from "./ICommandParams";
+import { runPutResource } from "../utils/resourceUtils";
 import constants from "../utils/constants";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
@@ -116,12 +117,18 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-function closeLocalFile(
+async function closeLocalFile(
   session: imperative.AbstractSession,
   parms: ICommandParams,
   busyDecision: string
 ): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `FILE='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -135,15 +142,5 @@ function closeLocalFile(
         },
       },
     },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `FILE='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  });
 }

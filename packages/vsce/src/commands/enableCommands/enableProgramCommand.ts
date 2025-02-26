@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
@@ -19,6 +19,7 @@ import { CICSTree } from "../../trees/CICSTree";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { ICommandParams } from "../ICommandParams";
+import { runPutResource } from "../../utils/resourceUtils";
 import constants from "../../utils/constants";
 
 /**
@@ -100,23 +101,19 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
 }
 
 function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `PROGRAM='${parms.name}'`}
+  },{
     request: {
       action: {
         $: {
           name: "ENABLE",
         },
       },
-    },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `PROGRAM='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_PROGRAM_RESOURCE, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+    }
+  });
 }

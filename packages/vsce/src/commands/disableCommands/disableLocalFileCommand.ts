@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, Utils, IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
@@ -20,6 +20,7 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { ICommandParams } from "../ICommandParams";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
 
 export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
@@ -110,7 +111,13 @@ function disableLocalFile(
   parms: ICommandParams,
   busyDecision: string
 ): Promise<ICMCIApiResponse> {
-  const requestBody: any = {
+  return runPutResource({
+    session: session,
+    resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    params: {"criteria": `FILE='${parms.name}'`}
+  }, {
     request: {
       action: {
         $: {
@@ -123,16 +130,6 @@ function disableLocalFile(
           },
         },
       },
-    },
-  };
-
-  const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `FILE='${parms.name}'`
-  };
-
-  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
-
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+    }
+  });
 }

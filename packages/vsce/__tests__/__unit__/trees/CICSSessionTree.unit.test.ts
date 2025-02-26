@@ -16,11 +16,12 @@ import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
+
 jest.mock("@zowe/zowe-explorer-api");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconFilePathFromName: getIconFilePathFromNameMock };
 });
-const cicsTreeMock = jest.fn();
+const cicstreeMock = jest.fn();
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
 const profile = {
   profile: { user: "user", password: "pwd", hostname: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 },
@@ -28,50 +29,53 @@ const profile = {
 describe("Test suite for CICSSessionTree", () => {
   let sut: CICSSessionTree;
 
-  beforeEach(() => {
-    getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
+  describe("Validation", () => {
 
-    sut = new CICSSessionTree(profile);
-    sut.isUnauthorized = true;
-    expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("profile-unverified");
-  });
+    beforeEach(() => {
+      getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+      sut = new CICSSessionTree(profile);
+      sut.isUnauthorized = true;
+      expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("profile-unverified");
+    });
 
-  describe("Test suite for addRegion", () => {
-    it("should push CICSRegionTree object into children", () => {
-      sut.addRegion(cicsTreeMock as any as CICSRegionTree);
-      expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+    afterEach(() => {
+      jest.resetAllMocks();
     });
-  });
-  describe("Test suite for addPlex", () => {
-    it("should push CICSPlexTree object into children", () => {
-      sut.addPlex(cicsTreeMock as any as CICSPlexTree);
-      expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+
+    describe("Test suite for addRegion", () => {
+      it("should push CICSRegionTree object into children", () => {
+        sut.addRegion(cicstreeMock as any as CICSRegionTree);
+        expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+      });
     });
-  });
-  describe("Test suite for getChildren", () => {
-    it("should return an array of childrens", () => {
-      expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
+    describe("Test suite for addPlex", () => {
+      it("should push CICSPlexTree object into children", () => {
+        sut.addPlex(cicstreeMock as any as CICSPlexTree);
+        expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+      });
     });
-  });
-  describe("Test suite for setUnauthorized", () => {
-    it("should set isUnauthorized to true", () => {
-      sut.setUnauthorized();
-      expect(sut.isUnauthorized).toBeTruthy();
+    describe("Test suite for getChildren", () => {
+      it("should return an array of childrens", () => {
+        expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
+      });
     });
-  });
-  describe("Test suite for setAuthorized", () => {
-    it("should set isUnauthorized to false", () => {
-      sut.setAuthorized();
-      expect(sut.isUnauthorized).toBeFalsy();
+    describe("Test suite for setUnauthorized", () => {
+      it("should set isUnauthorized to true", () => {
+        sut.setUnauthorized();
+        expect(sut.isUnauthorized).toBeTruthy();
+      });
     });
-  });
-  describe("Test suite for getIsUnauthorized", () => {
-    it("should return the object of isUnauthorized", () => {
-      expect(sut.getIsUnauthorized()).toBeTruthy();
+    describe("Test suite for setAuthorized", () => {
+      it("should set isUnauthorized to false", () => {
+        sut.setAuthorized();
+        expect(sut.isUnauthorized).toBeFalsy();
+      });
+    });
+    describe("Test suite for getIsUnauthorized", () => {
+      it("should return the object of isUnauthorized", () => {
+        expect(sut.getIsUnauthorized()).toBeTruthy();
+      });
     });
   });
 });

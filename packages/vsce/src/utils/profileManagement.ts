@@ -12,9 +12,7 @@
 import {
   CicsCmciConstants,
   CicsCmciRestError,
-  getCache,
-  getResource,
-  IResourceQueryParams
+  getCache
 } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { Gui, imperative, MessageSeverity, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
@@ -23,6 +21,7 @@ import { toArray } from "./commandUtils";
 import constants from "./constants";
 import cicsProfileMeta from "./profileDefinition";
 import { getBestCICSplexes } from "./plexUtils";
+import { runGetResource } from "./resourceUtils";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -90,35 +89,19 @@ export class ProfileManagement {
     });
   }
 
-  public static async runGetResource({ session, resourceName, profile, params }: {
-    session: Session,
-    resourceName: string,
-    profile?: imperative.IProfile,
-    params?: { criteria?: string, parameter?: string; queryParams?: IResourceQueryParams; };
-  }) {
-    const { response } = await getResource(session, {
-      name: resourceName,
-      ...profile?.regionName && { regionName: profile.regionName },
-      ...profile?.cicsPlex && { cicsPlex: profile.cicsPlex },
-      ...params?.criteria && { criteria: params.criteria },
-      ...params?.parameter && { parameter: params.parameter },
-      ...params?.queryParams && { queryParams: params.queryParams },
-    }, { failOnNoData: false, useCICSCmciRestError: true });
-    return response;
-  }
-
   public static async regionIsGroup(session: Session, profile: imperative.IProfile): Promise<boolean> {
 
     let isGroup = false;
     try {
-      const { resultsummary } = await this.runGetResource({
+      const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_REGION_GROUP,
-        profile,
+        ...profile?.regionName && { regionName: profile.regionName },
+        ...profile?.cicsPlex && {cicsPlex: profile.cicsPlex },
         params: { criteria: `GROUP=${profile.regionName}`, queryParams: { summonly: true, nodiscard: false } }
       });
 
-      isGroup = resultsummary.recordcount !== "0";
+      isGroup = response.resultsummary.recordcount !== "0";
     } catch (error) {
       let errorMessage = `Error requesting region groups - ${JSON.stringify(error)}`;
       if (error instanceof CicsCmciRestError) {
@@ -137,7 +120,7 @@ export class ProfileManagement {
 
   public static async isPlex(session: Session): Promise<string | null> {
     try {
-      const { resultsummary } = await this.runGetResource({
+      const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_CICS_PLEX,
         params: {
@@ -147,7 +130,7 @@ export class ProfileManagement {
           }
         }
       });
-      return resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? resultsummary.cachetoken : null;
+      return response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? response.resultsummary.cachetoken : null;
 
     } catch (error) {
 
@@ -173,16 +156,17 @@ export class ProfileManagement {
     const infoLoaded: InfoLoaded[] = [];
 
     try {
-      const { records } = await this.runGetResource({
+      const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
-        profile,
+        ...profile?.regionName && { regionName: profile.regionName },
+        ...profile?.cicsPlex && {cicsPlex: profile.cicsPlex },
       });
 
-      if (records?.cicsmanagedregion) {
+      if (response.records?.cicsmanagedregion) {
         infoLoaded.push({
           plexname: profile.cicsPlex,
-          regions: toArray(records.cicsmanagedregion),
+          regions: toArray(response.records.cicsmanagedregion),
           group: await this.regionIsGroup(session, profile),
         });
       } else {
@@ -215,16 +199,17 @@ export class ProfileManagement {
 
     try {
 
-      const { records } = await this.runGetResource({
+      const { response } = await runGetResource({
         session,
-        profile,
+        ...profile?.regionName && { regionName: profile.regionName },
+        ...profile?.cicsPlex && {cicsPlex: profile.cicsPlex },
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
       });
 
-      if (records?.cicsmanagedregion) {
+      if (response.records?.cicsmanagedregion) {
         infoLoaded.push({
           plexname: profile.cicsPlex,
-          regions: toArray(records.cicsmanagedregion),
+          regions: toArray(response.records.cicsmanagedregion),
           group: false,
         });
       } else {
@@ -258,16 +243,17 @@ export class ProfileManagement {
     const infoLoaded: InfoLoaded[] = [];
 
     try {
-      const { records } = await this.runGetResource({
+      const { response } = await runGetResource({
         session,
-        profile,
+        ...profile?.regionName && { regionName: profile.regionName },
+        ...profile?.cicsPlex && {cicsPlex: profile.cicsPlex },
         resourceName: CicsCmciConstants.CICS_CMCI_REGION,
       });
 
-      if (records?.cicsregion) {
+      if (response.records?.cicsregion) {
         infoLoaded.push({
           plexname: null,
-          regions: toArray(records.cicsregion),
+          regions: toArray(response.records.cicsregion),
           group: false,
         });
       } else {
@@ -323,14 +309,14 @@ export class ProfileManagement {
       }
     } else {
       try {
-        const { records } = await this.runGetResource({
+        const { response } = await runGetResource({
           session,
           resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         });
-        if (records?.cicsregion) {
+        if (response.records?.cicsregion) {
           infoLoaded.push({
             plexname: null,
-            regions: toArray(records.cicsregion),
+            regions: toArray(response.records.cicsregion),
             group: false,
           });
         }
@@ -356,9 +342,7 @@ export class ProfileManagement {
    * @param profile
    * @returns Array of type InfoLoaded
    */
-  public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
-
-    const session = this.getSessionFromProfile(profile.profile);
+  public static async getPlexInfo(profile: imperative.IProfileLoaded, session: Session): Promise<InfoLoaded[]> {
 
     if (profile.profile.cicsPlex && profile.profile.regionName) {
       return this.regionPlexProvided(session, profile.profile);
@@ -376,14 +360,14 @@ export class ProfileManagement {
    */
   public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
     try {
-      const session = this.getSessionFromProfile(plex.getProfile().profile);
-      const { resultsummary, records } = await this.runGetResource({
+      const session: Session = plex.getSession();
+      const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
-        profile: { cicsPlex: plex.getPlexName() }
+        cicsPlex: plex.getPlexName()
       });
-      if (resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && records?.cicsmanagedregion) {
-        return toArray(records.cicsmanagedregion);
+      if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
+        return toArray(response.records.cicsmanagedregion);
       }
     } catch (error) {
       let errorMessage = `Error requesting CICSManagedRegion - ${JSON.stringify(error)}`;
@@ -404,24 +388,27 @@ export class ProfileManagement {
 
   public static async generateCacheToken(
     profile: imperative.IProfileLoaded,
+    session: Session,
     plexName: string,
     resourceName: string,
     criteria?: string,
     group?: string
   ): Promise<{ cacheToken: string; recordCount: number; }> {
-    const session = this.getSessionFromProfile(profile.profile);
     try {
-      const { response } = await getResource(session, {
-        name: resourceName,
+      const { response } = await runGetResource({
+        session: session,
+        resourceName: resourceName,
         cicsPlex: plexName,
         ...group ? { regionName: group } : {},
-        criteria: criteria,
-        queryParams: {
-          summonly: true,
-          nodiscard: true,
-          overrideWarningCount: true,
+        params: {
+          criteria: criteria,
+          queryParams: {
+            summonly: true,
+            nodiscard: true,
+            overrideWarningCount: true,
+          }
         }
-      }, { failOnNoData: false, useCICSCmciRestError: true });
+      });
       if (response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}`) {
         const resultsSummary = response.resultsummary;
         return { cacheToken: resultsSummary.cachetoken, recordCount: parseInt(resultsSummary.recordcount, 10) };
@@ -436,11 +423,11 @@ export class ProfileManagement {
 
   public static async getCachedResources(
     profile: imperative.IProfileLoaded,
+    session: Session,
     cacheToken: string,
     resourceName: string,
     start = 1,
     increment = constants.RESOURCES_MAX) {
-    const session = this.getSessionFromProfile(profile.profile);
     const allItemsresponse = await getCache(session, {
       cacheToken,
       startIndex: start,

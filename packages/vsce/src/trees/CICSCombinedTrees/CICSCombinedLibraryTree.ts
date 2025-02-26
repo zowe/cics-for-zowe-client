@@ -20,6 +20,7 @@ import { CICSLibraryTreeItem } from "../treeItems/CICSLibraryTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSCombinedLibraryTree extends TreeItem {
   children: (CICSLibraryTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -40,7 +41,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allLibraries.recordCountIncrement")}`;
-    this.constant = "CICSLibrary";
+    this.constant = CicsCmciConstants.CICS_LIBRARY_RESOURCE;
   }
 
   public async loadContents(tree: CICSTree) {
@@ -60,6 +61,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -72,6 +74,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allLibraries = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -80,6 +83,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
               } else {
                 allLibraries = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -148,6 +152,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
         }
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
@@ -159,6 +164,7 @@ export class CICSCombinedLibraryTree extends TreeItem {
           const count = recordsCount;
           const allLibraries = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -202,5 +208,9 @@ export class CICSCombinedLibraryTree extends TreeItem {
 
   public getParent() {
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

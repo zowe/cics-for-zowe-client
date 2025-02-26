@@ -14,22 +14,24 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { getIconFilePathFromName } from "../utils/iconUtils";
+import { SessConstants } from "@zowe/imperative";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
   session: imperative.Session;
   profile: any;
   isUnauthorized: boolean | undefined;
+  iconPath = getIconFilePathFromName("profile-unverified");
 
-  constructor(
-    profile: any,
-    public readonly iconPath = getIconFilePathFromName("profile-unverified"),
-  ) {
+  constructor(profile: any) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;
+
     this.session = new imperative.Session({
-      type: "basic",
+      type: SessConstants.AUTH_TYPE_TOKEN,
+      storeCookie: true,
+      tokenType: SessConstants.TOKEN_TYPE_LTPA,
       hostname: profile.profile!.host,
       port: Number(profile.profile!.port),
       user: profile.profile!.user || "",
@@ -37,12 +39,17 @@ export class CICSSessionTree extends TreeItem {
       rejectUnauthorized: profile.profile!.rejectUnauthorized,
       protocol: profile.profile!.protocol,
     });
+
     this.profile = profile;
     this.isUnauthorized = undefined;
   }
 
   public addRegion(region: CICSRegionTree) {
     this.children.push(region);
+  }
+
+  public clearChildren() {
+    this.children = [];
   }
 
   public addPlex(plex: CICSPlexTree) {
@@ -59,10 +66,12 @@ export class CICSSessionTree extends TreeItem {
 
   public setUnauthorized() {
     this.isUnauthorized = true;
+    this.iconPath = getIconFilePathFromName("profile-disconnected");
   }
 
   public setAuthorized() {
     this.isUnauthorized = false;
+    this.iconPath = getIconFilePathFromName("profile");
   }
 
   public getIsUnauthorized() {
@@ -71,5 +80,9 @@ export class CICSSessionTree extends TreeItem {
 
   public getParent(): null {
     return null;
+  }
+
+  public setIsExpanded(isExpanded: boolean) {
+    this.collapsibleState = isExpanded ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
   }
 }

@@ -60,6 +60,7 @@ export class CICSCombinedTaskTree extends TreeItem {
           let count;
           const cacheTokenInfo = await ProfileManagement.generateCacheToken(
             this.parentPlex.getProfile(),
+            this.getSession(),
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
@@ -72,6 +73,7 @@ export class CICSCombinedTaskTree extends TreeItem {
               if (recordsCount <= this.incrementCount) {
                 allTasks = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -80,6 +82,7 @@ export class CICSCombinedTaskTree extends TreeItem {
               } else {
                 allTasks = await ProfileManagement.getCachedResources(
                   this.parentPlex.getProfile(),
+                  this.getSession(),
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
@@ -149,6 +152,7 @@ export class CICSCombinedTaskTree extends TreeItem {
       async () => {
         const cacheTokenInfo = await ProfileManagement.generateCacheToken(
           this.parentPlex.getProfile(),
+          this.getSession(),
           this.parentPlex.getPlexName(),
           this.constant,
           this.getParent().getGroupName(),
@@ -159,6 +163,7 @@ export class CICSCombinedTaskTree extends TreeItem {
           const count = recordsCount;
           const allTasks = await ProfileManagement.getCachedResources(
             this.parentPlex.getProfile(),
+            this.getSession(),
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
@@ -199,5 +204,9 @@ export class CICSCombinedTaskTree extends TreeItem {
   public getParent() {
     // direct parent
     return this.parentPlex;
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }

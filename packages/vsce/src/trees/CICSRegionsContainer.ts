@@ -9,7 +9,6 @@
  *
  */
 
-import { getResource } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
 import { ProfileManagement } from "../utils/profileManagement";
 import { CICSPlexTree } from "./CICSPlexTree";
@@ -17,6 +16,8 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
 import { getFolderIcon } from "../utils/iconUtils";
 import { toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -63,8 +64,9 @@ export class CICSRegionsContainer extends TreeItem {
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
     const session = parentPlex.getParent().getSession();
-    const regionsObtained = await getResource(session, {
-      name: "CICSManagedRegion",
+    const regionsObtained = await runGetResource({
+      session: session,
+      resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
@@ -144,5 +146,9 @@ export class CICSRegionsContainer extends TreeItem {
 
   public clearChildren() {
     this.children = [];
+  }
+
+  public getSession() {
+    return this.getParent().getSession();
   }
 }
