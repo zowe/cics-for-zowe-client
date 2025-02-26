@@ -874,6 +874,6 @@
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.3.3",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.1.0"
+    "@zowe/zowe-explorer-api": "^3.1.1"
   }
 }
