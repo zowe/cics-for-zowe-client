@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "webservice"],
   definition: WebServiceDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DefineWebserviceHandler", () => {
@@ -49,9 +49,9 @@ describe("DefineWebserviceHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineWebservice");
@@ -64,7 +64,7 @@ describe("DefineWebserviceHandler", () => {
   it("should call the defineWebservice api", async () => {
     const handler = new WebServiceHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       webserviceName: websvcName,
@@ -78,7 +78,7 @@ describe("DefineWebserviceHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -93,7 +93,7 @@ describe("DefineWebserviceHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: websvcName,
@@ -101,7 +101,7 @@ describe("DefineWebserviceHandler", () => {
         pipelineName,
         wsBind,
         regionName,
-        cicsPlex
+        cicsPlex,
       }
     );
   });

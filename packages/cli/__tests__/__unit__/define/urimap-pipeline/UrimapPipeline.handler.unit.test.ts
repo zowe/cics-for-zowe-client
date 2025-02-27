@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "define", "urimap-pipeline"],
   definition: UrimapPipelineDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DefineUrimapPipelineHandler", () => {
@@ -56,9 +56,9 @@ describe("DefineUrimapPipelineHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Define, "defineUrimapPipeline");
@@ -71,7 +71,7 @@ describe("DefineUrimapPipelineHandler", () => {
   it("should call the defineUrimapPipeline api with required options specified", async () => {
     const handler = new UrimapPipelineHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -88,7 +88,7 @@ describe("DefineUrimapPipelineHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -103,7 +103,7 @@ describe("DefineUrimapPipelineHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
@@ -117,7 +117,7 @@ describe("DefineUrimapPipelineHandler", () => {
         enable,
         description: undefined,
         transactionName: undefined,
-        webserviceName: undefined
+        webserviceName: undefined,
       }
     );
   });
@@ -125,7 +125,7 @@ describe("DefineUrimapPipelineHandler", () => {
   it("should call the defineUrimapPipeline api with all options specified", async () => {
     const handler = new UrimapPipelineHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -145,7 +145,7 @@ describe("DefineUrimapPipelineHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -160,7 +160,7 @@ describe("DefineUrimapPipelineHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
@@ -174,7 +174,7 @@ describe("DefineUrimapPipelineHandler", () => {
         transactionName,
         webserviceName,
         regionName,
-        cicsPlex
+        cicsPlex,
       }
     );
   });

@@ -10,8 +10,14 @@
  */
 
 import {
-  ConnectionPropsForSessCfg, ICommandArguments, ICommandOptionDefinition,
-  IHandlerParameters, IProfile, ISession, Logger, Session
+  ConnectionPropsForSessCfg,
+  ICommandArguments,
+  ICommandOptionDefinition,
+  IHandlerParameters,
+  IProfile,
+  ISession,
+  Logger,
+  Session,
 } from "@zowe/imperative";
 
 /**
@@ -19,46 +25,45 @@ import {
  * @export
  */
 export class CicsSession {
-
   public static CICS_CONNECTION_OPTION_GROUP = "Cics Connection Options";
 
   /**
-     * Option used in profile creation and commands for hostname for CICS
-     */
+   * Option used in profile creation and commands for hostname for CICS
+   */
   public static CICS_OPTION_HOST: ICommandOptionDefinition = {
     name: "host",
     aliases: ["H"],
     description: "The CICS server host name.",
     type: "string",
-    group: CicsSession.CICS_CONNECTION_OPTION_GROUP
+    group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
 
   /**
-     * Option used in profile creation and commands for port for CICS
-     */
+   * Option used in profile creation and commands for port for CICS
+   */
   public static CICS_OPTION_PORT: ICommandOptionDefinition = {
     name: "port",
     aliases: ["P"],
     description: "The CICS server port.",
     type: "number",
     defaultValue: 443,
-    group: CicsSession.CICS_CONNECTION_OPTION_GROUP
+    group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
 
   /**
-     * Option used in profile creation and commands for username / ID  for CICS
-     */
+   * Option used in profile creation and commands for username / ID  for CICS
+   */
   public static CICS_OPTION_USER: ICommandOptionDefinition = {
     name: "user",
     aliases: ["u"],
     description: "Mainframe (CICS) user name, which can be the same as your TSO login.",
     type: "string",
-    group: CicsSession.CICS_CONNECTION_OPTION_GROUP
+    group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
 
   /**
-     * Option used in profile creation and commands for password/passphrase for CICS
-     */
+   * Option used in profile creation and commands for password/passphrase for CICS
+   */
   public static CICS_OPTION_PASSWORD: ICommandOptionDefinition = {
     name: "password",
     aliases: ["pw"],
@@ -75,7 +80,7 @@ export class CicsSession {
     description: "Reject self-signed certificates.",
     type: "boolean",
     defaultValue: true,
-    group: CicsSession.CICS_CONNECTION_OPTION_GROUP
+    group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
   /**
    * Option used in profile creation and commands for protocol for CMCI
@@ -87,28 +92,28 @@ export class CicsSession {
     type: "string",
     defaultValue: "https",
     allowableValues: { values: ["http", "https"], caseSensitive: false },
-    group: CicsSession.CICS_CONNECTION_OPTION_GROUP
+    group: CicsSession.CICS_CONNECTION_OPTION_GROUP,
   };
 
   /**
-     * Options related to connecting to CICS
-     * These options can be filled in if the user creates a profile
-     */
+   * Options related to connecting to CICS
+   * These options can be filled in if the user creates a profile
+   */
   public static CICS_CONNECTION_OPTIONS: ICommandOptionDefinition[] = [
     CicsSession.CICS_OPTION_HOST,
     CicsSession.CICS_OPTION_PORT,
     CicsSession.CICS_OPTION_USER,
     CicsSession.CICS_OPTION_PASSWORD,
     CicsSession.CICS_OPTION_REJECT_UNAUTHORIZED,
-    CicsSession.CICS_OPTION_PROTOCOL
+    CicsSession.CICS_OPTION_PROTOCOL,
   ];
 
   /**
-     * Given a CICS profile, create a REST Client Session.
-     * @static
-     * @param {IProfile} profile - The CICS profile contents
-     * @returns {Session} - A session for usage in the CMCI REST Client
-     */
+   * Given a CICS profile, create a REST Client Session.
+   * @static
+   * @param {IProfile} profile - The CICS profile contents
+   * @returns {Session} - A session for usage in the CMCI REST Client
+   */
   public static createBasicCicsSession(profile: IProfile): Session {
     this.log.debug("Creating a CICS session from the profile named %s", profile.name);
     return new Session({
@@ -123,11 +128,11 @@ export class CicsSession {
   }
 
   /**
-     * Given command line arguments, create a REST Client Session.
-     * @static
-     * @param {IProfile} args - The arguments specified by the user
-     * @returns {Session} - A session for usage in the CMCI REST Client
-     */
+   * Given command line arguments, create a REST Client Session.
+   * @static
+   * @param {IProfile} args - The arguments specified by the user
+   * @returns {Session} - A session for usage in the CMCI REST Client
+   */
   public static createBasicCicsSessionFromArguments(args: ICommandArguments): Session {
     this.log.debug("Creating a CICS session from arguments");
     return new Session({
@@ -143,13 +148,13 @@ export class CicsSession {
   }
 
   /**
-     * Given command line arguments, create a REST Client Session.
-     * @static
-     * @param {IProfile} args - The arguments specified by the user
-     * @param {boolean} doPrompting - Whether to prompt for missing arguments (defaults to true)
-     * @param {IHandlerParameters} handlerParams - The command parameters object for Daemon mode prompting
-     * @returns {Session} - A session for usage in the CMCI REST Client
-     */
+   * Given command line arguments, create a REST Client Session.
+   * @static
+   * @param {IProfile} args - The arguments specified by the user
+   * @param {boolean} doPrompting - Whether to prompt for missing arguments (defaults to true)
+   * @param {IHandlerParameters} handlerParams - The command parameters object for Daemon mode prompting
+   * @returns {Session} - A session for usage in the CMCI REST Client
+   */
   public static async createSessCfgFromArgs(args: ICommandArguments, doPrompting = true, handlerParams?: IHandlerParameters): Promise<Session> {
     const sessCfg: ISession = {
       type: "basic",

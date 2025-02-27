@@ -9,8 +9,8 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, removeCSDGroupFromList } from "@zowe/cics-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 import i18nTypings from "../../-strings-/en";
@@ -26,19 +26,18 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).RE
  */
 export default class CSDGroupFromListHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Removing CSD Group from CSD List on CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await removeCSDGroupFromList(session, {
       name: params.arguments.name,
       csdList: params.arguments.csdList,
       regionName: params.arguments.regionName,
-      cicsPlex: params.arguments.cicsPlex
+      cicsPlex: params.arguments.cicsPlex,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.name, params.arguments.csdList);

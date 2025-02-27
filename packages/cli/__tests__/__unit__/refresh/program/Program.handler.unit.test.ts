@@ -32,12 +32,12 @@ const PROFILE_MAP = {
   user,
   password,
   protocol,
-  rejectUnauthorized: false
+  rejectUnauthorized: false,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "refresh", "program"],
   definition: ProgramDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("RefreshProgramHandler", () => {
@@ -47,9 +47,9 @@ describe("RefreshProgramHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Set, "programNewcopy");
@@ -62,7 +62,7 @@ describe("RefreshProgramHandler", () => {
   it("should call the programNewcopy api", async () => {
     const handler = new ProgramHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       programName,
@@ -72,7 +72,7 @@ describe("RefreshProgramHandler", () => {
       port,
       user,
       password,
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
     };
 
     await handler.process(commandParameters);
@@ -91,7 +91,7 @@ describe("RefreshProgramHandler", () => {
       }),
       {
         name: programName,
-        regionName
+        regionName,
       }
     );
   });

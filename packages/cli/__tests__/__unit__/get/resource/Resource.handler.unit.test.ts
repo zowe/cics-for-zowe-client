@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "get", "resource"],
   definition: ResourceDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("GetResourceHandler", () => {
@@ -45,23 +45,23 @@ describe("GetResourceHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: {}
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: {},
+    },
   };
 
   const functionSpy = jest.spyOn(Get, "getResource");
 
   beforeEach(() => {
     functionSpy.mockClear();
-    defaultReturn.response.records[resourceName.toLowerCase()] = [{prop: "test1"}, {prop: "test2"}];
+    defaultReturn.response.records[resourceName.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
     functionSpy.mockImplementation(async () => defaultReturn);
   });
 
   it("should call the getResource api", async () => {
     const handler = new ResourceHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       resourceName,
@@ -71,7 +71,7 @@ describe("GetResourceHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -86,11 +86,11 @@ describe("GetResourceHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: resourceName,
-        regionName
+        regionName,
       }
     );
   });

@@ -25,23 +25,19 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).DELET
  * Definition for the "delete" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "delete", aliases: ["del"],
+  name: "delete",
+  aliases: ["del"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [ProgramDefinition,
-    TransactionDefinition,
-    UrimapDefinition,
-    WebServiceDefinition],
+  children: [ProgramDefinition, TransactionDefinition, UrimapDefinition, WebServiceDefinition],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

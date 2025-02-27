@@ -9,8 +9,8 @@
  *
  */
 
-import { CicsSession } from "../CicsSession";
 import { ICommandDefinition } from "@zowe/imperative";
+import { CicsSession } from "../CicsSession";
 import { ResourceDefinition } from "./resource/Resource.definition";
 
 import i18nTypings from "../-strings-/en";
@@ -32,10 +32,8 @@ const definition: ICommandDefinition = {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

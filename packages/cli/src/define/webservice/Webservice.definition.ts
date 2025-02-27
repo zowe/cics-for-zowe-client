@@ -22,62 +22,68 @@ export const WebServiceDefinition: ICommandDefinition = {
   description: strings.DESCRIPTION,
   handler: __dirname + "/Webservice.handler",
   type: "command",
-  positionals: [{
-    name: "webserviceName",
-    description: strings.POSITIONALS.WEBSERVICENAME,
-    type: "string",
-    required: true
-  }, {
-    name: "csdGroup",
-    description: strings.POSITIONALS.CSDGROUP,
-    type: "string",
-    required: true
-  }],
+  positionals: [
+    {
+      name: "webserviceName",
+      description: strings.POSITIONALS.WEBSERVICENAME,
+      type: "string",
+      required: true,
+    },
+    {
+      name: "csdGroup",
+      description: strings.POSITIONALS.CSDGROUP,
+      type: "string",
+      required: true,
+    },
+  ],
   options: [
     {
       name: "pipeline-name",
       aliases: ["pn"],
       description: strings.OPTIONS.PIPELINENAME,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "wsbind",
       description: strings.OPTIONS.WSBIND,
       type: "string",
-      required: true
+      required: true,
     },
     {
       name: "description",
       aliases: ["desc"],
       description: strings.OPTIONS.DESCRIPTION,
-      type: "string"
+      type: "string",
     },
     {
       name: "validation",
       description: strings.OPTIONS.VALIDATION,
       type: "boolean",
-      defaultValue: false
+      defaultValue: false,
     },
     {
       name: "wsdlfile",
       aliases: ["wsdl"],
       description: strings.OPTIONS.WSDLFILE,
-      type: "string"
+      type: "string",
     },
     {
       name: "region-name",
       description: strings.OPTIONS.REGIONNAME,
-      type: "string"
+      type: "string",
     },
     {
       name: "cics-plex",
       description: strings.OPTIONS.CICSPLEX,
-      type: "string"
-    }],
-  profile: {optional: ["cics"]},
-  examples: [{
-    description: strings.EXAMPLES.EX1,
-    options: "WEBSVCA MYGRP --pipeline-name PIPELINE --wsbind /u/exampleapp/wsbind/example.log --region-name MYREGION"
-  }]
+      type: "string",
+    },
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+    {
+      description: strings.EXAMPLES.EX1,
+      options: "WEBSVCA MYGRP --pipeline-name PIPELINE --wsbind /u/exampleapp/wsbind/example.log --region-name MYREGION",
+    },
+  ],
 };

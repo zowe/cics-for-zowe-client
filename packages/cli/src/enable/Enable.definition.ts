@@ -22,21 +22,19 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABL
  * Definition for the "Enable" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "enable", aliases: ["en"],
+  name: "enable",
+  aliases: ["en"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [
-    UrimapDefinition],
+  children: [UrimapDefinition],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

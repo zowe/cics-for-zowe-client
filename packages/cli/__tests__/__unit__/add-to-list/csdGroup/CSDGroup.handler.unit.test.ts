@@ -31,13 +31,13 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "add-to-list", "csdGroup"],
   definition: CSDGroupDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("AddToListProgramHandler", () => {
@@ -47,9 +47,9 @@ describe("AddToListProgramHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(AddToList, "addCSDGroupToList");
@@ -62,7 +62,7 @@ describe("AddToListProgramHandler", () => {
   it("should call the addCSDGroupToList api", async () => {
     const handler = new CSDGroupHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       name,
@@ -73,7 +73,7 @@ describe("AddToListProgramHandler", () => {
       user,
       password,
       rejectUnauthorized,
-      protocol
+      protocol,
     };
 
     await handler.process(commandParameters);
@@ -88,12 +88,12 @@ describe("AddToListProgramHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name,
         csdList,
-        regionName
+        regionName,
       }
     );
   });

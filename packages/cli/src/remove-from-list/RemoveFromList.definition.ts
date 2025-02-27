@@ -23,7 +23,8 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).REMOV
  * Definition for the "remove" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "remove-from-list", aliases: ["rfl"],
+  name: "remove-from-list",
+  aliases: ["rfl"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
@@ -33,10 +34,8 @@ const definition: ICommandDefinition = {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;

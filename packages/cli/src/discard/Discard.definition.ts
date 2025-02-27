@@ -24,22 +24,19 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).DISCA
  * Definition for the "discard" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "discard", aliases: ["dis"],
+  name: "discard",
+  aliases: ["dis"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [ProgramDefinition,
-    TransactionDefinition,
-    UrimapDefinition],
+  children: [ProgramDefinition, TransactionDefinition, UrimapDefinition],
   passOn: [
     {
       property: "options",
       value: CicsSession.CICS_CONNECTION_OPTIONS,
       merge: true,
-      ignoreNodes: [
-        {type: "group"}
-      ]
-    }
-  ]
+      ignoreNodes: [{ type: "group" }],
+    },
+  ],
 };
 export = definition;
