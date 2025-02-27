@@ -336,7 +336,7 @@
       },
       {
         "command": "cics-extension-for-zowe.showRegionLogs",
-        "title": "Show Logs",
+        "title": "Show Region Logs",
         "category": "IBM CICS for Zowe Explorer"
       },
       {
