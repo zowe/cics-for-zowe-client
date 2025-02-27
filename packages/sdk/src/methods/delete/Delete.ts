@@ -10,10 +10,10 @@
  */
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { ICMCIApiResponse, IGetResourceUriOptions, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Delete a program installed in CICS through CMCI REST API
@@ -33,10 +33,10 @@ export async function deleteProgram(session: AbstractSession, parms: IProgramPar
   Logger.getAppLogger().debug("Attempting to delete a program with the following parameters:\n%s", JSON.stringify(parms));
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_PROGRAM, options);
@@ -62,10 +62,10 @@ export async function deleteTransaction(session: AbstractSession, parms: ITransa
   Logger.getAppLogger().debug("Attempting to delete a transaction with the following parameters:\n%s", JSON.stringify(parms));
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_TRANSACTION, options);
@@ -92,10 +92,10 @@ export async function deleteUrimap(session: AbstractSession, parms: IURIMapParms
   Logger.getAppLogger().debug("Attempting to delete a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
@@ -122,10 +122,10 @@ export async function deleteWebservice(session: AbstractSession, parms: IWebServ
   Logger.getAppLogger().debug("Attempting to delete a web service with the following parameters:\n%s", JSON.stringify(parms));
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`,
-    "parameter": `CSDGROUP(${parms.csdGroup})`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
+    parameter: `CSDGROUP(${parms.csdGroup})`,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_WEBSERVICE, options);

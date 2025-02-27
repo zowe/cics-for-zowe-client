@@ -9,21 +9,20 @@
  *
  */
 
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+import { IResourceParms, getResource } from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
-import { getResource, IResourceParms } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
 let session: Session;
 
 describe("CICS Get resource", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_get_resource",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
     const cicsProperties = testEnvironment.systemTestProperties.cics;
@@ -35,7 +34,7 @@ describe("CICS Get resource", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 

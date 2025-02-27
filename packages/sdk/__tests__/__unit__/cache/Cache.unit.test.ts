@@ -10,13 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  getCache,
-  ICacheParms,
-  ICMCIApiResponse
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, getCache, ICacheParms, ICMCIApiResponse } from "../../../src";
 
 describe("CMCI - Get Cache", () => {
   const content: ICMCIApiResponse = {
@@ -30,21 +24,20 @@ describe("CMCI - Get Cache", () => {
         cachetoken: "E0252A3D2292C613",
         displayed_recordcount: "1",
       },
-      records: []
-    }
+      records: [],
+    },
   };
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
   let response: any;
   let endPoint: string;
   let cacheParms: ICacheParms;
-
 
   describe("validation", () => {
     beforeEach(() => {
@@ -92,7 +85,6 @@ describe("CMCI - Get Cache", () => {
   });
 
   describe("success scenarios", () => {
-
     const cmciGetSpy = jest.spyOn(CicsCmciRestClient, "getExpectParsedXml").mockResolvedValue(content);
 
     beforeEach(() => {
@@ -112,9 +104,15 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
@@ -128,10 +126,17 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "?" + CicsCmciConstants.NO_DISCARD +
-        "&" + CicsCmciConstants.SUMM_ONLY;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD +
+        "&" +
+        CicsCmciConstants.SUMM_ONLY;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
@@ -145,10 +150,16 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "/" +
-        "10?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "/" +
+        "10?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
@@ -163,10 +174,16 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken + "/" +
-        "15/5?" + CicsCmciConstants.NO_DISCARD;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "/" +
+        "15/5?" +
+        CicsCmciConstants.NO_DISCARD;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
@@ -180,9 +197,7 @@ describe("CMCI - Get Cache", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" + CicsCmciConstants.CICS_RESULT_CACHE +
-        "/" + cacheParms.cacheToken;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_RESULT_CACHE + "/" + cacheParms.cacheToken;
 
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);

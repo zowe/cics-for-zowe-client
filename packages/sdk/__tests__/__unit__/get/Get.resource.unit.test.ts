@@ -9,19 +9,11 @@
  *
  */
 
-import { Session, ImperativeError } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  CicsCmciRestError,
-  getResource,
-  ICMCIApiResponse,
-  IResourceParms
-} from "../../../src";
+import { ImperativeError, Session } from "@zowe/imperative";
+import { CicsCmciConstants, CicsCmciRestClient, CicsCmciRestError, ICMCIApiResponse, IResourceParms, getResource } from "../../../src";
 import { nodataContent, nodataXmlResponse, ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {
-
   const resource = "CICSCICSPlex";
   const region = "REGION1";
   const cicsPlex = "PLEX01";
@@ -31,14 +23,13 @@ describe("CMCI - Get resource", () => {
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: Error | CicsCmciRestError | undefined;
   let response: ICMCIApiResponse | undefined;
   let endPoint: string;
   let resourceParms: IResourceParms;
-
 
   describe("validation", () => {
     beforeEach(() => {
@@ -48,7 +39,7 @@ describe("CMCI - Get resource", () => {
         regionName: region,
         name: resource,
         criteria: undefined,
-        cicsPlex: undefined
+        cicsPlex: undefined,
       };
     });
 
@@ -85,7 +76,7 @@ describe("CMCI - Get resource", () => {
       try {
         response = await getResource(dummySession, {
           regionName: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -98,7 +89,6 @@ describe("CMCI - Get resource", () => {
   });
 
   describe("success scenarios", () => {
-
     const getExpectStringMock = jest.spyOn(CicsCmciRestClient, "getExpectString");
 
     beforeEach(() => {
@@ -108,7 +98,7 @@ describe("CMCI - Get resource", () => {
         regionName: region,
         name: resource,
         criteria: undefined,
-        cicsPlex: undefined
+        cicsPlex: undefined,
       };
       getExpectStringMock.mockClear();
       getExpectStringMock.mockResolvedValue(ok2RecordsXmlResponse);
@@ -122,8 +112,7 @@ describe("CMCI - Get resource", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        resource + "/";
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/";
 
       expect(response).toEqual(okContent2Records);
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
@@ -137,16 +126,14 @@ describe("CMCI - Get resource", () => {
         error = err;
       }
 
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        resource + "/";
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/";
 
       expect(response).toEqual(okContent2Records);
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
 
     it("should be able to get a resource without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-        "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
@@ -156,8 +143,7 @@ describe("CMCI - Get resource", () => {
 
     it("should be able to get a resource without criteria specified", async () => {
       resourceParms.criteria = undefined;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-        "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
@@ -168,8 +154,7 @@ describe("CMCI - Get resource", () => {
     it("should be able to get a resource with cicsPlex specified and criteria not specified", async () => {
       resourceParms.cicsPlex = cicsPlex;
       resourceParms.criteria = undefined;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-        "/" + cicsPlex + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + cicsPlex + "/" + region;
 
       response = await getResource(dummySession, resourceParms);
 
@@ -180,8 +165,16 @@ describe("CMCI - Get resource", () => {
     it("should be able to get a resource with criteria specified", async () => {
       resourceParms.cicsPlex = undefined;
       resourceParms.criteria = criteria;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource +
-        "/" + region + "?CRITERIA=(" + encodeURIComponent(resourceParms.criteria) + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        resource +
+        "/" +
+        region +
+        "?CRITERIA=(" +
+        encodeURIComponent(resourceParms.criteria) +
+        ")";
       response = await getResource(dummySession, resourceParms);
 
       expect(response).toEqual(okContent2Records);
@@ -258,7 +251,6 @@ describe("CMCI - Get resource", () => {
     });
 
     it("should error when failOnNoData is true and data is not returned", async () => {
-
       getExpectStringMock.mockClear();
       getExpectStringMock.mockResolvedValue(nodataXmlResponse);
 
@@ -284,7 +276,6 @@ describe("CMCI - Get resource", () => {
     });
 
     it("should not fail when failOnNoData is false and data is not returned", async () => {
-
       getExpectStringMock.mockClear();
       getExpectStringMock.mockResolvedValue(nodataXmlResponse);
 
@@ -302,7 +293,6 @@ describe("CMCI - Get resource", () => {
     });
 
     it("should provide a CicsCmciRestError when requestOptions.useCICSCmciRestError is true", async () => {
-
       getExpectStringMock.mockClear();
       getExpectStringMock.mockResolvedValue(nodataXmlResponse);
 
@@ -324,7 +314,6 @@ describe("CMCI - Get resource", () => {
     });
 
     it("should provide a ImperativeError when requestOptions.useCICSCmciRestError is false", async () => {
-
       getExpectStringMock.mockClear();
       getExpectStringMock.mockResolvedValue(nodataXmlResponse);
 

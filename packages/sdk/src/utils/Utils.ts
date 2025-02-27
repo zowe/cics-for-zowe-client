@@ -20,7 +20,6 @@ import { IResultCacheParms } from "../doc/IResultCacheParms";
  * @class Utils
  */
 export class Utils {
-
   /**
    * Get uri for requesting a resources in CICS through CMCI REST API
    * @param {string} resourceName - CMCI resource name

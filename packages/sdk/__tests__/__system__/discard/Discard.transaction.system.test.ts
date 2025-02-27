@@ -9,11 +9,11 @@
  *
  */
 
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+import { ITransactionParms, defineTransaction, deleteTransaction, discardTransaction, installTransaction } from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineTransaction, deleteTransaction, discardTransaction, installTransaction, ITransactionParms } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -21,11 +21,10 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Discard transaction", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_discard_transaction",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -38,7 +37,7 @@ describe("CICS Discard transaction", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 

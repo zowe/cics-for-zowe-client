@@ -10,7 +10,7 @@
  */
 
 export * from "./constants";
-export * from "./methods";
 export * from "./doc";
+export * from "./methods";
 export * from "./rest";
 export * from "./utils";

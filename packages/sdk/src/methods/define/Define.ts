@@ -10,9 +10,9 @@
  */
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms, IGetResourceUriOptions } from "../../doc";
+import { ICMCIApiResponse, IGetResourceUriOptions, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
 /**
@@ -38,21 +38,21 @@ export function defineProgram(session: AbstractSession, parms: IProgramParms): P
         parameter: {
           $: {
             name: "CSD",
-          }
+          },
         },
         attributes: {
           $: {
             name: parms.name,
-            csdgroup: parms.csdGroup
-          }
-        }
-      }
-    }
+            csdgroup: parms.csdGroup,
+          },
+        },
+      },
+    },
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_PROGRAM, options);
@@ -84,27 +84,26 @@ export function defineTransaction(session: AbstractSession, parms: ITransactionP
         parameter: {
           $: {
             name: "CSD",
-          }
+          },
         },
         attributes: {
           $: {
             name: parms.name,
             program: parms.programName,
-            csdgroup: parms.csdGroup
-          }
-        }
-      }
-    }
+            csdgroup: parms.csdGroup,
+          },
+        },
+      },
+    },
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_TRANSACTION, options);
-  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
-    [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
 
 /**
@@ -131,8 +130,8 @@ export function defineUrimapServer(session: AbstractSession, parms: IURIMapParms
   requestBody.request.create.attributes.$.program = parms.programName;
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
@@ -160,8 +159,8 @@ export function defineUrimapClient(session: AbstractSession, parms: IURIMapParms
   const requestBody: any = buildUrimapRequestBody(parms, "client");
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
@@ -192,8 +191,8 @@ export function defineUrimapPipeline(session: AbstractSession, parms: IURIMapPar
   requestBody.request.create.attributes.$.pipeline = parms.pipelineName;
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_URIMAP, options);
@@ -231,7 +230,7 @@ function buildUrimapRequestBody(parms: IURIMapParms, usage: "server" | "client" 
     path: parms.path,
     host: parms.host,
     scheme: parms.scheme,
-    usage
+    usage,
   };
 
   if (parms.description != null) {
@@ -270,13 +269,13 @@ function buildUrimapRequestBody(parms: IURIMapParms, usage: "server" | "client" 
         parameter: {
           $: {
             name: "CSD",
-          }
+          },
         },
         attributes: {
-          $: requestAttrs
-        }
-      }
-    }
+          $: requestAttrs,
+        },
+      },
+    },
   };
 }
 
@@ -294,7 +293,7 @@ export function defineWebservice(session: AbstractSession, parms: IWebServicePar
     csdgroup: parms.csdGroup,
     pipeline: parms.pipelineName,
     wsbind: parms.wsBind,
-    validation: parms.validation ? "yes" : "no"
+    validation: parms.validation ? "yes" : "no",
   };
 
   if (parms.description != null) {
@@ -311,21 +310,20 @@ export function defineWebservice(session: AbstractSession, parms: IWebServicePar
         parameter: {
           $: {
             name: "CSD",
-          }
+          },
         },
         attributes: {
-          $: requestAttrs
-        }
-      }
-    }
+          $: requestAttrs,
+        },
+      },
+    },
   };
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_WEBSERVICE, options);
-  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource,
-    [], requestBody) as any;
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }

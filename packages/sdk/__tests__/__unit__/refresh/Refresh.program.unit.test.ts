@@ -10,10 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, programNewcopy, IProgramParms, ICMCIApiResponse } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IProgramParms, programNewcopy } from "../../../src";
 
 describe("CMCI - Refresh program", () => {
-
   const program = "program";
   const region = "region";
   const cicsPlex = "plex";
@@ -22,14 +21,14 @@ describe("CMCI - Refresh program", () => {
   const refreshParms: IProgramParms = {
     regionName: region,
     name: program,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -73,7 +72,7 @@ describe("CMCI - Refresh program", () => {
       try {
         response = await programNewcopy(dummySession, {
           regionName: undefined,
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -88,7 +87,7 @@ describe("CMCI - Refresh program", () => {
       try {
         response = await programNewcopy(dummySession, {
           regionName: "fake",
-          name: ""
+          name: "",
         });
       } catch (err) {
         error = err;
@@ -103,7 +102,7 @@ describe("CMCI - Refresh program", () => {
       try {
         response = await programNewcopy(dummySession, {
           regionName: "",
-          name: "fake"
+          name: "fake",
         });
       } catch (err) {
         error = err;
@@ -116,15 +115,14 @@ describe("CMCI - Refresh program", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         action: {
           $: {
             name: "NEWCOPY",
-          }
-        }
-      }
+          },
+        },
+      },
     };
 
     const refreshSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
@@ -137,9 +135,16 @@ describe("CMCI - Refresh program", () => {
     });
 
     it("should be able to refresh a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + region +
-                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "/" +
+        region +
+        "?CRITERIA=(PROGRAM%3D" +
+        refreshParms.name +
+        ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 
@@ -150,9 +155,16 @@ describe("CMCI - Refresh program", () => {
 
     it("should be able to refresh a program with cicsPlex specified but empty string", async () => {
       refreshParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "//" + region +
-                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "//" +
+        region +
+        "?CRITERIA=(PROGRAM%3D" +
+        refreshParms.name +
+        ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 
@@ -163,9 +175,18 @@ describe("CMCI - Refresh program", () => {
 
     it("should be able to refresh a program with cicsPlex specified", async () => {
       refreshParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_PROGRAM_RESOURCE + "/" + cicsPlex + "/" + region +
-                "?CRITERIA=(PROGRAM%3D" + refreshParms.name + ")";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_PROGRAM_RESOURCE +
+        "/" +
+        cicsPlex +
+        "/" +
+        region +
+        "?CRITERIA=(PROGRAM%3D" +
+        refreshParms.name +
+        ")";
 
       response = await programNewcopy(dummySession, refreshParms);
 

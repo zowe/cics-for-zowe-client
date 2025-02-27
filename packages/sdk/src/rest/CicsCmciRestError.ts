@@ -13,7 +13,6 @@ import { ImperativeError } from "@zowe/imperative";
 import { ICMCIResponseResultSummary } from "../doc";
 
 export class CicsCmciRestError extends ImperativeError {
-
   resultSummary: ICMCIResponseResultSummary;
 
   RESPONSE_1: number;
@@ -35,5 +34,4 @@ export class CicsCmciRestError extends ImperativeError {
     this.RESPONSE_1_ALT = this.resultSummary.api_response1_alt;
     this.RESPONSE_2_ALT = this.resultSummary.api_response2_alt;
   }
-
 }

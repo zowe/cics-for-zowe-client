@@ -10,10 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, IURIMapParms, defineUrimapServer, ICMCIApiResponse } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IURIMapParms, defineUrimapServer } from "../../../src";
 
 describe("CMCI - Define server URIMap", () => {
-
   const urimap = "urimap";
   const path = "path";
   const host = "host";
@@ -26,7 +25,7 @@ describe("CMCI - Define server URIMap", () => {
   const description = "description";
   const tcpipservice = "TCPIPSRV";
 
-  const defineParms: IURIMapParms  = {
+  const defineParms: IURIMapParms = {
     regionName: region,
     name: urimap,
     path,
@@ -34,14 +33,14 @@ describe("CMCI - Define server URIMap", () => {
     scheme,
     programName: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -75,7 +74,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -95,7 +94,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -115,7 +114,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -135,7 +134,7 @@ describe("CMCI - Define server URIMap", () => {
           host: undefined,
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -155,7 +154,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: undefined,
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -175,7 +174,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -195,7 +194,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -215,7 +214,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -235,7 +234,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -255,7 +254,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -275,7 +274,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -295,7 +294,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -315,7 +314,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -335,7 +334,7 @@ describe("CMCI - Define server URIMap", () => {
           host: "fake",
           scheme: "http",
           programName: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -348,14 +347,13 @@ describe("CMCI - Define server URIMap", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
@@ -366,11 +364,11 @@ describe("CMCI - Define server URIMap", () => {
               scheme,
               program,
               usage: "server",
-              status: "ENABLED"
-            }
-          }
-        }
-      }
+              status: "ENABLED",
+            },
+          },
+        },
+      },
     };
 
     const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
@@ -383,8 +381,7 @@ describe("CMCI - Define server URIMap", () => {
     });
 
     it("should be able to define a URIMap without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
@@ -395,8 +392,7 @@ describe("CMCI - Define server URIMap", () => {
 
     it("should be able to define a URIMap with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "//" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_URIMAP + "//" + region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
@@ -407,8 +403,7 @@ describe("CMCI - Define server URIMap", () => {
 
     it("should be able to define a URIMap with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + "/" + region;
 
       response = await defineUrimapServer(dummySession, defineParms);
 
@@ -420,8 +415,7 @@ describe("CMCI - Define server URIMap", () => {
     it("should be able to define a URIMap with optional parameters specified", async () => {
       defineParms.description = description;
       defineParms.tcpipservice = tcpipservice;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex +"/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + "/" + region;
       requestBody.request.create.attributes.$.description = description;
       requestBody.request.create.attributes.$.tcpipservice = tcpipservice;
 
