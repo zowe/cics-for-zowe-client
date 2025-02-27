@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("cics enable urimap", () => {
   const ENABLE_RESOURCES = 1;
 
-  it ("should not have changed", () => {
+  it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/enable/Enable.definition");
     expect(definition).toBeDefined();
     expect(definition.children.length).toBe(ENABLE_RESOURCES);

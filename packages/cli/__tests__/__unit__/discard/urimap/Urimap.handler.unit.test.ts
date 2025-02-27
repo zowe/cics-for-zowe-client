@@ -33,12 +33,12 @@ const PROFILE_MAP = {
   user,
   password,
   protocol,
-  rejectUnauthorized
+  rejectUnauthorized,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "discard", "urimap"],
   definition: UrimapDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("DiscardUrimapHandler", () => {
@@ -47,9 +47,9 @@ describe("DiscardUrimapHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Discard, "discardUrimap");
@@ -62,7 +62,7 @@ describe("DiscardUrimapHandler", () => {
   it("should call the discardUrimap api", async () => {
     const handler = new UrimapHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       urimapName,
@@ -72,7 +72,7 @@ describe("DiscardUrimapHandler", () => {
       user,
       password,
       protocol,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -87,11 +87,11 @@ describe("DiscardUrimapHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: urimapName,
-        regionName
+        regionName,
       }
     );
   });

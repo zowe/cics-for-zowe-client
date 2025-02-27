@@ -10,10 +10,10 @@
  */
 
 import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
-import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
+import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -26,12 +26,11 @@ let protocol: string;
 let rejectUnauthorized: boolean;
 
 describe("CICS discard program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "discard_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -57,12 +56,14 @@ describe("CICS discard program command", () => {
       user: cicsProperties.user,
       password: cicsProperties.password,
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+    );
   };
 
   it("should be able to display the help", () => {
@@ -73,22 +74,23 @@ describe("CICS discard program command", () => {
   });
 
   it("should be able to successfully discard a program with basic options", async () => {
-
     // Get a random program name
     const programNameSuffixLength = 4;
     const programName = "AAA" + generateRandomAlphaNumericString(programNameSuffixLength);
 
     // Define the program
-    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program.sh", TEST_ENVIRONMENT,
-      [programName, csdGroup, regionName]);
+    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
     // Install defined program
-    output = runCliScript(__dirname + "/../../install/program/__scripts__/install_program.sh", TEST_ENVIRONMENT,
-      [programName, csdGroup, regionName]);
+    output = runCliScript(__dirname + "/../../install/program/__scripts__/install_program.sh", TEST_ENVIRONMENT, [programName, csdGroup, regionName]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -113,53 +115,54 @@ describe("CICS discard program command", () => {
   });
 
   it("should be able to successfully discard a program with profile options", async () => {
-
     // Get a random program name
     const programNameSuffixLength = 4;
     const programName = "AAA" + generateRandomAlphaNumericString(programNameSuffixLength);
 
     // Define the program
-    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    let output = runCliScript(__dirname + "/../../define/program/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
     // Install defined program
-    output = runCliScript(__dirname + "/../../install/program/__scripts__/install_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/../../install/program/__scripts__/install_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/discard_program_fully_qualified.sh",
-      TEST_ENVIRONMENT,
-      [programName,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/__scripts__/discard_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);

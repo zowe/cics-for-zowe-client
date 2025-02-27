@@ -31,12 +31,12 @@ const PROFILE_MAP = {
   host,
   port,
   user,
-  password
+  password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
   positionals: ["cics", "install", "transaction"],
   definition: TransactionDefinition,
-  arguments: PROFILE_MAP
+  arguments: PROFILE_MAP,
 });
 
 describe("InstallTransactionHandler", () => {
@@ -46,9 +46,9 @@ describe("InstallTransactionHandler", () => {
 
   const defaultReturn: ICMCIApiResponse = {
     response: {
-      resultsummary: {api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0"},
-      records: "testing"
-    }
+      resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+      records: "testing",
+    },
   };
 
   const functionSpy = jest.spyOn(Install, "installTransaction");
@@ -61,7 +61,7 @@ describe("InstallTransactionHandler", () => {
   it("should call the installTransaction api", async () => {
     const handler = new TransactionHandler();
 
-    const commandParameters = {...DEFAULT_PARAMETERS};
+    const commandParameters = { ...DEFAULT_PARAMETERS };
     commandParameters.arguments = {
       ...commandParameters.arguments,
       transactionName,
@@ -71,7 +71,7 @@ describe("InstallTransactionHandler", () => {
       port,
       user,
       password,
-      rejectUnauthorized
+      rejectUnauthorized,
     };
 
     await handler.process(commandParameters);
@@ -86,12 +86,12 @@ describe("InstallTransactionHandler", () => {
         user: PROFILE_MAP.user,
         password: PROFILE_MAP.password,
         rejectUnauthorized,
-        protocol
+        protocol,
       }),
       {
         name: transactionName,
         csdGroup,
-        regionName
+        regionName,
       }
     );
   });

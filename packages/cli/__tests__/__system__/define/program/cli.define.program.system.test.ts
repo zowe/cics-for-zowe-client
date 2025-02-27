@@ -10,10 +10,10 @@
  */
 
 import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
-import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
+import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -25,12 +25,11 @@ let password: string;
 let protocol: string;
 let rejectUnauthorized: boolean;
 describe("CICS define program command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "define_program",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
@@ -56,12 +55,14 @@ describe("CICS define program command", () => {
       user: cicsProperties.user,
       password: cicsProperties.password,
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
 
-    return CicsCmciRestClient.deleteExpectParsedXml(session,
+    return CicsCmciRestClient.deleteExpectParsedXml(
+      session,
       `/${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/CICSDefinitionProgram/${cmciProperties.regionName}` +
-            `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`);
+        `?CRITERIA=(NAME=${programName})&PARAMETER=CSDGROUP(${cmciProperties.csdGroup})`
+    );
   };
 
   it("should be able to display the help", () => {
@@ -102,21 +103,21 @@ describe("CICS define program command", () => {
   it("should be able to successfully define a program using profile options", async () => {
     const programNameSuffixLength = 4;
     const programName = "DFN" + generateRandomAlphaNumericString(programNameSuffixLength);
-    const output = runCliScript(__dirname + "/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT,
-      [programName,
-        csdGroup,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    const output = runCliScript(__dirname + "/__scripts__/define_program_fully_qualified.sh", TEST_ENVIRONMENT, [
+      programName,
+      csdGroup,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
     await deleteProgram(programName);
   });
-
 });

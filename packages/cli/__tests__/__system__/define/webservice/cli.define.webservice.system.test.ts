@@ -9,12 +9,12 @@
  *
  */
 
+import { deleteWebservice } from "@zowe/cics-for-zowe-sdk";
 import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
-import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 import { Session } from "@zowe/imperative";
 import { IWebServiceParms } from "../../../../src";
-import { deleteWebservice } from "@zowe/cics-for-zowe-sdk";
+import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -28,12 +28,11 @@ let rejectUnauthorized: boolean;
 let session: Session;
 
 describe("CICS define web service command", () => {
-
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       testName: "define_webservice",
       installPlugin: true,
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
     csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
@@ -51,7 +50,7 @@ describe("CICS define web service command", () => {
       user: cicsProperties.user,
       password: cicsProperties.password,
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 
@@ -70,15 +69,19 @@ describe("CICS define web service command", () => {
     const websvcNameSuffixLength = 4;
     const websvcName = "DFN" + generateRandomAlphaNumericString(websvcNameSuffixLength);
     const options: IWebServiceParms = { name: websvcName, csdGroup, regionName };
-    let output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      [websvcName, csdGroup, "FAKEPIPE", "//u/exampleapp/wsbind/example.log", regionName]);
+    let output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, [
+      websvcName,
+      csdGroup,
+      "FAKEPIPE",
+      "//u/exampleapp/wsbind/example.log",
+      regionName,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/get_resource_webservice.sh", TEST_ENVIRONMENT,
-      [regionName, csdGroup]);
+    output = runCliScript(__dirname + "/__scripts__/get_resource_webservice.sh", TEST_ENVIRONMENT, [regionName, csdGroup]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -88,8 +91,7 @@ describe("CICS define web service command", () => {
   });
 
   it("should get a syntax error if web service name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      ["", "FAKEGRP", "FAKEPIPE", "FAKEWSB", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, ["", "FAKEGRP", "FAKEPIPE", "FAKEWSB", "FAKERGN"]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("webserviceName");
@@ -97,8 +99,13 @@ describe("CICS define web service command", () => {
   });
 
   it("should get a syntax error if CSD group is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      ["FAKEWSVC", "", "FAKEPIPE", "FAKEWSB", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, [
+      "FAKEWSVC",
+      "",
+      "FAKEPIPE",
+      "FAKEWSB",
+      "FAKERGN",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("csdGroup");
@@ -106,8 +113,7 @@ describe("CICS define web service command", () => {
   });
 
   it("should get a syntax error if web service pipeline name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      ["FAKEWSVC", "FAKEGRP", "", "FAKEWSB", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, ["FAKEWSVC", "FAKEGRP", "", "FAKEWSB", "FAKERGN"]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("pipeline-name");
@@ -115,8 +121,13 @@ describe("CICS define web service command", () => {
   });
 
   it("should get a syntax error if web service binding file is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      ["FAKEWSVC", "FAKEGRP", "FAKEPIPE", "", "FAKERGN"]);
+    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, [
+      "FAKEWSVC",
+      "FAKEGRP",
+      "FAKEPIPE",
+      "",
+      "FAKERGN",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("wsbind");
@@ -124,8 +135,13 @@ describe("CICS define web service command", () => {
   });
 
   it("should get a syntax error if region name is omitted", () => {
-    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT,
-      ["FAKEWSVC", "FAKEGRP", "FAKEPIPE", "FAKEWSB", ""]);
+    const output = runCliScript(__dirname + "/__scripts__/define_webservice.sh", TEST_ENVIRONMENT, [
+      "FAKEWSVC",
+      "FAKEGRP",
+      "FAKEPIPE",
+      "FAKEWSB",
+      "",
+    ]);
     const stderr = output.stderr.toString();
     expect(stderr).toContain("Syntax");
     expect(stderr).toContain("region-name");
@@ -138,32 +154,34 @@ describe("CICS define web service command", () => {
     const pipelineName = "FAKEPIPE";
     const wsBind = "//u/exampleapp/wsbind/example.log";
     const options: IWebServiceParms = { name: websvcName, csdGroup, regionName };
-    let output = runCliScript(__dirname + "/__scripts__/define_webservice_fully_qualified.sh", TEST_ENVIRONMENT,
-      [websvcName,
-        csdGroup,
-        pipelineName,
-        wsBind,
-        regionName,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    let output = runCliScript(__dirname + "/__scripts__/define_webservice_fully_qualified.sh", TEST_ENVIRONMENT, [
+      websvcName,
+      csdGroup,
+      pipelineName,
+      wsBind,
+      regionName,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     let stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
 
-    output = runCliScript(__dirname + "/__scripts__/get_resource_webservice_fully_qualified.sh", TEST_ENVIRONMENT,
-      [regionName,
-        csdGroup,
-        host,
-        port,
-        user,
-        password,
-        protocol,
-        rejectUnauthorized]);
+    output = runCliScript(__dirname + "/__scripts__/get_resource_webservice_fully_qualified.sh", TEST_ENVIRONMENT, [
+      regionName,
+      csdGroup,
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    ]);
     stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
@@ -171,5 +189,4 @@ describe("CICS define web service command", () => {
 
     await deleteWebservice(session, options);
   });
-
 });

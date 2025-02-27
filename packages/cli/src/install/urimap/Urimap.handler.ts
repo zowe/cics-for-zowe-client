@@ -9,8 +9,8 @@
  *
  */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { ICMCIApiResponse, installUrimap } from "@zowe/cics-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 import i18nTypings from "../../-strings-/en";
@@ -27,18 +27,17 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).IN
 
 export default class UrimapHandler extends CicsBaseHandler {
   public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
-
     const status: ITaskWithStatus = {
       statusMessage: "Installing URIMAP from CICS",
       percentComplete: 0,
-      stageName: TaskStage.IN_PROGRESS
+      stageName: TaskStage.IN_PROGRESS,
     };
-    params.response.progress.startBar({task: status});
+    params.response.progress.startBar({ task: status });
 
     const response = await installUrimap(session, {
       name: params.arguments.urimapName,
       csdGroup: params.arguments.csdGroup,
-      regionName: params.arguments.regionName
+      regionName: params.arguments.regionName,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);
