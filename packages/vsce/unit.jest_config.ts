@@ -9,5 +9,5 @@
  *
  */
 
-import { createConfig, ConfigGlobals } from '../../common.jest_config';
+import { ConfigGlobals, createConfig } from "../../common.jest_config";
 export default createConfig("unit", "Zowe CICS VSCE Unit Tests") as ConfigGlobals;
