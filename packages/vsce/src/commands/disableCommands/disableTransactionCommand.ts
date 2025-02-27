@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
-import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
-import { ICommandParams } from "../ICommandParams";
+import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import constants from "../../utils/constants";
 import { runPutResource } from "../../utils/resourceUtils";
+import { ICommandParams } from "../ICommandParams";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -37,14 +37,13 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
             increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-
 
           try {
             await disableTransaction(currentNode.parentRegion.parentSession.session, {
@@ -61,7 +60,8 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform DISABLE on Transaction "${allSelectedNodes[parseInt(index)].transaction.tranid
+                `Perform DISABLE on Transaction "${
+                  allSelectedNodes[parseInt(index)].transaction.tranid
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -106,23 +106,23 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
   });
 }
 
-function disableTransaction(
-  session: imperative.AbstractSession,
-  parms: ICommandParams
-): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `TRANID='${parms.name}'`}
-  }, {
-    request: {
-      action: {
-        $: {
-          name: "DISABLE",
+function disableTransaction(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `TRANID='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "DISABLE",
+          },
         },
       },
-    },
-  });
+    }
+  );
 }

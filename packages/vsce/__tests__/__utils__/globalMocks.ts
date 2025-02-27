@@ -10,9 +10,9 @@
  */
 
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfile } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
-import { IProfile } from "@zowe/imperative";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");

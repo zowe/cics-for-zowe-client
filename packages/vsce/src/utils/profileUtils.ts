@@ -11,8 +11,8 @@
 
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
-import { ProfileManagement } from "./profileManagement";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
+import { ProfileManagement } from "./profileManagement";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
   const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
@@ -38,10 +38,11 @@ export function missingUsernamePassword(missingParamters: any): boolean {
 
 export async function updateProfile(profile?: imperative.IProfileLoaded, sessionTree?: CICSSessionTree): Promise<imperative.IProfileLoaded> {
   let missingParamters = missingSessionParameters(profile.profile);
-  if (missingUsernamePassword(missingParamters) ||
-  // If profile is expanded and it previously had 401 error code
-   (sessionTree && sessionTree.getIsUnauthorized())) {
-
+  if (
+    missingUsernamePassword(missingParamters) ||
+    // If profile is expanded and it previously had 401 error code
+    (sessionTree && sessionTree.getIsUnauthorized())
+  ) {
     const updatedProfile = await promptCredentials(profile.name, true);
     if (updatedProfile) {
       profile = updatedProfile;
@@ -51,7 +52,7 @@ export async function updateProfile(profile?: imperative.IProfileLoaded, session
 
     if (missingParamters.length) {
       window.showInformationMessage(
-        `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`,
+        `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`
       );
     } else {
       return profile;
@@ -66,10 +67,13 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
   // });
   // await mProfileInfo.readProfilesFromDisk();
   // ProfilesCache.createConfigInstance(mProfileInfo);
-  const promptInfo = await ZoweVsCodeExtension.updateCredentials({
-    sessionName,
-    rePrompt,
-  }, ProfileManagement.getExplorerApis());
+  const promptInfo = await ZoweVsCodeExtension.updateCredentials(
+    {
+      sessionName,
+      rePrompt,
+    },
+    ProfileManagement.getExplorerApis()
+  );
   if (!promptInfo) {
     window.showInformationMessage("Input credentials operation Cancelled");
   }

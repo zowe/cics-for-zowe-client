@@ -1,4 +1,4 @@
-import { getIconByStatus, getFolderIcon, getIconFilePathFromName, getIconRootName } from "../../../src/utils/iconUtils";
+import { getFolderIcon, getIconByStatus, getIconFilePathFromName, getIconRootName } from "../../../src/utils/iconUtils";
 
 const iconPath = {
   light: "program-dark.svg",

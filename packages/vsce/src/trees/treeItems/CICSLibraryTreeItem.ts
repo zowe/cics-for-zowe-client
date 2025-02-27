@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
 import { runGetResource } from "../../utils/resourceUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 import { CICSLibraryDatasets } from "./CICSLibraryDatasets";
 
 import { toArray } from "../../utils/commandUtils";
@@ -28,7 +28,7 @@ export class CICSLibraryTreeItem extends TreeItem {
     library: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getIconFilePathFromName("library"),
+    public iconPath = getIconFilePathFromName("library")
   ) {
     super(`${library.name}`, TreeItemCollapsibleState.Collapsed);
 
@@ -81,8 +81,8 @@ export class CICSLibraryTreeItem extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching datasets - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

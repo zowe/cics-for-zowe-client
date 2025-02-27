@@ -865,7 +865,8 @@
     "test": "npm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
-    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix"
+    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",

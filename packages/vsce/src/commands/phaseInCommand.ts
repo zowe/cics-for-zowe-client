@@ -18,8 +18,8 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import { runPutResource } from "../utils/resourceUtils";
 import constants from "../utils/constants";
+import { runPutResource } from "../utils/resourceUtils";
 
 /**
  * Performs PHASE IN on selected CICSProgram nodes.
@@ -41,7 +41,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Phase In ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
@@ -65,7 +65,8 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform PHASEIN on Program "${allSelectedNodes[parseInt(index)].program.program
+                `Perform PHASEIN on Program "${
+                  allSelectedNodes[parseInt(index)].program.program
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -110,20 +111,23 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
   });
 }
 
-async function performPhaseIn(session: imperative.AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string; }) {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `PROGRAM='${parms.name}'`}
-  }, {
-    request: {
-      action: {
-        $: {
-          name: "PHASEIN",
+async function performPhaseIn(session: imperative.AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string }) {
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `PROGRAM='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "PHASEIN",
+          },
         },
       },
-    },
-  });
+    }
+  );
 }

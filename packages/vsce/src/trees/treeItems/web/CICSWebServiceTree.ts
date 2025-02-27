@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
-import { toArray } from "../../../utils/commandUtils";
 import { runGetResource } from "../../../utils/resourceUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 
 export class CICSWebServiceTree extends TreeItem {
   children: CICSWebServiceTreeItem[] = [];
@@ -24,7 +24,7 @@ export class CICSWebServiceTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Web Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
@@ -48,9 +48,9 @@ export class CICSWebServiceTree extends TreeItem {
       const webserviceResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
         resourceName: "CICSWebService",
-        cicsPlex:  this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
+        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         regionName: this.parentRegion.getRegionName(),
-        params: {criteria: criteria}
+        params: { criteria: criteria },
       });
 
       const webservicesArray = toArray(webserviceResponse.response.records.cicswebservice);
@@ -72,8 +72,8 @@ export class CICSWebServiceTree extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching Web Services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

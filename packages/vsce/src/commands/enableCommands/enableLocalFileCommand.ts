@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { ICommandParams } from "../ICommandParams";
-import { runPutResource } from "../../utils/resourceUtils";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
+import { ICommandParams } from "../ICommandParams";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -37,14 +37,13 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
             increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-
 
           try {
             await enableLocalFile(currentNode.parentRegion.parentSession.session, {
@@ -97,19 +96,22 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<any
 }
 
 function enableLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `FILE='${parms.name}'`}
-  },{
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `FILE='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "ENABLE",
+          },
         },
       },
     }
-  });
+  );
 }

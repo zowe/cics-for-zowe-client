@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
-import { runGetResource } from "../../../utils/resourceUtils";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
-import { toArray } from "../../../utils/commandUtils";
+import { runGetResource } from "../../../utils/resourceUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
 
 export class CICSPipelineTree extends TreeItem {
   children: CICSPipelineTreeItem[] = [];
@@ -24,7 +24,7 @@ export class CICSPipelineTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
@@ -50,7 +50,7 @@ export class CICSPipelineTree extends TreeItem {
         resourceName: "CICSPipeline",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
       const pipelinesArray = toArray(pipelineResponse.response.records.cicspipeline);
       this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;
@@ -71,8 +71,8 @@ export class CICSPipelineTree extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching Pipelines - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

@@ -11,12 +11,12 @@
 
 const getFolderIconMock = jest.fn();
 
-import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
 import * as filterUtils from "../../../src/utils/filterUtils";
-import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
 import CustomError from "../../__utils__/CustomError";
 
 jest.mock("@zowe/cics-for-zowe-sdk");

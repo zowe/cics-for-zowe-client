@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconByStatus } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSLocalFileTreeItem extends TreeItem {
   localFile: any;
@@ -27,17 +27,12 @@ export class CICSLocalFileTreeItem extends TreeItem {
   ) {
     super(
       `${localFile.file} ${
-        localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() === "closed"
-          ? "(Disabled) (Closed)"
-          : localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() !== "closed"
-            ? "(Disabled)"
-            : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() === "closed"
-              ? "(Unenabled) (Closed)"
-              : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() !== "closed"
-                ? "(Unenabled)"
-                : localFile.enablestatus.toLowerCase() === "enabled" && localFile.openstatus.toLowerCase() === "closed"
-                  ? "(Closed)"
-                  : ""
+        localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Disabled) (Closed)"
+        : localFile.enablestatus.toLowerCase() === "disabled" && localFile.openstatus.toLowerCase() !== "closed" ? "(Disabled)"
+        : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Unenabled) (Closed)"
+        : localFile.enablestatus.toLowerCase() === "unenabled" && localFile.openstatus.toLowerCase() !== "closed" ? "(Unenabled)"
+        : localFile.enablestatus.toLowerCase() === "enabled" && localFile.openstatus.toLowerCase() === "closed" ? "(Closed)"
+        : ""
       }`,
       TreeItemCollapsibleState.None
     );

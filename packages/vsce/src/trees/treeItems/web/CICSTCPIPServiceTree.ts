@@ -9,14 +9,14 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
-import { runGetResource } from "../../../utils/resourceUtils";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
-import { toArray } from "../../../utils/commandUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { runGetResource } from "../../../utils/resourceUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
 
 export class CICSTCPIPServiceTree extends TreeItem {
   children: CICSTCPIPServiceTreeItem[] = [];
@@ -25,7 +25,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
@@ -51,14 +51,14 @@ export class CICSTCPIPServiceTree extends TreeItem {
         resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
       const tcpipservicesArray = toArray(tcpipsResponse.response.records.cicstcpipservice);
       this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${tcpipservicesArray.length}]`;
       for (const tcpips of tcpipservicesArray) {
         const newTCPIPServiceItem = new CICSTCPIPServiceTreeItem(tcpips, this.parentRegion, this);
         newTCPIPServiceItem.setLabel(
-          newTCPIPServiceItem.label.toString().replace(tcpips.name, `${tcpips.name} [Port #${newTCPIPServiceItem.tcpips.port}]`),
+          newTCPIPServiceItem.label.toString().replace(tcpips.name, `${tcpips.name} [Port #${newTCPIPServiceItem.tcpips.port}]`)
         );
         this.addTCPIPS(newTCPIPServiceItem);
       }
@@ -74,8 +74,8 @@ export class CICSTCPIPServiceTree extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching TCPIP services - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

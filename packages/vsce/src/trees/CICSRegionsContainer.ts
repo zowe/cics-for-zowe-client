@@ -9,15 +9,15 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../utils/commandUtils";
+import { getFolderIcon } from "../utils/iconUtils";
 import { ProfileManagement } from "../utils/profileManagement";
+import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { getFolderIcon } from "../utils/iconUtils";
-import { toArray } from "../utils/commandUtils";
-import { runGetResource } from "../utils/resourceUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -27,7 +27,7 @@ export class CICSRegionsContainer extends TreeItem {
 
   constructor(
     parent: CICSPlexTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Regions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicsregionscontainer.`;
@@ -56,7 +56,7 @@ export class CICSRegionsContainer extends TreeItem {
         if (!this.children.length) {
           window.showInformationMessage(`No regions found for ${this.parent.getPlexName()}`);
         }
-      },
+      }
     );
   }
 

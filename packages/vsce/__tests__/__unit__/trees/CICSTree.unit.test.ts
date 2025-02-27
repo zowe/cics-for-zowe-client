@@ -9,8 +9,8 @@
  *
  */
 
-import { CICSProfileMock } from "../../__utils__/globalMocks";
 import { imperative } from "@zowe/zowe-explorer-api";
+import { CICSProfileMock } from "../../__utils__/globalMocks";
 
 const profilesCacheRefreshMock = jest.fn();
 profilesCacheRefreshMock.mockReturnValue(["prof1", "prof2"]);
@@ -22,9 +22,9 @@ getProfilesCacheMock.mockReturnValue({
       message: "",
       type: "cics",
       name: name,
-      profile: CICSProfileMock
+      profile: CICSProfileMock,
     };
-  }
+  },
 });
 
 import { CICSTree } from "../../../src/trees/CICSTree";

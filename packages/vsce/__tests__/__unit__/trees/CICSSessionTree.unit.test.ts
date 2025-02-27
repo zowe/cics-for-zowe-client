@@ -16,7 +16,6 @@ import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
-
 jest.mock("@zowe/zowe-explorer-api");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconFilePathFromName: getIconFilePathFromNameMock };
@@ -30,7 +29,6 @@ describe("Test suite for CICSSessionTree", () => {
   let sut: CICSSessionTree;
 
   describe("Validation", () => {
-
     beforeEach(() => {
       getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
 

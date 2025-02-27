@@ -9,18 +9,18 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSTCPIPServiceTreeItem } from "../treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSCombinedTCPIPServiceTree extends TreeItem {
   children: (CICSTCPIPServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -32,7 +32,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
 
   constructor(
     parentPlex: CICSPlexTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("All TCPIP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtcpipstree.`;
@@ -42,7 +42,6 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allTCPIPS.recordCountIncrement")}`;
     this.constant = CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE;
-
   }
 
   public async loadContents(tree: CICSTree) {
@@ -66,7 +65,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName(),
+            this.getParent().getGroupName()
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -79,7 +78,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount,
+                  recordsCount
                 );
               } else {
                 allTCPIPS = await ProfileManagement.getCachedResources(
@@ -88,7 +87,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount,
+                  this.incrementCount
                 );
                 count = recordsCount;
               }
@@ -107,11 +106,11 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching TCPIP Services TEST - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " ",
-            )}`,
+              " "
+            )}`
           );
         }
-      },
+      }
     );
   }
 
@@ -127,7 +126,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
         .filter((child) => child instanceof CICSRegionTree && child.getRegionName() === tcpips.eyu_cicsname)?.[0] as CICSRegionTree;
       const tcpipsTree = new CICSTCPIPServiceTreeItem(tcpips, parentRegion, this);
       tcpipsTree.setLabel(
-        tcpipsTree.label.toString().replace(tcpips.name, `${tcpips.name} (${tcpips.eyu_cicsname}) [Port #${tcpipsTree.tcpips.port}]`),
+        tcpipsTree.label.toString().replace(tcpips.name, `${tcpips.name} (${tcpips.eyu_cicsname}) [Port #${tcpipsTree.tcpips.port}]`)
       );
       newChildren.push(tcpipsTree);
     }
@@ -160,7 +159,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName(),
+          this.getParent().getGroupName()
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -172,19 +171,19 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount,
+            this.incrementCount
           );
           if (allTCPIPS) {
             // @ts-ignore
             this.addTCPIPSUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSTCPIPServiceTreeItem) ?? []) as CICSTCPIPServiceTreeItem[],
               allTCPIPS,
-              count,
+              count
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      },
+      }
     );
   }
 

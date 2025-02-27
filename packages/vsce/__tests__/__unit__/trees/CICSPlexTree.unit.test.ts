@@ -13,9 +13,9 @@ const getIconFilePathFromNameMock = jest.fn();
 const cicsCombinedTreeMock = jest.fn();
 
 import { IProfileLoaded } from "@zowe/imperative";
-import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
+import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedProgramTree", () => ({

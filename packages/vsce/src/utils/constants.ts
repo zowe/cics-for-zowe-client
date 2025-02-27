@@ -10,7 +10,6 @@
  */
 
 export default {
-
   /**
    * Default maximum number of resources returned from a CMCI request
    */

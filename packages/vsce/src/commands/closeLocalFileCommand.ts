@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedLocalFileTree } from "../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import { ICommandParams } from "./ICommandParams";
-import { runPutResource } from "../utils/resourceUtils";
 import constants from "../utils/constants";
+import { runPutResource } from "../utils/resourceUtils";
+import { ICommandParams } from "./ICommandParams";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -44,7 +44,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
           cancellable: true,
         },
         async (progress, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           for (const index in allSelectedNodes) {
             progress.report({
               message: `Closing ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
@@ -72,7 +72,8 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
                 const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
 
                 window.showErrorMessage(
-                  `Perform CLOSE on local file "${allSelectedNodes[parseInt(index)].localFile.file
+                  `Perform CLOSE on local file "${
+                    allSelectedNodes[parseInt(index)].localFile.file
                   }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
                 );
               } else {
@@ -117,30 +118,29 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-async function closeLocalFile(
-  session: imperative.AbstractSession,
-  parms: ICommandParams,
-  busyDecision: string
-): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `FILE='${parms.name}'`}
-  }, {
-    request: {
-      action: {
-        $: {
-          name: "CLOSE",
-        },
-        parameter: {
+async function closeLocalFile(session: imperative.AbstractSession, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `FILE='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
           $: {
-            name: "BUSY",
-            value: busyDecision,
+            name: "CLOSE",
+          },
+          parameter: {
+            $: {
+              name: "BUSY",
+              value: busyDecision,
+            },
           },
         },
       },
-    },
-  });
+    }
+  );
 }

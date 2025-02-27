@@ -9,33 +9,33 @@
  *
  */
 
-import { FilterDescriptor } from "../utils/filterUtils";
-import { Gui, imperative, FileManagement, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import {
-  commands,
   Event,
   EventEmitter,
   ProgressLocation,
   ProviderResult,
+  QuickPickItem,
+  QuickPickOptions,
   TreeDataProvider,
   TreeItem,
-  window,
   TreeView,
-  QuickPickItem,
+  commands,
   l10n,
-  QuickPickOptions,
+  window,
 } from "vscode";
-import constants from "../utils/constants";
 import { PersistentStorage } from "../utils/PersistentStorage";
+import constants from "../utils/constants";
+import { getErrorCode } from "../utils/errorUtils";
+import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { updateProfile } from "../utils/profileUtils";
+import { runGetResource } from "../utils/resourceUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { getErrorCode } from "../utils/errorUtils";
-import { runGetResource } from "../utils/resourceUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -130,8 +130,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       window.showErrorMessage(
         `Something went wrong while managing the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
           /(\\n\t|\\n|\\t)/gm,
-          " ",
-        )}`,
+          " "
+        )}`
       );
     }
   }
@@ -257,7 +257,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             for (const item of plexInfo) {
               // No plex
               if (item.plexname === null) {
-
                 const regionsObtained = await runGetResource({
                   session: sessionTree.getSession(),
                   resourceName: CicsCmciConstants.CICS_CMCI_REGION,
@@ -270,7 +269,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   regionsObtained.response.records.cicsregion,
                   sessionTree,
                   undefined,
-                  sessionTree,
+                  sessionTree
                 );
                 sessionTree.addRegion(newRegionTree);
               } else {
@@ -292,7 +291,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           sessionTree.setIsExpanded(false);
           this._onDidChangeTreeData.fire(undefined);
         }
-      },
+      }
     );
   }
 

@@ -9,15 +9,15 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSProgramTree } from "./CICSProgramTree";
-import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSLocalFileTree } from "./CICSLocalFileTree";
-import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSPlexTree } from "./CICSPlexTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconByStatus } from "../utils/iconUtils";
-import { CICSTaskTree } from "./CICSTaskTree";
 import { CICSLibraryTree } from "./CICSLibraryTree";
+import { CICSLocalFileTree } from "./CICSLocalFileTree";
+import { CICSPlexTree } from "./CICSPlexTree";
+import { CICSProgramTree } from "./CICSProgramTree";
+import { CICSSessionTree } from "./CICSSessionTree";
+import { CICSTaskTree } from "./CICSTaskTree";
+import { CICSTransactionTree } from "./CICSTransactionTree";
 import { CICSWebTree } from "./CICSWebTree";
 
 export class CICSRegionTree extends TreeItem {

@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { ICommandParams } from "../ICommandParams";
-import { runPutResource } from "../../utils/resourceUtils";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
+import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs enable on selected CICSProgram nodes.
@@ -42,7 +42,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
@@ -101,19 +101,22 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
 }
 
 function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `PROGRAM='${parms.name}'`}
-  },{
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `PROGRAM='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "ENABLE",
+          },
         },
       },
     }
-  });
+  );
 }

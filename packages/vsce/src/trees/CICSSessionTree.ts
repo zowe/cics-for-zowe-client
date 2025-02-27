@@ -9,12 +9,12 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSPlexTree } from "./CICSPlexTree";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { getIconFilePathFromName } from "../utils/iconUtils";
 import { SessConstants } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { getIconFilePathFromName } from "../utils/iconUtils";
+import { CICSPlexTree } from "./CICSPlexTree";
+import { CICSRegionTree } from "./CICSRegionTree";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];

@@ -9,14 +9,14 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
-import { CICSRegionTree } from "./CICSRegionTree";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../utils/commandUtils";
 import { getDefaultTransactionFilter, toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
-import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -25,7 +25,7 @@ export class CICSTransactionTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Transactions", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
@@ -51,7 +51,7 @@ export class CICSTransactionTree extends TreeItem {
         resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
       const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
@@ -73,8 +73,8 @@ export class CICSTransactionTree extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching transaction - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

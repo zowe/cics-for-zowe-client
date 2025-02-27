@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
-import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
-import { ICommandParams } from "../ICommandParams";
+import { findSelectedNodes } from "../../utils/commandUtils";
 import constants from "../../utils/constants";
 import { runPutResource } from "../../utils/resourceUtils";
+import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -42,14 +42,13 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
             increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-
 
           try {
             await disableProgram(currentNode.parentRegion.parentSession.session, {
@@ -103,19 +102,22 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
 }
 
 function disableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `PROGRAM='${parms.name}'`}
-  }, {
-    request: {
-      action: {
-        $: {
-          name: "DISABLE",
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `PROGRAM='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "DISABLE",
+          },
         },
       },
-    },
-  });
+    }
+  );
 }

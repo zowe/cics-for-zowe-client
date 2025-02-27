@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconFilePathFromName } from "../../../../utils/iconUtils";
+import { CICSRegionTree } from "../../../CICSRegionTree";
 
 export class CICSURIMapTreeItem extends TreeItem {
   urimap: any;
@@ -22,7 +22,7 @@ export class CICSURIMapTreeItem extends TreeItem {
     urimap: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("uri-map"),
+    public readonly iconPath = getIconFilePathFromName("uri-map")
   ) {
     super(`${urimap.name}`, TreeItemCollapsibleState.None);
 
