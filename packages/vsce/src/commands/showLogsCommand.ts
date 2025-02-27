@@ -11,10 +11,10 @@
 
 import { commands, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { findSelectedNodes } from "../utils/commandUtils";
+import { findSelectedNodes, toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, getResource } from "@zowe/cics-for-zowe-sdk";
 import * as vscode from "vscode";
 import { IProfileLoaded } from "@zowe/imperative";
 
@@ -29,7 +29,7 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
   const matchingProfiles: IProfileLoaded[] = [];
   if (baseForCicsProfile) {
     for (const profile of zosProfiles) {
-      if (baseForCicsProfile && baseForCicsProfile?.name === (await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name))?.name) {
+      if (baseForCicsProfile && baseForCicsProfile.name === (await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name))?.name) {
         matchingProfiles.push(profile);
       }
     }
@@ -47,9 +47,7 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
 }
 
 function promptUserForProfile(zosProfiles: IProfileLoaded[]): Thenable<string> {
-  const profileNames = zosProfiles.map((value) => {
-    return value.name;
-  });
+  const profileNames = zosProfiles.map((value) => value.name);
 
   if (profileNames.length > 0) {
     const quickPickOptions: vscode.QuickPickOptions = {
@@ -69,16 +67,16 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
   // tree. request CICSRGN if jobid isn't available.
   let jobid: string = selectedRegion.region.jobid;
   if (!jobid) {
-    let response: ICMCIApiResponse;
     try {
-      response = await getResource(selectedRegion.parentSession.getSession(), {
-        name: "CICSRegion",
+      const { response } = await getResource(selectedRegion.parentSession.getSession(), {
+        name: CicsCmciConstants.CICS_CMCI_REGION,
         cicsPlex: selectedRegion.parentPlex.plexName,
         regionName: selectedRegion.region.cicsname,
       });
-      jobid = response.response.records.cicsregion.jobid;
+      if (response.records?.cicsregion) {
+        jobid = toArray(response.records.cicsregion)[0].jobid;
+      }
     } catch (ex) {
-      console.log(ex);
       // unlikely to get here but logging this would be useful in future
     }
   }
@@ -88,14 +86,12 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
 export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node) => {
     const allSelectedRegions = findSelectedNodes(treeview, CICSRegionTree, node);
-    if (!allSelectedRegions || !(allSelectedRegions.length == 1)) {
+    if (!allSelectedRegions || allSelectedRegions.length !== 1) {
       await window.showErrorMessage("One CICS region must be selected");
       return;
     }
     const selectedRegion: CICSRegionTree = allSelectedRegions[0];
-    const zosProfiles = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter(
-      (profile) => profile.type === "zosmf" || profile.type === "rse",
-    );
+    const zosProfiles = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter((profile) => ["zosmf", "rse"].includes(profile.type));
 
     let chosenProfileName: string;
 
