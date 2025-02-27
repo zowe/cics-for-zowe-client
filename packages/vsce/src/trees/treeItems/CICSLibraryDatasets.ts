@@ -9,14 +9,14 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
-import { getIconFilePathFromName } from "../../utils/iconUtils";
-import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
-import { toEscapedCriteriaString } from "../../utils/filterUtils";
-import { toArray } from "../../utils/commandUtils";
-import { runGetResource } from "../../utils/resourceUtils";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../../utils/commandUtils";
+import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
+import { runGetResource } from "../../utils/resourceUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
 
 export class CICSLibraryDatasets extends TreeItem {
   children: CICSProgramTreeItem[] = [];
@@ -29,7 +29,7 @@ export class CICSLibraryDatasets extends TreeItem {
     dataset: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public iconPath = getIconFilePathFromName("library-dataset"),
+    public iconPath = getIconFilePathFromName("library-dataset")
   ) {
     super(`${dataset.dsname}`, TreeItemCollapsibleState.Collapsed);
 
@@ -64,7 +64,7 @@ export class CICSLibraryDatasets extends TreeItem {
         resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
 
       const programsArray = toArray(datasetResponse.response.records.cicsprogram);
@@ -83,8 +83,8 @@ export class CICSLibraryDatasets extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

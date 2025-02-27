@@ -12,8 +12,8 @@
 import { ExtensionContext, ProgressLocation, TreeItemCollapsibleState, window } from "vscode";
 import { CICSTree } from "./trees/CICSTree";
 import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
-import { ProfileManagement } from "./utils/profileManagement";
 import { getFolderIcon, getIconFilePathFromName } from "./utils/iconUtils";
+import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { Logger } from "@zowe/imperative";
@@ -55,7 +55,7 @@ export async function activate(context: ExtensionContext) {
   } else {
     window.showErrorMessage(
       "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-      "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed",
+        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
     );
     return;
   }
@@ -85,11 +85,11 @@ export async function activate(context: ExtensionContext) {
         await node.element.loadContents();
         node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
         treeDataProv._onDidChangeTreeData.fire(undefined);
-      },
+      }
     );
   };
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void; } = {
+  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
     cicscombinedprogramtree: expandCombinedTree,
     cicscombinedtransactiontree: expandCombinedTree,
     cicscombinedlocalfiletree: expandCombinedTree,

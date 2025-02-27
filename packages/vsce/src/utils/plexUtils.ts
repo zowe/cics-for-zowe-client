@@ -11,23 +11,23 @@
 
 export interface ICicsPlexInfo {
   _keydata: string;
-  accesstype: string,
-  botrsupd: string,
-  cmasname: string,
-  mpstatus: string,
-  plexname: string,
-  readrs: string,
-  rspoolid: string,
-  status: string,
-  sysid: string,
-  toprsupd: string,
-  transitcmas: string,
-  transitcnt: string,
-  updaters: string
+  accesstype: string;
+  botrsupd: string;
+  cmasname: string;
+  mpstatus: string;
+  plexname: string;
+  readrs: string;
+  rspoolid: string;
+  status: string;
+  sysid: string;
+  toprsupd: string;
+  transitcmas: string;
+  transitcnt: string;
+  updaters: string;
 }
 
 export function scoreCicsPlexByStatus(plex: ICicsPlexInfo): number {
-  return  (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
+  return (plex.status === "ACTIVE" && 7) + (plex.accesstype === "LOCAL" && 5) + (plex.mpstatus === "YES" && 3);
 }
 
 // pick the highest scoring cicsplexes if there are duplicates

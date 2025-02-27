@@ -9,21 +9,24 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
-import { getFolderIcon } from "../utils/iconUtils";
-import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
-import { toEscapedCriteriaString } from "../utils/filterUtils";
-import { toArray } from "../utils/commandUtils";
-import { runGetResource } from "../utils/resourceUtils";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../utils/commandUtils";
+import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { getFolderIcon } from "../utils/iconUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
 
 export class CICSLibraryTree extends TreeItem {
   children: CICSLibraryTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getFolderIcon(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false)
+  ) {
     super("Libraries", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.parentRegion = parentRegion;
@@ -46,9 +49,9 @@ export class CICSLibraryTree extends TreeItem {
       const libraryResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
         resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-        cicsPlex:  this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
+        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         regionName: this.parentRegion.getRegionName(),
-        params: {criteria: criteria}
+        params: { criteria: criteria },
       });
 
       const librariesArray = toArray(libraryResponse.response.records.cicslibrary);

@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedTransactionsTree } from "../../trees/CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
-import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
-import { ICommandParams } from "../ICommandParams";
-import { runPutResource } from "../../utils/resourceUtils";
+import { findSelectedNodes } from "../../utils/commandUtils";
 import constants from "../../utils/constants";
+import { runPutResource } from "../../utils/resourceUtils";
+import { ICommandParams } from "../ICommandParams";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -38,14 +38,13 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
             increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
           });
           const currentNode = allSelectedNodes[parseInt(index)];
-
 
           try {
             await enableTransaction(currentNode.parentRegion.parentSession.session, {
@@ -97,19 +96,22 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
 }
 
 function enableTransaction(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `TRANID='${parms.name}'`}
-  },{
-    request: {
-      action: {
-        $: {
-          name: "ENABLE",
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `TRANID='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
+          $: {
+            name: "ENABLE",
+          },
         },
       },
     }
-  });
+  );
 }

@@ -12,10 +12,10 @@
 const getFolderIconMock = jest.fn();
 const getRegionInfoInPlexMock = jest.fn();
 
+import * as vscode from "vscode";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSTree } from "../../../src/trees/CICSTree";
-import * as vscode from "vscode";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
@@ -24,8 +24,8 @@ jest.mock("../../../src/utils/iconUtils", () => {
 });
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
-    getRegionInfoInPlex: getRegionInfoInPlexMock
-  }
+    getRegionInfoInPlex: getRegionInfoInPlexMock,
+  },
 }));
 jest.mock("../../../src/trees/CICSRegionTree");
 
@@ -87,8 +87,10 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await sut.loadRegionsInCICSGroup(CICSTreeMock as any as CICSTree);
 
-      expect(getResourceMock).toHaveBeenCalledWith(sut.getParent().getParent().getSession(), testData,
-      { failOnNoData: false, useCICSCmciRestError: true });
+      expect(getResourceMock).toHaveBeenCalledWith(sut.getParent().getParent().getSession(), testData, {
+        failOnNoData: false,
+        useCICSCmciRestError: true,
+      });
       expect(sut.label).toBe("Regions (cics) [1/1]");
       expect(sut.collapsibleState).toBe(2);
     });

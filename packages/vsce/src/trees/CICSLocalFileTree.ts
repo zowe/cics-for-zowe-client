@@ -9,20 +9,23 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
-import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
-import { CICSRegionTree } from "./CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
-import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
-  constructor(parentRegion: CICSRegionTree, public iconPath = getFolderIcon(false)) {
+  constructor(
+    parentRegion: CICSRegionTree,
+    public iconPath = getFolderIcon(false)
+  ) {
     super("Local Files", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.parentRegion = parentRegion;
@@ -46,13 +49,12 @@ export class CICSLocalFileTree extends TreeItem {
     }
     this.children = [];
     try {
-
       const localFileResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
         resourceName: "CICSLocalFile",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
       const localFileArray = toArray(localFileResponse.response.records.cicslocalfile);
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;

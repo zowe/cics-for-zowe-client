@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconFilePathFromName } from "../../../../utils/iconUtils";
+import { CICSRegionTree } from "../../../CICSRegionTree";
 
 export class CICSWebServiceTreeItem extends TreeItem {
   webservice: any;
@@ -22,7 +22,7 @@ export class CICSWebServiceTreeItem extends TreeItem {
     webservice: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("web-service"),
+    public readonly iconPath = getIconFilePathFromName("web-service")
   ) {
     super(`${webservice.name}`, TreeItemCollapsibleState.None);
 

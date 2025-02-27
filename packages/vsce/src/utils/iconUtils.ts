@@ -31,19 +31,18 @@ export function getIconRootName(resourceType: string, resourceTreeItem: any) {
     case "TRANSACTION":
       return resourceTreeItem.status === "DISABLED" ? "local-transaction-disabled" : "local-transaction";
     case "LOCAL_FILE":
-      return resourceTreeItem.openstatus === "CLOSED" && resourceTreeItem.enablestatus === "DISABLED"
-        ? "local-file-disabled-closed"
-        : resourceTreeItem.openstatus === "CLOSED"
-          ? "local-file-closed"
-          : resourceTreeItem.enablestatus === "DISABLED"
-            ? "local-file-disabled"
-            : "local-file";
+      return (
+        resourceTreeItem.openstatus === "CLOSED" && resourceTreeItem.enablestatus === "DISABLED" ? "local-file-disabled-closed"
+        : resourceTreeItem.openstatus === "CLOSED" ? "local-file-closed"
+        : resourceTreeItem.enablestatus === "DISABLED" ? "local-file-disabled"
+        : "local-file"
+      );
     case "TASK":
-      return resourceTreeItem.runstatus === "RUNNING"
-        ? "task-running"
-        : resourceTreeItem.runstatus === "SUSPENDED"
-          ? "task-suspended"
-          : "task-dispatched";
+      return (
+        resourceTreeItem.runstatus === "RUNNING" ? "task-running"
+        : resourceTreeItem.runstatus === "SUSPENDED" ? "task-suspended"
+        : "task-dispatched"
+      );
     case "REGION":
       return resourceTreeItem.isActive ? "region" : "region-disabled";
   }

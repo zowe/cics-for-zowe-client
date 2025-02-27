@@ -9,11 +9,10 @@
  *
  */
 
-import {ICicsPlexInfo, scoreCicsPlexByStatus, getBestCICSplexes} from "../../../src/utils/plexUtils";
+import { ICicsPlexInfo, getBestCICSplexes, scoreCicsPlexByStatus } from "../../../src/utils/plexUtils";
 
 function getPlexInfo(plexname: string, status: string, mpstatus: string, accesstype: string) {
-  const plex: ICicsPlexInfo =
-  {
+  const plex: ICicsPlexInfo = {
     _keydata: "",
     accesstype: accesstype,
     botrsupd: "",
@@ -27,11 +26,10 @@ function getPlexInfo(plexname: string, status: string, mpstatus: string, accesst
     toprsupd: "",
     transitcmas: "",
     transitcnt: "",
-    updaters: ""
+    updaters: "",
   };
   return plex;
 }
-
 
 describe("Plex Utils tests", () => {
   describe("compareCicsplexes", () => {
@@ -80,78 +78,58 @@ describe("Plex Utils tests", () => {
 
   describe("getBestCICSplexes", () => {
     it("should return a map of 2 plexes as both are valid", () => {
-      const plexes = [
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
-        getPlexInfo("PLEX2", 'ACTIVE', 'YES', 'LOCAL')
-      ];
+      const plexes = [getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"), getPlexInfo("PLEX2", "ACTIVE", "YES", "LOCAL")];
       const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(2);
     });
 
     it("should return a map of 1 plex as one in inactive both are valid", () => {
-      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL');
-      const plexes = [
-        getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL'),
-        expected
-      ];
+      const expected = getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL");
+      const plexes = [getPlexInfo("PLEX1", "INACTIVE", "YES", "LOCAL"), expected];
       const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(expected);
     });
 
     it("should return a map of 1 plex even though both are inactive", () => {
-      const expected = getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL');
-      const plexes = [
-        expected,
-        getPlexInfo("PLEX1", 'INACTIVE', 'YES', 'LOCAL')
-      ];
+      const expected = getPlexInfo("PLEX1", "INACTIVE", "YES", "LOCAL");
+      const plexes = [expected, getPlexInfo("PLEX1", "INACTIVE", "YES", "LOCAL")];
       const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
       expect(allplexes.get("PLEX1")).toEqual(expected);
     });
 
     it("should return a map of 1 plex as one of the plexes has mpstatus NO", () => {
-      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL');
-      const plexes = [
-        getPlexInfo("PLEX1", 'ACTIVE', 'NO', 'LOCAL'),
-        expected
-      ];
+      const expected = getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL");
+      const plexes = [getPlexInfo("PLEX1", "ACTIVE", "NO", "LOCAL"), expected];
       const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
-      expect(allplexes.get("PLEX1")).toEqual(
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
+      expect(allplexes.get("PLEX1")).toEqual(getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
     });
 
     it("should return a map of 1 plex as one of the plexes has accesstype ADJACENT", () => {
-      const expected = getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL')
-      const plexes = [
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'ADJACENT'),
-        expected
-      ];
+      const expected = getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL");
+      const plexes = [getPlexInfo("PLEX1", "ACTIVE", "YES", "ADJACENT"), expected];
       const allplexes = getBestCICSplexes(plexes);
       expect(allplexes.size).toEqual(1);
-      expect(allplexes.get("PLEX1")).toEqual(
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
+      expect(allplexes.get("PLEX1")).toEqual(getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
     });
 
     it("should return an array of 3 plexes", () => {
       const plexes = [
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'),
-        getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'),
-        getPlexInfo("PLEX2#", 'ACTIVE', 'YES', 'ADJACENT'),
-        getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'),
-        getPlexInfo("PLEX3#", 'ACTIVE', 'YES', 'ADJACENT')
+        getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"),
+        getPlexInfo("PLEX2#", "ACTIVE", "NO", "LOCAL"),
+        getPlexInfo("PLEX2#", "ACTIVE", "YES", "ADJACENT"),
+        getPlexInfo("PLEX3#", "ACTIVE", "NO", "LOCAL"),
+        getPlexInfo("PLEX3#", "ACTIVE", "YES", "ADJACENT"),
       ];
 
       const allplexes = getBestCICSplexes(plexes);
 
       expect(allplexes.size).toEqual(3);
-      expect(allplexes.get("PLEX1")).toEqual(
-        getPlexInfo("PLEX1", 'ACTIVE', 'YES', 'LOCAL'));
-      expect(allplexes.get("PLEX2#")).toEqual(
-        getPlexInfo("PLEX2#", 'ACTIVE', 'NO', 'LOCAL'));
-      expect(allplexes.get("PLEX3#")).toEqual(
-        getPlexInfo("PLEX3#", 'ACTIVE', 'NO', 'LOCAL'));
+      expect(allplexes.get("PLEX1")).toEqual(getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX2#")).toEqual(getPlexInfo("PLEX2#", "ACTIVE", "NO", "LOCAL"));
+      expect(allplexes.get("PLEX3#")).toEqual(getPlexInfo("PLEX3#", "ACTIVE", "NO", "LOCAL"));
     });
 
     it("should return an array of 4 plexes", () => {
@@ -195,21 +173,16 @@ describe("Plex Utils tests", () => {
         getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
         getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
         getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
-        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT")
+        getPlexInfo("PLEX4", "ACTIVE", "NO", "ADJACENT"),
       ];
 
       const allplexes = getBestCICSplexes(plexes);
 
       expect(allplexes.size).toEqual(4);
-      expect(allplexes.get("PLEX1")).toEqual(
-        getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
-      expect(allplexes.get("PLEX2")).toEqual(
-        getPlexInfo("PLEX2", "ACTIVE", "YES", "LOCAL"));
-      expect(allplexes.get("PLEX3")).toEqual(
-        getPlexInfo("PLEX3", "ACTIVE", "YES", "LOCAL"));
-      expect(allplexes.get("PLEX4")).toEqual(
-        getPlexInfo("PLEX4", "ACTIVE", "YES", "LOCAL"));
-
+      expect(allplexes.get("PLEX1")).toEqual(getPlexInfo("PLEX1", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX2")).toEqual(getPlexInfo("PLEX2", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX3")).toEqual(getPlexInfo("PLEX3", "ACTIVE", "YES", "LOCAL"));
+      expect(allplexes.get("PLEX4")).toEqual(getPlexInfo("PLEX4", "ACTIVE", "YES", "LOCAL"));
     });
   });
 });

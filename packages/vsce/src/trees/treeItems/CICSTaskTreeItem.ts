@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconByStatus } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSTaskTreeItem extends TreeItem {
   task: any;

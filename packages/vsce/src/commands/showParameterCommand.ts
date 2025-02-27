@@ -9,12 +9,12 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
-import { getParametersHtml } from "../utils/webviewHTML";
 import { runGetResource } from "../utils/resourceUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { getParametersHtml } from "../utils/webviewHTML";
 
 export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node) => {

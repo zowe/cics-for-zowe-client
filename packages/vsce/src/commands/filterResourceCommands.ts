@@ -51,7 +51,7 @@ export function getFilterLibrariesCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -85,7 +85,7 @@ export function getFilterDatasetsCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -119,7 +119,7 @@ export function getFilterProgramsCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -153,7 +153,7 @@ export function getFilterDatasetProgramsCommand(tree: CICSTree, treeview: TreeVi
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -187,7 +187,7 @@ export function getFilterLocalFilesCommand(tree: CICSTree, treeview: TreeView<an
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -221,7 +221,7 @@ export function getFilterTasksCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -255,7 +255,7 @@ export function getFilterTransactionCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -289,7 +289,7 @@ export function getFilterTCPIPSCommand(tree: CICSTree, treeview: TreeView<any>) 
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -323,7 +323,7 @@ export function getFilterURIMapsCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -357,7 +357,7 @@ export function getFilterPipelinesCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -391,7 +391,7 @@ export function getFilterWebServicesCommand(tree: CICSTree, treeview: TreeView<a
         cancellable: false,
       },
       async (_, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         await chosenNode.loadContents();
         tree._onDidChangeTreeData.fire(undefined);
       }

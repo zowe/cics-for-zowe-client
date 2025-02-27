@@ -9,6 +9,6 @@
  *
  */
 
-export function  getErrorCode(error: any) {
+export function getErrorCode(error: any) {
   return error.mDetails?.errorCode || error.response?.status;
 }

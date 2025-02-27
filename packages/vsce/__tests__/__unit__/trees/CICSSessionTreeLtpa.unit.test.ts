@@ -34,11 +34,10 @@ describe("Test suite for CICSSessionTree", () => {
       user: "A USER",
       password: "A PASSWORD",
     },
-    type: "cics"
+    type: "cics",
   };
 
   describe("cookies", () => {
-
     beforeEach(() => {
       sut = new CICSSessionTree(cicsProfileMock);
     });
@@ -49,7 +48,7 @@ describe("Test suite for CICSSessionTree", () => {
 
     it("Should not store invalid cookie", () => {
       const cookie = {
-        Cookie: "blah=hello"
+        Cookie: "blah=hello",
       };
 
       ses = sut.getSession();
@@ -61,7 +60,7 @@ describe("Test suite for CICSSessionTree", () => {
 
     it("Should store valid cookie", () => {
       const cookies = {
-        Cookie: "LtpaToken2=testValue"
+        Cookie: "LtpaToken2=testValue",
       };
 
       sut = new CICSSessionTree(cicsProfileMock);
@@ -75,7 +74,7 @@ describe("Test suite for CICSSessionTree", () => {
 
     it("Should store valid cookie if more the one returned", () => {
       const cookies = {
-        Cookie: "blah=hello;LtpaToken2=testValue"
+        Cookie: "blah=hello;LtpaToken2=testValue",
       };
 
       sut = new CICSSessionTree(cicsProfileMock);

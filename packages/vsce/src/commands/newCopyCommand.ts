@@ -39,7 +39,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
         for (const index in allSelectedNodes) {
           progress.report({
             message: `New Copying ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
@@ -63,7 +63,8 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform NEWCOPY on Program "${allSelectedNodes[parseInt(index)].program.program
+                `Perform NEWCOPY on Program "${
+                  allSelectedNodes[parseInt(index)].program.program
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {

@@ -9,14 +9,14 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window, workspace } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants";
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
+import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
 import { getFolderIcon } from "../utils/iconUtils";
-import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
-import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -25,7 +25,7 @@ export class CICSTaskTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Tasks", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
@@ -55,7 +55,7 @@ export class CICSTaskTree extends TreeItem {
         resourceName: CicsCmciConstants.CICS_CMCI_TASK,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
 
       const tasksArray = toArray(taskResponse.response.records.cicstask);
@@ -66,7 +66,7 @@ export class CICSTaskTree extends TreeItem {
         newTaskItem.setLabel(
           newTaskItem.label
             .toString()
-            .replace(task.task, `${task.task} - ${task.tranid}${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`),
+            .replace(task.task, `${task.task} - ${task.tranid}${task.runstatus !== "SUSPENDED" ? ` (${task.runstatus})` : ""}`)
         );
         this.addTask(newTaskItem);
       }
@@ -80,7 +80,7 @@ export class CICSTaskTree extends TreeItem {
         this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`,
+          `Something went wrong when fetching tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
         );
       }
     }

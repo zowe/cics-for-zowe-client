@@ -63,7 +63,7 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           await selectedNode.loadContents();
           tree._onDidChangeTreeData.fire(undefined);
         }

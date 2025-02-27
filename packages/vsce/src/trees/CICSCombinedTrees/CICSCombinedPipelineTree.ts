@@ -11,13 +11,13 @@
 
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
+import { getFolderIcon } from "../../utils/iconUtils";
 import { ProfileManagement } from "../../utils/profileManagement";
 import { CICSPlexTree } from "../CICSPlexTree";
-import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSRegionTree } from "../CICSRegionTree";
+import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
-import { getFolderIcon } from "../../utils/iconUtils";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSPipelineTreeItem } from "../treeItems/web/treeItems/CICSPipelineTreeItem";
 
@@ -31,7 +31,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
 
   constructor(
     parentPlex: CICSPlexTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("All Pipelines", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedpipelinetree.`;
@@ -64,7 +64,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
             this.parentPlex.getPlexName(),
             this.constant,
             criteria,
-            this.getParent().getGroupName(),
+            this.getParent().getGroupName()
           );
           if (cacheTokenInfo) {
             const recordsCount = cacheTokenInfo.recordCount;
@@ -77,7 +77,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  recordsCount,
+                  recordsCount
                 );
               } else {
                 allPipelines = await ProfileManagement.getCachedResources(
@@ -86,7 +86,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
                   cacheTokenInfo.cacheToken,
                   this.constant,
                   1,
-                  this.incrementCount,
+                  this.incrementCount
                 );
                 count = recordsCount;
               }
@@ -105,11 +105,11 @@ export class CICSCombinedPipelineTree extends TreeItem {
           window.showErrorMessage(
             `Something went wrong when fetching pipelines - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
               /(\\n\t|\\n|\\t)/gm,
-              " ",
-            )}`,
+              " "
+            )}`
           );
         }
-      },
+      }
     );
   }
 
@@ -155,7 +155,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
           this.parentPlex.getPlexName(),
           this.constant,
           criteria,
-          this.getParent().getGroupName(),
+          this.getParent().getGroupName()
         );
         if (cacheTokenInfo) {
           // record count may have updated
@@ -167,19 +167,19 @@ export class CICSCombinedPipelineTree extends TreeItem {
             cacheTokenInfo.cacheToken,
             this.constant,
             this.currentCount + 1,
-            this.incrementCount,
+            this.incrementCount
           );
           if (allPipelines) {
             // @ts-ignore
             this.addPipelinesUtil(
               (this.getChildren()?.filter((child) => child instanceof CICSPipelineTreeItem) ?? []) as CICSPipelineTreeItem[],
               allPipelines,
-              count,
+              count
             );
             tree._onDidChangeTreeData.fire(undefined);
           }
         }
-      },
+      }
     );
   }
 

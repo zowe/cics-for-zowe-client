@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconByStatus } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSProgramTreeItem extends TreeItem {
   program: any;
@@ -26,13 +26,10 @@ export class CICSProgramTreeItem extends TreeItem {
   ) {
     super(
       `${program.program}${
-        program.status.toLowerCase() === "disabled" && parseInt(program.newcopycnt)
-          ? ` (New copy count: ${program.newcopycnt}) (Disabled)`
-          : program.status.toLowerCase() === "disabled" && !parseInt(program.newcopycnt)
-            ? ` (Disabled)`
-            : program.status.toLowerCase() !== "disabled" && parseInt(program.newcopycnt)
-              ? ` (New copy count: ${program.newcopycnt})`
-              : ""
+        program.status.toLowerCase() === "disabled" && parseInt(program.newcopycnt) ? ` (New copy count: ${program.newcopycnt}) (Disabled)`
+        : program.status.toLowerCase() === "disabled" && !parseInt(program.newcopycnt) ? ` (Disabled)`
+        : program.status.toLowerCase() !== "disabled" && parseInt(program.newcopycnt) ? ` (New copy count: ${program.newcopycnt})`
+        : ""
       }`,
       TreeItemCollapsibleState.None
     );

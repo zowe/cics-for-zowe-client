@@ -51,7 +51,7 @@ describe("Test suite for CICSRegionTree", () => {
       region,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      "Parent",
+      "Parent"
     );
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
@@ -68,7 +68,7 @@ describe("Test suite for CICSRegionTree", () => {
       region_disable,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region,
+      region
     );
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
@@ -81,7 +81,7 @@ describe("Test suite for CICSRegionTree", () => {
       region_undefined,
       globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
       globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region,
+      region
     );
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);

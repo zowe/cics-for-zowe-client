@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconFilePathFromName } from "../../../../utils/iconUtils";
+import { CICSRegionTree } from "../../../CICSRegionTree";
 
 export class CICSTCPIPServiceTreeItem extends TreeItem {
   tcpips: any;
@@ -22,7 +22,7 @@ export class CICSTCPIPServiceTreeItem extends TreeItem {
     tcpips: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("tcp-ip-service"),
+    public readonly iconPath = getIconFilePathFromName("tcp-ip-service")
   ) {
     super(`${tcpips.name}`, TreeItemCollapsibleState.None);
 

@@ -9,12 +9,12 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getFolderIcon } from "../utils/iconUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
-import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
 import { CICSPipelineTree } from "./treeItems/web/CICSPipelineTree";
+import { CICSTCPIPServiceTree } from "./treeItems/web/CICSTCPIPServiceTree";
+import { CICSURIMapTree } from "./treeItems/web/CICSURIMapTree";
 import { CICSWebServiceTree } from "./treeItems/web/CICSWebServiceTree";
 
 export class CICSWebTree extends TreeItem {
@@ -24,7 +24,7 @@ export class CICSWebTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("Web", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeweb.web`;

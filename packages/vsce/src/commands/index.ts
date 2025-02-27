@@ -9,21 +9,21 @@
  *
  */
 
-import * as disableCommands from './disableCommands';
-import * as enableCommands from './enableCommands';
+import * as disableCommands from "./disableCommands";
+import * as enableCommands from "./enableCommands";
 
-import { TreeView } from 'vscode';
-import { CICSTree } from '../trees/CICSTree';
+import { TreeView } from "vscode";
+import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
-import { getManageSessionCommand } from "./manageSessionCommand";
 import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
+import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";

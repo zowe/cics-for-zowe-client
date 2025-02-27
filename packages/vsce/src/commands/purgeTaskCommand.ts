@@ -11,16 +11,16 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { ICommandParams } from "./ICommandParams";
-import { runPutResource } from "../utils/resourceUtils";
+import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import constants from "../utils/constants";
+import { runPutResource } from "../utils/resourceUtils";
+import { ICommandParams } from "./ICommandParams";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -47,7 +47,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
           cancellable: true,
         },
         async (progress, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           for (const index in allSelectedNodes) {
             progress.report({
               message: `Purging ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
@@ -74,7 +74,8 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                 // @ts-ignore
                 const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
                 window.showErrorMessage(
-                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${allSelectedNodes[parseInt(index)].task.task
+                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${
+                    allSelectedNodes[parseInt(index)].task.task
                   }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
                 );
               } else {
@@ -129,30 +130,29 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
  * @param purgeType
  * @returns
  */
-function purgeTask(
-  session: imperative.AbstractSession,
-  parms: ICommandParams,
-  purgeType: string
-): Promise<ICMCIApiResponse> {
-  return runPutResource({
-    session: session,
-    resourceName: CicsCmciConstants.CICS_CMCI_TASK,
-    cicsPlex: parms.cicsPlex,
-    regionName: parms.regionName,
-    params: {"criteria": `TASK='${parms.name}'`}
-  }, {
-    request: {
-      action: {
-        $: {
-          name: "PURGE",
-        },
-        parameter: {
+function purgeTask(session: imperative.AbstractSession, parms: ICommandParams, purgeType: string): Promise<ICMCIApiResponse> {
+  return runPutResource(
+    {
+      session: session,
+      resourceName: CicsCmciConstants.CICS_CMCI_TASK,
+      cicsPlex: parms.cicsPlex,
+      regionName: parms.regionName,
+      params: { criteria: `TASK='${parms.name}'` },
+    },
+    {
+      request: {
+        action: {
           $: {
-            name: "TYPE",
-            value: purgeType,
+            name: "PURGE",
+          },
+          parameter: {
+            $: {
+              name: "TYPE",
+              value: purgeType,
+            },
           },
         },
       },
-    },
-  });
+    }
+  );
 }

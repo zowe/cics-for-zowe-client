@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
-import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
-import { CICSRegionTree } from "../../CICSRegionTree";
-import { runGetResource } from "../../../utils/resourceUtils";
+import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { toArray } from "../../../utils/commandUtils";
 import { toEscapedCriteriaString } from "../../../utils/filterUtils";
 import { getFolderIcon } from "../../../utils/iconUtils";
-import { toArray } from "../../../utils/commandUtils";
+import { runGetResource } from "../../../utils/resourceUtils";
+import { CICSRegionTree } from "../../CICSRegionTree";
+import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 
 export class CICSURIMapTree extends TreeItem {
   children: CICSURIMapTreeItem[] = [];
@@ -24,7 +24,7 @@ export class CICSURIMapTree extends TreeItem {
 
   constructor(
     parentRegion: CICSRegionTree,
-    public iconPath = getFolderIcon(false),
+    public iconPath = getFolderIcon(false)
   ) {
     super("URI Maps", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
@@ -50,14 +50,14 @@ export class CICSURIMapTree extends TreeItem {
         resourceName: "CICSURIMap",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
-        params: {criteria: criteria},
+        params: { criteria: criteria },
       });
       const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
       for (const urimap of urimapArray) {
         const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
         newURIMapItem.setLabel(
-          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`),
+          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`)
         );
         this.addURIMAP(newURIMapItem);
       }
@@ -73,8 +73,8 @@ export class CICSURIMapTree extends TreeItem {
         window.showErrorMessage(
           `Something went wrong when fetching URI Maps - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
-            " ",
-          )}`,
+            " "
+          )}`
         );
       }
     }

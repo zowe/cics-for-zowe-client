@@ -16,7 +16,7 @@ export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>
 }
 
 export class FilterDescriptor implements QuickPickItem {
-  constructor(private text: string) { }
+  constructor(private text: string) {}
   get label(): string {
     return this.text;
   }

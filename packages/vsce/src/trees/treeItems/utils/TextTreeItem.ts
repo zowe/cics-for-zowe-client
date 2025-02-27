@@ -9,7 +9,7 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 
 export class TextTreeItem extends TreeItem {
   constructor(label: string, contextValue: string) {

@@ -14,8 +14,8 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { ProfileManagement } from "./profileManagement";
 import { getFolderIcon } from "./iconUtils";
+import { ProfileManagement } from "./profileManagement";
 
 export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);
@@ -43,7 +43,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
           await regionContiner.loadRegionsInCICSGroup(tree);
           regionContiner.iconPath = getFolderIcon(true);
           tree._onDidChangeTreeData.fire(undefined);
-        },
+        }
       );
     }
   } else {
@@ -62,7 +62,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
           window.showInformationMessage(`No regions found for plex ${parentPlex.getPlexName()}`);
         }
         tree._onDidChangeTreeData.fire(undefined);
-      },
+      }
     );
   }
   tree._onDidChangeTreeData.fire(undefined);
@@ -82,7 +82,7 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
           cancellable: false,
         },
         async (_, token) => {
-          token.onCancellationRequested(() => { });
+          token.onCancellationRequested(() => {});
           await plex.loadOnlyRegion();
           tree._onDidChangeTreeData.fire(undefined);
         }
@@ -104,4 +104,3 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
   }
   tree._onDidChangeTreeData.fire(undefined);
 }
-

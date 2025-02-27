@@ -9,23 +9,23 @@
  *
  */
 
-import { TreeItemCollapsibleState, TreeItem } from "vscode";
-import { CICSRegionTree } from "./CICSRegionTree";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSRegionsContainer } from "./CICSRegionsContainer";
-import { getIconFilePathFromName } from "../utils/iconUtils";
-import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
-import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
-import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
-import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
-import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
-import { runGetResource } from "../utils/resourceUtils";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { getIconFilePathFromName } from "../utils/iconUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
+import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
+import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
+import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
+import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
+import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
+import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
+import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
+import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { CICSSessionTree } from "./CICSSessionTree";
 
 export class CICSPlexTree extends TreeItem {
   children: (
@@ -81,7 +81,7 @@ export class CICSPlexTree extends TreeItem {
       regionsObtained.response.records.cicsregion,
       this.getParent(),
       this,
-      this,
+      this
     );
     this.clearChildren();
     this.addRegion(newRegionTree);
