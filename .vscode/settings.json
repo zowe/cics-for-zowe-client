@@ -10,10 +10,8 @@
   "search.exclude": {
     "out": true // set this to false to include "out" folder in search results
   },
-
   // Make sure people do not accidentally forget to sign
   "git.alwaysSignOff": true,
-
   "typescript.tsdk": "node_modules/typescript/lib",
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
@@ -21,6 +19,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Enforce prettier on save
   "editor.formatOnSave": true,
-  "npm.packageManager": "npm",
-  "eslint.packageManager": "npm"
+  "npm.packageManager": "npm"
 }
