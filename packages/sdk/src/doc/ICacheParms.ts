@@ -11,10 +11,9 @@
 
 import { IResultCacheParms } from "./IResultCacheParms";
 
-
 export interface ICacheParms extends IResultCacheParms {
   /**
-     * The cache token to be fetched
-     */
+   * The cache token to be fetched
+   */
   cacheToken: string;
 }

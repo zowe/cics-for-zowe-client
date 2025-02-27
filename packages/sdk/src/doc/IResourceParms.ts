@@ -13,7 +13,7 @@ import { IGetResourceUriOptions } from "./IGetResourceUriOptions";
 
 export interface IResourceParms extends IGetResourceUriOptions {
   /**
-     * The name of the resource
-     */
+   * The name of the resource
+   */
   name: string;
 }

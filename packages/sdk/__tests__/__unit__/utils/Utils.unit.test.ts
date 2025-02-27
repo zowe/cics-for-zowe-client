@@ -14,7 +14,6 @@ import { IResultCacheParms } from "../../../src/doc/IResultCacheParms";
 import { Utils } from "../../../src/utils";
 
 describe("Utils - getResourceUri", () => {
-
   let error: any;
   let response: any;
 
@@ -62,7 +61,6 @@ describe("Utils - getResourceUri", () => {
   });
 
   describe("success scenarios", () => {
-
     beforeEach(() => {
       response = undefined;
       error = undefined;
@@ -82,10 +80,9 @@ describe("Utils - getResourceUri", () => {
 
     it("should be able to get a resource uri with the cicsplex and resource name specified", async () => {
       try {
-
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": ""
+          cicsPlex: "cicsplex1",
+          regionName: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -101,8 +98,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the region and resource names specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "",
-          "regionName": "region1"
+          cicsPlex: "",
+          regionName: "region1",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -118,8 +115,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the region containing #", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "",
-          "regionName": "region#"
+          cicsPlex: "",
+          regionName: "region#",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -135,8 +132,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the plex name containing #", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex#",
-          "regionName": ""
+          cicsPlex: "cicsplex#",
+          regionName: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -152,8 +149,8 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the plex, region and resource names specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -169,9 +166,9 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the criteria is unspecified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": ""
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -187,9 +184,9 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the criteria is specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "NAME=test"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "NAME=test",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -205,10 +202,10 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the parameter is unspecified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "",
-          "parameter": ""
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
+          parameter: "",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -224,10 +221,10 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri with the parameter is specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "",
-          "parameter": "PARAM=test"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "",
+          parameter: "PARAM=test",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -243,10 +240,10 @@ describe("Utils - getResourceUri", () => {
     it("should be able to get a resource uri when both criteria and parameter are specified", async () => {
       try {
         const options: IGetResourceUriOptions = {
-          "cicsPlex": "cicsplex1",
-          "regionName": "region1",
-          "criteria": "NAME=test1",
-          "parameter": "PARAM=test2"
+          cicsPlex: "cicsplex1",
+          regionName: "region1",
+          criteria: "NAME=test1",
+          parameter: "PARAM=test2",
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -266,7 +263,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             summonly: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -286,7 +283,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             summonly: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -306,7 +303,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             nodiscard: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -326,7 +323,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             nodiscard: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -346,7 +343,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -366,7 +363,7 @@ describe("Utils - getResourceUri", () => {
           regionName: "region1",
           queryParams: {
             overrideWarningCount: false,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -388,7 +385,7 @@ describe("Utils - getResourceUri", () => {
             summonly: true,
             nodiscard: true,
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -408,7 +405,7 @@ describe("Utils - getResourceUri", () => {
             summonly: true,
             nodiscard: true,
             overrideWarningCount: true,
-          }
+          },
         };
 
         response = Utils.getResourceUri("resource1", options);
@@ -423,8 +420,7 @@ describe("Utils - getResourceUri", () => {
   });
 });
 
-describe('Utils - enforceParentheses', () => {
-
+describe("Utils - enforceParentheses", () => {
   it("should add brackets when none exist", () => {
     const output = Utils.enforceParentheses("input");
     expect(output).toEqual("(input)");
@@ -452,14 +448,13 @@ describe('Utils - enforceParentheses', () => {
 
   it("should add appropriate brackets", () => {
     const output = Utils.enforceParentheses(
-      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)");
-    expect(output).toEqual(
-      "(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
+      "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)"
+    );
+    expect(output).toEqual("(NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*))");
   });
 });
 
 describe("Utils - getCacheUri", () => {
-
   let error: any;
   let response: any;
 
@@ -507,7 +502,6 @@ describe("Utils - getCacheUri", () => {
   });
 
   describe("success scenarios", () => {
-
     beforeEach(() => {
       response = undefined;
       error = undefined;
@@ -527,9 +521,8 @@ describe("Utils - getCacheUri", () => {
 
     it("should be able to get a result cache with the index specified", async () => {
       try {
-
         const options: IResultCacheParms = {
-          startIndex: 1
+          startIndex: 1,
         };
 
         response = Utils.getCacheUri("abcdefgh", options);
@@ -545,7 +538,7 @@ describe("Utils - getCacheUri", () => {
     it("should be able to get a result cache with the count specified - ignored with no index", async () => {
       try {
         const options: IResultCacheParms = {
-          count: 20
+          count: 20,
         };
 
         response = Utils.getCacheUri("cachetoken", options);
@@ -562,7 +555,7 @@ describe("Utils - getCacheUri", () => {
       try {
         const options: IResultCacheParms = {
           startIndex: 10,
-          count: 20
+          count: 20,
         };
 
         response = Utils.getCacheUri("cachetoken", options);
@@ -594,7 +587,7 @@ describe("Utils - getCacheUri", () => {
     it("should be able to get a result cache and with false NODISCARD", async () => {
       try {
         const options: IResultCacheParms = {
-          nodiscard: false
+          nodiscard: false,
         };
 
         response = Utils.getCacheUri("abcdef", options);

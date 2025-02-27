@@ -13,7 +13,6 @@ import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient, defineProgram, ICMCIApiResponse, IProgramParms } from "../../../src";
 
 describe("CMCI - Define program", () => {
-
   const program = "program";
   const region = "region";
   const group = "group";
@@ -24,14 +23,14 @@ describe("CMCI - Define program", () => {
     regionName: region,
     name: program,
     csdGroup: group,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -61,7 +60,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: "fake",
           name: undefined,
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -77,7 +76,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: undefined
+          csdGroup: undefined,
         });
       } catch (err) {
         error = err;
@@ -93,7 +92,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: undefined,
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -109,7 +108,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: "fake",
           name: "",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -125,7 +124,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdGroup: ""
+          csdGroup: "",
         });
       } catch (err) {
         error = err;
@@ -141,7 +140,7 @@ describe("CMCI - Define program", () => {
         response = await defineProgram(dummySession, {
           regionName: "",
           name: "fake",
-          csdGroup: "fake"
+          csdGroup: "fake",
         });
       } catch (err) {
         error = err;
@@ -154,23 +153,22 @@ describe("CMCI - Define program", () => {
   });
 
   describe("success scenarios", () => {
-
     const requestBody: any = {
       request: {
         create: {
           parameter: {
             $: {
               name: "CSD",
-            }
+            },
           },
           attributes: {
             $: {
               name: program,
-              csdgroup: group
-            }
-          }
-        }
-      }
+              csdgroup: group,
+            },
+          },
+        },
+      },
     };
 
     const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
@@ -183,8 +181,7 @@ describe("CMCI - Define program", () => {
     });
 
     it("should be able to define a program without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + region;
 
       response = await defineProgram(dummySession, defineParms);
 
@@ -195,8 +192,7 @@ describe("CMCI - Define program", () => {
 
     it("should be able to define a program with cicsPlex specified but empty string", async () => {
       defineParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_PROGRAM + "//" + region;
 
       response = await defineProgram(dummySession, defineParms);
 
@@ -207,8 +203,7 @@ describe("CMCI - Define program", () => {
 
     it("should be able to define a program with cicsPlex specified", async () => {
       defineParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-                CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_PROGRAM + "/" + cicsPlex + "/" + region;
 
       response = await defineProgram(dummySession, defineParms);
 

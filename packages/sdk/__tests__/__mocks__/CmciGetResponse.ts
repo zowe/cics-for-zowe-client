@@ -198,6 +198,6 @@ export const nodataContent: any = {
     },
     records: {
       cicscicsplex: [],
-    }
+    },
   },
 };

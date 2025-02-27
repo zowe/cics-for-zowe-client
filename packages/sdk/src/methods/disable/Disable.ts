@@ -10,10 +10,10 @@
  */
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { CicsCmciRestClient } from "../../rest";
 import { CicsCmciConstants } from "../../constants";
+import { ICMCIApiResponse, IGetResourceUriOptions, IURIMapParms } from "../../doc";
+import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIApiResponse, IURIMapParms, IGetResourceUriOptions } from "../../doc";
 
 /**
  * Disable a URIMap installed in CICS through CMCI REST API
@@ -34,9 +34,9 @@ export async function disableUrimap(session: AbstractSession, parms: IURIMapParm
   Logger.getAppLogger().debug("Attempting to disable a URIMap with the following parameters:\n%s", JSON.stringify(parms));
 
   const options: IGetResourceUriOptions = {
-    "cicsPlex": parms.cicsPlex,
-    "regionName": parms.regionName,
-    "criteria": `NAME=${parms.name}`
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    criteria: `NAME=${parms.name}`,
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_URIMAP, options);
@@ -46,11 +46,11 @@ export async function disableUrimap(session: AbstractSession, parms: IURIMapParm
       update: {
         attributes: {
           $: {
-            ENABLESTATUS: "DISABLED"
-          }
-        }
-      }
-    }
+            ENABLESTATUS: "DISABLED",
+          },
+        },
+      },
+    },
   };
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }

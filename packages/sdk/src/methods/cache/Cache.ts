@@ -11,11 +11,11 @@
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { ICMCIApiResponse } from "../../doc";
+import { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
 import { ICacheParms } from "../../doc/ICacheParms";
 import { IResultCacheParms } from "../../doc/IResultCacheParms";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
-import { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
 
 export async function getCache(session: AbstractSession, parms: ICacheParms, requestOptions?: ICMCIRequestOptions): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.cacheToken, "CICS Result Cache Token", "CICS Result Cache Token is required");

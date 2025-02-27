@@ -10,16 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  ICMCIApiResponse,
-  IURIMapParms,
-  deleteUrimap
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IURIMapParms, deleteUrimap } from "../../../src";
 
 describe("CMCI - Delete urimap", () => {
-
   const urimap = "urimap";
   const region = "region";
   const group = "group";
@@ -28,14 +21,14 @@ describe("CMCI - Delete urimap", () => {
   const deleteParms: IURIMapParms = {
     regionName: region,
     name: urimap,
-    csdGroup: group
+    csdGroup: group,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -102,9 +95,14 @@ describe("CMCI - Delete urimap", () => {
     });
 
     it("should be able to delete a urimap", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + region +
-            `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_URIMAP +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteUrimap(dummySession, deleteParms);
       expect(response).toContain(content);

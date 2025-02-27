@@ -25,21 +25,21 @@ describe("CicsCmciRestClient tests", () => {
 
   it("should return a formatted JSON object based on the XML retrieved", async () => {
     const breakfastMenu =
-            "<response>" +
-                "<resultsummary api_response1='1024' api_response2='0' />" +
-                "<breakfast_menu>\n" +
-                "<food>\n" +
-                    "<name>French Toast</name>\n" +
-                    "<price currency='USD'>$5.95</price>\n" +
-                "</food>\n" +
-                "<food>\n" +
-                    "<name>Homestyle Breakfast</name>\n" +
-                    "<price currency='USD' size='small'>$6.95</price>\n" +
-                    "<price currency='USD' size='medium'>$7.95</price>\n" +
-                    "<price currency='USD' size='large'>$8.95</price>\n" +
-                "</food>\n" +
-                "</breakfast_menu>" +
-            "</response>";
+      "<response>" +
+      "<resultsummary api_response1='1024' api_response2='0' />" +
+      "<breakfast_menu>\n" +
+      "<food>\n" +
+      "<name>French Toast</name>\n" +
+      "<price currency='USD'>$5.95</price>\n" +
+      "</food>\n" +
+      "<food>\n" +
+      "<name>Homestyle Breakfast</name>\n" +
+      "<price currency='USD' size='small'>$6.95</price>\n" +
+      "<price currency='USD' size='medium'>$7.95</price>\n" +
+      "<price currency='USD' size='large'>$8.95</price>\n" +
+      "</food>\n" +
+      "</breakfast_menu>" +
+      "</response>";
     const breakfastMenuJson: any = {
       response: {
         resultsummary: {
@@ -52,8 +52,8 @@ describe("CicsCmciRestClient tests", () => {
               name: "French Toast",
               price: {
                 currency: "USD",
-                _: "$5.95"
-              }
+                _: "$5.95",
+              },
             },
             {
               name: "Homestyle Breakfast",
@@ -61,23 +61,23 @@ describe("CicsCmciRestClient tests", () => {
                 {
                   currency: "USD",
                   size: "small",
-                  _: "$6.95"
+                  _: "$6.95",
                 },
                 {
                   currency: "USD",
                   size: "medium",
-                  _: "$7.95"
+                  _: "$7.95",
                 },
                 {
                   currency: "USD",
                   size: "large",
-                  _: "$8.95"
-                }
-              ]
-            }
-          ]
-        }
-      }
+                  _: "$8.95",
+                },
+              ],
+            },
+          ],
+        },
+      },
     };
     restClientExpect.mockResolvedValue(breakfastMenu);
 
@@ -94,12 +94,11 @@ describe("CicsCmciRestClient tests", () => {
       msg: "hello",
       causeErrors: JSON.stringify({
         stack: shouldDeleteMessage,
-        shouldNotDelete: shouldNotDeleteMessage
-      })
+        shouldNotDelete: shouldNotDeleteMessage,
+      }),
     };
-    const processedError = ((cicsCmciRestClient as any).processError(error));
+    const processedError = (cicsCmciRestClient as any).processError(error);
     expect(processedError.msg).toContain(shouldNotDeleteMessage);
     expect(processedError.msg.indexOf()).toEqual(-1);
-
   });
 });

@@ -9,11 +9,11 @@
  *
  */
 
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { Session } from "@zowe/imperative";
+import { IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram, programNewcopy } from "../../../src";
 import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
-import { defineProgram, deleteProgram, discardProgram, installProgram, IProgramParms, programNewcopy } from "../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
@@ -21,11 +21,10 @@ let csdGroup: string;
 let session: Session;
 
 describe("CICS Refresh program", () => {
-
   beforeAll(async () => {
     testEnvironment = await TestEnvironment.setUp({
       testName: "cics_cmci_refresh_program",
-      tempProfileTypes: ["cics"]
+      tempProfileTypes: ["cics"],
     });
     csdGroup = testEnvironment.systemTestProperties.cmci.csdGroup;
     regionName = testEnvironment.systemTestProperties.cmci.regionName;
@@ -38,7 +37,7 @@ describe("CICS Refresh program", () => {
       port: cicsProperties.port,
       type: "basic",
       rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
+      protocol: (cicsProperties.protocol as any) || "https",
     });
   });
 

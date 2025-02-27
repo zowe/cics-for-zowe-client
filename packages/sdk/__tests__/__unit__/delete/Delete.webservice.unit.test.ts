@@ -10,16 +10,9 @@
  */
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  ICMCIApiResponse,
-  IWebServiceParms,
-  deleteWebservice
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IWebServiceParms, deleteWebservice } from "../../../src";
 
 describe("CMCI - Delete web service", () => {
-
   const webservice = "webservice";
   const region = "region";
   const group = "group";
@@ -28,14 +21,14 @@ describe("CMCI - Delete web service", () => {
   const deleteParms: IWebServiceParms = {
     regionName: region,
     name: webservice,
-    csdGroup: group
+    csdGroup: group,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -102,9 +95,14 @@ describe("CMCI - Delete web service", () => {
     });
 
     it("should be able to delete a web service", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + region +
-            `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_DEFINITION_WEBSERVICE +
+        "/" +
+        region +
+        `?CRITERIA=(NAME%3D${deleteParms.name})&PARAMETER=CSDGROUP(${deleteParms.csdGroup})`;
 
       response = await deleteWebservice(dummySession, deleteParms);
       expect(response).toContain(content);

@@ -10,28 +10,27 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciRestClient, CicsCmciConstants, ICSDGroupParms, removeCSDGroupFromList, ICMCIApiResponse } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, ICSDGroupParms, removeCSDGroupFromList } from "../../../src";
 
 describe("CMCI - Remove csdGroup from list", () => {
-
   const region = "region";
   const group = "group";
   const cicsPlex = "plex";
   const list = "list";
   const content = "This\nis\r\na\ntest" as unknown as ICMCIApiResponse;
 
-  const removeFromListParms: ICSDGroupParms  = {
+  const removeFromListParms: ICSDGroupParms = {
     regionName: region,
     name: group,
     csdList: list,
-    cicsPlex: undefined
+    cicsPlex: undefined,
   };
 
   const dummySession = new Session({
     user: "fake",
     password: "fake",
     hostname: "fake",
-    port: 1490
+    port: 1490,
   });
 
   let error: any;
@@ -61,7 +60,7 @@ describe("CMCI - Remove csdGroup from list", () => {
         response = await removeCSDGroupFromList(dummySession, {
           regionName: "fake",
           name: undefined,
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -77,7 +76,7 @@ describe("CMCI - Remove csdGroup from list", () => {
         response = await removeCSDGroupFromList(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdList: undefined
+          csdList: undefined,
         });
       } catch (err) {
         error = err;
@@ -93,7 +92,7 @@ describe("CMCI - Remove csdGroup from list", () => {
         response = await removeCSDGroupFromList(dummySession, {
           regionName: undefined,
           name: "fake",
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -109,7 +108,7 @@ describe("CMCI - Remove csdGroup from list", () => {
         response = await removeCSDGroupFromList(dummySession, {
           regionName: "fake",
           name: "",
-          csdList: "fake"
+          csdList: "fake",
         });
       } catch (err) {
         error = err;
@@ -125,7 +124,7 @@ describe("CMCI - Remove csdGroup from list", () => {
         response = await removeCSDGroupFromList(dummySession, {
           regionName: "fake",
           name: "fake",
-          csdList: ""
+          csdList: "",
         });
       } catch (err) {
         error = err;
@@ -137,7 +136,6 @@ describe("CMCI - Remove csdGroup from list", () => {
     });
   });
   describe("success scenarios", () => {
-
     const defineSpy = jest.spyOn(CicsCmciRestClient, "deleteExpectParsedXml").mockResolvedValue(content);
 
     beforeEach(() => {
@@ -148,9 +146,18 @@ describe("CMCI - Remove csdGroup from list", () => {
     });
 
     it("should be able to remove a csdGroup from list without cicsPlex specified", async () => {
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + removeFromListParms.regionName +
-            "?CRITERIA=(CSDLIST%3D%3D'" + removeFromListParms.csdList + "')%20AND%20(CSDGROUP%3D%3D'" + removeFromListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP_IN_LIST +
+        "/" +
+        removeFromListParms.regionName +
+        "?CRITERIA=(CSDLIST%3D%3D'" +
+        removeFromListParms.csdList +
+        "')%20AND%20(CSDGROUP%3D%3D'" +
+        removeFromListParms.name +
+        "')";
 
       response = await removeCSDGroupFromList(dummySession, removeFromListParms);
 
@@ -161,9 +168,20 @@ describe("CMCI - Remove csdGroup from list", () => {
 
     it("should be able to remove a csdGroup from list with cicsPlex specified but empty string", async () => {
       removeFromListParms.cicsPlex = "";
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + removeFromListParms.cicsPlex + "/" + removeFromListParms.regionName +
-            "?CRITERIA=(CSDLIST%3D%3D'" + removeFromListParms.csdList + "')%20AND%20(CSDGROUP%3D%3D'" + removeFromListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP_IN_LIST +
+        "/" +
+        removeFromListParms.cicsPlex +
+        "/" +
+        removeFromListParms.regionName +
+        "?CRITERIA=(CSDLIST%3D%3D'" +
+        removeFromListParms.csdList +
+        "')%20AND%20(CSDGROUP%3D%3D'" +
+        removeFromListParms.name +
+        "')";
 
       response = await removeCSDGroupFromList(dummySession, removeFromListParms);
 
@@ -174,9 +192,20 @@ describe("CMCI - Remove csdGroup from list", () => {
 
     it("should be able to remove a csdGroup from list with cicsPlex specified", async () => {
       removeFromListParms.cicsPlex = cicsPlex;
-      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-            CicsCmciConstants.CICS_CSDGROUP_IN_LIST + "/" + removeFromListParms.cicsPlex + "/" + removeFromListParms.regionName +
-            "?CRITERIA=(CSDLIST%3D%3D'" + removeFromListParms.csdList + "')%20AND%20(CSDGROUP%3D%3D'" + removeFromListParms.name + "')";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CSDGROUP_IN_LIST +
+        "/" +
+        removeFromListParms.cicsPlex +
+        "/" +
+        removeFromListParms.regionName +
+        "?CRITERIA=(CSDLIST%3D%3D'" +
+        removeFromListParms.csdList +
+        "')%20AND%20(CSDGROUP%3D%3D'" +
+        removeFromListParms.name +
+        "')";
 
       response = await removeCSDGroupFromList(dummySession, removeFromListParms);
 
