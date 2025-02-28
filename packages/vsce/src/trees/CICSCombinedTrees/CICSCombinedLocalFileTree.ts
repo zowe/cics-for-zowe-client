@@ -20,6 +20,7 @@ import { CICSTree } from "../CICSTree";
 import { CICSLocalFileTreeItem } from "../treeItems/CICSLocalFileTreeItem";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSCombinedLocalFileTree extends TreeItem {
   children: (CICSLocalFileTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -40,7 +41,7 @@ export class CICSCombinedLocalFileTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allLocalFiles.recordCountIncrement")}`;
-    this.constant = "CICSLocalFile";
+    this.constant =  CicsCmciConstants.CICS_CMCI_LOCAL_FILE;
   }
 
   public async loadContents(tree: CICSTree) {

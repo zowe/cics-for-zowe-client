@@ -16,6 +16,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
@@ -51,7 +52,7 @@ export class CICSLocalFileTree extends TreeItem {
     try {
       const localFileResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSLocalFile",
+        resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: { criteria: criteria },
