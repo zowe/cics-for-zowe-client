@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/CICSSystemManagement/CICSResultCache/E06EB1264D925C60"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "ok-cache-plex.xml",
+    "headers": {
+      "Content-Type": "text/xml"
+    }
+  }
+}

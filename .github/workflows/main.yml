@@ -92,9 +92,59 @@ jobs:
     #     name: zowe-cics-client
     #     path: dist/*
 
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    services:
+      wiremock:
+        image: wiremock/wiremock
+        ports:
+          - 8080:8080
+        volumes:
+          - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock
+        options: --name wiremock
+
+    steps:
+      - name: Change workspace folder so wiremock service can write
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restart Wiremock with new mappings
+        run: docker restart wiremock
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Source
+        id: build
+        run: npm run build
+
+      - name: List Wiremock mappings
+        if: ${{ always() && steps.build.outcome == 'success' }}
+        run: curl localhost:8080/__admin/mappings
+
+      - name: Test Wiremock route
+        if: ${{ always() && steps.build.outcome == 'success' }}
+        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E06EB1264D925C60
+
+      - name: E2E Tests
+        if: ${{ always() && steps.build.outcome == 'success' }}
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: npm run test:e2e
+
   release:
     if: github.event_name == 'push' && github.ref_protected
-    needs: test
+    needs:
+      - test
+      - e2e-test
     runs-on: ubuntu-latest
     permissions:
       contents: write
