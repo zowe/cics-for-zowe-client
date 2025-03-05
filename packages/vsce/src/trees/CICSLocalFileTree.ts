@@ -9,6 +9,7 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeItem, TreeItemCollapsibleState, window, workspace } from "vscode";
 import { toArray } from "../utils/commandUtils";
 import { toEscapedCriteriaString } from "../utils/filterUtils";
@@ -16,7 +17,6 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
