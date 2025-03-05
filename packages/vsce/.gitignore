@@ -6,3 +6,6 @@ logs/
 .vscode-test/
 results/
 prebuilds/
+.cics
+.e2e-global-settings
+*.vsix

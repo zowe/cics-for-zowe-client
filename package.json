@@ -16,6 +16,7 @@
     "test": "npm run test --workspaces",
     "test:system": "npm run test:system --workspaces",
     "test:unit": "npm run test:unit --workspaces",
+    "test:e2e": "npm run test:e2e --workspaces",
     "lint": "npm run lint --workspaces",
     "lintErrors": "npm run lintErrors --workspaces",
     "prepare": "husky install",

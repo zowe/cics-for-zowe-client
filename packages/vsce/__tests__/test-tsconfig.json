@@ -1,7 +1,11 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "outDir": "./lib"
+},
   "include": [
-    "./**/*.ts"
+    "./__e2e__/*.ts"
   ],
   "exclude": [
     "lib",

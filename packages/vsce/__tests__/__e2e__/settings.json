@@ -1,0 +1,10 @@
+{
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "workbench.editor.enablePreview": true,
+  "git.autoRepositoryDetection": false,
+  "terminal.integrated.sendKeybindingsToShell": true,
+  "workbench.remoteIndicator.showExtensionRecommendations": false,
+  "extensions.ignoreRecommendations": true,
+  "zowe.security.secureCredentialsEnabled": false,
+  "editor.fontSize": 14
+}

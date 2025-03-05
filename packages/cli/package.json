@@ -41,6 +41,7 @@
     "test": "npm run test:unit && npm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
+    "test:e2e": "echo 'Nothing to e2e test'",
     "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck",
