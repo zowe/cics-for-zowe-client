@@ -866,9 +866,17 @@
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "test:e2e:setup": "echo \"Using global config home: $ZOWE_CLI_HOME\" && rm -rf $ZOWE_CLI_HOME && mkdir -p $ZOWE_CLI_HOME",
+    "test:e2e:run": "tsc --project __tests__/test-tsconfig.json && extest setup-and-run '__tests__/lib/*.test.js' -s .cics -e .cics -c max -o __tests__/__e2e__/settings.json -i --mocha_config __tests__/__e2e__/.mocharc.js",
+    "test:e2e": "export ZOWE_CLI_HOME=`pwd`/.e2e-global-settings && npm run test:e2e:setup && npm run test:e2e:run",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.10",
+    "chai": "^4.4.1",
+    "mocha": "^11.1.0",
+    "vscode-extension-tester": "^8.11.0",
     "@types/vscode": "~1.53.0",
     "@vscode/vsce": "^2.32.0"
   },
