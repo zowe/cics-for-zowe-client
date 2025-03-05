@@ -1,0 +1,58 @@
+{
+  "$schema": "./zowe.schema.json",
+  "profiles": {
+        "zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 443
+            }
+        },
+        "tso": {
+            "type": "tso",
+            "properties": {
+                "account": "",
+                "codePage": "1047",
+                "logonProcedure": "IZUFPROC"
+            }
+        },
+        "ssh": {
+            "type": "ssh",
+            "properties": {
+                "port": 22  
+            }
+        },
+        "zftp": {
+            "type": "zftp",
+            "properties": {
+                "port": 21,
+                "secureFtp": true
+            }
+        },
+    "cicsplex_local": {
+      "type": "cics",
+            "properties": {
+                "port": 21,
+                "user": "****************",
+                "password": "*******************",
+                "rejectUnauthorized": false,
+                "protocol": "http"
+            }
+    },
+        "project_base": {
+            "type": "base",
+            "properties": {
+                "host": "localhost",
+                "rejectUnauthorized": true
+            }
+        }
+  },
+    "defaults": {
+        "zosmf": "zosmf",
+        "tso": "tso",
+        "ssh": "ssh",
+        "zftp": "zftp",
+        "cics": "cicsplex_local",
+        "base": "project_base"
+    },
+  "autoStore": true
+}
