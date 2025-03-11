@@ -9,14 +9,14 @@
  *
  */
 
-import { commands, TreeView, window } from "vscode";
+import { CicsCmciConstants, getResource } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
+import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import * as vscode from "vscode";
+import { TreeView, commands, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes, toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
-import { Gui } from "@zowe/zowe-explorer-api";
-import { CicsCmciConstants, getResource } from "@zowe/cics-for-zowe-sdk";
-import * as vscode from "vscode";
-import { IProfileLoaded } from "@zowe/imperative";
 
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded> {
   const baseForCicsProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(cicsProfile.name);
@@ -83,6 +83,16 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
   return jobid;
 }
 
+export function doesConnectionSupportJes(profile: IProfileLoaded) {
+  try {
+    ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(profile);
+    return true;
+  } catch (ex) {
+    // profile does not support JES API
+  }
+  return false;
+}
+
 export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node) => {
     const allSelectedRegions = findSelectedNodes(treeview, CICSRegionTree, node);
@@ -90,8 +100,11 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       await window.showErrorMessage("One CICS region must be selected");
       return;
     }
+
     const selectedRegion: CICSRegionTree = allSelectedRegions[0];
-    const zosProfiles = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter((profile) => ["zosmf", "rse"].includes(profile.type));
+    const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
+    // do not include the FTP profile because it doesn't support spools for running jobs.
+    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesConnectionSupportJes(element));
 
     let chosenProfileName: string;
 

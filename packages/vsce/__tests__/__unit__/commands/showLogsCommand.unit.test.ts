@@ -9,11 +9,17 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
+// these need to be mocked before the imports
+const getZoweExplorerApiMock = jest.fn();
+const jesApiMock = jest.fn();
+
+import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
+import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
-import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+
+const zoweExplorerAPI = { getJesApi: jesApiMock };
 
 const getProfilesCacheMock = jest.fn();
 getProfilesCacheMock.mockReturnValue({
@@ -35,6 +41,7 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 
 // this import needs to come after the mocks are set up correctly
 import * as showLogsCommand from "../../../src/commands/showLogsCommand";
+jest.mock("@zowe/zowe-explorer-api", () => ({ ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock } }));
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {
@@ -117,5 +124,30 @@ describe("Test suite for getJobIdForRegion", () => {
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
     expect(jobId).toEqual(null);
+  });
+});
+
+describe("Check whether profile supports JES", () => {
+  beforeEach(() => {
+    getZoweExplorerApiMock.mockReturnValue(zoweExplorerAPI);
+  });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  const supports = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+  const doesntSupport = createProfile("host1.myzosmf", "else", "h1", "user");
+
+  it("connection supports JES", async () => {
+    jesApiMock.mockReturnValue(true);
+    ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(supports);
+    expect(showLogsCommand.doesConnectionSupportJes(supports)).toEqual(true);
+    expect(jesApiMock).toHaveBeenCalledWith(supports);
+  });
+  it("connection doesn't support JES", async () => {
+    jesApiMock.mockImplementation(() => {
+      throw new Error("hello");
+    });
+    expect(showLogsCommand.doesConnectionSupportJes(doesntSupport)).toEqual(false);
+    expect(jesApiMock).toHaveBeenCalledWith(doesntSupport);
   });
 });
