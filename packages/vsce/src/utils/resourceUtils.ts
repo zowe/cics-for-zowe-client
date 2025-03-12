@@ -13,6 +13,7 @@ import { CicsCmciRestClient, getResource, IGetResourceUriOptions, IResourceQuery
 import { Session } from "@zowe/imperative";
 import constants from "./constants";
 import { getErrorCode } from "./errorUtils";
+import { CicsLogger } from "./cicsLogger";
 
 export async function runGetResource({
   session,
@@ -35,6 +36,15 @@ export async function runGetResource({
     ...(params?.parameter && { parameter: params.parameter }),
     ...(params?.queryParams && { queryParams: params.queryParams }),
   };
+
+  logResourceRequest({
+    call: "runGetResource",
+    resourceName: resourceName,
+    cicsPlex: cicsPlex,
+    regionName: regionName,
+    ...params
+  });
+
   const requestOptions = {
     failOnNoData: false,
     useCICSCmciRestError: true,
@@ -78,6 +88,14 @@ export async function runPutResource(
   };
   const cmciResource = Utils.getResourceUri(resourceName, options);
 
+  logResourceRequest({
+    call: "runPutResource",
+    resourceName: resourceName,
+    cicsPlex: cicsPlex,
+    regionName: regionName,
+    ...params
+  });
+
   try {
     // First attempt
     return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
@@ -91,4 +109,24 @@ export async function runPutResource(
   // Making a second attempt as ltpa token has expired
   session.ISession.tokenValue = null;
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+
+
+function logResourceRequest({call, resourceName,regionName, cicsPlex, params}: {
+  call: string;
+  resourceName: string;
+  regionName?: string;
+  cicsPlex?: string;
+  params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
+}) {
+
+  CicsLogger.trace(`${call} called for resource [${resourceName}].`);
+  if (cicsPlex)
+    CicsLogger.trace(`- cicsPlex [${cicsPlex}]`);
+  if (regionName)
+    CicsLogger.trace(`- region [${regionName}]`);
+  if (params?.criteria)
+    CicsLogger.trace(`- criteria [${params?.criteria}]`);
+  if (params?.parameter)
+    CicsLogger.trace(`- parameter [${params?.parameter}]`);
 }
