@@ -755,6 +755,28 @@
           "description": "Zowe CICS Extension History",
           "scope": "window"
         },
+        "zowe.cics.logger": {
+          "type": "string",
+          "default": "INFO",
+          "enum": [
+            "TRACE",
+            "DEBUG",
+            "INFO",
+            "WARN",
+            "ERROR",
+            "FATAL"
+          ],
+          "markdownEnumDescriptions": [
+            "Messages about fine details of the application's behaviour.",
+            "Messages about diagnostic information for troubleshooting.",
+            "Messages about routine application operations.",
+            "Messages about potentially harmful occurrences.",
+            "Messages about serious problem occurrences.",
+            "Messages about catastraphic error events."
+          ],
+          "description": "Select the log level for IBM CICS for Zowe Explorer. The default is INFO.",
+          "scope": "window"
+        },
         "zowe.cics.program.filter": {
           "type": "string",
           "default": "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
