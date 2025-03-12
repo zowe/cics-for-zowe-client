@@ -186,5 +186,5 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  CicsLogger.disposeZoweLogger();
+  await CicsLogger.disposeZoweLogger();
 }
