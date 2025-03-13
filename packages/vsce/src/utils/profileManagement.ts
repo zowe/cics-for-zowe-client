@@ -9,14 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, CicsCmciRestError, getCache } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestError, getCache, getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "./constants";
 import { getBestCICSplexes } from "./plexUtils";
-import cicsProfileMeta from "./profileDefinition";
 import { runGetResource } from "./resourceUtils";
 
 export class ProfileManagement {
@@ -33,7 +32,7 @@ export class ProfileManagement {
   }
 
   public static async registerCICSProfiles() {
-    await ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().initForZowe("cics", cicsProfileMeta);
+    await ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().initForZowe("cics", [getCICSProfileDefinition()]);
   }
 
   public static getExplorerApis() {

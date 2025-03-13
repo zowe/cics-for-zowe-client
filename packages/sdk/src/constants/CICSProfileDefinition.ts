@@ -11,8 +11,8 @@
 
 import { imperative } from "@zowe/zowe-explorer-api";
 
-const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
-  {
+export const getCICSProfileDefinition = (): imperative.ICommandProfileTypeConfiguration => {
+  return {
     type: "cics",
     schema: {
       type: "object",
@@ -105,7 +105,5 @@ const cicsProfileMeta: imperative.ICommandProfileTypeConfiguration[] = [
       },
       required: [],
     },
-  },
-];
-
-export default cicsProfileMeta;
+  };
+};
