@@ -17,8 +17,7 @@ import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { getCommands } from "./commands";
-import { CicsLogger } from "./utils/cicsLogger";
-import { LoggerUtils } from "./utils/LoggerUtils";
+import { CicsLogger } from "./utils/CicsLogger";
 import { CicsMessages } from "./constants/Cics.messages";
 
 /**
@@ -29,10 +28,7 @@ import { CicsMessages } from "./constants/Cics.messages";
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
 
-  const logsPath =
-  await CicsLogger.initializeZoweLogger(context);
-  CicsLogger.zeOutputChannel = await LoggerUtils.initVscLogger(context, logsPath);
-
+  await CicsLogger.initialize(context);
 
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
@@ -186,5 +182,5 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  await CicsLogger.disposeZoweLogger();
+  await CicsLogger.dispose();
 }

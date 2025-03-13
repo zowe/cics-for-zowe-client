@@ -25,7 +25,6 @@ export class PersistentStorage {
   private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
   private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
-  private static readonly cicsZoweLoggerSetting: string = "cicsZoweLoggerSetting";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -38,7 +37,6 @@ export class PersistentStorage {
   private mURIMapsSearchHistory: string[] = [];
   private mPipelineSearchHistory: string[] = [];
   private mWebServiceSearchHistory: string[] = [];
-  private mCicsZoweLoggerSetting: string = "INFO";
 
   constructor(schema: string) {
     this.schema = schema;
@@ -57,7 +55,6 @@ export class PersistentStorage {
     let urimapsSearchHistoryLines: string[] | undefined;
     let pipelineSearchHistoryLines: string[] | undefined;
     let webserviceSearchHistoryLines: string[] | undefined;
-    let cicsZoweLoggerSetting: string;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -71,7 +68,6 @@ export class PersistentStorage {
       urimapsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.urimapsSearchHistory);
       pipelineSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.pipelineSearchHistory);
       webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
-      cicsZoweLoggerSetting = workspace.getConfiguration(this.schema).get(PersistentStorage.cicsZoweLoggerSetting);
     }
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
@@ -164,10 +160,6 @@ export class PersistentStorage {
     return this.mWebServiceSearchHistory;
   }
 
-  public getCicsZoweLoggerSetting() : string {
-    return this.mCicsZoweLoggerSetting;
-  }
-
   public async resetProgramSearchHistory(): Promise<void> {
     this.mProgramSearchHistory = [];
     await this.updateProgramSearchHistory();
@@ -211,11 +203,6 @@ export class PersistentStorage {
   public async resetWebServiceSearchHistory(): Promise<void> {
     this.mWebServiceSearchHistory = [];
     await this.updateWebServiceSearchHistory();
-  }
-
-  public async resetCicsZoweLoggerSetting() : Promise<void> {
-    this.mCicsZoweLoggerSetting = "INFO";
-    await this.updateCicsZoweLoggerSetting();
   }
 
   private async updateProgramSearchHistory(): Promise<void> {
@@ -294,14 +281,6 @@ export class PersistentStorage {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.webserviceSearchHistory] = this.mWebServiceSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updateCicsZoweLoggerSetting(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.cicsZoweLoggerSetting] = this.mCicsZoweLoggerSetting;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
@@ -464,14 +443,6 @@ export class PersistentStorage {
         this.mWebServiceSearchHistory.pop();
       }
       await this.updateWebServiceSearchHistory();
-    }
-  }
-
-  public async addCicsZoweLoggerSetting(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mCicsZoweLoggerSetting = criteria.trim();
-
-      await this.updateCicsZoweLoggerSetting();
     }
   }
 

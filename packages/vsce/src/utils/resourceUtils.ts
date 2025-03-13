@@ -13,7 +13,7 @@ import { CicsCmciRestClient, getResource, IGetResourceUriOptions, IResourceQuery
 import { Session } from "@zowe/imperative";
 import constants from "./constants";
 import { getErrorCode } from "./errorUtils";
-import { CicsLogger } from "./cicsLogger";
+import { CicsLogger } from "./CicsLogger";
 
 export async function runGetResource({
   session,
