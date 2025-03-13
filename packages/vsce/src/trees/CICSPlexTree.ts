@@ -14,15 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
-import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
-import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
-import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
-import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSSessionTree } from "./CICSSessionTree";
@@ -30,16 +21,7 @@ import { CICSSessionTree } from "./CICSSessionTree";
 export class CICSPlexTree extends TreeItem {
   children: (
     | CICSRegionTree
-    | CICSCombinedProgramTree
-    | CICSCombinedTransactionsTree
-    | CICSCombinedLocalFileTree
-    | CICSCombinedTaskTree
-    | CICSCombinedLibraryTree
     | CICSRegionsContainer
-    | CICSCombinedTCPIPServiceTree
-    | CICSCombinedURIMapTree
-    | CICSCombinedPipelineTree
-    | CICSCombinedWebServiceTree
   )[] = [];
   plexName: string;
   profile: imperative.IProfileLoaded;
@@ -157,18 +139,6 @@ export class CICSPlexTree extends TreeItem {
 
   public getActiveFilter() {
     return this.activeFilter;
-  }
-
-  public addNewCombinedTrees() {
-    this.children.push(new CICSCombinedProgramTree(this));
-    this.children.push(new CICSCombinedTransactionsTree(this));
-    this.children.push(new CICSCombinedLocalFileTree(this));
-    this.children.push(new CICSCombinedTaskTree(this));
-    this.children.push(new CICSCombinedLibraryTree(this));
-    this.children.push(new CICSCombinedTCPIPServiceTree(this));
-    this.children.push(new CICSCombinedURIMapTree(this));
-    this.children.push(new CICSCombinedWebServiceTree(this));
-    this.children.push(new CICSCombinedPipelineTree(this));
   }
 
   public addRegionContainer(): CICSRegionsContainer {

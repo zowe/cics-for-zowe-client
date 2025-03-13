@@ -9,19 +9,29 @@
  *
  */
 
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { TreeItemCollapsibleState } from "vscode";
 import { getIconByStatus } from "../utils/iconUtils";
-import { CICSLibraryTree } from "./CICSLibraryTree";
-import { CICSLocalFileTree } from "./CICSLocalFileTree";
 import { CICSPlexTree } from "./CICSPlexTree";
-import { CICSProgramTree } from "./CICSProgramTree";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSTaskTree } from "./CICSTaskTree";
-import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSWebTree } from "./CICSWebTree";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import {
+  IResource,
+  IResourceMeta,
+  LibraryMeta,
+  LocalFileMeta,
+  PipelineMeta,
+  ProgramMeta,
+  TaskMeta,
+  TCPIPMeta,
+  TransactionMeta,
+  URIMapMeta,
+  WebServiceMeta
+} from "../doc";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { ResourceContainer } from "../resources";
+import { CICSTreeNode } from "./CICSTreeNode";
 
-export class CICSRegionTree extends TreeItem {
-  children: [CICSProgramTree, CICSTransactionTree, CICSLocalFileTree, CICSTaskTree, CICSLibraryTree, CICSWebTree] | null;
+export class CICSRegionTree extends CICSTreeNode {
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -29,9 +39,9 @@ export class CICSRegionTree extends TreeItem {
   isActive: true | false;
 
   constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
-    super(regionName, TreeItemCollapsibleState.Collapsed);
+    super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.session, parentSession.profile);
     this.region = region;
-    this.contextValue = `cicsregion.${regionName}`;
+    this.contextValue = `${CicsCmciConstants.CICS_CMCI_REGION}.${regionName}`;
     this.parentSession = parentSession;
     this.directParent = directParent;
     if (parentPlex) {
@@ -52,14 +62,37 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.contextValue += ".active";
       this.children = [
-        new CICSProgramTree(this),
-        new CICSTransactionTree(this),
-        new CICSLocalFileTree(this),
-        new CICSTaskTree(this),
-        new CICSLibraryTree(this),
-        new CICSWebTree(this),
+
+        this.buildResourceContainerNode(ProgramMeta),
+        this.buildResourceContainerNode(TransactionMeta),
+        this.buildResourceContainerNode(LocalFileMeta),
+        this.buildResourceContainerNode(TaskMeta),
+        this.buildResourceContainerNode(LibraryMeta),
+
+        this.buildResourceContainerNode(TCPIPMeta),
+        this.buildResourceContainerNode(WebServiceMeta),
+        this.buildResourceContainerNode(URIMapMeta),
+        this.buildResourceContainerNode(PipelineMeta),
       ];
     }
+  }
+
+  private buildResourceContainerNode(meta: IResourceMeta<IResource>) {
+    return new CICSResourceContainerNode(
+      meta.humanReadableName,
+      {
+        parentNode: this,
+        profile: this.parentSession.profile,
+        session: this.parentSession.session,
+        cicsplexName: this.parentPlex?.plexName,
+        regionName: this.getRegionName()
+      },
+      null,
+      {
+        resources: new ResourceContainer(meta),
+        meta,
+      }
+    );
   }
 
   public getRegionName() {

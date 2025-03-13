@@ -92,14 +92,12 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
       plex.clearChildren();
       const regionsContainer = plex.addRegionContainer();
       regionContainerExpansionHandler(regionsContainer, tree);
-      plex.addNewCombinedTrees();
       tree._onDidChangeTreeData.fire(undefined);
     }
   } else {
     plex.clearChildren();
     const regionsContainer = plex.addRegionContainer();
     regionContainerExpansionHandler(regionsContainer, tree);
-    plex.addNewCombinedTrees();
     tree._onDidChangeTreeData.fire(undefined);
   }
   tree._onDidChangeTreeData.fire(undefined);
