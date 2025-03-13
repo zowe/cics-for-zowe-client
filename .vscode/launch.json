@@ -20,6 +20,16 @@
       "skipFiles": ["<node_internals>/**"],
       "enableTurboSourcemaps": true,
       "sourceMaps": true
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run VSCE Tests",
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/packages/vsce",
+      "args": [ "test" ],
+      "enableTurboSourcemaps": true,
+      "sourceMaps": true
+  },
   ]
 }

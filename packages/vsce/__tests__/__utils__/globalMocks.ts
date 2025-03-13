@@ -28,14 +28,14 @@ export const CICSProfileMock = {
   protocol: "http",
 };
 
-export const imperativeSession = new imperative.Session({
+export const imperativeSession = {
   user: "user",
   password: "pwd",
   hostname: "hostname",
   protocol: "https",
   type: "basic",
   rejectUnauthorized: false,
-});
+} as unknown as imperative.Session;
 
 const IProfileMock: IProfile = {
   cicsPlex: "PLEXX",
