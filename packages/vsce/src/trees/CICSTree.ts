@@ -381,7 +381,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return element;
   }
   getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
-    return element === undefined ? this.loadedProfiles : element.children;
+    return element === undefined ? this.loadedProfiles : element.getChildren();
   }
 
   getParent(element: any): ProviderResult<any> {
