@@ -10,7 +10,7 @@
  */
 
 import { ConfigurationTarget, workspace } from "vscode";
-import constants from "./constants";
+import constants from "../constants/Cics.defaults";
 
 export class PersistentStorage {
   public schema: string;

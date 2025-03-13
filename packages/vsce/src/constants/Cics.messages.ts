@@ -32,5 +32,4 @@ Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed`
     loadingResources: {
       message: "Loading resources..."
     }
-
 };

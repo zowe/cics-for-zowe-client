@@ -17,7 +17,7 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import constants from "../utils/constants";
+import constants from "../constants/Cics.defaults";
 
 /**
  * Performs new copy on selected CICSProgram nodes.

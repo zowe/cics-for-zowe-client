@@ -11,7 +11,7 @@
 
 import { CicsCmciRestClient, getResource, IGetResourceUriOptions, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import constants from "./constants";
+import constants from "../constants/Cics.defaults";
 import { getErrorCode } from "./errorUtils";
 import { CicsLogger } from "./CicsLogger";
 
