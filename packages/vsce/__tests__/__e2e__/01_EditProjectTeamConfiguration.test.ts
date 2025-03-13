@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, VSBrowser } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, VSBrowser } from "vscode-extension-tester";
 
 describe("Create Project Level Team Configuration File Scenario", () => {
   let cicsTree: DefaultTreeSection;
@@ -86,6 +86,19 @@ describe("Create Project Level Team Configuration File Scenario", () => {
     // Check zowe.config.json was opened - could check content here
     expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
 
+    // Open the editor for zowe.config.json
+    const editor = await editorView.openEditor("zowe.config.json") as TextEditor;
+   
+    const isWmAvailable = await editor.getText()
+    if(!isWmAvailable.includes("wiremock_server")){
+      const wiremockConfig = ",\n\"wiremock_server\": {\n   \"type\": \"cics\",\n\"properties\": {\n     \"host\": \"localhost\",\n\"port\": 8080,\n\"rejectUnauthorized\": false,\n\"protocol\": \"http\"\n}\n}"
+    
+      // add the wiremock configuration at the given coordinates
+      await editor.typeTextAt(47,10,wiremockConfig);
+      await editor.save();
+      const editorText = await editor.getText();
+      expect(editorText).to.contain("wiremock_server");
+    }
     cicsTree.takeScreenshot();
   });
 });
