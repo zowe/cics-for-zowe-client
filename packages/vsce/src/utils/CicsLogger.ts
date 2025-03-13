@@ -11,32 +11,31 @@
 
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
-import * as vscode from "vscode";
+import { ExtensionContext, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { LogLevel } from "vscode";
 
 export class CicsLogger {
-    private static logOutputChannel: vscode.LogOutputChannel;
+    private static logOutputChannel: LogOutputChannel;
 
-    public static async initialize(context: vscode.ExtensionContext) {
+    public static async initialize(context: ExtensionContext) {
         try {
-            CicsLogger.logOutputChannel = vscode.window.createOutputChannel(vscode.l10n.t("CICS for Zowe Explorer"), { log: true } )
+            CicsLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
 
             CicsLogger.writeInitInfo(context);
         } catch (err) {
             // Don't log error if logger failed to initialize
             if (err instanceof Error) {
-                const errorMessage = vscode.l10n.t("Error encountered while activating and initializing logger");
+                const errorMessage = l10n.t("Error encountered while activating and initializing logger");
                 await Gui.errorMessage(`${errorMessage}: ${err.message}`);
             }
         }
     }
 
-    private static writeInitInfo(context: vscode.ExtensionContext): void {
-      CicsLogger.info(vscode.l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
+    private static writeInitInfo(context: ExtensionContext): void {
+      CicsLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
       CicsLogger.info(`${context.extension.packageJSON.displayName as string} ${context.extension.packageJSON.version as string}`);
       CicsLogger.info(
-        vscode.l10n.t({
+        l10n.t({
             message: "IBM CICS for Zowe Explorer log level: {0}",
             args: [LogLevel[CicsLogger.logOutputChannel.logLevel]],
             comment: ["Log level"],
