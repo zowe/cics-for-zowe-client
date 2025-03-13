@@ -89,7 +89,7 @@ export async function activate(context: ExtensionContext) {
         await node.element.loadContents();
         node.element.collapsibleState = TreeItemCollapsibleState.Expanded;
         treeDataProv._onDidChangeTreeData.fire(undefined);
-      }//import { LoggerUtils } from "./utils/LoggerUtils";
+      }
     );
   };
 
