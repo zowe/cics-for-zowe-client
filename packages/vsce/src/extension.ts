@@ -17,8 +17,8 @@ import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
 import { getCommands } from "./commands";
-import { CicsLogger } from "./utils/CicsLogger";
-import { CicsMessages } from "./constants/Cics.messages";
+import { CICSLogger } from "./utils/CICSLogger";
+import { CICSMessages } from "./constants/CICS.messages";
 
 /**
  * Initializes the extension
@@ -28,16 +28,16 @@ import { CicsMessages } from "./constants/Cics.messages";
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
 
-  await CicsLogger.initialize(context);
+  await CICSLogger.initialize(context);
 
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
-    CicsLogger.error(CicsMessages.zoweExplorerNotFound.message);
-    window.showErrorMessage(CicsMessages.zoweExplorerNotFound.message);
+    CICSLogger.error(CICSMessages.zoweExplorerNotFound.message);
+    window.showErrorMessage(CICSMessages.zoweExplorerNotFound.message);
     return;
   } else if (zeVersion[0] !== "3") {
     const message = `Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`;
-    CicsLogger.error(message);
+    CICSLogger.error(message);
     window.showErrorMessage(message);
     return;
   }
@@ -53,14 +53,14 @@ export async function activate(context: ExtensionContext) {
           await treeDataProv.refreshLoadedProfiles();
         });
       }
-      CicsLogger.debug(CicsMessages.zoweExplorerModified.message);
+      CICSLogger.debug(CICSMessages.zoweExplorerModified.message);
     } catch (error) {
-      CicsLogger.error(CicsMessages.notInitializedCorrectly.message);
+      CICSLogger.error(CICSMessages.notInitializedCorrectly.message);
       return;
     }
   } else {
-    CicsLogger.error(CicsMessages.incorrectZoweExplorerVersion.message);
-    window.showErrorMessage(CicsMessages.incorrectZoweExplorerVersion.message);
+    CICSLogger.error(CICSMessages.incorrectZoweExplorerVersion.message);
+    window.showErrorMessage(CICSMessages.incorrectZoweExplorerVersion.message);
     return;
   }
 
@@ -82,7 +82,7 @@ export async function activate(context: ExtensionContext) {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: CicsMessages.loadingResources.message,
+        title: CICSMessages.loadingResources.message,
         cancellable: true,
       },
       async (_progress, _token) => {
@@ -125,7 +125,7 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        CicsLogger.error(error);
+        CICSLogger.error(error);
         node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
@@ -182,5 +182,5 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  await CicsLogger.dispose();
+  await CICSLogger.dispose();
 }

@@ -14,14 +14,14 @@
 import { ExtensionContext, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 import { Gui } from "@zowe/zowe-explorer-api";
 
-export class CicsLogger {
+export class CICSLogger {
     private static logOutputChannel: LogOutputChannel;
 
     public static async initialize(context: ExtensionContext) {
         try {
-            CicsLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
+            CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
 
-            CicsLogger.writeInitInfo(context);
+            CICSLogger.writeInitInfo(context);
         } catch (err) {
             // Don't log error if logger failed to initialize
             if (err instanceof Error) {
@@ -32,42 +32,42 @@ export class CicsLogger {
     }
 
     private static writeInitInfo(context: ExtensionContext): void {
-      CicsLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
-      CicsLogger.info(`${context.extension.packageJSON.displayName as string} ${context.extension.packageJSON.version as string}`);
-      CicsLogger.info(
+      CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
+      CICSLogger.info(`${context.extension.packageJSON.displayName as string} ${context.extension.packageJSON.version as string}`);
+      CICSLogger.info(
         l10n.t({
             message: "IBM CICS for Zowe Explorer log level: {0}",
-            args: [LogLevel[CicsLogger.logOutputChannel.logLevel]],
+            args: [LogLevel[CICSLogger.logOutputChannel.logLevel]],
             comment: ["Log level"],
         })
       );
     }
 
     public static trace(message: string): void {
-      CicsLogger.logOutputChannel.trace(message);
+      CICSLogger.logOutputChannel.trace(message);
     }
 
     public static debug(message: string): void {
-      CicsLogger.logOutputChannel.debug(message);
+      CICSLogger.logOutputChannel.debug(message);
     }
 
     public static info(message: string): void {
-      CicsLogger.logOutputChannel.info(message);
+      CICSLogger.logOutputChannel.info(message);
     }
 
     public static warn(message: string): void {
-      CicsLogger.logOutputChannel.warn(message);
+      CICSLogger.logOutputChannel.warn(message);
     }
 
     public static error(message: string): void {
-      CicsLogger.logOutputChannel.error(message);
+      CICSLogger.logOutputChannel.error(message);
     }
 
     public static fatal(message: string): void {
-      CicsLogger.logOutputChannel.error(message);
+      CICSLogger.logOutputChannel.error(message);
     }
 
     public static dispose(): void {
-      CicsLogger.logOutputChannel.dispose();
+      CICSLogger.logOutputChannel.dispose();
     }
 }

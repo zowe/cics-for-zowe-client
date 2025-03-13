@@ -11,7 +11,7 @@
 
 import { IMessageDefinition } from "@zowe/imperative";
 
-export const CicsMessages: { [key: string]: IMessageDefinition } = {
+export const CICSMessages: { [key: string]: IMessageDefinition } = {
     zoweExplorerNotFound: {
       message: "Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed"
     },

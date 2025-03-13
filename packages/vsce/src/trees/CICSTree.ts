@@ -26,7 +26,7 @@ import {
   window,
 } from "vscode";
 import { PersistentStorage } from "../utils/PersistentStorage";
-import constants from "../constants/Cics.defaults";
+import constants from "../constants/CICS.defaults";
 import { getErrorCode } from "../utils/errorUtils";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";

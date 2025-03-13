@@ -18,7 +18,7 @@ import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import constants from "../../constants/Cics.defaults";
+import constants from "../../constants/CICS.defaults";
 import { runPutResource } from "../../utils/resourceUtils";
 import { ICommandParams } from "../ICommandParams";
 

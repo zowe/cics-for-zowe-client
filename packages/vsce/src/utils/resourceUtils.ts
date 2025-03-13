@@ -11,9 +11,9 @@
 
 import { CicsCmciRestClient, getResource, IGetResourceUriOptions, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import constants from "../constants/Cics.defaults";
+import constants from "../constants/CICS.defaults";
 import { getErrorCode } from "./errorUtils";
-import { CicsLogger } from "./CicsLogger";
+import { CICSLogger } from "./CICSLogger";
 
 export async function runGetResource({
   session,
@@ -120,13 +120,13 @@ function logResourceRequest({call, resourceName,regionName, cicsPlex, params}: {
   params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
 }) {
 
-  CicsLogger.trace(`${call} called for resource [${resourceName}].`);
+  CICSLogger.trace(`${call} called for resource [${resourceName}].`);
   if (cicsPlex)
-    CicsLogger.trace(`- cicsPlex [${cicsPlex}]`);
+    CICSLogger.trace(`- cicsPlex [${cicsPlex}]`);
   if (regionName)
-    CicsLogger.trace(`- region [${regionName}]`);
+    CICSLogger.trace(`- region [${regionName}]`);
   if (params?.criteria)
-    CicsLogger.trace(`- criteria [${params?.criteria}]`);
+    CICSLogger.trace(`- criteria [${params?.criteria}]`);
   if (params?.parameter)
-    CicsLogger.trace(`- parameter [${params?.parameter}]`);
+    CICSLogger.trace(`- parameter [${params?.parameter}]`);
 }
