@@ -19,7 +19,11 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE,
   humanReadableName: "Bundles",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 

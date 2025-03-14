@@ -18,7 +18,11 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
   humanReadableName: "Transactions",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `TRANID=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "NOT (program=DFH* OR program=EYU*)";
   },
 

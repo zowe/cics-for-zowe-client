@@ -15,22 +15,22 @@ import * as enableCommands from "./enableCommands";
 import { TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
-import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
-import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
-import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
-import * as filterAllResourceCommands from "./filterAllResourceCommand";
+// import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
+// import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
+// import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
+// import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
-import { getFilterPlexResources } from "./getFilterPlexResources";
-import { getInquireProgramCommand } from "./inquireProgram";
-import { getInquireTransactionCommand } from "./inquireTransaction";
+// import { getFilterPlexResources } from "./getFilterPlexResources";
+// import { getInquireProgramCommand } from "./inquireProgram";
+// import { getInquireTransactionCommand } from "./inquireTransaction";
 import { getManageSessionCommand } from "./manageSessionCommand";
-import { getNewCopyCommand } from "./newCopyCommand";
-import { getOpenLocalFileCommand } from "./openLocalFileCommand";
-import { getPhaseInCommand } from "./phaseInCommand";
-import { getPurgeTaskCommand } from "./purgeTaskCommand";
+// import { getNewCopyCommand } from "./newCopyCommand";
+// import { getOpenLocalFileCommand } from "./openLocalFileCommand";
+// import { getPhaseInCommand } from "./phaseInCommand";
+// import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-import * as showAttributesCommands from "./showAttributesCommand";
-import { getShowRegionSITParametersCommand } from "./showParameterCommand";
+// import * as showAttributesCommands from "./showAttributesCommand";
+// import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => {
@@ -40,8 +40,8 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     getRefreshCommand(treeDataProv),
 
-    getNewCopyCommand(treeDataProv, treeview),
-    getPhaseInCommand(treeDataProv, treeview),
+    // getNewCopyCommand(treeDataProv, treeview),
+    // getPhaseInCommand(treeDataProv, treeview),
 
     enableCommands.getEnableProgramCommand(treeDataProv, treeview),
     enableCommands.getEnableTransactionCommand(treeDataProv, treeview),
@@ -50,55 +50,46 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
     disableCommands.getDisableTransactionCommand(treeDataProv, treeview),
     disableCommands.getDisableLocalFileCommand(treeDataProv, treeview),
 
-    getCloseLocalFileCommand(treeDataProv, treeview),
-    getOpenLocalFileCommand(treeDataProv, treeview),
+    // getCloseLocalFileCommand(treeDataProv, treeview),
+    // getOpenLocalFileCommand(treeDataProv, treeview),
 
-    getPurgeTaskCommand(treeDataProv, treeview),
+    // getPurgeTaskCommand(treeDataProv, treeview),
 
-    showAttributesCommands.getShowRegionAttributes(treeview),
-    showAttributesCommands.getShowProgramAttributesCommand(treeview),
-    showAttributesCommands.getShowLibraryAttributesCommand(treeview),
-    showAttributesCommands.getShowLibraryDatasetsAttributesCommand(treeview),
-    showAttributesCommands.getShowTCPIPServiceAttributesCommand(treeview),
-    showAttributesCommands.getShowURIMapAttributesCommand(treeview),
-    showAttributesCommands.getShowTransactionAttributesCommand(treeview),
-    showAttributesCommands.getShowLocalFileAttributesCommand(treeview),
-    showAttributesCommands.getShowTaskAttributesCommand(treeview),
-    showAttributesCommands.getShowPipelineAttributesCommand(treeview),
-    showAttributesCommands.getShowWebServiceAttributesCommand(treeview),
+    // showAttributesCommands.getShowRegionAttributes(treeview),
+    // showAttributesCommands.getShowProgramAttributesCommand(treeview),
+    // showAttributesCommands.getShowLibraryAttributesCommand(treeview),
+    // showAttributesCommands.getShowLibraryDatasetsAttributesCommand(treeview),
+    // showAttributesCommands.getShowTCPIPServiceAttributesCommand(treeview),
+    // showAttributesCommands.getShowURIMapAttributesCommand(treeview),
+    // showAttributesCommands.getShowTransactionAttributesCommand(treeview),
+    // showAttributesCommands.getShowLocalFileAttributesCommand(treeview),
+    // showAttributesCommands.getShowTaskAttributesCommand(treeview),
+    // showAttributesCommands.getShowPipelineAttributesCommand(treeview),
+    // showAttributesCommands.getShowWebServiceAttributesCommand(treeview),
 
-    getShowRegionSITParametersCommand(treeview),
+    // getShowRegionSITParametersCommand(treeview),
 
-    filterResourceCommands.getFilterProgramsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterDatasetProgramsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterLibrariesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterDatasetsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTransactionCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterLocalFilesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTasksCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTCPIPSCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterURIMapsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterPipelinesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterWebServicesCommand(treeDataProv, treeview),
+    filterResourceCommands.getFilterResourcesCommand(treeDataProv),
+    filterResourceCommands.getClearFilterCommand(treeDataProv),
 
-    filterAllResourceCommands.getFilterAllProgramsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLibrariesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllWebServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllPipelinesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTransactionsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLocalFilesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTasksCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTCPIPServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllURIMapsCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllProgramsCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllLibrariesCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllWebServicesCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllPipelinesCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllTransactionsCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllLocalFilesCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllTasksCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllTCPIPServicesCommand(treeDataProv, treeview),
+    // filterAllResourceCommands.getFilterAllURIMapsCommand(treeDataProv, treeview),
 
-    getFilterPlexResources(treeDataProv, treeview),
+    // getFilterPlexResources(treeDataProv, treeview),
 
-    getClearResourceFilterCommand(treeDataProv, treeview),
-    getClearPlexFilterCommand(treeDataProv, treeview),
+    // getClearResourceFilterCommand(treeDataProv, treeview),
+    // getClearPlexFilterCommand(treeDataProv, treeview),
 
     viewMoreCommand(treeDataProv, treeview),
 
-    getInquireTransactionCommand(treeDataProv, treeview),
-    getInquireProgramCommand(treeDataProv, treeview),
+    // getInquireTransactionCommand(treeDataProv, treeview),
+    // getInquireProgramCommand(treeDataProv, treeview),
   ];
 };

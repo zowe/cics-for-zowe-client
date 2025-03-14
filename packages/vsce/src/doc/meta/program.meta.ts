@@ -18,7 +18,11 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
   humanReadableName: "Programs",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `PROGRAM=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
   },
 

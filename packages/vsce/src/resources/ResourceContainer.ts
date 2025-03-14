@@ -17,8 +17,11 @@ import CICSRequester from "../utils/CICSRequester";
 
 export class ResourceContainer<T extends IResource> {
   resources: Resource<T>[] | undefined;
+  criteria: string;
 
-  constructor(private resourceMeta: IResourceMeta<T>, private resource?: Resource<T>) { }
+  constructor(private resourceMeta: IResourceMeta<T>, private resource?: Resource<T>) {
+    this.resetCriteria();
+  }
 
   getMeta() {
     return this.resourceMeta;
@@ -32,12 +35,20 @@ export class ResourceContainer<T extends IResource> {
     return this.resources;
   }
 
-  async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string, criteria?: string): Promise<Resource<T>[]> {
+  setCriteria(criteria: string) {
+    this.criteria = this.resourceMeta.buildCriteria(criteria, this.resource?.attributes);
+  }
+
+  resetCriteria() {
+    this.criteria = this.resourceMeta.getDefaultCriteria(this.resource?.attributes);
+  }
+
+  async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<Resource<T>[]> {
     const { response } = await CICSRequester.get(cicsSession, {
       resourceName: this.resourceMeta.resourceName,
       cicsplexName,
       regionName,
-      criteria,
+      criteria: this.criteria,
     });
 
     this.resources = toArray(

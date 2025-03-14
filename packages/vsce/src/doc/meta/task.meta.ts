@@ -18,7 +18,11 @@ export const TaskMeta: IResourceMeta<ITask> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TASK,
   humanReadableName: "Tasks",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `TRANID=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "TRANID=*";
   },
 

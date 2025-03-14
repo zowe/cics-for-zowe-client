@@ -18,7 +18,11 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   resourceName: CicsCmciConstants.CICS_PIPELINE_RESOURCE,
   humanReadableName: "Pipelines",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 
