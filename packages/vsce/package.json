@@ -91,52 +91,7 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.showProgramAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showLibraryAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showLibraryDatasetsAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showTCPIPServiceAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showURIMapAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showTransactionAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showLocalFileAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showTaskAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showPipelineAttributes",
-        "title": "Show Attributes",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
-        "command": "cics-extension-for-zowe.showWebServiceAttributes",
+        "command": "cics-extension-for-zowe.showResourceAttributes",
         "title": "Show Attributes",
         "category": "IBM CICS for Zowe Explorer"
       },
@@ -240,137 +195,92 @@
       ],
       "view/item/context": [
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.phaseInCommand",
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.phaseInCommand",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsregion\\./",
+          "when": "view == cics-view && viewItem =~ /^CICSRegion.*/",
           "command": "cics-extension-for-zowe.showRegionAttributes",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /cicsregion.*\\.active/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*[^F][^I][^L][^T][^E][^R][^A][^B][^L][^E]$/",
+          "command": "cics-extension-for-zowe.showResourceAttributes",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSRegion.*.ACTIVE/",
           "command": "cics-extension-for-zowe.showRegionParameters",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE/",
           "command": "cics-extension-for-zowe.filterResources",
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE/",
           "command": "cics-extension-for-zowe.clearFilter",
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
-          "command": "cics-extension-for-zowe.showProgramAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicslibrary.*/",
-          "command": "cics-extension-for-zowe.showLibraryAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicsdatasets.*/",
-          "command": "cics-extension-for-zowe.showLibraryDatasetsAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicstcpips.*/",
-          "command": "cics-extension-for-zowe.showTCPIPServiceAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicsurimaps.*/",
-          "command": "cics-extension-for-zowe.showURIMapAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicstransaction.*/",
-          "command": "cics-extension-for-zowe.showTransactionAttributes",
-          "group": "000_zowecics_main@0"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/",
-          "command": "cics-extension-for-zowe.showLocalFileAttributes",
-          "group": ""
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicstask.*/",
-          "command": "cics-extension-for-zowe.showTaskAttributes",
-          "group": "000_zowecics_main@0"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicspipeline.*/",
-          "command": "cics-extension-for-zowe.showPipelineAttributes",
-          "group": "000_zowecics_main@0"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicswebservice.*/",
-          "command": "cics-extension-for-zowe.showWebServiceAttributes",
-          "group": "000_zowecics_main@0"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.disabled.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*.DISABLED.*/",
           "command": "cics-extension-for-zowe.enableProgram",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.enabled.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*.ENABLED.*/",
           "command": "cics-extension-for-zowe.disableProgram",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicstransaction.disabled.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*.DISABLED/",
           "command": "cics-extension-for-zowe.enableTransaction",
           "group": "000_zowecics_main@1"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicstransaction.enabled.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*.ENABLED/",
           "command": "cics-extension-for-zowe.disableTransaction",
           "group": "000_zowecics_main@1"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.DISABLED.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.*.DISABLED.*/",
           "command": "cics-extension-for-zowe.enableLocalFile",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.UNENABLED.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.*.UNENABLED.*/",
           "command": "cics-extension-for-zowe.enableLocalFile",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.ENABLED.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.*.ENABLED.*/",
           "command": "cics-extension-for-zowe.disableLocalFile",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /(?=^cicslocalfile)(?=.*open)/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.*.OPEN.*/",
           "command": "cics-extension-for-zowe.closeLocalFile",
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /(?=^cicslocalfile)(?=.*closed)/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.*.CLOSED.*/",
           "command": "cics-extension-for-zowe.openLocalFile",
           "group": ""
         },
@@ -380,17 +290,17 @@
           "title": "Manage Session"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicstask.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
           "command": "cics-extension-for-zowe.inquireTransaction",
           "group": "001_zowecics_inquire@0"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicstransaction.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*/",
           "command": "cics-extension-for-zowe.inquireProgram",
           "group": "001_zowecics_inquire@0"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicstask.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
           "command": "cics-extension-for-zowe.purgeTask",
           "group": "000_zowecics_main@1"
         }
