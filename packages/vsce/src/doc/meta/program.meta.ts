@@ -41,7 +41,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getContext: function (program: Resource<IProgram>): string {
     let context = `${CicsCmciConstants.CICS_PROGRAM_RESOURCE}.${program.attributes.program}`;
     if (program.attributes.status.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },

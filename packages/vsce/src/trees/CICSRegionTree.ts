@@ -58,9 +58,9 @@ export class CICSRegionTree extends CICSTreeNode {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
       this.iconPath = getIconByStatus("REGION", this);
-      this.contextValue += ".inactive";
+      this.contextValue += ".INACTIVE";
     } else {
-      this.contextValue += ".active";
+      this.contextValue += ".ACTIVE";
       this.children = [
 
         this.buildResourceContainerNode(ProgramMeta),

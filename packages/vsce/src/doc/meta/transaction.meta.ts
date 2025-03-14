@@ -39,7 +39,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   getContext: function (transaction: Resource<ITransaction>): string {
     let context = `${CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION}.${transaction.attributes.tranid}`;
     if (transaction.attributes.status.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },
