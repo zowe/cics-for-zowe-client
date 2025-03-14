@@ -19,7 +19,11 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
   humanReadableName: "Libraries",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 

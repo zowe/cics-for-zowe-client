@@ -18,7 +18,11 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
   humanReadableName: "URI Maps",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 

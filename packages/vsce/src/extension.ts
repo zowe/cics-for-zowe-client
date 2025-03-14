@@ -93,29 +93,7 @@ export async function activate(context: ExtensionContext) {
     );
   };
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
-    cicscombinedprogramtree: expandCombinedTree,
-    cicscombinedtransactiontree: expandCombinedTree,
-    cicscombinedlocalfiletree: expandCombinedTree,
-    cicscombinedtasktree: expandCombinedTree,
-    cicscombinedlibrarytree: expandCombinedTree,
-    cicscombinedtcpipstree: expandCombinedTree,
-    cicscombinedurimapstree: expandCombinedTree,
-    cicscombinedpipelinetree: expandCombinedTree,
-    cicscombinedwebservicetree: expandCombinedTree,
-
-    cicstreeprogram: expandResourceTree,
-    cicstreetransaction: expandResourceTree,
-    cicstreelocalfile: expandResourceTree,
-    cicstreetask: expandResourceTree,
-    cicstreelibrary: expandResourceTree,
-    cicslibrary: expandResourceTree,
-    cicsdatasets: expandResourceTree,
-    cicstreetcpips: expandResourceTree,
-    cicstreewebservice: expandResourceTree,
-    cicstreepipeline: expandResourceTree,
-    cicstreeurimaps: expandResourceTree,
-
+  const contextMap: { [key: string]: (node: any) => Promise<void> | void; } = {
     cicssession: async (node: any) => {
       await sessionExpansionHandler(node.element, treeDataProv);
     },
@@ -126,14 +104,14 @@ export async function activate(context: ExtensionContext) {
       } catch (error) {
         CICSLogger.error(error);
         node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
-        treeDataProv._onDidChangeTreeData.fire(undefined);
+        treeDataProv._onDidChangeTreeData.fire(node.element);
       }
     },
 
     cicsregionscontainer: (node: any) => {
       node.element.iconPath = getFolderIcon(true);
       regionContainerExpansionHandler(node.element, treeDataProv);
-      treeDataProv._onDidChangeTreeData.fire(undefined);
+      treeDataProv._onDidChangeTreeData.fire(node.element);
     },
   };
 
@@ -144,36 +122,21 @@ export async function activate(context: ExtensionContext) {
     if (initialContext in contextMap) {
       contextMap[initialContext](node);
     }
+    // @ts-ignore
+    node.element.refreshIcon(true);
+    treeDataProv._onDidChangeTreeData.fire(node.element);
   });
 
   treeview.onDidCollapseElement((node) => {
     const interestedContextValues = [
       "cicsregionscontainer.",
-      "cicscombinedprogramtree.",
-      "cicscombinedtransactiontree.",
-      "cicscombinedlocalfiletree.",
-      "cicscombinedtasktree.",
-      "cicscombinedlibrarytree.",
-      "cicscombinedtcpipstree.",
-      "cicscombinedurimapstree.",
-      "cicscombinedpipelinetree.",
-      "cicscombinedwebservicetree.",
-      "cicstreeprogram.",
-      "cicstreetransaction.",
-      "cicstreelocalfile.",
-      "cicstreetask.",
-      "cicstreelibrary.",
-      "cicstreetcpips.",
-      "cicstreepipeline.",
-      "cicstreewebservice.",
-      "cicstreeurimaps.",
     ];
 
     if (interestedContextValues.some((item) => node.element.contextValue.includes(item))) {
       node.element.iconPath = getFolderIcon(false);
     }
-    node.element.collapsibleState = TreeItemCollapsibleState.Collapsed;
-    treeDataProv._onDidChangeTreeData.fire(undefined);
+    node.element.refreshIcon();
+    treeDataProv._onDidChangeTreeData.fire(node.element);
   });
 
   context.subscriptions.concat(getCommands(treeDataProv, treeview));
