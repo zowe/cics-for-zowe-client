@@ -11,63 +11,67 @@
 
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
-import { ExtensionContext, l10n, LogLevel, LogOutputChannel, window } from "vscode";
+import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 import { Gui } from "@zowe/zowe-explorer-api";
 
 export class CICSLogger {
-    private static logOutputChannel: LogOutputChannel;
+    private logOutputChannel: LogOutputChannel;
+    private static _instance: CICSLogger;
 
-    public static async initialize(context: ExtensionContext) {
-        try {
-            CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
-
-            CICSLogger.writeInitInfo(context);
-        } catch (err) {
-            // Don't log error if logger failed to initialize
-            if (err instanceof Error) {
-                const errorMessage = l10n.t("Error encountered while activating and initializing logger");
-                await Gui.errorMessage(`${errorMessage}: ${err.message}`);
-            }
-        }
+    public static get Instance() {
+      return this._instance || (this._instance = new this());
     }
 
-    private static writeInitInfo(context: ExtensionContext): void {
-      CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
-      CICSLogger.info(`${context.extension.packageJSON.displayName as string} ${context.extension.packageJSON.version as string}`);
-      CICSLogger.info(
-        l10n.t({
-            message: "IBM CICS for Zowe Explorer log level: {0}",
-            args: [LogLevel[CICSLogger.logOutputChannel.logLevel]],
-            comment: ["Log level"],
-        })
-      );
+    private constructor() {
+      try {
+        this.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
+
+        this.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
+
+        const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON
+
+        this.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
+        this.info(
+          l10n.t({
+              message: "IBM CICS for Zowe Explorer log level: {0}",
+              args: [LogLevel[this.logOutputChannel.logLevel]],
+              comment: ["Log level"],
+          })
+        );
+      } catch (err) {
+          // Don't log error if logger failed to initialize
+          if (err instanceof Error) {
+              const errorMessage = l10n.t("Error encountered while activating and initializing logger");
+              Gui.errorMessage(`${errorMessage}: ${err.message}`);
+          }
+      }
     }
 
-    public static trace(message: string): void {
-      CICSLogger.logOutputChannel.trace(message);
+    public trace(message: string): void {
+      this.logOutputChannel.trace(message);
     }
 
-    public static debug(message: string): void {
-      CICSLogger.logOutputChannel.debug(message);
+    public debug(message: string): void {
+      this.logOutputChannel.debug(message);
     }
 
-    public static info(message: string): void {
-      CICSLogger.logOutputChannel.info(message);
+    public info(message: string): void {
+      this.logOutputChannel.info(message);
     }
 
-    public static warn(message: string): void {
-      CICSLogger.logOutputChannel.warn(message);
+    public warn(message: string): void {
+      this.logOutputChannel.warn(message);
     }
 
-    public static error(message: string): void {
-      CICSLogger.logOutputChannel.error(message);
+    public error(message: string): void {
+      this.logOutputChannel.error(message);
     }
 
-    public static fatal(message: string): void {
-      CICSLogger.logOutputChannel.error(message);
+    public fatal(message: string): void {
+      this.logOutputChannel.error(message);
     }
 
-    public static dispose(): void {
-      CICSLogger.logOutputChannel.dispose();
+    public dispose(): void {
+      this.logOutputChannel.dispose();
     }
 }

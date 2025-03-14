@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
- - Enhancement: Lack of logging in the CICS VS Code extension. [#250](https://github.com/zowe/cics-for-zowe-client/issues/250)
+ - Enhancement: Added logging support to the CICS VS Code extension. [#250](https://github.com/zowe/cics-for-zowe-client/issues/250)
 
 ## `3.4.0`
 

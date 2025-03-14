@@ -28,16 +28,16 @@ import { CICSMessages } from "./constants/CICS.messages";
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
 
-  await CICSLogger.initialize(context);
+  await CICSLogger.Instance;
 
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
-    CICSLogger.error(CICSMessages.zoweExplorerNotFound.message);
+    CICSLogger.Instance.error(CICSMessages.zoweExplorerNotFound.message);
     window.showErrorMessage(CICSMessages.zoweExplorerNotFound.message);
     return;
   } else if (zeVersion[0] !== "3") {
     const message = `Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`;
-    CICSLogger.error(message);
+    CICSLogger.Instance.error(message);
     window.showErrorMessage(message);
     return;
   }
@@ -53,13 +53,13 @@ export async function activate(context: ExtensionContext) {
           await treeDataProv.refreshLoadedProfiles();
         });
       }
-      CICSLogger.debug(CICSMessages.zoweExplorerModified.message);
+      CICSLogger.Instance.debug(CICSMessages.zoweExplorerModified.message);
     } catch (error) {
-      CICSLogger.error(CICSMessages.notInitializedCorrectly.message);
+      CICSLogger.Instance.error(CICSMessages.notInitializedCorrectly.message);
       return;
     }
   } else {
-    CICSLogger.error(CICSMessages.incorrectZoweExplorerVersion.message);
+    CICSLogger.Instance.error(CICSMessages.incorrectZoweExplorerVersion.message);
     window.showErrorMessage(CICSMessages.incorrectZoweExplorerVersion.message);
     return;
   }
@@ -125,7 +125,7 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
-        CICSLogger.error(error);
+        CICSLogger.Instance.error(error);
         node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
@@ -182,5 +182,5 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  await CICSLogger.dispose();
+  await CICSLogger.Instance.dispose();
 }
