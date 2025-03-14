@@ -40,7 +40,7 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   getContext: function (bundle: Resource<IBundle>): string {
     let context = `${CicsCmciConstants.CICS_CMCI_BUNDLE}.${bundle.attributes.name}`;
     if (bundle.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },

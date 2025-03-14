@@ -44,9 +44,10 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
 
   getContext: function (localFile: Resource<ILocalFile>): string {
     return `${CicsCmciConstants.CICS_CMCI_LOCAL_FILE
-      }.${localFile.attributes.enablestatus
-      }.${localFile.attributes.openstatus
-      }.${localFile.attributes.file}`;
+      }.${localFile.attributes.file
+      }.${localFile.attributes.enablestatus.toUpperCase()
+      }.${localFile.attributes.openstatus.toUpperCase()
+      }`;
   },
 
   getIconName: function (localFile: Resource<ILocalFile>): string {

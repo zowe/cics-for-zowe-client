@@ -49,6 +49,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.containedResource?.meta) {
       this.contextValue = `CICSResourceNode.${this.containedResource.meta.getContext(this.containedResource.resource)}`;
     }
+    if (this.childResource?.meta) {
+      this.contextValue += `.FILTERABLE`;
+    }
 
     this.refreshIcon();
   }
