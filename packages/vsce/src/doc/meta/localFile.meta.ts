@@ -18,7 +18,11 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
   humanReadableName: "Local Files",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `file=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "file=*";
   },
 

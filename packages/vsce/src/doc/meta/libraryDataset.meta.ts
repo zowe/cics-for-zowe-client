@@ -18,7 +18,11 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE,
   humanReadableName: "Library Datasets",
 
-  getDefaultFilter: function (parentResource: ILibrary): string {
+  buildCriteria(criteria: string, parentResource: ILibrary) {
+    return `LIBRARY=${parentResource.name} AND DSNAME=${criteria}`;
+  },
+
+  getDefaultCriteria: function (parentResource: ILibrary): string {
     return `LIBRARY=${parentResource.name}`;
   },
 

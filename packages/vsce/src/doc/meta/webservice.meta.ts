@@ -18,7 +18,11 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
   humanReadableName: "Web Services",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 

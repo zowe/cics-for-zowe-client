@@ -18,7 +18,11 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
   humanReadableName: "TCPIP Services",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `name=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "name=*";
   },
 
