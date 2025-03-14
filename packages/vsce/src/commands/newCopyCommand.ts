@@ -11,12 +11,9 @@
 
 import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
+import { ProgramMeta } from "../doc";
 import constants from "../constants/CICS.defaults";
 
 /**
@@ -26,12 +23,12 @@ import constants from "../constants/CICS.defaults";
  */
 export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.newCopyProgram", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, ProgramMeta, clickedNode);
+    if (!nodes || !nodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+
     window.withProgress(
       {
         title: "New Copy",
@@ -39,32 +36,25 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
-        for (const index in allSelectedNodes) {
+        token.onCancellationRequested(() => { });
+
+        for (const node of nodes) {
           progress.report({
-            message: `New Copying ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
+            message: `New Copying ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
-          const currentNode = allSelectedNodes[parseInt(index)];
 
           try {
-            await programNewcopy(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.program.program,
-              regionName: currentNode.parentRegion.label,
-              cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
+            await programNewcopy(node.getSession(), {
+              name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
+              regionName: node.regionName,
+              cicsPlex: node.cicsplexName,
             });
-            if (!parentRegions.includes(currentNode.parentRegion)) {
-              parentRegions.push(currentNode.parentRegion);
-            }
           } catch (error) {
-            // CMCI new copy error
-            // @ts-ignore
             if (error.mMessage) {
-              // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform NEWCOPY on Program "${
-                  allSelectedNodes[parseInt(index)].program.program
+                `Perform NEWCOPY on Program "${node.getContainedResource().meta.getName(node.getContainedResource().resource)
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -77,33 +67,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
-        // Reload contents
-        for (const parentRegion of parentRegions) {
-          try {
-            const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-            // Only load contents if the tree is expanded
-            if (programTree.collapsibleState === 2) {
-              await programTree.loadContents();
-            }
-            // if node is in a plex and the plex contains the region container tree
-            if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
-                child.contextValue.includes("cicscombinedprogramtree.")
-              )[0] as CICSCombinedProgramTree;
-              if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
-                await allProgramsTree.loadContents(tree);
-              }
-            }
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when reloading programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
-        }
-        tree._onDidChangeTreeData.fire(undefined);
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

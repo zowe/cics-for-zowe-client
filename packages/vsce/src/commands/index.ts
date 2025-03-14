@@ -24,13 +24,12 @@ import * as filterResourceCommands from "./filterResourceCommands";
 // import { getInquireProgramCommand } from "./inquireProgram";
 // import { getInquireTransactionCommand } from "./inquireTransaction";
 import { getManageSessionCommand } from "./manageSessionCommand";
-// import { getNewCopyCommand } from "./newCopyCommand";
+import { getNewCopyCommand } from "./newCopyCommand";
 // import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 // import { getPhaseInCommand } from "./phaseInCommand";
 // import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-// import * as showAttributesCommands from "./showAttributesCommand";
-// import { getShowRegionSITParametersCommand } from "./showParameterCommand";
+import * as showAttributesCommands from "./showAttributesCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => {
@@ -40,7 +39,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     getRefreshCommand(treeDataProv),
 
-    // getNewCopyCommand(treeDataProv, treeview),
+    getNewCopyCommand(treeDataProv, treeview),
     // getPhaseInCommand(treeDataProv, treeview),
 
     enableCommands.getEnableProgramCommand(treeDataProv, treeview),
@@ -55,6 +54,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     // getPurgeTaskCommand(treeDataProv, treeview),
 
+    showAttributesCommands.getShowResourceAttributesCommand(treeview),
     // showAttributesCommands.getShowRegionAttributes(treeview),
     // showAttributesCommands.getShowProgramAttributesCommand(treeview),
     // showAttributesCommands.getShowLibraryAttributesCommand(treeview),
