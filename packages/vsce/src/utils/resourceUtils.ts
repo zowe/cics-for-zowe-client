@@ -39,9 +39,9 @@ export async function runGetResource({
 
   logResourceRequest({
     call: "runGetResource",
-    resourceName: resourceName,
-    cicsPlex: cicsPlex,
-    regionName: regionName,
+    resourceName,
+    cicsPlex,
+    regionName,
     ...params
   });
 
@@ -90,9 +90,9 @@ export async function runPutResource(
 
   logResourceRequest({
     call: "runPutResource",
-    resourceName: resourceName,
-    cicsPlex: cicsPlex,
-    regionName: regionName,
+    resourceName,
+    cicsPlex,
+    regionName,
     ...params
   });
 
@@ -112,7 +112,7 @@ export async function runPutResource(
 }
 
 
-function logResourceRequest({call, resourceName,regionName, cicsPlex, params}: {
+function logResourceRequest({call, resourceName, regionName, cicsPlex, params}: {
   call: string;
   resourceName: string;
   regionName?: string;
