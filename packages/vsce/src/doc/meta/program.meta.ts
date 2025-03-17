@@ -18,7 +18,11 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
   humanReadableName: "Programs",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `PROGRAM=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
   },
 
@@ -37,7 +41,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getContext: function (program: Resource<IProgram>): string {
     let context = `${CicsCmciConstants.CICS_PROGRAM_RESOURCE}.${program.attributes.program}`;
     if (program.attributes.status.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },

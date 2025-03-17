@@ -18,7 +18,11 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
   humanReadableName: "Transactions",
 
-  getDefaultFilter: function (): string {
+  buildCriteria(criteria: string) {
+    return `TRANID=${criteria}`;
+  },
+
+  getDefaultCriteria: function (): string {
     return "NOT (program=DFH* OR program=EYU*)";
   },
 
@@ -35,7 +39,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   getContext: function (transaction: Resource<ITransaction>): string {
     let context = `${CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION}.${transaction.attributes.tranid}`;
     if (transaction.attributes.status.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },

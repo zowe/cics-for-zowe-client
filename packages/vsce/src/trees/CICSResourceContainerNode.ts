@@ -21,8 +21,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   regionName: string;
   cicsplexName: string;
 
-  activeFilter: string;
-
   constructor(
     label: string | TreeItemLabel,
     opts: {
@@ -47,13 +45,12 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     this.regionName = opts.regionName;
     this.cicsplexName = opts.cicsplexName;
 
-    if (this.childResource?.meta) {
-      this.activeFilter = this.childResource.meta.getDefaultFilter(this.containedResource?.resource.attributes);
-    }
-
     this.contextValue = `CICSResourceNode.${this.label}`;
     if (this.containedResource?.meta) {
       this.contextValue = `CICSResourceNode.${this.containedResource.meta.getContext(this.containedResource.resource)}`;
+    }
+    if (this.childResource?.meta) {
+      this.contextValue += `.FILTERABLE`;
     }
 
     this.refreshIcon();
@@ -75,7 +72,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.getSession(),
       this.regionName,
       this.cicsplexName,
-      this.activeFilter,
     );
 
     this.children = resources.map(
@@ -113,8 +109,11 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     return this.containedResource;
   }
 
-  // TODO: Should this be a PROGRAM='THING' or THING
-  setActiveFilter(filter: string) {
-    this.activeFilter = filter;
+  getChildResource(): IChildResource<T> {
+    return this.childResource;
+  }
+
+  setFilter(filter: string) {
+    this.childResource.resources.setCriteria(filter);
   }
 }

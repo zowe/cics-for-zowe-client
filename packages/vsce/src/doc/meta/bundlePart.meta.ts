@@ -18,7 +18,11 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
   humanReadableName: "Bundle Parts",
 
-  getDefaultFilter: function (parentResource: IBundle): string {
+  buildCriteria(criteria: string, parentResource?: IBundle) {
+    return `BUNDLE=${parentResource.name} AND BUNDLEPART=${criteria}`;
+  },
+
+  getDefaultCriteria: function (parentResource: IBundle): string {
     return `BUNDLE='${parentResource.name}'`;
   },
 
@@ -35,7 +39,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   getContext: function (bundlePart: Resource<IBundlePart>): string {
     let context = `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART}.${bundlePart.attributes.bundlepart}`;
     if (bundlePart.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
-      context += `.disabled`;
+      context += `.DISABLED`;
     }
     return context;
   },
