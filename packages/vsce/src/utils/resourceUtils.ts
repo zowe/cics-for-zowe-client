@@ -120,13 +120,13 @@ function logResourceRequest({call, resourceName,regionName, cicsPlex, params}: {
   params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
 }) {
 
-  CICSLogger.Instance.trace(`${call} called for resource [${resourceName}].`);
+  CICSLogger.trace(`${call} called for resource [${resourceName}].`);
   if (cicsPlex)
-    CICSLogger.Instance.trace(`- cicsPlex [${cicsPlex}]`);
+    CICSLogger.trace(`- cicsPlex [${cicsPlex}]`);
   if (regionName)
-    CICSLogger.Instance.trace(`- region [${regionName}]`);
+    CICSLogger.trace(`- region [${regionName}]`);
   if (params?.criteria)
-    CICSLogger.Instance.trace(`- criteria [${params?.criteria}]`);
+    CICSLogger.trace(`- criteria [${params?.criteria}]`);
   if (params?.parameter)
-    CICSLogger.Instance.trace(`- parameter [${params?.parameter}]`);
+    CICSLogger.trace(`- parameter [${params?.parameter}]`);
 }

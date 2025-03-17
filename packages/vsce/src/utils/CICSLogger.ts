@@ -26,12 +26,12 @@ export class CICSLogger {
       try {
         this.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
 
-        this.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
+        CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
 
         const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON
 
-        this.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
-        this.info(
+        CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
+        CICSLogger.info(
           l10n.t({
               message: "IBM CICS for Zowe Explorer log level: {0}",
               args: [LogLevel[this.logOutputChannel.logLevel]],
@@ -47,31 +47,31 @@ export class CICSLogger {
       }
     }
 
-    public trace(message: string): void {
-      this.logOutputChannel.trace(message);
+    public static trace(message: string): void {
+      this._instance.logOutputChannel.trace(message);
     }
 
-    public debug(message: string): void {
-      this.logOutputChannel.debug(message);
+    public static debug(message: string): void {
+      this._instance.logOutputChannel.debug(message);
     }
 
-    public info(message: string): void {
-      this.logOutputChannel.info(message);
+    public static info(message: string): void {
+      this._instance.logOutputChannel.info(message);
     }
 
-    public warn(message: string): void {
-      this.logOutputChannel.warn(message);
+    public static warn(message: string): void {
+      this._instance.logOutputChannel.warn(message);
     }
 
-    public error(message: string): void {
-      this.logOutputChannel.error(message);
+    public static error(message: string): void {
+      this._instance.logOutputChannel.error(message);
     }
 
-    public fatal(message: string): void {
-      this.logOutputChannel.error(message);
+    public static fatal(message: string): void {
+      this._instance.logOutputChannel.error(message);
     }
 
-    public dispose(): void {
-      this.logOutputChannel.dispose();
+    public static dispose(): void {
+      this._instance.logOutputChannel.dispose();
     }
 }
