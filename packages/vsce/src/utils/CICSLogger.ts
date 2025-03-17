@@ -15,16 +15,11 @@ import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 import { Gui } from "@zowe/zowe-explorer-api";
 
 export class CICSLogger {
-    private logOutputChannel: LogOutputChannel;
-    private static _instance: CICSLogger;
+    private static logOutputChannel: LogOutputChannel;
 
-    public static get Instance() {
-      return this._instance || (this._instance = new this());
-    }
-
-    private constructor() {
+    public static initialize() {
       try {
-        this.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
+        CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
 
         CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
 
@@ -48,30 +43,30 @@ export class CICSLogger {
     }
 
     public static trace(message: string): void {
-      this._instance.logOutputChannel.trace(message);
+      CICSLogger.logOutputChannel.trace(message);
     }
 
     public static debug(message: string): void {
-      this._instance.logOutputChannel.debug(message);
+      CICSLogger.logOutputChannel.debug(message);
     }
 
     public static info(message: string): void {
-      this._instance.logOutputChannel.info(message);
+      CICSLogger.logOutputChannel.info(message);
     }
 
     public static warn(message: string): void {
-      this._instance.logOutputChannel.warn(message);
+      CICSLogger.logOutputChannel.warn(message);
     }
 
     public static error(message: string): void {
-      this._instance.logOutputChannel.error(message);
+      CICSLogger.logOutputChannel.error(message);
     }
 
     public static fatal(message: string): void {
-      this._instance.logOutputChannel.error(message);
+      CICSLogger.logOutputChannel.error(message);
     }
 
     public static dispose(): void {
-      this._instance.logOutputChannel.dispose();
+      CICSLogger.logOutputChannel.dispose();
     }
 }

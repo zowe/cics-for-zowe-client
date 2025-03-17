@@ -13,11 +13,12 @@ import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfile } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
+import * as resourceUtils from "../../src/utils/resourceUtils"
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
 export const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString");
-export const getResourceMock = jest.spyOn(zoweSdkMock, "getResource");
+export const getResourceMock = jest.spyOn(resourceUtils, "runGetResource");
 
 export const CICSProfileMock = {
   host: "hostname",

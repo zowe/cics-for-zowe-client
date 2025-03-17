@@ -28,7 +28,7 @@ import { CICSMessages } from "./constants/CICS.messages";
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
 
-  await CICSLogger.Instance;
+  CICSLogger.initialize();
 
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
