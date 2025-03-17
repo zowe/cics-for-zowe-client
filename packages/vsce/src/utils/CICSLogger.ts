@@ -12,7 +12,6 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
 import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
-import { Gui } from "@zowe/zowe-explorer-api";
 
 export class CICSLogger {
     private static logOutputChannel: LogOutputChannel;
