@@ -16,8 +16,9 @@ import { getFolderIcon, getIconFilePathFromName } from "./utils/iconUtils";
 import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
-import { Logger } from "@zowe/imperative";
 import { getCommands } from "./commands";
+import { CICSLogger } from "./utils/CICSLogger";
+import { CICSMessages } from "./constants/CICS.messages";
 
 /**
  * Initializes the extension
@@ -26,13 +27,18 @@ import { getCommands } from "./commands";
  */
 export async function activate(context: ExtensionContext) {
   const zeVersion = getZoweExplorerVersion();
-  const logger = Logger.getAppLogger();
+
+  CICSLogger.initialize();
+
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
-    window.showErrorMessage("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
+    CICSLogger.error(CICSMessages.zoweExplorerNotFound.message);
+    window.showErrorMessage(CICSMessages.zoweExplorerNotFound.message);
     return;
   } else if (zeVersion[0] !== "3") {
-    window.showErrorMessage(`Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`);
+    const message = `Current version of Zowe Explorer is ${zeVersion}. Please ensure Zowe Explorer v3.0.0 or higher is installed`;
+    CICSLogger.error(message);
+    window.showErrorMessage(message);
     return;
   }
   if (ProfileManagement.apiDoesExist()) {
@@ -47,16 +53,14 @@ export async function activate(context: ExtensionContext) {
           await treeDataProv.refreshLoadedProfiles();
         });
       }
-      logger.debug("Zowe Explorer was modified for the CICS Extension.");
+      CICSLogger.debug(CICSMessages.zoweExplorerModified.message);
     } catch (error) {
-      logger.error("IBM CICS for Zowe Explorer was not initialized correctly");
+      CICSLogger.error(CICSMessages.notInitializedCorrectly.message);
       return;
     }
   } else {
-    window.showErrorMessage(
-      "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. " +
-        "Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
-    );
+    CICSLogger.error(CICSMessages.incorrectZoweExplorerVersion.message);
+    window.showErrorMessage(CICSMessages.incorrectZoweExplorerVersion.message);
     return;
   }
 
@@ -78,7 +82,7 @@ export async function activate(context: ExtensionContext) {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: "Loading resources...",
+        title: CICSMessages.loadingResources.message,
         cancellable: true,
       },
       async (_progress, _token) => {
@@ -121,6 +125,7 @@ export async function activate(context: ExtensionContext) {
       try {
         plexExpansionHandler(node.element, treeDataProv);
       } catch (error) {
+        CICSLogger.error(error);
         node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
         treeDataProv._onDidChangeTreeData.fire(undefined);
       }
@@ -174,4 +179,8 @@ export async function activate(context: ExtensionContext) {
   });
 
   context.subscriptions.concat(getCommands(treeDataProv, treeview));
+}
+
+export async function deactivate(): Promise<void> {
+  await CICSLogger.dispose();
 }

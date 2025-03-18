@@ -11,16 +11,15 @@
 
 const getFolderIconMock = jest.fn();
 
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSProgramTree } from "../../../src/trees/CICSProgramTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSProgramTreeItem } from "../../../src/trees/treeItems/CICSProgramTreeItem";
 import * as filterUtils from "../../../src/utils/filterUtils";
 import CustomError from "../../__utils__/CustomError";
+import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
-const zoweSdk = require("@zowe/cics-for-zowe-sdk");
 
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getFolderIcon: getFolderIconMock };
@@ -47,16 +46,10 @@ const cicsRegionTreeMock = {
   },
 };
 const CICSProgramTreeItemMock = {};
-const getResourceMock = jest.spyOn(zoweSdk, "getResource");
+const getResourceMock = globalMocks.getResourceMock;
 const iconPath = "/icon/path";
 const cicsprogram = "cicsprogram";
 const value = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
-const ICMCIApiResponseMock: ICMCIApiResponse = {
-  response: {
-    resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
-    records: {},
-  },
-};
 
 describe("Test suite for CICSProgramTree", () => {
   let sut: CICSProgramTree;
@@ -83,7 +76,7 @@ describe("Test suite for CICSProgramTree", () => {
 
     beforeEach(() => {
       getDefaultProgramFilter = jest.spyOn(filterUtils, "getDefaultProgramFilter").mockResolvedValueOnce(value);
-      getResourceMock.mockImplementation(async () => ICMCIApiResponseMock);
+      getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
     });
     afterEach(() => {
       getResourceMock.mockClear();
@@ -91,7 +84,7 @@ describe("Test suite for CICSProgramTree", () => {
     });
 
     it("Should add newProgramItem into the addProgram() and activeFilter is undefined", async () => {
-      ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
+      globalMocks.ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
 
       await sut.loadContents();
       expect(getDefaultProgramFilter).toHaveBeenCalled();
@@ -102,7 +95,7 @@ describe("Test suite for CICSProgramTree", () => {
 
     it("Should add newProgramItem into the addProgram() and invoke toEscapedCriteriaString when activeFilter is defined", async () => {
       sut.activeFilter = "Active";
-      ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
+      globalMocks.ICMCIApiResponseMock.response.records[cicsprogram.toLowerCase()] = [{ prop: "test1" }, { prop: "test2" }];
       const toEscapedCriteriaString = jest.spyOn(filterUtils, "toEscapedCriteriaString").mockReturnValueOnce("PROGRAM");
 
       await sut.loadContents();

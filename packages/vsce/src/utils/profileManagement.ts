@@ -14,7 +14,7 @@ import { Session } from "@zowe/imperative";
 import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
-import constants from "./constants";
+import constants from "../constants/CICS.defaults";
 import { getBestCICSplexes } from "./plexUtils";
 import { runGetResource } from "./resourceUtils";
 
