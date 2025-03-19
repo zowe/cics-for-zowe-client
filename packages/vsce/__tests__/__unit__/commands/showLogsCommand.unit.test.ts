@@ -24,6 +24,9 @@ const zoweExplorerAPI = { getJesApi: jesApiMock };
 const getProfilesCacheMock = jest.fn();
 getProfilesCacheMock.mockReturnValue({
   fetchBaseProfile: (name: string): imperative.IProfileLoaded => {
+    if (name === "exception") {
+      throw Error("Error");
+    }
     var splitString = name.split(".");
     if (splitString.length > 1) {
       return createProfile(splitString[0], "base", "", "");
@@ -55,6 +58,25 @@ function createProfile(name: string, type: string, host: string, user?: string) 
     },
   } as imperative.IProfileLoaded;
 }
+
+describe("Test suite for fetchBaseProfileWithoutError", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Profile with common base finds z/osmf", async () => {
+    let h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+    let zosProfiles: imperative.IProfileLoaded[] = [h1z];
+    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
+    expect(profile?.name).toEqual("host1");
+  });
+  it("Profile with no common base", async () => {
+    let h1z = createProfile("myzosmf", "zosmf", "h1", "user");
+    let zosProfiles: imperative.IProfileLoaded[] = [h1z];
+    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("exception", "cics", "h1", "user"));
+    expect(profile).toBeUndefined();
+  });
+});
 
 describe("Test suite for findRelatedZosProfiles", () => {
   let h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
