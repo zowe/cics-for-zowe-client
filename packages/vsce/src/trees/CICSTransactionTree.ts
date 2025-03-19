@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -37,6 +38,8 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public async loadContents() {
+    CICSLogger.trace("CICSTransactionTree.loadContents called.");
+
     const defaultCriteria = await getDefaultTransactionFilter();
     let criteria;
     if (this.activeFilter) {
@@ -81,12 +84,16 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.trace("CICSTransactionTree.clearFilter called.");
+
     this.activeFilter = undefined;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.trace("CICSTransactionTree.setFilter called.");
+
     this.activeFilter = newFilter;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

@@ -18,6 +18,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -37,6 +38,8 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async filterRegions(pattern: string, tree: CICSTree) {
+    CICSLogger.trace("CICSRegionsContainer.filterRegions called.");
+
     this.children = [];
     this.activeFilter = pattern;
     this.setLabel(this.activeFilter === "*" ? `Regions` : `Regions (${this.activeFilter})`);
@@ -61,6 +64,8 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async loadRegionsInCICSGroup(tree: CICSTree) {
+    CICSLogger.trace("CICSRegionsContainer.loadRegionsInCICSGroup called.");
+
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
     const session = parentPlex.getParent().getSession();
@@ -79,6 +84,8 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async loadRegionsInPlex() {
+    CICSLogger.trace("CICSRegionsContainer.loadRegionsInPlex called.");
+
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
     if (regionInfo) {
@@ -93,6 +100,8 @@ export class CICSRegionsContainer extends TreeItem {
    * @param regionsArray
    */
   private addRegionsUtility(regionsArray: any[]) {
+    CICSLogger.trace("CICSRegionsContainer.addRegionsUtility called.");
+
     let activeCount = 0;
     let totalCount = 0;
     const parentPlex = this.getParent();
@@ -116,6 +125,8 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   private patternIntoRegex(pattern: string) {
+    CICSLogger.trace("CICSRegionsContainer.patternIntoRegex called.");
+
     const patternList = pattern.split(",");
     let patternString = "";
     for (const index in patternList) {

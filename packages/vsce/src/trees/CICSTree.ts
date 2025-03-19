@@ -36,6 +36,7 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -62,6 +63,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * these as children to the CICSTree (TreeDataProvider)
    */
   public async loadStoredProfileNames() {
+    CICSLogger.trace("CICSTree.loadStoredProfileNames called.");
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await ProfileManagement.profilesCacheRefresh();
     // Retrieve previously added profiles from persistent storage
@@ -86,6 +88,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * *@param node current selected node
    */
   async manageProfile(treeview: TreeView<any>, node: CICSSessionTree) {
+    CICSLogger.trace("CICSTree.manageProfile called.");
     try {
       const configInstance = await ProfileManagement.getConfigInstance();
       if (configInstance.getTeamConfig().exists) {
@@ -141,6 +144,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * Provides user with prompts and allows them to add a profile after clicking the '+' button
    */
   async addProfile() {
+    CICSLogger.trace("CICSTree.addProfile called.");
     try {
       //const allCICSProfileNames = await ProfileManagement.getProfilesCache().getNamesForType('cics');
       const configInstance = await ProfileManagement.getConfigInstance();
@@ -212,6 +216,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param sessionTree current CICSSessionTree only passed in if expanding a profile
    */
   async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
+    CICSLogger.trace("CICSTree.loadProfile called.");
+
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
 
@@ -299,6 +305,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * Allows user to edit a configuration file based on global or project level context
    */
   async editZoweConfigFile() {
+    CICSLogger.trace("CICSTree.editZoweConfigFile called.");
+
     let rootPath = FileManagement.getZoweDir();
     const workspaceDir = ZoweVsCodeExtension.workspaceRoot;
     const choice = await this.getConfigLocationPrompt("edit");
@@ -317,6 +325,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param label name of the selected profile
    */
   async loadExistingProfile(label: string) {
+    CICSLogger.trace("CICSTree.loadExistingProfile called.");
+
     label = label.split(/ (.*)/)[1];
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad);
@@ -327,6 +337,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   async removeSession(session: CICSSessionTree) {
+    CICSLogger.trace("CICSTree.removeSession called.");
+
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.removeLoadedCICSProfile(session.label.toString());
     this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
@@ -338,6 +350,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param action string create or edit
    */
   private async getConfigLocationPrompt(action: string): Promise<string> {
+    CICSLogger.trace("CICSTree.getConfigLocationPrompt called.");
+
     let placeHolderText: string;
     if (action === "create") {
       placeHolderText = l10n.t("Select the location where the config file will be initialized");
@@ -366,6 +380,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param osLocInfo physical location of of profile on OS
    */
   private getProfileIcon(osLocInfo: imperative.IProfLocOsLoc[]): string[] {
+    CICSLogger.trace("CICSTree.getProfileIcon called.");
+
     const ret: string[] = [];
     for (const loc of osLocInfo ?? []) {
       if (loc.global) {

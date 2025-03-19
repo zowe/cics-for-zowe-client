@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -37,6 +38,8 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public async loadContents() {
+    CICSLogger.trace("CICSTaskTree.loadContents called.");
+
     let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.tasks.filter")}`;
     if (!defaultCriteria || defaultCriteria.length === 0) {
       await workspace.getConfiguration().update("zowe.cics.tasks.filter", "(TRANID=*)");
@@ -87,12 +90,16 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.trace("CICSTaskTree.clearFilter called.");
+
     this.activeTransactionFilter = undefined;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.trace("CICSTaskTree.setFilter called.");
+
     this.activeTransactionFilter = newFilter;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
