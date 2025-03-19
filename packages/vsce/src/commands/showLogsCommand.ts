@@ -18,8 +18,19 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes, toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
 
+// fetching a base profile can throw an error if no nesting or base profile is available
+export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
+  let baseForProfile = undefined;
+  try {
+    baseForProfile = ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
+  } catch (ex) {
+    // no problem - no base profile, we'll return undefined
+  }
+  return baseForProfile;
+}
+
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded> {
-  const baseForCicsProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(cicsProfile.name);
+  const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
 
   // sort profiles with zosmf ones first to make zosmf the default
   // also filter so we only automatically pick z/os connections that have credentials associated
@@ -29,7 +40,7 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
   const matchingProfiles: IProfileLoaded[] = [];
   if (baseForCicsProfile) {
     for (const profile of zosProfiles) {
-      if (baseForCicsProfile && baseForCicsProfile.name === (await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name))?.name) {
+      if (baseForCicsProfile && baseForCicsProfile.name === (await fetchBaseProfileWithoutError(profile))?.name) {
         matchingProfiles.push(profile);
       }
     }
@@ -116,7 +127,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       // we couldn't find a matching profile - prompt the user with all zos profiles
       chosenProfileName = await promptUserForProfile(zosProfiles);
       if (chosenProfileName === null) {
-        window.showErrorMessage("Could not find any z/OSMF or RSE profiles.");
+        window.showErrorMessage("Could not find any profiles that will access JES (for instance z/OSMF).");
         return;
       }
     }
