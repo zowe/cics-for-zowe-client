@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor } from "vscode-extension-tester";
-import { addNewProfile, restoreOriginalProfile} from "./e2e_globalMocks";
+import { addNewProfile, restoreOriginalProfile, sleep} from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS", () => {
     let cicsTree: DefaultTreeSection;
@@ -53,7 +53,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS
     });
 
     describe("Check For The Wiremock Profile And List The Regions", async () => {
-        let wiremockServer: TreeItem;
+        let wiremockServer: TreeItem | undefined;
 
         it("Quick Pick Option test", async () => {
             // Click the plus icon in cics
@@ -83,27 +83,37 @@ describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS
 
         it("Wiremock Profile Available Under CICS Section Test", async ()=>{
             // Checking if wiremock_server profile is available under the cics section
-            const potentialWireMockServer = await cicsTree.findItem(text);
-            assert(typeof potentialWireMockServer !== "undefined");
+            const potentialWireMockServer: TreeItem | undefined  = await cicsTree.findItem(text);
             wiremockServer = potentialWireMockServer;
-            expect(wiremockServer).exist;
+            expect(potentialWireMockServer).exist;
             cicsTree.takeScreenshot();
           });
 
         it("Should List The Regions Under Wiremock Profile", async () => {
             // Expand the wiremock_server profile and list the regions under it
-            await wiremockServer.click();
-            await wiremockServer.expand();
-            expect(await wiremockServer.getLabel()).equals("wiremock_server");
-            const wmItems = await wiremockServer.getChildren();
-            console.log(wmItems);
+            await wiremockServer?.click();
+            await wiremockServer?.collapse();
+            await sleep(3000);
+            await wiremockServer?.expand();
 
-            /*const label1 =  await wmItems[0].getLabel();
-            expect(label1).contains("CICSEX61");
-        
-            const label2 =  await wmItems[1].getLabel();
-            expect(label2).contains("DUMMY907");*/
-          });
+            // Title check for wiremork profile
+            const wmSever_label = await wiremockServer?.getLabel();
+            expect(wmSever_label).equals("wiremock_server");
+
+            // Check the plexes under wiremock profile
+            const wmItems: TreeItem[]| undefined = await wiremockServer?.getChildren();
+            const wmLen = wmItems?.length;
+            expect(wmLen).equals(2);
+            
+            const plex1 =  wmItems?.find(() => "CICSEX61");
+            const plex1_label = await plex1?.getLabel()
+            expect(plex1_label).contains("CICSEX61");
+
+            const plex2 =  wmItems?.find(() => "DUMMY907");
+            const plex2_label = await plex2?.getLabel()
+            expect(plex2_label).contains("CICSEX61");
+            cicsTree.takeScreenshot();
+          }).timeout(5000);
     });
 
     after(async () => {
