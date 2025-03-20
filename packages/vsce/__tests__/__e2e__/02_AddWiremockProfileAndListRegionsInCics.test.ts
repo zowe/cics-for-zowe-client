@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor } from "vscode-extension-tester";
-import { addNewProfile, restoreOriginalProfile, sleep} from "./e2e_globalMocks";
+import { addNewProfile, sleep} from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS", () => {
     let cicsTree: DefaultTreeSection;
@@ -104,26 +104,13 @@ describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS
             const wmItems: TreeItem[]| undefined = await wiremockServer?.getChildren();
             const wmLen = wmItems?.length;
             expect(wmLen).equals(2);
-            
-            const plex1 =  wmItems?.find(() => "CICSEX61");
-            const plex1_label = await plex1?.getLabel()
-            expect(plex1_label).contains("CICSEX61");
 
-            const plex2 =  wmItems?.find(() => "DUMMY907");
-            const plex2_label = await plex2?.getLabel()
-            expect(plex2_label).contains("CICSEX61");
+            const plex1 = await wmItems?.at(0)?.getLabel();
+            expect(plex1).contains("CICSEX61");
+
+            const plex2 = await wmItems?.at(1)?.getLabel();
+            expect(plex2).contains("DUMMY907");
             cicsTree.takeScreenshot();
           }).timeout(5000);
-    });
-
-    after(async () => {
-        // Remove the wiremock profile
-        restoreOriginalProfile();
-        
-        // Checking if the wiremock profile is removed
-        editorView = new EditorView();
-        let editor = await editorView.openEditor("zowe.config.json") as TextEditor;
-        let isWmAvailable = await editor.getText()
-        expect(isWmAvailable.includes(text)).not.to.be.true;
     });
 });
