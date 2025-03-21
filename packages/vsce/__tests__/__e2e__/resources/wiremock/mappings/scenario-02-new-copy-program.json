@@ -1,0 +1,114 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Load programs with New Copy count as 1",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(PROGRAM%3DDSNCUEXT)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"NEWCOPY\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-new-copy-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Load programs with New Copy count as 1",
+      "newScenarioState": "Perform New Copy second time",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "program-with-new-copy-count-1.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Perform New Copy second time",
+      "newScenarioState": "Load programs with New Copy count as 2",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(PROGRAM%3DDSNCUEXT)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"NEWCOPY\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-new-copy-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Load programs with New Copy count as 2",
+      "newScenarioState": "Perform New Copy third time",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "program-with-new-copy-count-2.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Perform New Copy third time",
+      "newScenarioState": "Load programs with New Copy count as 3",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(PROGRAM%3DDSNCUEXT)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"NEWCOPY\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-new-copy-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Load programs with New Copy count as 3",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "program-with-new-copy-count-3.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
