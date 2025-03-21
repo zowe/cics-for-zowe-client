@@ -28,6 +28,7 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   },
 }));
 jest.mock("../../../src/trees/CICSRegionTree");
+jest.mock("../../../src/utils/CICSLogger");
 
 const getResourceMock = globalMocks.getResourceMock;
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");

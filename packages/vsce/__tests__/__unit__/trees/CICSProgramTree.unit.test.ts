@@ -25,6 +25,7 @@ jest.mock("../../../src/utils/iconUtils", () => {
   return { getFolderIcon: getFolderIconMock };
 });
 jest.mock("../../../src/trees/treeItems/CICSProgramTreeItem");
+jest.mock("../../../src/utils/CICSLogger");
 
 const imperativeSession = new imperative.Session({
   user: "user",

@@ -28,6 +28,8 @@ export async function runGetResource({
   cicsPlex?: string;
   params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
 }) {
+  CICSLogger.trace("resourceUtils.runGetResource called");
+
   const resourceParams = {
     name: resourceName,
     ...(regionName && { regionName: regionName }),
@@ -37,13 +39,11 @@ export async function runGetResource({
     ...(params?.queryParams && { queryParams: params.queryParams }),
   };
 
-  logResourceRequest({
-    call: "runGetResource",
-    resourceName,
-    cicsPlex,
-    regionName,
-    ...params
-  });
+  CICSLogger.debug("GET request - Resource [" + resourceName + "]" +
+    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (regionName ? ", Region [" + regionName + "]" : "") +
+    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
 
   const requestOptions = {
     failOnNoData: false,
@@ -61,6 +61,7 @@ export async function runGetResource({
   }
 
   // Making a second attempt as ltpa token has expired
+  CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
   return await getResource(session, resourceParams, requestOptions);
 }
@@ -81,6 +82,8 @@ export async function runPutResource(
   },
   requestBody: any
 ) {
+  CICSLogger.trace("resourceUtils.runPutResource called");
+
   const options: IGetResourceUriOptions = {
     cicsPlex: cicsPlex,
     regionName: regionName,
@@ -88,13 +91,11 @@ export async function runPutResource(
   };
   const cmciResource = Utils.getResourceUri(resourceName, options);
 
-  logResourceRequest({
-    call: "runPutResource",
-    resourceName,
-    cicsPlex,
-    regionName,
-    ...params
-  });
+  CICSLogger.debug("PUT request - Resource [" + resourceName + "]" +
+    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (regionName ? ", Region [" + regionName + "]" : "") +
+    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
 
   try {
     // First attempt
@@ -107,26 +108,7 @@ export async function runPutResource(
   }
 
   // Making a second attempt as ltpa token has expired
+  CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
-}
-
-
-function logResourceRequest({call, resourceName, regionName, cicsPlex, params}: {
-  call: string;
-  resourceName: string;
-  regionName?: string;
-  cicsPlex?: string;
-  params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
-}) {
-
-  CICSLogger.trace(`${call} called for resource [${resourceName}].`);
-  if (cicsPlex)
-    CICSLogger.trace(`- cicsPlex [${cicsPlex}]`);
-  if (regionName)
-    CICSLogger.trace(`- region [${regionName}]`);
-  if (params?.criteria)
-    CICSLogger.trace(`- criteria [${params?.criteria}]`);
-  if (params?.parameter)
-    CICSLogger.trace(`- parameter [${params?.parameter}]`);
 }

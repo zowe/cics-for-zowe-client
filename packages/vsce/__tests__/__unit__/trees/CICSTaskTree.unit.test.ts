@@ -19,6 +19,7 @@ import CustomError from "../../__utils__/CustomError";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getFolderIcon: getFolderIconMock };
 });
