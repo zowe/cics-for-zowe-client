@@ -17,12 +17,13 @@ import { TreeView, commands, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes, toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
+import { promptCredentials } from "../utils/profileUtils";
 
 // fetching a base profile can throw an error if no nesting or base profile is available
 export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
   let baseForProfile = undefined;
   try {
-    baseForProfile = ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
+    baseForProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
   } catch (ex) {
     // no problem - no base profile, we'll return undefined
   }
@@ -134,6 +135,20 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
 
     const jobid = await getJobIdForRegion(selectedRegion);
     if (jobid) {
+      const myProfile = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter(prof => prof.name === chosenProfileName)[0];
+      const profile = myProfile.profile;
+      if (!(profile.user || profile.certFile || profile.tokenValue)) {
+        // TODO this results in "Expect Error: Required session must be defined"
+        // from deep in the bowels of Zowe Explorer. However you do get prompted
+        // for credentials so it might be passable.
+        ZoweVsCodeExtension.updateCredentials(
+          {
+            profile: myProfile,
+            rePrompt: false
+          },
+          ProfileManagement.getExplorerApis()
+        )
+      } 
       commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
     } else {
       window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
