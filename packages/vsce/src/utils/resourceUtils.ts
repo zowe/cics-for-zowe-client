@@ -39,12 +39,11 @@ export async function runGetResource({
     ...(params?.queryParams && { queryParams: params.queryParams }),
   };
 
-  logResourceRequest({
-    resourceName,
-    cicsPlex,
-    regionName,
-    ...params
-  });
+  CICSLogger.debug("GET request - Resource [" + resourceName + "]" +
+    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (regionName ? ", Region [" + regionName + "]" : "") +
+    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
 
   const requestOptions = {
     failOnNoData: false,
@@ -92,12 +91,11 @@ export async function runPutResource(
   };
   const cmciResource = Utils.getResourceUri(resourceName, options);
 
-  logResourceRequest({
-    resourceName,
-    cicsPlex,
-    regionName,
-    ...params
-  });
+  CICSLogger.debug("PUT request - Resource [" + resourceName + "]" +
+    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (regionName ? ", Region [" + regionName + "]" : "") +
+    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
 
   try {
     // First attempt
@@ -113,23 +111,4 @@ export async function runPutResource(
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
-}
-
-
-function logResourceRequest({resourceName, regionName, cicsPlex, params}: {
-  resourceName: string;
-  regionName?: string;
-  cicsPlex?: string;
-  params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
-}) {
-
-  CICSLogger.debug(`Resource [${resourceName}].`);
-  if (cicsPlex)
-    CICSLogger.debug(`CICSPlex [${cicsPlex}]`);
-  if (regionName)
-    CICSLogger.debug(`Region [${regionName}]`);
-  if (params?.criteria)
-    CICSLogger.debug(`Criteria [${params?.criteria}]`);
-  if (params?.parameter)
-    CICSLogger.debug(`Parameter [${params?.parameter}]`);
 }

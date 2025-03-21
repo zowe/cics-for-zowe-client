@@ -38,7 +38,7 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public async loadContents() {
-    CICSLogger.trace("CICSTaskTree.loadContents called.");
+    CICSLogger.trace("CICSTaskTree.loadContents called");
 
     let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.tasks.filter")}`;
     if (!defaultCriteria || defaultCriteria.length === 0) {
@@ -90,7 +90,7 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public clearFilter() {
-    CICSLogger.trace("CICSTaskTree.clearFilter called.");
+    CICSLogger.trace("CICSTaskTree.clearFilter called");
 
     this.activeTransactionFilter = undefined;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
@@ -98,7 +98,7 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public setFilter(newFilter: string) {
-    CICSLogger.trace("CICSTaskTree.setFilter called.");
+    CICSLogger.trace("CICSTaskTree.setFilter called");
 
     this.activeTransactionFilter = newFilter;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;

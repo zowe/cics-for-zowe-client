@@ -38,7 +38,7 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public async loadContents() {
-    CICSLogger.trace("CICSTransactionTree.loadContents called.");
+    CICSLogger.trace("CICSTransactionTree.loadContents called");
 
     const defaultCriteria = await getDefaultTransactionFilter();
     let criteria;
@@ -84,7 +84,7 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public clearFilter() {
-    CICSLogger.trace("CICSTransactionTree.clearFilter called.");
+    CICSLogger.trace("CICSTransactionTree.clearFilter called");
 
     this.activeFilter = undefined;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
@@ -92,7 +92,7 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public setFilter(newFilter: string) {
-    CICSLogger.trace("CICSTransactionTree.setFilter called.");
+    CICSLogger.trace("CICSTransactionTree.setFilter called");
 
     this.activeFilter = newFilter;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;

@@ -38,7 +38,7 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async filterRegions(pattern: string, tree: CICSTree) {
-    CICSLogger.trace("CICSRegionsContainer.filterRegions called.");
+    CICSLogger.trace("CICSRegionsContainer.filterRegions called");
 
     this.children = [];
     this.activeFilter = pattern;
@@ -64,7 +64,7 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async loadRegionsInCICSGroup(tree: CICSTree) {
-    CICSLogger.trace("CICSRegionsContainer.loadRegionsInCICSGroup called.");
+    CICSLogger.trace("CICSRegionsContainer.loadRegionsInCICSGroup called");
 
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
@@ -84,7 +84,7 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async loadRegionsInPlex() {
-    CICSLogger.trace("CICSRegionsContainer.loadRegionsInPlex called.");
+    CICSLogger.trace("CICSRegionsContainer.loadRegionsInPlex called");
 
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
@@ -100,7 +100,7 @@ export class CICSRegionsContainer extends TreeItem {
    * @param regionsArray
    */
   private addRegionsUtility(regionsArray: any[]) {
-    CICSLogger.trace("CICSRegionsContainer.addRegionsUtility called.");
+    CICSLogger.trace("CICSRegionsContainer.addRegionsUtility called");
 
     let activeCount = 0;
     let totalCount = 0;
@@ -125,7 +125,7 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   private patternIntoRegex(pattern: string) {
-    CICSLogger.trace("CICSRegionsContainer.patternIntoRegex called.");
+    CICSLogger.trace("CICSRegionsContainer.patternIntoRegex called");
 
     const patternList = pattern.split(",");
     let patternString = "";

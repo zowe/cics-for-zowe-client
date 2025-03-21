@@ -34,12 +34,12 @@ export class CICSProgramTree extends TreeItem {
   }
 
   public addProgram(program: CICSProgramTreeItem) {
-    CICSLogger.trace("CICSProgramTree.addProgram called.");
+    CICSLogger.trace("CICSProgramTree.addProgram called");
     this.children.push(program);
   }
 
   public async loadContents() {
-    CICSLogger.trace("CICSProgramTree.loadContents called.");
+    CICSLogger.trace("CICSProgramTree.loadContents called");
     const defaultCriteria = await getDefaultProgramFilter();
     let criteria;
     if (this.activeFilter) {
@@ -82,14 +82,14 @@ export class CICSProgramTree extends TreeItem {
   }
 
   public clearFilter() {
-    CICSLogger.trace("CICSProgramTree.clearFilter called.");
+    CICSLogger.trace("CICSProgramTree.clearFilter called");
     this.activeFilter = undefined;
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
-    CICSLogger.trace("CICSProgramTree.setFilter called.");
+    CICSLogger.trace("CICSProgramTree.setFilter called");
     this.activeFilter = newFilter;
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

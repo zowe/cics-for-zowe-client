@@ -13,7 +13,7 @@ import { InputBoxOptions, QuickPick, QuickPickItem, window, workspace } from "vs
 import { CICSLogger } from "./CICSLogger";
 
 export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>): Promise<QuickPickItem | undefined> {
-  CICSLogger.trace("filterUtils.resolveQuickPickHelper called.");
+  CICSLogger.trace("filterUtils.resolveQuickPickHelper called");
 
   return new Promise<QuickPickItem | undefined>((c) => quickpick.onDidAccept(() => c(quickpick.activeItems[0])));
 }
@@ -32,7 +32,7 @@ export class FilterDescriptor implements QuickPickItem {
 }
 
 export async function getPatternFromFilter(resourceName: string, resourceHistory: string[]) {
-  CICSLogger.trace("filterUtils.getPatternFromFilter called.");
+  CICSLogger.trace("filterUtils.getPatternFromFilter called");
 
   let pattern: string = "";
   const createPick = new FilterDescriptor(`\uFF0B Create New ${resourceName} Filter (use a comma to separate multiple patterns e.g. LG*,I*)`);
@@ -76,7 +76,7 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
 }
 
 export async function getDefaultProgramFilter() {
-  CICSLogger.trace("filterUtils.getDefaultProgramFilter called.");
+  CICSLogger.trace("filterUtils.getDefaultProgramFilter called");
 
   let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.program.filter")}`;
   if (!defaultCriteria || defaultCriteria.length === 0) {
@@ -92,7 +92,7 @@ export async function getDefaultProgramFilter() {
 }
 
 export async function getDefaultTransactionFilter() {
-  CICSLogger.trace("filterUtils.getDefaultTransactionFilter called.");
+  CICSLogger.trace("filterUtils.getDefaultTransactionFilter called");
 
   let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.transaction.filter")}`;
   if (!defaultCriteria || defaultCriteria.length === 0) {
@@ -103,7 +103,7 @@ export async function getDefaultTransactionFilter() {
 }
 
 export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {
-  CICSLogger.trace("filterUtils.toEscapedCriteriaString called.");
+  CICSLogger.trace("filterUtils.toEscapedCriteriaString called");
 
   // returns a string as an escaped_criteria_string suitable for the criteria
   // query parameter for a CMCI request.
