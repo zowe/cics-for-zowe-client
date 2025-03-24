@@ -12,7 +12,7 @@
 import { commands, window } from "vscode";
 
 export function editConfig() {
-    return commands.registerCommand("cics-extension-for-zowe.editConfig",async () =>  {
-        window.showInformationMessage("Clicked on editConfig icon");
+    return commands.registerCommand("cics-extension-for-zowe.editConfig", async () =>  {
+        await window.showInformationMessage("Clicked on editConfig icon");
     });
 }
