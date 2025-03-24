@@ -87,7 +87,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS
             cicsTree.takeScreenshot();
           });
 
-        it("Should List The Regions Under Wiremock Profile", async () => {
+        it("Should List The CICSplexes Under Wiremock Profile", async () => {
             // Expand the wiremock_server profile and list the regions under it
             await wiremockServer?.click();
             await wiremockServer?.collapse();
