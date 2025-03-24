@@ -13,7 +13,7 @@ import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor, ViewPanelAction } from "vscode-extension-tester";
 import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
 
-describe("Test Suite For Adding Wiremock Profile And Listing The Regions In CICS", () => {
+describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
     let cicsTree: DefaultTreeSection;
     let quickPick: InputBox;
     let editorView: EditorView;
