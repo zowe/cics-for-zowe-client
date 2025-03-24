@@ -27,7 +27,7 @@ const wiremock_profile = {
 
 let jsonOriginalProfile: object;
 
-export function addNewProfile(): void {
+export function addWiremockProfileToConfigFile(): void {
     const jsonFile = require(jsonFilePath);
     jsonOriginalProfile = {...jsonFile.profiles};
     const newProfile = {
@@ -38,7 +38,7 @@ export function addNewProfile(): void {
     fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), 'utf8');
 };
 
-export function restoreOriginalProfile(): void {
+export function restoreOriginalConfigFile(): void {
     const jsonFile = require(jsonFilePath);
     if(jsonFile.profiles && jsonFile.profiles.hasOwnProperty('wiremock_server')){
         jsonFile.profiles = jsonOriginalProfile;
