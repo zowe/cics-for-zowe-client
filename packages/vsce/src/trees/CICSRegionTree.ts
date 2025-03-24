@@ -24,8 +24,7 @@ import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
 
 export class CICSRegionTree extends TreeItem {
-  children:
-    | [
+  children: [
         CICSProgramTree,
         CICSTransactionTree,
         CICSLocalFileTree,
@@ -75,7 +74,7 @@ export class CICSRegionTree extends TreeItem {
         new CICSPipelineTree(this),
         new CICSTCPIPServiceTree(this),
         new CICSURIMapTree(this),
-        new CICSWebServiceTree(this)
+        new CICSWebServiceTree(this),
       ];
     }
   }

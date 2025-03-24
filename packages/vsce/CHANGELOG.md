@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 ## Recent Changes
- - Remove confusing Web node in resource types tree [#251] https://github.com/zowe/cics-for-zowe-client/issues/251
+ - Flatten web resource tree [#251] https://github.com/zowe/cics-for-zowe-client/issues/251
  - Enhancement: Added logging support to the CICS VS Code extension. [#250](https://github.com/zowe/cics-for-zowe-client/issues/250)
 
 ## `3.4.0`
