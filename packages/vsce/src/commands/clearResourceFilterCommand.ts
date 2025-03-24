@@ -18,10 +18,10 @@ import { CICSTransactionTree } from "../trees/CICSTransactionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
 import { CICSLibraryTreeItem } from "../trees/treeItems/CICSLibraryTreeItem";
-import { CICSPipelineTree } from "../trees/treeItems/web/CICSPipelineTree";
-import { CICSTCPIPServiceTree } from "../trees/treeItems/web/CICSTCPIPServiceTree";
-import { CICSURIMapTree } from "../trees/treeItems/web/CICSURIMapTree";
-import { CICSWebServiceTree } from "../trees/treeItems/web/CICSWebServiceTree";
+import { CICSPipelineTree } from "../trees/CICSPipelineTree";
+import { CICSTCPIPServiceTree } from "../trees/CICSTCPIPServiceTree";
+import { CICSURIMapTree } from "../trees/CICSURIMapTree";
+import { CICSWebServiceTree } from "../trees/CICSWebServiceTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView<any>) {

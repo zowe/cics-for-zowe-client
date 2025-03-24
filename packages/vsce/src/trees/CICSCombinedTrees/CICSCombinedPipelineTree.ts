@@ -19,7 +19,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CICSPipelineTreeItem } from "../treeItems/web/treeItems/CICSPipelineTreeItem";
+import { CICSPipelineTreeItem } from "../treeItems/CICSPipelineTreeItem";
 
 export class CICSCombinedPipelineTree extends TreeItem {
   children: (CICSPipelineTreeItem | ViewMore)[] | [TextTreeItem] | null;

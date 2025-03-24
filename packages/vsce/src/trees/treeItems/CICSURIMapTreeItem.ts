@@ -10,26 +10,26 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { getIconFilePathFromName } from "../../../../utils/iconUtils";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
-export class CICSWebServiceTreeItem extends TreeItem {
-  webservice: any;
+export class CICSURIMapTreeItem extends TreeItem {
+  urimap: any;
   parentRegion: CICSRegionTree;
   directParent: any;
 
   constructor(
-    webservice: any,
+    urimap: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("web-service")
+    public readonly iconPath = getIconFilePathFromName("uri-map")
   ) {
-    super(`${webservice.name}`, TreeItemCollapsibleState.None);
+    super(`${urimap.name}`, TreeItemCollapsibleState.None);
 
-    this.webservice = webservice;
+    this.urimap = urimap;
     this.parentRegion = parentRegion;
     this.directParent = directParent;
-    this.contextValue = `cicswebservice.${webservice.name}`;
+    this.contextValue = `cicsurimaps.${urimap.name}`;
   }
 
   public setLabel(newLabel: string) {

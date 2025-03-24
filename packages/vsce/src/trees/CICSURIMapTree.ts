@@ -10,15 +10,15 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { toArray } from "../../../utils/commandUtils";
-import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getFolderIcon } from "../../../utils/iconUtils";
-import { runGetResource } from "../../../utils/resourceUtils";
-import { CICSRegionTree } from "../../CICSRegionTree";
-import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
+import { toArray } from "../utils/commandUtils";
+import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { getFolderIcon } from "../utils/iconUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
 
-export class CICSPipelineTree extends TreeItem {
-  children: CICSPipelineTreeItem[] = [];
+export class CICSURIMapTree extends TreeItem {
+  children: CICSURIMapTreeItem[] = [];
   parentRegion: CICSRegionTree;
   activeFilter: string | undefined = undefined;
 
@@ -26,13 +26,13 @@ export class CICSPipelineTree extends TreeItem {
     parentRegion: CICSRegionTree,
     public iconPath = getFolderIcon(false)
   ) {
-    super("Pipelines", TreeItemCollapsibleState.Collapsed);
-    this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
+    super("URI Maps", TreeItemCollapsibleState.Collapsed);
+    this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.parentRegion = parentRegion;
   }
 
-  public addPipeline(pipeline: CICSPipelineTreeItem) {
-    this.children.push(pipeline);
+  public addURIMAP(urimap: CICSURIMapTreeItem) {
+    this.children.push(urimap);
   }
 
   public async loadContents() {
@@ -45,31 +45,33 @@ export class CICSPipelineTree extends TreeItem {
     }
     this.children = [];
     try {
-      const pipelineResponse = await runGetResource({
+      const urimapResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSPipeline",
+        resourceName: "CICSURIMap",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: { criteria: criteria },
       });
-      const pipelinesArray = toArray(pipelineResponse.response.records.cicspipeline);
-      this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;
-      for (const pipeline of pipelinesArray) {
-        const newPipelineItem = new CICSPipelineTreeItem(pipeline, this.parentRegion, this);
-        newPipelineItem.setLabel(newPipelineItem.label.toString().replace(pipeline.name, `${pipeline.name}`));
-        this.addPipeline(newPipelineItem);
+      const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
+      this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
+      for (const urimap of urimapArray) {
+        const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
+        newURIMapItem.setLabel(
+          newURIMapItem.label.toString().replace(urimap.name, `${urimap.name} [${newURIMapItem.urimap.scheme}] (${newURIMapItem.urimap.path})`)
+        );
+        this.addURIMAP(newURIMapItem);
       }
       this.iconPath = getFolderIcon(true);
     } catch (error) {
       if (error.mMessage!.includes("exceeded a resource limit")) {
-        window.showErrorMessage(`Resource Limit Exceeded - Set a Pipeline filter to narrow search`);
+        window.showErrorMessage(`Resource Limit Exceeded - Set a URIMap filter to narrow search`);
       } else if (this.children.length === 0) {
-        window.showInformationMessage(`No Pipelines found`);
-        this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
+        window.showInformationMessage(`No URI Maps found`);
+        this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[0]`;
         this.iconPath = getFolderIcon(true);
       } else {
         window.showErrorMessage(
-          `Something went wrong when fetching Pipelines - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+          `Something went wrong when fetching URI Maps - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
             /(\\n\t|\\n|\\t)/gm,
             " "
           )}`
@@ -80,13 +82,13 @@ export class CICSPipelineTree extends TreeItem {
 
   public clearFilter() {
     this.activeFilter = undefined;
-    this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
+    this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
     this.activeFilter = newFilter;
-    this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
+    this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 

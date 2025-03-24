@@ -10,8 +10,8 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { getIconFilePathFromName } from "../../../../utils/iconUtils";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
 export class CICSPipelineTreeItem extends TreeItem {
   pipeline: any;

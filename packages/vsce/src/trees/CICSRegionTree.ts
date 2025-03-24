@@ -18,10 +18,25 @@ import { CICSProgramTree } from "./CICSProgramTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSTaskTree } from "./CICSTaskTree";
 import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSWebTree } from "./CICSWebTree";
+import { CICSPipelineTree } from "./CICSPipelineTree";
+import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
+import { CICSURIMapTree } from "./CICSURIMapTree";
+import { CICSWebServiceTree } from "./CICSWebServiceTree";
 
 export class CICSRegionTree extends TreeItem {
-  children: [CICSProgramTree, CICSTransactionTree, CICSLocalFileTree, CICSTaskTree, CICSLibraryTree, CICSWebTree] | null;
+  children:
+    | [
+        CICSProgramTree,
+        CICSTransactionTree,
+        CICSLocalFileTree,
+        CICSTaskTree,
+        CICSLibraryTree,
+        CICSPipelineTree,
+        CICSTCPIPServiceTree,
+        CICSURIMapTree,
+        CICSWebServiceTree,
+      ]
+    | null;
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -57,7 +72,10 @@ export class CICSRegionTree extends TreeItem {
         new CICSLocalFileTree(this),
         new CICSTaskTree(this),
         new CICSLibraryTree(this),
-        new CICSWebTree(this),
+        new CICSPipelineTree(this),
+        new CICSTCPIPServiceTree(this),
+        new CICSURIMapTree(this),
+        new CICSWebServiceTree(this)
       ];
     }
   }

@@ -10,26 +10,26 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { getIconFilePathFromName } from "../../../../utils/iconUtils";
-import { CICSRegionTree } from "../../../CICSRegionTree";
+import { getIconFilePathFromName } from "../../utils/iconUtils";
+import { CICSRegionTree } from "../CICSRegionTree";
 
-export class CICSURIMapTreeItem extends TreeItem {
-  urimap: any;
+export class CICSTCPIPServiceTreeItem extends TreeItem {
+  tcpips: any;
   parentRegion: CICSRegionTree;
   directParent: any;
 
   constructor(
-    urimap: any,
+    tcpips: any,
     parentRegion: CICSRegionTree,
     directParent: any,
-    public readonly iconPath = getIconFilePathFromName("uri-map")
+    public readonly iconPath = getIconFilePathFromName("tcp-ip-service")
   ) {
-    super(`${urimap.name}`, TreeItemCollapsibleState.None);
+    super(`${tcpips.name}`, TreeItemCollapsibleState.None);
 
-    this.urimap = urimap;
+    this.tcpips = tcpips;
     this.parentRegion = parentRegion;
     this.directParent = directParent;
-    this.contextValue = `cicsurimaps.${urimap.name}`;
+    this.contextValue = `cicstcpips.${tcpips.name}`;
   }
 
   public setLabel(newLabel: string) {
