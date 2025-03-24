@@ -12,7 +12,6 @@
 import { assert, expect } from "chai";
 import * as path from "path";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, VSBrowser } from "vscode-extension-tester";
-import { resetAllScenarios } from "./resources/resetScenarios";
 
 describe("Create Project Level Team Configuration File Scenario", () => {
   let cicsTree: DefaultTreeSection;
@@ -89,5 +88,4 @@ describe("Create Project Level Team Configuration File Scenario", () => {
 
     cicsTree.takeScreenshot();
   });
-  resetAllScenarios()
 });
