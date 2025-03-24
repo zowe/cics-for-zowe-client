@@ -28,8 +28,6 @@ export async function runGetResource({
   cicsPlex?: string;
   params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
 }) {
-  CICSLogger.trace("resourceUtils.runGetResource called");
-
   const resourceParams = {
     name: resourceName,
     ...(regionName && { regionName: regionName }),
@@ -40,7 +38,7 @@ export async function runGetResource({
   };
 
   CICSLogger.debug("GET request - Resource [" + resourceName + "]" +
-    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
     (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
@@ -82,8 +80,6 @@ export async function runPutResource(
   },
   requestBody: any
 ) {
-  CICSLogger.trace("resourceUtils.runPutResource called");
-
   const options: IGetResourceUriOptions = {
     cicsPlex: cicsPlex,
     regionName: regionName,
@@ -92,7 +88,7 @@ export async function runPutResource(
   const cmciResource = Utils.getResourceUri(resourceName, options);
 
   CICSLogger.debug("PUT request - Resource [" + resourceName + "]" +
-    (cicsPlex ? ", CICSPlex [" + cicsPlex + "]" : "") +
+    (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
     (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );

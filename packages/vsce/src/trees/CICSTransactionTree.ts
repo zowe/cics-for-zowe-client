@@ -38,8 +38,6 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public async loadContents() {
-    CICSLogger.trace("CICSTransactionTree.loadContents called");
-
     const defaultCriteria = await getDefaultTransactionFilter();
     let criteria;
     if (this.activeFilter) {
@@ -58,6 +56,7 @@ export class CICSTransactionTree extends TreeItem {
       });
       const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
+      CICSLogger.debug(`Adding [${transactionArray.length}] transactions`);
       for (const transaction of transactionArray) {
         const newTransactionItem = new CICSTransactionTreeItem(transaction, this.parentRegion, this);
         this.addTransaction(newTransactionItem);
@@ -84,7 +83,7 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public clearFilter() {
-    CICSLogger.trace("CICSTransactionTree.clearFilter called");
+    CICSLogger.debug("Clear transaction filter");
 
     this.activeFilter = undefined;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
@@ -92,7 +91,7 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public setFilter(newFilter: string) {
-    CICSLogger.trace("CICSTransactionTree.setFilter called");
+    CICSLogger.debug(`Set transaction filter [${newFilter}]`);
 
     this.activeFilter = newFilter;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;

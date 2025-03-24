@@ -69,7 +69,6 @@ export class CICSPlexTree extends TreeItem {
    * Method for adding a region when a plex AND region name were specified upon profile creation
    */
   public async loadOnlyRegion() {
-    CICSLogger.trace("CICSPlexTree.loadOnlyRegion called");
     const plexProfile = this.getProfile();
     const session = this.getParent().getSession();
     const regionsObtained = await runGetResource({
@@ -162,7 +161,6 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addNewCombinedTrees() {
-    CICSLogger.trace("CICSPlexTree.addNewCombinedTrees called");
     this.children.push(new CICSCombinedProgramTree(this));
     this.children.push(new CICSCombinedTransactionsTree(this));
     this.children.push(new CICSCombinedLocalFileTree(this));
@@ -175,7 +173,6 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addRegionContainer(): CICSRegionsContainer {
-    CICSLogger.trace("CICSPlexTree.addRegionContainer called");
     const regionContainer = new CICSRegionsContainer(this);
     this.children.push(regionContainer);
     return regionContainer;

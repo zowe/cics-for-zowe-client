@@ -16,10 +16,8 @@ import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getFolderIcon } from "./iconUtils";
 import { ProfileManagement } from "./profileManagement";
-import { CICSLogger } from "./CICSLogger";
 
 export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
-  CICSLogger.trace("expansionHandle.sessionExpansionHandler called");
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);
   if (profile == null) {
     throw new Error("sessionExpansionHandler: Profile is not defined");
@@ -28,7 +26,6 @@ export async function sessionExpansionHandler(session: CICSSessionTree, tree: CI
 }
 
 export function regionContainerExpansionHandler(regionContiner: CICSRegionsContainer, tree: CICSTree) {
-  CICSLogger.trace("expansionHandle.regionContainerExpansionHandler called");
   const parentPlex = regionContiner.getParent();
   const plexProfile = parentPlex.getProfile();
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
@@ -72,7 +69,6 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
 }
 
 export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
-  CICSLogger.trace("expansionHandle.plexExpansionHandler called");
   const plexProfile = plex.getProfile();
   // Region name and plex name specified
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
