@@ -26,7 +26,6 @@ import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebS
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSPlexTree extends TreeItem {
   children: (
