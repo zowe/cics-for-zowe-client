@@ -11,20 +11,20 @@
 
 import { expect } from "chai";
 import { EditorView, TextEditor } from "vscode-extension-tester";
-import { restoreOriginalProfile} from "./e2e_globalMocks";
+import { restoreOriginalConfigFile} from "./e2e_globalMocks";
 
 describe("Remove The Wiremock Profile From The Configuration File", async() => {
     let editorView: EditorView;
-    const text = "wiremock_server";
+    const profileName = "wiremock_server";
 
     it("Remove Wiremock Profile", async () => {
-        // Remove the wiremock profile
-        restoreOriginalProfile();
+        // Remove the wiremock profile from zowe.config.json
+        restoreOriginalConfigFile();
         
         // Checking if the wiremock profile is removed
         editorView = new EditorView();
         let editor = await editorView.openEditor("zowe.config.json") as TextEditor;
         let isWmAvailable = await editor.getText()
-        expect(isWmAvailable.includes(text)).not.to.be.true;
+        expect(isWmAvailable.includes(profileName)).not.to.be.true;
     });
 });
