@@ -20,7 +20,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CICSTCPIPServiceTreeItem } from "../treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
+import { CICSTCPIPServiceTreeItem } from "../treeItems/CICSTCPIPServiceTreeItem";
 
 export class CICSCombinedTCPIPServiceTree extends TreeItem {
   children: (CICSTCPIPServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -34,7 +34,7 @@ export class CICSCombinedTCPIPServiceTree extends TreeItem {
     parentPlex: CICSPlexTree,
     public iconPath = getFolderIcon(false)
   ) {
-    super("All TCPIP Services", TreeItemCollapsibleState.Collapsed);
+    super("All TCP/IP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicscombinedtcpipstree.`;
     this.parentPlex = parentPlex;
     this.children = [new TextTreeItem("Use the search button to display TCPIP Services", "applyfiltertext.")];

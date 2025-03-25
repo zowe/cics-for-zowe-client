@@ -104,7 +104,6 @@ export async function activate(context: ExtensionContext) {
     cicscombinedpipelinetree: expandCombinedTree,
     cicscombinedwebservicetree: expandCombinedTree,
 
-    cicstreeweb: expandResourceTree,
     cicstreeprogram: expandResourceTree,
     cicstreetransaction: expandResourceTree,
     cicstreelocalfile: expandResourceTree,
@@ -164,7 +163,6 @@ export async function activate(context: ExtensionContext) {
       "cicstreelocalfile.",
       "cicstreetask.",
       "cicstreelibrary.",
-      "cicstreeweb.",
       "cicstreetcpips.",
       "cicstreepipeline.",
       "cicstreewebservice.",

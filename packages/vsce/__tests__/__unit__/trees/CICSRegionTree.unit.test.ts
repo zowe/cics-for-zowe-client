@@ -21,7 +21,10 @@ jest.mock("../../../src/trees/CICSTransactionTree");
 jest.mock("../../../src/trees/CICSLocalFileTree");
 jest.mock("../../../src/trees/CICSTaskTree");
 jest.mock("../../../src/trees/CICSLibraryTree");
-jest.mock("../../../src/trees/CICSWebTree");
+jest.mock("../../../src/trees/CICSTCPIPServiceTree");
+jest.mock("../../../src/trees/CICSPipelineTree");
+jest.mock("../../../src/trees/CICSURIMapTree");
+jest.mock("../../../src/trees/CICSWebServiceTree");
 
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconByStatus: getIconByStatusMock };
