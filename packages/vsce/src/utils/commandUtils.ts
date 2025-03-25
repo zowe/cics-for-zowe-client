@@ -10,6 +10,8 @@
  */
 
 import { TreeView } from "vscode";
+import { IResource, IResourceMeta } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
 
 /**
  * Returns an array of selected nodes in the current treeview.
@@ -18,23 +20,28 @@ import { TreeView } from "vscode";
  * @param clickedNode - Node that was clicked right before the command was executed
  * @return Array of selected nodes in the treeview.
  */
-export function findSelectedNodes(treeview: TreeView<any>, instanceOf: any, clickedNode?: any) {
-  const selection = treeview.selection;
-  let allSelectedNodes = [];
-  if (clickedNode) {
-    if (selection.includes(clickedNode)) {
-      allSelectedNodes = [...selection];
-    } else {
-      //if user right clicks the node other than selected node
-      allSelectedNodes = [clickedNode];
-    }
-    allSelectedNodes = allSelectedNodes.filter((selectedNode) => selectedNode instanceof instanceOf);
+export function findSelectedNodes(
+  treeview: TreeView<CICSResourceContainerNode<IResource>>,
+  expectedMeta: IResourceMeta<IResource>,
+  clickedNode?: CICSResourceContainerNode<IResource>
+): CICSResourceContainerNode<IResource>[] {
+  /**
+   * - Clicked node NOT in selection, return clicked node only
+   * - Clicked node in selection, return selection [filtered by meta]
+   * - NOT clicked node, return selection as run from cmd palette [filtered by meta]
+   */
+
+  const selectedNodes = treeview.selection;
+
+  if (!clickedNode) {
+    return selectedNodes.filter((node) => node.getContainedResource().meta === expectedMeta);
   }
-  // executed from command palette
-  else if (selection.length) {
-    allSelectedNodes = selection.filter((node: any) => node && node instanceof instanceOf);
+
+  if (selectedNodes.includes(clickedNode)) {
+    return selectedNodes.filter((node) => node.getContainedResource().meta === expectedMeta);
+  } else {
+    return [clickedNode];
   }
-  return allSelectedNodes;
 }
 
 /**
