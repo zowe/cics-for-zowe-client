@@ -17,7 +17,7 @@ export class CICSLogger {
     private static logOutputChannel: LogOutputChannel;
 
     public static initialize() {
-      CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("CICS for Zowe Explorer"), { log: true } )
+      CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("IBM CICS for Zowe Explorer"), { log: true } )
 
       CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
 

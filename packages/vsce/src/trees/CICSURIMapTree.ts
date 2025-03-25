@@ -16,6 +16,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSURIMapTreeItem } from "./treeItems/CICSURIMapTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSURIMapTree extends TreeItem {
   children: CICSURIMapTreeItem[] = [];
@@ -54,6 +55,7 @@ export class CICSURIMapTree extends TreeItem {
       });
       const urimapArray = toArray(urimapResponse.response.records.cicsurimap);
       this.label = `URI Maps${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${urimapArray.length}]`;
+      CICSLogger.debug(`Adding [${urimapArray.length}] URI Maps`);
       for (const urimap of urimapArray) {
         const newURIMapItem = new CICSURIMapTreeItem(urimap, this.parentRegion, this);
         newURIMapItem.setLabel(
@@ -81,12 +83,14 @@ export class CICSURIMapTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared URI Map filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set URI Map filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreeurimaps.${this.activeFilter ? "filtered" : "unfiltered"}.urimaps`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

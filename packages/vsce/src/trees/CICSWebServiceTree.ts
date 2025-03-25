@@ -16,6 +16,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSWebServiceTree extends TreeItem {
   children: CICSWebServiceTreeItem[] = [];
@@ -55,6 +56,7 @@ export class CICSWebServiceTree extends TreeItem {
 
       const webservicesArray = toArray(webserviceResponse.response.records.cicswebservice);
       this.label = `Web Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${webservicesArray.length}]`;
+      CICSLogger.debug(`Adding [${webservicesArray.length}] Web Services`);
       for (const webservice of webservicesArray) {
         const newWebServiceItem = new CICSWebServiceTreeItem(webservice, this.parentRegion, this);
         newWebServiceItem.setLabel(newWebServiceItem.label.toString().replace(webservice.name, `${webservice.name}`));
@@ -80,12 +82,14 @@ export class CICSWebServiceTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared Web Service filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set Web Service filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreewebservice.${this.activeFilter ? "filtered" : "unfiltered"}.webservices`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
