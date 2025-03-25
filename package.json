@@ -1,7 +1,7 @@
 {
   "name": "@zowe/cics_monorepo",
   "private": true,
-  "version": "6.4.0",
+  "version": "6.5.0",
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@zowe/cli-test-utils": "^8.0.0",
-    "@zowe/imperative": "^8.14.0",
+    "@zowe/imperative": "^8.15.1",
     "@zowe/zowe-explorer-api": "^3.1.1",
     "chalk": "^4.1.2",
     "eslint": "^8.37.0",
