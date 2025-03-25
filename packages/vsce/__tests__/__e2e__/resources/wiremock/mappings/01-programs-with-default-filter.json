@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "programs-with-default-filter.xml",
+    "headers": {
+      "Content-Type": "text/xml"
+    }
+  }
+}
