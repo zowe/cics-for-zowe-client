@@ -10,11 +10,11 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { toArray } from "../../../utils/commandUtils";
-import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getFolderIcon } from "../../../utils/iconUtils";
-import { runGetResource } from "../../../utils/resourceUtils";
-import { CICSRegionTree } from "../../CICSRegionTree";
+import { toArray } from "../utils/commandUtils";
+import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { getFolderIcon } from "../utils/iconUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 
 export class CICSWebServiceTree extends TreeItem {

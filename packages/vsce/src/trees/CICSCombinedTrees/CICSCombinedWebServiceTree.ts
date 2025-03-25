@@ -19,7 +19,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CICSWebServiceTreeItem } from "../treeItems/web/treeItems/CICSWebServiceTreeItem";
+import { CICSWebServiceTreeItem } from "../treeItems/CICSWebServiceTreeItem";
 
 export class CICSCombinedWebServiceTree extends TreeItem {
   children: (CICSWebServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;

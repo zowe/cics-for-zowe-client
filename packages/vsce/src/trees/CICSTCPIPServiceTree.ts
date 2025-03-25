@@ -11,11 +11,11 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { toArray } from "../../../utils/commandUtils";
-import { toEscapedCriteriaString } from "../../../utils/filterUtils";
-import { getFolderIcon } from "../../../utils/iconUtils";
-import { runGetResource } from "../../../utils/resourceUtils";
-import { CICSRegionTree } from "../../CICSRegionTree";
+import { toArray } from "../utils/commandUtils";
+import { toEscapedCriteriaString } from "../utils/filterUtils";
+import { getFolderIcon } from "../utils/iconUtils";
+import { runGetResource } from "../utils/resourceUtils";
+import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
 
 export class CICSTCPIPServiceTree extends TreeItem {
@@ -27,7 +27,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
     parentRegion: CICSRegionTree,
     public iconPath = getFolderIcon(false)
   ) {
-    super("TCPIP Services", TreeItemCollapsibleState.Collapsed);
+    super("TCP/IP Services", TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
     this.parentRegion = parentRegion;
   }

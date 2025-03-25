@@ -19,7 +19,7 @@ import { CICSRegionsContainer } from "../CICSRegionsContainer";
 import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
-import { CICSURIMapTreeItem } from "../treeItems/web/treeItems/CICSURIMapTreeItem";
+import { CICSURIMapTreeItem } from "../treeItems/CICSURIMapTreeItem";
 
 export class CICSCombinedURIMapTree extends TreeItem {
   children: (CICSURIMapTreeItem | ViewMore)[] | [TextTreeItem] | null;

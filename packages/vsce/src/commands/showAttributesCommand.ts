@@ -17,10 +17,10 @@ import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem"
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
-import { CICSPipelineTreeItem } from "../trees/treeItems/web/treeItems/CICSPipelineTreeItem";
-import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSTCPIPServiceTreeItem";
-import { CICSURIMapTreeItem } from "../trees/treeItems/web/treeItems/CICSURIMapTreeItem";
-import { CICSWebServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSWebServiceTreeItem";
+import { CICSPipelineTreeItem } from "../trees/treeItems/CICSPipelineTreeItem";
+import { CICSTCPIPServiceTreeItem } from "../trees/treeItems/CICSTCPIPServiceTreeItem";
+import { CICSURIMapTreeItem } from "../trees/treeItems/CICSURIMapTreeItem";
+import { CICSWebServiceTreeItem } from "../trees/treeItems/CICSWebServiceTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getAttributesHtml } from "../utils/webviewHTML";
 
