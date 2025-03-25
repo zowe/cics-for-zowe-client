@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, VSBrowser } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, VSBrowser } from "vscode-extension-tester";
 
 describe("Create Project Level Team Configuration File Scenario", () => {
   let cicsTree: DefaultTreeSection;
