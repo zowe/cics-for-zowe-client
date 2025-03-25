@@ -71,6 +71,7 @@ jest.mock("../../../src/trees/CICSRegionsContainer", () => ({
 }));
 jest.mock("../../../src/trees/CICSRegionTree");
 jest.mock("@zowe/cics-for-zowe-sdk");
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/trees/CICSSessionTree");
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconFilePathFromName: getIconFilePathFromNameMock };

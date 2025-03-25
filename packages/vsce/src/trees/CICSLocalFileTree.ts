@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLocalFileTreeItem } from "./treeItems/CICSLocalFileTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSLocalFileTree extends TreeItem {
   children: CICSLocalFileTreeItem[] = [];
@@ -59,6 +60,7 @@ export class CICSLocalFileTree extends TreeItem {
       });
       const localFileArray = toArray(localFileResponse.response.records.cicslocalfile);
       this.label = `Local Files${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${localFileArray.length}]`;
+      CICSLogger.debug(`Adding [${localFileArray.length}] local files`);
       for (const localFile of localFileArray) {
         const newLocalFileItem = new CICSLocalFileTreeItem(localFile, this.parentRegion, this);
         this.addLocalFile(newLocalFileItem);
@@ -85,12 +87,14 @@ export class CICSLocalFileTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared local file filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set local file filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreelocalfile.${this.activeFilter ? "filtered" : "unfiltered"}.localFiles`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTransactionTreeItem } from "./treeItems/CICSTransactionTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTransactionTree extends TreeItem {
   children: CICSTransactionTreeItem[] = [];
@@ -55,6 +56,7 @@ export class CICSTransactionTree extends TreeItem {
       });
       const transactionArray = toArray(transactionResponse.response.records.cicslocaltransaction);
       this.label = `Transactions${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${transactionArray.length}]`;
+      CICSLogger.debug(`Adding [${transactionArray.length}] transactions`);
       for (const transaction of transactionArray) {
         const newTransactionItem = new CICSTransactionTreeItem(transaction, this.parentRegion, this);
         this.addTransaction(newTransactionItem);
@@ -81,12 +83,16 @@ export class CICSTransactionTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Clear transaction filter");
+
     this.activeFilter = undefined;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set transaction filter [${newFilter}]`);
+
     this.activeFilter = newFilter;
     this.contextValue = `cicstreetransaction.${this.activeFilter ? "filtered" : "unfiltered"}.transactions`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSProgramTreeItem } from "./treeItems/CICSProgramTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSProgramTree extends TreeItem {
   children: CICSProgramTreeItem[] = [];
@@ -55,6 +56,7 @@ export class CICSProgramTree extends TreeItem {
       });
       const programsArray = toArray(programResponse.response.records.cicsprogram);
       this.label = `Programs${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${programsArray.length}]`;
+      CICSLogger.debug(`Adding [${programsArray.length}] programs`);
       for (const program of programsArray) {
         const newProgramItem = new CICSProgramTreeItem(program, this.parentRegion, this);
         this.addProgram(newProgramItem);
@@ -79,12 +81,14 @@ export class CICSProgramTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared program filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set program filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreeprogram.${this.activeFilter ? "filtered" : "unfiltered"}.programs`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

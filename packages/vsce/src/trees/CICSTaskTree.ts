@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTaskTreeItem } from "./treeItems/CICSTaskTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTaskTree extends TreeItem {
   children: CICSTaskTreeItem[] = [];
@@ -60,6 +61,7 @@ export class CICSTaskTree extends TreeItem {
 
       const tasksArray = toArray(taskResponse.response.records.cicstask);
       this.label = `Tasks${this.activeTransactionFilter ? ` (${this.activeTransactionFilter}) ` : " "}[${tasksArray.length}]`;
+      CICSLogger.debug(`Adding [${tasksArray.length}] tasks`);
       for (const task of tasksArray) {
         const newTaskItem = new CICSTaskTreeItem(task, this.parentRegion, this);
         // Show run status if run status isn't SUSPENDED (assuming SUSPENDED is default runstatus)
@@ -87,12 +89,14 @@ export class CICSTaskTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared task filter");
     this.activeTransactionFilter = undefined;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set task filter [${newFilter}]`);
     this.activeTransactionFilter = newFilter;
     this.contextValue = `cicstreetask.${this.activeTransactionFilter ? "filtered" : "unfiltered"}.tasks`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

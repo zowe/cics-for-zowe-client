@@ -29,6 +29,7 @@ getProfilesCacheMock.mockReturnValue({
 
 import { CICSTree } from "../../../src/trees/CICSTree";
 
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/utils/PersistentStorage", () => ({
   get PersistentStorage() {
     return jest.fn().mockImplementation(() => {

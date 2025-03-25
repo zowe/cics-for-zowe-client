@@ -36,6 +36,7 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -212,6 +213,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param sessionTree current CICSSessionTree only passed in if expanding a profile
    */
   async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
+    CICSLogger.debug(`Loading CICS profile [${profile.name}]`);
+
     const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await persistentStorage.addLoadedCICSProfile(profile.name);
 
@@ -317,6 +320,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param label name of the selected profile
    */
   async loadExistingProfile(label: string) {
+    CICSLogger.debug(`Loading existing profile [${label}]`);
+
     label = label.split(/ (.*)/)[1];
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad);

@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLibraryTreeItem } from "./treeItems/CICSLibraryTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSLibraryTree extends TreeItem {
   children: CICSLibraryTreeItem[] = [];
@@ -56,6 +57,7 @@ export class CICSLibraryTree extends TreeItem {
 
       const librariesArray = toArray(libraryResponse.response.records.cicslibrary);
       this.label = `Libraries${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${librariesArray.length}]`;
+      CICSLogger.debug(`Adding [${librariesArray.length}] libraries`);
       for (const library of librariesArray) {
         const newLibraryItem = new CICSLibraryTreeItem(library, this.parentRegion, this);
         this.addLibrary(newLibraryItem);
@@ -80,12 +82,15 @@ export class CICSLibraryTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Clear library filter");
+
     this.activeFilter = undefined;
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set library filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreelibrary.${this.activeFilter ? "filtered" : "unfiltered"}.libraries`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

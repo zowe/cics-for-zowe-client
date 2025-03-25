@@ -18,6 +18,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -37,6 +38,8 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async filterRegions(pattern: string, tree: CICSTree) {
+    CICSLogger.debug(`Filter region [${pattern}]`);
+
     this.children = [];
     this.activeFilter = pattern;
     this.setLabel(this.activeFilter === "*" ? `Regions` : `Regions (${this.activeFilter})`);
