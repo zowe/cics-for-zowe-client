@@ -16,6 +16,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSPipelineTree extends TreeItem {
   children: CICSPipelineTreeItem[] = [];
@@ -54,6 +55,7 @@ export class CICSPipelineTree extends TreeItem {
       });
       const pipelinesArray = toArray(pipelineResponse.response.records.cicspipeline);
       this.label = `Pipelines${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${pipelinesArray.length}]`;
+      CICSLogger.debug(`Adding [${pipelinesArray.length}] pipelines`);
       for (const pipeline of pipelinesArray) {
         const newPipelineItem = new CICSPipelineTreeItem(pipeline, this.parentRegion, this);
         newPipelineItem.setLabel(newPipelineItem.label.toString().replace(pipeline.name, `${pipeline.name}`));
@@ -79,12 +81,14 @@ export class CICSPipelineTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared pipeline filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set pipeline filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreepipeline.${this.activeFilter ? "filtered" : "unfiltered"}.pipelines`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;

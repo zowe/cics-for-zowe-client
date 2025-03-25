@@ -17,6 +17,7 @@ import { getFolderIcon } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTCPIPServiceTreeItem } from "./treeItems/CICSTCPIPServiceTreeItem";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTCPIPServiceTree extends TreeItem {
   children: CICSTCPIPServiceTreeItem[] = [];
@@ -55,6 +56,7 @@ export class CICSTCPIPServiceTree extends TreeItem {
       });
       const tcpipservicesArray = toArray(tcpipsResponse.response.records.cicstcpipservice);
       this.label = `TCPIP Services${this.activeFilter ? ` (${this.activeFilter}) ` : " "}[${tcpipservicesArray.length}]`;
+      CICSLogger.debug(`Adding [${tcpipservicesArray.length}] TCP/IP services`);
       for (const tcpips of tcpipservicesArray) {
         const newTCPIPServiceItem = new CICSTCPIPServiceTreeItem(tcpips, this.parentRegion, this);
         newTCPIPServiceItem.setLabel(
@@ -82,12 +84,14 @@ export class CICSTCPIPServiceTree extends TreeItem {
   }
 
   public clearFilter() {
+    CICSLogger.debug("Cleared TCP/IP service filter");
     this.activeFilter = undefined;
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
   public setFilter(newFilter: string) {
+    CICSLogger.debug(`Set TCP/IP service filter [${newFilter}]`);
     this.activeFilter = newFilter;
     this.contextValue = `cicstreetcpips.${this.activeFilter ? "filtered" : "unfiltered"}.tcpips`;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
