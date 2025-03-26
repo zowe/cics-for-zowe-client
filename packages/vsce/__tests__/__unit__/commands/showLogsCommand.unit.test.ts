@@ -65,14 +65,10 @@ describe("Test suite for fetchBaseProfileWithoutError", () => {
   });
 
   it("Profile with common base finds z/osmf", async () => {
-    let h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
-    let zosProfiles: imperative.IProfileLoaded[] = [h1z];
     const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
     expect(profile?.name).toEqual("host1");
   });
   it("Profile with no common base", async () => {
-    let h1z = createProfile("myzosmf", "zosmf", "h1", "user");
-    let zosProfiles: imperative.IProfileLoaded[] = [h1z];
     const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("exception", "cics", "h1", "user"));
     expect(profile).toBeUndefined();
   });
