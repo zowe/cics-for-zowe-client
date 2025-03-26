@@ -10,8 +10,9 @@
  */
 
 import { assert, expect } from "chai";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor, ViewPanelAction } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor, ViewPanelAction, VSBrowser } from "vscode-extension-tester";
 import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
+import path from "path";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
     let cicsTree: DefaultTreeSection;
@@ -20,6 +21,10 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     const profileName = "wiremock_server";
 
     before(async () => {
+        // open the Explorer view into the folder where configuration files are available
+        await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
+        (await new ActivityBar().getViewControl("Explorer"))?.openView();
+            
         // Switch to the cics extension view
         const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
         assert(zoweExplorer !== undefined);
