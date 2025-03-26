@@ -29,11 +29,13 @@ let jsonOriginalProfile: object;
 
 export function addWiremockProfileToConfigFile(): void {
     const jsonFile = require(jsonFilePath);
+    console.log("===========jsonfile: ", jsonFile);
     jsonOriginalProfile = {...jsonFile.profiles};
     const newProfile = {
         ...jsonFile.profiles,
         ...wiremock_profile
     };
+    console.log("===========new profile: ", newProfile);
     jsonFile.profiles = newProfile;
     fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), 'utf8');
 };

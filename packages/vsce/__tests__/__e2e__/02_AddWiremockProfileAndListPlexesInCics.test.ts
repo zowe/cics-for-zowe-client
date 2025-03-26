@@ -41,7 +41,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
             // Find open editors
             editorView = new EditorView();
             const titles = await editorView.getOpenEditorTitles();
-
+            console.log("==============titles: ", titles);
             // Check zowe.config.json was opened - could check content here
             expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
 
