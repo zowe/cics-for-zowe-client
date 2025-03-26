@@ -39,6 +39,9 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     });
 
     describe("Adding Wiremock Profile In The Configuration File", () => {
+        afterEach(async () => {
+            await editorView.closeAllEditors();
+        });
         it("Should Open The Configuration File", async () => {
             // Click the plus icon in cics
             const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
@@ -61,6 +64,18 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
         it("Should Add Wiremock Profile", async () => {
             // Add wiremock profile to the zowe.config.json
             addWiremockProfileToConfigFile();
+
+            // Click the plus icon in cics
+            const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
+            await plusIcon?.click();
+
+            // Find quickpick and select the options to edit project team configuration file
+            quickPick = await InputBox.create();
+            await quickPick.selectQuickPick(1);
+            await quickPick.selectQuickPick(1);
+
+            // Find open editors
+            editorView = new EditorView();
             
             // Check if wiremock profile is added to the zowe.config.json
             const editor = await editorView.openEditor("zowe.config.json") as TextEditor;
