@@ -27,7 +27,7 @@ getProfilesCacheMock.mockReturnValue({
     if (name === "exception") {
       throw Error("Error");
     }
-    var splitString = name.split(".");
+    const splitString = name.split(".");
     if (splitString.length > 1) {
       return createProfile(splitString[0], "base", "", "");
     }
