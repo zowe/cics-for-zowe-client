@@ -7,7 +7,8 @@
   },
   "repository": "https://github.com/zowe/cics-for-zowe-client",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/vsce/src/webviews"
   ],
   "scripts": {
     "build": "turbo build",
