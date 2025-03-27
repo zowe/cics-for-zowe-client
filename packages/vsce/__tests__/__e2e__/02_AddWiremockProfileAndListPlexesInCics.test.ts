@@ -12,7 +12,7 @@
 import { assert, expect } from "chai";
 import * as path from "path";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
-import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
+import { sleep } from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
   let cicsTree: DefaultTreeSection;
@@ -67,7 +67,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
     it("Should Add Wiremock Profile", async () => {
       // Add wiremock profile to the zowe.config.json
-      addWiremockProfileToConfigFile();
+      //addWiremockProfileToConfigFile();
 
       // Find open editors
       editorView = new EditorView();
