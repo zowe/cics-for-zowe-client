@@ -11,13 +11,14 @@
 
 import { assert, expect } from "chai";
 import { ActivityBar, EditorView, InputBox, TextEditor, ViewPanelAction } from "vscode-extension-tester";
-import { restoreOriginalConfigFile } from "./e2e_globalMocks";
+import { restoreOriginalConfigFile, sleep } from "./e2e_globalMocks";
 
 describe("Remove The Wiremock Profile From The Configuration File", async () => {
   let editorView: EditorView;
   const profileName = "wiremock_server";
 
   beforeEach(async () => {
+    await sleep(5000);
     // Switch to the cics extension view
     const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
     assert(zoweExplorer !== undefined);

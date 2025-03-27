@@ -21,6 +21,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
   const profileName = "wiremock_server";
 
   before(async () => {
+    await sleep(5000);
     // open the Explorer view into the folder where configuration files are available
     await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
     (await new ActivityBar().getViewControl("Explorer"))?.openView();
