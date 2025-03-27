@@ -45,6 +45,8 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     });
     beforeEach(async () => {
       // Click the plus icon in cics
+      await cicsTree.click();
+      await cicsTree.expand();
       const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
       assert(typeof plusIcon !== undefined);
       await plusIcon?.click();
