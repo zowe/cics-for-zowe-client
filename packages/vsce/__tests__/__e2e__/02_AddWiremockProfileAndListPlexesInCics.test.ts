@@ -40,13 +40,40 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
   });
 
   describe("Adding Wiremock Profile In The Configuration File", () => {
-    afterEach(async () => {
-      await editorView.closeAllEditors();
-    });
-    beforeEach(async () => {
+    // afterEach(async () => {
+    //   await editorView.closeAllEditors();
+    // });
+    // beforeEach(async () => {
+    //   // Click the plus icon in cics
+    //   await cicsTree.click();
+    //   await cicsTree.expand();
+    //   const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
+    //   assert(typeof plusIcon !== undefined);
+    //   await plusIcon?.click();
+
+    //   // Find quickpick and select the options to edit project team configuration file
+    //   quickPick = await InputBox.create();
+    //   await quickPick.selectQuickPick(1);
+    //   await quickPick.selectQuickPick(1);
+    // });
+
+    // it("Should Open The Configuration File", async () => {
+    //   // Find open editors
+    //   editorView = new EditorView();
+    //   const titles = await editorView.getOpenEditorTitles();
+    //   console.log("titles: ", titles);
+
+    //   // Check zowe.config.json was opened - could check content here
+    //   expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
+    // });
+
+    it("Should Add Wiremock Profile", async () => {
+      // Add wiremock profile to the zowe.config.json
+      //addWiremockProfileToConfigFile();
+
       // Click the plus icon in cics
-      await cicsTree.click();
-      await cicsTree.expand();
+      //   await cicsTree.click();
+      //   await cicsTree.expand();
       const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
       assert(typeof plusIcon !== undefined);
       await plusIcon?.click();
@@ -55,21 +82,6 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       quickPick = await InputBox.create();
       await quickPick.selectQuickPick(1);
       await quickPick.selectQuickPick(1);
-    });
-
-    it("Should Open The Configuration File", async () => {
-      // Find open editors
-      editorView = new EditorView();
-      const titles = await editorView.getOpenEditorTitles();
-      console.log("titles: ", titles);
-
-      // Check zowe.config.json was opened - could check content here
-      expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
-    });
-
-    it("Should Add Wiremock Profile", async () => {
-      // Add wiremock profile to the zowe.config.json
-      //addWiremockProfileToConfigFile();
 
       // Find open editors
       editorView = new EditorView();
@@ -80,6 +92,8 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       console.log("file path: ", filePath);
       const isWmAvailable = await editor.getText();
       expect(isWmAvailable.includes(profileName)).to.be.true;
+
+      await editorView.closeAllEditors();
     });
   });
 
