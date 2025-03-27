@@ -73,6 +73,11 @@
         }
       },
       {
+        "command": "cics-extension-for-zowe.sampleWebview",
+        "title": "Sample Webview",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.filterPrograms",
         "title": "Filter Programs",
         "category": "IBM CICS for Zowe Explorer",
@@ -856,7 +861,7 @@
     "build": "tsup && npm run checkTestsCompile && npm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "echo 'Nothing to check'",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts --ignore-pattern src/webviews",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "tsup --watch",
@@ -874,11 +879,11 @@
   "devDependencies": {
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.10",
+    "@types/vscode": "~1.53.0",
+    "@vscode/vsce": "^2.32.0",
     "chai": "^4.4.1",
     "mocha": "^11.1.0",
-    "vscode-extension-tester": "^8.11.0",
-    "@types/vscode": "~1.53.0",
-    "@vscode/vsce": "^2.32.0"
+    "vscode-extension-tester": "^8.11.0"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.5.0",
