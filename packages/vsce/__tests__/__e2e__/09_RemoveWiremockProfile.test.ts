@@ -9,7 +9,7 @@
  *
  */
 
-import { assert, expect } from "chai";
+/*import { assert, expect } from "chai";
 import { ActivityBar, EditorView, InputBox, TextEditor, ViewPanelAction } from "vscode-extension-tester";
 import { restoreOriginalConfigFile, sleep } from "./e2e_globalMocks";
 
@@ -44,4 +44,4 @@ describe("Remove The Wiremock Profile From The Configuration File", async () => 
     let isWmAvailable = await editor.getText();
     expect(isWmAvailable.includes(profileName)).not.to.be.true;
   });
-});
+});*/

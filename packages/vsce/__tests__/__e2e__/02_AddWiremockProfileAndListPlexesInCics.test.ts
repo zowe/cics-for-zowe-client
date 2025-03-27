@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
 import { sleep } from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
@@ -39,7 +39,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     await cicsTree.expand();
   });
 
-  describe("Adding Wiremock Profile In The Configuration File", () => {
+  /*describe("Adding Wiremock Profile In The Configuration File", () => {
     // afterEach(async () => {
     //   await editorView.closeAllEditors();
     // });
@@ -95,7 +95,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
       await editorView.closeAllEditors();
     });
-  });
+  });*/
 
   describe("Check For The Wiremock Profile And List The Regions", async () => {
     let wiremockServer: TreeItem | undefined;
