@@ -57,19 +57,37 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
   return cicsHostProfiles[0];
 }
 
-function promptUserForProfile(zosProfiles: IProfileLoaded[]): Thenable<string> {
-  const profileNames = zosProfiles.map((value) => value.name);
+async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promise<string> {
+  const profileNames = zosProfiles.map((profile) => profile.name);
 
-  if (profileNames.length > 0) {
-    const quickPickOptions: vscode.QuickPickOptions = {
-      placeHolder: vscode.l10n.t("Select a profile to access the logs"),
-      ignoreFocusOut: true,
-      canPickMany: false,
-    };
-    return Gui.showQuickPick(profileNames, quickPickOptions);
-  } else {
+  if (profileNames.length === 0) {
     return null;
   }
+  // ask the user to pick from the profiles passed in
+  const quickPickOptions: vscode.QuickPickOptions = {
+    placeHolder: vscode.l10n.t("Select a profile to access the logs"),
+    ignoreFocusOut: true,
+    canPickMany: false,
+  };
+  const chosenProfileName = await Gui.showQuickPick(profileNames, quickPickOptions);
+  if (chosenProfileName === undefined) {
+    return chosenProfileName;
+  }
+  // if the profile they picked doesn't have credentials, prompt the user for them
+  const chosenProfileLoaded = zosProfiles.filter((profile) => profile.name === chosenProfileName)[0];
+  const chosenProfile = chosenProfileLoaded.profile;
+  if (!(chosenProfile.user || chosenProfile.certFile || chosenProfile.tokenValue)) {
+    await ZoweVsCodeExtension.updateCredentials(
+      {
+        profile: chosenProfileLoaded,
+        rePrompt: false,
+      },
+      ProfileManagement.getExplorerApis()
+    );
+  }
+  // call fetchAllProfiles again otherwise we get an expect error about requiring a session to be defined
+  const requestTheProfileAgain = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter((prof) => prof.name === chosenProfileName)[0];
+  return requestTheProfileAgain.name;
 }
 
 export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise<string> {
@@ -108,18 +126,24 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node) => {
     const allSelectedRegions = findSelectedNodes(treeview, CICSRegionTree, node);
     if (!allSelectedRegions || allSelectedRegions.length !== 1) {
-      await window.showErrorMessage("One CICS region must be selected");
+      window.showErrorMessage("One CICS region must be selected");
       return;
     }
 
     const selectedRegion: CICSRegionTree = allSelectedRegions[0];
+    const jobid = await getJobIdForRegion(selectedRegion);
+    if (!jobid) {
+      window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
+      return;
+    }
+
     const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
     // do not include the FTP profile because it doesn't support spools for running jobs.
     const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesConnectionSupportJes(element));
 
     let chosenProfileName: string;
 
-    // find profiles that match by base profile or hostname
+    // find profiles that match by base profile or hostname, and have valid credentials
     const matchingZosProfiles = await findRelatedZosProfiles(selectedRegion.parentSession.profile, zosProfiles);
     if (matchingZosProfiles) {
       chosenProfileName = matchingZosProfiles.name;
@@ -135,26 +159,6 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       }
     }
 
-    const jobid = await getJobIdForRegion(selectedRegion);
-    if (jobid) {
-      const myProfile = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter((prof) => prof.name === chosenProfileName)[0];
-      const profile = myProfile.profile;
-      if (!(profile.user || profile.certFile || profile.tokenValue)) {
-        await ZoweVsCodeExtension.updateCredentials(
-          {
-            profile: myProfile,
-            rePrompt: false,
-          },
-          ProfileManagement.getExplorerApis()
-        );
-      }
-      // call fetchAllProfiles again otherwise we get an expect error about requiring a session to be defined
-      const requestTheProfileAgain = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter(
-        (prof) => prof.name === chosenProfileName
-      )[0];
-      commands.executeCommand("zowe.jobs.setJobSpool", requestTheProfileAgain.name, jobid);
-    } else {
-      window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
-    }
+    commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
   });
 }
