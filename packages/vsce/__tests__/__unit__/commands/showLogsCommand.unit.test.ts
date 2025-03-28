@@ -36,6 +36,7 @@ getProfilesCacheMock.mockReturnValue({
 });
 
 jest.mock("@zowe/cics-for-zowe-sdk");
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     getProfilesCache: getProfilesCacheMock,

@@ -9,14 +9,16 @@
  *
  */
 
-import { CicsCmciConstants, getResource } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
 import { TreeView, commands, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { CICSLogger } from "../utils/CICSLogger";
 import { findSelectedNodes, toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
+import { runGetResource } from "../utils/resourceUtils";
 
 // fetching a base profile can throw an error if no nesting or base profile is available
 export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
@@ -47,14 +49,19 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
   }
 
   if (matchingProfiles.length > 0) {
+    CICSLogger.debug(`Located matching z/OS profile by base profile: ${matchingProfiles[0]?.name}`);
     return matchingProfiles[0];
   }
 
   // we couldn't find anything within a profile group
   // filter down to just profiles that have the same hostname as our cics connection
-  const cicsHostProfiles = zosProfiles.filter((profile) => cicsProfile.profile.host === profile.profile.host);
+  const cicsHostProfile = zosProfiles.filter((profile) => cicsProfile.profile.host === profile.profile.host)[0];
+  if (cicsHostProfile) {
+    CICSLogger.debug(`Located matching z/OS profile by hostname ${cicsHostProfile?.name}`);
+    return cicsHostProfile;
+  }
 
-  return cicsHostProfiles[0];
+  return undefined;
 }
 
 async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promise<string> {
@@ -77,6 +84,7 @@ async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promise<stri
   const chosenProfileLoaded = zosProfiles.filter((profile) => profile.name === chosenProfileName)[0];
   const chosenProfile = chosenProfileLoaded.profile;
   if (!(chosenProfile.user || chosenProfile.certFile || chosenProfile.tokenValue)) {
+    CICSLogger.debug(`Prompting for credentials for ${chosenProfileName}`);
     await ZoweVsCodeExtension.updateCredentials(
       {
         profile: chosenProfileLoaded,
@@ -97,10 +105,11 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
   let jobid: string = selectedRegion.region.jobid;
   if (!jobid) {
     try {
-      const { response } = await getResource(selectedRegion.parentSession.getSession(), {
-        name: CicsCmciConstants.CICS_CMCI_REGION,
-        cicsPlex: selectedRegion.parentPlex.plexName,
+      const { response } = await runGetResource({
+        session: selectedRegion.parentSession.getSession(),
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         regionName: selectedRegion.region.cicsname,
+        cicsPlex: selectedRegion.parentPlex.plexName,
       });
       if (response.records?.cicsregion) {
         jobid = toArray(response.records.cicsregion)[0].jobid;
@@ -125,13 +134,11 @@ export function doesConnectionSupportJes(profile: IProfileLoaded) {
 export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node) => {
     const allSelectedRegions = findSelectedNodes(treeview, CICSRegionTree, node);
-    if (!allSelectedRegions || allSelectedRegions.length !== 1) {
-      window.showErrorMessage("One CICS region must be selected");
-      return;
-    }
-
     const selectedRegion: CICSRegionTree = allSelectedRegions[0];
+    CICSLogger.debug(`Showing region logs for region ${selectedRegion?.getRegionName()}`);
+
     const jobid = await getJobIdForRegion(selectedRegion);
+    CICSLogger.debug(`Job ID for region: ${jobid}`);
     if (!jobid) {
       window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
       return;
@@ -144,12 +151,13 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
     let chosenProfileName: string;
 
     // find profiles that match by base profile or hostname, and have valid credentials
-    const matchingZosProfiles = await findRelatedZosProfiles(selectedRegion.parentSession.profile, zosProfiles);
-    if (matchingZosProfiles) {
-      chosenProfileName = matchingZosProfiles.name;
+    const matchingZosProfile = await findRelatedZosProfiles(selectedRegion.parentSession.profile, zosProfiles);
+    if (matchingZosProfile) {
+      chosenProfileName = matchingZosProfile.name;
     } else {
       // we couldn't find a matching profile - prompt the user with all zos profiles
       chosenProfileName = await promptUserForProfile(zosProfiles);
+      CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
       if (chosenProfileName === null) {
         window.showErrorMessage("Could not find any profiles that will access JES (for instance z/OSMF).");
         return;
@@ -159,6 +167,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       }
     }
 
+    CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${selectedRegion?.getRegionName()}: ${chosenProfileName} / ${jobid}`);
     commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
   });
 }
