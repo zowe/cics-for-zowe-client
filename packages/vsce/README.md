@@ -30,7 +30,6 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
     - [Purge Task](#purge-task)
     - [Inquire functionality](#inquire-functionality)
     - [View data sets under libraries](#view-data-sets-under-libraries)
-    - [View four CICS web resources under the web folder](#view-four-cics-web-resources-under-the-web-folder)
   - [Untrusted TLS certificates](#untrusted-tls-certificates)
   - [Usage tips](#usage-tips)
   - [Providing feedback or help contributing](#providing-feedback-or-help-contributing)
@@ -130,7 +129,9 @@ Expand a CICS profile to explore any CICSplexes and CICS regions that are availa
 
 ### Show and filter resources in a region
 
-Expand a CICS region to show folders for the resource types `Programs`, `Transactions`, `Local Files`, and `Tasks` with the set of resources nested within each. The number of resources in a resource tree appear in square brackets next to the tree name.
+The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP Services`, `URI Maps`, and `Web Services`.
+
+Expand a CICS region to show folders for each resource type with the set of resources nested within each. The number of resources in a resource tree appear in square brackets next to the tree name.
 
 The list of resources are pre-filtered to exclude many of the IBM-supplied items; these default filters are configured in the settings for the CICS extension.
 
@@ -232,14 +233,6 @@ Expand libraries of a region to view specific data sets belonging to a library. 
 
 <p align="center">
 <img src="/packages/vsce/docs/images/datasets.gif" alt="Zowe CICS Explorer View Datasets functionality" width="600px"/>
-</p>
-
-### View four CICS web resources under the web folder
-
-Expand the Web folder to view TCPIP Services, URI Maps, Pipelines, and Web Services. Each of these resources can be expanded and allows for right-click functionality on the specific resource to execute the `Show Attributes` command. Use the **Filter** icon to filter down specific resources by applying a filter.
-
-<p align="center">
-<img src="/packages/vsce/docs/images/webResources.gif" alt="Zowe CICS Explorer Web resources under the Web folder" width="600px"/>
 </p>
 
 ## Untrusted TLS certificates
