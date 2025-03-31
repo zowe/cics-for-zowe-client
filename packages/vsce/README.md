@@ -20,6 +20,7 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
     - [Hiding CICS profiles](#hiding-cics-profiles)
     - [Deleting CICS profiles](#deleting-cics-profiles)
   - [CICS resources](#cics-resources)
+    - [Show logs for a region](#show-logs-for-a-region)
     - [Show and filter resources in a region](#show-and-filter-resources-in-a-region)
     - [Show and filter resources in a plex](#show-and-filter-resources-in-a-plex)
     - [Show and filter resources in an 'All' resource tree](#show-and-filter-resources-in-an-all-resource-tree)
@@ -127,6 +128,18 @@ Right-click a CICS profile and select `Manage Profile` to show profile options. 
 ## CICS resources
 
 Expand a CICS profile to explore any CICSplexes and CICS regions that are available. CICS regions are nested within the CICSplex they are part of. CICS resources are available both within an individual CICS region and across the CICSplex. Regions that are not active - defined to a CICSplex but without a running job - are shown with a no entry sign.
+
+### Show logs for a region
+
+Right-click a CICS region and select the `Open Region Logs` option to reveal the CICS region's logs in the Zowe Explorer Jobs tree.
+
+You must have a connection configured in Zowe Explorer with access to the CICS region's logs.
+
+<p align="center">
+<img src="/packages/vsce/docs/images/show-region-logs-clip.gif" alt="Show region logs" width="480px"/>
+</p>
+
+**Tip:** A good way to associate CICS and z/OSMF profiles for the same host is to nest them under the same parent profile, using [Zowe CLI nested profiles](https://docs.zowe.org/stable/user-guide/cli-using-creating-profiles/).
 
 ### Show and filter resources in a region
 

@@ -10,10 +10,10 @@
  */
 
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfile } from "@zowe/imperative";
+import { IProfile, Session } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
-import * as resourceUtils from "../../src/utils/resourceUtils"
+import * as resourceUtils from "../../src/utils/resourceUtils";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
@@ -29,7 +29,7 @@ export const CICSProfileMock = {
   protocol: "http",
 };
 
-export const imperativeSession = new imperative.Session({
+export const imperativeSession: Session = new Session({
   user: "user",
   password: "pwd",
   hostname: "hostname",
