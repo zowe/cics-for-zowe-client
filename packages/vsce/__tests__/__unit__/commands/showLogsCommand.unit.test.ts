@@ -9,16 +9,25 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
+// these need to be mocked before the imports
+const getZoweExplorerApiMock = jest.fn();
+const jesApiMock = jest.fn();
+
+import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
+import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
-import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+
+const zoweExplorerAPI = { getJesApi: jesApiMock };
 
 const getProfilesCacheMock = jest.fn();
 getProfilesCacheMock.mockReturnValue({
   fetchBaseProfile: (name: string): imperative.IProfileLoaded => {
-    var splitString = name.split(".");
+    if (name === "exception") {
+      throw Error("Error");
+    }
+    const splitString = name.split(".");
     if (splitString.length > 1) {
       return createProfile(splitString[0], "base", "", "");
     }
@@ -27,6 +36,7 @@ getProfilesCacheMock.mockReturnValue({
 });
 
 jest.mock("@zowe/cics-for-zowe-sdk");
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     getProfilesCache: getProfilesCacheMock,
@@ -35,6 +45,7 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 
 // this import needs to come after the mocks are set up correctly
 import * as showLogsCommand from "../../../src/commands/showLogsCommand";
+jest.mock("@zowe/zowe-explorer-api", () => ({ ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock } }));
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {
@@ -48,6 +59,21 @@ function createProfile(name: string, type: string, host: string, user?: string) 
     },
   } as imperative.IProfileLoaded;
 }
+
+describe("Test suite for fetchBaseProfileWithoutError", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Profile with common base finds z/osmf", async () => {
+    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
+    expect(profile?.name).toEqual("host1");
+  });
+  it("Profile with no common base", async () => {
+    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("exception", "cics", "h1", "user"));
+    expect(profile).toBeUndefined();
+  });
+});
 
 describe("Test suite for findRelatedZosProfiles", () => {
   let h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
@@ -117,5 +143,30 @@ describe("Test suite for getJobIdForRegion", () => {
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
     expect(jobId).toEqual(null);
+  });
+});
+
+describe("Check whether profile supports JES", () => {
+  beforeEach(() => {
+    getZoweExplorerApiMock.mockReturnValue(zoweExplorerAPI);
+  });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  const supports = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+  const doesntSupport = createProfile("host1.myzosmf", "else", "h1", "user");
+
+  it("connection supports JES", async () => {
+    jesApiMock.mockReturnValue(true);
+    ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(supports);
+    expect(showLogsCommand.doesConnectionSupportJes(supports)).toEqual(true);
+    expect(jesApiMock).toHaveBeenCalledWith(supports);
+  });
+  it("connection doesn't support JES", async () => {
+    jesApiMock.mockImplementation(() => {
+      throw new Error("hello");
+    });
+    expect(showLogsCommand.doesConnectionSupportJes(doesntSupport)).toEqual(false);
+    expect(jesApiMock).toHaveBeenCalledWith(doesntSupport);
   });
 });
