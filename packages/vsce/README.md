@@ -1,9 +1,9 @@
 # IBM CICS for Zowe Explorer
 
 [![version](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)
-[![downloads](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)
 [![slack](https://img.shields.io/badge/chat-on%20Slack-blue)](https://openmainframeproject.slack.com/archives/CUVE37Z5F)
-[![open issues](https://img.shields.io/github/issues/zowe/vscode-extension-for-cics)](https://github.com/zowe/vscode-extension-for-cics/issues)
+[![open issues](https://img.shields.io/github/issues/zowe/cics-for-zowe-client)](https://github.com/zowe/cics-for-zowe-client/issues)
+[![codecov](https://codecov.io/gh/zowe/cics-for-zowe-client/branch/main/graph/badge.svg)](https://app.codecov.io/gh/zowe/cics-for-zowe-client/branch/main/)
 
 This CICS Extension for Zowe Explorer adds additional functionality to the popular VS Code extension, [Zowe Explorer](https://github.com/zowe/vscode-extension-for-zowe). This extension allows interactions with CICS regions and resources, and the ability to run commands against them.
 
@@ -31,7 +31,6 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
     - [Purge Task](#purge-task)
     - [Inquire functionality](#inquire-functionality)
     - [View data sets under libraries](#view-data-sets-under-libraries)
-    - [View four CICS web resources under the web folder](#view-four-cics-web-resources-under-the-web-folder)
   - [Untrusted TLS certificates](#untrusted-tls-certificates)
   - [Usage tips](#usage-tips)
   - [Providing feedback or help contributing](#providing-feedback-or-help-contributing)
@@ -131,7 +130,7 @@ Expand a CICS profile to explore any CICSplexes and CICS regions that are availa
 
 ### Show logs for a region
 
-Right-click a CICS region and select the `Open Region Logs` option to reveal the CICS region's logs in the Zowe Explorer Jobs tree.
+Right-click a CICS region and select the `Show Region Logs` option to reveal the CICS region's logs in the Zowe Explorer Jobs tree.
 
 You must have a connection configured in Zowe Explorer with access to the CICS region's logs.
 
@@ -143,7 +142,9 @@ You must have a connection configured in Zowe Explorer with access to the CICS r
 
 ### Show and filter resources in a region
 
-Expand a CICS region to show folders for the resource types `Programs`, `Transactions`, `Local Files`, and `Tasks` with the set of resources nested within each. The number of resources in a resource tree appear in square brackets next to the tree name.
+The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP Services`, `URI Maps`, and `Web Services`.
+
+Expand a CICS region to show folders containing each resource type. The number of resources in a resource tree appear in square brackets next to the tree name.
 
 The list of resources are pre-filtered to exclude many of the IBM-supplied items; these default filters are configured in the settings for the CICS extension.
 
@@ -245,14 +246,6 @@ Expand libraries of a region to view specific data sets belonging to a library. 
 
 <p align="center">
 <img src="/packages/vsce/docs/images/datasets.gif" alt="Zowe CICS Explorer View Datasets functionality" width="600px"/>
-</p>
-
-### View four CICS web resources under the web folder
-
-Expand the Web folder to view TCPIP Services, URI Maps, Pipelines, and Web Services. Each of these resources can be expanded and allows for right-click functionality on the specific resource to execute the `Show Attributes` command. Use the **Filter** icon to filter down specific resources by applying a filter.
-
-<p align="center">
-<img src="/packages/vsce/docs/images/webResources.gif" alt="Zowe CICS Explorer Web resources under the Web folder" width="600px"/>
 </p>
 
 ## Untrusted TLS certificates
