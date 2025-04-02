@@ -8,17 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-import { VscodeButton } from "@vscode-elements/react-elements";
 import { useEffect, useState } from "preact/hooks";
+import Button from "../../components/Button";
+// import { hot } from "ract-hot-loader/root";
 
 const vscodeApi = acquireVsCodeApi();
 
 export function App() {
-
   const [msg, setMsg] = useState<string>("not set");
 
   useEffect(() => {
-
     window.addEventListener("message", (event) => {
       setMsg(event.data.msg);
     });
@@ -28,12 +27,15 @@ export function App() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: "1rem", gap: "1rem" }}>
-
       <h1 style={{ fontSize: "2rem" }}>{msg}</h1>
-
-      <VscodeButton onClick={() => {
-        vscodeApi.postMessage({ command: "save" });
-      }}>Save</VscodeButton>
-    </div >
+      <Button name="Sample"></Button>
+      {/* <VscodeButton
+        onClick={() => {
+          vscodeApi.postMessage({ command: "save" });
+        }}
+      >
+        Save
+      </VscodeButton> */}
+    </div>
   );
 }

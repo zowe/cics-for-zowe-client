@@ -32,7 +32,7 @@ const getAvailableWebviews = (source: string): Webviews => {
   return readdirSync(source, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name)
-    .reduce((o, key) => Object.assign(o, { [key]: path.resolve("src", key, "index.html") }), {});
+    .reduce((o, key) => Object.assign(o, { [key]: path.resolve("src/views", key, "index.html") }), {});
 };
 
 export default defineConfig({
@@ -61,7 +61,7 @@ export default defineConfig({
     emptyOutDir: true,
     outDir: path.resolve(__dirname, "dist"),
     rollupOptions: {
-      input: getAvailableWebviews(path.resolve(__dirname, "src")) as any,
+      input: getAvailableWebviews(path.resolve(__dirname, "src", "views")) as any,
       output: {
         entryFileNames: `[name]/[name].js`,
         chunkFileNames: `[name]/[name].js`,
