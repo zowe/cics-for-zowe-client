@@ -9,7 +9,7 @@ module.exports = (env, { mode }) => {
     target: "node",
     mode: mode || "none",
     entry: {
-      extension: "./src/extension.ts",
+      extension: "../src/extension.ts",
     },
     output: {
       path: path.resolve(__dirname, "dist"),
