@@ -73,9 +73,13 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.sampleWebview",
-        "title": "Sample Webview",
-        "category": "IBM CICS for Zowe Explorer"
+        "command": "cics-extension-for-zowe.toggleResourcesWebView",
+        "title": "Toggle Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/filter-dark.svg",
+          "dark": "resources/imgs/filter-light.svg"
+        }
       },
       {
         "command": "cics-extension-for-zowe.filterPrograms",

@@ -8,8 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import preact from "@preact/preset-vite";
+import react from "@vitejs/plugin-react";
 import { readdirSync } from "fs";
 import * as path from "path";
 import { defineConfig } from "vite";
@@ -37,7 +36,7 @@ const getAvailableWebviews = (source: string): Webviews => {
 
 export default defineConfig({
   plugins: [
-    preact(),
+    react(),
     checker({
       typescript: true,
     }),
@@ -54,6 +53,14 @@ export default defineConfig({
       ],
     }),
   ],
+  server: {
+    //enabling HMR for devlopmnent on port 8000
+    hmr: {
+      protocol: "ws",
+      host: "localhost",
+      port: 8000,
+    },
+  },
   root: path.resolve(__dirname, "src"),
   build: {
     chunkSizeWarningLimit: 1000,
@@ -74,8 +81,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      react: "preact/compat",
-      "react-dom": "preact/compat",
+      react: "react",
+      "react-dom": "react-dom",
     },
   },
 });

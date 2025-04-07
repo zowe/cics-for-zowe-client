@@ -33,6 +33,7 @@ import { getSampleWebviewCommand } from "./sampleWebviewCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
+import { toggleResourcesWebViewCommand } from "./toggleResourcesWebViewCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -103,5 +104,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInquireProgramCommand(treeDataProv, treeview),
 
     getSampleWebviewCommand(context),
+    toggleResourcesWebViewCommand(context),
   ];
 };

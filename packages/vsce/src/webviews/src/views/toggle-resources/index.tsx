@@ -8,13 +8,11 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
+import ReactDOM from "react-dom/client";
+import { App } from "./App";
 
 // Get the root element where you want to mount your React app
-const root = ReactDOM.createRoot(document.getElementById('webviewRoot')!);
-
-// Render the React app
+const root = ReactDOM.createRoot(document.getElementById("webviewRoot")!);
 root.render(<App />);
 
 //For HMR in dev environment

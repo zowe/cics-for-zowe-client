@@ -12,13 +12,14 @@
 import { WebView } from "@zowe/zowe-explorer-api";
 import { ExtensionContext } from "vscode";
 
-export class SampleWebview extends WebView {
+export class ToggleResourcesWebView extends WebView {
   constructor(context: ExtensionContext) {
-    super("Sample Webview", "sample-app", context, {
+    super("Toggle Resources Web view", "toggle-resources", context, {
       onDidReceiveMessage: (message: { command: string }) => this.onDidReceiveMessage(message),
       retainContext: true,
     });
   }
+
   async onDidReceiveMessage(message: { command: string; metas?: any[] }) {
     if (message.command === "init") {
       await this.panel.webview.postMessage({

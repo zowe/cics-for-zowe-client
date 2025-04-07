@@ -1,0 +1,6 @@
+.main-panel {
+  border: 1px solid grey;
+  max-width: fit-content;
+  padding: 10px;
+  margin: 10px;
+}

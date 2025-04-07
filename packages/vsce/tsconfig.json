@@ -4,6 +4,6 @@
     "types": ["node", "jest"],
     "outDir": "./lib"
   },
-  "include": ["./src/**/*.ts", "src/webviews/src/components/ButtonCommon.jsx"],
+  "include": ["./src/**/*.ts", "src/webviews/src/components/ButtonCommon.jsx", "src/webviews/src/HotModuleReloadSetup.js"],
   "exclude": ["src/webviews/**"]
 }
