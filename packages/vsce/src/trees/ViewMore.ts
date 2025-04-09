@@ -10,12 +10,14 @@
  */
 
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { IResource } from "../doc";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 
 export class ViewMore extends TreeItem {
-  parent: any;
+  parent: CICSResourceContainerNode<IResource>;
 
-  constructor(parent: any, numberLeft: number) {
-    super(`View ${numberLeft} more ...`, TreeItemCollapsibleState.None);
+  constructor(parent: CICSResourceContainerNode<IResource>) {
+    super(`View more...`, TreeItemCollapsibleState.None);
     this.parent = parent;
     this.contextValue = "viewmore.";
     this.command = {
