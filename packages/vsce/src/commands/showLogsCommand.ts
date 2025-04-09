@@ -109,7 +109,7 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
         session: selectedRegion.parentSession.getSession(),
         resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         regionName: selectedRegion.region.cicsname,
-        cicsPlex: selectedRegion.parentPlex.plexName,
+        cicsPlex: selectedRegion.parentPlex?.plexName,
       });
       if (response.records?.cicsregion) {
         jobid = toArray(response.records.cicsregion)[0].jobid;
@@ -132,10 +132,13 @@ export function doesConnectionSupportJes(profile: IProfileLoaded) {
 }
 
 export function getShowRegionLogs(treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node) => {
-    const allSelectedRegions = findSelectedNodes(treeview, CICSRegionTree, node);
-    const selectedRegion: CICSRegionTree = allSelectedRegions[0];
-    CICSLogger.debug(`Showing region logs for region ${selectedRegion?.getRegionName()}`);
+  return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node: CICSRegionTree) => {
+    const selectedRegion = node ?? treeview.selection[0];
+    if (!selectedRegion) {
+      window.showErrorMessage(`No region selected`);
+      return;
+    }
+    CICSLogger.debug(`Showing region logs for region ${selectedRegion.getRegionName()}`);
 
     const jobid = await getJobIdForRegion(selectedRegion);
     CICSLogger.debug(`Job ID for region: ${jobid}`);
