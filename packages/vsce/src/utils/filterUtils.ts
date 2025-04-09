@@ -108,3 +108,12 @@ export function toEscapedCriteriaString(activeFilter: string, attribute: string)
   criteria += ")";
   return criteria;
 }
+
+export async function getDefaultFilter(params: { ID: string; DEFAULT: string }): Promise<string> {
+  let defaultCriteria: string = await workspace.getConfiguration().get(params.ID);
+  if (!defaultCriteria || `${defaultCriteria}`.length === 0) {
+    await workspace.getConfiguration().update(params.ID, params.DEFAULT);
+    defaultCriteria = params.DEFAULT;
+  }
+  return defaultCriteria;
+}

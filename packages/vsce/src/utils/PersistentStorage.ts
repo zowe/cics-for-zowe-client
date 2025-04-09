@@ -25,6 +25,7 @@ export class PersistentStorage {
   private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
   private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
+  private static readonly visibleResources: string = "visibleResources";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -37,13 +38,14 @@ export class PersistentStorage {
   private mURIMapsSearchHistory: string[] = [];
   private mPipelineSearchHistory: string[] = [];
   private mWebServiceSearchHistory: string[] = [];
+  private mVisibleResources: string[] = ["CICSProgram", "CICSLocalTransaction", "CICSLocalFile"];
 
   constructor(schema: string) {
     this.schema = schema;
     this.init();
   }
 
-  private async init(): Promise<void> {
+  public async init(): Promise<void> {
     let programSearchHistoryLines: string[] | undefined;
     let librarySearchHistoryLines: string[] | undefined;
     let datasetSearchHistoryLines: string[] | undefined;
@@ -159,7 +161,9 @@ export class PersistentStorage {
   public getWebServiceSearchHistory(): string[] {
     return this.mWebServiceSearchHistory;
   }
-
+  public getVisibleResources(): string[] {
+    return this.mVisibleResources;
+  }
   public async resetProgramSearchHistory(): Promise<void> {
     this.mProgramSearchHistory = [];
     await this.updateProgramSearchHistory();
@@ -453,6 +457,24 @@ export class PersistentStorage {
       });
 
       await this.updateLoadedCICSProfile();
+    }
+  }
+
+  public async setVisibleResources(visibles: string[]): Promise<void> {
+    this.mVisibleResources = visibles;
+    await this.updateVisibleResources();
+  }
+
+  public async resetVisibleResources(): Promise<void> {
+    this.mVisibleResources = ["CICSProgram", "CICSLocalTransaction", "CICSLocalFile"];
+    await this.updateVisibleResources();
+  }
+
+  private async updateVisibleResources(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.visibleResources] = this.mVisibleResources;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
 }

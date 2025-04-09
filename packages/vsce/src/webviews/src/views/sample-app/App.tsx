@@ -30,7 +30,7 @@ export function App() {
       <h1 style={{ fontSize: "2rem" }}>{msg}</h1>
       <Button name="Sample"></Button>
       <h2>Hello from HMR</h2>
-      <CheckBox label="resources"></CheckBox>
+      <CheckBox label="resources" checked={true}></CheckBox>
     </div>
   );
 }

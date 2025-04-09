@@ -1,6 +1,25 @@
 .main-panel {
-  border: 1px solid grey;
+  /* border: 1px solid grey; */
   max-width: fit-content;
   padding: 10px;
   margin: 10px;
 }
+
+.padd {
+  padding: 2px;
+}
+.set-margin {
+  margin-bottom: -15px;
+}
+.bg-color {
+  background-color: #252526;
+  margin-bottom:auto;
+}
+.left-padd {
+  padding-left: 2%;
+}
+.padd-sides {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+

@@ -1,12 +1,13 @@
 import { VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react";
 
 interface CheckBoxProperty {
-  label: String;
+  label: string;
+  checked: boolean;
 }
-export default function CheckBox({ label }: CheckBoxProperty) {
+export default function CheckBox({ label, checked }: CheckBoxProperty) {
   return (
-    <>
-      <VSCodeCheckbox autofocus>{label}</VSCodeCheckbox>
-    </>
+    <VSCodeCheckbox className="padd" autofocus checked={checked}>
+      {label}
+    </VSCodeCheckbox>
   );
 }

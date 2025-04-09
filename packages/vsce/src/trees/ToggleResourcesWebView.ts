@@ -11,17 +11,30 @@
 
 import { WebView } from "@zowe/zowe-explorer-api";
 import { ExtensionContext } from "vscode";
+import { PersistentStorage } from "../utils/PersistentStorage";
+import { getMetas } from "../doc";
 
 export class ToggleResourcesWebView extends WebView {
+  persistentStorage: PersistentStorage;
+
   constructor(context: ExtensionContext) {
     super("Toggle Resources Web view", "toggle-resources", context, {
-      onDidReceiveMessage: (message: { command: string }) => this.onDidReceiveMessage(message),
+      onDidReceiveMessage: (message: { command: string; metas?: any[] }) => this.onDidReceiveMessage(message),
       retainContext: true,
     });
+    this.persistentStorage = new PersistentStorage("zowe.cics.persistent");
   }
 
-  async onDidReceiveMessage(message: { command: string; metas?: any[] }) {
-    if (message.command === "init") {
+  async onDidReceiveMessage(message: { command: string; resources?: any[] }) {
+    if (message.command === "metas") {
+      await this.persistentStorage.init();
+      const visibles = this.persistentStorage.getVisibleResources();
+      await this.panel.webview.postMessage({
+        metas: getMetas().map((meta) => {
+          return { ...meta, visible: visibles.includes(meta.resourceName) };
+        }),
+      });
+    } else if (message.command === "init") {
       await this.panel.webview.postMessage({
         msg: "Hello from webview class!",
       });
