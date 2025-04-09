@@ -16,7 +16,6 @@ const jesApiMock = jest.fn();
 import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 const zoweExplorerAPI = { getJesApi: jesApiMock };
@@ -45,7 +44,13 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 
 // this import needs to come after the mocks are set up correctly
 import * as showLogsCommand from "../../../src/commands/showLogsCommand";
-jest.mock("@zowe/zowe-explorer-api", () => ({ ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock } }));
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
+import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
+
+jest.mock("@zowe/zowe-explorer-api", () => ({
+  ...jest.requireActual("@zowe/zowe-explorer-api"),
+  ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
+}));
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {
@@ -59,6 +64,9 @@ function createProfile(name: string, type: string, host: string, user?: string) 
     },
   } as imperative.IProfileLoaded;
 }
+
+const sessionTree = new CICSSessionTree({ profile: globalMocks.CICSProfileMock });
+const regionTree = new CICSRegionTree("IYK2ZXXX", { jobid: "TheOtherJobId" }, sessionTree, undefined, sessionTree);
 
 describe("Test suite for fetchBaseProfileWithoutError", () => {
   afterEach(() => {
@@ -111,7 +119,7 @@ describe("Test suite for findRelatedZosProfiles", () => {
 
 describe("Test suite for getJobIdForRegion", () => {
   it("Job ID is available on region tree", async () => {
-    let region: CICSRegionTree = globalMocks.cicsRegionTreeMock as CICSRegionTree;
+    let region: CICSRegionTree = regionTree;
     region.region = { jobid: "TheJobId" };
 
     const jobId = await showLogsCommand.getJobIdForRegion(region);
@@ -130,7 +138,7 @@ describe("Test suite for getJobIdForRegion", () => {
         resolve(responseObject);
       });
     });
-    let region: CICSRegionTree = globalMocks.cicsRegionTreeMock as CICSRegionTree;
+    let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
     expect(jobId).toEqual("TheOtherJobId");
@@ -139,7 +147,7 @@ describe("Test suite for getJobIdForRegion", () => {
     (getResource as jest.Mock<Promise<ICMCIApiResponse>>).mockImplementation(() => {
       throw new Error("getResource failed. Perhaps your network connection has gone down");
     });
-    let region: CICSRegionTree = globalMocks.cicsRegionTreeMock as CICSRegionTree;
+    let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
     expect(jobId).toEqual(null);
