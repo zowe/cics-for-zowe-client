@@ -10,24 +10,18 @@
  */
 
 const getIconByStatusMock = jest.fn();
+const getIconFilePathFromNameMock = jest.fn();
 
-import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
 
-jest.mock("../../../src/trees/CICSProgramTree");
-jest.mock("../../../src/trees/CICSTransactionTree");
-jest.mock("../../../src/trees/CICSLocalFileTree");
-jest.mock("../../../src/trees/CICSTaskTree");
-jest.mock("../../../src/trees/CICSLibraryTree");
-jest.mock("../../../src/trees/CICSTCPIPServiceTree");
-jest.mock("../../../src/trees/CICSPipelineTree");
-jest.mock("../../../src/trees/CICSURIMapTree");
-jest.mock("../../../src/trees/CICSWebServiceTree");
-
+jest.mock("../../../src/trees/CICSResourceContainerNode");
 jest.mock("../../../src/utils/iconUtils", () => {
-  return { getIconByStatus: getIconByStatusMock };
+  return {
+    getIconByStatus: getIconByStatusMock,
+    getIconFilePathFromName: getIconFilePathFromNameMock,
+  };
 });
 
 const region = {
@@ -49,13 +43,8 @@ describe("Test suite for CICSRegionTree", () => {
 
   beforeEach(() => {
     getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
-    sut = new CICSRegionTree(
-      "regionName",
-      region,
-      globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
-      globalMocks.CICSPlexTree as any as CICSPlexTree,
-      "Parent"
-    );
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock });
+    sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
     expect(sut.isActive).toBeTruthy();
@@ -66,26 +55,16 @@ describe("Test suite for CICSRegionTree", () => {
   });
 
   it("Should load region Tree when cicsstate is DISABLED", () => {
-    sut = new CICSRegionTree(
-      "regionName",
-      region_disable,
-      globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
-      globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region
-    );
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock });
+    sut = new CICSRegionTree("regionName", region_disable, parent, undefined, parent);
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
     expect(sut.isActive).toBeFalsy();
   });
 
   it("Should load region Tree when cicsstate is ACTIVE", () => {
-    sut = new CICSRegionTree(
-      "regionName",
-      region_undefined,
-      globalMocks.CICSSessionTreeMock as any as CICSSessionTree,
-      globalMocks.CICSPlexTree as any as CICSPlexTree,
-      region
-    );
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock });
+    sut = new CICSRegionTree("regionName", region_undefined, parent, undefined, parent);
 
     expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
     expect(sut.isActive).toBeFalsy();
@@ -95,13 +74,16 @@ describe("Test suite for CICSRegionTree", () => {
     expect(sut.getRegionName()).toBeTruthy();
   });
 
-  it("Should return return all cics tree in children array", () => {
-    const result = sut.getChildren();
+  it("Should return return all cics tree in children array", async () => {
+    const result = await sut.getChildren();
     expect(result?.length).toBeGreaterThanOrEqual(6);
   });
 
   it("Should return parent", () => {
-    expect(sut.getParent()).toBe("Parent");
+    expect(sut.getParent()).toBeDefined();
+    expect(sut.getParent().profile).toEqual({
+      profile: globalMocks.CICSProfileMock,
+    });
   });
 
   it("Should return isActive", () => {
