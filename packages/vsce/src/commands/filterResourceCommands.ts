@@ -14,10 +14,31 @@ import { ICICSTreeNode, IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
+import { PersistentStorage } from "../utils/PersistentStorage";
+
+// TODO: bake this into meta files so we don't specify resources here
+const persistentStorage = new PersistentStorage("zowe.cics.persistent");
+const mapper: { [key: string]: () => string[]; } = {
+  CICSProgram: () => persistentStorage.getProgramSearchHistory(),
+  CICSLocalTransaction: () => persistentStorage.getTransactionSearchHistory(),
+  CICSLocalFile: () => persistentStorage.getLocalFileSearchHistory(),
+  CICSTask: () => persistentStorage.getTransactionSearchHistory(),
+  CICSLibrary: () => persistentStorage.getLibrarySearchHistory(),
+  CICSLibraryDatasetName: () => persistentStorage.getDatasetSearchHistory(),
+  CICSPipeline: () => persistentStorage.getPipelineSearchHistory(),
+  CICSTCPIPService: () => persistentStorage.getTCPIPSSearchHistory(),
+  CICSURIMap: () => persistentStorage.getURIMapSearchHistory(),
+  CICSWebService: () => persistentStorage.getWebServiceSearchHistory(),
+};
 
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {
   return commands.registerCommand("cics-extension-for-zowe.filterResources", async (node: CICSResourceContainerNode<IResource>) => {
-    const pattern = await getPatternFromFilter(node.getChildResource().meta.humanReadableName, []);
+
+    const pattern = await getPatternFromFilter(
+      node.getChildResource().meta.humanReadableName,
+      mapper[node.getChildResource().meta.resourceName]()
+    );
+
     if (!pattern) {
       return;
     }
