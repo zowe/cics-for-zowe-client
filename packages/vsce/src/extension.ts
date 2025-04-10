@@ -176,7 +176,7 @@ export async function activate(context: ExtensionContext) {
     treeDataProv._onDidChangeTreeData.fire(undefined);
   });
 
-  context.subscriptions.concat(getCommands(treeDataProv, treeview));
+  context.subscriptions.concat(getCommands(treeDataProv, treeview, context));
 }
 
 export async function deactivate(): Promise<void> {
