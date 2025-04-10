@@ -11,7 +11,6 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
-import { CICSLogger } from "../utils/CICSLogger";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { ProfileManagement } from "../utils/profileManagement";
@@ -19,6 +18,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];

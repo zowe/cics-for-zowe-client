@@ -18,31 +18,61 @@ import { PersistentStorage } from "../utils/PersistentStorage";
 
 // TODO: bake this into meta files so we don't specify resources here
 const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-const mapper: { [key: string]: () => string[]; } = {
-  CICSProgram: () => persistentStorage.getProgramSearchHistory(),
-  CICSLocalTransaction: () => persistentStorage.getTransactionSearchHistory(),
-  CICSLocalFile: () => persistentStorage.getLocalFileSearchHistory(),
-  CICSTask: () => persistentStorage.getTransactionSearchHistory(),
-  CICSLibrary: () => persistentStorage.getLibrarySearchHistory(),
-  CICSLibraryDatasetName: () => persistentStorage.getDatasetSearchHistory(),
-  CICSPipeline: () => persistentStorage.getPipelineSearchHistory(),
-  CICSTCPIPService: () => persistentStorage.getTCPIPSSearchHistory(),
-  CICSURIMap: () => persistentStorage.getURIMapSearchHistory(),
-  CICSWebService: () => persistentStorage.getWebServiceSearchHistory(),
+const mapper: { [key: string]: { get: () => string[]; update: (pattern: string) => Promise<void> } } = {
+  CICSProgram: {
+    get: () => persistentStorage.getProgramSearchHistory(),
+    update: (pattern: string) => persistentStorage.addProgramSearchHistory(pattern),
+  },
+  CICSLocalTransaction: {
+    get: () => persistentStorage.getTransactionSearchHistory(),
+    update: (pattern: string) => persistentStorage.addTransactionSearchHistory(pattern),
+  },
+  CICSLocalFile: {
+    get: () => persistentStorage.getLocalFileSearchHistory(),
+    update: (pattern: string) => persistentStorage.addLocalFileSearchHistory(pattern),
+  },
+  CICSTask: {
+    get: () => persistentStorage.getTransactionSearchHistory(),
+    update: (pattern: string) => persistentStorage.addTransactionSearchHistory(pattern),
+  },
+  CICSLibrary: {
+    get: () => persistentStorage.getLibrarySearchHistory(),
+    update: (pattern: string) => persistentStorage.addLibrarySearchHistory(pattern),
+  },
+  CICSLibraryDatasetName: {
+    get: () => persistentStorage.getDatasetSearchHistory(),
+    update: (pattern: string) => persistentStorage.addDatasetSearchHistory(pattern),
+  },
+  CICSPipeline: {
+    get: () => persistentStorage.getPipelineSearchHistory(),
+    update: (pattern: string) => persistentStorage.addPipelineSearchHistory(pattern),
+  },
+  CICSTCPIPService: {
+    get: () => persistentStorage.getTCPIPSSearchHistory(),
+    update: (pattern: string) => persistentStorage.addTCPIPSSearchHistory(pattern),
+  },
+  CICSURIMap: {
+    get: () => persistentStorage.getURIMapSearchHistory(),
+    update: (pattern: string) => persistentStorage.addURIMapsSearchHistory(pattern),
+  },
+  CICSWebService: {
+    get: () => persistentStorage.getWebServiceSearchHistory(),
+    update: (pattern: string) => persistentStorage.addWebServiceSearchHistory(pattern),
+  },
 };
 
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {
   return commands.registerCommand("cics-extension-for-zowe.filterResources", async (node: CICSResourceContainerNode<IResource>) => {
-
     const pattern = await getPatternFromFilter(
       node.getChildResource().meta.humanReadableName,
-      mapper[node.getChildResource().meta.resourceName]()
+      mapper[node.getChildResource().meta.resourceName].get()
     );
 
     if (!pattern) {
       return;
     }
 
+    await mapper[node.getChildResource().meta.resourceName].update(pattern);
     node.setFilter([pattern]);
     node.description = pattern;
     tree._onDidChangeTreeData.fire(node);
@@ -51,8 +81,8 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
 }
 
 export function getClearFilterCommand(tree: CICSTree) {
-  return commands.registerCommand("cics-extension-for-zowe.clearFilter", (node: CICSResourceContainerNode<IResource>) => {
-    node.clearFilter();
+  return commands.registerCommand("cics-extension-for-zowe.clearFilter", async (node: CICSResourceContainerNode<IResource>) => {
+    await node.clearFilter();
     node.description = "";
     tree._onDidChangeTreeData.fire(node);
   });

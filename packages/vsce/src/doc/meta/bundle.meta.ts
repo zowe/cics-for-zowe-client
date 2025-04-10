@@ -23,8 +23,8 @@ export const BundleMeta: IResourceMeta<IBundle> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "name=*";
+  getDefaultCriteria: function () {
+    return Promise.resolve("name=*");
   },
 
   getLabel: function (bundle: Resource<IBundle>): string {

@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { IURIMap } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 
@@ -22,8 +23,8 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "name=*";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_URIMAP);
   },
 
   getLabel: function (resource: Resource<IURIMap>): string {

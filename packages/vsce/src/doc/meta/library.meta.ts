@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { ILibrary } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 import { LibraryDatasetMeta } from "./libraryDataset.meta";
@@ -23,8 +24,8 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "name=*";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE);
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {

@@ -31,8 +31,8 @@ describe("Bundle Meta", () => {
     const criteria = BundleMeta.buildCriteria(["A", "B"]);
     expect(criteria).toEqual(`name=A OR name=B`);
   });
-  it("should get default criteria", () => {
-    const criteria = BundleMeta.getDefaultCriteria();
+  it("should get default criteria", async () => {
+    const criteria = await BundleMeta.getDefaultCriteria();
     expect(criteria).toEqual(`name=*`);
   });
 

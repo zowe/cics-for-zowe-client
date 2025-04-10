@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { ILocalFile } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 
@@ -22,8 +23,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
     return criteria.map((n) => `file=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "file=*";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_FILE);
   },
 
   getLabel: function (localFile: Resource<ILocalFile>): string {

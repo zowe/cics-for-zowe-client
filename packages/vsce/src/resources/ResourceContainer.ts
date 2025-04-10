@@ -15,6 +15,7 @@ import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSSession } from "./CICSSession";
 import { Resource } from "./Resource";
+import { PersistentStorage } from "../utils/PersistentStorage";
 
 export class ResourceContainer<T extends IResource> {
   resources: Resource<T>[] | undefined;
@@ -63,8 +64,8 @@ export class ResourceContainer<T extends IResource> {
     this.startIndex = 1;
   }
 
-  resetCriteria() {
-    this.criteria = this.resourceMeta.getDefaultCriteria(this.resource?.attributes);
+  async resetCriteria() {
+    this.criteria = await this.resourceMeta.getDefaultCriteria(this.resource?.attributes);
     this.filterApplied = false;
   }
 
@@ -76,8 +77,8 @@ export class ResourceContainer<T extends IResource> {
     this.numberToFetch = num;
   }
 
-  resetNumberToFetch() {
-    this.numberToFetch = 10;
+  async resetNumberToFetch() {
+    this.numberToFetch = await PersistentStorage.getNumberOfResourcesToFetch();
   }
 
   async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {

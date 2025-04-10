@@ -17,7 +17,7 @@ import { ProgramMeta } from "./program.meta";
 
 const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
-  return `(librarydsn='${parentResource.dsname}')`;
+  return Promise.resolve(`(librarydsn='${parentResource.dsname}')`);
 };
 
 export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
@@ -28,8 +28,8 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
     return `LIBRARY=${parentResource.name} AND (${criteria.map((n) => `DSNAME=${n}`).join(" OR ")})`;
   },
 
-  getDefaultCriteria: function (parentResource: ILibrary): string {
-    return `LIBRARY=${parentResource.name}`;
+  getDefaultCriteria: function (parentResource: ILibrary) {
+    return Promise.resolve(`LIBRARY=${parentResource.name}`);
   },
 
   getLabel: function (resource: Resource<ILibraryDataset>): string {

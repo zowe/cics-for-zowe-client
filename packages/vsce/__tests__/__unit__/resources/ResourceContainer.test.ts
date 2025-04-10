@@ -73,21 +73,21 @@ describe("Resource Container", () => {
     expect(container.getFetchedAll()).toBeFalsy();
   });
 
-  it("should set criteria", () => {
+  it("should set criteria", async () => {
     // @ts-ignore - private property
-    expect(container.criteria).toEqual(ProgramMeta.getDefaultCriteria());
+    expect(container.criteria).toEqual(await ProgramMeta.getDefaultCriteria());
     container.setCriteria(["a", "b"]);
     // @ts-ignore - private property
     expect(container.criteria).toEqual("PROGRAM=a OR PROGRAM=b");
   });
 
-  it("should set numtoFetch", () => {
+  it("should set numtoFetch", async () => {
     // @ts-ignore - private property
     expect(container.numberToFetch).toEqual(10);
     container.setNumberToFetch(12);
     // @ts-ignore - private property
     expect(container.numberToFetch).toEqual(12);
-    container.resetNumberToFetch();
+    await container.resetNumberToFetch();
     // @ts-ignore - private property
     expect(container.numberToFetch).toEqual(10);
   });
@@ -106,7 +106,7 @@ describe("Resource Container", () => {
       cicsPlex: undefined,
       regionName: "MYREG",
       params: {
-        criteria: ProgramMeta.getDefaultCriteria(),
+        criteria: await ProgramMeta.getDefaultCriteria(),
         queryParams: {
           summonly: true,
           nodiscard: true,
@@ -178,7 +178,7 @@ describe("Resource Container", () => {
       cicsPlex: undefined,
       regionName: "MYREG",
       params: {
-        criteria: ProgramMeta.getDefaultCriteria(),
+        criteria: await ProgramMeta.getDefaultCriteria(),
         queryParams: {
           summonly: true,
           nodiscard: true,

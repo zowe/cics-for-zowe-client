@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { ITask } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 
@@ -22,8 +23,8 @@ export const TaskMeta: IResourceMeta<ITask> = {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "TRANID=*";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_TASK);
   },
 
   getLabel: function (resource: Resource<ITask>): string {

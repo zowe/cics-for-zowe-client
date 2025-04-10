@@ -141,7 +141,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     await this.loadPageOfResources();
     this.refreshIcon(true);
     this.viewMore = false;
-    this.childResource.resources.resetNumberToFetch();
+    await this.childResource.resources.resetNumberToFetch();
     return this.children;
   }
 
@@ -162,8 +162,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     this.contextValue += `.FILTERED`;
   }
 
-  clearFilter() {
-    this.childResource.resources.resetCriteria();
+  async clearFilter() {
+    await this.childResource.resources.resetCriteria();
     this.contextValue = this.contextValue.replace(".FILTERED", "");
   }
 }

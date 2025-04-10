@@ -9,6 +9,18 @@
  *
  */
 
+const defaultFilterMock = jest.fn();
+defaultFilterMock.mockReturnValue("DEFAULT FITLER");
+const defaultResNumberMock = jest.fn();
+defaultResNumberMock.mockReturnValue(10);
+
+jest.mock("../../../src/utils/PersistentStorage", () => ({
+  PersistentStorage: {
+    getDefaultFilter: defaultFilterMock,
+    getNumberOfResourcesToFetch: defaultResNumberMock,
+  },
+}));
+
 const getIconFilePathFromNameMock = jest.fn();
 const cicsCombinedTreeMock = jest.fn();
 

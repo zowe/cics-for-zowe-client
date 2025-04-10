@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { ITransaction } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 
@@ -22,8 +23,8 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "NOT (program=DFH* OR program=EYU*)";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION);
   },
 
   getLabel: function (transaction: Resource<ITransaction>): string {

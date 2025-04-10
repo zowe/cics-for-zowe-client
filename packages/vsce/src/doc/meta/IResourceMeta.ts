@@ -17,7 +17,7 @@ export interface IResourceMeta<T extends IResource> {
   humanReadableName: string;
 
   buildCriteria(criteria: string[], parentResource?: IResource): string;
-  getDefaultCriteria(parentResource?: IResource): string;
+  getDefaultCriteria(parentResource?: IResource): Promise<string>;
   getLabel(resource: Resource<T>): string;
   getContext(resource: Resource<T>): string;
   getIconName(resource: Resource<T>): string;
