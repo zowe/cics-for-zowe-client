@@ -139,6 +139,24 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.enableJVMServer",
+        "title": "Enable JVM Server",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.disableJVMServer",
+        "title": "Disable JVM Server",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/phasein-dark.svg",
+          "dark": "resources/imgs/phasein-light.svg"
+        }
+      },
+      {
         "command": "cics-extension-for-zowe.enableTransaction",
         "title": "Enable Transaction",
         "category": "IBM CICS for Zowe Explorer"
@@ -226,6 +244,26 @@
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.phaseInCommand",
           "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMServer",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMServer",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "group": "2.CICSResourceNode.action"
         },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",

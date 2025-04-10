@@ -59,6 +59,18 @@ const mapper: { [key: string]: { get: () => string[]; update: (pattern: string) 
     get: () => persistentStorage.getWebServiceSearchHistory(),
     update: (pattern: string) => persistentStorage.addWebServiceSearchHistory(pattern),
   },
+  CICSBundle: {
+    get: () => persistentStorage.getBundleSearchHistory(),
+    update: (pattern: string) => persistentStorage.addBundleSearchHistory(pattern),
+  },
+  CICSBundlePart: {
+    get: () => persistentStorage.getBundlePartSearchHistory(),
+    update: (pattern: string) => persistentStorage.addBundlePartSearchHistory(pattern),
+  },
+  CICSJVMServer: {
+    get: () => persistentStorage.getJVMServerSearchHistory(),
+    update: (pattern: string) => persistentStorage.addJVMServerSearchHistory(pattern),
+  },
 };
 
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {

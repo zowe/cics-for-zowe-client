@@ -42,9 +42,11 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
     getNewCopyCommand(treeDataProv, treeview),
     getPhaseInCommand(treeDataProv, treeview),
 
+    enableCommands.getEnableJVMServerCommand(treeDataProv, treeview),
     enableCommands.getEnableProgramCommand(treeDataProv, treeview),
     enableCommands.getEnableTransactionCommand(treeDataProv, treeview),
     enableCommands.getEnableLocalFileCommand(treeDataProv, treeview),
+    disableCommands.getDisableJVMServerCommand(treeDataProv, treeview),
     disableCommands.getDisableProgramCommand(treeDataProv, treeview),
     disableCommands.getDisableTransactionCommand(treeDataProv, treeview),
     disableCommands.getDisableLocalFileCommand(treeDataProv, treeview),

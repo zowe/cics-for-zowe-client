@@ -9,7 +9,10 @@
  *
  */
 
-export * from "./disableJVMServerCommand";
-export * from "./disableLocalFileCommand";
-export * from "./disableProgramCommand";
-export * from "./disableTransactionCommand";
+import { IResource } from "./IResource";
+
+export interface IJVMServer extends IResource {
+  name: string;
+  enablestatus: string;
+  profile: string; // USS Path to jvm profile
+}
