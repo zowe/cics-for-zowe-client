@@ -894,7 +894,7 @@
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "5.0.9",
     "@zowe/zowe-explorer-api": "^2.18.0",
-    "axios": "^1.7.9",
+    "axios": "^1.8.3",
     "https": "~1.0.0",
     "syncpack": "^13.0.2",
     "tsup": "^8.3.6",
