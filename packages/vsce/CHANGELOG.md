@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `2.3.10`
 
 - Updated axios to resolve technical currency. [#263](https://github.com/zowe/cics-for-zowe-client/pull/263)
 
