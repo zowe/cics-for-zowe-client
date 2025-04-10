@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
+import { PersistentStorage } from "../../utils/PersistentStorage";
 import { ITCPIP } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 
@@ -22,8 +23,8 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function (): string {
-    return "name=*";
+  getDefaultCriteria: function () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE);
   },
 
   getLabel: function (resource: Resource<ITCPIP>): string {

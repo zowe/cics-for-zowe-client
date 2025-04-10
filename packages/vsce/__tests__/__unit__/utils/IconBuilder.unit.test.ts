@@ -9,6 +9,7 @@
  *
  */
 
+import { join } from "path";
 import { IProgram, ProgramMeta } from "../../../src/doc";
 import { CICSSession, Resource } from "../../../src/resources";
 import IconBuilder from "../../../src/utils/IconBuilder";
@@ -17,8 +18,8 @@ import { CICSProfileMock } from "../../__utils__/globalMocks";
 describe("IconBuilder tests", () => {
   it("should get session icon", () => {
     const icon = IconBuilder.session(new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" }));
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/profile-unverified-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/profile-unverified-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-unverified-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-unverified-light.svg"));
   });
 
   it("should get verified session icon", () => {
@@ -26,8 +27,8 @@ describe("IconBuilder tests", () => {
     session.setVerified(true);
 
     const icon = IconBuilder.session(session);
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/profile-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/profile-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-light.svg"));
   });
 
   it("should get NOT verified session icon", () => {
@@ -35,24 +36,24 @@ describe("IconBuilder tests", () => {
     session.setVerified(false);
 
     const icon = IconBuilder.session(session);
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/profile-disconnected-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/profile-disconnected-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-disconnected-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-disconnected-light.svg"));
   });
 
   it("should get open folder icon", () => {
     const icon = IconBuilder.folder(true);
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/folder-open-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/folder-open-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-open-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-open-light.svg"));
   });
   it("should get closed folder icon", () => {
     const icon = IconBuilder.folder(false);
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/folder-closed-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/folder-closed-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-closed-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-closed-light.svg"));
   });
   it("should get open folder icon using default", () => {
     const icon = IconBuilder.folder();
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/folder-closed-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/folder-closed-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-closed-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "folder-closed-light.svg"));
   });
 
   it("should get resource icon", () => {
@@ -60,15 +61,15 @@ describe("IconBuilder tests", () => {
       meta: ProgramMeta,
       resource: new Resource<IProgram>({ eyu_cicsname: "REG", newcopycnt: "0", program: "MYPROG", status: "ENABLED" }),
     });
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/program-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/program-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-light.svg"));
   });
   it("should get resource icon when disabled", () => {
     const icon = IconBuilder.resource<IProgram>({
       meta: ProgramMeta,
       resource: new Resource<IProgram>({ eyu_cicsname: "REG", newcopycnt: "0", program: "MYPROG", status: "DISABLED" }),
     });
-    expect(icon.light).toContain("packages/vsce/src/resources/imgs/program-disabled-dark.svg");
-    expect(icon.dark).toContain("packages/vsce/src/resources/imgs/program-disabled-light.svg");
+    expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-dark.svg"));
+    expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-light.svg"));
   });
 });

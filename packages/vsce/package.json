@@ -354,96 +354,64 @@
           "description": "Zowe CICS Extension History",
           "scope": "window"
         },
-        "zowe.cics.program.filter": {
+        "zowe.cics.CICSProgram.filter": {
           "type": "string",
           "default": "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
           "description": "Default filter criteria for Programs",
           "scope": "window"
         },
-        "zowe.cics.transaction.filter": {
+        "zowe.cics.CICSLocalTransaction.filter": {
           "type": "string",
           "default": "NOT (program=DFH* OR program=EYU*)",
           "description": "Default filter criteria for Transactions",
           "scope": "window"
         },
-        "zowe.cics.localFile.filter": {
+        "zowe.cics.CICSLocalFile.filter": {
           "type": "string",
           "default": "file=*",
           "description": "Default filter criteria for Local Files",
           "scope": "window"
         },
-        "zowe.cics.tasks.filter": {
+        "zowe.cics.CICSTask.filter": {
           "type": "string",
           "default": "(TRANID=*)",
           "description": "Default filter criteria for Tasks",
           "scope": "window"
         },
-        "zowe.cics.library.filter": {
+        "zowe.cics.CICSLibrary.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for Library",
           "scope": "window"
         },
-        "zowe.cics.allPrograms.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Programs'",
-          "scope": "window",
-          "minimum": 1
+        "zowe.cics.CICSPipeline.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Pipeline",
+          "scope": "window"
         },
-        "zowe.cics.allTransactions.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Transactions'",
-          "scope": "window",
-          "minimum": 1
+        "zowe.cics.CICSTCPIPService.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for TCP/IP Service",
+          "scope": "window"
         },
-        "zowe.cics.allLocalFiles.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Local Files'",
-          "scope": "window",
-          "minimum": 1
+        "zowe.cics.CICSURIMap.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for URI Map",
+          "scope": "window"
         },
-        "zowe.cics.allTasks.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Tasks'",
-          "scope": "window",
-          "minimum": 1
+        "zowe.cics.CICSWebService.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Web Service",
+          "scope": "window"
         },
-        "zowe.cics.allLibraries.recordCountIncrement": {
+        "zowe.cics.resources.recordCountIncrement": {
           "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Libraries'",
-          "scope": "window",
-          "minimum": 1
-        },
-        "zowe.cics.allTCPIPS.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All TCPIP Services'",
-          "scope": "window",
-          "minimum": 1
-        },
-        "zowe.cics.allURIMaps.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All URI Maps'",
-          "scope": "window",
-          "minimum": 1
-        },
-        "zowe.cics.allPipelines.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Pipelines'",
-          "scope": "window",
-          "minimum": 1
-        },
-        "zowe.cics.allWebServices.recordCountIncrement": {
-          "type": "number",
-          "default": 500,
-          "description": "Record count increment criteria for 'All Web Services'",
+          "default": 10,
+          "description": "How many records to fetch per page of resources",
           "scope": "window",
           "minimum": 1
         }

@@ -382,7 +382,7 @@ describe("CICSResourceContainerNode tests", () => {
     expect(containerNode.getChildResource().resources.isFilterApplied()).toBeFalsy();
     containerNode.setFilter(["a"]);
     expect(containerNode.getChildResource().resources.isFilterApplied()).toBeTruthy();
-    containerNode.clearFilter();
+    await containerNode.clearFilter();
     expect(containerNode.getChildResource().resources.isFilterApplied()).toBeFalsy();
   });
 

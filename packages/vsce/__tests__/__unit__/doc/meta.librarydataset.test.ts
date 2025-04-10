@@ -34,8 +34,8 @@ describe("Library Dataset Meta", () => {
     const crit = LibraryDatasetMeta.buildCriteria(["a", "b"], parentLibraryMock.attributes);
     expect(crit).toEqual(`LIBRARY=LIB1 AND (DSNAME=a OR DSNAME=b)`);
   });
-  it("should get default criteria", () => {
-    const crit = LibraryDatasetMeta.getDefaultCriteria(parentLibraryMock.attributes);
+  it("should get default criteria", async () => {
+    const crit = await LibraryDatasetMeta.getDefaultCriteria(parentLibraryMock.attributes);
     expect(crit).toEqual(`LIBRARY=LIB1`);
   });
   it("should return label", () => {
@@ -54,8 +54,8 @@ describe("Library Dataset Meta", () => {
     const name = LibraryDatasetMeta.getName(libraryDSMock);
     expect(name).toEqual("MY.DSNAME");
   });
-  it("should have custom child type", () => {
-    const childTypeDefaultCriteria = LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
+  it("should have custom child type", async () => {
+    const childTypeDefaultCriteria = await LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
     expect(childTypeDefaultCriteria).toEqual(`(librarydsn='MY.DSNAME')`);
   });
 });

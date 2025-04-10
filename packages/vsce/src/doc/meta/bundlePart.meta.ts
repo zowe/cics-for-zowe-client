@@ -22,8 +22,8 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
     return `BUNDLE=${parentResource.name} AND (${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")})`;
   },
 
-  getDefaultCriteria: function (parentResource: IBundle): string {
-    return `BUNDLE='${parentResource.name}'`;
+  getDefaultCriteria: function (parentResource: IBundle) {
+    return Promise.resolve(`BUNDLE='${parentResource.name}'`);
   },
 
   getLabel: function (bundlePart: Resource<IBundlePart>): string {
