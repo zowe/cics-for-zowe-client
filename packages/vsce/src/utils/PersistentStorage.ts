@@ -25,6 +25,9 @@ export class PersistentStorage {
   private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
   private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
+  private static readonly bundleSearchHistory: string = "bundleSearchHistory";
+  private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
+  private static readonly jvmServerSearchHistory: string = "bundleSearchHistory";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -37,6 +40,9 @@ export class PersistentStorage {
   private mURIMapsSearchHistory: string[] = [];
   private mPipelineSearchHistory: string[] = [];
   private mWebServiceSearchHistory: string[] = [];
+  private mBundleSearchHistory: string[] = [];
+  private mBundlePartSearchHistory: string[] = [];
+  private mJVMServerSearchHistory: string[] = [];
 
   constructor(schema: string) {
     this.schema = schema;
@@ -55,6 +61,9 @@ export class PersistentStorage {
     let urimapsSearchHistoryLines: string[] | undefined;
     let pipelineSearchHistoryLines: string[] | undefined;
     let webserviceSearchHistoryLines: string[] | undefined;
+    let bundleSearchHistoryLines: string[] | undefined;
+    let bundlePartSearchHistoryLines: string[] | undefined;
+    let jvmServerSearchHistoryLines: string[] | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -68,6 +77,9 @@ export class PersistentStorage {
       urimapsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.urimapsSearchHistory);
       pipelineSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.pipelineSearchHistory);
       webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
+      bundleSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundleSearchHistory);
+      bundlePartSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundlePartSearchHistory);
+      jvmServerSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.jvmServerSearchHistory);
     }
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
@@ -124,6 +136,21 @@ export class PersistentStorage {
     } else {
       await this.resetWebServiceSearchHistory();
     }
+    if (bundleSearchHistoryLines) {
+      this.mBundleSearchHistory = bundleSearchHistoryLines;
+    } else {
+      await this.resetBundleSearchHistory();
+    }
+    if (bundlePartSearchHistoryLines) {
+      this.mBundlePartSearchHistory = bundlePartSearchHistoryLines;
+    } else {
+      await this.resetBundlePartSearchHistory();
+    }
+    if (jvmServerSearchHistoryLines) {
+      this.mJVMServerSearchHistory = jvmServerSearchHistoryLines;
+    } else {
+      await this.resetJVMServerSearchHistory();
+    }
   }
 
   public getProgramSearchHistory(): string[] {
@@ -158,6 +185,15 @@ export class PersistentStorage {
   }
   public getWebServiceSearchHistory(): string[] {
     return this.mWebServiceSearchHistory;
+  }
+  public getBundleSearchHistory(): string[] {
+    return this.mBundleSearchHistory;
+  }
+  public getBundlePartSearchHistory(): string[] {
+    return this.mBundlePartSearchHistory;
+  }
+  public getJVMServerSearchHistory(): string[] {
+    return this.mJVMServerSearchHistory;
   }
 
   public async resetProgramSearchHistory(): Promise<void> {
@@ -203,6 +239,18 @@ export class PersistentStorage {
   public async resetWebServiceSearchHistory(): Promise<void> {
     this.mWebServiceSearchHistory = [];
     await this.updateWebServiceSearchHistory();
+  }
+  public async resetBundleSearchHistory(): Promise<void> {
+    this.mBundleSearchHistory = [];
+    await this.updateBundleSearchHistory();
+  }
+  public async resetBundlePartSearchHistory(): Promise<void> {
+    this.mBundlePartSearchHistory = [];
+    await this.updateBundlePartSearchHistory();
+  }
+  public async resetJVMServerSearchHistory(): Promise<void> {
+    this.mJVMServerSearchHistory = [];
+    await this.updateJVMServerSearchHistory();
   }
 
   private async updateProgramSearchHistory(): Promise<void> {
@@ -281,6 +329,30 @@ export class PersistentStorage {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.webserviceSearchHistory] = this.mWebServiceSearchHistory;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
+  private async updateBundleSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.bundleSearchHistory] = this.mBundleSearchHistory;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
+  private async updateBundlePartSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.bundlePartSearchHistory] = this.mBundlePartSearchHistory;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
+  private async updateJVMServerSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.jvmServerSearchHistory] = this.mJVMServerSearchHistory;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
@@ -443,6 +515,51 @@ export class PersistentStorage {
         this.mWebServiceSearchHistory.pop();
       }
       await this.updateWebServiceSearchHistory();
+    }
+  }
+
+  public async addBundleSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mBundleSearchHistory = this.mBundleSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+      });
+
+      this.mBundleSearchHistory.unshift(criteria);
+
+      if (this.mBundleSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+        this.mBundleSearchHistory.pop();
+      }
+      await this.updateBundleSearchHistory();
+    }
+  }
+
+  public async addBundlePartSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mBundlePartSearchHistory = this.mBundlePartSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+      });
+
+      this.mBundlePartSearchHistory.unshift(criteria);
+
+      if (this.mBundlePartSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+        this.mBundlePartSearchHistory.pop();
+      }
+      await this.updateBundlePartSearchHistory();
+    }
+  }
+
+  public async addJVMServerSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mJVMServerSearchHistory = this.mJVMServerSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+      });
+
+      this.mJVMServerSearchHistory.unshift(criteria);
+
+      if (this.mJVMServerSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+        this.mJVMServerSearchHistory.pop();
+      }
+      await this.updateJVMServerSearchHistory();
     }
   }
 
