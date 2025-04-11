@@ -1,25 +1,22 @@
 .main-panel {
-  /* border: 1px solid grey; */
-  max-width: fit-content;
-  padding: 10px;
-  margin: 10px;
+  max-width: max-content;
 }
 
-.padd {
-  padding: 2px;
-}
 .set-margin {
-  margin-bottom: -15px;
+  padding: 4px;
+  margin: 4px;
 }
 .bg-color {
-  background-color: #252526;
-  margin-bottom:auto;
+  background-color: var(--vscode-editorWidget-background);
 }
-.left-padd {
-  padding-left: 2%;
+
+.button-style {
+  padding-right: 3px;
+  margin: 1px 4px 5px 4px;
 }
-.padd-sides {
-  padding-left: 2%;
-  padding-right: 2%;
+
+.divider-style {
+  margin: 3px 4px;
+  padding: 3px 4px;
 }
 

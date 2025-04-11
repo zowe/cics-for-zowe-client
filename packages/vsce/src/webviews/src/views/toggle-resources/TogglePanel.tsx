@@ -25,7 +25,11 @@ export default function ToggleResources({ items }: props) {
         <PanelTab id={val.id} children={val.children}></PanelTab>
       ))}
       {items.map((val) => (
-        <PanelView id={val.resourceName} children={<CheckBox label={val.humanReadableName} checked={val.visible}></CheckBox>}></PanelView>
+        <PanelView
+          id={val.resourceName}
+          styles="set-margin"
+          children={<CheckBox label={val.humanReadableName} checked={val.visible}></CheckBox>}
+        ></PanelView>
       ))}
     </VSCodePanels>
   );

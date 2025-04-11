@@ -8,16 +8,16 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import "../../style.css";
 import ToggleResources from "./TogglePanel";
+import Divider from "../../components/Divider";
 
 const vscodeApi = acquireVsCodeApi();
 
 export function App() {
-  const [msg, setMsg] = useState<string>("not set");
+  // const [msg, setMsg] = useState<string>("not set");
   // const [resources, setResources] = useState<resource[]>([]);
   const [metas, setMetas] = useState<
     {
@@ -29,12 +29,7 @@ export function App() {
 
   useEffect(() => {
     window.addEventListener("message", (event) => {
-      console.log("printing event: ", event.data.metas);
       setMetas(event.data.metas);
-    });
-    console.log(msg);
-    window.addEventListener("message", (event) => {
-      setMsg(event.data.msg);
     });
     vscodeApi.postMessage({ command: "metas" });
   }, []);
@@ -43,21 +38,20 @@ export function App() {
     console.log("printing metas", metas);
   };
   return (
-    <div className="main-panel container">
+    <div className="main-panel">
       <div>
-        hello workd
         <h3>Select the resources to show in the CICS extension tree</h3>
       </div>
       <div className="bg-color">
         <div>
           <ToggleResources items={metas}></ToggleResources>
         </div>
-        <VSCodeDivider className="padd-sides" />
-        <div>
-          <span className="left-padd">
-            <Button name="Apply" onclick={print}></Button>{" "}
-            <Button name="Reset" type="secondary" onclick={() => console.log("clicked again")}></Button>
-          </span>
+        <div className="divider-style">
+          <Divider />
+        </div>
+        <div className="button-style">
+          <Button name="Apply" onclick={print} styles="button-style"></Button>{" "}
+          <Button name="Reset" type="secondary" styles="button-style" onclick={() => console.log("clicked again")}></Button>
         </div>
       </div>
     </div>

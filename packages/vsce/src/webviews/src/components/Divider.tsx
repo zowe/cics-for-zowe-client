@@ -1,5 +1,8 @@
 import { VSCodeDivider } from "@vscode/webview-ui-toolkit/react";
 
-export default function Divider() {
-  return <VSCodeDivider></VSCodeDivider>;
+interface Prop {
+  styles?: string | undefined;
+}
+export default function Divider(prop: Prop) {
+  return <VSCodeDivider className={prop.styles}></VSCodeDivider>;
 }
