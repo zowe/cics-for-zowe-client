@@ -10,7 +10,7 @@
  */
 
 import { WebView } from "@zowe/zowe-explorer-api";
-import { ExtensionContext } from "vscode";
+import { commands, ExtensionContext } from "vscode";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { getMetas } from "../doc";
 
@@ -25,7 +25,7 @@ export class ToggleResourcesWebView extends WebView {
     this.persistentStorage = new PersistentStorage("zowe.cics.persistent");
   }
 
-  async onDidReceiveMessage(message: { command: string; resources?: any[] }) {
+  async onDidReceiveMessage(message: { command: string; metas?: any[] }) {
     if (message.command === "metas") {
       await this.persistentStorage.init();
       const visibles = this.persistentStorage.getVisibleResources();
@@ -34,14 +34,13 @@ export class ToggleResourcesWebView extends WebView {
           return { ...meta, visible: visibles.includes(meta.resourceName) };
         }),
       });
-    } else if (message.command === "init") {
-      await this.panel.webview.postMessage({
-        msg: "Hello from webview class!",
-      });
     } else if (message.command === "save") {
-      await this.panel.webview.postMessage({
-        msg: "Save received by webview class :D",
-      });
+      const visibleResources = message.metas.filter((meta) => meta.visible).map((meta) => meta.resourceName);
+      await this.persistentStorage.setVisibleResources(visibleResources);
+      this.panel.dispose();
+      commands.executeCommand("cics-extension-for-zowe.refreshTree");
+    } else if (message.command === "reset") {
+      this.persistentStorage.resetVisibleResources();
     }
   }
 }
