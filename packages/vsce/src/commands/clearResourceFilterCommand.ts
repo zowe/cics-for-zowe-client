@@ -50,7 +50,7 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
       ...allSelectedPipelineTreeNodes,
       ...allSelectedWebServiceTreeNodes,
     ];
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    if (!allSelectedNodes.length) {
       await window.showErrorMessage("No CICS resource tree selected");
       return;
     }

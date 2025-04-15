@@ -76,12 +76,6 @@ describe("Test suite for CICSRegionsContainer", () => {
       jest.resetAllMocks();
     });
 
-    const testData = {
-      name: "CICSManagedRegion",
-      cicsPlex: "PLEXX",
-      regionName: "IYK2ZXXX",
-    };
-
     it("should load regions in CICS group", async () => {
       globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
       sut.activeFilter = "cics";

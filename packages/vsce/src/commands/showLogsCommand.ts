@@ -16,7 +16,7 @@ import * as vscode from "vscode";
 import { TreeView, commands, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
-import { findSelectedNodes, toArray } from "../utils/commandUtils";
+import { toArray } from "../utils/commandUtils";
 import { ProfileManagement } from "../utils/profileManagement";
 import { runGetResource } from "../utils/resourceUtils";
 
