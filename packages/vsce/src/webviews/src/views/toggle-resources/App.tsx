@@ -17,8 +17,6 @@ import Divider from "../../components/Divider";
 const vscodeApi = acquireVsCodeApi();
 
 export function App() {
-  // const [msg, setMsg] = useState<string>("not set");
-  // const [resources, setResources] = useState<resource[]>([]);
   const [metas, setMetas] = useState<
     {
       resourceName: string;
@@ -31,11 +29,13 @@ export function App() {
     window.addEventListener("message", (event) => {
       setMetas(event.data.metas);
     });
-    vscodeApi.postMessage({ command: "metas" });
+    vscodeApi.postMessage({ command: "init" });
   }, []);
 
   const print = () => {
-    console.log("printing metas", metas);
+    const filtered = metas.filter((val) => val.visible);
+    console.log("printing metas", filtered);
+    vscodeApi.postMessage({ command: "save", metas });
   };
   return (
     <div className="main-panel">
@@ -50,7 +50,15 @@ export function App() {
           <Divider />
         </div>
         <div className="button-style">
-          <Button name="Apply" onclick={print} styles="button-style"></Button>{" "}
+          <Button
+            name="Apply"
+            // onclick={() => {
+            //   console.log("printing metas == ", metas);
+            //   vscodeApi.postMessage({ command: "save", metas });
+            // }}
+            onclick={print}
+            styles="button-style"
+          ></Button>
           <Button name="Reset" type="secondary" styles="button-style" onclick={() => console.log("clicked again")}></Button>
         </div>
       </div>

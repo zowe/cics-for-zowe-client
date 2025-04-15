@@ -22,20 +22,10 @@ import { CICSPipelineTree } from "./CICSPipelineTree";
 import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
 import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
+import { PersistentStorage } from "../utils/PersistentStorage";
 
 export class CICSRegionTree extends TreeItem {
-  children: [
-        CICSProgramTree,
-        CICSTransactionTree,
-        CICSLocalFileTree,
-        CICSTaskTree,
-        CICSLibraryTree,
-        CICSPipelineTree,
-        CICSTCPIPServiceTree,
-        CICSURIMapTree,
-        CICSWebServiceTree,
-      ]
-    | null;
+  children: TreeItem[] | null;
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -65,17 +55,31 @@ export class CICSRegionTree extends TreeItem {
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";
-      this.children = [
-        new CICSProgramTree(this),
-        new CICSTransactionTree(this),
-        new CICSLocalFileTree(this),
-        new CICSTaskTree(this),
-        new CICSLibraryTree(this),
-        new CICSPipelineTree(this),
-        new CICSTCPIPServiceTree(this),
-        new CICSURIMapTree(this),
-        new CICSWebServiceTree(this),
-      ];
+      const pers = new PersistentStorage("zowe.cics.persistent");
+      const visibles = pers.getVisibleResources();
+      this.children = [];
+      for (let m of visibles) {
+        if (m === "CICSProgram") this.children.push(new CICSProgramTree(this));
+        else if (m === "CICSLocalTransaction") this.children.push(new CICSTransactionTree(this));
+        else if (m === "CICSLocalFile") this.children.push(new CICSLocalFileTree(this));
+        else if (m === "CICSTask") this.children.push(new CICSTaskTree(this));
+        else if (m === "CICSLibrary") this.children.push(new CICSLibraryTree(this));
+        else if (m === "CICSPipeline") this.children.push(new CICSPipelineTree(this));
+        else if (m === "CICSTCPIPService") this.children.push(new CICSTCPIPServiceTree(this));
+        else if (m === "CICSURIMap") this.children.push(new CICSURIMapTree(this));
+        else if (m === "CICSWebService") this.children.push(new CICSWebServiceTree(this));
+      }
+      // this.children = [
+      //   new CICSProgramTree(this),
+      //   new CICSTransactionTree(this),
+      //   new CICSLocalFileTree(this),
+      //   new CICSTaskTree(this),
+      //   new CICSLibraryTree(this),
+      //   new CICSPipelineTree(this),
+      //   new CICSTCPIPServiceTree(this),
+      //   new CICSURIMapTree(this),
+      //   new CICSWebServiceTree(this),
+      // ];
     }
   }
 

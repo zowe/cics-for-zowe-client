@@ -13,13 +13,15 @@ import { commands, ExtensionContext } from "vscode";
 import { ToggleResourcesWebView } from "../trees/ToggleResourcesWebView";
 
 export function toggleResourcesWebViewCommand(context: ExtensionContext) {
-  let toggleResourcesWebView: ToggleResourcesWebView = undefined;
-  return commands.registerCommand("cics-extension-for-zowe.toggleResourcesWebView", () => {
-    if (toggleResourcesWebView == undefined) {
-      toggleResourcesWebView = new ToggleResourcesWebView(context);
-      return this.toggleResourcesWebView;
-    }
-    toggleResourcesWebView.panel.reveal(this.toggleResourcesWebView);
+  // let toggleResourcesWebView: ToggleResourcesWebView = undefined;
+  return commands.registerCommand("cics-extension-for-zowe.toggleResourcesWebView", async () => {
+    // if (toggleResourcesWebView == undefined) {
+    //   toggleResourcesWebView = new ToggleResourcesWebView(context);
+    //   return toggleResourcesWebView;
+    // }
+    // if (toggleResourcesWebView.panel.active) {
+    //   return toggleResourcesWebView;
+    // }
     return new ToggleResourcesWebView(context);
   });
 }

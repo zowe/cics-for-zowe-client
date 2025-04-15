@@ -26,7 +26,7 @@ export class ToggleResourcesWebView extends WebView {
   }
 
   async onDidReceiveMessage(message: { command: string; metas?: any[] }) {
-    if (message.command === "metas") {
+    if (message.command === "init") {
       await this.persistentStorage.init();
       const visibles = this.persistentStorage.getVisibleResources();
       await this.panel.webview.postMessage({

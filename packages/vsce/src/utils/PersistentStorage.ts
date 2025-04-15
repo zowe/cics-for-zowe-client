@@ -38,7 +38,17 @@ export class PersistentStorage {
   private mURIMapsSearchHistory: string[] = [];
   private mPipelineSearchHistory: string[] = [];
   private mWebServiceSearchHistory: string[] = [];
-  private mVisibleResources: string[] = ["CICSProgram", "CICSLocalTransaction", "CICSLocalFile"];
+  private mVisibleResources: string[] = [
+    "CICSProgram",
+    "CICSLocalTransaction",
+    "CICSLocalFile",
+    "CICSTask",
+    "CICSLibrary",
+    "CICSPipeline",
+    "CICSTCPIPService",
+    "CICSURIMap",
+    "CICSWebService",
+  ];
 
   constructor(schema: string) {
     this.schema = schema;
@@ -466,7 +476,17 @@ export class PersistentStorage {
   }
 
   public async resetVisibleResources(): Promise<void> {
-    this.mVisibleResources = ["CICSProgram", "CICSLocalTransaction", "CICSLocalFile"];
+    this.mVisibleResources = [
+      "CICSProgram",
+      "CICSLocalTransaction",
+      "CICSLocalFile",
+      "CICSTask",
+      "CICSLibrary",
+      "CICSPipeline",
+      "CICSTCPIPService",
+      "CICSURIMap",
+      "CICSWebService",
+    ];
     await this.updateVisibleResources();
   }
 
