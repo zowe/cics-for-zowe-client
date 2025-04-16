@@ -1,3 +1,6 @@
+:root {
+  --theme-color: var(--vscode-editorWidget-background);
+}
 .main-panel {
   max-width: max-content;
 }
@@ -7,7 +10,7 @@
   margin: 4px;
 }
 .bg-color {
-  background-color: var(--vscode-editorWidget-background);
+  background-color: var(--theme-color)
 }
 
 .button-style {
@@ -18,5 +21,8 @@
 .divider-style {
   margin: 3px 4px;
   padding: 3px 4px;
+}
+.icon-style {
+    margin-bottom: -2px;
 }
 

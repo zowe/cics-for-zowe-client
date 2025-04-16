@@ -11,6 +11,19 @@ interface metas {
 interface props {
   items: metas[];
 }
+const getImg = (item: string) => {
+  //Dark theme color
+  const darkTheme = "#252526";
+
+  //fetching theme color from css
+  const themeColor = getComputedStyle(document.documentElement).getPropertyValue("--theme-color");
+  
+  let theme = "-" + "dark.svg";
+  if (themeColor.includes(darkTheme)) {
+    theme = "-" + "light.svg";
+  }
+  return "webviews/public/" + item.substring(4).toLowerCase() + theme;
+};
 
 export default function ToggleResources({ items }: props) {
   const tabProps = [
@@ -35,6 +48,7 @@ export default function ToggleResources({ items }: props) {
               onchange={(e) => {
                 val.visible = (e.target as HTMLInputElement).checked;
               }}
+              imgPath={getImg(val.resourceName)}
             ></CheckBox>
           }
         ></PanelView>

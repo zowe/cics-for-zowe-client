@@ -42,7 +42,7 @@ export function App() {
       <div>
         <h3>Select the resources to show in the CICS extension tree</h3>
       </div>
-      <div className="bg-color">
+      <div id="toggle-resource-body" className="bg-color">
         <div>
           <ToggleResources items={metas}></ToggleResources>
         </div>
