@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Add notices file into package [#267](https://github.com/zowe/cics-for-zowe-client/issues/267)
+
 ## `3.6.0`
 
 - Enhancement: Add context menu on a region to reveal the region's logs in the jobs tree. [#56](https://github.com/zowe/cics-for-zowe-client/issues/56)
