@@ -19,7 +19,8 @@
   },
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "NOTICE"
   ],
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"

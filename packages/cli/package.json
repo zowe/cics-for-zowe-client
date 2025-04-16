@@ -21,7 +21,8 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "npm-shrinkwrap.json"
+    "npm-shrinkwrap.json",
+    "NOTICE"
   ],
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
