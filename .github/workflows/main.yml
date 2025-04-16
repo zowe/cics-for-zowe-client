@@ -140,11 +140,47 @@ jobs:
         with:
           run: npm run test:e2e
 
+  notices:
+    if: github.event_name == 'push' && github.ref_protected
+    needs:
+      - test
+      - e2e-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ github.ref }}
+
+    - name: Use Node.js LTS
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+
+    - name: Update NOTICE file
+      run: bash scripts/updateNotices.sh
+
+    - name: Push changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Update NOTICE [ci skip]
+        commit_options: '--signoff'
+        file_pattern: packages/*/NOTICE
+        commit_user_name: zowe_robot
+        commit_user_email: zowe.robot@gmail.com
+
   release:
     if: github.event_name == 'push' && github.ref_protected
     needs:
       - test
       - e2e-test
+      - notices
     runs-on: ubuntu-latest
     permissions:
       contents: write
