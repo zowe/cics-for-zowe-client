@@ -13,6 +13,7 @@ import { WebView } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext } from "vscode";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { getMetas } from "../doc";
+import { getPersistentStorage, setPersistentStorage } from "../utils/persistentUtils";
 
 export class ToggleResourcesWebView extends WebView {
   persistentStorage: PersistentStorage;
@@ -22,7 +23,7 @@ export class ToggleResourcesWebView extends WebView {
       onDidReceiveMessage: (message: { command: string; metas?: any[] }) => this.onDidReceiveMessage(message),
       retainContext: true,
     });
-    this.persistentStorage = new PersistentStorage("zowe.cics.persistent");
+    this.persistentStorage = getPersistentStorage() === undefined ? new PersistentStorage("zowe.cics.persistent") : getPersistentStorage();
   }
 
   async onDidReceiveMessage(message: { command: string; metas?: any[] }) {
@@ -42,5 +43,6 @@ export class ToggleResourcesWebView extends WebView {
     } else if (message.command === "reset") {
       this.persistentStorage.resetVisibleResources();
     }
+    setPersistentStorage(this.persistentStorage);
   }
 }

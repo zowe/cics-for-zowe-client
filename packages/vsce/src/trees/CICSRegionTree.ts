@@ -23,6 +23,7 @@ import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
 import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
 import { PersistentStorage } from "../utils/PersistentStorage";
+import { getPersistentStorage } from "../utils/persistentUtils";
 
 export class CICSRegionTree extends TreeItem {
   children: TreeItem[] | null;
@@ -55,8 +56,8 @@ export class CICSRegionTree extends TreeItem {
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";
-      const pers = new PersistentStorage("zowe.cics.persistent");
-      const visibles = pers.getVisibleResources();
+      const persistentStorage = getPersistentStorage() === undefined ? new PersistentStorage("zowe.cics.persistent") : getPersistentStorage();
+      const visibles = persistentStorage.getVisibleResources();
       this.children = [];
       for (let m of visibles) {
         if (m === "CICSProgram") this.children.push(new CICSProgramTree(this));
