@@ -25,8 +25,9 @@ import {
   l10n,
   window,
 } from "vscode";
-import { PersistentStorage } from "../utils/PersistentStorage";
 import constants from "../constants/CICS.defaults";
+import { CICSLogger } from "../utils/CICSLogger";
+import { PersistentStorage } from "../utils/PersistentStorage";
 import { getErrorCode } from "../utils/errorUtils";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
@@ -36,7 +37,6 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -386,7 +386,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return element;
   }
   getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
-    return element === undefined ? this.loadedProfiles : element.children;
+    return element === undefined ? this.loadedProfiles : element.getChildren();
   }
 
   getParent(element: any): ProviderResult<any> {

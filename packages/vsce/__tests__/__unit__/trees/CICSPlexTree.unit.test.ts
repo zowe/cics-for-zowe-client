@@ -9,6 +9,18 @@
  *
  */
 
+const defaultFilterMock = jest.fn();
+defaultFilterMock.mockReturnValue("DEFAULT FITLER");
+const defaultResNumberMock = jest.fn();
+defaultResNumberMock.mockReturnValue(10);
+
+jest.mock("../../../src/utils/PersistentStorage", () => ({
+  PersistentStorage: {
+    getDefaultFilter: defaultFilterMock,
+    getNumberOfResourcesToFetch: defaultResNumberMock,
+  },
+}));
+
 const getIconFilePathFromNameMock = jest.fn();
 const cicsCombinedTreeMock = jest.fn();
 
@@ -17,52 +29,6 @@ import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
-
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedProgramTree", () => ({
-  get CICSCombinedProgramTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedTransactionTree", () => ({
-  get CICSCombinedTransactionsTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedLocalFileTree", () => ({
-  get CICSCombinedLocalFileTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedTaskTree", () => ({
-  get CICSCombinedTaskTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedLibraryTree", () => ({
-  get CICSCombinedLibraryTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedTCPIPServiceTree", () => ({
-  get CICSCombinedTCPIPServiceTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedURIMapTree", () => ({
-  get CICSCombinedURIMapTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedPipelineTree", () => ({
-  get CICSCombinedPipelineTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
-jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedWebServiceTree", () => ({
-  get CICSCombinedWebServiceTree() {
-    return cicsCombinedTreeMock;
-  },
-}));
 
 jest.mock("../../../src/trees/CICSRegionsContainer", () => ({
   get CICSRegionsContainer() {

@@ -455,4 +455,31 @@ export class PersistentStorage {
       await this.updateLoadedCICSProfile();
     }
   }
+
+  public static async getDefaultFilter(resourceName: string): Promise<string> {
+    const constantsKey = `DEFAULT_${resourceName.toUpperCase()}_FILTER` as keyof typeof constants;
+    const configKey = `zowe.cics.${resourceName}.filter`;
+
+    const filterFromConfig = await workspace.getConfiguration().get(configKey);
+
+    if (!filterFromConfig) {
+      const defaultValue = constants[constantsKey];
+      await workspace.getConfiguration().update(configKey, defaultValue);
+      return `${defaultValue}`;
+    }
+
+    return `${filterFromConfig}`;
+  }
+
+  public static async getNumberOfResourcesToFetch(): Promise<number> {
+    const configKey = `zowe.cics.resources.recordCountIncrement`;
+    const valFromConfig = await workspace.getConfiguration().get(configKey);
+
+    if (!valFromConfig) {
+      await workspace.getConfiguration().update(configKey, constants.DEFAULT_RESOURCE_PAGE_SIZE);
+      return constants.DEFAULT_RESOURCE_PAGE_SIZE;
+    }
+
+    return parseInt(`${valFromConfig}`, 10);
+  }
 }
