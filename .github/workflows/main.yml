@@ -141,10 +141,7 @@ jobs:
           run: npm run test:e2e
 
   notices:
-    if: github.event_name == 'push' && github.ref_protected
-    needs:
-      - test
-      - e2e-test
+    if: github.event.pull_request.merged != true && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write

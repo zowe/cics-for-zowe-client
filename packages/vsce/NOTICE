@@ -3801,34 +3801,6 @@ SOFTWARE.
 
 ------
 
-** stoppable; version 1.1.0 -- https://github.com/hunterloftis/stoppable
-Copyright (c) 2017 Hunter Loftis <hunter@hunterloftis.com>
-
-The MIT License (MIT)
-
-Copyright (c) 2017 Hunter Loftis <hunter@hunterloftis.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-------
-
 ** undici; version 6.21.2 -- https://undici.nodejs.org
 Copyright (c) 2020 Ethan Arrowood
 Copyright (c) 2016 Luigi Pinca and contributors
@@ -3970,9 +3942,9 @@ THE SOFTWARE.
 
 ------
 
-** jwa; version 2.0.0 -- https://github.com/brianloveswords/node-jwa#readme
+** jwa; version 1.4.1 -- https://github.com/brianloveswords/node-jwa#readme
 Copyright (c) 2013 Brian J. Brennan
-** jws; version 4.0.0 -- https://github.com/brianloveswords/node-jws#readme
+** jws; version 3.2.2 -- https://github.com/brianloveswords/node-jws#readme
 Copyright (c) 2013 Brian J. Brennan
 Copyright (c) 2013-2015 Brian J. Brennan
 
@@ -4099,35 +4071,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-------
-
-** events; version 3.3.0 -- https://github.com/Gozala/events#readme
-Copyright Joyent, Inc. and other Node contributors
-
-MIT
-
-Copyright Joyent, Inc. and other Node contributors.
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to permit
-persons to whom the Software is furnished to do so, subject to the
-following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ------
@@ -5604,8 +5547,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Copyright (c) Microsoft Corporation
 ** @azure/core-rest-pipeline; version 1.19.1 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-rest-pipeline/
 Copyright (c) Microsoft Corporation
-** @azure/identity; version 4.8.0 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
-Copyright (c) Microsoft Corporation
 
 Copyright (c) Microsoft Corporation.
 
@@ -6249,6 +6190,36 @@ SOFTWARE.
 
 ------
 
+** @azure/msal-browser; version 4.11.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+Copyright (c) Microsoft Corporation
+** @azure/msal-common; version 15.5.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+Copyright (c) Microsoft Corporation
+
+MIT License
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE
+
+
+------
+
 ** process-nextick-args; version 2.0.1 -- https://github.com/calvinmetcalf/process-nextick-args
 Copyright (c) 2015 Calvin Metcalf
 
@@ -6500,6 +6471,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+
+------
+
+** @azure/msal-node; version 3.5.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+Copyright (c) 2020 Microsoft
+Copyright (c) Microsoft Corporation
+
+MIT License
+
+Copyright (c) 2020 Microsoft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ------
