@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## Recent Changes
+## `6.6.1`
 
 - Add notices file into package [#267](https://github.com/zowe/cics-for-zowe-client/issues/267)
 
