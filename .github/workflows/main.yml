@@ -177,7 +177,6 @@ jobs:
     needs:
       - test
       - e2e-test
-      - notices
     runs-on: ubuntu-latest
     permissions:
       contents: write
