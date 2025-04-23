@@ -91,6 +91,30 @@ jobs:
     #   with:
     #     name: zowe-cics-client
     #     path: dist/*
+  e2e-test-mac: 
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 11
+        uses: actions/setup-java@v3.14.1
+        with:
+          distribution: 'semeru'
+          java-version: '11'
+
+      - name: Download WireMock Standalone JAR
+        run: |
+          curl -L https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.0.1/ -o wiremock-standalone.jar
+
+      - name: Start WireMock Standalone JAR
+        run: |
+          # Start WireMock in the background
+          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/ &
+
+      - name: List Wiremock mappings
+        run: curl localhost:8080/__admin/mappings
 
   e2e-test:
     runs-on: windows-latest
