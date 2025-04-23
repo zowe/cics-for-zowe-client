@@ -94,28 +94,26 @@ jobs:
 
   e2e-test:
     runs-on: macos-latest
-
-    services:
-      wiremock:
-        image: wiremock/wiremock
-        ports:
-          - 8080:8080
-        volumes:
-          - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock
-        options: --name wiremock
-
     steps:
       - name: Setup Docker
         run: |
             brew install docker 
             colima start
             docker ps
+            docker run -it --rm -d \
+            -p 8080:8080 \
+            --name cmci-wiremock \
+            -v - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock
+            wiremock/wiremock:3.10.0
 
       - name: Change workspace folder so wiremock service can write
         run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Restart Wiremock with new mappings
+        run: docker restart wiremock
 
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
