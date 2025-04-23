@@ -95,11 +95,16 @@ jobs:
   e2e-test:
     runs-on: macos-latest
     steps:
-      - name: Setup Docker
+      - name: Setup Docker and Colima
         run: |
             brew install docker 
             colima start
-            docker ps
+            
+      - name: Docker PS
+        run: docker ps
+      
+      - name: Start Docker with wiremock  
+        run: |
             docker run -it --rm -d \
             -p 8080:8080 \
             --name cmci-wiremock \
