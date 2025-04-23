@@ -105,11 +105,11 @@ jobs:
         options: --name wiremock
 
     steps:
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v4
+      - name: Docker Setup Docker
+        uses: docker/setup-docker-action@v4.3.0
         env:
           LIMA_START_ARGS: --cpus 4 --memory 8
-          
+
       - name: Change workspace folder so wiremock service can write
         run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
 
