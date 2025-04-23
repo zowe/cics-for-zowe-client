@@ -100,11 +100,7 @@ jobs:
       
       - name: Start Docker with wiremock  
         run: |
-            docker run -it --rm -d \
-            -p 8080:8080 \
-            --name cmci-wiremock \
-            -v - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock
-            wiremock/wiremock:3.10.0
+            docker run -it --rm -d \ -p 8080:8080 \ --name cmci-wiremock \ -v - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock wiremock/wiremock:3.10.0
 
       - name: Change workspace folder so wiremock service can write
         run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
