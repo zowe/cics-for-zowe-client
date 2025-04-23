@@ -103,11 +103,11 @@ jobs:
         run: brew install docker
             
       - name: Delete colima
-        run: colima delete
+        run: colima delete -y
             
       - name: Start colima
         run: |
-            colima start      
+            colima start --verbose    
             docker ps
       
       - name: Start Docker with wiremock  
