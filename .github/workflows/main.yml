@@ -93,23 +93,12 @@ jobs:
     #     path: dist/*
 
   e2e-test:
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
-      - name: Setup Colima
-        run: |
-            brew install colima
-
-      - name: Setup Docker
-        run: |
-            brew install docker
-            
-      - name: Delete colima
-        run: colima delete --force
-            
-      - name: Start colima
-        run: |
-            colima start --cpu 1 --memory 2 --disk 10 --very-verbose
-            docker ps
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: latest
       
       - name: Start Docker with wiremock  
         run: |
