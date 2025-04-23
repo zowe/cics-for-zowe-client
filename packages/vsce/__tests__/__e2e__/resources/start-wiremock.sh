@@ -7,12 +7,12 @@ docker run -it --rm -d \
     -p 8080:8080 \
     --name wiremock \
     -v "$1" \
-    wiremock/wiremock:3.10.0
+    wiremock/wiremock:latest
 
-sleep 1
+sleep 2
+
+echo "Starting wire mock"
 
 docker ps
 
 sleep 2
-
-curl http://localhost:8080/__admin/mappings
