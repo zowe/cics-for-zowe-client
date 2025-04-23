@@ -139,7 +139,7 @@ jobs:
 
       - name: Test Wiremock route
         if: ${{ always() && steps.build.outcome == 'success' }}
-        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E06EB1264D925C60
+        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E07F03C0E3C3A462
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
