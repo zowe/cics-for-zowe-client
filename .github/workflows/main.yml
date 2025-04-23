@@ -117,9 +117,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restart Wiremock with new mappings
-        run: docker restart wiremock
-
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
