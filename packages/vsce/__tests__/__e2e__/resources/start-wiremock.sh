@@ -7,7 +7,7 @@ docker run -it --rm -d \
     -p 8080:8080 \
     --name wiremock \
     -v "$1" \
-    wiremock/wiremock:latest
+    wiremock/wiremock:3.10.0
 
 sleep 1
 
