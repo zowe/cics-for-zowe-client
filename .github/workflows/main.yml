@@ -99,8 +99,8 @@ jobs:
         run: docker ps
       
       - name: Start Docker with wiremock  
+      # cd {{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/
         run: |
-            cd ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/
             ls -lrt
             ./start-wiremock ${{ github.workspace }}
 
