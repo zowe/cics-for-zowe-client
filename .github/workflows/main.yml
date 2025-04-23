@@ -95,13 +95,15 @@ jobs:
   e2e-test:
     runs-on: macos-latest
     steps:
-      - name: Setup Docker and Colima
+      - name: Setup Colima
         run: |
-            brew install docker 
+            brew install colima
+
+      - name: Setup Docker
+        run: |
             colima start
-            
-      - name: Docker PS
-        run: docker ps
+            brew install docker      
+            docker ps
       
       - name: Start Docker with wiremock  
         run: |
