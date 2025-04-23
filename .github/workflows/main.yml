@@ -95,6 +95,9 @@ jobs:
   e2e-test:
     runs-on: windows-latest
     steps:
+      - name: Check docker 
+        run: docker ps
+        
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3.10.0
         with:
