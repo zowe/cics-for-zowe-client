@@ -100,9 +100,13 @@ jobs:
             brew install colima
 
       - name: Setup Docker
+        run: brew install docker
+            
+      - name: Delete colima
+        run: colima delete
+            
+      - name: Start colima
         run: |
-            brew install docker
-            colima delete
             colima start      
             docker ps
       
