@@ -102,7 +102,6 @@ jobs:
       - name: Setup Docker
         run: |
             brew install docker
-            docker ps
             
       - name: Delete colima
         run: colima delete --force
@@ -110,6 +109,7 @@ jobs:
       - name: Start colima
         run: |
             colima start --cpu 1 --memory 2 --disk 10
+            docker ps
       
       - name: Start Docker with wiremock  
         run: |
