@@ -101,7 +101,6 @@ jobs:
       - name: Set up Java 11
         uses: actions/setup-java@v3.14.1
         with:
-          distribution: 'semeru'
           java-version: '11'
 
       - name: Download WireMock Standalone JAR
