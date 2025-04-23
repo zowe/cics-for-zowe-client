@@ -107,7 +107,7 @@ jobs:
             
       - name: Start colima
         run: |
-            colima start --cpu 1 --memory 1 --disk 1   
+            colima start --cpu 1 --memory 2 --disk 10
             docker ps
       
       - name: Start Docker with wiremock  
