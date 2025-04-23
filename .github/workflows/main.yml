@@ -106,7 +106,8 @@ jobs:
       # cd {{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/
         working-directory: ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/
         run: |
-          bash start-wiremock.sh ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/:/home/wiremock
+          chmod +x start-wiremock.sh
+          bash start-wiremock.sh "${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/:/home/wiremock"
           docker ps
 
       - name: Change workspace folder so wiremock service can write
