@@ -115,7 +115,11 @@ jobs:
       - name: Start WireMock Standalone JAR
         run: |
           # Start WireMock in the background
-          java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/ &
+          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/ &
+      
+      - name: Wait for WireMock to be ready
+        run: |
+          sleep 5
 
       - name: List Wiremock mappings
         run: curl localhost:8080/__admin/mappings
