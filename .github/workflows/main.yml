@@ -106,7 +106,7 @@ jobs:
 
       - name: Download WireMock Standalone JAR
         run: |
-          curl -L https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.0.1/ -o wiremock-standalone.jar
+          curl -L https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.0.1/wiremock-standalone-3.0.1.jar -o wiremock-standalone.jar
       
       - name: Wait for WireMock to be ready
         run: |
