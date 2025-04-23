@@ -93,7 +93,7 @@ jobs:
     #     path: dist/*
 
   e2e-test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     services:
       wiremock:
@@ -136,9 +136,9 @@ jobs:
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: npm run test:e2e
+        # uses: coactions/setup-xvfb@v1
+        # with:
+        run: npm run test:e2e
 
   notices:
     if: github.event.pull_request.merged != true && github.ref != 'refs/heads/main'
