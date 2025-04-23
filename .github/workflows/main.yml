@@ -102,6 +102,7 @@ jobs:
       - name: Setup Docker
         run: |
             brew install docker
+            colima delete
             colima start      
             docker ps
       
