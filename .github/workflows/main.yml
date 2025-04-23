@@ -101,7 +101,7 @@ jobs:
       - name: Start Docker with wiremock  
       # cd {{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/
         run: |
-            ls -lrt
+            ls
             ./start-wiremock ${{ github.workspace }}
 
       - name: Change workspace folder so wiremock service can write
