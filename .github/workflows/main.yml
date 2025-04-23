@@ -93,7 +93,7 @@ jobs:
     #     path: dist/*
 
   e2e-test:
-    runs-on: macos-latest-large
+    runs-on: macos-latest
     steps:
       - name: Setup Colima
         run: |
