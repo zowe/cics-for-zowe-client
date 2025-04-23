@@ -101,8 +101,8 @@ jobs:
 
       - name: Setup Docker
         run: |
-            colima start
-            brew install docker      
+            brew install docker
+            colima start      
             docker ps
       
       - name: Start Docker with wiremock  
