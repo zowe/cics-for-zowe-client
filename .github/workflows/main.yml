@@ -182,6 +182,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_protected
     needs:
       - test
+      - e2e-test-mac
     runs-on: ubuntu-latest
     permissions:
       contents: write
