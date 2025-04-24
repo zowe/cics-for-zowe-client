@@ -1380,8 +1380,6 @@ Copyright 2019 Coveo Solutions Inc.
 ** @bazel/runfiles; version 6.3.1 -- https://github.com/bazel-contrib/rules_nodejs#readme
 ** @sigstore/verify; version 1.2.1 -- https://github.com/sigstore/sigstore-js/tree/main/packages/verify#readme
 Copyright 2023 The Sigstore Authors
-** detect-libc; version 2.0.3 -- https://github.com/lovell/detect-libc#readme
-Copyright 2017 Lovell Fuller and others.
 ** spdx-correct; version 3.2.0 -- https://github.com/jslicense/spdx-correct.js#readme
 ** validate-npm-package-license; version 3.0.4 -- https://github.com/kemitchell/validate-npm-package-license.js#readme
 
@@ -4395,8 +4393,6 @@ SOFTWARE.
 
 ------
 
-** parse5; version 7.2.1 -- https://parse5.js.org
-Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 ** parse5-htmlparser2-tree-adapter; version 7.1.0 -- https://parse5.js.org
 Copyright (c) 2013-2019 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 ** parse5-parser-stream; version 7.1.2 -- https://github.com/inikulin/parse5
@@ -5546,6 +5542,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ** @azure/core-client; version 1.9.3 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-client/
 Copyright (c) Microsoft Corporation
 ** @azure/core-rest-pipeline; version 1.19.1 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-rest-pipeline/
+Copyright (c) Microsoft Corporation
+** @azure/identity; version 4.9.1 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
 Copyright (c) Microsoft Corporation
 
 Copyright (c) Microsoft Corporation.
@@ -6809,6 +6807,9 @@ Copyright (c) Microsoft Corporation
 ** @types/istanbul-lib-coverage; version 2.0.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/istanbul-lib-coverage
 Copyright (c) Microsoft Corporation
 ** @types/mocha; version 10.0.10 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mocha
+Copyright (c) Microsoft Corporation
+** @types/node; version 22.14.1 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/selenium-webdriver; version 4.1.28 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/selenium-webdriver
 ** @types/vscode; version 1.53.0 -- 
