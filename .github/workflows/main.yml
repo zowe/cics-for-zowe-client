@@ -92,28 +92,36 @@ jobs:
     #     name: zowe-cics-client
     #     path: dist/*
 
-  e2e-test:
-    runs-on: ubuntu-latest
-
-    services:
-      wiremock:
-        image: wiremock/wiremock
-        ports:
-          - 8080:8080
-        volumes:
-          - ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock:/home/wiremock
-        options: --name wiremock
+  e2e-test-mac: 
+    runs-on: macos-latest
 
     steps:
-      - name: Change workspace folder so wiremock service can write
-        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
-
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Restart Wiremock with new mappings
-        run: docker restart wiremock
+      - name: Set up Java 17
+        uses: actions/setup-java@v3.14.1
+        with:
+          distribution: 'oracle'
+          java-version: '17'
 
+      - name: Download WireMock Standalone JAR
+        run: |
+          curl -L https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.0.1/wiremock-standalone-3.0.1.jar -o wiremock-standalone.jar
+      
+      - name: Wait for WireMock to be ready
+        run: |
+          sleep 2
+      
+      - name: Start WireMock Standalone JAR
+        run: |
+          # Start WireMock in the background
+          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock/ &
+      
+      - name: Wait for WireMock to be ready
+        run: |
+          sleep 5
+      
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
@@ -132,13 +140,11 @@ jobs:
 
       - name: Test Wiremock route
         if: ${{ always() && steps.build.outcome == 'success' }}
-        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E06EB1264D925C60
+        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E07F03C0E3C3A462
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: npm run test:e2e
+        run: npm run test:e2e
 
   notices:
     if: github.event.pull_request.merged != true && github.ref != 'refs/heads/main'
@@ -176,7 +182,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_protected
     needs:
       - test
-      - e2e-test
+      - e2e-test-mac
     runs-on: ubuntu-latest
     permissions:
       contents: write
