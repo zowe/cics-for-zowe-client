@@ -9,43 +9,40 @@
  *
  */
 
-let fs = require('fs');
-let path = require('path');
+let fs = require("fs");
+let path = require("path");
 
-const jsonFilePath = path.resolve(__dirname, '../__e2e__/resources/test/config-files/zowe.config.json');
+const jsonFilePath = path.resolve(__dirname, "../__e2e__/resources/test/config-files/zowe.config.json");
 const wiremock_profile = {
-    "wiremock_server": {
-         "type": "cics",
-         "properties": {
-             "host": "localhost",
-             "port": 8080,
-             "rejectUnauthorized": false,
-             "protocol": "http"
-            }
-    }
+  wiremock_server: {
+    type: "cics",
+    properties: {
+      host: "localhost",
+      port: 8080,
+      rejectUnauthorized: false,
+      protocol: "http",
+    },
+  },
 };
-
-let jsonOriginalProfile: object;
 
 export function addWiremockProfileToConfigFile(): void {
-    const jsonFile = require(jsonFilePath);
-    jsonOriginalProfile = {...jsonFile.profiles};
-    const newProfile = {
-        ...jsonFile.profiles,
-        ...wiremock_profile
-    };
-    jsonFile.profiles = newProfile;
-    fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), 'utf8');
-};
+  const jsonFile = require(jsonFilePath);
+  const newProfile = {
+    ...jsonFile.profiles,
+    ...wiremock_profile,
+  };
+  jsonFile.profiles = newProfile;
+  fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), "utf8");
+}
 
 export function restoreOriginalConfigFile(): void {
-    const jsonFile = require(jsonFilePath);
-    if(jsonFile.profiles && jsonFile.profiles.hasOwnProperty('wiremock_server')){
-        jsonFile.profiles = jsonOriginalProfile;
-        fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), 'utf8');
-    }
-};
+  const jsonFile = require(jsonFilePath);
+  if (jsonFile.profiles && jsonFile.profiles.hasOwnProperty("wiremock_server")) {
+    delete jsonFile.profiles.wiremock_server;
+    fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2), "utf8");
+  }
+}
 
 export function sleep(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
