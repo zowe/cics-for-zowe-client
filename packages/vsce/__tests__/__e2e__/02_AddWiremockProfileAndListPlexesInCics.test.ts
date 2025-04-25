@@ -100,10 +100,14 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       cicsTree.takeScreenshot();
     });
 
-    it("Should Display Wiremock Profile Under CICS Section", async () => {
+    it("Should Display Wiremock Profile Under CICS Section And Check For The Title Of Profile", async () => {
       // Checking if wiremock_server profile is available under the cics section
       wiremockServer = await cicsTree.findItem(profileName);
       expect(wiremockServer).exist;
+
+      // Title check for wiremork profile
+      const wmSeverLabel = await wiremockServer?.getLabel();
+      expect(wmSeverLabel).equals("wiremock_server");
       cicsTree.takeScreenshot();
     });
 
@@ -115,10 +119,6 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       await sleep(200);
       expect(await wiremockServer?.isExpandable()).to.be.true;
       await wiremockServer?.expand();
-
-      // Title check for wiremork profile
-      const wmSeverLabel = await wiremockServer?.getLabel();
-      expect(wmSeverLabel).equals("wiremock_server");
 
       // Check the plexes under wiremock profile
       const wmItems: TreeItem[] | undefined = await wiremockServer?.getChildren();
