@@ -116,7 +116,8 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       await wiremockServer?.click();
       expect(await wiremockServer?.isExpanded()).to.be.true;
       await wiremockServer?.collapse();
-      await sleep(200);
+      await sleep(5000);
+      // await sleep(200);
       expect(await wiremockServer?.isExpandable()).to.be.true;
       await wiremockServer?.expand();
 
@@ -131,6 +132,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       const plex2 = await wmItems?.at(1)?.getLabel();
       expect(plex2).contains("DUMMY907");
       cicsTree.takeScreenshot();
+      // vscode.window.showInformationMessage("Test Passed");
     });
   });
 });
