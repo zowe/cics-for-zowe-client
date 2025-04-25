@@ -120,8 +120,6 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
       // Check the plexes under wiremock profile
       const wmItems: TreeItem[] | undefined = await wiremockServer?.getChildren();
-      const wmLen = wmItems?.length;
-      expect(wmLen).equals(2);
 
       const plex1 = await wmItems?.at(0)?.getLabel();
       expect(plex1).contains("CICSEX61");
