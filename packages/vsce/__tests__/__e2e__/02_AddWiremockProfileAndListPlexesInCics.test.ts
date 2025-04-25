@@ -33,9 +33,8 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
   });
 
   beforeEach(async () => {
-    // Expand the cics section
+    // Click the cics section
     await cicsTree.click();
-    await cicsTree.expand();
   });
 
   after(async () => {
@@ -113,7 +112,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       await wiremockServer?.click();
       expect(await wiremockServer?.isExpanded()).to.be.true;
       await wiremockServer?.collapse();
-      await sleep(500);
+      await sleep(200);
       expect(await wiremockServer?.isExpandable()).to.be.true;
       await wiremockServer?.expand();
 
