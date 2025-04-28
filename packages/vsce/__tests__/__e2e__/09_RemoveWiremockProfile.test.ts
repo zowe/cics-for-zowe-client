@@ -51,7 +51,15 @@ describe("Remove The Wiremock Profile From The Configuration File", async () => 
 
     // Select the option to edit project team configuration file
     quickPick = await InputBox.create();
+
+    let qpItems = await quickPick.getQuickPicks();
+    const label1 = await qpItems[1].getLabel();
+    expect(label1).contains("Edit Team Configuration File");
     await quickPick.selectQuickPick(1);
+
+    qpItems = await quickPick.getQuickPicks();
+    const label2 = await qpItems[1].getLabel();
+    expect(label2).contains("Project: in the current working directory");
     await quickPick.selectQuickPick(1);
 
     // Find open editors
