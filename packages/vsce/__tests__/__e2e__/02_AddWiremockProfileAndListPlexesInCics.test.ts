@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser } from "vscode-extension-tester";
 import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
@@ -48,8 +48,9 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       addWiremockProfileToConfigFile();
 
       // Click the plus icon in the cicsTree
-      const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
-      await plusIcon?.click();
+      const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
+      assert(plusIcon !== undefined);
+      await plusIcon.click();
 
       // Select the option to edit project team configuration file
       quickPick = await InputBox.create();
@@ -85,8 +86,9 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
     it("Should Add The Wiremock CICS Profile To The Tree Using The Create Profile Toolbar Option", async () => {
       // Click the plus icon in cics
-      const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
-      await plusIcon?.click();
+      const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
+      assert(plusIcon !== undefined);
+      await plusIcon.click();
 
       // Find quickpick
       quickPick = await InputBox.create();
@@ -112,20 +114,21 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       // Checking if wiremock_server profile is available under the cics section
       wiremockServer = await cicsTree.findItem(profileName);
       expect(wiremockServer).exist;
-
+      assert(wiremockServer !== undefined);
       // Title check for wiremork profile
-      const wmSeverLabel = await wiremockServer?.getLabel();
+      const wmSeverLabel = await wiremockServer.getLabel();
       expect(wmSeverLabel).equals("wiremock_server");
       cicsTree.takeScreenshot();
     });
 
     it("Should List The CICSplexes Under Wiremock Profile", async () => {
       // Click the wiremock_server profile and list the regions under it
+      assert(wiremockServer !== undefined);
       console.log("======  Expanding Children =====");
-      expect(await wiremockServer?.isExpanded()).to.be.false;
+      expect(await wiremockServer.isExpanded()).to.be.false;
       await wiremockServer?.click();
       console.log("====== Children Expanded =====");
-      expect(await wiremockServer?.isExpanded()).to.be.true;
+      expect(await wiremockServer.isExpanded()).to.be.true;
       await wiremockServer?.collapse();
       await sleep(500);
 
@@ -140,20 +143,25 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       // await sleep(500);
 
       // Check the plexes under wiremock profile
-      const wmItems = await wiremockServer?.getChildren();
+      let wmItems = await wiremockServer.getChildren();
+      assert(wmItems !== undefined);
       expect(wmItems).exist;
 
-      if (wmItems != undefined && wmItems?.length > 2) {
-        console.log("======Label 0===", wmItems[0]?.getLabel());
-        console.log("======Label 1===", wmItems[1]?.getLabel());
-        await wiremockServer?.collapse();
+      if (wmItems != undefined && wmItems.length > 2) {
+        let label = await wmItems[0].getLabel();
+        console.log("======Label 0===", label);
+        label = await wmItems[1].getLabel();
+        console.log("======Label 1===", label);
+        await wiremockServer.collapse();
+        await sleep(500);
+        wmItems = await wiremockServer.getChildren();
       }
-      console.log("======len===", wmItems?.length);
+      console.log("======len===", wmItems.length);
 
-      const plex1 = await wmItems?.at(0)?.getLabel();
+      const plex1 = await wmItems[0].getLabel();
       expect(plex1).contains("CICSEX61");
 
-      const plex2 = await wmItems?.at(1)?.getLabel();
+      const plex2 = await wmItems[1].getLabel();
       expect(plex2).contains("DUMMY907");
       cicsTree.takeScreenshot();
     });
