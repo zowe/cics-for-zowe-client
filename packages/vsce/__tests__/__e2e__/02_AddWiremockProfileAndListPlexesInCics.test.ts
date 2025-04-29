@@ -121,31 +121,40 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
     it("Should List The CICSplexes Under Wiremock Profile", async () => {
       // Click the wiremock_server profile and list the regions under it
+      console.log("======  Expanding Children =====");
+      expect(await wiremockServer?.isExpanded()).to.be.false;
       await wiremockServer?.click();
+      console.log("====== Children Expanded =====");
       expect(await wiremockServer?.isExpanded()).to.be.true;
       await wiremockServer?.collapse();
       await sleep(500);
 
-      const child1 = await wiremockServer?.findChildItem("CICSEX61");
-      expect(child1).not.to.be.undefined;
+      // const child1 = await wiremockServer?.findChildItem("CICSEX61");
+      // expect(child1).not.to.be.undefined;
 
-      const child2 = await wiremockServer?.findChildItem("DUMMY907");
-      expect(child2).not.to.be.undefined;
+      // const child2 = await wiremockServer?.findChildItem("DUMMY907");
+      // expect(child2).not.to.be.undefined;
 
-      console.log("child: ", await child1?.getLabel(), await child2?.getLabel());
+      // console.log("child: ", await child1?.getLabel(), await child2?.getLabel());
       // await wiremockServer?.collapse();
       // await sleep(500);
 
-      // // Check the plexes under wiremock profile
-      // const wmItems = await wiremockServer?.getChildren();
-      // expect(wmItems).exist;
-      // console.log("======len===", wmItems?.length);
+      // Check the plexes under wiremock profile
+      const wmItems = await wiremockServer?.getChildren();
+      expect(wmItems).exist;
 
-      // const plex1 = await wmItems?.at(0)?.getLabel();
-      // expect(plex1).contains("CICSEX61");
+      if (wmItems != undefined && wmItems?.length > 2) {
+        console.log("======Label 0===", wmItems[0]?.getLabel());
+        console.log("======Label 1===", wmItems[1]?.getLabel());
+        await wiremockServer?.collapse();
+      }
+      console.log("======len===", wmItems?.length);
 
-      // const plex2 = await wmItems?.at(1)?.getLabel();
-      // expect(plex2).contains("DUMMY907");
+      const plex1 = await wmItems?.at(0)?.getLabel();
+      expect(plex1).contains("CICSEX61");
+
+      const plex2 = await wmItems?.at(1)?.getLabel();
+      expect(plex2).contains("DUMMY907");
       cicsTree.takeScreenshot();
     });
   });
