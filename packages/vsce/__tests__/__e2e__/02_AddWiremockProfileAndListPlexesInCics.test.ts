@@ -12,7 +12,7 @@
 import { assert, expect } from "chai";
 import * as path from "path";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
-import { addWiremockProfileToConfigFile } from "./e2e_globalMocks";
+import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
   let cicsTree: DefaultTreeSection;
@@ -123,12 +123,16 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       // Click the wiremock_server profile and list the regions under it
       await wiremockServer?.click();
       expect(await wiremockServer?.isExpanded()).to.be.true;
+      await wiremockServer?.collapse();
+      await sleep(500);
 
       const child1 = await wiremockServer?.findChildItem("CICSEX61");
       expect(child1).not.to.be.undefined;
 
       const child2 = await wiremockServer?.findChildItem("DUMMY907");
       expect(child2).not.to.be.undefined;
+
+      console.log("child: ", await child1?.getLabel(), await child2?.getLabel());
       // await wiremockServer?.collapse();
       // await sleep(500);
 
