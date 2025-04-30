@@ -30,6 +30,11 @@ describe("Create Project Level Team Configuration File Scenario", () => {
     cicsTree = await view.getContent().getSection("cics");
   });
 
+  after(async () => {
+    // Close all open editor tabs
+    editorView.closeAllEditors();
+  });
+
   it("CICS Section title Check", async () => {
     // title check for cics section
     const title = await cicsTree.getTitle();
@@ -85,7 +90,6 @@ describe("Create Project Level Team Configuration File Scenario", () => {
 
     // Check zowe.config.json was opened - could check content here
     expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
-
     cicsTree.takeScreenshot();
   });
 });

@@ -25,6 +25,11 @@ describe("Edit Global Team Configuration File Scenario", () => {
     cicsTree = await view.getContent().getSection("cics");
   });
 
+  after(async () => {
+    // Close all open editor tabs
+    editorView.closeAllEditors();
+  });
+
   it("CICS Section title Check", async () => {
     // title check for cics section
     const title = await cicsTree.getTitle();
