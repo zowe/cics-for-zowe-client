@@ -11,6 +11,7 @@
 
 import * as disableCommands from "./disableCommands";
 import * as enableCommands from "./enableCommands";
+import { getToggleResourceSettingCommand } from "./toggleResourceSettingCommand";
 
 import { TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
@@ -102,5 +103,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
+
+    getToggleResourceSettingCommand(),
   ];
 };

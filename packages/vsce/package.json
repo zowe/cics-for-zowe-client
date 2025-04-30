@@ -17,7 +17,8 @@
   ],
   "activationEvents": [
     "onCommand:cics-extension-for-zowe.addSession",
-    "onView:cics-view"
+    "onView:cics-view",
+    "onCommand:cics-extension-for-zowe.toggleResourceSetting"
   ],
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
@@ -417,6 +418,15 @@
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.toggleResourceSetting",
+        "title": "Toggle Resource Setting",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
       }
     ],
     "menus": {
@@ -429,6 +439,11 @@
         {
           "command": "cics-extension-for-zowe.addSession",
           "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
+          "when": "view == cics-view",
+          "command": "cics-extension-for-zowe.toggleResourceSetting",
           "group": "navigation"
         }
       ],
@@ -857,6 +872,60 @@
           "description": "Record count increment criteria for 'All Web Services'",
           "scope": "window",
           "minimum": 1
+        },
+        "zowe.cics.resources.program": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Program Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.transaction": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Transaction Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.localFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Local File Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.task": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Task Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.library": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Library Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.pipeline": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Pipeline Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.tcpipService": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable TCPIP Service Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.uriMap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable URI Map Resource",
+          "scope": "window"
+        },
+        "zowe.cics.resources.webService": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Web Service Resource",
+          "scope": "window"
         }
       }
     }
