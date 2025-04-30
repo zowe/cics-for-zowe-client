@@ -22,20 +22,10 @@ import { CICSPipelineTree } from "./CICSPipelineTree";
 import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
 import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
+import { workspace } from "vscode";
 
 export class CICSRegionTree extends TreeItem {
-  children: [
-        CICSProgramTree,
-        CICSTransactionTree,
-        CICSLocalFileTree,
-        CICSTaskTree,
-        CICSLibraryTree,
-        CICSPipelineTree,
-        CICSTCPIPServiceTree,
-        CICSURIMapTree,
-        CICSWebServiceTree,
-      ]
-    | null;
+  children: TreeItem[] | null;
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -65,17 +55,20 @@ export class CICSRegionTree extends TreeItem {
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";
+
+      const config = workspace.getConfiguration("zowe.cics.resources");
+
       this.children = [
-        new CICSProgramTree(this),
-        new CICSTransactionTree(this),
-        new CICSLocalFileTree(this),
-        new CICSTaskTree(this),
-        new CICSLibraryTree(this),
-        new CICSPipelineTree(this),
-        new CICSTCPIPServiceTree(this),
-        new CICSURIMapTree(this),
-        new CICSWebServiceTree(this),
-      ];
+        config.get<boolean>("program", true) ? new CICSProgramTree(this) : null,
+        config.get<boolean>("transaction", true) ? new CICSTransactionTree(this) : null,
+        config.get<boolean>("localFile", true) ? new CICSLocalFileTree(this) : null,
+        config.get<boolean>("task", true) ? new CICSTaskTree(this) : null,
+        config.get<boolean>("library", true) ? new CICSLibraryTree(this) : null,
+        config.get<boolean>("pipeline", true) ? new CICSPipelineTree(this) : null,
+        config.get<boolean>("tcpipService", true) ? new CICSTCPIPServiceTree(this) : null,
+        config.get<boolean>("uriMap", true) ? new CICSURIMapTree(this) : null,
+        config.get<boolean>("webService", true) ? new CICSWebServiceTree(this) : null,
+      ].filter((child) => child !== null);
     }
   }
 
