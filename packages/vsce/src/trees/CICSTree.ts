@@ -241,13 +241,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             } catch (error) {
               if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
                 sessionTree.setUnauthorized();
-                const newProfile = await updateProfile(profile, sessionTree);
+                profile = await updateProfile(profile, sessionTree);
 
-                if (!newProfile) {
+                if (!profile) {
                   throw error;
                 }
 
-                profile = newProfile;
+                sessionTree.profile = profile;
+                sessionTree.createSessionFromProfile();
                 plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
                 sessionTree.setAuthorized();
               } else {
