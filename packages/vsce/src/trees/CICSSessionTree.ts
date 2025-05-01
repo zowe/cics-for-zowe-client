@@ -28,20 +28,24 @@ export class CICSSessionTree extends TreeItem {
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;
 
+    this.profile = profile;
+    this.createSessionFromProfile();
+
+    this.isUnauthorized = undefined;
+  }
+
+  public createSessionFromProfile() {
     this.session = new imperative.Session({
       type: SessConstants.AUTH_TYPE_TOKEN,
       storeCookie: true,
       tokenType: SessConstants.TOKEN_TYPE_LTPA,
-      hostname: profile.profile!.host,
-      port: Number(profile.profile!.port),
-      user: profile.profile!.user || "",
-      password: profile.profile!.password || "",
-      rejectUnauthorized: profile.profile!.rejectUnauthorized,
-      protocol: profile.profile!.protocol,
+      hostname: this.profile.profile!.host,
+      port: Number(this.profile.profile!.port),
+      user: this.profile.profile!.user || "",
+      password: this.profile.profile!.password || "",
+      rejectUnauthorized: this.profile.profile!.rejectUnauthorized,
+      protocol: this.profile.profile!.protocol,
     });
-
-    this.profile = profile;
-    this.isUnauthorized = undefined;
   }
 
   public addRegion(region: CICSRegionTree) {
