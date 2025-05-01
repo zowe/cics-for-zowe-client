@@ -9,15 +9,17 @@
  *
  */
 
-export * from "./add-to-list";
-export * from "./define";
-export * from "./delete";
-export * from "./disable";
-export * from "./discard";
-export * from "./enable";
-export * from "./get";
-export * from "./set";
-export * from "./install";
-export * from "./remove-from-list";
-export * from "./utils";
-export * from "./cache";
+export interface IResourceQueryParams {
+  /**
+   * Include SUMMONLY query parameter
+   */
+  summonly?: boolean;
+  /**
+   * Include NODISCARD query parameter
+   */
+  nodiscard?: boolean;
+  /**
+   * Include OVERRIDEWARNINGCOUNT query parameter
+   */
+  overrideWarningCount?: boolean;
+}
