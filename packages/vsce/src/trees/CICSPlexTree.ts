@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
@@ -160,15 +160,35 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addNewCombinedTrees() {
-    this.children.push(new CICSCombinedProgramTree(this));
-    this.children.push(new CICSCombinedTransactionsTree(this));
-    this.children.push(new CICSCombinedLocalFileTree(this));
-    this.children.push(new CICSCombinedTaskTree(this));
-    this.children.push(new CICSCombinedLibraryTree(this));
-    this.children.push(new CICSCombinedTCPIPServiceTree(this));
-    this.children.push(new CICSCombinedURIMapTree(this));
-    this.children.push(new CICSCombinedWebServiceTree(this));
-    this.children.push(new CICSCombinedPipelineTree(this));
+    const config = workspace.getConfiguration("zowe.cics.resources");
+
+    if (config.get<boolean>("program", true)) {
+      this.children.push(new CICSCombinedProgramTree(this));
+    }
+    if (config.get<boolean>("transaction", true)) {
+      this.children.push(new CICSCombinedTransactionsTree(this));
+    }
+    if (config.get<boolean>("localFile", true)) {
+      this.children.push(new CICSCombinedLocalFileTree(this));
+    }
+    if (config.get<boolean>("task", true)) {
+      this.children.push(new CICSCombinedTaskTree(this));
+    }
+    if (config.get<boolean>("library", true)) {
+      this.children.push(new CICSCombinedLibraryTree(this));
+    }
+    if (config.get<boolean>("pipeline", true)) {
+      this.children.push(new CICSCombinedPipelineTree(this));
+    }
+    if (config.get<boolean>("tcpipService", true)) {
+      this.children.push(new CICSCombinedTCPIPServiceTree(this));
+    }
+    if (config.get<boolean>("uriMap", true)) {
+      this.children.push(new CICSCombinedURIMapTree(this));
+    }
+    if (config.get<boolean>("webService", true)) {
+      this.children.push(new CICSCombinedWebServiceTree(this));
+    }
   }
 
   public addRegionContainer(): CICSRegionsContainer {
