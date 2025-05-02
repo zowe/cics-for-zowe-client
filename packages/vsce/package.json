@@ -421,12 +421,8 @@
       },
       {
         "command": "cics-extension-for-zowe.toggleResourceSetting",
-        "title": "Toggle Resource Setting",
-        "category": "IBM CICS for Zowe Explorer",
-        "icon": {
-          "light": "resources/imgs/newcopy-dark.svg",
-          "dark": "resources/imgs/newcopy-light.svg"
-        }
+        "title": "Toggle Resources",
+        "category": "IBM CICS for Zowe Explorer"
       }
     ],
     "menus": {
@@ -440,14 +436,14 @@
           "command": "cics-extension-for-zowe.addSession",
           "when": "view == cics-view",
           "group": "navigation"
-        },
-        {
-          "when": "view == cics-view",
-          "command": "cics-extension-for-zowe.toggleResourceSetting",
-          "group": "navigation"
         }
       ],
       "view/item/context": [
+        {
+          "when": "view == cics-view",
+          "command": "cics-extension-for-zowe.toggleResourceSetting",
+          "group": ""
+        },
         {
           "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
