@@ -9,71 +9,60 @@
  *
  */
 
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, VSBrowser, ViewPanelAction } from "vscode-extension-tester";
-import { restoreOriginalConfigFile } from "./e2e_globalMocks";
+import { ActivityBar, DefaultTreeSection, EditorView, SideBarView, VSBrowser } from "vscode-extension-tester";
+import { restoreOriginalConfigFile, sleep } from "./util/globalMocks";
+import {
+  checkIfZoweConfigJsonFileIsOpened,
+  closeAllEditorsTabs,
+  getCicsSection,
+  openZoweExplorer,
+  selectEditProjectTeamConfigFile,
+} from "./util/initSetup.test";
 
 describe("Remove The Wiremock Profile From The Configuration File", async () => {
+  let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let editorView: EditorView;
-  let quickPick: InputBox;
+  const configFileName = "zowe.config.json";
   const profileName = "wiremock_server";
 
   before(async () => {
+    await sleep(2000);
     // open the Explorer view into the folder where configuration files are available
     await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
     (await new ActivityBar().getViewControl("Explorer"))?.openView();
 
-    // Switch to the cics extension view
-    const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
-    assert(zoweExplorer !== undefined);
-    const view = await zoweExplorer.openView();
-    cicsTree = await view.getContent().getSection("cics");
+    // Open the Zowe explorer
+    view = await openZoweExplorer();
 
-    // Expand the cics section
-    await cicsTree.click();
-    await cicsTree.expand();
+    // Open the cics section in the Zowe explorer and expand it
+    cicsTree = await getCicsSection(view);
   });
 
   after(async () => {
     // Close all open editor tabs
-    editorView.closeAllEditors();
+    await closeAllEditorsTabs();
   });
 
   it("Remove Wiremock Profile", async () => {
     // Remove the wiremock profile from zowe.config.json
     restoreOriginalConfigFile();
 
-    // Click the plus icon in the cicsTree
-    const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
-    await plusIcon?.click();
+    // Select the option to edit project team configuration file from the quickpick
+    await selectEditProjectTeamConfigFile(cicsTree);
 
-    // Select the option to edit project team configuration file
-    quickPick = await InputBox.create();
+    // Should open the configuration file
+    await checkIfZoweConfigJsonFileIsOpened();
 
-    let qpItems = await quickPick.getQuickPicks();
-    const label1 = await qpItems[1].getLabel();
-    expect(label1).contains("Edit Team Configuration File");
-    await quickPick.selectQuickPick(1);
-
-    qpItems = await quickPick.getQuickPicks();
-    const label2 = await qpItems[1].getLabel();
-    expect(label2).contains("Project: in the current working directory");
-    await quickPick.selectQuickPick(1);
-
-    // Find open editors
+    //Open the editor tab of zowe.config.json
     editorView = new EditorView();
-    const titles = await editorView.getOpenEditorTitles();
-
-    // Check zowe.config.json was opened - could check content here
-    expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
-
-    //Get the config file path
-    const editor = (await editorView.openEditor("zowe.config.json")) as TextEditor;
+    const editor = await editorView.openEditor(configFileName);
 
     // Checking if the wiremock profile is removed
     let isWmAvailable = await editor.getText();
     expect(isWmAvailable.includes(profileName)).not.to.be.true;
+    cicsTree.takeScreenshot();
   });
 });
