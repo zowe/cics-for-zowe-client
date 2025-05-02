@@ -3,14 +3,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "outDir": "./lib"
-},
-  "include": [
-    "./__e2e__/*.ts"
-  ],
-  "exclude": [
-    "lib",
-    "**/__results__/",
-    "**/__snapshots__",
-    "**/node_modules"
-  ]
+  },
+  "include": ["./__e2e__/*.ts", "./__e2e__/util/*.ts"],
+  "exclude": ["lib", "**/__results__/", "**/__snapshots__", "**/node_modules"]
 }
