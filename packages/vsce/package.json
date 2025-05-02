@@ -421,7 +421,7 @@
       },
       {
         "command": "cics-extension-for-zowe.toggleResourceSetting",
-        "title": "Toggle Resources",
+        "title": "Manage Visible Resources",
         "category": "IBM CICS for Zowe Explorer"
       }
     ],
