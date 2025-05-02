@@ -15,6 +15,7 @@ import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
+import * as vscode from "vscode";
 
 jest.mock("../../../src/trees/CICSProgramTree");
 jest.mock("../../../src/trees/CICSTransactionTree");
@@ -44,11 +45,18 @@ const region_undefined = {
 };
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsregion", "");
 
+const workspaceMock = globalMocks.workspaceMock;
+const workspaceConfiguration = globalMocks.workspaceConfiguration;
+const get = globalMocks.get;
+
 describe("Test suite for CICSRegionTree", () => {
   let sut: CICSRegionTree;
 
   beforeEach(() => {
     getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
+    workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+    get.mockReturnValue(true);
+
     sut = new CICSRegionTree(
       "regionName",
       region,

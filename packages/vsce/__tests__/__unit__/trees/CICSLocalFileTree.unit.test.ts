@@ -31,12 +31,9 @@ const CICSLocalFileTreeItemMock = {};
 const treeResourceMock = globalMocks.getDummyTreeResources("cicslocalfile", "fileName*");
 const record = [{ prop: "test1" }, { prop: "test2" }];
 
-const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
-const get = jest.fn();
-const workspaceConfiguration = {
-  get: get,
-  update: jest.fn(),
-};
+const workspaceMock = globalMocks.workspaceMock;
+const workspaceConfiguration = globalMocks.workspaceConfiguration;
+const get = globalMocks.get;
 
 describe("Test suite for CICSLocalFileTree", () => {
   let sut: CICSLocalFileTree;
