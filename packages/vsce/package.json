@@ -36,11 +36,28 @@
   ],
   "contributes": {
     "viewsWelcome": [],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "inspector-panel",
+          "icon": "resources/zowe_cics_logo.png",
+          "title": "Resource Inspector"
+        }
+      ]
+    },
     "views": {
       "zowe": [
         {
           "id": "cics-view",
           "name": "cics"
+        }
+      ],
+      "inspector-panel": [
+        {
+          "type": "webview",
+          "id": "resource-inspector",
+          "name": "Resource Inspector",
+          "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
         }
       ]
     },
@@ -75,6 +92,15 @@
       {
         "command": "cics-extension-for-zowe.toggleResourcesWebView",
         "title": "Toggle Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/filter-dark.svg",
+          "dark": "resources/imgs/filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.resourceInspectorView",
+        "title": "Resource Inspector",
         "category": "IBM CICS for Zowe Explorer",
         "icon": {
           "light": "resources/imgs/filter-dark.svg",
@@ -413,6 +439,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.resourceInspectorView",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "Inquire Transaction",
         "category": "IBM CICS for Zowe Explorer"
@@ -446,6 +477,11 @@
           "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
           "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ || viewItem =~ /^cicsurimaps.*/ || viewItem =~ /^cicslocalfile.*/",
+          "command": "cics-extension-for-zowe.resourceInspectorView",
+          "group": ""
         },
         {
           "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
@@ -897,11 +933,13 @@
     "@vscode/vsce": "^2.32.0",
     "chai": "^4.4.1",
     "mocha": "^11.1.0",
-    "vscode-extension-tester": "^8.11.0"
+    "vscode-extension-tester": "^8.11.0",
+    "@types/mustache": "^4.2.5"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "6.5.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.1.1"
+    "@zowe/zowe-explorer-api": "^3.1.1",
+    "mustache": "^4.2.0"
   }
 }
