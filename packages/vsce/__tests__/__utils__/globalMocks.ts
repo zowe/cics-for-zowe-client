@@ -14,6 +14,7 @@ import { IProfile, Session } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 import * as filterUtils from "../../src/utils/filterUtils";
 import * as resourceUtils from "../../src/utils/resourceUtils";
+import * as vscode from "vscode";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
@@ -82,3 +83,11 @@ export function getDummyTreeResources(resourceName: string, defaultCriteria: str
     defaultCriteria: defaultCriteria,
   };
 }
+
+export const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
+export const get = jest.fn();
+export const workspaceConfiguration = {
+  get: get,
+  update: jest.fn(),
+  isFile: jest.fn().mockReturnValue(true),
+};
