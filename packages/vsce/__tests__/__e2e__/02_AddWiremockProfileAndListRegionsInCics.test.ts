@@ -10,106 +10,119 @@
  */
 
 import { assert, expect } from "chai";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TreeItem, TextEditor, ViewPanelAction } from "vscode-extension-tester";
-import { addWiremockProfileToConfigFile, sleep } from "./e2e_globalMocks";
+import * as path from "path";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem, VSBrowser } from "vscode-extension-tester";
+import { addWiremockProfileToConfigFile, sleep } from "./util/globalMocks";
+import {
+  checkIfZoweConfigJsonFileIsOpened,
+  clickPlusIconInCicsTree,
+  closeAllEditorsTabs,
+  getCicsSection,
+  openZoweExplorer,
+  selectEditProjectTeamConfigFile,
+} from "./util/initSetup.test";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
-    let cicsTree: DefaultTreeSection;
-    let quickPick: InputBox;
-    let editorView: EditorView;
-    const profileName = "wiremock_server";
+  let view: SideBarView;
+  let cicsTree: DefaultTreeSection | undefined;
+  let quickPick: InputBox;
+  let editorView: EditorView;
+  const configFileName = "zowe.config.json";
+  const profileName = "wiremock_server";
 
-    before(async () => {
-        // Switch to the cics extension view
-        const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
-        assert(zoweExplorer !== undefined);
-        const view = await zoweExplorer.openView();
-        cicsTree = await view.getContent().getSection("cics");
+  before(async () => {
+    await sleep(2000);
+    // open the Explorer view into the folder where configuration files are available
+    await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
+    (await new ActivityBar().getViewControl("Explorer"))?.openView();
+
+    // Open the Zowe explorer
+    view = await openZoweExplorer();
+
+    // Open the cics section in the Zowe explorer and expand it
+    cicsTree = await getCicsSection(view);
+  });
+
+  beforeEach(async () => {
+    // Expand the cics section
+    await cicsTree?.click();
+  });
+
+  after(async () => {
+    // Close all open editors
+    await closeAllEditorsTabs();
+  });
+
+  describe("Adding Wiremock Profile In The Configuration File", () => {
+    it("Should Add Wiremock Profile", async () => {
+      // Add wiremock profile to the zowe.config.json
+      addWiremockProfileToConfigFile();
+
+      // Select the option to edit project team configuration file from the quickpick
+      await selectEditProjectTeamConfigFile(cicsTree);
+
+      // Should open the configuration file
+      await checkIfZoweConfigJsonFileIsOpened();
+
+      // Check if wiremock profile is added to the zowe.config.json
+      editorView = new EditorView();
+      const editor = await editorView.openEditor(configFileName);
+      const isWmAvailable = await editor.getText();
+      expect(isWmAvailable.includes(profileName)).to.be.true;
+      cicsTree?.takeScreenshot();
+    });
+  });
+
+  describe("Check For The Wiremock Profile And List The Plexes", async () => {
+    let wiremockServer: TreeItem | undefined;
+
+    it("Should Add The Wiremock CICS Profile To The Tree Using The Create Profile Toolbar Option", async () => {
+      // Click the plus icon in cics section
+      await clickPlusIconInCicsTree(cicsTree);
+
+      // Find quickpick
+      quickPick = await InputBox.create();
+      const qpItems = await quickPick.getQuickPicks();
+      const qpLen = qpItems.length;
+
+      // Selecting wiremock_server from the quickpick
+      let i, wiremockLabel;
+      for (i = 0; i < qpLen; i++) {
+        wiremockLabel = await qpItems[i].getLabel();
+        if (wiremockLabel.includes(profileName)) {
+          break;
+        }
+      }
+      expect(wiremockLabel).contains(profileName);
+      if (i < qpLen) {
+        await quickPick.selectQuickPick(i);
+      }
+      cicsTree?.takeScreenshot();
     });
 
-    beforeEach(async () => {
-        // Expand the cics section
-        await cicsTree.click();
-        await cicsTree.expand();
+    it("Should Display Wiremock Profile Under CICS Section And Title Check For The Wiremock Profile", async () => {
+      // Checking if wiremock_server profile is available under the cics section
+      wiremockServer = await cicsTree?.findItem(profileName);
+      expect(wiremockServer).exist;
+
+      // Title check for wiremork profile
+      const wmSeverLabel = await wiremockServer?.getLabel();
+      expect(wmSeverLabel).equals(profileName);
+      cicsTree?.takeScreenshot();
     });
 
-    describe("Adding Wiremock Profile In The Configuration File", () => {
-        it("Should Add Wiremock Profile", async () => {
-            // Add wiremock profile to the zowe.config.json
-            addWiremockProfileToConfigFile();
-            
-            // Find open editors
-            editorView = new EditorView();
-            const titles = await editorView.getOpenEditorTitles();
+    it("Should List The CICSplexes Under Wiremock Profile", async () => {
+      // Should expand the wiremock_profile and check for the plexes present under it
+      const plexes = await cicsTree?.openItem(profileName);
+      assert(plexes !== undefined);
+      expect(plexes).exist;
 
-            // Check zowe.config.json was opened - could check content here
-            expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
+      const plex1 = await plexes[0].getLabel();
+      expect(plex1).contains("CICSEX61");
 
-            // Check if wiremock profile is added to the zowe.config.json
-            const editor = await editorView.openEditor("zowe.config.json") as TextEditor;
-            const isWmAvailable = await editor.getText()
-            expect(isWmAvailable.includes(profileName)).to.be.true;    
-        });
+      const plex2 = await plexes[1].getLabel();
+      expect(plex2).contains("DUMMY907");
+      cicsTree?.takeScreenshot();
     });
-
-    describe("Check For The Wiremock Profile And List The Regions", async () => {
-        let wiremockServer: TreeItem | undefined;
-
-        it("Should Add The Wiremock CICS Profile To The Tree Using The Create Profile Toolbar Option", async () => {
-            // Click the plus icon in cics
-            const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
-            await plusIcon?.click();
-
-            // Find quickpick
-            quickPick = await InputBox.create();
-            const qpItems = await quickPick.getQuickPicks();
-            const qpLen = qpItems.length;
-        
-            // Selecting wiremock_server from the quickpick
-            let i, wiremockLabel;
-            for(i=0; i<qpLen; i++){
-                wiremockLabel = await qpItems[i].getLabel();
-                if(wiremockLabel.includes(profileName)){
-                    break;
-                }
-            }
-            expect(wiremockLabel).contains(profileName);
-            if(i<qpLen){
-              await quickPick.selectQuickPick(i);
-            }
-            cicsTree.takeScreenshot();
-          });
-
-        it("Should Display Wiremock Profile Under CICS Section", async ()=>{
-            // Checking if wiremock_server profile is available under the cics section
-            wiremockServer = await cicsTree.findItem(profileName);
-            expect(wiremockServer).exist;
-            cicsTree.takeScreenshot();
-          });
-
-        it("Should List The CICSplexes Under Wiremock Profile", async () => {
-            // Expand the wiremock_server profile and list the regions under it
-            await wiremockServer?.click();
-            await wiremockServer?.collapse();
-            await sleep(200);
-            expect(await wiremockServer?.isExpandable()).to.be.true;
-            await wiremockServer?.expand();
-
-            // Title check for wiremork profile
-            const wmSeverLabel = await wiremockServer?.getLabel();
-            expect(wmSeverLabel).equals("wiremock_server");
-
-            // Check the plexes under wiremock profile
-            const wmItems: TreeItem[]| undefined = await wiremockServer?.getChildren();
-            const wmLen = wmItems?.length;
-            expect(wmLen).equals(2);
-
-            const plex1 = await wmItems?.at(0)?.getLabel();
-            expect(plex1).contains("CICSEX61");
-
-            const plex2 = await wmItems?.at(1)?.getLabel();
-            expect(plex2).contains("DUMMY907");
-            cicsTree.takeScreenshot();
-          });
-    });
+  });
 });
