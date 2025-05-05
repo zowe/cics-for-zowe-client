@@ -42,6 +42,11 @@
           "id": "inspector-panel",
           "icon": "resources/zowe_cics_logo.png",
           "title": "Resource Inspector"
+        },
+        {
+          "id": "bottom-panel",
+          "icon": "resources/zowe_cics_logo.png",
+          "title": "Bottom Panel View"
         }
       ]
     },
@@ -58,6 +63,14 @@
           "id": "resource-inspector",
           "name": "Resource Inspector",
           "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
+        }
+      ],
+      "bottom-panel": [
+        {
+          "type": "webview",
+          "id": "bottom-view",
+          "name": "Bottom View",
+          "when": "zowe.vscode-extension-for-zowe.showBottomPanel"
         }
       ]
     },
@@ -457,6 +470,11 @@
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.openBottomPanel",
+        "title": "Open Bottom Panel",
+        "category": "IBM CICS for Zowe Explorer"
       }
     ],
     "menus": {
@@ -792,6 +810,11 @@
           "when": "view == cics-view && viewItem =~ /^cicstask.*/",
           "command": "cics-extension-for-zowe.purgeTask",
           "group": "000_zowecics_main@1"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ || viewItem =~ /^cicsurimaps.*/ || viewItem =~ /^cicslocalfile.*/",
+          "command": "cics-extension-for-zowe.openBottomPanel",
+          "group": ""
         }
       ]
     },

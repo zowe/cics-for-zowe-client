@@ -35,6 +35,7 @@ import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 import { toggleResourcesWebViewCommand } from "./toggleResourcesWebViewCommand";
 import { getResourceInspectorCommand } from "./resourceInspectorViewCommand";
+import { getOpenBottomPanelCommand } from "./registerBottomPanel";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -107,5 +108,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getSampleWebviewCommand(context),
     toggleResourcesWebViewCommand(context),
     getResourceInspectorCommand(context, treeview),
+    getOpenBottomPanelCommand(context, treeview)
   ];
 };
