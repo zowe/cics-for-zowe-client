@@ -26,16 +26,16 @@ export function App() {
 
   useEffect(() => {
     window.addEventListener("message", (event) => {
-      console.log("printing event: ", event);
-      setLabel(event.data.label);
+      const data = event.data.data;
+      console.log("printing event: ", data);
+      setLabel(data[0].label);
+      setAttr(data[0].program);
     });
-
-    window.addEventListener("message", (event) => {
-      setAttr(event.data.attribute);
-    });
+    debugger;
     vscodeApi.postMessage({ command: "init" });
   }, []);
 
+  debugger;
   console.log("printing label: ", label);
   console.log("printing attr: ", attr);
   const keys = Object.keys(attr);
@@ -55,12 +55,12 @@ export function App() {
         <VscodeTableHeader>
           <VscodeTableRow>
             <VscodeTableHeaderCell>Attributes</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell>value</VscodeTableHeaderCell>
+            <VscodeTableHeaderCell>Value</VscodeTableHeaderCell>
           </VscodeTableRow>
         </VscodeTableHeader>
         <VscodeTableBody>
           {keys.map((x) => (
-            <VscodeTableRow>
+            <VscodeTableRow key={x}>
               <VscodeTableCell>{x}</VscodeTableCell>
               <VscodeTableCell>{map.get(x)}</VscodeTableCell>
             </VscodeTableRow>
