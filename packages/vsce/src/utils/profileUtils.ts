@@ -15,7 +15,9 @@ import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { ProfileManagement } from "./profileManagement";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {
-  const params = ["host", "port", "user", "password", "rejectUnauthorized", "protocol"];
+  // Only call this method when 401 is received and profile is updating,
+  // so user and password are deemed mandatory
+  const params = ["host", "port", "user", "password", "protocol"];
   const missing: (string | undefined)[] = [];
   for (const value of params) {
     if (profileProfile[value] === undefined) {
@@ -43,7 +45,7 @@ export async function updateProfile(profile?: imperative.IProfileLoaded, session
     // If profile is expanded and it previously had 401 error code
     (sessionTree && sessionTree.getIsUnauthorized())
   ) {
-    const updatedProfile = await promptCredentials(profile.name, true);
+    const updatedProfile = await promptCredentials(profile);
     if (updatedProfile) {
       profile = updatedProfile;
       // Remove "user" and "password" from missing params array
@@ -61,7 +63,7 @@ export async function updateProfile(profile?: imperative.IProfileLoaded, session
   return undefined;
 }
 
-export async function promptCredentials(sessionName: string, rePrompt?: boolean): Promise<imperative.IProfileLoaded> {
+export async function promptCredentials(profile: imperative.IProfileLoaded): Promise<imperative.IProfileLoaded> {
   // const mProfileInfo = new ProfileInfo("zowe", {
   //   requireKeytar: () => getSecurityModules("keytar", isTheia())!,
   // });
@@ -69,8 +71,9 @@ export async function promptCredentials(sessionName: string, rePrompt?: boolean)
   // ProfilesCache.createConfigInstance(mProfileInfo);
   const promptInfo = await ZoweVsCodeExtension.updateCredentials(
     {
-      sessionName,
-      rePrompt,
+      profile,
+      rePrompt: true,
+      zeProfiles: ProfileManagement.getProfilesCache(),
     },
     ProfileManagement.getExplorerApis()
   );
