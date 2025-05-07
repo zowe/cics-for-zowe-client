@@ -12,13 +12,11 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSTree } from "../trees/CICSTree";
-import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import constants from "../constants/CICS.defaults";
+import { IProgram, ProgramMeta } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
+import { CICSTree } from "../trees/CICSTree";
+import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
 
 /**
@@ -28,13 +26,13 @@ import { runPutResource } from "../utils/resourceUtils";
  */
 export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.phaseInCommand", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, ProgramMeta, clickedNode);
+    if (!nodes || !nodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
-    await window.withProgress(
+
+    window.withProgress(
       {
         title: "Phase In",
         location: ProgressLocation.Notification,
@@ -42,32 +40,26 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
       },
       async (progress, token) => {
         token.onCancellationRequested(() => {});
-        for (const index in allSelectedNodes) {
+
+        for (const node of nodes) {
           progress.report({
-            message: `Phase In ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
+            message: `Phase in ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
-          const currentNode = allSelectedNodes[parseInt(index)];
 
           try {
-            await performPhaseIn(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.program.program,
-              regionName: currentNode.parentRegion.label,
-              cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
+            await performPhaseIn(node.getSession(), {
+              name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
+              regionName: node.regionName,
+              cicsPlex: node.cicsplexName,
             });
-
-            if (!parentRegions.includes(currentNode.parentRegion)) {
-              parentRegions.push(currentNode.parentRegion);
-            }
           } catch (error) {
-            // @ts-ignore
             if (error.mMessage) {
-              // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform PHASEIN on Program "${
-                  allSelectedNodes[parseInt(index)].program.program
-                }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
+                `Perform PHASEIN on Program "${node
+                  .getContainedResource()
+                  .meta.getName(node.getContainedResource().resource)}" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
               window.showErrorMessage(
@@ -79,33 +71,15 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
-        // Reload contents
-        for (const parentRegion of parentRegions) {
-          try {
-            const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-            // Only load contents if the tree is expanded
-            if (programTree.collapsibleState === 2) {
-              await programTree.loadContents();
-            }
-            // if node is in a plex and the plex contains the region container tree
-            if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
-                child.contextValue.includes("cicscombinedprogramtree.")
-              )[0] as CICSCombinedProgramTree;
-              if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
-                await allProgramsTree.loadContents(tree);
-              }
-            }
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when reloading programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
+        // Work out how many programs to re-fetch
+        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<IProgram>;
+        let numToFetch = parentNode.children.length;
+        if (!parentNode.getChildResource().resources.getFetchedAll()) {
+          numToFetch -= 1;
         }
-        tree._onDidChangeTreeData.fire(undefined);
+        parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
+
+        tree._onDidChangeTreeData.fire(parentNode);
       }
     );
   });

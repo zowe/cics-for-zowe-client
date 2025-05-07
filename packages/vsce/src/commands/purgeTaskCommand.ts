@@ -12,13 +12,11 @@
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSTree } from "../trees/CICSTree";
-import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import constants from "../constants/CICS.defaults";
+import { ITask, TaskMeta } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
+import { CICSTree } from "../trees/CICSTree";
+import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
 import { ICommandParams } from "./ICommandParams";
 
@@ -30,96 +28,75 @@ import { ICommandParams } from "./ICommandParams";
  */
 export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.purgeTask", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, TaskMeta, clickedNode);
+    if (!nodes || !nodes.length) {
       window.showErrorMessage("No CICS task selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+
     let purgeType = await window.showInformationMessage(`Choose one of the following options for Purge`, ...["Purge", "Force Purge"]);
-    if (purgeType) {
-      purgeType = purgeType.replace(" ", "").toUpperCase();
-
-      window.withProgress(
-        {
-          title: "Purge",
-          location: ProgressLocation.Notification,
-          cancellable: true,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => {});
-          for (const index in allSelectedNodes) {
-            progress.report({
-              message: `Purging ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-              increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
-            });
-            const currentNode = allSelectedNodes[parseInt(index)];
-
-            try {
-              await purgeTask(
-                currentNode.parentRegion.parentSession.session,
-                {
-                  name: currentNode.task.task,
-                  regionName: currentNode.parentRegion.label,
-                  cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
-                },
-                purgeType
-              );
-              if (!parentRegions.includes(currentNode.parentRegion)) {
-                parentRegions.push(currentNode.parentRegion);
-              }
-            } catch (error) {
-              // @ts-ignore
-              if (error.mMessage) {
-                // @ts-ignore
-                const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-                window.showErrorMessage(
-                  `Perform ${purgeType?.toUpperCase()} on CICSTask "${
-                    allSelectedNodes[parseInt(index)].task.task
-                  }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
-                );
-              } else {
-                window.showErrorMessage(
-                  `Something went wrong when performing a ${purgeType?.toUpperCase()} - ${JSON.stringify(
-                    error,
-                    Object.getOwnPropertyNames(error)
-                  ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
-                );
-              }
-            }
-          }
-          for (const parentRegion of parentRegions) {
-            try {
-              const taskTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreetask."))[0];
-              // Only load contents if the tree is expanded
-              if (taskTree.collapsibleState === 2) {
-                await taskTree.loadContents();
-              }
-              // if node is in a plex and the plex contains the region container tree
-              // Note: this avoids the condition of an item in the cics task tree item having a different state to the
-              // same task item in a CICS combined task tree of the same profile
-              if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-                const allTaskTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
-                  child.contextValue.includes("cicscombinedlocalfiletree.")
-                )[0] as CICSCombinedTaskTree;
-                // If allTasksTree is open
-                if (allTaskTreeTree.collapsibleState === 2 && allTaskTreeTree.getActiveFilter()) {
-                  await allTaskTreeTree.loadContents(tree);
-                }
-              }
-            } catch (error) {
-              window.showErrorMessage(
-                `Something went wrong when reloading tasks - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-          tree._onDidChangeTreeData.fire(undefined);
-        }
-      );
+    if (!purgeType) {
+      return;
     }
+    purgeType = purgeType.replace(" ", "").toUpperCase();
+
+    window.withProgress(
+      {
+        title: "Purge",
+        location: ProgressLocation.Notification,
+        cancellable: true,
+      },
+      async (progress, token) => {
+        token.onCancellationRequested(() => {});
+
+        for (const node of nodes) {
+          progress.report({
+            message: `Purging ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
+          });
+
+          const resName = node.getContainedResource().meta.getName(node.getContainedResource().resource);
+          try {
+            await purgeTask(
+              node.getSession(),
+              {
+                name: resName,
+                regionName: node.regionName,
+                cicsPlex: node.cicsplexName,
+              },
+              purgeType
+            );
+          } catch (error) {
+            // @ts-ignore
+            if (error.mMessage) {
+              // @ts-ignore
+              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
+              window.showErrorMessage(
+                `Perform ${purgeType?.toUpperCase()} on CICSTask "${
+                  resName
+                }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
+              );
+            } else {
+              window.showErrorMessage(
+                `Something went wrong when performing a ${purgeType?.toUpperCase()} - ${JSON.stringify(
+                  error,
+                  Object.getOwnPropertyNames(error)
+                ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
+              );
+            }
+          }
+        }
+        // Work out how many tasks to re-fetch
+        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<ITask>;
+        let numToFetch = parentNode.children.length;
+        if (!parentNode.getChildResource().resources.getFetchedAll()) {
+          numToFetch -= 1;
+        }
+        parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
+
+        tree._onDidChangeTreeData.fire(parentNode);
+      }
+    );
   });
 }
 

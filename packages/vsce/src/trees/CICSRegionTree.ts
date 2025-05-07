@@ -9,33 +9,30 @@
  *
  */
 
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { TreeItemCollapsibleState } from "vscode";
+import {
+  ICICSTreeNode,
+  IResource,
+  IResourceMeta,
+  LibraryMeta,
+  LocalFileMeta,
+  PipelineMeta,
+  ProgramMeta,
+  TaskMeta,
+  TCPIPMeta,
+  TransactionMeta,
+  URIMapMeta,
+  WebServiceMeta,
+} from "../doc";
+import { ResourceContainer } from "../resources";
 import { getIconByStatus } from "../utils/iconUtils";
-import { CICSLibraryTree } from "./CICSLibraryTree";
-import { CICSLocalFileTree } from "./CICSLocalFileTree";
 import { CICSPlexTree } from "./CICSPlexTree";
-import { CICSProgramTree } from "./CICSProgramTree";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { CICSTaskTree } from "./CICSTaskTree";
-import { CICSTransactionTree } from "./CICSTransactionTree";
-import { CICSPipelineTree } from "./CICSPipelineTree";
-import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
-import { CICSURIMapTree } from "./CICSURIMapTree";
-import { CICSWebServiceTree } from "./CICSWebServiceTree";
+import { CICSTreeNode } from "./CICSTreeNode";
 
-export class CICSRegionTree extends TreeItem {
-  children: [
-        CICSProgramTree,
-        CICSTransactionTree,
-        CICSLocalFileTree,
-        CICSTaskTree,
-        CICSLibraryTree,
-        CICSPipelineTree,
-        CICSTCPIPServiceTree,
-        CICSURIMapTree,
-        CICSWebServiceTree,
-      ]
-    | null;
+export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
@@ -43,9 +40,9 @@ export class CICSRegionTree extends TreeItem {
   isActive: true | false;
 
   constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
-    super(regionName, TreeItemCollapsibleState.Collapsed);
+    super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.session, parentSession.profile);
     this.region = region;
-    this.contextValue = `cicsregion.${regionName}`;
+    this.contextValue = `${CicsCmciConstants.CICS_CMCI_REGION}.${regionName}`;
     this.parentSession = parentSession;
     this.directParent = directParent;
     if (parentPlex) {
@@ -57,26 +54,49 @@ export class CICSRegionTree extends TreeItem {
     } else {
       this.isActive = region.cicsstatus === "ACTIVE" ? true : false;
     }
-    this.iconPath = getIconByStatus("REGION", this);
+    this.refreshIcon();
     if (!this.isActive) {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
-      this.iconPath = getIconByStatus("REGION", this);
+      this.refreshIcon();
       this.contextValue += ".inactive";
     } else {
       this.contextValue += ".active";
       this.children = [
-        new CICSProgramTree(this),
-        new CICSTransactionTree(this),
-        new CICSLocalFileTree(this),
-        new CICSTaskTree(this),
-        new CICSLibraryTree(this),
-        new CICSPipelineTree(this),
-        new CICSTCPIPServiceTree(this),
-        new CICSURIMapTree(this),
-        new CICSWebServiceTree(this),
+        this.buildResourceContainerNode(ProgramMeta),
+        this.buildResourceContainerNode(TransactionMeta),
+        this.buildResourceContainerNode(LocalFileMeta),
+        this.buildResourceContainerNode(TaskMeta),
+        this.buildResourceContainerNode(LibraryMeta),
+
+        this.buildResourceContainerNode(TCPIPMeta),
+        this.buildResourceContainerNode(WebServiceMeta),
+        this.buildResourceContainerNode(URIMapMeta),
+        this.buildResourceContainerNode(PipelineMeta),
       ];
     }
+  }
+
+  refreshIcon(): void {
+    this.iconPath = getIconByStatus("REGION", this);
+  }
+
+  private buildResourceContainerNode(meta: IResourceMeta<IResource>) {
+    return new CICSResourceContainerNode(
+      meta.humanReadableName,
+      {
+        parentNode: this,
+        profile: this.parentSession.profile,
+        session: this.parentSession.session,
+        cicsplexName: this.parentPlex?.plexName,
+        regionName: this.getRegionName(),
+      },
+      null,
+      {
+        resources: new ResourceContainer(meta),
+        meta,
+      }
+    );
   }
 
   public getRegionName() {
@@ -88,10 +108,14 @@ export class CICSRegionTree extends TreeItem {
   }
 
   public getChildren() {
-    return this.children;
+    return Promise.resolve(this.children);
   }
 
   public getParent() {
     return this.directParent;
+  }
+
+  getSessionNode() {
+    return this.parentSession;
   }
 }
