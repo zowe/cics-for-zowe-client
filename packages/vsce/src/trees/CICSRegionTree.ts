@@ -59,15 +59,15 @@ export class CICSRegionTree extends TreeItem {
       const config = workspace.getConfiguration("zowe.cics.resources");
 
       this.children = [
-        config.get<boolean>("program", true) ? new CICSProgramTree(this) : null,
-        config.get<boolean>("transaction", true) ? new CICSTransactionTree(this) : null,
-        config.get<boolean>("localFile", true) ? new CICSLocalFileTree(this) : null,
-        config.get<boolean>("task", true) ? new CICSTaskTree(this) : null,
-        config.get<boolean>("library", true) ? new CICSLibraryTree(this) : null,
-        config.get<boolean>("pipeline", true) ? new CICSPipelineTree(this) : null,
-        config.get<boolean>("tcpipService", true) ? new CICSTCPIPServiceTree(this) : null,
-        config.get<boolean>("uriMap", true) ? new CICSURIMapTree(this) : null,
-        config.get<boolean>("webService", true) ? new CICSWebServiceTree(this) : null,
+        config.get<boolean>("Program", true) ? new CICSProgramTree(this) : null,
+        config.get<boolean>("Transaction", true) ? new CICSTransactionTree(this) : null,
+        config.get<boolean>("LocalFile", true) ? new CICSLocalFileTree(this) : null,
+        config.get<boolean>("Task", true) ? new CICSTaskTree(this) : null,
+        config.get<boolean>("Library", true) ? new CICSLibraryTree(this) : null,
+        config.get<boolean>("Pipeline", true) ? new CICSPipelineTree(this) : null,
+        config.get<boolean>("TCPIPService", true) ? new CICSTCPIPServiceTree(this) : null,
+        config.get<boolean>("URIMap", true) ? new CICSURIMapTree(this) : null,
+        config.get<boolean>("WebService", true) ? new CICSWebServiceTree(this) : null,
       ].filter((child) => child !== null);
     }
   }

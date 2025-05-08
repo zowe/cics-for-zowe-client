@@ -162,31 +162,31 @@ export class CICSPlexTree extends TreeItem {
   public addNewCombinedTrees() {
     const config = workspace.getConfiguration("zowe.cics.resources");
 
-    if (config.get<boolean>("program", true)) {
+    if (config.get<boolean>("Program", true)) {
       this.children.push(new CICSCombinedProgramTree(this));
     }
-    if (config.get<boolean>("transaction", true)) {
+    if (config.get<boolean>("Transaction", true)) {
       this.children.push(new CICSCombinedTransactionsTree(this));
     }
-    if (config.get<boolean>("localFile", true)) {
+    if (config.get<boolean>("LocalFile", true)) {
       this.children.push(new CICSCombinedLocalFileTree(this));
     }
-    if (config.get<boolean>("task", true)) {
+    if (config.get<boolean>("Task", true)) {
       this.children.push(new CICSCombinedTaskTree(this));
     }
-    if (config.get<boolean>("library", true)) {
+    if (config.get<boolean>("Library", true)) {
       this.children.push(new CICSCombinedLibraryTree(this));
     }
-    if (config.get<boolean>("pipeline", true)) {
+    if (config.get<boolean>("Pipeline", true)) {
       this.children.push(new CICSCombinedPipelineTree(this));
     }
-    if (config.get<boolean>("tcpipService", true)) {
+    if (config.get<boolean>("TCPIPService", true)) {
       this.children.push(new CICSCombinedTCPIPServiceTree(this));
     }
-    if (config.get<boolean>("uriMap", true)) {
+    if (config.get<boolean>("URIMap", true)) {
       this.children.push(new CICSCombinedURIMapTree(this));
     }
-    if (config.get<boolean>("webService", true)) {
+    if (config.get<boolean>("WebService", true)) {
       this.children.push(new CICSCombinedWebServiceTree(this));
     }
   }
