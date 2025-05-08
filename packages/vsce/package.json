@@ -17,7 +17,8 @@
   ],
   "activationEvents": [
     "onCommand:cics-extension-for-zowe.addSession",
-    "onView:cics-view"
+    "onView:cics-view",
+    "onCommand:cics-extension-for-zowe.toggleResourceSetting"
   ],
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
@@ -417,6 +418,15 @@
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.toggleResourceSetting",
+        "title": "Click to customize visible CICS Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/toggle-resources-dark.svg",
+          "dark": "resources/imgs/toggle-resources-light.svg"
+        }
       }
     ],
     "menus": {
@@ -429,6 +439,11 @@
         {
           "command": "cics-extension-for-zowe.addSession",
           "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
+          "when": "view == cics-view",
+          "command": "cics-extension-for-zowe.toggleResourceSetting",
           "group": "navigation"
         }
       ],
@@ -857,6 +872,61 @@
           "description": "Record count increment criteria for 'All Web Services'",
           "scope": "window",
           "minimum": 1
+        },
+        "zowe.cics.resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Select resources to show in CICS tree",
+          "properties": {
+            "Program": {
+              "type": "boolean",
+              "description": "CICS Program"
+            },
+            "Transaction": {
+              "type": "boolean",
+              "description": "CICS Local Transaction"
+            },
+            "LocalFile": {
+              "type": "boolean",
+              "description": "CICS Local File"
+            },
+            "Task": {
+              "type": "boolean",
+              "description": "CICS Task"
+            },
+            "Library": {
+              "type": "boolean",
+              "description": "CICS Library"
+            },
+            "Pipeline": {
+              "type": "boolean",
+              "description": "CICS Pipeline"
+            },
+            "TCPIPService": {
+              "type": "boolean",
+              "description": "CICS TCPIP Service"
+            },
+            "URIMap": {
+              "type": "boolean",
+              "description": "CICS URI Map"
+            },
+            "WebService": {
+              "type": "boolean",
+              "description": "CICS Web Service"
+            }
+          },
+          "default": {
+            "Program": true,
+            "LocalTransaction": true,
+            "LocalFile": true,
+            "Task": true,
+            "Library": true,
+            "Pipeline": true,
+            "TCPIPService": true,
+            "URIMap": true,
+            "WebService": true
+          },
+          "scope": "window"
         }
       }
     }

@@ -17,6 +17,7 @@ import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as globalMocks from "../../__utils__/globalMocks";
+import * as vscode from "vscode";
 
 jest.mock("../../../src/trees/CICSCombinedTrees/CICSCombinedProgramTree", () => ({
   get CICSCombinedProgramTree() {
@@ -95,6 +96,11 @@ const iprofileLoadedMock = {
 const CICSSessionTreeMock = {
   getSession: () => globalMocks.imperativeSession,
 };
+
+const workspaceMock = globalMocks.workspaceMock;
+const workspaceConfiguration = globalMocks.workspaceConfiguration;
+const get = globalMocks.get;
+
 describe("Test suite for CICSLocalFileTree", () => {
   let sut: CICSPlexTree;
 
@@ -190,6 +196,9 @@ describe("Test suite for CICSLocalFileTree", () => {
 
   describe("Test suite for addNewCombinedTrees()", () => {
     it("Should push all new combined trees instance into children array", () => {
+      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+      get.mockReturnValue(true);
+
       sut.addNewCombinedTrees();
 
       expect(sut.children.length).toBeGreaterThanOrEqual(9);
