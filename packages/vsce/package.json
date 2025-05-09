@@ -99,7 +99,16 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.resourceInspectorView",
+        "command": "cics-extension-for-zowe.programResourceInspectorView",
+        "title": "Resource Inspector",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/filter-dark.svg",
+          "dark": "resources/imgs/filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.localFileResourceInspectorView",
         "title": "Resource Inspector",
         "category": "IBM CICS for Zowe Explorer",
         "icon": {
@@ -439,7 +448,12 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
-        "command": "cics-extension-for-zowe.resourceInspectorView",
+        "command": "cics-extension-for-zowe.programResourceInspectorView",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.localFileResourceInspectorView",
         "title": "Inspect Resource",
         "category": "IBM CICS for Zowe Explorer"
       },
@@ -479,8 +493,8 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ || viewItem =~ /^cicsurimaps.*/ || viewItem =~ /^cicslocalfile.*/",
-          "command": "cics-extension-for-zowe.resourceInspectorView",
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "command": "cics-extension-for-zowe.programResourceInspectorView",
           "group": ""
         },
         {
@@ -706,6 +720,11 @@
         {
           "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/",
           "command": "cics-extension-for-zowe.showLocalFileAttributes",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/",
+          "command": "cics-extension-for-zowe.localFileResourceInspectorView",
           "group": ""
         },
         {

@@ -178,7 +178,12 @@ export async function activate(context: ExtensionContext) {
   });
 
   context.subscriptions.concat(getCommands(treeDataProv, treeview, context));
-  context.subscriptions.push(window.registerWebviewViewProvider("resource-inspector", ResourceInspectorViewProvider.getInstance()));
+  context.subscriptions.push(
+    window.registerWebviewViewProvider(
+      ResourceInspectorViewProvider.viewType,
+      ResourceInspectorViewProvider.getInstance(context.extensionUri, treeview)
+    )
+  );
 }
 
 export async function deactivate(): Promise<void> {

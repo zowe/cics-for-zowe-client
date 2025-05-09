@@ -9,21 +9,77 @@
  *
  */
 
-import { ExtensionContext, TreeView, commands, window } from "vscode";
-import { ResourceInspectorView } from "../trees/ResourceInspectorView";
+import { ExtensionContext, TreeView, commands, window, WebviewView, Uri } from "vscode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
+import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 
-export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.resourceInspectorView", async (node) => {
+let resourceViewProvider: ResourceInspectorViewProvider;
+//const locFileAttributes = ["VSAMTYPE", "RECORDSIZE", "KEYLENGTH", "DSNAME"];
+
+export function getResourceInspectorforProgramFile(context: ExtensionContext, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.programResourceInspectorView", async (node) => {
     const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
-    for (const programTreeItem of allSelectedNodes) {
-      await ResourceInspectorViewProvider.getInstance().setTableView(new ResourceInspectorView(context, programTreeItem));
-    }
+    getResourceViewProvider(allSelectedNodes, "CICSProgram", context.extensionUri, treeview);
   });
 }
+
+export function getResourceInspectorforLocalFile(context: ExtensionContext, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.localFileResourceInspectorView", async (node) => {
+    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, node);
+    if (!allSelectedNodes || !allSelectedNodes.length) {
+      await window.showErrorMessage("No CICS program selected");
+      return;
+    }
+    getResourceViewProvider(allSelectedNodes, "CICSLocalFile", context.extensionUri, treeview);
+  });
+}
+
+function getResourceViewProvider(allSelectedNodes: any[], resourceValue: string, extensionUri: Uri, treeview: TreeView<any>) {
+  let data;
+  let details;
+  for (const item of allSelectedNodes) {
+    if (resourceValue === "CICSProgram") {
+      data = {
+        label: item.label,
+        attributes: item.program,
+        resource: resourceValue,
+        details: {
+          status: item.program.status,
+          type: item.program.progtype,
+          permission: item.program.sharestatus,
+          keyLength: item.program.length,
+          recordSize: item.program.changeagrel,
+          dsName: item.program.eyu_cicsname,
+        },
+      };
+    }
+    if (resourceValue === "CICSLocalFile") {
+      data = {
+        label: item.label,
+        attributes: item.localFile,
+        resource: resourceValue,
+        details: {
+          status: (item.localFile.openstatus + " and " + item.localFile.enablestatus).toLowerCase(),
+          Type: item.localFile.vsamtype,
+          Permission: item.localFile.read + " , " + item.localFile.browse,
+          Keylength: item.localFile.keylength,
+          "Record Size": item.localFile.recordsize,
+          "DS Name": item.localFile.dsname,
+        },
+      };
+    }
+
+    resourceViewProvider = ResourceInspectorViewProvider.getInstance(extensionUri, treeview);
+    const enbededWebview = resourceViewProvider?._manager?._view;
+    resourceViewProvider.reloadData(data, enbededWebview);
+  }
+  commands.executeCommand("setContext", "zowe.vscode-extension-for-zowe.showResourceInspector", true);
+  commands.executeCommand("workbench.view.extension.inspector-panel");
+}
+

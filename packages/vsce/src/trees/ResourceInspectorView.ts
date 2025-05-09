@@ -9,34 +9,56 @@
  *
  */
 
-import { WebView } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, commands } from "vscode";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import { WebviewView, Uri, Webview } from "vscode";
+import Mustache = require("mustache");
+import { HTMLTemplate } from "@zowe/zowe-explorer-api";
+import { randomUUID } from "crypto";
 
-export class ResourceInspectorView extends WebView {
-  persistentStorage: PersistentStorage;
+export class ResourceInspectorView {
+  public _view?: WebviewView;
 
-  constructor(context: ExtensionContext, program: any) {
-    super("Resource Inspector view", "resource-inspector", context, {
-      onDidReceiveMessage: (message: { command: string; metas?: any[] }) => this.onDidReceiveMessage(message, program),
-      retainContext: true,
+  constructor(
+    private readonly extensionUri: Uri,
+    private readonly data: { label: string; attributes: any; resource: string; details: any }
+  ) {}
+
+  initializeWebview(webviewView: WebviewView) {
+    this._view = webviewView;
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this.extensionUri],
+    };
+
+    webviewView.webview.onDidReceiveMessage(async (message) => {
+      if (message.command === "init") {
+        console.log("React app initialized");
+        await this.sendDataToReactApp();
+      }
     });
-    this.setTableView();
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
   }
 
-  public async setTableView(): Promise<void> {
-    await commands.executeCommand("setContext", "zowe.vscode-extension-for-zowe.showResourceInspector", true);
-    await commands.executeCommand("workbench.view.extension.inspector-panel");
-  }
-
-  async onDidReceiveMessage(message: { command: string; resources?: any[] }, program: any) {
-    if (message.command === "init") {
-      console.log("printing program.label", program.label);
-      console.log("printing program.program", program.program);
-      await this.panel.webview.postMessage({
-        label: program.label,
-        attribute: program.program,
-      });
+  private async sendDataToReactApp() {
+    if (this._view) {
+      try {
+        await this._view.webview.postMessage({
+          command: "init",
+          data: this.data, // Use data from the constructor
+        });
+      } catch (error) {
+        console.error("Failed to send data to React app:", error);
+      }
     }
+  }
+  //reusing the function from Zowe-explorer-api
+  private _getHtmlForWebview(webview: Webview): string {
+    const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "resource-inspector", "resource-inspector.js"));
+    const codiconsUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "codicons", "codicon.css"));
+    const nonce = randomUUID();
+
+    return Mustache.render(HTMLTemplate.default, {
+      uris: { resource: { script: scriptUri, codicons: codiconsUri } },
+      nonce,
+    });
   }
 }
