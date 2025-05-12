@@ -1,0 +1,20 @@
+.main-panel-1 {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.details-para {
+  padding-left: 30px;
+  line-height: 0.5;
+}
+.table-main {
+  padding-right: 175px;
+  overflow: auto;
+  height: 500px;
+  width: 75%;
+}
+.cell-padding {
+  padding-left: 75px;
+}

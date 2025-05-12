@@ -1,10 +1,17 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "types": ["node", "jest"],
-        "outDir": "./lib"
+    "types": [
+        "node",
+        "jest"
+    ],
+    "outDir": "./lib"
     },
     "include": [
-        "./src/**/*.ts"
+        "./src/**/*.ts",
+        "src/webviews/src/components/ButtonCommon.jsx",
     ],
+    "exclude": [
+        "src/webviews/**"
+    ]
 }
