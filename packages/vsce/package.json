@@ -917,7 +917,7 @@
           },
           "default": {
             "Program": true,
-            "LocalTransaction": true,
+            "Transaction": true,
             "LocalFile": true,
             "Task": true,
             "Library": true,
