@@ -9,80 +9,76 @@
  *
  */
 
-import { assert, expect } from "chai";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, ModalDialog, WebElement, Workbench } from "vscode-extension-tester";
+import { expect } from "chai";
+import { DefaultTreeSection, InputBox, ModalDialog, SideBarView, ViewPanelAction, WebElement, Workbench } from "vscode-extension-tester";
+import { CICS, CREATE_A_CICS_PROFILE, CREATE_A_NEW_TEAM_CONFIGURATION_FILE, EDIT_TEAM_CONFIG_FILE, QUICKPICK_PLACEHOLDER } from "./util/constants";
+import { sleep } from "./util/globalMocks";
+import { checkIfZoweConfigJsonFileIsOpened, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
-describe("Create New Global Team Configuration File Scenario", () => {
+describe("Test Suite For Creating New Global Team Configuration File", () => {
+  let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
   let dialog: ModalDialog;
   let element: WebElement;
-  let editorView: EditorView;
 
-  before(async function () {
-    // open the cics extension view
-    const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
-    assert(zoweExplorer !== undefined);
-    const view = await zoweExplorer.openView();
+  before(async () => {
+    await sleep(2000);
+    view = await openZoweExplorer();
 
-    //handle notifications if config file is missing
+    // Handle notifications if config file is missing
     const notifications = await new Workbench().getNotifications();
     if (notifications.length > 0) {
       await notifications[0].click();
       const actions = await notifications[0].getActions();
       await actions[0].click();
 
-      //select qp option
       quickPick = await InputBox.create();
       await quickPick.selectQuickPick(0);
     }
 
-    cicsTree = await view.getContent().getSection("cics");
-    await cicsTree.click();
+    cicsTree = await getCicsSection(view);
   });
 
   after(async () => {
-    // Close all open editor tabs
-    editorView.closeAllEditors();
+    await closeAllEditorsTabs();
   });
 
-  it("CICS Section title Check", async () => {
-    // title check for cics section
-    const title = await cicsTree.getTitle();
-    expect(title).equals("cics");
+  it("Should Check The CICS Section Title", async () => {
+    // Title check for cics section
+    const cicsTreeTitle = await cicsTree.getTitle();
+    expect(cicsTreeTitle).equals(CICS);
   });
 
-  it("+ (plus) button clickable test", async () => {
-    // selecting cics view and clicking + icon
+  it("Should Test If The + (Plus) Button Is Clickable", async () => {
+    // Click the + icon in the cics section
     await cicsTree.click();
-    await cicsTree.expand();
-    const potentialPlusIcon = await cicsTree.getAction(`Create a CICS Profile`);
-    assert(typeof potentialPlusIcon !== "undefined");
-    const plusIcon = potentialPlusIcon;
+    const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(CREATE_A_CICS_PROFILE);
     expect(plusIcon).exist;
-    cicsTree.takeScreenshot();
-    await plusIcon.click();
+    await plusIcon?.click();
+    cicsTree?.takeScreenshot();
   });
 
-  it("Quick Pick Option test", async () => {
+  it("Should Verify If The Quick Pick Options Are Correct", async () => {
     // Find quickpick
     quickPick = await InputBox.create();
     const qpItems = await quickPick.getQuickPicks();
 
     const label1 = await qpItems[0].getLabel();
-    expect(label1).contains("＋ Create a New Team Configuration File");
+    expect(label1).contains(CREATE_A_NEW_TEAM_CONFIGURATION_FILE);
 
     if (qpItems.length > 1) {
       const label2 = await qpItems[1].getLabel();
-      expect(label2).contains("Edit Team Configuration File");
+      expect(label2).contains(EDIT_TEAM_CONFIG_FILE);
     }
 
     const placeholder = await quickPick.getPlaceHolder();
-    expect(placeholder).equals('Choose "Create new..." to define or select a profile to add to the CICS tree');
+    expect(placeholder).equals(QUICKPICK_PLACEHOLDER);
     cicsTree.takeScreenshot();
   });
 
-  it("Create New Configuration File Test", async () => {
+  it("Should Create A New Configuration File", async () => {
+    // Select the option to create a new team configuration file in the quickpick
     quickPick = await InputBox.create();
     await quickPick.selectQuickPick(0);
     dialog = new ModalDialog();
@@ -93,17 +89,13 @@ describe("Create New Global Team Configuration File Scenario", () => {
 
     const buttons = await dialog.getButtons();
 
-    // there should be 2 buttons
+    // There should be 2 buttons
     expect(buttons.length).equals(2);
 
-    // or we can directly push a button by title
+    // Push the button by title to create new configuration file
     await dialog.pushButton(`Create New`);
 
-    // Find open editors
-    editorView = new EditorView();
-    const titles = await editorView.getOpenEditorTitles();
-
-    // Check zowe.config.json was opened - could check content here
-    expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
+    await checkIfZoweConfigJsonFileIsOpened();
+    cicsTree.takeScreenshot();
   });
 });

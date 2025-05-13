@@ -9,37 +9,38 @@
  *
  */
 
-import { assert, expect } from "chai";
-import * as path from "path";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, TextEditor, TreeItem, VSBrowser } from "vscode-extension-tester";
-import { addWiremockProfileToConfigFile } from "./e2e_globalMocks";
+import { expect } from "chai";
+import { DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem } from "vscode-extension-tester";
+import { CICSEX61, CONFIG_FILE_NAME, DUMMY907, PROFILE_NAME } from "./util/constants";
+import { addWiremockProfileToConfigFile, sleep } from "./util/globalMocks";
+import {
+  checkIfZoweConfigJsonFileIsOpened,
+  clickPlusIconInCicsTree,
+  closeAllEditorsTabs,
+  getCicsSection,
+  openZoweExplorer,
+  selectEditProjectTeamConfigFile,
+} from "./util/initSetup.test";
 
 describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
+  let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
   let editorView: EditorView;
-  const profileName = "wiremock_server";
 
   before(async () => {
-    // open the Explorer view into the folder where configuration files are available
-    await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
-    (await new ActivityBar().getViewControl("Explorer"))?.openView();
-
-    // Switch to the cics extension view
-    const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
-    assert(zoweExplorer !== undefined);
-    const view = await zoweExplorer.openView();
-    cicsTree = await view.getContent().getSection("cics");
+    await sleep(2000);
+    view = await openZoweExplorer();
+    cicsTree = await getCicsSection(view);
   });
 
   beforeEach(async () => {
-    // Click the cics section
+    // Expand the cics section
     await cicsTree.click();
   });
 
   after(async () => {
-    // Close all open editor tabs
-    editorView.closeAllEditors();
+    await closeAllEditorsTabs();
   });
 
   describe("Adding Wiremock Profile In The Configuration File", () => {
@@ -47,37 +48,16 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       // Add wiremock profile to the zowe.config.json
       addWiremockProfileToConfigFile();
 
-      // Click the plus icon in the cicsTree
-      const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
-      assert(plusIcon !== undefined);
-      await plusIcon.click();
-
-      // Select the option to edit project team configuration file
-      quickPick = await InputBox.create();
-
-      let qpItems = await quickPick.getQuickPicks();
-      const label1 = await qpItems[1].getLabel();
-      expect(label1).contains("Edit Team Configuration File");
-      await quickPick.selectQuickPick(1);
-
-      qpItems = await quickPick.getQuickPicks();
-      const label2 = await qpItems[1].getLabel();
-      expect(label2).contains("Project: in the current working directory");
-      await quickPick.selectQuickPick(1);
-
-      // Find open editors
-      editorView = new EditorView();
-      const titles = await editorView.getOpenEditorTitles();
-
-      // Check zowe.config.json was opened - could check content here
-      expect(titles.some((title) => title.startsWith("zowe.config.json"))).is.true;
-
-      //Get the config file path
-      const editor = (await editorView.openEditor("zowe.config.json")) as TextEditor;
+      // Select the option to edit project team configuration file from the quickpick
+      await selectEditProjectTeamConfigFile(cicsTree);
+      await checkIfZoweConfigJsonFileIsOpened();
 
       // Check if wiremock profile is added to the zowe.config.json
+      editorView = new EditorView();
+      const editor = await editorView.openEditor(CONFIG_FILE_NAME);
       const isWmAvailable = await editor.getText();
-      expect(isWmAvailable.includes(profileName)).to.be.true;
+      expect(isWmAvailable.includes(PROFILE_NAME)).to.be.true;
+      cicsTree.takeScreenshot();
     });
   });
 
@@ -85,10 +65,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     let wiremockServer: TreeItem | undefined;
 
     it("Should Add The Wiremock CICS Profile To The Tree Using The Create Profile Toolbar Option", async () => {
-      // Click the plus icon in cics
-      const plusIcon = await cicsTree.getAction(`Create a CICS Profile`);
-      assert(plusIcon !== undefined);
-      await plusIcon.click();
+      await clickPlusIconInCicsTree(cicsTree);
 
       // Find quickpick
       quickPick = await InputBox.create();
@@ -99,38 +76,38 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       let i, wiremockLabel;
       for (i = 0; i < qpLen; i++) {
         wiremockLabel = await qpItems[i].getLabel();
-        if (wiremockLabel.includes(profileName)) {
+        if (wiremockLabel.includes(PROFILE_NAME)) {
           break;
         }
       }
-      expect(wiremockLabel).contains(profileName);
+      expect(wiremockLabel).contains(PROFILE_NAME);
       if (i < qpLen) {
         await quickPick.selectQuickPick(i);
       }
       cicsTree.takeScreenshot();
     });
 
-    it("Should Display Wiremock Profile Under CICS Section And Check For The Title Of Profile", async () => {
+    it("Should Display Wiremock Profile Under CICS Section And Title Check For The Wiremock Profile", async () => {
       // Checking if wiremock_server profile is available under the cics section
-      wiremockServer = await cicsTree.findItem(profileName);
+      wiremockServer = await cicsTree.findItem(PROFILE_NAME);
       expect(wiremockServer).exist;
 
       // Title check for wiremork profile
       const wmSeverLabel = await wiremockServer?.getLabel();
-      expect(wmSeverLabel).equals("wiremock_server");
+      expect(wmSeverLabel).equals(PROFILE_NAME);
       cicsTree.takeScreenshot();
     });
 
-    it("Should List The CICSPlexes Under The Wiremock Profile", async () => {
+    it("Should List The CICSplexes Under Wiremock Profile", async () => {
       // Should expand the wiremock_profile and check for the plexes present under it
-      const plexes = await cicsTree.openItem(profileName);
+      const plexes = await cicsTree.openItem(PROFILE_NAME);
       expect(plexes).exist;
 
       const plex1 = await plexes[0].getLabel();
-      expect(plex1).contains("CICSEX61");
+      expect(plex1).contains(CICSEX61);
 
       const plex2 = await plexes[1].getLabel();
-      expect(plex2).contains("DUMMY907");
+      expect(plex2).contains(DUMMY907);
       cicsTree.takeScreenshot();
     });
   });
