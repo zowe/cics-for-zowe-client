@@ -28,10 +28,6 @@ describe("Remove The Wiremock Profile From The Configuration File", async () => 
 
   before(async () => {
     await sleep(2000);
-    // open the Explorer view into the folder where configuration files are available
-    // await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
-    // (await new ActivityBar().getViewControl("Explorer"))?.openView();
-
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
   });
