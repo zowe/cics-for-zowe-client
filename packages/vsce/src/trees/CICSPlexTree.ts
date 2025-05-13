@@ -180,7 +180,7 @@ export class CICSPlexTree extends TreeItem {
     if (config.get<boolean>("Pipeline", true)) {
       this.children.push(new CICSCombinedPipelineTree(this));
     }
-    if (config.get<boolean>("TCPIPService", true)) {
+    if (config.get<boolean>("TCP/IPService", true)) {
       this.children.push(new CICSCombinedTCPIPServiceTree(this));
     }
     if (config.get<boolean>("URIMap", true)) {

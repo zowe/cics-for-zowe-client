@@ -65,7 +65,7 @@ export class CICSRegionTree extends TreeItem {
         config.get<boolean>("Task", true) ? new CICSTaskTree(this) : null,
         config.get<boolean>("Library", true) ? new CICSLibraryTree(this) : null,
         config.get<boolean>("Pipeline", true) ? new CICSPipelineTree(this) : null,
-        config.get<boolean>("TCPIPService", true) ? new CICSTCPIPServiceTree(this) : null,
+        config.get<boolean>("TCP/IPService", true) ? new CICSTCPIPServiceTree(this) : null,
         config.get<boolean>("URIMap", true) ? new CICSURIMapTree(this) : null,
         config.get<boolean>("WebService", true) ? new CICSWebServiceTree(this) : null,
       ].filter((child) => child !== null);
