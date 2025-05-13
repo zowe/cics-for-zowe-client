@@ -12,6 +12,7 @@
 import { expect } from "chai";
 import * as path from "path";
 import { ActivityBar, DefaultTreeSection, InputBox, QuickPickItem, SideBarView, VSBrowser } from "vscode-extension-tester";
+import { EDIT_TEAM_CONFIG_FILE, GLOBAL_ZOWE_HOME_DIRECTORY, PROJECT_CURRENT_WORKING_DIRECTORY } from "./util/constants";
 import { sleep } from "./util/globalMocks";
 import {
   checkIfZoweConfigJsonFileIsOpened,
@@ -33,33 +34,27 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
     await VSBrowser.instance.openResources(path.join("__tests__", "__e2e__", "resources", "test", "config-files"));
     (await new ActivityBar().getViewControl("Explorer"))?.openView();
 
-    // Open the Zowe explorer
     view = await openZoweExplorer();
-
-    // Open the cics section in the Zowe explorer and expand it
     cicsTree = await getCicsSection(view);
   });
 
   beforeEach(async () => {
-    // Click the plus icon in cics section
+    // Open the quick pick by clicking the plus icon in the cics section
+    // Select the option to edit project team configuration file from the quickpicks
     await clickPlusIconInCicsTree(cicsTree);
 
-    // Find quickpick and select the option to edit team configuration file
     quickPick = await InputBox.create();
     qpItems = await quickPick.getQuickPicks();
 
     const label = await qpItems[1].getLabel();
-    expect(label).contains("Edit Team Configuration File");
+    expect(label).contains(EDIT_TEAM_CONFIG_FILE);
     await quickPick.selectQuickPick(1);
 
     qpItems = await quickPick.getQuickPicks();
   });
 
   afterEach(async () => {
-    // Should open the configuration file
     await checkIfZoweConfigJsonFileIsOpened();
-
-    // Close all open editors
     await closeAllEditorsTabs();
   });
 
@@ -67,7 +62,7 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
     it("Should Select The Global Option From The Quickpick", async () => {
       // Select the option "Global: in the Zowe home directory" from the quickpick
       const label1 = await qpItems[0].getLabel();
-      expect(label1).contains("Global: in the Zowe home directory");
+      expect(label1).contains(GLOBAL_ZOWE_HOME_DIRECTORY);
 
       await quickPick.selectQuickPick(0);
       cicsTree.takeScreenshot();
@@ -78,7 +73,7 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
     it("Should Select The Project Option From The Quickpick", async () => {
       // Select the option "Project: in the current working directory" from the quickpick
       const label2 = await qpItems[1].getLabel();
-      expect(label2).contains("Project: in the current working directory");
+      expect(label2).contains(PROJECT_CURRENT_WORKING_DIRECTORY);
 
       await quickPick.selectQuickPick(1);
       cicsTree.takeScreenshot();

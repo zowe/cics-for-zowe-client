@@ -10,36 +10,34 @@
  */
 import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, ViewPanelAction } from "vscode-extension-tester";
+import { CICS, CONFIG_FILE_NAME, ZOWE_EXPLORER } from "./constants";
 
 export async function openZoweExplorer(): Promise<SideBarView> {
-  // Open the Zowe Explorer
-  const zoweExplorer = await new ActivityBar().getViewControl("Zowe Explorer");
+  const zoweExplorer = await new ActivityBar().getViewControl(ZOWE_EXPLORER);
   assert(zoweExplorer !== undefined);
   const view = await zoweExplorer.openView();
   return view;
 }
 
 export async function getCicsSection(view: SideBarView): Promise<DefaultTreeSection> {
-  // Get the cics section
   let cicsTree: DefaultTreeSection;
-  cicsTree = await view.getContent().getSection("cics");
+  cicsTree = await view.getContent().getSection(CICS);
   await cicsTree.click();
   return cicsTree;
 }
 
 export async function clickPlusIconInCicsTree(cicsTree: DefaultTreeSection): Promise<void> {
-  // Click the plus icon in the cics section
   await cicsTree.click();
-  const plusIcon: ViewPanelAction | undefined = await cicsTree?.getAction(`Create a CICS Profile`);
+  const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
   await plusIcon?.click();
 }
 
 export async function selectEditProjectTeamConfigFile(cicsTree: DefaultTreeSection): Promise<void> {
-  // Select the option to edit project team configuration file from the quickpick
-  // Click the plus icon in cics section
+  // Open the quick pick to add a new connection by clicking the plus icon in the cics section
+  // Select the option to edit project team configuration file from the quickpicks
+
   await clickPlusIconInCicsTree(cicsTree);
 
-  // Select the option to edit project team configuration file
   let quickPick: InputBox;
   quickPick = await InputBox.create();
 
@@ -56,16 +54,14 @@ export async function selectEditProjectTeamConfigFile(cicsTree: DefaultTreeSecti
 
 export async function checkIfZoweConfigJsonFileIsOpened(): Promise<void> {
   // Find open editors
-  const configFileName = "zowe.config.json";
   const editorView = new EditorView();
   const titles = await editorView.getOpenEditorTitles();
 
   // Check zowe.config.json was opened - could check content here
-  expect(titles.some((title) => title.startsWith(configFileName))).is.true;
+  expect(titles.some((title) => title.startsWith(CONFIG_FILE_NAME))).is.true;
 }
 
 export async function closeAllEditorsTabs(): Promise<void> {
-  // Close all open editor tabs
   const editorView = new EditorView();
   await editorView.closeAllEditors();
   const titles = editorView.getOpenEditorTitles();

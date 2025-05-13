@@ -11,6 +11,7 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, InputBox, ModalDialog, SideBarView, ViewPanelAction, WebElement, Workbench } from "vscode-extension-tester";
+import { CICS, CREATE_A_CICS_PROFILE, CREATE_A_NEW_TEAM_CONFIGURATION_FILE, EDIT_TEAM_CONFIG_FILE, QUICKPICK_PLACEHOLDER } from "./util/constants";
 import { sleep } from "./util/globalMocks";
 import { checkIfZoweConfigJsonFileIsOpened, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
@@ -23,7 +24,6 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
 
   before(async () => {
     await sleep(2000);
-    // Open the Zowe Explorer
     view = await openZoweExplorer();
 
     // Handle notifications if config file is missing
@@ -33,30 +33,27 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
       const actions = await notifications[0].getActions();
       await actions[0].click();
 
-      // Select qp option
       quickPick = await InputBox.create();
       await quickPick.selectQuickPick(0);
     }
 
-    // Open the cics section in the zowe explorer
     cicsTree = await getCicsSection(view);
   });
 
   after(async () => {
-    // Close all open editors
     await closeAllEditorsTabs();
   });
 
   it("Should Check The CICS Section Title", async () => {
     // Title check for cics section
     const cicsTreeTitle = await cicsTree.getTitle();
-    expect(cicsTreeTitle).equals("cics");
+    expect(cicsTreeTitle).equals(CICS);
   });
 
   it("Should Test If The + (Plus) Button Is Clickable", async () => {
     // Click the + icon in the cics section
     await cicsTree.click();
-    const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
+    const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(CREATE_A_CICS_PROFILE);
     expect(plusIcon).exist;
     await plusIcon?.click();
     cicsTree?.takeScreenshot();
@@ -68,15 +65,15 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     const qpItems = await quickPick.getQuickPicks();
 
     const label1 = await qpItems[0].getLabel();
-    expect(label1).contains("＋ Create a New Team Configuration File");
+    expect(label1).contains(CREATE_A_NEW_TEAM_CONFIGURATION_FILE);
 
     if (qpItems.length > 1) {
       const label2 = await qpItems[1].getLabel();
-      expect(label2).contains("Edit Team Configuration File");
+      expect(label2).contains(EDIT_TEAM_CONFIG_FILE);
     }
 
     const placeholder = await quickPick.getPlaceHolder();
-    expect(placeholder).equals('Choose "Create new..." to define or select a profile to add to the CICS tree');
+    expect(placeholder).equals(QUICKPICK_PLACEHOLDER);
     cicsTree.takeScreenshot();
   });
 
@@ -98,7 +95,6 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     // Push the button by title to create new configuration file
     await dialog.pushButton(`Create New`);
 
-    // Check if zowe.config.json is opened
     await checkIfZoweConfigJsonFileIsOpened();
     cicsTree.takeScreenshot();
   });
