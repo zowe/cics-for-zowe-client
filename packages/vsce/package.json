@@ -902,9 +902,9 @@
               "type": "boolean",
               "description": "CICS Pipeline"
             },
-            "TCPIPService": {
+            "TCP/IPService": {
               "type": "boolean",
-              "description": "CICS TCPIP Service"
+              "description": "CICS TCP/IP Service"
             },
             "URIMap": {
               "type": "boolean",
@@ -922,7 +922,7 @@
             "Task": true,
             "Library": true,
             "Pipeline": true,
-            "TCPIPService": true,
+            "TCP/IPService": true,
             "URIMap": true,
             "WebService": true
           },
