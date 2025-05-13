@@ -421,7 +421,7 @@
       },
       {
         "command": "cics-extension-for-zowe.toggleResourceSetting",
-        "title": "Click to customize visible CICS Resources",
+        "title": "Toggle visible CICS Resources",
         "category": "IBM CICS for Zowe Explorer",
         "icon": {
           "light": "resources/imgs/toggle-resources-dark.svg",

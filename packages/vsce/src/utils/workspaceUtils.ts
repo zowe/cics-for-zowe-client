@@ -9,7 +9,7 @@
  *
  */
 
-import { env, extensions, window, workspace } from "vscode";
+import { commands, env, extensions, window, workspace } from "vscode";
 
 export function isTheia(): boolean {
   const VSCODE_APPNAME: string[] = ["Visual Studio Code", "VSCodium"];
@@ -28,4 +28,20 @@ export async function openConfigFile(filePath: string): Promise<void> {
 export function getZoweExplorerVersion(): string | undefined {
   const extension = extensions.getExtension("zowe.vscode-extension-for-zowe");
   return extension?.packageJSON?.version;
+}
+
+export function openSettingsForHiddenResourceType(msg: string, resourceType: string): boolean {
+  const config = workspace.getConfiguration("zowe.cics.resources");
+  const openSettings = "Open Settings";
+  const cancel = "Cancel";
+
+  if (!config.get<boolean>(resourceType)) {
+    window.showInformationMessage(msg, openSettings, cancel).then(async (select) => {
+      if (select === openSettings) {
+        await commands.executeCommand("workbench.action.openSettings", "zowe.cics.resources");
+      }
+    });
+    return false;
+  }
+  return true;
 }
