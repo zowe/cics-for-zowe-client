@@ -5,7 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - BugFix: Allow credentials to be used by the current session only with `autoStore: false` [#224](https://github.com/zowe/cics-for-zowe-client/issues/224)
-- Feature: CICS Resources visibilty can be toggled from the VS Code settings [#274](https://github.com/zowe/cics-for-zowe-client/pull/274)
+- Feature: CICS Resources visibilty can be toggled from the VS Code settings [#252](https://github.com/zowe/cics-for-zowe-client/issues/252)
 
 ## `3.6.1`
 
