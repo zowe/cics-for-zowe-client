@@ -6687,6 +6687,9 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @types/mocha; version 10.0.10 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mocha
 Copyright (c) Microsoft Corporation
+** @types/node; version 22.15.18 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+Copyright Node.js contributors
+Copyright (c) Microsoft Corporation
 ** @types/selenium-webdriver; version 4.1.28 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/selenium-webdriver
 ** @types/vscode; version 1.53.0 -- 
 Copyright (c) Microsoft Corporation.
