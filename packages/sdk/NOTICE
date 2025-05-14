@@ -2384,7 +2384,7 @@ SOFTWARE.
 
 ------
 
-** debug; version 4.4.0 -- https://github.com/debug-js/debug#readme
+** debug; version 4.4.1 -- https://github.com/debug-js/debug#readme
 Copyright (c) 2018-2021 Josh Junon
 Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>
 
