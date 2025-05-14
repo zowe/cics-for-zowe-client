@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "turbo build",
     "watch": "npm run watch --workspaces",
     "package": "npm run package --workspaces",
     "test": "npm run test --workspaces",
