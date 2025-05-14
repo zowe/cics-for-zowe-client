@@ -9,7 +9,7 @@
  *
  */
 
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import { getIconByStatus } from "../utils/iconUtils";
 import { CICSLibraryTree } from "./CICSLibraryTree";
 import { CICSLocalFileTree } from "./CICSLocalFileTree";
@@ -22,7 +22,6 @@ import { CICSPipelineTree } from "./CICSPipelineTree";
 import { CICSTCPIPServiceTree } from "./CICSTCPIPServiceTree";
 import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
-import { workspace } from "vscode";
 
 export class CICSRegionTree extends TreeItem {
   children: TreeItem[] | null;
