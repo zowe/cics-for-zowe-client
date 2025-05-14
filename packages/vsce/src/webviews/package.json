@@ -36,8 +36,8 @@
   "devDependencies": {
     "@vscode-elements/webview-playground": "^1.6.0",
     "typescript": "^5.3.3",
-    "vite": "^4.5.5",
+    "vite": "^6.3.5",
     "vite-plugin-checker": "^0.6.4",
-    "vite-plugin-static-copy": "^0.17.1"
+    "vite-plugin-static-copy": "^3.0.0"
   }
 }
