@@ -52,12 +52,12 @@ export class ResourceInspectorView {
   }
   //reusing the function from Zowe-explorer-api
   private _getHtmlForWebview(webview: Webview): string {
-    const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "resource-inspector", "resource-inspector.js"));
-    const codiconsUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "codicons", "codicon.css"));
+    const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "resourceInspectorPanelView.js"));
+    // const codiconsUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "codicons", "codicon.css"));
     const nonce = randomUUID();
 
     return Mustache.render(HTMLTemplate.default, {
-      uris: { resource: { script: scriptUri, codicons: codiconsUri } },
+      uris: { resource: { script: scriptUri } },
       nonce,
     });
   }

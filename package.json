@@ -7,13 +7,12 @@
   },
   "repository": "https://github.com/zowe/cics-for-zowe-client",
   "workspaces": [
-    "packages/*",
-    "packages/vsce/src/webviews"
+    "packages/*"
   ],
   "scripts": {
-    "build": "turbo build",
-    "watch": "turbo watch",
-    "package": "turbo package",
+    "build": "npm run build --workspaces",
+    "watch": "npm run watch --workspaces",
+    "package": "npm run package --workspaces",
     "test": "npm run test --workspaces",
     "test:system": "npm run test:system --workspaces",
     "test:unit": "npm run test:unit --workspaces",

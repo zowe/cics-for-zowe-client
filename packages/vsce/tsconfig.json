@@ -1,17 +1,12 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-    "types": [
-        "node",
-        "jest"
-    ],
-    "outDir": "./lib"
-    },
-    "include": [
-        "./src/**/*.ts",
-        "src/webviews/src/components/ButtonCommon.jsx",
-    ],
-    "exclude": [
-        "src/webviews/**"
-    ]
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "jsx": "react"
+  },
+  "outDir": "./dist",
+  "include": [
+    "src",
+  ],
 }
