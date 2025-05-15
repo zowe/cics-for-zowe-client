@@ -187,7 +187,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           Gui.showMessage(debugMsg);
           return;
         } else if (choice === configPick) {
-          commands.executeCommand("zowe.all.config.init");
+          ZoweVsCodeExtension.createTeamConfiguration();
           return;
         } else if (choice === configEdit) {
           await this.editZoweConfigFile();
