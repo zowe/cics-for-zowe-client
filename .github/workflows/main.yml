@@ -2,14 +2,7 @@ name: Zowe CICS Main CI
 
 on:
   push:
-    paths:
-      - .github/**
-      - packages/**
-      - .npmrc
-      - package.json
   pull_request:
-    paths:
-      - packages/**
   workflow_dispatch:
 
 jobs:
@@ -146,38 +139,6 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: npm run test:e2e
 
-  notices:
-    if: github.event.pull_request.merged != true && github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        ref: ${{ github.ref }}
-
-    - name: Use Node.js LTS
-      uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-
-    - name: Update NOTICE file
-      run: bash scripts/updateNotices.sh
-
-    - name: Push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: Update NOTICE [ci skip]
-        commit_options: '--signoff'
-        file_pattern: packages/*/NOTICE
-        commit_user_name: zowe_robot
-        commit_user_email: zowe.robot@gmail.com
-
   release:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
     needs:
@@ -214,6 +175,35 @@ jobs:
       with:
         config-dir: .github
         script: npmUpdate
+
+    - name: Update NOTICE file
+      run: bash scripts/updateNotices.sh
+
+    - name: Push Notice Changes
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+
+        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+      run: |
+        set -e
+
+        echo "Set config"
+        git config --global user.name $GIT_COMMITTER_NAME
+        git config --global user.email $GIT_COMMITTER_EMAIL
+        git config --global credential.helper store
+        git config --get remote.origin.url
+
+        touch ~/.git-credentials
+        echo "https://$GIT_CREDENTIALS@github.com" >> ~/.git-credentials
+
+        git ls-remote --heads origin $GITHUB_REF
+
+        git add packages/*/NOTICE
+        git diff --name-only --cached
+
+        git commit -s -m "Update Notice Files [ci skip]" || true
+        git push
 
     - name: Build Source
       run: npm run build
