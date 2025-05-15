@@ -59,6 +59,7 @@ export const CICSPlexTree = {
 export const CICSSessionTreeMock = {
   session: imperativeSession,
   getSession: () => imperativeSession,
+  getProfile: () => IProfileMock,
 };
 
 export const cicsRegionTreeMock = {

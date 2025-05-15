@@ -10,15 +10,12 @@
  */
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
-import { CICSCombinedProgramTree } from "../../trees/CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSRegionTree } from "../../trees/CICSRegionTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
-import { CICSTree } from "../../trees/CICSTree";
-import { CICSProgramTreeItem } from "../../trees/treeItems/CICSProgramTreeItem";
-import { findSelectedNodes } from "../../utils/commandUtils";
 import constants from "../../constants/CICS.defaults";
+import { ProgramMeta } from "../../doc";
+import { CICSSession } from "../../resources";
+import { CICSTree } from "../../trees/CICSTree";
+import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 import { ICommandParams } from "../ICommandParams";
 
@@ -29,12 +26,12 @@ import { ICommandParams } from "../ICommandParams";
  */
 export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableProgram", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, ProgramMeta, clickedNode);
+    if (!nodes || !nodes.length) {
       await window.showErrorMessage("No CICS program selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+
     await window.withProgress(
       {
         title: "Enable",
@@ -43,22 +40,19 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
       },
       async (progress, token) => {
         token.onCancellationRequested(() => {});
-        for (const index in allSelectedNodes) {
+
+        for (const node of nodes) {
           progress.report({
-            message: `Enabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-            increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
+            message: `Enabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
-          const currentNode = allSelectedNodes[parseInt(index)];
 
           try {
-            await enableProgram(currentNode.parentRegion.parentSession.session, {
-              name: currentNode.program.program,
-              regionName: currentNode.parentRegion.label,
-              cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
+            await enableProgram(node.getSession(), {
+              name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
+              regionName: node.regionName,
+              cicsPlex: node.cicsplexName,
             });
-            if (!parentRegions.includes(currentNode.parentRegion)) {
-              parentRegions.push(currentNode.parentRegion);
-            }
           } catch (error) {
             window.showErrorMessage(
               `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -68,39 +62,13 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
             );
           }
         }
-        // Reload contents
-        for (const parentRegion of parentRegions) {
-          try {
-            const programTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
-            // Only load contents if the tree is expanded
-            if (programTree.collapsibleState === 2) {
-              await programTree.loadContents();
-            }
-            // if node is in a plex and the plex contains the region container tree
-            if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-              const allProgramsTree = parentRegion.parentPlex.children.filter((child: any) =>
-                child.contextValue.includes("cicscombinedprogramtree.")
-              )[0] as CICSCombinedProgramTree;
-              if (allProgramsTree.collapsibleState === 2 && allProgramsTree.getActiveFilter()) {
-                await allProgramsTree.loadContents(tree);
-              }
-            }
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when reloading programs - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
-        }
-        tree._onDidChangeTreeData.fire(undefined);
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
 }
 
-function enableProgram(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableProgram(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       session: session,
