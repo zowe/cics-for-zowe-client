@@ -1,10 +1,12 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "types": ["node", "jest"],
-        "outDir": "./lib"
-    },
-    "include": [
-        "./src/**/*.ts"
-    ],
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "jsx": "react"
+  },
+  "outDir": "./dist",
+  "include": [
+    "src",
+  ],
 }

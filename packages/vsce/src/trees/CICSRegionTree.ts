@@ -24,7 +24,19 @@ import { CICSURIMapTree } from "./CICSURIMapTree";
 import { CICSWebServiceTree } from "./CICSWebServiceTree";
 
 export class CICSRegionTree extends TreeItem {
-  children: TreeItem[] | null;
+  children:
+    | (
+        | CICSProgramTree
+        | CICSTransactionTree
+        | CICSLocalFileTree
+        | CICSTaskTree
+        | CICSLibraryTree
+        | CICSPipelineTree
+        | CICSTCPIPServiceTree
+        | CICSURIMapTree
+        | CICSWebServiceTree
+      )[]
+    | null;
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
