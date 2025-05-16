@@ -62,13 +62,13 @@ const extensionConfig = {
 
 function webviews(mode) {
   const config = {
-    name: 'cics-webviews',
-    target: 'web',
-    devtool: 'source-map',
+    name: "cics-webviews",
+    target: "web",
+    devtool: "source-map",
     // devtool: mode === 'development' ? 'eval' : false,
     entry: {
       resourceInspectorPanelView: {
-        import: path.resolve(__dirname, 'src/webviews/resource-inspector-panel/index.tsx'),
+        import: path.resolve(__dirname, "src/webviews/resource-inspector-panel/index.tsx"),
         // dependOn: 'sharedModules'
       },
       // sharedModules: ['react', 'react-dom']
@@ -76,13 +76,13 @@ function webviews(mode) {
     // entry: path.resolve(__dirname, 'src/webviews/resource-inspector-panel/index.tsx'),
     output: {
       // globalObject: 'self',
-      path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js',
+      path: path.resolve(__dirname, "dist"),
+      filename: "[name].js",
       // chunkFilename: 'chunks/[id].[name].chunk.js',
       // devtoolModuleFilenameTemplate: '../[resource-path]'
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx']
+      extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
     module: {
       rules: [
@@ -91,33 +91,30 @@ function webviews(mode) {
           exclude: /node_modules/,
           use: [
             {
-              loader: 'ts-loader',
-            }
-          ]
+              loader: "ts-loader",
+            },
+          ],
         },
         {
-          test: /\.(css|scss|sass)$/,
+          test: /\.(css)$/,
           use: [
             {
-              loader: 'style-loader'
+              loader: "style-loader",
             },
             {
-              loader: 'css-loader'
+              loader: "css-loader",
             },
-            {
-              loader: 'sass-loader'
-            }
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
     performance: {
       hints: "error",
       maxEntrypointSize: 2000000,
-      maxAssetSize: 2000000
+      maxAssetSize: 2000000,
     },
     plugins: [
-      new WebpackManifestPlugin({ publicPath: "" })
+      new WebpackManifestPlugin({ publicPath: "" }),
       // new webpack.BannerPlugin(fs.readFileSync('../../scripts/LICENSE_HEADER', 'utf8')),
       // new MonacoWebpackPlugin({ languages: ['java'] })
     ],
@@ -128,8 +125,8 @@ function webviews(mode) {
       allowedHosts: "all",
       headers: {
         "Access-Control-Allow-Origin": "*",
-      }
-    }
+      },
+    },
   };
   return config;
 }

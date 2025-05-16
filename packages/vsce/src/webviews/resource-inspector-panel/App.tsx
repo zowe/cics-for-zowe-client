@@ -21,7 +21,9 @@ import {
 } from "@vscode-elements/react-elements";
 
 import * as React from "react";
-import * as vscode from '../common/vscode';
+import * as vscode from "../common/vscode";
+
+import "../css/style.css";
 
 const RIPanelView = () => {
   const [label, setLabel] = React.useState<any>({});
@@ -50,54 +52,67 @@ const RIPanelView = () => {
     };
   }, []);
 
-  console.log("printing label: ", label);
-  console.log("printing attr: ", attr);
-
-  const keys = Object.keys(attr);
-  const map: Map<string, string> = new Map(Object.entries(attr));
-
-  const keys2 = Object.keys(details);
-  const map2: Map<string, string> = new Map(Object.entries(details));
-
-  console.log("printing details: ", details);
+  const attributesMap: Map<string, string> = new Map(Object.entries(attr));
+  const detailsMap: Map<string, string> = new Map(Object.entries(details));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", padding: "1rem", gap: "1rem" }}>
-      <VscodeCollapsible title={label} description={details.status} open={true}>
-        {keys2
-          .filter((x) => {
-            return x !== "status";
-          })
-          .map((x) => (
-            <p style={{ paddingLeft: "20px", lineHeight: "0.5" }}>
-              {x} : {map2.get(x)}
-            </p>
-          ))}
-      </VscodeCollapsible>
-      <VscodeTable style={{ paddingRight: "175px", overflow: "auto", height: "500px" }}>
+    <div className="maindiv">
+      <VscodeTable>
         <VscodeTableHeader>
           <VscodeTableRow>
-            <VscodeTableHeaderCell style={{ paddingLeft: "50px" }}>Attributes</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell style={{ paddingLeft: "188px" }}>value</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell>
-              <VscodeTextfield
-                type="text"
-                placeholder="Keyword search..."
-                onInput={(e: { target: HTMLInputElement; }) => setSearch(e.target.value)}
-                value={search}
-              ></VscodeTextfield>
+            <VscodeTableHeaderCell style={{ verticalAlign: "middle", paddingLeft: "12px" }}>
+              <div style={{ display: "inline-block", verticalAlign: "middle" }}>{label + ""} </div>
+              <div style={{ display: "inline-block", verticalAlign: "middle", fontSize: "x-small", paddingLeft: "7px", fontWeight: "100" }}>
+                {details.status + ""}
+              </div>
             </VscodeTableHeaderCell>
           </VscodeTableRow>
         </VscodeTableHeader>
         <VscodeTableBody>
-          {keys
-            .filter((x) => {
-              return search.toLowerCase() === "" ? x : x.toLowerCase().includes(search);
+          <VscodeTableCell style={{ paddingLeft: "20px" }}>
+            {Array.from(detailsMap)
+              .filter(([key]) => {
+                return key !== "status";
+              })
+              .map(([key, value]) => (
+                <p className="line">
+                  {key} : {value}
+                </p>
+              ))}
+          </VscodeTableCell>
+        </VscodeTableBody>
+      </VscodeTable>
+
+      <VscodeTable>
+        <VscodeTableHeader>
+          <VscodeTableRow>
+            <VscodeTableHeaderCell>Attributes</VscodeTableHeaderCell>
+            <VscodeTableHeaderCell style={{ paddingRight: "10px" }}>
+              <div>
+                <div style={{ display: "inline-block", verticalAlign: "middle" }}>Values</div>
+
+                <VscodeTextfield
+                  type="text"
+                  placeholder="Keyword search..."
+                  onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
+                  value={search}
+                  style={{ width: "300px", float: "right", display: "inline-block", verticalAlign: "middle" }}
+                ></VscodeTextfield>
+              </div>
+            </VscodeTableHeaderCell>
+          </VscodeTableRow>
+        </VscodeTableHeader>
+        <VscodeTableBody>
+          {Array.from(attributesMap)
+            .filter(([key, value]) => {
+              return (
+                (search.toLowerCase() === "" ? key : key.toLowerCase().includes(search) || value.toLowerCase().includes(search)) && key !== "_keydata"
+              );
             })
-            .map((x) => (
+            .map(([key, value]) => (
               <VscodeTableRow>
-                <VscodeTableCell style={{ paddingLeft: "50px" }}>{x}</VscodeTableCell>
-                <VscodeTableCell>{map.get(x)}</VscodeTableCell>
+                <VscodeTableCell style={{ paddingLeft: "20px" }}>{key}</VscodeTableCell>
+                <VscodeTableCell style={{ paddingRight: "75px" }}>{value}</VscodeTableCell>
               </VscodeTableRow>
             ))}
         </VscodeTableBody>

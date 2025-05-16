@@ -1,0 +1,26 @@
+.maindiv {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.line {
+  line-height: 0.5;
+  font-size: small;
+}
+
+.details-sec {
+  background-color: rgb(243, 243, 243);
+}
+
+.table1 {
+  padding-left: 10px;
+  vertical-align: middle;
+  width: 30%;
+}
+.table2 {
+  padding-left: 10px;
+  vertical-align: middle;
+  width: 70%;
+}
