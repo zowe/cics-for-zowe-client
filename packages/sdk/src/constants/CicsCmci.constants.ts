@@ -165,6 +165,16 @@ export const CicsCmciConstants = {
   CICS_CMCI_TASK: "CICSTask",
 
   /**
+   * The CICS CMCI pipeline
+   */
+   CICS_CMCI_PIPELINE: "CICSPipeline",
+
+  /**
+   * The CICS CMCI web service
+   */
+  CICS_CMCI_WEB_SERVICE: "CICSWebService",
+
+  /**
    * CICS CMCI Response 1 Codes
    */
   RESPONSE_1_CODES: {
