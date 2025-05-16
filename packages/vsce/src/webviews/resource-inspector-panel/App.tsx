@@ -10,7 +10,6 @@
  */
 
 import {
-  VscodeCollapsible,
   VscodeTable,
   VscodeTableBody,
   VscodeTableCell,
@@ -60,16 +59,14 @@ const RIPanelView = () => {
       <VscodeTable>
         <VscodeTableHeader>
           <VscodeTableRow>
-            <VscodeTableHeaderCell style={{ verticalAlign: "middle", paddingLeft: "12px" }}>
-              <div style={{ display: "inline-block", verticalAlign: "middle" }}>{label + ""} </div>
-              <div style={{ display: "inline-block", verticalAlign: "middle", fontSize: "x-small", paddingLeft: "7px", fontWeight: "100" }}>
-                {details.status + ""}
-              </div>
+            <VscodeTableHeaderCell className="header-cell-1">
+              <div className="div-display-1">{label + ""} </div>
+              <div className="div-display-1 div-display-2">{details.status + ""}</div>
             </VscodeTableHeaderCell>
           </VscodeTableRow>
         </VscodeTableHeader>
         <VscodeTableBody>
-          <VscodeTableCell style={{ paddingLeft: "20px" }}>
+          <VscodeTableCell className="padding-left-20">
             {Array.from(detailsMap)
               .filter(([key]) => {
                 return key !== "status";
@@ -83,20 +80,19 @@ const RIPanelView = () => {
         </VscodeTableBody>
       </VscodeTable>
 
-      <VscodeTable>
+      <VscodeTable zebra="true">
         <VscodeTableHeader>
           <VscodeTableRow>
             <VscodeTableHeaderCell>Attributes</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell style={{ paddingRight: "10px" }}>
+            <VscodeTableHeaderCell className="padding-right-10">
               <div>
-                <div style={{ display: "inline-block", verticalAlign: "middle" }}>Values</div>
-
+                <div className="div-display-1">Values</div>
                 <VscodeTextfield
                   type="text"
                   placeholder="Keyword search..."
                   onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
                   value={search}
-                  style={{ width: "300px", float: "right", display: "inline-block", verticalAlign: "middle" }}
+                  className="search-style div-display-1"
                 ></VscodeTextfield>
               </div>
             </VscodeTableHeaderCell>
@@ -111,8 +107,8 @@ const RIPanelView = () => {
             })
             .map(([key, value]) => (
               <VscodeTableRow>
-                <VscodeTableCell style={{ paddingLeft: "20px" }}>{key}</VscodeTableCell>
-                <VscodeTableCell style={{ paddingRight: "75px" }}>{value}</VscodeTableCell>
+                <VscodeTableCell className="padding-left-20">{key}</VscodeTableCell>
+                <VscodeTableCell className="padding-right-75">{value}</VscodeTableCell>
               </VscodeTableRow>
             ))}
         </VscodeTableBody>
