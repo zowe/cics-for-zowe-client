@@ -42,7 +42,6 @@ export function getResourceInspectorforLocalFile(context: ExtensionContext, tree
 
 function getResourceViewProvider(allSelectedNodes: any[], resourceValue: string, extensionUri: Uri, treeview: TreeView<any>) {
   let data;
-  let details;
   for (const item of allSelectedNodes) {
     if (resourceValue === "CICSProgram") {
       data = {
