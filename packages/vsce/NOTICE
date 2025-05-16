@@ -1701,6 +1701,9 @@ and licensed under:
 <pre>
 Copyright (c) 2000-2006, The Perl Foundation.
 
+** npm-install-checks; version 6.3.0 -- https://github.com/npm/npm-install-checks#readme
+Copyright (c) Robert Kowalski and Isaac Z. Schlueter 'Authors
+
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
 
 Preamble

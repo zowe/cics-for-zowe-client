@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "3.6.1",
+  "version": "3.7.0",
   "engines": {
     "vscode": "^1.79.0"
   },
@@ -17,7 +17,8 @@
   ],
   "activationEvents": [
     "onCommand:cics-extension-for-zowe.addSession",
-    "onView:cics-view"
+    "onView:cics-view",
+    "onCommand:cics-extension-for-zowe.toggleResourceSetting"
   ],
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
@@ -457,6 +458,15 @@
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.toggleResourceSetting",
+        "title": "Toggle visible CICS Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/toggle-resources-dark.svg",
+          "dark": "resources/imgs/toggle-resources-light.svg"
+        }
       }
     ],
     "menus": {
@@ -469,6 +479,11 @@
         {
           "command": "cics-extension-for-zowe.addSession",
           "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
+          "when": "view == cics-view",
+          "command": "cics-extension-for-zowe.toggleResourceSetting",
           "group": "navigation"
         }
       ],
@@ -902,6 +917,61 @@
           "description": "Record count increment criteria for 'All Web Services'",
           "scope": "window",
           "minimum": 1
+        },
+        "zowe.cics.resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Select resources to show in CICS tree",
+          "properties": {
+            "Program": {
+              "type": "boolean",
+              "description": "CICS Program"
+            },
+            "Transaction": {
+              "type": "boolean",
+              "description": "CICS Local Transaction"
+            },
+            "LocalFile": {
+              "type": "boolean",
+              "description": "CICS Local File"
+            },
+            "Task": {
+              "type": "boolean",
+              "description": "CICS Task"
+            },
+            "Library": {
+              "type": "boolean",
+              "description": "CICS Library"
+            },
+            "Pipeline": {
+              "type": "boolean",
+              "description": "CICS Pipeline"
+            },
+            "TCP/IPService": {
+              "type": "boolean",
+              "description": "CICS TCP/IP Service"
+            },
+            "URIMap": {
+              "type": "boolean",
+              "description": "CICS URI Map"
+            },
+            "WebService": {
+              "type": "boolean",
+              "description": "CICS Web Service"
+            }
+          },
+          "default": {
+            "Program": true,
+            "Transaction": true,
+            "LocalFile": true,
+            "Task": true,
+            "Library": true,
+            "Pipeline": true,
+            "TCP/IPService": true,
+            "URIMap": true,
+            "WebService": true
+          },
+          "scope": "window"
         }
       }
     }
@@ -946,12 +1016,11 @@
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
-    "@zowe/cics-for-zowe-sdk": "6.5.0",
-    "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.1.1",
     "mustache": "^4.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "ts-loader": "^9.5.2"
+    "@zowe/cics-for-zowe-sdk": "6.7.0",
+    "@zowe/core-for-zowe-sdk": "^8.0.0",
+    "@zowe/zowe-explorer-api": "^3.2.0"
   }
 }
