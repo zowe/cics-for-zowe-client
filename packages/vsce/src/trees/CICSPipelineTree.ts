@@ -17,6 +17,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSPipelineTreeItem } from "./treeItems/CICSPipelineTreeItem";
 import { CICSLogger } from "../utils/CICSLogger";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSPipelineTree extends TreeItem {
   children: CICSPipelineTreeItem[] = [];
@@ -48,7 +49,7 @@ export class CICSPipelineTree extends TreeItem {
     try {
       const pipelineResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSPipeline",
+        resourceName: CicsCmciConstants.CICS_CMCI_PIPELINE,
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: { criteria: criteria },

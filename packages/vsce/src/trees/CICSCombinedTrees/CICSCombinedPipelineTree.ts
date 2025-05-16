@@ -20,6 +20,7 @@ import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSPipelineTreeItem } from "../treeItems/CICSPipelineTreeItem";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants/CicsCmci.constants";
 
 export class CICSCombinedPipelineTree extends TreeItem {
   children: (CICSPipelineTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -40,7 +41,7 @@ export class CICSCombinedPipelineTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allPipelines.recordCountIncrement")}`;
-    this.constant = "CICSPipeline";
+    this.constant = CicsCmciConstants.CICS_CMCI_PIPELINE;
   }
 
   public async loadContents(tree: CICSTree) {

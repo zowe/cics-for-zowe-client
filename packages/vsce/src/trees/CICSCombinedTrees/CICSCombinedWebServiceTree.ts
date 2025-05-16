@@ -20,6 +20,7 @@ import { CICSTree } from "../CICSTree";
 import { TextTreeItem } from "../treeItems/utils/TextTreeItem";
 import { ViewMore } from "../treeItems/utils/ViewMore";
 import { CICSWebServiceTreeItem } from "../treeItems/CICSWebServiceTreeItem";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSCombinedWebServiceTree extends TreeItem {
   children: (CICSWebServiceTreeItem | ViewMore)[] | [TextTreeItem] | null;
@@ -40,7 +41,7 @@ export class CICSCombinedWebServiceTree extends TreeItem {
     this.activeFilter = undefined;
     this.currentCount = 0;
     this.incrementCount = +`${workspace.getConfiguration().get("zowe.cics.allWebServices.recordCountIncrement")}`;
-    this.constant = "CICSWebService";
+    this.constant = CicsCmciConstants.CICS_CMCI_WEB_SERVICE;
   }
 
   public async loadContents(tree: CICSTree) {

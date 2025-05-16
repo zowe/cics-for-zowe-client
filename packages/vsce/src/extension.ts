@@ -19,6 +19,7 @@ import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 import { getCommands } from "./commands";
 import { CICSLogger } from "./utils/CICSLogger";
 import { CICSMessages } from "./constants/CICS.messages";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 /**
  * Initializes the extension
@@ -177,6 +178,24 @@ export async function activate(context: ExtensionContext) {
   });
 
   context.subscriptions.concat(getCommands(treeDataProv, treeview));
+
+  return {
+    api: {
+      configuration: {
+        supportedResources: [
+          CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+          CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+          CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
+          CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
+          CicsCmciConstants.CICS_LIBRARY_RESOURCE,
+          CicsCmciConstants.CICS_URIMAP,
+          CicsCmciConstants.CICS_CMCI_TASK,
+          CicsCmciConstants.CICS_CMCI_PIPELINE,
+          CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
+        ],
+      }
+    }
+  };
 }
 
 export async function deactivate(): Promise<void> {
