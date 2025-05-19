@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Feature: Add React-based attributes view in the panel to replace existing attributes editor [#281](https://github.com/zowe/cics-for-zowe-client/issues/281)
+- Feature: Add resource-inspector view in the panel [#281](https://github.com/zowe/cics-for-zowe-client/issues/281)
 
 ## `3.7.0`
 
