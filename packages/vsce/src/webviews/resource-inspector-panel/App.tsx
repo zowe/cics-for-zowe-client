@@ -60,7 +60,7 @@ const RIPanelView = () => {
         <VscodeTableHeader>
           <VscodeTableRow>
             <VscodeTableHeaderCell className="header-cell-1">
-              <div className="div-display-1">{(label + "").replace(/Closed|Disabled|\(|\)/g, "")}</div>
+              <div className="div-display-1">{(label + "").replace(/Closed|Disabled|Unenabled|\(|\)/g, "")}</div>
               <div className="div-display-1 div-display-2">{details.status + ""}</div>
             </VscodeTableHeaderCell>
           </VscodeTableRow>
@@ -80,11 +80,11 @@ const RIPanelView = () => {
         </VscodeTableBody>
       </VscodeTable>
 
-      <VscodeTable zebra="true">
+      <VscodeTable zebra={true} columns={["30%", "70%"]}>
         <VscodeTableHeader>
           <VscodeTableRow>
-            <VscodeTableHeaderCell className="padding-right-10 column-width-30">Attributes</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell className="padding-right-10 column-width-70">
+            <VscodeTableHeaderCell className="padding-right-10">Attributes</VscodeTableHeaderCell>
+            <VscodeTableHeaderCell className="padding-right-10">
               <div>
                 <div className="div-display-1">Values</div>
                 <VscodeTextfield
@@ -107,8 +107,8 @@ const RIPanelView = () => {
             })
             .map(([key, value]) => (
               <VscodeTableRow>
-                <VscodeTableCell className="padding-left-20 column-width-30">{key}</VscodeTableCell>
-                <VscodeTableCell className="padding-right-75 column-width-70">{value}</VscodeTableCell>
+                <VscodeTableCell className="padding-left-20">{key}</VscodeTableCell>
+                <VscodeTableCell className="padding-right-75">{value}</VscodeTableCell>
               </VscodeTableRow>
             ))}
         </VscodeTableBody>
