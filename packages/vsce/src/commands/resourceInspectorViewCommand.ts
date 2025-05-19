@@ -33,7 +33,7 @@ export function getResourceInspectorforLocalFile(context: ExtensionContext, tree
   return commands.registerCommand("cics-extension-for-zowe.localFileResourceInspectorView", async (node) => {
     const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, node);
     if (!allSelectedNodes || !allSelectedNodes.length) {
-      await window.showErrorMessage("No CICS program selected");
+      await window.showErrorMessage("No CICS local file selected");
       return;
     }
     getResourceViewProvider(allSelectedNodes, "CICSLocalFile", context.extensionUri, treeview);
