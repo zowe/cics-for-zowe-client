@@ -64,10 +64,8 @@ const RIPanelView = () => {
         </VscodeTableHeader>
         <VscodeTableBody>
           <VscodeTableCell className="padding-left-20">
-            {Array.from(detailsMap)
-              .filter(([key]) => {
-                return key !== "status";
-              })
+           {Object.entries(riArgs.details)
+              .filter(([key, value]) => key !== "status")
               .map(([key, value]) => (
                 <p className="line">
                   {key} : {value}
