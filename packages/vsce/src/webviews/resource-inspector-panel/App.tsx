@@ -94,12 +94,13 @@ const RIPanelView = () => {
           </VscodeTableRow>
         </VscodeTableHeader>
         <VscodeTableBody>
-          {Array.from(attributesMap)
-            .filter(([key, value]) => {
-              return (
-                (search.toLowerCase() === "" ? key : key.toLowerCase().includes(search) || value.toLowerCase().includes(search)) && key !== "_keydata"
-              );
-            })
+          {Object.entries(riArgs.attributes)
+            .filter(([key, value]) => key.toLowerCase() !== "_keydata")
+            .filter(
+              ([key, value]) =>
+                key.toLowerCase().trim().includes(search.toLowerCase().trim()) ||
+                value.toLowerCase().trim().includes(search.toLowerCase().trim())
+            )
             .map(([key, value]) => (
               <VscodeTableRow>
                 <VscodeTableCell className="padding-left-20">{key}</VscodeTableCell>
