@@ -57,7 +57,7 @@ const RIPanelView = () => {
         <VscodeTableHeader>
           <VscodeTableRow>
             <VscodeTableHeaderCell className="header-cell-1">
-              <div className="div-display-1">{(label + "").replace(/Closed|Disabled|Unenabled|\(|\)/g, "")}</div>
+              <div className="div-display-1">{(riArgs.label + "").replace(/Closed|Disabled|Unenabled|\(|\)/g, "")}</div>
               <div className="div-display-1 div-display-2">{details.status + ""}</div>
             </VscodeTableHeaderCell>
           </VscodeTableRow>
