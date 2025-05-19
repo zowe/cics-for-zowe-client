@@ -26,12 +26,6 @@ const extensionConfig = {
   ],
   resolve: {
     extensions: ['.ts', '.js', '.json'],
-    fallback: {
-      //https://github.com/cthackers/adm-zip/issues/242
-      //original-fs is a built-in electron modiule, which the VS Code instance will have access to at runtime
-      //So we do not need to provide a fallback for it. This will supress the warning
-      'original-fs': false // added for adm-zip
-    }
   },
   module: {
     rules: [
