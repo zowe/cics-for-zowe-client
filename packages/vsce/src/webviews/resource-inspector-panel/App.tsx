@@ -51,8 +51,6 @@ const RIPanelView = () => {
     };
   }, []);
 
-  const attributesMap: Map<string, string> = new Map(Object.entries(attr));
-  const detailsMap: Map<string, string> = new Map(Object.entries(details));
 
   return (
     <div className="maindiv">
