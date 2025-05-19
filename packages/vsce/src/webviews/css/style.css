@@ -23,7 +23,7 @@
 .div-display-2{
   font-size: x-small;
   padding-left: 7px;
-  font-weight: 100;
+  font-weight: 400;
 }
 
 .padding-left-20{
@@ -34,6 +34,14 @@
 }
 .padding-right-75{
   padding-right: 75px;
+}
+
+.column-width-30{
+  width: 30% !important;
+}
+
+.column-width-70{
+  width: 70% !important;
 }
 
 .search-style{
