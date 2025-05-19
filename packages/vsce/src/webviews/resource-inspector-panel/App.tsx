@@ -25,22 +25,21 @@ import * as vscode from "../common/vscode";
 import "../css/style.css";
 
 const RIPanelView = () => {
-  const [label, setLabel] = React.useState<any>({});
-  const [attr, setAttr] = React.useState<any>({});
-  const [resource, setResource] = React.useState<any>({});
   const [search, setSearch] = React.useState("");
-  const [details, setDetails] = React.useState<any>({});
 
+  const [riArgs, setRIArgs] = React.useState<{
+    label: string;
+    details: { [key: string]: string; };
+    resource: { [key: string]: string; };
+    attributes: { [key: string]: string; };
+  }>();
   console.log("printing resource: ", resource);
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       const data = event.data.data;
       console.log("printing event: ", data);
-      setLabel(data.label);
-      setAttr(data.attributes);
-      setResource(data.resource);
-      setDetails(data.details);
+      setRIArgs(data);
     };
     vscode.addVscMessageListener(listener);
 
