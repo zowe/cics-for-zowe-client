@@ -46,16 +46,7 @@ export class CICSLibraryTreeItem extends TreeItem {
     this.children.push(dataset);
   }
 
-  public async loadContents() {
-    const defaultCriteria = `(LIBRARY=${this.library.name})`;
-    let criteria;
-
-    if (this.activeFilter) {
-      criteria = `(LIBRARY=${this.library.name} AND DSNAME=${this.activeFilter})`;
-    } else {
-      criteria = defaultCriteria;
-    }
-
+  private async fetchAndProcessDatasets(criteria: string, postFilter?: (dataset: any[]) => any[]) {
     this.children = [];
     try {
       const libraryResponse = await runGetResource({
@@ -65,7 +56,11 @@ export class CICSLibraryTreeItem extends TreeItem {
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         params: { criteria: criteria },
       });
-      const datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
+
+      let datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
+      if (postFilter) {
+        datasetArray = postFilter(datasetArray);
+      }
       this.label = this.buildLabel(datasetArray);
       for (const dataset of datasetArray) {
         const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); //this=CICSLibraryTreeItem
@@ -86,6 +81,23 @@ export class CICSLibraryTreeItem extends TreeItem {
         );
       }
     }
+}
+
+  public async loadContents() {
+    const defaultCriteria = `(LIBRARY=${this.library.name})`;
+    let criteria;
+    if (this.activeFilter) {
+      criteria = `(LIBRARY=${this.library.name} AND DSNAME=${this.activeFilter})`;
+    } else {
+      criteria = defaultCriteria;
+    }
+    await this.fetchAndProcessDatasets(criteria);
+  }
+
+  //loadContents does not work with DSNAME filter,cmci returns invalid params with activeFilter
+  public async loadContentsWithDSFilter() {
+    const criteria = `(LIBRARY=${this.library.name})`;
+    await this.fetchAndProcessDatasets(criteria, datasetArray =>datasetArray.filter(dataset => this.activeFilter.includes(dataset["dsname"])));
   }
 
   private buildLabel(arr?: any[]) {
