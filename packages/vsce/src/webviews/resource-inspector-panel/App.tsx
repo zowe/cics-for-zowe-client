@@ -29,11 +29,10 @@ const RIPanelView = () => {
 
   const [riArgs, setRIArgs] = React.useState<{
     label: string;
-    details: { [key: string]: string; };
-    resource: { [key: string]: string; };
-    attributes: { [key: string]: string; };
+    details: { [key: string]: string };
+    resource: { [key: string]: string };
+    attributes: { [key: string]: string };
   }>();
-  console.log("printing resource: ", resource);
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
@@ -50,66 +49,66 @@ const RIPanelView = () => {
     };
   }, []);
 
-
   return (
-    <div className="maindiv">
-      <VscodeTable>
-        <VscodeTableHeader>
-          <VscodeTableRow>
-            <VscodeTableHeaderCell className="header-cell-1">
-              <div className="div-display-1">{(riArgs.label + "").replace(/Closed|Disabled|Unenabled|\(|\)/g, "")}</div>
-              <div className="div-display-1 div-display-2">{details.status + ""}</div>
-            </VscodeTableHeaderCell>
-          </VscodeTableRow>
-        </VscodeTableHeader>
-        <VscodeTableBody>
-          <VscodeTableCell className="padding-left-20">
-           {Object.entries(riArgs.details)
-              .filter(([key, value]) => key !== "status")
-              .map(([key, value]) => (
-                <p className="line">
-                  {key} : {value}
-                </p>
-              ))}
-          </VscodeTableCell>
-        </VscodeTableBody>
-      </VscodeTable>
+    riArgs && (
+      <div className="maindiv">
+        <VscodeTable>
+          <VscodeTableHeader>
+            <VscodeTableRow>
+              <VscodeTableHeaderCell className="header-cell-1">
+                <div className="div-display-1">{(riArgs.label + "").replace(/Closed|Disabled|Unenabled|\(|\)/g, "")}</div>
+                <div className="div-display-1 div-display-2">{riArgs.details.status + ""}</div>
+              </VscodeTableHeaderCell>
+            </VscodeTableRow>
+          </VscodeTableHeader>
+          <VscodeTableBody>
+            <VscodeTableCell className="padding-left-20">
+              {Object.entries(riArgs.details)
+                .filter(([key, value]) => key !== "status")
+                .map(([key, value]) => (
+                  <p className="line">
+                    {key}: {value}
+                  </p>
+                ))}
+            </VscodeTableCell>
+          </VscodeTableBody>
+        </VscodeTable>
 
-      <VscodeTable zebra={true} columns={["30%", "70%"]}>
-        <VscodeTableHeader>
-          <VscodeTableRow>
-            <VscodeTableHeaderCell className="padding-right-10">Attributes</VscodeTableHeaderCell>
-            <VscodeTableHeaderCell className="padding-right-10">
-              <div>
-                <div className="div-display-1">Values</div>
-                <VscodeTextfield
-                  type="text"
-                  placeholder="Keyword search..."
-                  onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
-                  value={search}
-                  className="search-style div-display-1"
-                ></VscodeTextfield>
-              </div>
-            </VscodeTableHeaderCell>
-          </VscodeTableRow>
-        </VscodeTableHeader>
-        <VscodeTableBody>
-          {Object.entries(riArgs.attributes)
-            .filter(([key, value]) => key.toLowerCase() !== "_keydata")
-            .filter(
-              ([key, value]) =>
-                key.toLowerCase().trim().includes(search.toLowerCase().trim()) ||
-                value.toLowerCase().trim().includes(search.toLowerCase().trim())
-            )
-            .map(([key, value]) => (
-              <VscodeTableRow>
-                <VscodeTableCell className="padding-left-20">{key}</VscodeTableCell>
-                <VscodeTableCell className="padding-right-75">{value}</VscodeTableCell>
-              </VscodeTableRow>
-            ))}
-        </VscodeTableBody>
-      </VscodeTable>
-    </div>
+        <VscodeTable zebra={true} columns={["30%", "70%"]}>
+          <VscodeTableHeader>
+            <VscodeTableRow>
+              <VscodeTableHeaderCell className="padding-right-10">Attribute</VscodeTableHeaderCell>
+              <VscodeTableHeaderCell className="padding-right-10">
+                <div>
+                  <div className="div-display-1">Value</div>
+                  <VscodeTextfield
+                    type="text"
+                    placeholder="Keyword search..."
+                    onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
+                    value={search}
+                    className="search-style div-display-1"
+                  ></VscodeTextfield>
+                </div>
+              </VscodeTableHeaderCell>
+            </VscodeTableRow>
+          </VscodeTableHeader>
+          <VscodeTableBody>
+            {Object.entries(riArgs.attributes)
+              .filter(([key, value]) => key.toLowerCase() !== "_keydata")
+              .filter(
+                ([key, value]) =>
+                  key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
+              )
+              .map(([key, value]) => (
+                <VscodeTableRow>
+                  <VscodeTableCell className="padding-left-20">{key}</VscodeTableCell>
+                  <VscodeTableCell className="padding-right-75">{value}</VscodeTableCell>
+                </VscodeTableRow>
+              ))}
+          </VscodeTableBody>
+        </VscodeTable>
+      </div>
+    )
   );
 };
 
