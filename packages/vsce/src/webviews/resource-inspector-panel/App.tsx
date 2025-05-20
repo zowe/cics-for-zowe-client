@@ -77,7 +77,7 @@ const RIPanelView = () => {
         <VscodeTable zebra={true} columns={["30%", "70%"]}>
           <VscodeTableHeader>
             <VscodeTableRow>
-              <VscodeTableHeaderCell className="padding-right-10">Attribute</VscodeTableHeaderCell>
+              <VscodeTableHeaderCell className="div-display-1 padding-right-10">Attribute</VscodeTableHeaderCell>
               <VscodeTableHeaderCell className="padding-right-10">
                 <div>
                   <div className="div-display-1">Value</div>
