@@ -91,24 +91,6 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.programResourceInspectorView",
-        "title": "Resource Inspector",
-        "category": "IBM CICS for Zowe Explorer",
-        "icon": {
-          "light": "resources/imgs/filter-dark.svg",
-          "dark": "resources/imgs/filter-light.svg"
-        }
-      },
-      {
-        "command": "cics-extension-for-zowe.localFileResourceInspectorView",
-        "title": "Resource Inspector",
-        "category": "IBM CICS for Zowe Explorer",
-        "icon": {
-          "light": "resources/imgs/filter-dark.svg",
-          "dark": "resources/imgs/filter-light.svg"
-        }
-      },
-      {
         "command": "cics-extension-for-zowe.filterPrograms",
         "title": "Filter Programs",
         "category": "IBM CICS for Zowe Explorer",
@@ -475,6 +457,16 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "cics-extension-for-zowe.programResourceInspectorView",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.localFileResourceInspectorView",
+          "when": "never"
+        }
+      ],
       "view/title": [
         {
           "command": "cics-extension-for-zowe.refreshTree",
