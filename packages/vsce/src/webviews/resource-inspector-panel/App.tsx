@@ -37,7 +37,6 @@ const RIPanelView = () => {
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       const data = event.data.data;
-      console.log("printing event: ", data);
       setRIArgs(data);
     };
     vscode.addVscMessageListener(listener);
@@ -113,4 +112,3 @@ const RIPanelView = () => {
 };
 
 export default RIPanelView;
-

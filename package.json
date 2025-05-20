@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "watch": "npm run watch --workspaces",
-    "package": "npm run package --workspaces",
+    "watch": "turbo watch",
+    "package": "turbo package",
     "test": "npm run test --workspaces",
     "test:system": "npm run test:system --workspaces",
     "test:unit": "npm run test:unit --workspaces",
