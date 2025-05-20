@@ -5194,34 +5194,6 @@ SOFTWARE.
 
 ------
 
-** tapable; version 2.2.1 -- https://github.com/webpack/tapable
-Copyright JS Foundation and other contributors
-
-The MIT License
-
-Copyright JS Foundation and other contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-------
-
 ** parse-semver; version 1.1.1 -- https://github.com/tunnckocore/parse-semver#readme
 Copyright (c) 2015 Charlike Mike Reagent, contributors.
 Copyright (c) 2015-2016 Charlike Make Reagent (http://j.mp/1stW47C)
@@ -7838,8 +7810,6 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** terser-webpack-plugin; version 5.3.14 -- https://github.com/webpack-contrib/terser-webpack-plugin
 Copyright JS Foundation and other contributors
-** watchpack; version 2.4.2 -- https://github.com/webpack/watchpack
-Copyright JS Foundation and other contributors
 ** webpack; version 5.99.8 -- https://github.com/webpack/webpack
 Copyright JS Foundation and other contributors
 ** webpack-cli; version 6.0.1 -- https://github.com/webpack/webpack-cli/tree/master/packages/webpack-cli
@@ -9007,6 +8977,9 @@ Copyright (c) Microsoft Corporation
 ** @types/mocha; version 10.0.10 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mocha
 Copyright (c) Microsoft Corporation
 ** @types/mustache; version 4.2.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mustache
+Copyright (c) Microsoft Corporation
+** @types/node; version 22.15.19 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
 Copyright (c) Microsoft Corporation
