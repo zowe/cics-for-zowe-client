@@ -1,31 +1,45 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
 //@ts-check
 
-'use strict';
+"use strict";
 
-const path = require('path');
-const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
+const path = require("path");
+const WebpackManifestPlugin = require("webpack-manifest-plugin").WebpackManifestPlugin;
+const webpack = require("webpack");
+const fs = require("fs");
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 const extensionConfig = {
-  target: 'node',
+  target: "node",
   entry: {
-    extension: './src/extension.ts'
+    extension: "./src/extension.ts",
   },
-  devtool: 'source-map',
+  devtool: "source-map",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
-    libraryTarget: 'commonjs2',
-    devtoolModuleFilenameTemplate: '../[resource-path]'
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+    libraryTarget: "commonjs2",
+    devtoolModuleFilenameTemplate: "../[resource-path]",
   },
+  plugins: [new webpack.BannerPlugin(fs.readFileSync("../../LICENSE_HEADER", "utf8"))],
   externals: [
     {
-      vscode: 'commonjs vscode',
+      vscode: "commonjs vscode",
     },
   ],
   resolve: {
-    extensions: ['.ts', '.js', '.json'],
+    extensions: [".ts", ".js", ".json"],
   },
   module: {
     rules: [
@@ -34,24 +48,24 @@ const extensionConfig = {
         // exclude: /.*node_modules.*/,
         use: [
           {
-            loader: 'ts-loader'
-          }
-        ]
+            loader: "ts-loader",
+          },
+        ],
       },
       {
         test: /\.node/,
-        use: "raw-loader"
+        use: "raw-loader",
       },
       {
         test: /\.js$/,
         include: /wontache/,
         type: "javascript/auto",
-      }
-    ]
+      },
+    ],
   },
   infrastructureLogging: {
-    level: 'log'
-  }
+    level: "log",
+  },
 };
 
 function webviews(mode) {
@@ -109,7 +123,7 @@ function webviews(mode) {
     },
     plugins: [
       new WebpackManifestPlugin({ publicPath: "" }),
-      // new webpack.BannerPlugin(fs.readFileSync('../../scripts/LICENSE_HEADER', 'utf8')),
+      new webpack.BannerPlugin(fs.readFileSync("../../LICENSE_HEADER", "utf8")),
       // new MonacoWebpackPlugin({ languages: ['java'] })
     ],
     devServer: {

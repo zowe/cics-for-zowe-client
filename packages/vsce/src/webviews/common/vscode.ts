@@ -1,11 +1,13 @@
-/*******************************************************************************
- * Licensed Materials - Property of IBM
- * (C) Copyright IBM Corporation 2023, 2025. All Rights Reserved.
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
  *
- * Note to U.S. Government Users Restricted Rights:
- * Use, duplication or disclosure restricted by GSA ADP Schedule
- * Contract with IBM Corp.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();

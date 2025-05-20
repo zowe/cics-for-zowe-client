@@ -42,7 +42,7 @@
         {
           "id": "inspector-panel",
           "icon": "resources/zowe_cics_logo.png",
-          "title": "Resource Inspector"
+          "title": "CICS Resource Inspector"
         }
       ]
     },
@@ -57,7 +57,7 @@
         {
           "type": "webview",
           "id": "resource-inspector",
-          "name": "Resource Inspector",
+          "name": "CICS Resource Inspector",
           "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
         }
       ]
@@ -499,7 +499,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
           "command": "cics-extension-for-zowe.programResourceInspectorView",
           "group": ""
         },
@@ -734,7 +734,7 @@
           "group": ""
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
           "command": "cics-extension-for-zowe.localFileResourceInspectorView",
           "group": ""
         },
