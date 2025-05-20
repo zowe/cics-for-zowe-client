@@ -39,13 +39,10 @@ jest.mock("../../../src/trees/treeItems/CICSTaskTreeItem", () => ({
 const getResourceMock = globalMocks.getResourceMock;
 const treeResourceMock = globalMocks.getDummyTreeResources("cicstask", "fileName*");
 const cicsTaskTreeItemMock = {};
-const workspaceMock = jest.spyOn(vscode.workspace, "getConfiguration");
-const get = jest.fn();
-const workspaceConfiguration = {
-  get: get,
-  update: jest.fn(),
-  isFile: jest.fn().mockReturnValue(true),
-};
+const workspaceMock = globalMocks.workspaceMock;
+const get = globalMocks.get;
+const workspaceConfiguration = globalMocks.workspaceConfiguration;
+
 const record = [{ prop: "test1" }, { prop: "test2" }];
 const toEscapedCriteriaString = globalMocks.toEscapedCriteriaString;
 

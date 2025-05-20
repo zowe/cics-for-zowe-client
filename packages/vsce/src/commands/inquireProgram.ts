@@ -18,12 +18,16 @@ import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { CICSTransactionTreeItem } from "../trees/treeItems/CICSTransactionTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
+import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 
 /**
  * Inquire the associated transaction tree item from a task tree item
  */
 export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireProgram", async (node) => {
+    const msg = "CICS Program resources are not visible. Enable them from your VS Code settings.";
+    if (!openSettingsForHiddenResourceType(msg, "Program")) return;
+    
     const allSelectedNodes = findSelectedNodes(treeview, CICSTransactionTreeItem, node) as CICSTransactionTreeItem[];
     if (!allSelectedNodes || !allSelectedNodes.length) {
       window.showErrorMessage("No CICS Transaction selected");
