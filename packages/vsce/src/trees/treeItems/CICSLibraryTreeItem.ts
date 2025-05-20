@@ -87,6 +87,41 @@ export class CICSLibraryTreeItem extends TreeItem {
       }
     }
   }
+//loadContents does not work with DSNAME filter,cmci returns invalid params with activeFilter
+  public async loadContentsWithDSFilter() {
+    const defaultCriteria = `(LIBRARY=${this.library.name})`;
+    this.children = [];
+    try {
+      const libraryResponse = await runGetResource({
+        session: this.parentRegion.parentSession.session,
+        resourceName: "cicslibrarydatasetname",
+        regionName: this.parentRegion.getRegionName(),
+        cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
+        params: { criteria: defaultCriteria },
+      });
+      let datasetArray = toArray(libraryResponse.response.records.cicslibrarydatasetname);
+      datasetArray = datasetArray.filter((dataset => dataset["dsname"] === this.activeFilter));
+      this.label = this.buildLabel(datasetArray);
+      for (const dataset of datasetArray) {
+        const newDatasetItem = new CICSLibraryDatasets(dataset, this.parentRegion, this); 
+        this.addDataset(newDatasetItem);
+      }
+    } catch (error) {
+      if (error.mMessage!.includes("exceeded a resource limit")) {
+        window.showErrorMessage(`Resource Limit Exceeded - Set a datasets filter to narrow search`);
+      } else if (this.children.length === 0) {
+        window.showInformationMessage(`No datasets found`);
+        this.label = this.buildLabel([]);
+      } else {
+        window.showErrorMessage(
+          `Something went wrong when fetching datasets - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+            /(\\n\t|\\n|\\t)/gm,
+            " "
+          )}`
+        );
+      }
+    }
+  }
 
   private buildLabel(arr?: any[]) {
     let labelContent = this.library.name;

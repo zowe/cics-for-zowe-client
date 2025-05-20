@@ -22,6 +22,7 @@ import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
+import {showLibraryDataSetCommand} from "./showLibraryDataSetCommand";
 import { getInquireTransactionCommand } from "./inquireTransaction";
 import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
@@ -102,5 +103,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>) => 
 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
+    showLibraryDataSetCommand(treeDataProv, treeview)
   ];
 };
