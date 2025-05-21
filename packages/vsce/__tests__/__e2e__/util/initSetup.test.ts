@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, ViewPanelAction } from "vscode-extension-tester";
 import { CICS, CONFIG_FILE_NAME, ZOWE_EXPLORER } from "./constants";

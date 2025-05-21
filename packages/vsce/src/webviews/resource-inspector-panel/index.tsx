@@ -9,12 +9,10 @@
  *
  */
 
-export function resetAllScenarios(): Promise<void> {
-  const request: RequestInfo = new Request("http://localhost:8080/__admin/scenarios/reset", {
-    method: "POST",
-  });
-  // Send the request and print the response
-  return fetch(request).then((res) => {
-    console.log("got response: ====", res.status);
-  });
-}
+import * as React from "react";
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+const container = document.getElementById('webviewRoot');
+const root = createRoot(container);
+root.render(<App />);

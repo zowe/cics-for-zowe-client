@@ -37,11 +37,28 @@
   ],
   "contributes": {
     "viewsWelcome": [],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "inspector-panel",
+          "icon": "resources/zowe_cics_logo.png",
+          "title": "CICS Resource Inspector"
+        }
+      ]
+    },
     "views": {
       "zowe": [
         {
           "id": "cics-view",
           "name": "cics"
+        }
+      ],
+      "inspector-panel": [
+        {
+          "type": "webview",
+          "id": "resource-inspector",
+          "name": "CICS Resource Inspector",
+          "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
         }
       ]
     },
@@ -405,6 +422,16 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.programResourceInspectorView",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.localFileResourceInspectorView",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "Inquire Transaction",
         "category": "IBM CICS for Zowe Explorer"
@@ -430,6 +457,16 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "cics-extension-for-zowe.programResourceInspectorView",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.localFileResourceInspectorView",
+          "when": "never"
+        }
+      ],
       "view/title": [
         {
           "command": "cics-extension-for-zowe.refreshTree",
@@ -452,6 +489,11 @@
           "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
           "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
+          "command": "cics-extension-for-zowe.programResourceInspectorView",
+          "group": ""
         },
         {
           "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
@@ -681,6 +723,11 @@
         {
           "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/",
           "command": "cics-extension-for-zowe.showLocalFileAttributes",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicslocalfile.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
+          "command": "cics-extension-for-zowe.localFileResourceInspectorView",
           "group": ""
         },
         {
@@ -932,14 +979,13 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run getPrebuilds && npm run tsupDep -- add && tsup && npm run tsupDep",
-    "build": "tsup && npm run checkTestsCompile && npm run madge",
-    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
-    "madge": "echo 'Nothing to check'",
+    "vscode:prepublish": "npm run getPrebuilds && npm run build:production",
+    "build": "webpack --mode development",
+    "build:production": "webpack --mode production",
     "lint": "eslint src --ext ts",
-    "prebuild": "npm run clean && echo Using TypeScript && tsc --version && echo Using TSUP && tsup --version",
+    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib && rimraf dist",
-    "watch": "tsup --watch",
+    "watch": "webpack --mode development --watch",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
     "test:unit": "jest --config unit.jest_config.ts",
     "test": "npm run test:unit",
@@ -954,13 +1000,28 @@
   "devDependencies": {
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.10",
-    "chai": "^4.4.1",
-    "mocha": "^11.1.0",
-    "vscode-extension-tester": "^8.11.0",
+    "@types/mustache": "^4.2.6",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
     "@types/vscode": "~1.53.0",
-    "@vscode/vsce": "^2.32.0"
+    "@vscode/vsce": "^2.32.0",
+    "chai": "^4.4.1",
+    "css-loader": "^7.1.2",
+    "mocha": "^11.1.0",
+    "mustache": "^4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "raw-loader": "^4.0.2",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.2",
+    "vscode-extension-tester": "^8.11.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-manifest-plugin": "^5.0.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "@vscode-elements/react-elements": "^1.15.1",
     "@zowe/cics-for-zowe-sdk": "6.7.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.2.0"

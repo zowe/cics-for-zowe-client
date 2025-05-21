@@ -5,7 +5,8 @@
 ../
 
 # Allowlist what we need
-!dist/extension.*
+!dist/*.js
+!dist/*.js.map
 !prebuilds/*
 # !out/src/nls.metadata*.json
 !resources/**/*.png
