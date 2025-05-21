@@ -4,7 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## Recent Changes
 
-- Enhancement: Added a some missing resource constants. [#294](https://github.com/zowe/cics-for-zowe-client/pull/294)
+- Enhancement: Added an extender api. [#298](https://github.com/zowe/cics-for-zowe-client/pull/298)
 
 ## `6.6.1`
 
