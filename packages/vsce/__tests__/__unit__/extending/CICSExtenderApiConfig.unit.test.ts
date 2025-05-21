@@ -11,15 +11,16 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants/CicsCmci.constants";
 import { CICSExtenderApiConfig } from "../../../src/extending/CICSExtenderApiConfig";
+import { ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
 
 describe("CICS Extender Api Tests", () => {
   it("should return resource inspector configuration", () => {
-    const config = CICSExtenderApiConfig.getInstance().getConfig();
+    const config:ICICSExtenderConfig = CICSExtenderApiConfig.getInstance().getConfig();
     expect(config).toHaveProperty('configuration.resourceInspector.enabled', false);
   });
 
   it("should return supported resources configuration", () => {
-    const config = CICSExtenderApiConfig.getInstance().getConfig();
+    const config:ICICSExtenderConfig  = CICSExtenderApiConfig.getInstance().getConfig();
     expect(config).toHaveProperty('configuration.supportedResources', [
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
         CicsCmciConstants.CICS_PROGRAM_RESOURCE,

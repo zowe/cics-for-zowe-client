@@ -4,7 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## Recent Changes
 
-- Enhancement: Added a some missing resource constants. [#299](https://github.com/zowe/cics-for-zowe-client/pull/299)
+- Enhancement: Added pipeline and webservice resource constants. [#299](https://github.com/zowe/cics-for-zowe-client/pull/299)
 
 ## `6.6.1`
 
