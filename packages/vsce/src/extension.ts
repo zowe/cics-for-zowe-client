@@ -19,6 +19,7 @@ import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 import { getCommands } from "./commands";
 import { CICSLogger } from "./utils/CICSLogger";
 import { CICSMessages } from "./constants/CICS.messages";
+import { CICSExtenderApiConfig } from "./extending/CICSExtenderApiConfig";
 import { ResourceInspectorViewProvider } from "./trees/ResourceInspectorViewProvider";
 
 /**
@@ -184,6 +185,8 @@ export async function activate(context: ExtensionContext) {
       ResourceInspectorViewProvider.getInstance(context.extensionUri, treeview)
     )
   );
+
+  return CICSExtenderApiConfig.getInstance().getConfig();
 }
 
 export async function deactivate(): Promise<void> {

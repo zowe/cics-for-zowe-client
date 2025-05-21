@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added a supportedResources API for extenders. [#294](https://github.com/zowe/cics-for-zowe-client/pull/294)
+- Enhancement: Added an API for extenders. [#299](https://github.com/zowe/cics-for-zowe-client/pull/299)
 
 ## `3.7.0`
 
