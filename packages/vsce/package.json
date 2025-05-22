@@ -221,6 +221,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.showLibrary",
+        "title": "Show Library",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
@@ -379,6 +384,11 @@
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*/",
           "command": "cics-extension-for-zowe.inquireProgram",
           "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "command": "cics-extension-for-zowe.showLibrary",
+          "group": ""
         },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
