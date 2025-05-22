@@ -28,11 +28,11 @@ import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
+import { getResourceInspectorCommand } from "./resourceInspectorViewCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
-import { getResourceInspectorCommand } from "./resourceInspectorViewCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [

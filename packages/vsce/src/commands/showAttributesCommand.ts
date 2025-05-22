@@ -16,9 +16,9 @@ import { getAttributesHtml } from "../utils/webviewHTML";
 
 export function getShowResourceAttributesCommand(treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.showResourceAttributes", (node: CICSResourceContainerNode<IResource>) => {
-    for (const res of [
-      ...new Set([...treeview.selection, node])
-    ].filter((item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource)) {
+    for (const res of [...new Set([...treeview.selection, node])].filter(
+      (item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource
+    )) {
       const resource = res.getContainedResource().resource.attributes;
       const resourceName = res.getContainedResourceName();
       const attributeHeadings = Object.keys(resource);

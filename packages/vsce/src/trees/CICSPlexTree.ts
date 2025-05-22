@@ -156,7 +156,6 @@ export class CICSPlexTree extends TreeItem {
   public addNewCombinedTrees() {
     const config = workspace.getConfiguration("zowe.cics.resources");
 
-
     if (config.get<boolean>("Program", true)) {
       this.children.push(this.buildCombinedTree("All Programs", ProgramMeta));
     }
