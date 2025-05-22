@@ -17,6 +17,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSWebServiceTreeItem } from "./treeItems/CICSWebServiceTreeItem";
 import { CICSLogger } from "../utils/CICSLogger";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 export class CICSWebServiceTree extends TreeItem {
   children: CICSWebServiceTreeItem[] = [];
@@ -48,7 +49,7 @@ export class CICSWebServiceTree extends TreeItem {
     try {
       const webserviceResponse = await runGetResource({
         session: this.parentRegion.parentSession.session,
-        resourceName: "CICSWebService",
+        resourceName: CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         regionName: this.parentRegion.getRegionName(),
         params: { criteria: criteria },

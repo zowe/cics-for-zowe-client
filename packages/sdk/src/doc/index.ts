@@ -22,3 +22,4 @@ export * from "./IResultCacheParms";
 export * from "./ITransactionParms";
 export * from "./IURIMapParms";
 export * from "./IWebServiceParms";
+export * from "./ICICSExtenderConfig";
