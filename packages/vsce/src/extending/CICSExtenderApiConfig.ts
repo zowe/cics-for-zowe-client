@@ -21,8 +21,8 @@ export class CICSExtenderApiConfig {
 
   private constructor() {
     this.config = {
-      "configuration": {
-        "supportedResources": [
+      configuration: {
+        supportedResources: [
             CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
             CicsCmciConstants.CICS_PROGRAM_RESOURCE,
             CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
@@ -33,8 +33,8 @@ export class CICSExtenderApiConfig {
             CicsCmciConstants.CICS_CMCI_PIPELINE,
             CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
         ],
-        "resourceInspector": {
-          "enabled": false
+        resourceInspector: {
+          enabled: false
         }
       }
     };
