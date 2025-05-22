@@ -82,4 +82,28 @@ describe("Bundle Part Meta", () => {
     const iconName = BundlePartMeta.getName(bundlePartMock);
     expect(iconName).toEqual(`PART2`);
   });
+
+  it("should return highlights", () => {
+    const highlights = BundlePartMeta.getHighlights(bundlePartMock);
+    expect(highlights).toEqual([
+      {
+        key: "Bundle",
+        value: "BUND1",
+      }
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "BUND1";
+    await BundlePartMeta.appendCriteriaHistory(criteria);
+    let history = BundlePartMeta.getCriteriaHistory();
+    expect(history).toEqual(["BUND1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "BUND1";
+    await BundlePartMeta.appendCriteriaHistory(criteria);
+    let history = BundlePartMeta.getCriteriaHistory();
+    expect(history).toEqual(["BUND1"]);
+  });
 });

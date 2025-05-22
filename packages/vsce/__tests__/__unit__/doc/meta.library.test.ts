@@ -46,4 +46,28 @@ describe("Library Meta", () => {
     const name = LibraryMeta.getName(libraryMock);
     expect(name).toEqual("LIB1");
   });
+
+  it("should return highlights", () => {
+    const highlights = LibraryMeta.getHighlights(libraryMock);
+    expect(highlights).toEqual([
+      {
+        key: "Ranking",
+        value: "10",
+      }
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "LIB1";
+    await LibraryMeta.appendCriteriaHistory(criteria);
+    let history = LibraryMeta.getCriteriaHistory();
+    expect(history).toEqual(["LIB1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "LIB1";
+    await LibraryMeta.appendCriteriaHistory(criteria);
+    let history = LibraryMeta.getCriteriaHistory();
+    expect(history).toEqual(["LIB1"]);
+  });
 });

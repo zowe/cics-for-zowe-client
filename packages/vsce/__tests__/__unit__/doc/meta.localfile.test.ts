@@ -124,4 +124,52 @@ describe("Local File Meta", () => {
     const name = LocalFileMeta.getName(localFileMock);
     expect(name).toEqual("MYFILE");
   });
+
+  it("should return highlights", () => {
+    const highlights = LocalFileMeta.getHighlights(localFileMock);
+    expect(highlights).toEqual([
+      {
+        key: "Open status",
+        value: "OPEN",
+      },
+      {
+        key: "Enabled status",
+        value: "ENABLED",
+      },
+      {
+        key: "Type",
+        value: "VSAM",
+      },
+      {
+        key: "Permission",
+        value: `READABLE, BROWSABLE`,
+      },
+      {
+        key: "Key length",
+        value: "80",
+      },
+      {
+        key: "Record size",
+        value: "100",
+      },
+      {
+        key: "Data set name",
+        value: "MY.DATASET",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "FILE1";
+    await LocalFileMeta.appendCriteriaHistory(criteria);
+    let history = LocalFileMeta.getCriteriaHistory();
+    expect(history).toEqual(["FILE1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "FILE1";
+    await LocalFileMeta.appendCriteriaHistory(criteria);
+    let history = LocalFileMeta.getCriteriaHistory();
+    expect(history).toEqual(["FILE1"]);
+  });
 });

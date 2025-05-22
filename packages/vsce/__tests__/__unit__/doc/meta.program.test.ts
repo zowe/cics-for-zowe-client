@@ -74,4 +74,32 @@ describe("Program Meta", () => {
     const name = ProgramMeta.getName(programMock);
     expect(name).toEqual("MYPROG");
   });
+
+  it("should return highlights", () => {
+    const highlights = ProgramMeta.getHighlights(programMock);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
+        key: "Type",
+        value: "COBOL",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "PROG1";
+    await ProgramMeta.appendCriteriaHistory(criteria);
+    let history = ProgramMeta.getCriteriaHistory();
+    expect(history).toEqual(["PROG1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "PROG1";
+    await ProgramMeta.appendCriteriaHistory(criteria);
+    let history = ProgramMeta.getCriteriaHistory();
+    expect(history).toEqual(["PROG1"]);
+  });
 });

@@ -68,4 +68,28 @@ describe("URIMap Meta", () => {
     const name = URIMapMeta.getName(urimapMock);
     expect(name).toEqual("MYURI");
   });
+
+  it("should return highlights", () => {
+    const highlights = URIMapMeta.getHighlights(urimapMock);
+    expect(highlights).toEqual([
+      {
+        key: "Path",
+        value: "/a/b/c",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "URI1";
+    await URIMapMeta.appendCriteriaHistory(criteria);
+    let history = URIMapMeta.getCriteriaHistory();
+    expect(history).toEqual(["URI1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "URI1";
+    await URIMapMeta.appendCriteriaHistory(criteria);
+    let history = URIMapMeta.getCriteriaHistory();
+    expect(history).toEqual(["URI1"]);
+  });
 });

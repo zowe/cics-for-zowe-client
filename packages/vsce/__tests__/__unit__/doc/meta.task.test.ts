@@ -63,4 +63,28 @@ describe("Task Meta", () => {
     const name = TaskMeta.getName(taskMock);
     expect(name).toEqual("MYTASK");
   });
+
+  it("should return highlights", () => {
+    const highlights = TaskMeta.getHighlights(taskMock);
+    expect(highlights).toEqual([
+      {
+        key: "Transaction ID",
+        value: "TRAN",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "TRN1";
+    await TaskMeta.appendCriteriaHistory(criteria);
+    let history = TaskMeta.getCriteriaHistory();
+    expect(history).toEqual(["TRN1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "TRN1";
+    await TaskMeta.appendCriteriaHistory(criteria);
+    let history = TaskMeta.getCriteriaHistory();
+    expect(history).toEqual(["TRN1"]);
+  });
 });
