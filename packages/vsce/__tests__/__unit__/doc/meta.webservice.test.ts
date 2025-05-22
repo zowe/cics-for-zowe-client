@@ -21,6 +21,7 @@ describe("WebService Meta", () => {
       name: "WEBSERV",
       eyu_cicsname: "MYREG",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 
@@ -49,12 +50,7 @@ describe("WebService Meta", () => {
 
   it("should return highlights", () => {
     const highlights = WebServiceMeta.getHighlights(webserviceMock);
-    expect(highlights).toEqual([
-      {
-        key: "Status",
-        value: "ENABLED",
-      },
-    ]);
+    expect(highlights).toEqual([]);
   });
 
   it("should append criteria history", async () => {

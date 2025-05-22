@@ -128,6 +128,7 @@ describe("CICSResourceContainerNode tests", () => {
           program: "MYPROG",
           status: "ENABLED",
           progtype: "COBOL",
+          enablestatus: "ENABLED",
         }),
       },
       {
@@ -157,6 +158,7 @@ describe("CICSResourceContainerNode tests", () => {
           program: "MYPROG",
           status: "DISABLED",
           progtype: "COBOL",
+          enablestatus: "ENABLED",
         }),
       },
       {

@@ -54,19 +54,21 @@ const ResourceInspector = () => {
             <VscodeTableRow>
               <VscodeTableHeaderCell className="header-cell-1">
                 <div className="div-display-1">{resourceInfo.name}</div>
-                <div className="div-display-1 div-display-2">{resourceInfo.resource.status}</div>
+                <div className="div-display-1 div-display-2">{resourceInfo.resource.status || resourceInfo.resource.enablestatus}</div>
               </VscodeTableHeaderCell>
             </VscodeTableRow>
           </VscodeTableHeader>
-          <VscodeTableBody>
-            <VscodeTableCell className="padding-left-20">
-              {resourceInfo.highlights.map((highlight) => (
-                <p className="line">
-                  {highlight.key}: {highlight.value}
-                </p>
-              ))}
-            </VscodeTableCell>
-          </VscodeTableBody>
+          {resourceInfo.highlights.length > 0 && (
+            <VscodeTableBody>
+              <VscodeTableCell className="padding-left-20">
+                {resourceInfo.highlights.map((highlight) => (
+                  <p className="line">
+                    {highlight.key}: {highlight.value}
+                  </p>
+                ))}
+              </VscodeTableCell>
+            </VscodeTableBody>
+          )}
         </VscodeTable>
 
         <VscodeTable zebra={true} columns={["30%", "70%"]}>

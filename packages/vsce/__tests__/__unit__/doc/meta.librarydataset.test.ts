@@ -25,12 +25,14 @@ describe("Library Dataset Meta", () => {
       name: "LIB1",
       ranking: "10",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
     libraryDSMock = new Resource({
       dsname: "MY.DSNAME",
       eyu_cicsname: "MYREG",
       library: "LIB1",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 

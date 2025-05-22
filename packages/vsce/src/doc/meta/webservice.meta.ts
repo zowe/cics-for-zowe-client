@@ -46,12 +46,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   getHighlights(resource: Resource<IWebService>) {
-    return [
-      {
-        key: "Status",
-        value: resource.attributes.status,
-      },
-    ];
+    return [];
   },
 
   async appendCriteriaHistory(criteria: string) {

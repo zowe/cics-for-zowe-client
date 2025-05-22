@@ -23,6 +23,7 @@ describe("URIMap Meta", () => {
       path: "/a/b/c",
       scheme: "http",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 

@@ -22,6 +22,7 @@ describe("Transaction Meta", () => {
       eyu_cicsname: "MYREG",
       program: "MYPROG",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 
