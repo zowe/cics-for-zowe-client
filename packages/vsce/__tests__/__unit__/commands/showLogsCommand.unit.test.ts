@@ -44,6 +44,7 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 
 // this import needs to come after the mocks are set up correctly
 import * as showLogsCommand from "../../../src/commands/showLogsCommand";
+import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
@@ -65,7 +66,9 @@ function createProfile(name: string, type: string, host: string, user?: string) 
   } as imperative.IProfileLoaded;
 }
 
-const sessionTree = new CICSSessionTree({ profile: globalMocks.CICSProfileMock });
+const sessionTree = new CICSSessionTree({ profile: globalMocks.CICSProfileMock }, {
+  _onDidChangeTreeData: { fire: () => jest.fn() },
+} as unknown as CICSTree);
 const regionTree = new CICSRegionTree("IYK2ZXXX", { jobid: "TheOtherJobId" }, sessionTree, undefined, sessionTree);
 
 describe("Test suite for fetchBaseProfileWithoutError", () => {

@@ -49,6 +49,11 @@ export const CicsCmciConstants = {
   CICS_LIBRARY_RESOURCE: "CICSLibrary",
 
   /**
+   * Specifies the required part of the REST interface URI to access library dataset resources
+   */
+  CICS_LIBRARY_DATASET_RESOURCE: "CICSLibraryDatasetName",
+
+  /**
    * Specifies the required part of the REST interface URI to access URIMap definitions
    */
   CICS_DEFINITION_URIMAP: "CICSDefinitionURIMap",
@@ -62,6 +67,16 @@ export const CicsCmciConstants = {
    * Specifies the required part of the REST interface URI to access tcp/ip service resources
    */
   CICS_TCPIPSERVICE_RESOURCE: "CICSTCPIPService",
+
+  /**
+   * Specifies the required part of the REST interface URI to access pipeline service resources
+   */
+  CICS_PIPELINE_RESOURCE: "CICSPipeline",
+
+  /**
+   * Specifies the required part of the REST interface URI to access pipeline service resources
+   */
+  CICS_WEBSERVICE_RESOURCE: "CICSWebService",
 
   /*
    * Specifies the required part of the REST interface URI to access URIMaps
@@ -167,12 +182,22 @@ export const CicsCmciConstants = {
   /**
    * The CICS CMCI pipeline
    */
-   CICS_CMCI_PIPELINE: "CICSPipeline",
+  CICS_CMCI_PIPELINE: "CICSPipeline",
 
   /**
    * The CICS CMCI web service
    */
   CICS_CMCI_WEB_SERVICE: "CICSWebService",
+
+  /**
+   * CICSBundle parameter
+   */
+  CICS_CMCI_BUNDLE: "CICSBundle",
+
+  /**
+   * CICSBundlePart parameter
+   */
+  CICS_CMCI_BUNDLE_PART: "CICSBundlePart",
 
   /**
    * CICS CMCI Response 1 Codes

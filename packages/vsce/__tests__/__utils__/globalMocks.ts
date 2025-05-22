@@ -12,9 +12,9 @@
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfile, Session } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
+import * as vscode from "vscode";
 import * as filterUtils from "../../src/utils/filterUtils";
 import * as resourceUtils from "../../src/utils/resourceUtils";
-import * as vscode from "vscode";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 export const zoweSdkMock = require("@zowe/cics-for-zowe-sdk");
@@ -59,6 +59,7 @@ export const CICSPlexTree = {
 export const CICSSessionTreeMock = {
   session: imperativeSession,
   getSession: () => imperativeSession,
+  getProfile: () => IProfileMock,
 };
 
 export const cicsRegionTreeMock = {
