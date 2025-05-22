@@ -11,6 +11,7 @@
 
 const getIconFilePathFromNameMock = jest.fn();
 
+import { CICSTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
@@ -32,7 +33,7 @@ describe("Test suite for CICSSessionTree", () => {
     beforeEach(() => {
       getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
 
-      sut = new CICSSessionTree(profile);
+      sut = new CICSSessionTree(profile, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
       sut.isUnauthorized = true;
       expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("profile-unverified");
     });
