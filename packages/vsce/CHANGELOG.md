@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Enhancement: Added pagination to all resource trees. [#302](https://github.com/zowe/cics-for-zowe-client/issues/302)
+- Enhancement: Arranged resource context menu items into groups.
 
 ## `3.8.0`
 
