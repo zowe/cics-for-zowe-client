@@ -46,4 +46,28 @@ describe("WebService Meta", () => {
     const name = WebServiceMeta.getName(webserviceMock);
     expect(name).toEqual("WEBSERV");
   });
+
+  it("should return highlights", () => {
+    const highlights = WebServiceMeta.getHighlights(webserviceMock);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "ENABLED",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "SRV1";
+    await WebServiceMeta.appendCriteriaHistory(criteria);
+    let history = WebServiceMeta.getCriteriaHistory();
+    expect(history).toEqual(["SRV1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "SRV1";
+    await WebServiceMeta.appendCriteriaHistory(criteria);
+    let history = WebServiceMeta.getCriteriaHistory();
+    expect(history).toEqual(["SRV1"]);
+  });
 });

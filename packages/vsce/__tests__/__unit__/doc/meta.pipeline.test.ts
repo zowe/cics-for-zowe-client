@@ -46,4 +46,28 @@ describe("Pipeline Meta", () => {
     const name = PipelineMeta.getName(pipelineMock);
     expect(name).toEqual("MYPIPE");
   });
+
+  it("should return highlights", () => {
+    const highlights = PipelineMeta.getHighlights(pipelineMock);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "ENABLED",
+      }
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "PIP1";
+    await PipelineMeta.appendCriteriaHistory(criteria);
+    let history = PipelineMeta.getCriteriaHistory();
+    expect(history).toEqual(["PIP1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "PIP1";
+    await PipelineMeta.appendCriteriaHistory(criteria);
+    let history = PipelineMeta.getCriteriaHistory();
+    expect(history).toEqual(["PIP1"]);
+  });
 });

@@ -62,4 +62,28 @@ describe("Library Dataset Meta", () => {
     const childTypeDefaultCriteria = await LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
     expect(childTypeDefaultCriteria).toEqual(`(librarydsn='MY.DSNAME')`);
   });
+
+  it("should return highlights", () => {
+    const highlights = LibraryDatasetMeta.getHighlights(libraryDSMock);
+    expect(highlights).toEqual([
+      {
+        key: "Library",
+        value: "LIB1",
+      }
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "LIB1";
+    await LibraryDatasetMeta.appendCriteriaHistory(criteria);
+    let history = LibraryDatasetMeta.getCriteriaHistory();
+    expect(history).toEqual(["LIB1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "LIB1";
+    await LibraryDatasetMeta.appendCriteriaHistory(criteria);
+    let history = LibraryDatasetMeta.getCriteriaHistory();
+    expect(history).toEqual(["LIB1"]);
+  });
 });

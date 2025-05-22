@@ -62,4 +62,28 @@ describe("Transaction Meta", () => {
     const name = TransactionMeta.getName(transactionMock);
     expect(name).toEqual("TRAN");
   });
+
+  it("should return highlights", () => {
+    const highlights = TransactionMeta.getHighlights(transactionMock);
+    expect(highlights).toEqual([
+      {
+        key: "Initial program",
+        value: "MYPROG",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "TRN1";
+    await TransactionMeta.appendCriteriaHistory(criteria);
+    let history = TransactionMeta.getCriteriaHistory();
+    expect(history).toEqual(["TRN1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "TRN1";
+    await TransactionMeta.appendCriteriaHistory(criteria);
+    let history = TransactionMeta.getCriteriaHistory();
+    expect(history).toEqual(["TRN1"]);
+  });
 });

@@ -53,4 +53,28 @@ describe("TCP IP Meta", () => {
     const name = TCPIPMeta.getName(tcpipMock);
     expect(name).toEqual("MYTCPIP");
   });
+
+  it("should return highlights", () => {
+    const highlights = TCPIPMeta.getHighlights(tcpipMock);
+    expect(highlights).toEqual([
+      {
+        key: "Port",
+        value: "12345",
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "TCP1";
+    await TCPIPMeta.appendCriteriaHistory(criteria);
+    let history = TCPIPMeta.getCriteriaHistory();
+    expect(history).toEqual(["TCP1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "TCP1";
+    await TCPIPMeta.appendCriteriaHistory(criteria);
+    let history = TCPIPMeta.getCriteriaHistory();
+    expect(history).toEqual(["TCP1"]);
+  });
 });

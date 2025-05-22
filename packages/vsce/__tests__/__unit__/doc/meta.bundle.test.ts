@@ -71,4 +71,28 @@ describe("Bundle Meta", () => {
     const iconName = BundleMeta.getName(bundleMock);
     expect(iconName).toEqual(`BUND1`);
   });
+
+  it("should return highlights", () => {
+    const highlights = BundleMeta.getHighlights(bundleMock);
+    expect(highlights).toEqual([
+      {
+        key: "Bundle Directory",
+        value: bundleMock.attributes.bundledir,
+      },
+    ]);
+  });
+
+  it("should append criteria history", async () => {
+    const criteria = "BUND1";
+    await BundleMeta.appendCriteriaHistory(criteria);
+    let history = BundleMeta.getCriteriaHistory();
+    expect(history).toEqual(["BUND1"]);
+  });
+
+  it("should get criteria history", async () => {
+    const criteria = "BUND1";
+    await BundleMeta.appendCriteriaHistory(criteria);
+    let history = BundleMeta.getCriteriaHistory();
+    expect(history).toEqual(["BUND1"]);
+  });
 });
