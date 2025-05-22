@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.8.0`
 
 - Enhancement: Added an API for extenders. [#299](https://github.com/zowe/cics-for-zowe-client/pull/299)
 
