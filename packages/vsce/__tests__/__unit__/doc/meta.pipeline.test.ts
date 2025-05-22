@@ -21,6 +21,7 @@ describe("Pipeline Meta", () => {
       name: "MYPIPE",
       eyu_cicsname: "MYREG",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 
@@ -49,12 +50,7 @@ describe("Pipeline Meta", () => {
 
   it("should return highlights", () => {
     const highlights = PipelineMeta.getHighlights(pipelineMock);
-    expect(highlights).toEqual([
-      {
-        key: "Status",
-        value: "ENABLED",
-      }
-    ]);
+    expect(highlights).toEqual([]);
   });
 
   it("should append criteria history", async () => {

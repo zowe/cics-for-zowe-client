@@ -9,8 +9,8 @@
  *
  */
 
-const prog1 = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsname: "MYREG" };
-const prog2 = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG" };
+const prog1: IProgram = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsname: "MYREG", enablestatus: "ENABLED", progtype: "PROGRAM" };
+const prog2: IProgram = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG", enablestatus: "ENABLED", progtype: "PROGRAM" };
 
 const runGetCacheMock = jest.fn();
 
@@ -25,7 +25,7 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
-import { IResource, ProgramMeta } from "../../../src/doc";
+import { IProgram, IResource, ProgramMeta } from "../../../src/doc";
 import { CICSSession, Resource } from "../../../src/resources";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
@@ -98,7 +98,7 @@ describe("Resource Container", () => {
 
     const [resources, moreToFetch] = await container.loadResources(cicsSessionMock, "MYREG", undefined);
     expect(moreToFetch).toBeFalsy();
-    expect(resources).toEqual([new Resource(prog1), new Resource(prog2)]);
+    expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
 
     expect(runGetResourceMock).toHaveBeenCalledWith({
       session: cicsSessionMock,
@@ -136,7 +136,7 @@ describe("Resource Container", () => {
 
     const [resources, moreToFetch] = await container.loadResources(cicsSessionMock, "MYREG", undefined);
     expect(moreToFetch).toBeFalsy();
-    expect(resources).toEqual([new Resource(prog1), new Resource(prog2)]);
+    expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
 
     expect(runGetResourceMock).toHaveBeenCalledTimes(0);
     expect(runGetCacheMock).toHaveBeenCalledWith(

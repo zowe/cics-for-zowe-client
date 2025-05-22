@@ -23,6 +23,7 @@ describe("Library Meta", () => {
       name: "LIB1",
       ranking: "10",
       status: "ENABLED",
+      enablestatus: "ENABLED"
     });
   });
 

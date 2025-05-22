@@ -23,6 +23,7 @@ describe("Task Meta", () => {
       runstatus: "RUNNING",
       tranid: "TRAN",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 

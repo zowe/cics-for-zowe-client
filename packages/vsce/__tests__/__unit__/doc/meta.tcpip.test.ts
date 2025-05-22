@@ -22,6 +22,7 @@ describe("TCP IP Meta", () => {
       eyu_cicsname: "MYREG",
       port: "12345",
       status: "ENABLED",
+      enablestatus: "ENABLED",
     });
   });
 

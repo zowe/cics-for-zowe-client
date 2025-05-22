@@ -46,12 +46,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   },
 
   getHighlights(resource: Resource<IPipeline>) {
-    return [
-      {
-        key: "Status",
-        value: resource.attributes.status,
-      },
-    ];
+    return [];
   },
 
   async appendCriteriaHistory(criteria: string) {

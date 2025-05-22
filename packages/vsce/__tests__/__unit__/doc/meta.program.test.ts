@@ -23,6 +23,7 @@ describe("Program Meta", () => {
       eyu_cicsname: "MYREG",
       newcopycnt: "0",
       progtype: "COBOL",
+      enablestatus: "ENABLED"
     });
   });
 
@@ -79,12 +80,12 @@ describe("Program Meta", () => {
     const highlights = ProgramMeta.getHighlights(programMock);
     expect(highlights).toEqual([
       {
-        key: "Status",
-        value: "ENABLED",
-      },
-      {
         key: "Type",
         value: "COBOL",
+      },
+      {
+        key: "New Copy Count",
+        value: "0",
       },
     ]);
   });

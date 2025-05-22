@@ -12,4 +12,5 @@
 export interface IResource {
   eyu_cicsname: string;
   status: string;
+  enablestatus: string;
 }
