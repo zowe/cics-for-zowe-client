@@ -25,8 +25,8 @@ jest.mock("../../../src/utils/iconUtils", () => {
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import * as globalMocks from "../../__utils__/globalMocks";
 import { PersistentStorage } from "../../../src/utils/PersistentStorage";
+import * as globalMocks from "../../__utils__/globalMocks";
 
 const defaultFilterMock = jest.fn();
 defaultFilterMock.mockReturnValue("DEFAULT FITLER");

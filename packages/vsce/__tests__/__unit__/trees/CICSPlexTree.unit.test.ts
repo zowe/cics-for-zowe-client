@@ -17,8 +17,8 @@ import * as vscode from "vscode";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import * as globalMocks from "../../__utils__/globalMocks";
 import { PersistentStorage } from "../../../src/utils/PersistentStorage";
+import * as globalMocks from "../../__utils__/globalMocks";
 
 const defaultFilterMock = jest.fn();
 defaultFilterMock.mockReturnValue("DEFAULT FITLER");

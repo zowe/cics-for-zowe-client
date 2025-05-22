@@ -117,17 +117,16 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
             this.regionName ? null : `(${resource.attributes.eyu_cicsname})`
           )
       )
-      .sort((a, b) =>
-        a.getContainedResourceName() > b.getContainedResourceName() ? 1 : -1
-      );
+      .sort((a, b) => (a.getContainedResourceName() > b.getContainedResourceName() ? 1 : -1));
 
     if (moreToFetch) {
       this.children.push(new ViewMore(this));
     }
 
     this.refreshingDescription = true;
-    this.description = `${this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
-      } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
+    this.description = `${
+      this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
+    } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
 
     this.setLoading(false);
     (this.getSessionNode().getParent() as CICSTree)._onDidChangeTreeData.fire(this);

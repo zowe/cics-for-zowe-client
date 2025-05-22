@@ -10,9 +10,9 @@
  */
 
 import { ExtensionContext, TreeView, Uri, commands, window } from "vscode";
-import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { CICSResourceContainerNode } from "../trees";
 import { IResource } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
+import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
@@ -26,10 +26,7 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
   });
 }
 
-function getResourceViewProvider(
-  selectedNodes: CICSResourceContainerNode<IResource>[],
-  extensionUri: Uri,
-  treeview: TreeView<any>) {
+function getResourceViewProvider(selectedNodes: CICSResourceContainerNode<IResource>[], extensionUri: Uri, treeview: TreeView<any>) {
   for (const item of selectedNodes) {
     const resourceViewProvider = ResourceInspectorViewProvider.getInstance(extensionUri, treeview);
     const enbededWebview = resourceViewProvider?._manager?._view;
