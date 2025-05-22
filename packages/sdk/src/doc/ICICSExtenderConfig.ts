@@ -14,10 +14,6 @@ export interface ICICSExtenderConfig {
    * Extension configuration as returned by the extender API
    */
   configuration: {
-    /**
-     * The name of the CSD Group
-     * Up to eight characters long
-     */
     supportedResources: string[];
     resourceInspector: {
       enabled: boolean;
