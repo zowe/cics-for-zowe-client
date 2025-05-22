@@ -10,103 +10,76 @@
  */
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
-import { CICSCombinedLocalFileTree } from "../../trees/CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSRegionTree } from "../../trees/CICSRegionTree";
-import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
-import { CICSTree } from "../../trees/CICSTree";
-import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
-import { findSelectedNodes } from "../../utils/commandUtils";
 import constants from "../../constants/CICS.defaults";
+import { IResource } from "../../doc";
+import { LocalFileMeta } from "../../doc/meta/localFile.meta";
+import { CICSSession } from "../../resources";
+import { CICSResourceContainerNode } from "../../trees";
+import { CICSTree } from "../../trees/CICSTree";
+import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 import { ICommandParams } from "../ICommandParams";
 
-export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
+export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSLocalFileTreeItem, clickedNode);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, LocalFileMeta, clickedNode);
+    if (!nodes || !nodes.length) {
       window.showErrorMessage("No CICS local file selected");
       return;
     }
-    const parentRegions: CICSRegionTree[] = [];
+
     let busyDecision = await window.showInformationMessage(
       `Choose one of the following for the file busy condition`,
       ...["Wait", "No Wait", "Force"]
     );
-    if (busyDecision) {
-      busyDecision = busyDecision.replace(" ", "").toUpperCase();
-
-      window.withProgress(
-        {
-          title: "Disable",
-          location: ProgressLocation.Notification,
-          cancellable: true,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => {});
-          for (const index in allSelectedNodes) {
-            progress.report({
-              message: `Disabling ${parseInt(index) + 1} of ${allSelectedNodes.length}`,
-              increment: (parseInt(index) / allSelectedNodes.length) * constants.PERCENTAGE_MAX,
-            });
-            const currentNode = allSelectedNodes[parseInt(index)];
-
-            try {
-              await disableLocalFile(
-                currentNode.parentRegion.parentSession.session,
-                {
-                  name: currentNode.localFile.file,
-                  regionName: currentNode.parentRegion.label,
-                  cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
-                },
-                busyDecision
-              );
-              if (!parentRegions.includes(currentNode.parentRegion)) {
-                parentRegions.push(currentNode.parentRegion);
-              }
-            } catch (error) {
-              window.showErrorMessage(
-                `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-          for (const parentRegion of parentRegions) {
-            try {
-              const localFileTree = parentRegion.children.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
-              // Only load contents if the tree is expanded
-              if (localFileTree.collapsibleState === 2) {
-                await localFileTree.loadContents();
-              }
-              // if node is in a plex and the plex contains the region container tree
-              if (parentRegion.parentPlex && parentRegion.parentPlex.children.some((child) => child instanceof CICSRegionsContainer)) {
-                const allLocalFileTreeTree = parentRegion.parentPlex.children.filter((child: any) =>
-                  child.contextValue.includes("cicscombinedlocalfiletree.")
-                )[0] as CICSCombinedLocalFileTree;
-                if (allLocalFileTreeTree.collapsibleState === 2 && allLocalFileTreeTree.getActiveFilter()) {
-                  await allLocalFileTreeTree.loadContents(tree);
-                }
-              }
-            } catch (error) {
-              window.showErrorMessage(
-                `Something went wrong when reloading local files - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-          tree._onDidChangeTreeData.fire(undefined);
-        }
-      );
+    if (!busyDecision) {
+      return;
     }
+
+    busyDecision = busyDecision.replace(" ", "").toUpperCase();
+
+    window.withProgress(
+      {
+        title: "Disable",
+        location: ProgressLocation.Notification,
+        cancellable: false,
+      },
+      async (progress, token) => {
+        token.onCancellationRequested(() => {});
+
+        for (const node of nodes) {
+          progress.report({
+            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
+          });
+
+          try {
+            await disableLocalFile(
+              node.getSession(),
+              {
+                name: node.getContainedResourceName(),
+                cicsPlex: node.cicsplexName,
+                regionName: node.regionName,
+              },
+              busyDecision
+            );
+          } catch (error) {
+            window.showErrorMessage(
+              `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " "
+              )}`
+            );
+          }
+        }
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
+      }
+    );
   });
 }
 
-function disableLocalFile(session: imperative.AbstractSession, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
+function disableLocalFile(session: CICSSession, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       session: session,

@@ -11,12 +11,13 @@
 
 import { commands, TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
-import { ViewMore } from "../trees/treeItems/utils/ViewMore";
+import { ViewMore } from "../trees/ViewMore";
 
 export function viewMoreCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.viewMore", () => {
+  return commands.registerCommand("cics-extension-for-zowe.viewMore", async () => {
     const selectedNode = treeview.selection.filter((item) => item instanceof ViewMore)[0];
-    selectedNode.parent.addMoreCachedResources(tree);
-    tree._onDidChangeTreeData.fire(undefined);
+    selectedNode.parent.viewMore = true;
+    await selectedNode.parent.loadPageOfResources();
+    tree._onDidChangeTreeData.fire(selectedNode.parent);
   });
 }
