@@ -12,6 +12,7 @@
 const getIconFilePathFromNameMock = jest.fn();
 
 import { imperative } from "@zowe/zowe-explorer-api";
+import { CICSTree } from "../../../src/trees";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
 jest.mock("../../../src/utils/iconUtils", () => {
@@ -39,7 +40,7 @@ describe("Test suite for CICSSessionTree", () => {
 
   describe("cookies", () => {
     beforeEach(() => {
-      sut = new CICSSessionTree(cicsProfileMock);
+      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
     });
 
     afterEach(() => {
@@ -63,7 +64,7 @@ describe("Test suite for CICSSessionTree", () => {
         Cookie: "LtpaToken2=testValue",
       };
 
-      sut = new CICSSessionTree(cicsProfileMock);
+      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
       ses = sut.getSession();
 
       ses.storeCookie(cookies);
@@ -77,7 +78,7 @@ describe("Test suite for CICSSessionTree", () => {
         Cookie: "blah=hello;LtpaToken2=testValue",
       };
 
-      sut = new CICSSessionTree(cicsProfileMock);
+      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
       ses = sut.getSession();
 
       ses.storeCookie(cookies);
