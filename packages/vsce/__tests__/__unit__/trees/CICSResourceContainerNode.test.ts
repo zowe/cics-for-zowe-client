@@ -294,8 +294,8 @@ describe("CICSResourceContainerNode tests", () => {
     runGetCacheMock.mockResolvedValue({
       response: {
         resultsummary: {
-          recordcount: "12",
-          displayed_recordcount: "10",
+          recordcount: "102",
+          displayed_recordcount: "100",
         },
         records: {
           cicsprogram: [prog1, prog2, prog1, prog2, prog1, prog2, prog1, prog2, prog1, prog2],

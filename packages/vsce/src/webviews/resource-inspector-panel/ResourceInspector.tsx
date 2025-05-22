@@ -30,6 +30,7 @@ const ResourceInspector = () => {
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
+    resourceName: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
   }>();
@@ -54,7 +55,9 @@ const ResourceInspector = () => {
             <VscodeTableRow>
               <VscodeTableHeaderCell className="header-cell-1">
                 <div className="div-display-1">{resourceInfo.name}</div>
-                <div className="div-display-1 div-display-2">{resourceInfo.resource.status || resourceInfo.resource.enablestatus}</div>
+                <div className="div-display-1 div-display-2">
+                  {resourceInfo.resourceName}: {resourceInfo.resource.status || resourceInfo.resource.enablestatus}
+                </div>
               </VscodeTableHeaderCell>
             </VscodeTableRow>
           </VscodeTableHeader>

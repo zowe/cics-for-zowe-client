@@ -44,6 +44,7 @@ export class ResourceInspectorView {
         command: "init",
         data: {
           name: this.resource.meta.getName(this.resource.resource),
+          resourceName: this.resource.meta.resourceName,
           highlights: this.resource.meta.getHighlights(this.resource.resource),
           resource: this.resource.resource.attributes,
         },

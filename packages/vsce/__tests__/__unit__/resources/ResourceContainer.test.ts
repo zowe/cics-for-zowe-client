@@ -83,13 +83,13 @@ describe("Resource Container", () => {
 
   it("should set numtoFetch", async () => {
     // @ts-ignore - private property
-    expect(container.numberToFetch).toEqual(10);
+    expect(container.numberToFetch).toEqual(100);
     container.setNumberToFetch(12);
     // @ts-ignore - private property
     expect(container.numberToFetch).toEqual(12);
     await container.resetNumberToFetch();
     // @ts-ignore - private property
-    expect(container.numberToFetch).toEqual(10);
+    expect(container.numberToFetch).toEqual(100);
   });
 
   it("should load resources with no plexname and no cache token", async () => {
@@ -119,7 +119,7 @@ describe("Resource Container", () => {
       {
         cacheToken: "MYCACHETOKEN",
         startIndex: 1,
-        count: 10,
+        count: 100,
         nodiscard: true,
         summonly: false,
       },
@@ -144,7 +144,7 @@ describe("Resource Container", () => {
       {
         cacheToken: "NEWTOKEN",
         startIndex: 1,
-        count: 10,
+        count: 100,
         nodiscard: true,
         summonly: false,
       },
