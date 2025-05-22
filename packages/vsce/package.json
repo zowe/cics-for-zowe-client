@@ -157,6 +157,42 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.enableJVMServer",
+        "title": "Enable JVM Server",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.disableJVMServer",
+        "title": "Disable JVM Server",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/phasein-dark.svg",
+          "dark": "resources/imgs/phasein-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.enableBundle",
+        "title": "Enable Bundle",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.disableBundle",
+        "title": "Disable Bundle",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/phasein-dark.svg",
+          "dark": "resources/imgs/phasein-light.svg"
+        }
+      },
+      {
         "command": "cics-extension-for-zowe.enableTransaction",
         "title": "Enable Transaction",
         "category": "IBM CICS for Zowe Explorer"
@@ -274,6 +310,46 @@
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.phaseInCommand",
           "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMServer",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMServer",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSBundle.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableBundle",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSBundle.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableBundle",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSBundle.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableBundle",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSBundle.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableBundle",
+          "group": "2.CICSResourceNode.action"
         },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
@@ -456,6 +532,18 @@
           "description": "Default filter criteria for Web Service",
           "scope": "window"
         },
+        "zowe.cics.CICSBundle.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Web Service",
+          "scope": "window"
+        },
+        "zowe.cics.CICSJVMServer.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Web Service",
+          "scope": "window"
+        },
         "zowe.cics.resourcePageCount": {
           "type": "number",
           "default": 100,
@@ -503,6 +591,14 @@
             "WebService": {
               "type": "boolean",
               "description": "CICS Web Service"
+            },
+            "JVMServer": {
+              "type": "boolean",
+              "description": "CICS Web Service"
+            },
+            "Bundle": {
+              "type": "boolean",
+              "description": "CICS Web Service"
             }
           },
           "default": {
@@ -514,7 +610,9 @@
             "Pipeline": true,
             "TCP/IPService": true,
             "URIMap": true,
-            "WebService": true
+            "WebService": true,
+            "JVMServer": true,
+            "Bundle": true
           },
           "scope": "window"
         }

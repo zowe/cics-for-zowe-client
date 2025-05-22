@@ -12,6 +12,7 @@
 export * from "./IBundle";
 export * from "./IBundlePart";
 export * from "./ICICSplex";
+export * from "./IJVMServer";
 export * from "./ILibrary";
 export * from "./ILibraryDataset";
 export * from "./ILocalFile";

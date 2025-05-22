@@ -12,9 +12,11 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeItemCollapsibleState, workspace } from "vscode";
 import {
+  BundleMeta,
   ICICSTreeNode,
   IResource,
   IResourceMeta,
+  JVMServerMeta,
   LibraryMeta,
   LocalFileMeta,
   PipelineMeta,
@@ -75,6 +77,8 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         config.get<boolean>("TCP/IPService", true) && this.buildResourceContainerNode(TCPIPMeta),
         config.get<boolean>("URIMap", true) && this.buildResourceContainerNode(URIMapMeta),
         config.get<boolean>("WebService", true) && this.buildResourceContainerNode(WebServiceMeta),
+        config.get<boolean>("JVMServer", true) && this.buildResourceContainerNode(JVMServerMeta),
+        config.get<boolean>("Bundle", true) && this.buildResourceContainerNode(BundleMeta),
       ].filter((child) => child !== null);
     }
   }

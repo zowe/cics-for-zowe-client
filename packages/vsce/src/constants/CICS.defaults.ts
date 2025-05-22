@@ -48,6 +48,11 @@ export default {
   HTTP_ERROR_SERVER_ERROR: 500,
 
   /**
+   * Default number of retries when polling for complete action
+   */
+  POLL_FOR_ACTION_DEFAULT_RETRIES: 10,
+
+  /**
    * Default number of resources on each page, pulled from package.json
    */
   DEFAULT_RESOURCE_PAGE_SIZE: meta.contributes.configuration.properties["zowe.cics.resourcePageCount"].default,
