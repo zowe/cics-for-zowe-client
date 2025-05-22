@@ -9,14 +9,11 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
-import { CICSCombinedTaskTree } from "../trees/CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSPlexTree } from "../trees/CICSPlexTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSTransactionTree } from "../trees/CICSTransactionTree";
+import { IResource, ITask, ITransaction, TaskMeta } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
-import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 
@@ -26,45 +23,27 @@ import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireTransaction", async (node) => {
     const msg = "CICS Transaction resources are not visible. Enable them from your VS Code settings.";
-    if (!openSettingsForHiddenResourceType(msg, "Transaction")) return;
+    if (!openSettingsForHiddenResourceType(msg, "Transaction")) {
+      return;
+    }
 
-    const allSelectedNodes = findSelectedNodes(treeview, CICSTaskTreeItem, node) as CICSTaskTreeItem[];
-    if (!allSelectedNodes || !allSelectedNodes.length) {
+    const nodes = findSelectedNodes(treeview, TaskMeta, node) as CICSResourceContainerNode<ITask>[];
+    if (!nodes || !nodes.length) {
       window.showErrorMessage("No CICS Task selected");
       return;
     }
-    let resourceFolders;
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedTaskTree) {
-      const cicsPlex: CICSPlexTree = allSelectedNodes[0].getParent().getParent();
-      const regionsContainer = cicsPlex.getChildren().filter((child) => child instanceof CICSRegionsContainer)[0];
-      //@ts-ignore
-      const regionTree: CICSRegionTree = regionsContainer
-        .getChildren()!
-        .filter((region: CICSRegionTree) => region.getRegionName() === allSelectedNodes[0].parentRegion.getRegionName())[0];
-      resourceFolders = regionTree.getChildren()!;
-    } else {
-      resourceFolders = allSelectedNodes[0].parentRegion.getChildren()!;
-    }
-    const tranids = [];
-    for (const localTaskTreeItem of allSelectedNodes) {
-      const task = localTaskTreeItem.task;
-      tranids.push(task["tranid"]);
-    }
-    // Comma separated filter
-    const pattern = tranids.join(", ");
-    const localTransactionTree = resourceFolders.filter((child) => child instanceof CICSTransactionTree)[0] as CICSTransactionTree;
-    localTransactionTree.setFilter(pattern);
-    await localTransactionTree.loadContents();
-    tree._onDidChangeTreeData.fire(undefined);
 
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedTaskTree) {
-      const nodeToExpand: any = localTransactionTree;
+    const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.tranid);
+    const transactionTree = nodes[0]
+      .getParent()
+      .getParent()
+      .children.filter(
+        (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LOCAL_TRANSACTION
+      )[0] as CICSResourceContainerNode<ITransaction>;
 
-      // TODO: Ideal situation would be to do await treeview.reveal(nodeToExpand), however this is resulting in an error,
-      // so inquire/highlight parent node instead
-      await treeview.reveal(nodeToExpand.getParent());
-      tree._onDidChangeTreeData.fire(undefined);
-    }
-    tree._onDidChangeTreeData.fire(undefined);
+    transactionTree.setFilter(pattern);
+    transactionTree.description = pattern.join(" OR ");
+    tree._onDidChangeTreeData.fire(transactionTree);
+    await treeview.reveal(transactionTree, { expand: true });
   });
 }

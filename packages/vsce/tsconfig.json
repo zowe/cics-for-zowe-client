@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "./dist",
-    "jsx": "react"
+    "jsx": "react",
+    "resolveJsonModule": true
   },
   "outDir": "./dist",
   "include": [
