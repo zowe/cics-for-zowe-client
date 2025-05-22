@@ -195,6 +195,11 @@ export const CicsCmciConstants = {
   CICS_CMCI_BUNDLE: "CICSBundle",
 
   /**
+   * CICSJVMServer parameter
+   */
+  CICS_CMCI_JVM_SERVER: "CICSJVMServer",
+
+  /**
    * CICSBundlePart parameter
    */
   CICS_CMCI_BUNDLE_PART: "CICSBundlePart",

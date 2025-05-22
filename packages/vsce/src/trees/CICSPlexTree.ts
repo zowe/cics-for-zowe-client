@@ -13,8 +13,10 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import {
+  BundleMeta,
   IResource,
   IResourceMeta,
+  JVMServerMeta,
   LibraryMeta,
   LocalFileMeta,
   PipelineMeta,
@@ -182,6 +184,12 @@ export class CICSPlexTree extends TreeItem {
     }
     if (config.get<boolean>("WebService", true)) {
       this.children.push(this.buildCombinedTree("All Web Services", WebServiceMeta));
+    }
+    if (config.get<boolean>("JVMServer", true)) {
+      this.children.push(this.buildCombinedTree("All JVM Servers", JVMServerMeta));
+    }
+    if (config.get<boolean>("Bundle", true)) {
+      this.children.push(this.buildCombinedTree("All Bundles", BundleMeta));
     }
   }
 

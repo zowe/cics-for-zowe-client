@@ -12,6 +12,7 @@
 export * from "./IResourceMeta";
 export * from "./bundle.meta";
 export * from "./bundlePart.meta";
+export * from "./jvmserver.meta";
 export * from "./library.meta";
 export * from "./libraryDataset.meta";
 export * from "./localFile.meta";
