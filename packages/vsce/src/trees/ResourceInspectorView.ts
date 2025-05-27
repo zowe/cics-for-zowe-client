@@ -13,14 +13,15 @@ import { WebviewView, Uri, Webview } from "vscode";
 import Mustache = require("mustache");
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
+import { IContainedResource, IResource } from "../doc";
 
 export class ResourceInspectorView {
   public _view?: WebviewView;
 
   constructor(
     private readonly extensionUri: Uri,
-    private readonly data: { label: string; attributes: any; resource: string; details: any }
-  ) {}
+    private readonly resource: IContainedResource<IResource>,
+  ) { }
 
   initializeWebview(webviewView: WebviewView) {
     this._view = webviewView;
@@ -31,7 +32,6 @@ export class ResourceInspectorView {
 
     webviewView.webview.onDidReceiveMessage(async (message) => {
       if (message.command === "init") {
-        console.log("React app initialized");
         await this.sendDataToReactApp();
       }
     });
@@ -40,20 +40,19 @@ export class ResourceInspectorView {
 
   private async sendDataToReactApp() {
     if (this._view) {
-      try {
-        await this._view.webview.postMessage({
-          command: "init",
-          data: this.data, // Use data from the constructor
-        });
-      } catch (error) {
-        console.error("Failed to send data to React app:", error);
-      }
+      await this._view.webview.postMessage({
+        command: "init",
+        data: {
+          name: this.resource.meta.getName(this.resource.resource),
+          highlights: this.resource.meta.getHighlights(this.resource.resource),
+          resource: this.resource.resource.attributes,
+        },
+      });
     }
   }
-  //reusing the function from Zowe-explorer-api
+
   private _getHtmlForWebview(webview: Webview): string {
     const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "resourceInspectorPanelView.js"));
-    // const codiconsUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "src", "webviews", "dist", "codicons", "codicon.css"));
     const nonce = randomUUID();
 
     return Mustache.render(HTMLTemplate.default, {

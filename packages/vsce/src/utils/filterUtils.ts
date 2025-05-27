@@ -9,7 +9,7 @@
  *
  */
 
-import { InputBoxOptions, QuickPick, QuickPickItem, window, workspace } from "vscode";
+import { InputBoxOptions, QuickPick, QuickPickItem, window } from "vscode";
 
 export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>): Promise<QuickPickItem | undefined> {
   return new Promise<QuickPickItem | undefined>((c) => quickpick.onDidAccept(() => c(quickpick.activeItems[0])));
@@ -68,29 +68,6 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
   pattern = pattern.toUpperCase();
   // Remove whitespace
   return pattern.replace(/\s/g, "");
-}
-
-export async function getDefaultProgramFilter() {
-  let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.program.filter")}`;
-  if (!defaultCriteria || defaultCriteria.length === 0) {
-    await workspace
-      .getConfiguration()
-      .update(
-        "zowe.cics.program.filter",
-        "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)"
-      );
-    defaultCriteria = "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)";
-  }
-  return defaultCriteria;
-}
-
-export async function getDefaultTransactionFilter() {
-  let defaultCriteria = `${await workspace.getConfiguration().get("zowe.cics.transaction.filter")}`;
-  if (!defaultCriteria || defaultCriteria.length === 0) {
-    await workspace.getConfiguration().update("zowe.cics.transaction.filter", "NOT (program=DFH* OR program=EYU*)");
-    defaultCriteria = "NOT (program=DFH* OR program=EYU*)";
-  }
-  return defaultCriteria;
 }
 
 export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {

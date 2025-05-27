@@ -12,35 +12,29 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
+import {
+  IResource,
+  IResourceMeta,
+  LibraryMeta,
+  LocalFileMeta,
+  PipelineMeta,
+  ProgramMeta,
+  TCPIPMeta,
+  TaskMeta,
+  TransactionMeta,
+  URIMapMeta,
+  WebServiceMeta,
+} from "../doc";
+import { ResourceContainer } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSCombinedLibraryTree } from "./CICSCombinedTrees/CICSCombinedLibraryTree";
-import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
-import { CICSCombinedPipelineTree } from "./CICSCombinedTrees/CICSCombinedPipelineTree";
-import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
-import { CICSCombinedTCPIPServiceTree } from "./CICSCombinedTrees/CICSCombinedTCPIPServiceTree";
-import { CICSCombinedTaskTree } from "./CICSCombinedTrees/CICSCombinedTaskTree";
-import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
-import { CICSCombinedURIMapTree } from "./CICSCombinedTrees/CICSCombinedURIMapTree";
-import { CICSCombinedWebServiceTree } from "./CICSCombinedTrees/CICSCombinedWebServiceTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
 
 export class CICSPlexTree extends TreeItem {
-  children: (
-    | CICSRegionTree
-    | CICSCombinedProgramTree
-    | CICSCombinedTransactionsTree
-    | CICSCombinedLocalFileTree
-    | CICSCombinedTaskTree
-    | CICSCombinedLibraryTree
-    | CICSRegionsContainer
-    | CICSCombinedTCPIPServiceTree
-    | CICSCombinedURIMapTree
-    | CICSCombinedPipelineTree
-    | CICSCombinedWebServiceTree
-  )[] = [];
+  children: (CICSRegionsContainer | CICSRegionTree | CICSResourceContainerNode<IResource>)[] = [];
   plexName: string;
   profile: imperative.IProfileLoaded;
   parent: CICSSessionTree;
@@ -163,32 +157,49 @@ export class CICSPlexTree extends TreeItem {
     const config = workspace.getConfiguration("zowe.cics.resources");
 
     if (config.get<boolean>("Program", true)) {
-      this.children.push(new CICSCombinedProgramTree(this));
+      this.children.push(this.buildCombinedTree("All Programs", ProgramMeta));
     }
     if (config.get<boolean>("Transaction", true)) {
-      this.children.push(new CICSCombinedTransactionsTree(this));
+      this.children.push(this.buildCombinedTree("All Local Transactions", TransactionMeta));
     }
     if (config.get<boolean>("LocalFile", true)) {
-      this.children.push(new CICSCombinedLocalFileTree(this));
+      this.children.push(this.buildCombinedTree("All Local Files", LocalFileMeta));
     }
     if (config.get<boolean>("Task", true)) {
-      this.children.push(new CICSCombinedTaskTree(this));
+      this.children.push(this.buildCombinedTree("All Tasks", TaskMeta));
     }
     if (config.get<boolean>("Library", true)) {
-      this.children.push(new CICSCombinedLibraryTree(this));
+      this.children.push(this.buildCombinedTree("All Libraries", LibraryMeta));
     }
     if (config.get<boolean>("Pipeline", true)) {
-      this.children.push(new CICSCombinedPipelineTree(this));
+      this.children.push(this.buildCombinedTree("All Pipelines", PipelineMeta));
     }
     if (config.get<boolean>("TCP/IPService", true)) {
-      this.children.push(new CICSCombinedTCPIPServiceTree(this));
+      this.children.push(this.buildCombinedTree("All TCP/IP Services", TCPIPMeta));
     }
     if (config.get<boolean>("URIMap", true)) {
-      this.children.push(new CICSCombinedURIMapTree(this));
+      this.children.push(this.buildCombinedTree("All URI Maps", URIMapMeta));
     }
     if (config.get<boolean>("WebService", true)) {
-      this.children.push(new CICSCombinedWebServiceTree(this));
+      this.children.push(this.buildCombinedTree("All Web Services", WebServiceMeta));
     }
+  }
+
+  private buildCombinedTree<T extends IResource>(label: string, meta: IResourceMeta<T>) {
+    return new CICSResourceContainerNode<T>(
+      label,
+      {
+        session: this.getSession(),
+        profile: this.getProfile(),
+        parentNode: this,
+        cicsplexName: this.getPlexName(),
+      },
+      null,
+      {
+        meta,
+        resources: new ResourceContainer(meta),
+      }
+    );
   }
 
   public addRegionContainer(): CICSRegionsContainer {
@@ -203,5 +214,9 @@ export class CICSPlexTree extends TreeItem {
 
   getSession() {
     return this.parent.getSession();
+  }
+
+  getSessionNode() {
+    return this.getParent();
   }
 }
