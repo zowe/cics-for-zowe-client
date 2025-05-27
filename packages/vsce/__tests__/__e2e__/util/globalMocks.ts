@@ -12,7 +12,7 @@
 let fs = require("fs");
 let path = require("path");
 
-const jsonFilePath = path.resolve(__dirname, "../../__e2e__/resources/test/config-files/zowe.config.json");
+const jsonFilePath = path.join(__dirname, "../../../../__e2e__/resources/test/config-files/zowe.config.json");
 const wiremock_profile = {
   wiremock_server: {
     type: "cics",
