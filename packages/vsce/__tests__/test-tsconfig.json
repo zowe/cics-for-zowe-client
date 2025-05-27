@@ -5,6 +5,6 @@
     "outDir": "./lib",
     "resolveJsonModule": true
   },
-  "include": ["./__e2e__/*.ts", "./__e2e__/util/*.ts", "./__e2e__/resources/test/**/*.json"],
+  "include": ["./__e2e__/*.ts", "./__e2e__/util/*.ts"],
   "exclude": ["lib", "**/__results__/", "**/__snapshots__", "**/node_modules"]
 }
