@@ -2,8 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "resolveJsonModule": true
   },
-  "include": ["./__e2e__/*.ts", "./__e2e__/util/*.ts"],
+  "include": ["./__e2e__/*.ts", "./__e2e__/util/*.ts", "./__e2e__/resources/test/**/*.json"],
   "exclude": ["lib", "**/__results__/", "**/__snapshots__", "**/node_modules"]
 }
