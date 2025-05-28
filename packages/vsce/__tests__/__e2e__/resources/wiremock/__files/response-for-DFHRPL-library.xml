@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://winmvs28.hursley.ibm.com:28963/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="6" displayed_recordcount="6" />
+	<records>
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000001" dsname="CTS540.CICS710.SDFHLOAD" dsnsearchpos="1001" dsnum="1" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000002" dsname="CTS540.CICS710.SDFHWSLD" dsnsearchpos="1002" dsnum="2" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000003" dsname="CTS610.CPSM610.SEYULOAD" dsnsearchpos="1003" dsnum="3" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000004" dsname="PP.ADLE370.ZOS205.SCEECICS" dsnsearchpos="1004" dsnum="4" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000005" dsname="PP.ADLE370.ZOS205.SCEERUN" dsnsearchpos="1005" dsnum="5" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+		<cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000006" dsname="PP.ADLE370.ZOS205.SCEERUN2" dsnsearchpos="1006" dsnum="6" eyu_cicsname="IYCWENK1" eyu_cicsrel="E710" eyu_reserved="0" library="DFHRPL" searchpos="1" />
+	</records>
+</response>
