@@ -93,7 +93,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Disable The Program C128N", async () => {
-      await C128Nprogram?.click();
+      await C128Nprogram?.select();
 
       // Run the disable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -111,7 +111,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Enable The Program C128N", async () => {
-      await C128Nprogram?.click();
+      await C128Nprogram?.select();
 
       // Run the enable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -144,7 +144,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Show Attributes Of The Program DSNTIAC", async () => {
-      await DSNTIACprogram?.click();
+      await DSNTIACprogram?.select();
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
     });
 
