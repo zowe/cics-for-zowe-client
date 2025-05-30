@@ -14,7 +14,7 @@ import { DefaultTreeSection, EditorView, SideBarView } from "vscode-extension-te
 import { CONFIG_FILE_NAME, PROFILE_NAME } from "./util/constants";
 import { restoreOriginalConfigFile, sleep } from "./util/globalMocks";
 import {
-  checkIfZoweConfigJsonFileIsOpened,
+  checkIfEditorTabIsOpened,
   closeAllEditorsTabs,
   getCicsSection,
   openZoweExplorer,
@@ -42,7 +42,7 @@ describe("Remove The Wiremock Profile From The Configuration File", async () => 
 
     // Select the option to edit project team configuration file from the quickpick
     await selectEditProjectTeamConfigFile(cicsTree);
-    await checkIfZoweConfigJsonFileIsOpened();
+    await checkIfEditorTabIsOpened(CONFIG_FILE_NAME);
 
     //Check if wiremock profile is removed from the zowe.config.json
     editorView = new EditorView();

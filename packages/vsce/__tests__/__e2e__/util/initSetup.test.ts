@@ -11,7 +11,7 @@
 
 import { assert, expect } from "chai";
 import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, ViewPanelAction } from "vscode-extension-tester";
-import { CICS, CONFIG_FILE_NAME, ZOWE_EXPLORER } from "./constants";
+import { CICS, EDIT_TEAM_CONFIG_FILE, PROJECT_CURRENT_WORKING_DIRECTORY, ZOWE_EXPLORER } from "./constants";
 
 export async function openZoweExplorer(): Promise<SideBarView> {
   const zoweExplorer = await new ActivityBar().getViewControl(ZOWE_EXPLORER);
@@ -36,7 +36,6 @@ export async function clickPlusIconInCicsTree(cicsTree: DefaultTreeSection): Pro
 export async function selectEditProjectTeamConfigFile(cicsTree: DefaultTreeSection): Promise<void> {
   // Open the quick pick to add a new connection by clicking the plus icon in the cics section
   // Select the option to edit project team configuration file from the quickpicks
-
   await clickPlusIconInCicsTree(cicsTree);
 
   let quickPick: InputBox;
@@ -44,22 +43,22 @@ export async function selectEditProjectTeamConfigFile(cicsTree: DefaultTreeSecti
 
   let qpItems = await quickPick.getQuickPicks();
   const label1 = await qpItems[1].getLabel();
-  expect(label1).contains("Edit Team Configuration File");
+  expect(label1).contains(EDIT_TEAM_CONFIG_FILE);
   await quickPick.selectQuickPick(1);
 
   qpItems = await quickPick.getQuickPicks();
   const label2 = await qpItems[1].getLabel();
-  expect(label2).contains("Project: in the current working directory");
+  expect(label2).contains(PROJECT_CURRENT_WORKING_DIRECTORY);
   await quickPick.selectQuickPick(1);
 }
 
-export async function checkIfZoweConfigJsonFileIsOpened(): Promise<void> {
+export async function checkIfEditorTabIsOpened(editorTabName: string): Promise<void> {
   // Find open editors
   const editorView = new EditorView();
   const titles = await editorView.getOpenEditorTitles();
 
-  // Check zowe.config.json was opened - could check content here
-  expect(titles.some((title) => title.startsWith(CONFIG_FILE_NAME))).is.true;
+  // Check if the required tab is opened
+  expect(titles.some((title) => title.startsWith(editorTabName))).is.true;
 }
 
 export async function closeAllEditorsTabs(): Promise<void> {
