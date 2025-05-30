@@ -14,7 +14,7 @@ import { DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem } from 
 import { CICSEX61, CONFIG_FILE_NAME, DUMMY907, PROFILE_NAME } from "./util/constants";
 import { addWiremockProfileToConfigFile, sleep } from "./util/globalMocks";
 import {
-  checkIfZoweConfigJsonFileIsOpened,
+  checkIfEditorTabIsOpened,
   clickPlusIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
@@ -50,7 +50,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
       // Select the option to edit project team configuration file from the quickpick
       await selectEditProjectTeamConfigFile(cicsTree);
-      await checkIfZoweConfigJsonFileIsOpened();
+      await checkIfEditorTabIsOpened(CONFIG_FILE_NAME);
 
       // Check if wiremock profile is added to the zowe.config.json
       editorView = new EditorView();
