@@ -47,6 +47,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsex61Children = await cicsTree.openItem(PROFILE_NAME, CICSEX61);
       expect(cicsex61Children).not.empty;
       expect(await cicsex61Children[0].getLabel()).contains("Regions");
+      cicsTree.takeScreenshot();
     });
 
     it("Should Check For Children Of Regions In CICSEX61 And Verify If Region IYCWENK1 Is Present", async () => {
@@ -55,6 +56,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
       regionIYCWENK1Index = regions.findIndex(async (regionItem) => (await regionItem.getLabel()).trim().startsWith("IYCWENK1"));
       expect(regionIYCWENK1Index).to.be.greaterThan(-1);
+      cicsTree.takeScreenshot();
     });
 
     it("Should Check For Children Of Region IYCWENK1 And Verify If Programs Is Present", async () => {
@@ -64,6 +66,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
       programsResourceIndex = regionK1Resources.findIndex(async (item) => (await item.getLabel()).trim().startsWith("Programs"));
       expect(programsResourceIndex).to.be.greaterThan(-1);
+      cicsTree.takeScreenshot();
     });
 
     it("Should Check For Programs In Region IYCWENK1", async () => {
@@ -76,6 +79,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
         await regionK1Resources[programsResourceIndex].getLabel()
       );
       expect(programs).not.empty;
+      cicsTree.takeScreenshot();
     });
   });
 
@@ -90,6 +94,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       C128Nprogram = await findProgramByLabel(programs, C128N);
       expect(C128Nprogram).not.undefined;
       expect(await C128Nprogram?.getLabel()).contains(C128N);
+      cicsTree.takeScreenshot();
     });
 
     it("Should Disable The Program C128N", async () => {
@@ -109,6 +114,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       );
 
       expect(await C128Nprogram?.getLabel()).contains(C128N + " (Disabled)");
+      cicsTree.takeScreenshot();
     });
 
     it("Should Enable The Program C128N", async () => {
@@ -128,6 +134,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
       expect(await C128Nprogram?.getLabel()).contains(C128N);
       expect(await C128Nprogram?.getLabel()).not.contains("Disabled");
+      cicsTree.takeScreenshot();
     });
   });
 
@@ -142,11 +149,13 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       DSNTIACprogram = await findProgramByLabel(programs, DSNTIAC);
       expect(DSNTIACprogram).not.undefined;
       expect(await DSNTIACprogram?.getLabel()).contains(DSNTIAC);
+      cicsTree.takeScreenshot();
     });
 
     it("Should Show Attributes Of The Program DSNTIAC", async () => {
       await DSNTIACprogram?.select();
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
+      cicsTree.takeScreenshot();
     });
 
     it("Should Check If The Attributes Of The Program DSNTIAC Are Shown", async () => {
@@ -154,6 +163,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       const titles = await editorView.getOpenEditorTitles();
       expect(titles).not.empty;
       expect(titles.some((title) => title.includes("CICS Program IYCWENK1(" + DSNTIAC + ")"))).is.true;
+      cicsTree.takeScreenshot();
     });
 
     it("Should Check If The Search Bar Is Working And The Value Of Program Is Correct In The Attributes Editor", async () => {
@@ -195,6 +205,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
       await searchBar.clear();
       await webView.switchBack();
+      cicsTree.takeScreenshot();
     });
   });
 });
