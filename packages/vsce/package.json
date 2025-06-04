@@ -402,31 +402,31 @@
           "description": "Zowe CICS Extension History",
           "scope": "window"
         },
-        "zowe.cics.CICSProgram.filter": {
+        "zowe.cics.program.filter": {
           "type": "string",
           "default": "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
           "description": "Default filter criteria for Programs",
           "scope": "window"
         },
-        "zowe.cics.CICSLocalTransaction.filter": {
+        "zowe.cics.transaction.filter": {
           "type": "string",
           "default": "NOT (program=DFH* OR program=EYU*)",
           "description": "Default filter criteria for Transactions",
           "scope": "window"
         },
-        "zowe.cics.CICSLocalFile.filter": {
+        "zowe.cics.localFile.filter": {
           "type": "string",
           "default": "file=*",
           "description": "Default filter criteria for Local Files",
           "scope": "window"
         },
-        "zowe.cics.CICSTask.filter": {
+        "zowe.cics.tasks.filter": {
           "type": "string",
           "default": "(TRANID=*)",
           "description": "Default filter criteria for Tasks",
           "scope": "window"
         },
-        "zowe.cics.CICSLibrary.filter": {
+        "zowe.cics.library.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for Library",

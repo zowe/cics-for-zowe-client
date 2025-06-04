@@ -55,13 +55,13 @@ export default {
   /**
    * Default resource filters pulled from package.json where configuration is specified
    */
-  DEFAULT_CICSLIBRARY_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSLibrary.filter"].default,
-  DEFAULT_CICSLOCALFILE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSLocalFile.filter"].default,
-  DEFAULT_CICSLOCALTRANSACTION_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSLocalTransaction.filter"].default,
+  DEFAULT_CICSLIBRARY_FILTER: meta.contributes.configuration.properties["zowe.cics.library.filter"].default,
+  DEFAULT_CICSLOCALFILE_FILTER: meta.contributes.configuration.properties["zowe.cics.localFile.filter"].default,
+  DEFAULT_CICSLOCALTRANSACTION_FILTER: meta.contributes.configuration.properties["zowe.cics.transaction.filter"].default,
   DEFAULT_CICSPIPELINE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSPipeline.filter"].default,
-  DEFAULT_CICSPROGRAM_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSProgram.filter"].default,
+  DEFAULT_CICSPROGRAM_FILTER: meta.contributes.configuration.properties["zowe.cics.program.filter"].default,
   DEFAULT_CICSTCPIPSERVICE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSTCPIPService.filter"].default,
-  DEFAULT_CICSTASK_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSTask.filter"].default,
+  DEFAULT_CICSTASK_FILTER: meta.contributes.configuration.properties["zowe.cics.tasks.filter"].default,
   DEFAULT_CICSURIMAP_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSURIMap.filter"].default,
   DEFAULT_CICSWEBSERVICE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSWebService.filter"].default,
 };

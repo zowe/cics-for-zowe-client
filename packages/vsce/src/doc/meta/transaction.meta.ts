@@ -25,8 +25,8 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION);
+  async getDefaultCriteria() {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION, "transaction");
   },
 
   getLabel: function (transaction: Resource<ITransaction>): string {

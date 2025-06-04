@@ -25,8 +25,8 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PIPELINE_RESOURCE);
+  async getDefaultCriteria () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PIPELINE_RESOURCE, "pipeline");
   },
 
   getLabel: function (resource: Resource<IPipeline>): string {

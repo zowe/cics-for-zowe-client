@@ -534,9 +534,9 @@ export class PersistentStorage {
     }
   }
 
-  public static async getDefaultFilter(resourceName: string): Promise<string> {
+  public static async getDefaultFilter(resourceName: string, settingsKey?: string): Promise<string> {
     const constantsKey = `DEFAULT_${resourceName.toUpperCase()}_FILTER` as keyof typeof constants;
-    const configKey = `zowe.cics.${resourceName}.filter`;
+    const configKey = `zowe.cics.${settingsKey ?? resourceName}.filter`;
 
     const filterFromConfig = await workspace.getConfiguration().get(configKey);
 

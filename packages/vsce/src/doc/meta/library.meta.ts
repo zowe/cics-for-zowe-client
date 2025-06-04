@@ -26,8 +26,8 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE);
+  async getDefaultCriteria () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {

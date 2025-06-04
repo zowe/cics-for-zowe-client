@@ -25,8 +25,8 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PROGRAM_RESOURCE);
+  async getDefaultCriteria() {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PROGRAM_RESOURCE, "program");
   },
 
   getLabel: function (program: Resource<IProgram>): string {

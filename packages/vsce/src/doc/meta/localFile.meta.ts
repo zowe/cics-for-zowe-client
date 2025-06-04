@@ -25,8 +25,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
     return criteria.map((n) => `file=${n}`).join(" OR ");
   },
 
-  getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_FILE);
+  async getDefaultCriteria () {
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, "localFile");
   },
 
   getLabel: function (localFile: Resource<ILocalFile>): string {
