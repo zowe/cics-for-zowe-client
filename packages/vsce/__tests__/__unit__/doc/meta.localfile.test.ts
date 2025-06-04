@@ -12,6 +12,13 @@
 import { LocalFileMeta } from "../../../src/doc/meta/localFile.meta";
 import { ILocalFile } from "../../../src/doc/resources/ILocalFile";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["FILE1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Local File Meta", () => {
   let localFileMock: Resource<ILocalFile>;
@@ -162,14 +169,14 @@ describe("Local File Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "FILE1";
     await LocalFileMeta.appendCriteriaHistory(criteria);
-    let history = LocalFileMeta.getCriteriaHistory();
+    let history = await LocalFileMeta.getCriteriaHistory();
     expect(history).toEqual(["FILE1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "FILE1";
     await LocalFileMeta.appendCriteriaHistory(criteria);
-    let history = LocalFileMeta.getCriteriaHistory();
+    let history = await LocalFileMeta.getCriteriaHistory();
     expect(history).toEqual(["FILE1"]);
   });
 });

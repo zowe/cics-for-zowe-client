@@ -12,6 +12,13 @@
 import { BundleMeta } from "../../../src/doc/meta/bundle.meta";
 import { IBundle } from "../../../src/doc/resources/IBundle";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["BUND1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Bundle Meta", () => {
   let bundleMock: Resource<IBundle>;
@@ -85,14 +92,14 @@ describe("Bundle Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "BUND1";
     await BundleMeta.appendCriteriaHistory(criteria);
-    let history = BundleMeta.getCriteriaHistory();
+    let history = await BundleMeta.getCriteriaHistory();
     expect(history).toEqual(["BUND1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "BUND1";
     await BundleMeta.appendCriteriaHistory(criteria);
-    let history = BundleMeta.getCriteriaHistory();
+    let history = await BundleMeta.getCriteriaHistory();
     expect(history).toEqual(["BUND1"]);
   });
 });

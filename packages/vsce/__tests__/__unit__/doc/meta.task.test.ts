@@ -12,6 +12,13 @@
 import { TaskMeta } from "../../../src/doc/meta/task.meta";
 import { ITask } from "../../../src/doc/resources/ITask";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["TRN1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Task Meta", () => {
   let taskMock: Resource<ITask>;
@@ -78,14 +85,14 @@ describe("Task Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "TRN1";
     await TaskMeta.appendCriteriaHistory(criteria);
-    let history = TaskMeta.getCriteriaHistory();
+    let history = await TaskMeta.getCriteriaHistory();
     expect(history).toEqual(["TRN1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "TRN1";
     await TaskMeta.appendCriteriaHistory(criteria);
-    let history = TaskMeta.getCriteriaHistory();
+    let history = await TaskMeta.getCriteriaHistory();
     expect(history).toEqual(["TRN1"]);
   });
 });

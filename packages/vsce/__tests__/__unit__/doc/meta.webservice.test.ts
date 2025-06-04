@@ -12,6 +12,13 @@
 import { WebServiceMeta } from "../../../src/doc/meta/webservice.meta";
 import { IWebService } from "../../../src/doc/resources/IWebService";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["SRV1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("WebService Meta", () => {
   let webserviceMock: Resource<IWebService>;
@@ -56,14 +63,14 @@ describe("WebService Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "SRV1";
     await WebServiceMeta.appendCriteriaHistory(criteria);
-    let history = WebServiceMeta.getCriteriaHistory();
+    let history = await WebServiceMeta.getCriteriaHistory();
     expect(history).toEqual(["SRV1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "SRV1";
     await WebServiceMeta.appendCriteriaHistory(criteria);
-    let history = WebServiceMeta.getCriteriaHistory();
+    let history = await WebServiceMeta.getCriteriaHistory();
     expect(history).toEqual(["SRV1"]);
   });
 });

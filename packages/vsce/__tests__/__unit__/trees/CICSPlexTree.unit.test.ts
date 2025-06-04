@@ -17,7 +17,7 @@ import * as vscode from "vscode";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import { PersistentStorage } from "../../../src/utils/PersistentStorage";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 const defaultFilterMock = jest.fn();
@@ -25,8 +25,8 @@ defaultFilterMock.mockReturnValue("DEFAULT FITLER");
 const defaultResNumberMock = jest.fn();
 defaultResNumberMock.mockReturnValue(10);
 
-PersistentStorage.getDefaultFilter = defaultFilterMock;
-PersistentStorage.getNumberOfResourcesToFetch = defaultResNumberMock;
+PersistentStorage.getResourceDefaultFilter = defaultFilterMock;
+PersistentStorage.getResourcePageSize = defaultResNumberMock;
 
 jest.mock("../../../src/trees/CICSRegionsContainer", () => ({
   get CICSRegionsContainer() {

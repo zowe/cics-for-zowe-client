@@ -13,6 +13,13 @@ import { ILibrary } from "../../../src/doc";
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
 import { ILibraryDataset } from "../../../src/doc/resources/ILibraryDataset";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["LIB1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Library Dataset Meta", () => {
   let libraryDSMock: Resource<ILibraryDataset>;
@@ -71,21 +78,21 @@ describe("Library Dataset Meta", () => {
       {
         key: "Library",
         value: "LIB1",
-      }
+      },
     ]);
   });
 
   it("should append criteria history", async () => {
     const criteria = "LIB1";
     await LibraryDatasetMeta.appendCriteriaHistory(criteria);
-    let history = LibraryDatasetMeta.getCriteriaHistory();
+    let history = await LibraryDatasetMeta.getCriteriaHistory();
     expect(history).toEqual(["LIB1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "LIB1";
     await LibraryDatasetMeta.appendCriteriaHistory(criteria);
-    let history = LibraryDatasetMeta.getCriteriaHistory();
+    let history = await LibraryDatasetMeta.getCriteriaHistory();
     expect(history).toEqual(["LIB1"]);
   });
 });

@@ -12,6 +12,13 @@
 import { URIMapMeta } from "../../../src/doc/meta/urimap.meta";
 import { IURIMap } from "../../../src/doc/resources/IURIMap";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["URI1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("URIMap Meta", () => {
   let urimapMock: Resource<IURIMap>;
@@ -83,14 +90,14 @@ describe("URIMap Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "URI1";
     await URIMapMeta.appendCriteriaHistory(criteria);
-    let history = URIMapMeta.getCriteriaHistory();
+    let history = await URIMapMeta.getCriteriaHistory();
     expect(history).toEqual(["URI1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "URI1";
     await URIMapMeta.appendCriteriaHistory(criteria);
-    let history = URIMapMeta.getCriteriaHistory();
+    let history = await URIMapMeta.getCriteriaHistory();
     expect(history).toEqual(["URI1"]);
   });
 });

@@ -12,6 +12,13 @@
 import { TransactionMeta } from "../../../src/doc/meta/transaction.meta";
 import { ITransaction } from "../../../src/doc/resources/ITransaction";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["TRN1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Transaction Meta", () => {
   let transactionMock: Resource<ITransaction>;
@@ -77,14 +84,14 @@ describe("Transaction Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "TRN1";
     await TransactionMeta.appendCriteriaHistory(criteria);
-    let history = TransactionMeta.getCriteriaHistory();
+    let history = await TransactionMeta.getCriteriaHistory();
     expect(history).toEqual(["TRN1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "TRN1";
     await TransactionMeta.appendCriteriaHistory(criteria);
-    let history = TransactionMeta.getCriteriaHistory();
+    let history = await TransactionMeta.getCriteriaHistory();
     expect(history).toEqual(["TRN1"]);
   });
 });

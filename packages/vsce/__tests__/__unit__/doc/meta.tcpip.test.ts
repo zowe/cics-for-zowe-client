@@ -12,6 +12,13 @@
 import { TCPIPMeta } from "../../../src/doc/meta/tcpip.meta";
 import { ITCPIP } from "../../../src/doc/resources/ITCPIP";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["TCP1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("TCP IP Meta", () => {
   let tcpipMock: Resource<ITCPIP>;
@@ -68,14 +75,14 @@ describe("TCP IP Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "TCP1";
     await TCPIPMeta.appendCriteriaHistory(criteria);
-    let history = TCPIPMeta.getCriteriaHistory();
+    let history = await TCPIPMeta.getCriteriaHistory();
     expect(history).toEqual(["TCP1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "TCP1";
     await TCPIPMeta.appendCriteriaHistory(criteria);
-    let history = TCPIPMeta.getCriteriaHistory();
+    let history = await TCPIPMeta.getCriteriaHistory();
     expect(history).toEqual(["TCP1"]);
   });
 });
