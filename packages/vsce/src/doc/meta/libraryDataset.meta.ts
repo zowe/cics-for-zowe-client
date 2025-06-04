@@ -11,12 +11,10 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ILibrary, ILibraryDataset } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
@@ -61,11 +59,11 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addDatasetSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("dataset", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getDatasetSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("dataset");
   },
 
   childType: customProgramMeta,

@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ILocalFile } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
@@ -25,8 +23,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
     return criteria.map((n) => `file=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, "localFile");
+  async getDefaultCriteria() {
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, "localFile");
   },
 
   getLabel: function (localFile: Resource<ILocalFile>): string {
@@ -100,10 +98,10 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addLocalFileSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("localFile", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getLocalFileSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("localFile");
   },
 };

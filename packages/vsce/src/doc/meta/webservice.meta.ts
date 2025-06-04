@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IWebService } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
@@ -26,7 +24,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE);
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE);
   },
 
   getLabel: function (resource: Resource<IWebService>): string {
@@ -50,10 +48,10 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addWebServiceSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("webservice", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getWebServiceSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("webservice");
   },
 };

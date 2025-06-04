@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IProgram } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
@@ -26,7 +24,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   },
 
   async getDefaultCriteria() {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PROGRAM_RESOURCE, "program");
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_PROGRAM_RESOURCE, "program");
   },
 
   getLabel: function (program: Resource<IProgram>): string {
@@ -67,11 +65,11 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addProgramSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("program", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getProgramSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("program");
   },
 
   getName(program: Resource<IProgram>): string {

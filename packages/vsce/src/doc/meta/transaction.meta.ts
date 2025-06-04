@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ITransaction } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const TransactionMeta: IResourceMeta<ITransaction> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
@@ -26,7 +24,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   },
 
   async getDefaultCriteria() {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION, "transaction");
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION, "transaction");
   },
 
   getLabel: function (transaction: Resource<ITransaction>): string {
@@ -65,10 +63,10 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addTransactionSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("transaction", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getTransactionSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("transaction");
   },
 };

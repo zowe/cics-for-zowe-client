@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IURIMap } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
@@ -26,7 +24,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_URIMAP);
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_URIMAP);
   },
 
   getLabel: function (resource: Resource<IURIMap>): string {
@@ -64,10 +62,10 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addURIMapsSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("urimaps", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getURIMapSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("urimaps");
   },
 };

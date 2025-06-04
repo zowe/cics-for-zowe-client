@@ -27,7 +27,7 @@ import {
 } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSLogger } from "../utils/CICSLogger";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import PersistentStorage from "../utils/PersistentStorage";
 import { getErrorCode } from "../utils/errorUtils";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
@@ -63,10 +63,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * these as children to the CICSTree (TreeDataProvider)
    */
   public async loadStoredProfileNames() {
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await ProfileManagement.profilesCacheRefresh();
     // Retrieve previously added profiles from persistent storage
-    for (const profilename of persistentStorage.getLoadedCICSProfile()) {
+    for (const profilename of await PersistentStorage.getPersistedCICSProfiles()) {
       try {
         const profileToLoad = await ProfileManagement.getProfilesCache().loadNamedProfile(profilename, "cics");
         // avoid accidental repeats
@@ -212,11 +211,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * to replace position of current CICSSessionTree.
    * @param sessionTree current CICSSessionTree only passed in if expanding a profile
    */
-  async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
+  loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
     CICSLogger.debug(`Loading CICS profile [${profile.name}]`);
 
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.addLoadedCICSProfile(profile.name);
+    // await PersistentStorage.appendPersistedCICSProfile(profile.name);
 
     window.withProgress(
       {
@@ -327,14 +325,12 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad, this);
     this.loadedProfiles.push(newSessionTree);
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.addLoadedCICSProfile(label);
+    await PersistentStorage.appendPersistedCICSProfile(label);
     this._onDidChangeTreeData.fire(undefined);
   }
 
   async removeSession(session: CICSSessionTree) {
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.removeLoadedCICSProfile(session.label.toString());
+    await PersistentStorage.removePersistedCICSProfile(session.label.toString());
     this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
     this._onDidChangeTreeData.fire(undefined);
   }
