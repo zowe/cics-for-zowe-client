@@ -64,7 +64,7 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(CREATE_A_CICS_PROFILE);
     expect(plusIcon).exist;
     await plusIcon?.click();
-    cicsTree?.takeScreenshot();
+    cicsTree.takeScreenshot();
   });
 
   it("Should Verify If The Quick Pick Options Are Correct", async () => {
