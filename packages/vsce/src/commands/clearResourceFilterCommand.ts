@@ -62,10 +62,10 @@ export function getClearResourceFilterCommand(tree: CICSTree, treeview: TreeView
           location: ProgressLocation.Notification,
           cancellable: false,
         },
-        async (_, token) => {
-          token.onCancellationRequested(() => {
-            console.log("Cancelling the loading of resources");
-          });
+        async (_, _token) => {
+          // _token.onCancellationRequested(() => {
+          //   console.log("Cancelling the loading of resources");
+          // });
           await selectedNode.loadContents();
           tree._onDidChangeTreeData.fire(undefined);
         }

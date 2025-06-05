@@ -90,9 +90,9 @@ export class ProfileManagement {
 
     if (profile.profile.cicsPlex) {
       const managedRegionsJson = await getResource(session, {
-        resource: "CICSManagedRegion",
-        plex: profile.profile.cicsPlex,
-        region: profile.profile.regionName,
+        name: "CICSManagedRegion",
+        cicsPlex: profile.profile.cicsPlex,
+        regionName: profile.profile.regionName,
       });
       const managedRegions = managedRegionsJson.response.records?.cicsmanagedregion;
 
@@ -101,9 +101,9 @@ export class ProfileManagement {
          * Both Supplied, no searching required - Only load 1 region
          */
         const regionGroupJson = await getResource(session, {
-          resource: "CICSRegionGroup",
-          plex: profile.profile.cicsPlex,
-          region: profile.profile.regionName,
+          name: "CICSRegionGroup",
+          cicsPlex: profile.profile.cicsPlex,
+          regionName: profile.profile.regionName,
           criteria: "GROUP=" + profile.profile.regionName,
         });
 
@@ -148,7 +148,7 @@ export class ProfileManagement {
        * Region but no plex - Single region system, use that
        */
       const singleRegionJson = await getResource(session, {
-        resource: "CICSRegion",
+        name: "CICSRegion",
         regionName: profile.profile.regionName,
       })
       if (singleRegionJson.response.records?.cicsregion?._attributes != null) {
@@ -169,7 +169,7 @@ export class ProfileManagement {
       try {
         // Plex
         const cicsplexJson = await getResource(session, {
-          resource: "CICSCICSPlex",
+          name: "CICSCICSPlex",
         });
         if (cicsplexJson.response.records?.cicscicsplex != null) {
           const returnedPlexes = cicsplexJson.response.records?.cicscicsplex.map((item: { _attributes: any }) => item._attributes);
@@ -191,7 +191,7 @@ export class ProfileManagement {
         } else {
           // Not Plex
           const singleRegionJson = await getResource(session, {
-            resource: "CICSRegion",
+            name: "CICSRegion",
           })
           const returnedRegion = singleRegionJson.response.records?.cicsregion?._attributes;
           if (returnedRegion != null) {
@@ -205,7 +205,7 @@ export class ProfileManagement {
       } catch (error) {
         // Not Plex - Could be error
         const singleRegionJson = await getResource(session, {
-          resource: "CICSRegion",
+          name: "CICSRegion",
         })
         const returnedRegion = singleRegionJson.response.records?.cicsregion?._attributes;
         if (returnedRegion != null) {
@@ -228,7 +228,7 @@ export class ProfileManagement {
     try {
       const session = ProfileManagement.getSessionFromProfile(plex.getProfile());
       const managedRegionsJson = await getResource(session, {
-        resource: "CICSManagedRegion",
+        name: "CICSManagedRegion",
         cicsPlex: plex.getPlexName(),
       })
       if (managedRegionsJson.response.records?.cicsmanagedregion != null) {
@@ -246,7 +246,7 @@ export class ProfileManagement {
     try {
       const session = ProfileManagement.getSessionFromProfile(profile.profile);
       const allProgramsResponse = await getResource(session, {
-        resource: resourceName,
+        name: resourceName,
         cicsPlex: plexName,
         regionName: group,
         criteria: criteria,
@@ -266,7 +266,7 @@ export class ProfileManagement {
     try {
       const session = ProfileManagement.getSessionFromProfile(profile.profile);
       const allItemsResponse = await getResource(session, {
-        resource: "CICSResultCache",
+        name: "CICSResultCache",
         cicsPlex: cacheToken,
         regionName: `${start}/${increment}`,
       });
