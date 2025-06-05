@@ -99,6 +99,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
     it("Should Disable The Program C128N", async () => {
       expect(await C128Nprogram?.isSelected()).to.be.false;
+      await sleep(1000);
       await C128Nprogram?.select();
       await sleep(1000);
 
@@ -119,6 +120,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Enable The Program C128N", async () => {
+      await sleep(1000);
       await C128Nprogram?.select();
       await sleep(1000);
       // Run the enable command from the command palette
