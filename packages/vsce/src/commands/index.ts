@@ -17,9 +17,7 @@ import { ExtensionContext, TreeView } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
-import { getClearResourceFilterCommand } from "./clearResourceFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
-import * as filterAllResourceCommands from "./filterAllResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
@@ -30,7 +28,7 @@ import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-import { getResourceInspectorforLocalFile, getResourceInspectorforProgramFile } from "./resourceInspectorViewCommand";
+import { getResourceInspectorCommand } from "./resourceInspectorViewCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
@@ -58,55 +56,24 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getPurgeTaskCommand(treeDataProv, treeview),
 
-    showAttributesCommands.getShowRegionAttributes(treeview),
     showLogsCommands.getShowRegionLogs(treeview),
-    showAttributesCommands.getShowProgramAttributesCommand(treeview),
-    showAttributesCommands.getShowLibraryAttributesCommand(treeview),
-    showAttributesCommands.getShowLibraryDatasetsAttributesCommand(treeview),
-    showAttributesCommands.getShowTCPIPServiceAttributesCommand(treeview),
-    showAttributesCommands.getShowURIMapAttributesCommand(treeview),
-    showAttributesCommands.getShowTransactionAttributesCommand(treeview),
-    showAttributesCommands.getShowLocalFileAttributesCommand(treeview),
-    showAttributesCommands.getShowTaskAttributesCommand(treeview),
-    showAttributesCommands.getShowPipelineAttributesCommand(treeview),
-    showAttributesCommands.getShowWebServiceAttributesCommand(treeview),
+    showAttributesCommands.getShowResourceAttributesCommand(treeview),
+    showAttributesCommands.getShowRegionAttributes(),
 
-    getShowRegionSITParametersCommand(treeview),
+    getShowRegionSITParametersCommand(),
 
-    filterResourceCommands.getFilterProgramsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterDatasetProgramsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterLibrariesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterDatasetsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTransactionCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterLocalFilesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTasksCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterTCPIPSCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterURIMapsCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterPipelinesCommand(treeDataProv, treeview),
-    filterResourceCommands.getFilterWebServicesCommand(treeDataProv, treeview),
-
-    filterAllResourceCommands.getFilterAllProgramsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLibrariesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllWebServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllPipelinesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTransactionsCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllLocalFilesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTasksCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllTCPIPServicesCommand(treeDataProv, treeview),
-    filterAllResourceCommands.getFilterAllURIMapsCommand(treeDataProv, treeview),
+    filterResourceCommands.getFilterResourcesCommand(treeDataProv, treeview),
+    filterResourceCommands.getClearFilterCommand(treeDataProv),
 
     getFilterPlexResources(treeDataProv, treeview),
-
-    getClearResourceFilterCommand(treeDataProv, treeview),
-    getClearPlexFilterCommand(treeDataProv, treeview),
+    getClearPlexFilterCommand(treeDataProv),
 
     viewMoreCommand(treeDataProv, treeview),
 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
 
-    getResourceInspectorforProgramFile(context, treeview),
-    getResourceInspectorforLocalFile(context, treeview),
+    getResourceInspectorCommand(context, treeview),
     getToggleResourceSettingCommand(),
   ];
 };

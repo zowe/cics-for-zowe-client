@@ -25,6 +25,8 @@ export class PersistentStorage {
   private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
   private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
+  private static readonly bundleSearchHistory: string = "bundleSearchHistory";
+  private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -37,6 +39,8 @@ export class PersistentStorage {
   private mURIMapsSearchHistory: string[] = [];
   private mPipelineSearchHistory: string[] = [];
   private mWebServiceSearchHistory: string[] = [];
+  private mBundleSearchHistory: string[] = [];
+  private mBundlePartSearchHistory: string[] = [];
 
   constructor(schema: string) {
     this.schema = schema;
@@ -55,6 +59,8 @@ export class PersistentStorage {
     let urimapsSearchHistoryLines: string[] | undefined;
     let pipelineSearchHistoryLines: string[] | undefined;
     let webserviceSearchHistoryLines: string[] | undefined;
+    let bundleSearchHistoryLines: string[] | undefined;
+    let bundlePartSearchHistoryLines: string[] | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -68,6 +74,8 @@ export class PersistentStorage {
       urimapsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.urimapsSearchHistory);
       pipelineSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.pipelineSearchHistory);
       webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
+      bundleSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundleSearchHistory);
+      bundlePartSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundlePartSearchHistory);
     }
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
@@ -124,6 +132,16 @@ export class PersistentStorage {
     } else {
       await this.resetWebServiceSearchHistory();
     }
+    if (bundleSearchHistoryLines) {
+      this.mBundleSearchHistory = bundleSearchHistoryLines;
+    } else {
+      await this.resetBundleSearchHistory();
+    }
+    if (bundlePartSearchHistoryLines) {
+      this.mBundlePartSearchHistory = bundlePartSearchHistoryLines;
+    } else {
+      await this.resetBundlePartSearchHistory();
+    }
   }
 
   public getProgramSearchHistory(): string[] {
@@ -158,6 +176,12 @@ export class PersistentStorage {
   }
   public getWebServiceSearchHistory(): string[] {
     return this.mWebServiceSearchHistory;
+  }
+  public getBundleSearchHistory(): string[] {
+    return this.mBundleSearchHistory;
+  }
+  public getBundlePartSearchHistory(): string[] {
+    return this.mBundlePartSearchHistory;
   }
 
   public async resetProgramSearchHistory(): Promise<void> {
@@ -203,6 +227,14 @@ export class PersistentStorage {
   public async resetWebServiceSearchHistory(): Promise<void> {
     this.mWebServiceSearchHistory = [];
     await this.updateWebServiceSearchHistory();
+  }
+  public async resetBundleSearchHistory(): Promise<void> {
+    this.mBundleSearchHistory = [];
+    await this.updateBundleSearchHistory();
+  }
+  public async resetBundlePartSearchHistory(): Promise<void> {
+    this.mBundlePartSearchHistory = [];
+    await this.updateBundlePartSearchHistory();
   }
 
   private async updateProgramSearchHistory(): Promise<void> {
@@ -281,6 +313,22 @@ export class PersistentStorage {
     const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.webserviceSearchHistory] = this.mWebServiceSearchHistory;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
+  private async updateBundleSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.bundleSearchHistory] = this.mBundleSearchHistory;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
+  private async updateBundlePartSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.bundlePartSearchHistory] = this.mBundlePartSearchHistory;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
@@ -446,6 +494,36 @@ export class PersistentStorage {
     }
   }
 
+  public async addBundleSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mBundleSearchHistory = this.mBundleSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+      });
+
+      this.mBundleSearchHistory.unshift(criteria);
+
+      if (this.mBundleSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+        this.mBundleSearchHistory.pop();
+      }
+      await this.updateBundleSearchHistory();
+    }
+  }
+
+  public async addBundlePartSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mBundlePartSearchHistory = this.mBundlePartSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+      });
+
+      this.mBundlePartSearchHistory.unshift(criteria);
+
+      if (this.mBundlePartSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+        this.mBundlePartSearchHistory.pop();
+      }
+      await this.updateBundlePartSearchHistory();
+    }
+  }
+
   public async removeLoadedCICSProfile(name: string): Promise<void> {
     if (name) {
       this.mLoadedCICSProfile = this.mLoadedCICSProfile.filter((element) => {
@@ -454,5 +532,32 @@ export class PersistentStorage {
 
       await this.updateLoadedCICSProfile();
     }
+  }
+
+  public static async getDefaultFilter(resourceName: string, settingsKey?: string): Promise<string> {
+    const constantsKey = `DEFAULT_${resourceName.toUpperCase()}_FILTER` as keyof typeof constants;
+    const configKey = `zowe.cics.${settingsKey ?? resourceName}.filter`;
+
+    const filterFromConfig = await workspace.getConfiguration().get(configKey);
+
+    if (!filterFromConfig) {
+      const defaultValue = constants[constantsKey];
+      await workspace.getConfiguration().update(configKey, defaultValue);
+      return `${defaultValue}`;
+    }
+
+    return `${filterFromConfig}`;
+  }
+
+  public static async getNumberOfResourcesToFetch(): Promise<number> {
+    const configKey = `zowe.cics.resourcePageCount`;
+    const valFromConfig = await workspace.getConfiguration().get(configKey);
+
+    if (!valFromConfig) {
+      await workspace.getConfiguration().update(configKey, constants.DEFAULT_RESOURCE_PAGE_SIZE);
+      return constants.DEFAULT_RESOURCE_PAGE_SIZE;
+    }
+
+    return parseInt(`${valFromConfig}`, 10);
   }
 }

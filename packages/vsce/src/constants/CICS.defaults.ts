@@ -9,6 +9,8 @@
  *
  */
 
+import * as meta from "../../package.json";
+
 export default {
   /**
    * Default maximum number of resources returned from a CMCI request
@@ -44,4 +46,22 @@ export default {
    * HTTP return code for Server Error
    */
   HTTP_ERROR_SERVER_ERROR: 500,
+
+  /**
+   * Default number of resources on each page, pulled from package.json
+   */
+  DEFAULT_RESOURCE_PAGE_SIZE: meta.contributes.configuration.properties["zowe.cics.resourcePageCount"].default,
+
+  /**
+   * Default resource filters pulled from package.json where configuration is specified
+   */
+  DEFAULT_CICSLIBRARY_FILTER: meta.contributes.configuration.properties["zowe.cics.library.filter"].default,
+  DEFAULT_CICSLOCALFILE_FILTER: meta.contributes.configuration.properties["zowe.cics.localFile.filter"].default,
+  DEFAULT_CICSLOCALTRANSACTION_FILTER: meta.contributes.configuration.properties["zowe.cics.transaction.filter"].default,
+  DEFAULT_CICSPIPELINE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSPipeline.filter"].default,
+  DEFAULT_CICSPROGRAM_FILTER: meta.contributes.configuration.properties["zowe.cics.program.filter"].default,
+  DEFAULT_CICSTCPIPSERVICE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSTCPIPService.filter"].default,
+  DEFAULT_CICSTASK_FILTER: meta.contributes.configuration.properties["zowe.cics.tasks.filter"].default,
+  DEFAULT_CICSURIMAP_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSURIMap.filter"].default,
+  DEFAULT_CICSWEBSERVICE_FILTER: meta.contributes.configuration.properties["zowe.cics.CICSWebService.filter"].default,
 };

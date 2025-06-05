@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, ProgressLocation, TreeItemCollapsibleState, TreeView, window } from "vscode";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
@@ -35,6 +35,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       return;
     }
     const plex = chosenNode.getParent();
+    await treeview.reveal(chosenNode, { expand: true });
     const plexProfile = plex.getProfile();
     let resourceToFilter: any;
     if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
@@ -76,48 +77,45 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
         await persistentStorage.addLibrarySearchHistory(pattern);
       }
 
-      chosenNode.collapsibleState = TreeItemCollapsibleState.Expanded;
-
       if (resourceToFilter === "Regions") {
         chosenNode.filterRegions(pattern, tree);
       } else {
-        window.withProgress(
+        await window.withProgress(
           {
             title: "Loading Resources",
             location: ProgressLocation.Notification,
             cancellable: true,
           },
-          async (_, token) => {
+          (_, token): Thenable<unknown> => {
             token.onCancellationRequested(() => {});
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
                 if (region.getIsActive()) {
                   let treeToFilter;
                   if (resourceToFilter === "Programs") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreeprogram."))[0];
+                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Programs."))[0];
                   } else if (resourceToFilter === "Local Transactions") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreetransaction."))[0];
+                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Transactions"))[0];
                   } else if (resourceToFilter === "Local Files") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreelocalfile."))[0];
+                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Local Files"))[0];
                   } else if (resourceToFilter === "Tasks") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreetask."))[0];
+                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Tasks"))[0];
                   } else if (resourceToFilter === "Libraries") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("cicstreelibrary."))[0];
+                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Libraries"))[0];
                   }
                   if (treeToFilter) {
-                    treeToFilter.setFilter(pattern);
-                    await treeToFilter.loadContents();
-                    treeToFilter.collapsibleState = TreeItemCollapsibleState.Expanded;
+                    // @ts-ignore
+                    treeToFilter.setFilter([pattern]);
+                    treeToFilter.description = pattern;
                   }
-                  region.collapsibleState = TreeItemCollapsibleState.Expanded;
                 }
               }
             }
-            tree._onDidChangeTreeData.fire(undefined);
+            return;
           }
         );
       }
-      tree._onDidChangeTreeData.fire(undefined);
+      tree._onDidChangeTreeData.fire(chosenNode);
     }
   });
 }

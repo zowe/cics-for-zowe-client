@@ -89,6 +89,16 @@ describe("AddToListProgramHandler", () => {
         password: PROFILE_MAP.password,
         rejectUnauthorized,
         protocol,
+        _authCache: {
+          availableCreds: {
+            base64EncodedAuth: "c29tZW9uZTpzb21lc2VjcmV0",
+            password: "somesecret",
+            user: "someone",
+          },
+          didUserSetAuthOrder: false,
+          topDefaultAuth: "basic",
+        },
+        authTypeOrder: ["basic", "token", "bearer", "cert-pem"],
       }),
       {
         name,
