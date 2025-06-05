@@ -118,11 +118,10 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
     it("Should Disable The Program C128N", async () => {
       expect(await C128NProgram?.isSelected()).to.be.false;
-      await sleep(1000);
+      await sleep(2000);
       expect(await C128NProgram?.isDisplayed()).to.be.true;
       await await C128NProgram?.select();
       await sleep(1000);
-      // expect(await C128NProgram?.isSelected()).to.be.true;
 
       // Run the disable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -141,7 +140,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Enable The Program C128N", async () => {
-      await sleep(1000);
+      await sleep(2000);
       await C128NProgram?.select();
       await sleep(1000);
 
