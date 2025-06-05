@@ -11,7 +11,7 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem } from "vscode-extension-tester";
-import { CICSEX61, CONFIG_FILE_NAME, DUMMY907, PROFILE_NAME } from "./util/constants";
+import { CICSEX61, CONFIG_FILE_NAME, DUMMY907, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { addWiremockProfileToConfigFile, sleep } from "./util/globalMocks";
 import {
   checkIfEditorTabIsOpened,
@@ -56,7 +56,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       editorView = new EditorView();
       const editor = await editorView.openEditor(CONFIG_FILE_NAME);
       const isWmAvailable = await editor.getText();
-      expect(isWmAvailable.includes(PROFILE_NAME)).to.be.true;
+      expect(isWmAvailable.includes(WIREMOCK_PROFILE_NAME)).to.be.true;
       cicsTree.takeScreenshot();
     });
   });
@@ -76,11 +76,11 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       let i, wiremockLabel;
       for (i = 0; i < qpLen; i++) {
         wiremockLabel = await qpItems[i].getLabel();
-        if (wiremockLabel.includes(PROFILE_NAME)) {
+        if (wiremockLabel.includes(WIREMOCK_PROFILE_NAME)) {
           break;
         }
       }
-      expect(wiremockLabel).contains(PROFILE_NAME);
+      expect(wiremockLabel).contains(WIREMOCK_PROFILE_NAME);
       if (i < qpLen) {
         await quickPick.selectQuickPick(i);
       }
@@ -89,18 +89,18 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
     it("Should Display Wiremock Profile Under CICS Section And Title Check For The Wiremock Profile", async () => {
       // Checking if wiremock_server profile is available under the cics section
-      wiremockServer = await cicsTree.findItem(PROFILE_NAME);
+      wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
       expect(wiremockServer).exist;
 
       // Title check for wiremork profile
       const wmSeverLabel = await wiremockServer?.getLabel();
-      expect(wmSeverLabel).equals(PROFILE_NAME);
+      expect(wmSeverLabel).equals(WIREMOCK_PROFILE_NAME);
       cicsTree.takeScreenshot();
     });
 
     it("Should List The CICSplexes Under Wiremock Profile", async () => {
       // Should expand the wiremock_profile and check for the plexes present under it
-      const plexes = await cicsTree.openItem(PROFILE_NAME);
+      const plexes = await cicsTree.openItem(WIREMOCK_PROFILE_NAME);
       expect(plexes).exist;
 
       const plex1 = await plexes[0].getLabel();

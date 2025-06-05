@@ -10,7 +10,7 @@
  */
 
 import { assert, expect } from "chai";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, ViewPanelAction } from "vscode-extension-tester";
+import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem, ViewPanelAction } from "vscode-extension-tester";
 import { CICS, EDIT_TEAM_CONFIG_FILE, PROJECT_CURRENT_WORKING_DIRECTORY, ZOWE_EXPLORER } from "./constants";
 
 export async function openZoweExplorer(): Promise<SideBarView> {
@@ -66,4 +66,52 @@ export async function closeAllEditorsTabs(): Promise<void> {
   await editorView.closeAllEditors();
   const titles = editorView.getOpenEditorTitles();
   expect(titles).to.be.empty;
+}
+
+export async function getPlexChildren(cicsTree: DefaultTreeSection, profileName: string, plexName: string): Promise<TreeItem[]> {
+  return await cicsTree.openItem(profileName, plexName);
+}
+
+export async function getPlexChildIndex(plexChildren: TreeItem[], plexChildName: string): Promise<number> {
+  for (const plexChild of plexChildren) {
+    if ((await plexChild.getLabel()).trim().startsWith(plexChildName)) {
+      return plexChildren.indexOf(plexChild);
+    }
+  }
+  return -1;
+}
+
+export async function getRegionsInPlex(cicsTree: DefaultTreeSection, profileName: string, plexName: string): Promise<TreeItem[]> {
+  const plexChildren = await getPlexChildren(cicsTree, profileName, plexName);
+  const regionsIndex = await getPlexChildIndex(plexChildren, "Regions");
+  expect(regionsIndex).to.be.greaterThan(-1);
+  return cicsTree.openItem(profileName, plexName, await plexChildren[regionsIndex].getLabel());
+}
+
+export async function getRegionIndex(regions: TreeItem[], regionName: string): Promise<number> {
+  for (const region of regions) {
+    if ((await region.getLabel()).trim().startsWith(regionName)) {
+      return regions.indexOf(region);
+    }
+  }
+  return -1;
+}
+
+export async function getRegionResources(
+  cicsTree: DefaultTreeSection,
+  profileName: string,
+  plexName: string,
+  regions: string,
+  regionName: string
+): Promise<TreeItem[]> {
+  return cicsTree.openItem(profileName, plexName, regions, regionName);
+}
+
+export async function getRegionResourceIndex(regionResources: TreeItem[], resourceName: string): Promise<number> {
+  for (const resource of regionResources) {
+    if ((await resource.getLabel()).trim().startsWith(resourceName)) {
+      return regionResources.indexOf(resource);
+    }
+  }
+  return -1;
 }

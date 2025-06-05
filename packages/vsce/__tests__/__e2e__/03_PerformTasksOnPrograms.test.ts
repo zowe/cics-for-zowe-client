@@ -11,9 +11,19 @@
 
 import { expect } from "chai";
 import { By, DefaultTreeSection, EditorView, SideBarView, TreeItem, WebElement, WebView } from "vscode-extension-tester";
-import { C128N, CICSEX61, DSNTIAC, PROFILE_NAME } from "./util/constants";
+import { C128N, CICSEX61, DSNTIAC, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findProgramByLabel, runCommandAndGetTreeItems, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
-import { closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
+import {
+  closeAllEditorsTabs,
+  getCicsSection,
+  getPlexChildIndex,
+  getPlexChildren,
+  getRegionIndex,
+  getRegionResourceIndex,
+  getRegionResources,
+  getRegionsInPlex,
+  openZoweExplorer,
+} from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
 describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => {
@@ -23,6 +33,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
   let webView: WebView;
   let wiremockServer: TreeItem | undefined;
   let cicsex61Children: TreeItem[];
+  let regionChildIndex: number;
   let regions: TreeItem[];
   let regionK1Resources: TreeItem[];
   let programs: TreeItem[];
@@ -34,7 +45,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
 
-    wiremockServer = await cicsTree.findItem(PROFILE_NAME);
+    wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
   });
 
@@ -44,37 +55,45 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
   describe("Test Suite For Checking Children Of Plex CICSEX61", () => {
     it("Should Check For Children Of Plex CICSEX61 And Verify If Regions Is Present", async () => {
-      cicsex61Children = await cicsTree.openItem(PROFILE_NAME, CICSEX61);
+      cicsex61Children = await getPlexChildren(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61);
       expect(cicsex61Children).not.empty;
-      expect(await cicsex61Children[0].getLabel()).contains("Regions");
+
+      regionChildIndex = await getPlexChildIndex(cicsex61Children, "Regions");
+      expect(regionChildIndex).to.be.greaterThan(-1);
       cicsTree.takeScreenshot();
     });
 
     it("Should Check For Children Of Regions In CICSEX61 And Verify If Region IYCWENK1 Is Present", async () => {
-      regions = await cicsTree.openItem(PROFILE_NAME, CICSEX61, await cicsex61Children[0].getLabel());
+      regions = await getRegionsInPlex(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61);
       expect(regions).not.empty;
 
-      regionIYCWENK1Index = regions.findIndex(async (regionItem) => (await regionItem.getLabel()).trim().startsWith("IYCWENK1"));
+      regionIYCWENK1Index = await getRegionIndex(regions, "IYCWENK1");
       expect(regionIYCWENK1Index).to.be.greaterThan(-1);
       cicsTree.takeScreenshot();
     });
 
     it("Should Check For Children Of Region IYCWENK1 And Verify If Programs Is Present", async () => {
       // Open the CICStree and check for children of Region IYCWENK1 in CICSEX61 plex and make sure that Programs resource is present
-      regionK1Resources = await cicsTree.openItem(PROFILE_NAME, CICSEX61, await cicsex61Children[0].getLabel(), await regions[0].getLabel());
+      regionK1Resources = await getRegionResources(
+        cicsTree,
+        WIREMOCK_PROFILE_NAME,
+        CICSEX61,
+        await cicsex61Children[regionChildIndex].getLabel(),
+        await regions[regionIYCWENK1Index].getLabel()
+      );
       expect(regionK1Resources).not.empty;
 
-      programsResourceIndex = regionK1Resources.findIndex(async (item) => (await item.getLabel()).trim().startsWith("Programs"));
+      programsResourceIndex = await getRegionResourceIndex(regionK1Resources, "Programs");
       expect(programsResourceIndex).to.be.greaterThan(-1);
       cicsTree.takeScreenshot();
     });
 
     it("Should Check For Programs In Region IYCWENK1", async () => {
-      await regionK1Resources[0].click();
+      await regionK1Resources[programsResourceIndex].click();
       programs = await cicsTree.openItem(
-        PROFILE_NAME,
+        WIREMOCK_PROFILE_NAME,
         CICSEX61,
-        await cicsex61Children[0].getLabel(),
+        await cicsex61Children[regionChildIndex].getLabel(),
         await regions[regionIYCWENK1Index].getLabel(),
         await regionK1Resources[programsResourceIndex].getLabel()
       );
@@ -84,79 +103,78 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
   });
 
   describe("Test Suite For Performing Disable And Enable Program Actions On Program C128N In Region IYCWENK1 In Plex CICSEX61", () => {
-    let C128Nprogram: TreeItem | undefined;
+    let C128NProgram: TreeItem | undefined;
 
     before(async () => {
       await resetAllScenarios();
     });
 
     it("Should Check If The Program C128N Is Present In Region IYCWENK1", async () => {
-      C128Nprogram = await findProgramByLabel(programs, C128N);
-      expect(C128Nprogram).not.undefined;
-      expect(await C128Nprogram?.getLabel()).contains(C128N);
+      C128NProgram = await findProgramByLabel(programs, C128N);
+      expect(C128NProgram).not.undefined;
+      expect(await C128NProgram?.getLabel()).contains(C128N);
       cicsTree.takeScreenshot();
     });
 
     it("Should Disable The Program C128N", async () => {
-      expect(await C128Nprogram?.isSelected()).to.be.false;
+      expect(await C128NProgram?.isSelected()).to.be.false;
       await sleep(1000);
-      await C128Nprogram?.select();
+      expect(await C128NProgram?.isDisplayed()).to.be.true;
+      await await C128NProgram?.select();
       await sleep(1000);
+      // expect(await C128NProgram?.isSelected()).to.be.true;
 
       // Run the disable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
       await runCommandAndGetTreeItems(
         cicsTree,
         ">IBM CICS for Zowe Explorer: Disable Program",
-        PROFILE_NAME,
+        WIREMOCK_PROFILE_NAME,
         CICSEX61,
-        await cicsex61Children[0].getLabel(),
+        await cicsex61Children[regionChildIndex].getLabel(),
         await regions[regionIYCWENK1Index].getLabel(),
         await regionK1Resources[programsResourceIndex].getLabel()
       );
 
-      expect(await C128Nprogram?.getLabel()).contains(C128N + " (Disabled)");
+      expect(await C128NProgram?.getLabel()).contains(C128N + " (Disabled)");
       cicsTree.takeScreenshot();
     });
 
     it("Should Enable The Program C128N", async () => {
       await sleep(1000);
-      await C128Nprogram?.select();
+      await C128NProgram?.select();
       await sleep(1000);
+
       // Run the enable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
       await runCommandAndGetTreeItems(
         cicsTree,
         ">IBM CICS for Zowe Explorer: Enable Program",
-        PROFILE_NAME,
+        WIREMOCK_PROFILE_NAME,
         CICSEX61,
-        await cicsex61Children[0].getLabel(),
+        await cicsex61Children[regionChildIndex].getLabel(),
         await regions[regionIYCWENK1Index].getLabel(),
         await regionK1Resources[programsResourceIndex].getLabel()
       );
 
-      expect(await C128Nprogram?.getLabel()).contains(C128N);
-      expect(await C128Nprogram?.getLabel()).not.contains("Disabled");
+      expect(await C128NProgram?.getLabel()).contains(C128N);
+      expect(await C128NProgram?.getLabel()).not.contains("Disabled");
       cicsTree.takeScreenshot();
     });
   });
 
   describe("Test Suite For Performing Show Attributes Action On Program DSNTIAC In Region IYCWENK1 In Plex CICSEX61", () => {
-    let DSNTIACprogram: TreeItem | undefined;
-
-    before(async () => {
-      await resetAllScenarios();
-    });
+    let DSNTIACProgram: TreeItem | undefined;
 
     it("Should Check If The Program DSNTIAC Is Present In Region IYCWENK1", async () => {
-      DSNTIACprogram = await findProgramByLabel(programs, DSNTIAC);
-      expect(DSNTIACprogram).not.undefined;
-      expect(await DSNTIACprogram?.getLabel()).contains(DSNTIAC);
+      DSNTIACProgram = await findProgramByLabel(programs, DSNTIAC);
+      expect(DSNTIACProgram).not.undefined;
+      expect(await DSNTIACProgram?.getLabel()).contains(DSNTIAC);
       cicsTree.takeScreenshot();
     });
 
     it("Should Show Attributes Of The Program DSNTIAC", async () => {
-      await DSNTIACprogram?.select();
+      await DSNTIACProgram?.select();
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
       cicsTree.takeScreenshot();
     });
