@@ -11,10 +11,10 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, EditorView, SideBarView } from "vscode-extension-tester";
-import { CONFIG_FILE_NAME, PROFILE_NAME } from "./util/constants";
+import { CONFIG_FILE_NAME, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { restoreOriginalConfigFile, sleep } from "./util/globalMocks";
 import {
-  checkIfZoweConfigJsonFileIsOpened,
+  checkIfEditorTabIsOpened,
   closeAllEditorsTabs,
   getCicsSection,
   openZoweExplorer,
@@ -42,13 +42,13 @@ describe("Remove The Wiremock Profile From The Configuration File", async () => 
 
     // Select the option to edit project team configuration file from the quickpick
     await selectEditProjectTeamConfigFile(cicsTree);
-    await checkIfZoweConfigJsonFileIsOpened();
+    await checkIfEditorTabIsOpened(CONFIG_FILE_NAME);
 
     //Check if wiremock profile is removed from the zowe.config.json
     editorView = new EditorView();
     const editor = await editorView.openEditor(CONFIG_FILE_NAME);
     let isWmAvailable = await editor.getText();
-    expect(isWmAvailable.includes(PROFILE_NAME)).not.to.be.true;
+    expect(isWmAvailable.includes(WIREMOCK_PROFILE_NAME)).not.to.be.true;
     cicsTree.takeScreenshot();
   });
 });

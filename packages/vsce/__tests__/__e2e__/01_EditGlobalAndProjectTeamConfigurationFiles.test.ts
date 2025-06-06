@@ -12,15 +12,9 @@
 import { expect } from "chai";
 import * as path from "path";
 import { ActivityBar, DefaultTreeSection, InputBox, QuickPickItem, SideBarView, VSBrowser } from "vscode-extension-tester";
-import { EDIT_TEAM_CONFIG_FILE, GLOBAL_ZOWE_HOME_DIRECTORY, PROJECT_CURRENT_WORKING_DIRECTORY } from "./util/constants";
+import { CONFIG_FILE_NAME, EDIT_TEAM_CONFIG_FILE, GLOBAL_ZOWE_HOME_DIRECTORY, PROJECT_CURRENT_WORKING_DIRECTORY } from "./util/constants";
 import { sleep } from "./util/globalMocks";
-import {
-  checkIfZoweConfigJsonFileIsOpened,
-  clickPlusIconInCicsTree,
-  closeAllEditorsTabs,
-  getCicsSection,
-  openZoweExplorer,
-} from "./util/initSetup.test";
+import { checkIfEditorTabIsOpened, clickPlusIconInCicsTree, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
 describe("Test Suite For Editing Global And Project Team Configuration Files", () => {
   let view: SideBarView;
@@ -54,7 +48,7 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
   });
 
   afterEach(async () => {
-    await checkIfZoweConfigJsonFileIsOpened();
+    await checkIfEditorTabIsOpened(CONFIG_FILE_NAME);
     await closeAllEditorsTabs();
   });
 
