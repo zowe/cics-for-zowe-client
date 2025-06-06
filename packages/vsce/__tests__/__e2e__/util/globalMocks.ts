@@ -9,6 +9,8 @@
  *
  */
 
+import { DefaultTreeSection, InputBox, Key, TreeItem, VSBrowser } from "vscode-extension-tester";
+
 let fs = require("fs");
 let path = require("path");
 
@@ -45,4 +47,32 @@ export function restoreOriginalConfigFile(): void {
 
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function runCommandFromCommandPalette(command: string): Promise<void> {
+  // Open Command Palette using keyboard shortcut as contextmenu support is not available
+  const driver = VSBrowser.instance.driver;
+  await driver.actions().keyDown(Key.COMMAND).sendKeys("P").keyUp(Key.COMMAND).perform();
+
+  // Enter and confirm the command
+  const quickPick = await InputBox.create();
+  await quickPick.setText(command);
+  await quickPick.confirm();
+}
+
+export async function runCommandAndGetTreeItems(cicsTree: DefaultTreeSection, command: string, ...path: string[]): Promise<TreeItem[]> {
+  // Run the command from the command palette
+  await runCommandFromCommandPalette(command);
+
+  // Open the specified tree path and return its children
+  return await cicsTree.openItem(...path);
+}
+
+export async function findProgramByLabel(programs: TreeItem[], programLabel: string): Promise<TreeItem | undefined> {
+  for (const program of programs) {
+    if ((await program.getLabel()).trim() === programLabel) {
+      return program;
+    }
+  }
+  return undefined;
 }
