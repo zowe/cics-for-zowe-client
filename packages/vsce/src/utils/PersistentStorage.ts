@@ -11,6 +11,8 @@
 
 import { ConfigurationTarget, workspace } from "vscode";
 import constants from "../constants/CICS.defaults";
+import { IProfileLoaded } from "@zowe/imperative";
+import { CICSSession } from "../resources";
 
 export class PersistentStorage {
   public schema: string;
@@ -27,6 +29,9 @@ export class PersistentStorage {
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
   private static readonly bundleSearchHistory: string = "bundleSearchHistory";
   private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
+  private static profile: IProfileLoaded | undefined = undefined;
+  private static cicsPlex: string | undefined = undefined;
+  private static session: CICSSession | undefined = undefined;
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -559,5 +564,15 @@ export class PersistentStorage {
     }
 
     return parseInt(`${valFromConfig}`, 10);
+  }
+
+  public static setProfileAndPlexNameAndSession(profile: IProfileLoaded, plex: string, session: CICSSession): void {
+    this.profile = profile || undefined;
+    this.cicsPlex = plex || undefined;
+    this.session = session || undefined;
+  }
+
+  public static getProfileAndPlexNameAndSession(): { profile: IProfileLoaded, plex: string, session: CICSSession } {
+    return { profile: this.profile, plex: this.cicsPlex, session: this.session };
   }
 }
