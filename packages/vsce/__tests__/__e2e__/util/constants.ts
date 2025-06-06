@@ -21,8 +21,13 @@ export const GLOBAL_ZOWE_HOME_DIRECTORY = "Global: in the Zowe home directory";
 export const PROJECT_CURRENT_WORKING_DIRECTORY = "Project: in the current working directory";
 
 export const CONFIG_FILE_NAME = "zowe.config.json";
-export const PROFILE_NAME = "wiremock_server";
+export const WIREMOCK_PROFILE_NAME = "wiremock_server";
 
 // Plex labels
 export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
+
+// Program labels
+export const C128N = "C128N";
+export const DSNCUEXT = "DSNCUEXT";
+export const DSNTIAC = "DSNTIAC";
