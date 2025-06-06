@@ -10,10 +10,11 @@
  */
 
 import { expect } from "chai";
-import { By, DefaultTreeSection, EditorView, SideBarView, TreeItem, WebElement, WebView } from "vscode-extension-tester";
+import { By, DefaultTreeSection, EditorView, Key, SideBarView, TreeItem, VSBrowser, WebElement, WebView } from "vscode-extension-tester";
 import { C128N, CICSEX61, DSNTIAC, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findProgramByLabel, runCommandAndGetTreeItems, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
+  clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
   getPlexChildIndex,
@@ -39,6 +40,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
   let programs: TreeItem[];
   let regionIYCWENK1Index: number;
   let programsResourceIndex: number;
+  const driver = VSBrowser.instance.driver;
 
   before(async () => {
     await sleep(2000);
@@ -51,6 +53,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
   after(async () => {
     await closeAllEditorsTabs();
+    await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
   describe("Test Suite For Checking Children Of Plex CICSEX61", () => {
@@ -117,16 +120,10 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Disable The Program C128N", async () => {
-      expect(await C128NProgram?.isSelected()).to.be.false;
-      await sleep(1000);
-      expect(await C128NProgram?.isDisplayed()).to.be.true;
-
-      // Dismiss any hover popups that might block the click
-      await cicsTree.getDriver().actions().move({ x: 0, y: 0 }).perform();
-      await cicsTree.getDriver().actions().sendKeys("\uE00C").perform(); // '\uE00C' is Escape
-
-      await C128NProgram?.select();
-      await sleep(1000);
+      for (let i = 0; i < 5; i++) {
+        await driver.actions().sendKeys(Key.ARROW_DOWN).perform();
+      }
+      await driver.actions().sendKeys(Key.ENTER).perform();
 
       // Run the disable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -145,9 +142,10 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
 
     it("Should Enable The Program C128N", async () => {
-      await sleep(2000);
-      await C128NProgram?.select();
-      await sleep(1000);
+      for (let i = 0; i < 5; i++) {
+        await driver.actions().sendKeys(Key.ARROW_DOWN).perform();
+      }
+      await driver.actions().sendKeys(Key.ENTER).perform();
 
       // Run the enable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state

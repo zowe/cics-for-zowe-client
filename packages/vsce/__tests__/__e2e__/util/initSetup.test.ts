@@ -33,6 +33,12 @@ export async function clickPlusIconInCicsTree(cicsTree: DefaultTreeSection): Pro
   await plusIcon?.click();
 }
 
+export async function clickCollapseAllsIconInCicsTree(cicsTree: DefaultTreeSection): Promise<void> {
+  await cicsTree.click();
+  const collapseAllIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Collapse All`);
+  await collapseAllIcon?.click();
+}
+
 export async function selectEditProjectTeamConfigFile(cicsTree: DefaultTreeSection): Promise<void> {
   // Open the quick pick to add a new connection by clicking the plus icon in the cics section
   // Select the option to edit project team configuration file from the quickpicks
@@ -114,4 +120,45 @@ export async function getRegionResourceIndex(regionResources: TreeItem[], resour
     }
   }
   return -1;
+}
+
+export async function getResourceInRegion(
+  cicsTree: DefaultTreeSection,
+  profileName: string,
+  plexName: string,
+  regionName: string,
+  resourceName: string
+): Promise<TreeItem[]> {
+  const plexChildren = await getPlexChildren(cicsTree, profileName, plexName);
+  expect(plexChildren).not.empty;
+
+  const regionsIndex = await getPlexChildIndex(plexChildren, "Regions");
+  expect(regionsIndex).to.be.greaterThan(-1);
+
+  const regions = await getRegionsInPlex(cicsTree, profileName, plexName);
+  expect(regions).not.empty;
+
+  const regionIndex = await getRegionIndex(regions, regionName);
+  expect(regionIndex).to.be.greaterThan(-1);
+
+  const regionResources = await getRegionResources(
+    cicsTree,
+    profileName,
+    plexName,
+    await plexChildren[regionIndex].getLabel(),
+    await regions[regionIndex].getLabel()
+  );
+  expect(regionResources).not.empty;
+
+  const resourceIndex = await getRegionResourceIndex(regionResources, resourceName);
+  expect(resourceIndex).to.be.greaterThan(-1);
+
+  await regionResources[resourceIndex].click();
+  return cicsTree.openItem(
+    profileName,
+    plexName,
+    await plexChildren[regionIndex].getLabel(),
+    await regions[regionIndex].getLabel(),
+    await regionResources[resourceIndex].getLabel()
+  );
 }

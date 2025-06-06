@@ -15,6 +15,7 @@ import { CICSEX61, CONFIG_FILE_NAME, DUMMY907, WIREMOCK_PROFILE_NAME } from "./u
 import { addWiremockProfileToConfigFile, sleep } from "./util/globalMocks";
 import {
   checkIfEditorTabIsOpened,
+  clickCollapseAllsIconInCicsTree,
   clickPlusIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
@@ -41,6 +42,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
 
   after(async () => {
     await closeAllEditorsTabs();
+    await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
   describe("Adding Wiremock Profile In The Configuration File", () => {
