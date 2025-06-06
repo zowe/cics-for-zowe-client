@@ -51,7 +51,7 @@ export class CICSRegionsContainer extends TreeItem {
       },
       async (_, token) => {
         token.onCancellationRequested(() => {});
-        const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
+        const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent, null, null);
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.iconPath = getFolderIcon(true);
@@ -83,7 +83,7 @@ export class CICSRegionsContainer extends TreeItem {
 
   public async loadRegionsInPlex() {
     const parentPlex = this.getParent();
-    const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
+    const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex, null, null);
     if (regionInfo) {
       this.addRegionsUtility(regionInfo);
       // Keep container open after label change
