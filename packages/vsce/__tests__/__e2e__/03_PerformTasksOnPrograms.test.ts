@@ -118,9 +118,14 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
     it("Should Disable The Program C128N", async () => {
       expect(await C128NProgram?.isSelected()).to.be.false;
-      await sleep(2000);
+      await sleep(1000);
       expect(await C128NProgram?.isDisplayed()).to.be.true;
-      await await C128NProgram?.select();
+
+      // Dismiss any hover popups that might block the click
+      await cicsTree.getDriver().actions().move({ x: 0, y: 0 }).perform();
+      await cicsTree.getDriver().actions().sendKeys("\uE00C").perform(); // '\uE00C' is Escape
+
+      await C128NProgram?.select();
       await sleep(1000);
 
       // Run the disable command from the command palette
