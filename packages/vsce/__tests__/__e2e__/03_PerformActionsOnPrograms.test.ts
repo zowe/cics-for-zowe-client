@@ -99,6 +99,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
         await regions[regionIYCWENK1Index].getLabel(),
         await regionK1Resources[programsResourceIndex].getLabel()
       );
+      await sleep(1000);
       expect(programs).not.empty;
       cicsTree.takeScreenshot();
     });
