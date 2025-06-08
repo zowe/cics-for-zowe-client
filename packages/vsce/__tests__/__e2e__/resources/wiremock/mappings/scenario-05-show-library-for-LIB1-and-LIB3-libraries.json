@@ -1,0 +1,36 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Show library for LIB1 and LIB3",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Next Step for show library for LIB1 and LIB3",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/PROGLIB?CRITERIA=(name%3DLIB1%20OR%20name%3D%20LIB3)"
+
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-show-library-LIB1-and-LIB3-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show library for LIB1 and LIB2",
+      "requiredScenarioState": "Next Step for show library for LIB1 and LIB2",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB1OR%20OR%20LIBRARY%3D%20LIB3)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-next-step-for-show-library-LIB1-and-LIB3-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

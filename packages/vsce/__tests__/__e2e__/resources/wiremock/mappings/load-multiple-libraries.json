@@ -3,11 +3,11 @@
   {
     "request": {
       "method": "GET",
-      "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/IYCWENK1?CRITERIA=(name%3D*)"
+      "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/PROGLIB?CRITERIA=(name%3D*)"
     },
     "response": {
       "status": 200,
-      "bodyFileName": "response-for-multiple-libraries.xml",
+      "bodyFileName": "response-for-multiple-different-libraries.xml",
       "headers": {
         "Content-Type": "text/xml"
       }
@@ -16,11 +16,11 @@
   {
     "request": {
       "method": "GET",
-      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/IYCWENK1?CRITERIA=(LIBRARY%3DDFHRPL)"
+      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB1)"
     },
     "response": {
       "status": 200,
-      "bodyFileName": "response-for-DFHRPL-library.xml",
+      "bodyFileName": "response-for-LIB1-library.xml",
       "headers": {
         "Content-Type": "text/xml"
       }
@@ -29,11 +29,11 @@
     {
     "request": {
       "method": "GET",
-      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/IYCWENK1?CRITERIA=(LIBRARY%3DDFHR)"
+      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB2)"
     },
     "response": {
       "status": 200,
-      "bodyFileName": "response-for-DFHR-library.xml",
+      "bodyFileName": "response-for-LIB2-library.xml",
       "headers": {
         "Content-Type": "text/xml"
       }
@@ -42,11 +42,24 @@
   {
     "request": {
       "method": "GET",
-      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/IYCWENK1?CRITERIA=(LIBRARY%3DCBSA)"
+      "url": "/CICSSystemManagement/cicslibrarydatasetname/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB3)"
     },
     "response": {
       "status": 200,
-      "bodyFileName": "response-for-CBSA-library.xml",
+      "bodyFileName": "response-for-LIB3-library.xml",
+      "headers": {
+        "Content-Type": "text/xml"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "GET",
+      "url": "/CICSSystemManagement/CICSProgram/CICSEX61/PROGLIB?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+    },
+    "response": {
+      "status": 200,
+      "bodyFileName": "response-for-programs.xml",
       "headers": {
         "Content-Type": "text/xml"
       }

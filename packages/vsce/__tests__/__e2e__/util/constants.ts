@@ -26,3 +26,27 @@ export const PROFILE_NAME = "wiremock_server";
 // Plex labels
 export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
+
+// Program labels
+export const PLIB1DS1 = "PLIB1DS1";
+export const PLIB3DS1 = "PLIB3DS1";
+export const PLIB1DS2 = "PLIB1DS2";
+export const PLIB2DS1 = "PLIB2DS1";
+
+// Library labels
+export const LIB1 = "LIB1";
+export const LIB2 = "LIB2";
+export const LIB3 = "LIB3";
+export const DS11 = "DS11";
+export const DS12 = "DS12";
+export const DS21 = "DS21";
+export const DS31 = "DS31";
+export const PIPELINES = "Pipelines";
+export const LIBRARIES_LIB1_LABEL = "Libraries (LIB1)";
+export const PROGRAMS = "Programs";
+export const LIBRARIES_LIB3_LABEL = "Libraries (LIB3)"
+export const LIB1_PROGLIB_DS12_LABEL = "LIB1 (PROGLIB) (DS12) [1]";
+export const LIBRARIES_LIB1_LIB3_LABEL = "Libraries (LIB1, LIB3) [2]";
+export const LIBRARIES_LIB1_LIB1_LABEL ="Libraries (LIB1, LIB1) [1]";
+export const LIB1_PROGLIB_DS11_DS12_LABEL = "LIB1 (PROGLIB) (DS11,DS12) [2]";
+

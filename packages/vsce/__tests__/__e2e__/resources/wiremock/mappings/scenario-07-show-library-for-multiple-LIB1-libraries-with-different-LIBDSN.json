@@ -1,0 +1,36 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Show library for multiple LIB1 libraries with different LIBDSN",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Next Step for show library for multiple LIB1 libraries with different LIBDSN",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/PROGLIB?CRITERIA=(name%3DLIB1%20OR%20name%3D%20LIB1)"
+
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-show-library-for-multiple-LIB1-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show library for multiple LIB1 libraries with different LIBDSN",
+      "requiredScenarioState": "Next Step for show library for multiple LIB1 libraries with different LIBDSN",
+      "request": {
+        "method": "GET",
+        "url": "CICSSystemManagement/cicslibrarydatasetname/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB1)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-next-step-for-show-library-for-multiple-LIB1-program.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
