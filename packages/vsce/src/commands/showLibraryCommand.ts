@@ -1,72 +1,75 @@
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
+import { ILibrary, IProgram, IResource, ProgramMeta } from "../doc";
+import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
-import { CICSPlexTree } from "../trees/CICSPlexTree";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSProgramTreeItem } from "../trees/treeItems/CICSProgramTreeItem";
-import { CICSLibraryTree } from "../trees/CICSLibraryTree";
-import { CICSCombinedProgramTree } from "../trees/CICSCombinedTrees/CICSCombinedProgramTree";
+import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 
-export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>){
-    return commands.registerCommand("cics-extension-for-zowe.showLibrary", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node) as CICSProgramTreeItem[];
-    if (!allSelectedNodes || !allSelectedNodes.length) {
-      await window.showErrorMessage("No CICS program was selected");
+export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.showLibrary", async (node) => {
+    const msg = "CICS Library resources are not visible. Enable them from your VS Code settings.";
+    if (!openSettingsForHiddenResourceType(msg, "Library")) {
       return;
     }
-    let resourceFolders;
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedProgramTree) {
-      const cicsPlex: CICSPlexTree = allSelectedNodes[0].getParent().getParent();
-      const regionsContainer = cicsPlex.getChildren().filter((child) => child instanceof CICSRegionsContainer)[0];
-      //@ts-ignore
-      const regionTree: CICSRegionTree = regionsContainer
-        .getChildren()!
-        .filter((region: CICSRegionTree) => region.getRegionName() === allSelectedNodes[0].parentRegion.getRegionName())[0];
-      resourceFolders = regionTree.getChildren()!;
-    } else {
-      resourceFolders = allSelectedNodes[0].parentRegion.getChildren()!;
+    const nodes = findSelectedNodes(treeview, ProgramMeta, node) as CICSResourceContainerNode<IProgram>[];
+    if (!nodes || !nodes.length) {
+      window.showErrorMessage("No CICS Program selected");
+      return;
     }
-    const library = [];
-    const libraryDSNMap = new Map();
-    if (allSelectedNodes[0] instanceof CICSProgramTreeItem) {
-        for(const localProgramTreeItem of allSelectedNodes){
-          const program = localProgramTreeItem.program;
-          if (program.library?.trim()) {
-            library.push(program.library);
-          }
-          if (program.librarydsn?.trim()) {
-            const existingDSN = libraryDSNMap.get(program.library);
-            const newDSN = existingDSN ? `${existingDSN},${program.librarydsn}` : program.librarydsn;
-            libraryDSNMap.set(program.library, newDSN);
-          } 
-        } 
+
+    // Create a map: library name -> set of librarydsn (unique values)
+    const libraryDSNMap = new Map<string, Set<string>>();
+    for (const childNode of nodes) {
+      const lib = childNode.getContainedResource().resource.attributes.library;
+      const libDsn = childNode.getContainedResource().resource.attributes.librarydsn;
+      if (lib) {
+        if (!libraryDSNMap.has(lib)) {
+          libraryDSNMap.set(lib, new Set());
+        }
+        if (libDsn && libDsn.length > 0) {
+          libraryDSNMap.get(lib)!.add(libDsn);
+        }
+      }
     }
-    if (!library.length) {
+    if (!libraryDSNMap.size) {
       await window.showInformationMessage("This program does not have a library");
       return;
-    } 
-    const libraryPattern = library.join(", ");
-    const libraryTree = resourceFolders.filter((child) => child instanceof CICSLibraryTree)[0] as CICSLibraryTree;
-    if(library.length > 0){
-      libraryTree.setFilter(libraryPattern);
-      await libraryTree.loadContents();
     }
-    for (const libChildren of libraryTree.children) {
-      const filter = libraryDSNMap.get(libChildren.label);
-      if (filter?.trim()) {
-        libChildren.setFilter(filter);
-        await libChildren.loadContentsWithDSFilter();
+    const libraryTree = nodes[0]
+      .getParent()
+      .getParent()
+      .children.filter(
+        (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_RESOURCE
+      )[0] as CICSResourceContainerNode<ILibrary>;
+
+    libraryTree.setFilter(Array.from(libraryDSNMap.keys()));
+    const libraryNodes = await libraryTree.getChildren();
+    let libNode;
+    const libArray = [];
+    for (const child of libraryNodes) {
+      libNode = child as CICSResourceContainerNode<IResource>;
+      const labelKey = typeof libNode.label === "string" ? libNode.label : (libNode.label?.label ?? "");
+      if (
+        libNode.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE &&
+        libraryDSNMap.has(labelKey) &&
+        libraryDSNMap.get(labelKey) &&
+        libraryDSNMap.get(labelKey)!.size > 0
+      ) {
+        const libDsns = Array.from(libraryDSNMap.get(labelKey)!);
+        libNode.setFilter(libDsns);
+        await libNode.getChildren();
+        libNode.description = libDsns.join(" OR ");
+        tree._onDidChangeTreeData.fire(libNode);
+        libArray.push(libNode);
       }
     }
 
-    tree._onDidChangeTreeData.fire(undefined);
-    if (allSelectedNodes[0].getParent() instanceof CICSCombinedProgramTree) {
-      const nodeToExpand: any = libraryTree;
-      await treeview.reveal(nodeToExpand.getParent());
-      tree._onDidChangeTreeData.fire(undefined);
+    libraryTree.description = Array.from(libraryDSNMap.keys()).join(" OR ");
+    tree._onDidChangeTreeData.fire(libraryTree);
+    await treeview.reveal(libraryTree, { expand: true });
+    for (const lib of libArray) {
+      await treeview.reveal(lib, { expand: true });
     }
-    tree._onDidChangeTreeData.fire(undefined);
-
-});
+  });
 }

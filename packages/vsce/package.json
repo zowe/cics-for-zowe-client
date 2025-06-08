@@ -386,9 +386,9 @@
           "group": "1.CICSResourceNode.inquire"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsprogram.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.showLibrary",
-          "group": ""
+          "group": "1.CICSResourceNode.inquire"
         },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
