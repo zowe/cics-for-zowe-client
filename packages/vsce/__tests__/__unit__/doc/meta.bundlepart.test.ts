@@ -13,6 +13,13 @@ import { IBundle } from "../../../src/doc";
 import { BundlePartMeta } from "../../../src/doc/meta/bundlePart.meta";
 import { IBundlePart } from "../../../src/doc/resources/IBundlePart";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["BUND1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Bundle Part Meta", () => {
   let bundlePartMock: Resource<IBundlePart>;
@@ -89,21 +96,21 @@ describe("Bundle Part Meta", () => {
       {
         key: "Bundle",
         value: "BUND1",
-      }
+      },
     ]);
   });
 
   it("should append criteria history", async () => {
     const criteria = "BUND1";
     await BundlePartMeta.appendCriteriaHistory(criteria);
-    let history = BundlePartMeta.getCriteriaHistory();
+    let history = await BundlePartMeta.getCriteriaHistory();
     expect(history).toEqual(["BUND1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "BUND1";
     await BundlePartMeta.appendCriteriaHistory(criteria);
-    let history = BundlePartMeta.getCriteriaHistory();
+    let history = await BundlePartMeta.getCriteriaHistory();
     expect(history).toEqual(["BUND1"]);
   });
 });

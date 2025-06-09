@@ -12,6 +12,13 @@
 import { ProgramMeta } from "../../../src/doc/meta/program.meta";
 import { IProgram } from "../../../src/doc/resources/IProgram";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["PROG1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Program Meta", () => {
   let programMock: Resource<IProgram>;
@@ -23,7 +30,7 @@ describe("Program Meta", () => {
       eyu_cicsname: "MYREG",
       newcopycnt: "0",
       progtype: "COBOL",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
     });
   });
 
@@ -93,14 +100,14 @@ describe("Program Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "PROG1";
     await ProgramMeta.appendCriteriaHistory(criteria);
-    let history = ProgramMeta.getCriteriaHistory();
+    let history = await ProgramMeta.getCriteriaHistory();
     expect(history).toEqual(["PROG1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "PROG1";
     await ProgramMeta.appendCriteriaHistory(criteria);
-    let history = ProgramMeta.getCriteriaHistory();
+    let history = await ProgramMeta.getCriteriaHistory();
     expect(history).toEqual(["PROG1"]);
   });
 });

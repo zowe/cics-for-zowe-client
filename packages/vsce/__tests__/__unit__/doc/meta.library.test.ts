@@ -12,6 +12,13 @@
 import { LibraryMeta } from "../../../src/doc/meta/library.meta";
 import { ILibrary } from "../../../src/doc/resources/ILibrary";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["LIB1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Library Meta", () => {
   let libraryMock: Resource<ILibrary>;
@@ -23,7 +30,7 @@ describe("Library Meta", () => {
       name: "LIB1",
       ranking: "10",
       status: "ENABLED",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
     });
   });
 
@@ -54,21 +61,21 @@ describe("Library Meta", () => {
       {
         key: "Ranking",
         value: "10",
-      }
+      },
     ]);
   });
 
   it("should append criteria history", async () => {
     const criteria = "LIB1";
     await LibraryMeta.appendCriteriaHistory(criteria);
-    let history = LibraryMeta.getCriteriaHistory();
+    let history = await LibraryMeta.getCriteriaHistory();
     expect(history).toEqual(["LIB1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "LIB1";
     await LibraryMeta.appendCriteriaHistory(criteria);
-    let history = LibraryMeta.getCriteriaHistory();
+    let history = await LibraryMeta.getCriteriaHistory();
     expect(history).toEqual(["LIB1"]);
   });
 });

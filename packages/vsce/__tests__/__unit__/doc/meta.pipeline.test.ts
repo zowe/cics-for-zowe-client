@@ -12,6 +12,13 @@
 import { PipelineMeta } from "../../../src/doc/meta/pipeline.meta";
 import { IPipeline } from "../../../src/doc/resources/IPipeline";
 import { Resource } from "../../../src/resources";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const appendResourceSearchHistoryMock = jest.fn();
+PersistentStorage.appendResourceSearchHistory = appendResourceSearchHistoryMock;
+const getResourceSearchHistoryMock = jest.fn();
+getResourceSearchHistoryMock.mockReturnValue(["PIP1"]);
+PersistentStorage.getResourceSearchHistory = getResourceSearchHistoryMock;
 
 describe("Pipeline Meta", () => {
   let pipelineMock: Resource<IPipeline>;
@@ -56,14 +63,14 @@ describe("Pipeline Meta", () => {
   it("should append criteria history", async () => {
     const criteria = "PIP1";
     await PipelineMeta.appendCriteriaHistory(criteria);
-    let history = PipelineMeta.getCriteriaHistory();
+    let history = await PipelineMeta.getCriteriaHistory();
     expect(history).toEqual(["PIP1"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "PIP1";
     await PipelineMeta.appendCriteriaHistory(criteria);
-    let history = PipelineMeta.getCriteriaHistory();
+    let history = await PipelineMeta.getCriteriaHistory();
     expect(history).toEqual(["PIP1"]);
   });
 });
