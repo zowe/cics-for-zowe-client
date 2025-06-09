@@ -10,6 +10,7 @@
  */
 
 import { CicsCmciConstants, ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
+import ResourceExtender from "../utils/CICSResourceExtender";
 
 export class CICSExtenderApiConfig {
   private static api: CICSExtenderApiConfig = new CICSExtenderApiConfig();
@@ -23,19 +24,22 @@ export class CICSExtenderApiConfig {
     this.config = {
       configuration: {
         supportedResources: [
-            CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-            CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-            CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
-            CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-            CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-            CicsCmciConstants.CICS_URIMAP,
-            CicsCmciConstants.CICS_CMCI_TASK,
-            CicsCmciConstants.CICS_CMCI_PIPELINE,
-            CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
+          CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+          CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+          CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
+          CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
+          CicsCmciConstants.CICS_LIBRARY_RESOURCE,
+          CicsCmciConstants.CICS_URIMAP,
+          CicsCmciConstants.CICS_CMCI_TASK,
+          CicsCmciConstants.CICS_CMCI_PIPELINE,
+          CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
         ],
         resourceInspector: {
           enabled: false
         }
+      },
+      extenders: {
+        resources: ResourceExtender,
       }
     };
   }

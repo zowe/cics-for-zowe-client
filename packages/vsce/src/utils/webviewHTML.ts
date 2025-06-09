@@ -9,13 +9,18 @@
  *
  */
 
+import ResourceInspectorExtender, { IActionInput } from "./CICSResourceExtender";
+
 /**
  * show attributes webview
  * @param title
  * @param webText
  * @returns
  */
-export const getAttributesHtml = (title: string, webText: string) => {
+export const getAttributesHtml = (title: string, webText: string, resourceType: string, actionInput: IActionInput) => {
+
+  const actions = [...ResourceInspectorExtender.getActions()];
+
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -82,6 +87,18 @@ export const getAttributesHtml = (title: string, webText: string) => {
       </style>
   </head>
   <body>
+  <div>
+  ${actions.filter((action) => {
+
+    let shouldInclude = action.resourceTypes.includes(resourceType);
+
+    if (shouldInclude && action.visibleWhen) {
+      shouldInclude = action.visibleWhen(actionInput);
+    }
+    return shouldInclude;
+
+  }).map((action) => `<button>${action.id}</button>`)}
+  </div>
   <div>
 
   <table id="resultsTable">

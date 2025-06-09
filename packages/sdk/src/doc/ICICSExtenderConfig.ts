@@ -19,4 +19,7 @@ export interface ICICSExtenderConfig {
       enabled: boolean;
     };
   };
+  extenders: {
+    resources: any; // Class not available in SDK - should this interface be in SDK anyway? Seems VSC specific to me
+  };
 }

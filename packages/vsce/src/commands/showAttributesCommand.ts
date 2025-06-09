@@ -32,7 +32,13 @@ export function getShowResourceAttributesCommand(treeview: TreeView<CICSResource
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(resourceName, webText);
+      const webviewHTML = getAttributesHtml(resourceName, webText, res.getContainedResource().meta.resourceName, {
+        session: node.getSession(),
+        profile: node.getProfile(),
+        cicsplexName: node.cicsplexName,
+        regionName: node.regionName,
+        resource: res.getContainedResource().resource.attributes,
+      });
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
@@ -56,7 +62,7 @@ export function getShowRegionAttributes() {
     }
     webText += "</tbody>";
 
-    const webviewHTML = getAttributesHtml(node.getRegionName(), webText);
+    const webviewHTML = getAttributesHtml(node.getRegionName(), webText, "CICSRegion", null);
 
     const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
     const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${node.getRegionName()}`, column || 1, {
