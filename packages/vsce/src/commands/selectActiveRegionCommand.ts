@@ -11,11 +11,11 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
+import { commands, ConfigurationTarget, l10n, QuickPick, QuickPickItem, window, workspace } from "vscode";
 import { CICSSession } from "../resources";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
-import { ProfileManagement } from "../utils/profileManagement";
+import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 
 interface ActiveRegion {
   profile: IProfileLoaded;
@@ -43,44 +43,13 @@ export async function getActiveRegion(): Promise<ActiveRegion | undefined> {
     let isPlex = false;
     let plexName: string | undefined = undefined;
 
-    let choice = await getChoiceFromQuickPick(quickPick, "Select Profile", [...profileNames]);
-    quickPick.hide();
-    const profileName = profileNames.find((item) => item === choice);
-    //fetch the profile information and session
-    const { plex, session, profile } = await getPlexAndSessionFromProfileChoice(profileName);
-    if (plex) {
-      const plexNames = plex.filter((p) => !p.group).map((p) => p.plexname);
-      const regions = plex.filter((p) => !p.group && p.plexname === null).map((p) => p.regions);
-
-      //If profile has only regions and no plexes, we should show the regions
-      if (regions.length > 0) {
-        const region = regions.map((r) => r.map((reg) => reg.applid));
-        choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...region.map((name) => new FilterDescriptor(name[0]))]);
-        activeSelectedRegion = choice.label;
-        workspace.getConfiguration("zowe.cics").update("activeRegion", activeSelectedRegion, ConfigurationTarget.Global);
-      } else if (plexNames.length > 0) {
-        choice = await getChoiceFromQuickPick(quickPick, "Select Plex", [...plexNames.map((name) => ({ label: name }))]);
-        isPlex = true;
-      } else {
-        Gui.showMessage(l10n.t("No active regions or plexes found in the selected profile."));
-      }
-      quickPick.hide();
-    }
-    if (isPlex) {
-      //if plex is selected, we should show the regions from the plex
-      plexName = choice.label;
-      let regionInfo = await ProfileManagement.getRegionInfoInPlex(null, plexName, session);
-      regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-      choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
-      quickPick.hide();
-      activeSelectedRegion = choice.label;
-    }
-    workspace.getConfiguration("zowe.cics").update("activeRegion", activeSelectedRegion, ConfigurationTarget.Global);
-    PersistentStorage.setProfileAndPlexNameAndSession(profile, plexName, session);
+    const { session, profile } = await updateActiveRegion(quickPick, profileNames, isPlex, plexName, activeSelectedRegion);
     return { profile, plexName, session, activeSelectedRegion } as ActiveRegion;
   }
 }
+
 async function getPlexAndSessionFromProfileChoice(profileName: QuickPickItem) {
+  let plex: InfoLoaded[] = [];
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
   const session = new CICSSession({
     type: "token",
@@ -93,7 +62,11 @@ async function getPlexAndSessionFromProfileChoice(profileName: QuickPickItem) {
     password: profile.profile.password || "",
     rejectUnauthorized: profile.profile.rejectUnauthorized,
   });
-  const plex = await ProfileManagement.getPlexInfo(profile, session);
+  try {
+    plex = await ProfileManagement.getPlexInfo(profile, session);
+  } catch (error) {
+    await Gui.errorMessage(l10n.t("Error fetching plex information for profile with reason {0}", error.message));
+  }
   return { plex, session, profile };
 }
 
@@ -117,4 +90,55 @@ async function getAllCICSProfiles(): Promise<FilterDescriptor[]> {
   const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
   const cicsProfiles = allCICSProfileNames.map((name) => new FilterDescriptor(name));
   return cicsProfiles;
+}
+
+async function updateActiveRegion(
+  quickPick: QuickPick<QuickPickItem>,
+  profileNames: FilterDescriptor[],
+  isPlex: boolean,
+  plexName?: string,
+  activeSelectedRegion?: string
+): Promise<{
+  session: CICSSession;
+  profile: IProfileLoaded;
+}> {
+  let choice = await getChoiceFromQuickPick(quickPick, "Select Profile", [...profileNames]);
+  quickPick.hide();
+  const profileName = profileNames.find((item) => item === choice);
+  //fetch the profile information and session
+  const { plex, session, profile } = await getPlexAndSessionFromProfileChoice(profileName);
+
+  if (plex) {
+    const plexNames = plex.filter((p) => !p.group).map((p) => p.plexname);
+    const regions = plex.filter((p) => !p.group && p.plexname === null).map((p) => p.regions);
+
+    //If profile has only regions and no plexes, we should show the regions
+    if (regions.length > 0) {
+      const region = regions.map((r) => r.map((reg) => reg.applid));
+      choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...region.map((name) => new FilterDescriptor(name[0]))]);
+      activeSelectedRegion = choice.label;
+      workspace.getConfiguration("zowe.cics").update("activeRegion", activeSelectedRegion, ConfigurationTarget.Global);
+    } else if (plexNames.length > 0) {
+      choice = await getChoiceFromQuickPick(quickPick, "Select Plex", [...plexNames.map((name) => ({ label: name }))]);
+      isPlex = true;
+    } else {
+      Gui.showMessage(l10n.t("No active regions or plexes found in the selected profile."));
+    }
+    quickPick.hide();
+  }
+  if (isPlex) {
+    //if plex is selected, we should show the regions from the plex
+    plexName = choice.label;
+    let regionInfo = await ProfileManagement.getRegionInfoInPlex(null, plexName, session);
+    regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
+    choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
+    quickPick.hide();
+    activeSelectedRegion = choice.label;
+  }
+  // update the active region in the workspace configuration
+  workspace.getConfiguration("zowe.cics").update("activeRegion", activeSelectedRegion, ConfigurationTarget.Global);
+  // Store the selected profile, plex name, and session in persistent storage
+  PersistentStorage.setProfileAndPlexNameAndSession(profile, plexName, session);
+
+  return { session, profile };
 }
