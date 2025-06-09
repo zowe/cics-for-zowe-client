@@ -25,13 +25,13 @@ export async function sessionExpansionHandler(session: CICSSessionTree, tree: CI
   await tree.loadProfile(profile, session);
 }
 
-export function regionContainerExpansionHandler(regionContiner: CICSRegionsContainer, tree: CICSTree) {
+export async function regionContainerExpansionHandler(regionContiner: CICSRegionsContainer, tree: CICSTree) {
   const parentPlex = regionContiner.getParent();
   const plexProfile = parentPlex.getProfile();
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
     if (parentPlex.getGroupName()) {
       // CICSGroup
-      window.withProgress(
+      await window.withProgress(
         {
           title: "Loading regions",
           location: ProgressLocation.Notification,
@@ -47,7 +47,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
       );
     }
   } else {
-    window.withProgress(
+    await window.withProgress(
       {
         title: "Loading regions",
         location: ProgressLocation.Notification,
@@ -68,7 +68,7 @@ export function regionContainerExpansionHandler(regionContiner: CICSRegionsConta
   tree._onDidChangeTreeData.fire(undefined);
 }
 
-export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
+export async function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
   const plexProfile = plex.getProfile();
   // Region name and plex name specified
   if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
@@ -91,15 +91,19 @@ export function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
     } else {
       plex.clearChildren();
       const regionsContainer = plex.addRegionContainer();
-      regionContainerExpansionHandler(regionsContainer, tree);
-      plex.addNewCombinedTrees();
+      await regionContainerExpansionHandler(regionsContainer, tree);
+      if (regionsContainer.children.length) {
+        plex.addNewCombinedTrees();
+      }
       tree._onDidChangeTreeData.fire(undefined);
     }
   } else {
     plex.clearChildren();
     const regionsContainer = plex.addRegionContainer();
-    regionContainerExpansionHandler(regionsContainer, tree);
-    plex.addNewCombinedTrees();
+    await regionContainerExpansionHandler(regionsContainer, tree);
+    if (regionsContainer.children.length) {
+      plex.addNewCombinedTrees();
+    }
     tree._onDidChangeTreeData.fire(undefined);
   }
   tree._onDidChangeTreeData.fire(undefined);

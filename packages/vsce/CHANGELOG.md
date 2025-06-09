@@ -2,6 +2,12 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added pagination to all resource trees. [#302](https://github.com/zowe/cics-for-zowe-client/issues/302)
+- Reduce default number of records returned in combined trees from 500 to 100. [#302](https://github.com/zowe/cics-for-zowe-client/issues/302)
+- Enhancement: Arranged resource context menu items into groups. [#307](https://github.com/zowe/cics-for-zowe-client/issues/307)
+
 ## `3.8.0`
 
 - Enhancement: Added an API for extenders. [#299](https://github.com/zowe/cics-for-zowe-client/pull/299)

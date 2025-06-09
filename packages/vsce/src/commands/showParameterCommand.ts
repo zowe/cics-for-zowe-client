@@ -10,33 +10,22 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, TreeView, WebviewPanel, window } from "vscode";
+import { commands, WebviewPanel, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { findSelectedNodes } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { getParametersHtml } from "../utils/webviewHTML";
 
-export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node) => {
-    const allSelectedNodes = findSelectedNodes(treeview, CICSRegionTree, node);
-    if (!allSelectedNodes || !allSelectedNodes.length) {
-      window.showErrorMessage("No CICS region selected");
-      return;
-    }
-    for (const regionTree of allSelectedNodes) {
-      if (regionTree.contextValue.includes(".inactive")) {
-        // Ignore region if not active - required for the command palette.
-        continue;
-      }
+export function getShowRegionSITParametersCommand() {
+  return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node: CICSRegionTree) => {
+    const { response } = await runGetResource({
+      session: node.parentSession.session,
+      resourceName: CicsCmciConstants.CICS_SYSTEM_PARAMETER,
+      regionName: `${node.label}`,
+      cicsPlex: node.parentPlex ? node.parentPlex.getPlexName() : undefined,
+      params: { parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)" },
+    });
 
-      const { response } = await runGetResource({
-        session: regionTree.parentSession.session,
-        resourceName: CicsCmciConstants.CICS_SYSTEM_PARAMETER,
-        regionName: regionTree.label,
-        cicsPlex: regionTree.parentPlex ? regionTree.parentPlex!.getPlexName() : undefined,
-        params: { parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)" },
-      });
-      let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>
+    let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>
         <th class="sourceHeading">Source
           <select id="filterSource" name="cars" id="cars">
             <option value="combined">Combined</option>
@@ -47,18 +36,17 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
           </select>
         </th>
         <th class="valueHeading">Value</th></tr></thead>`;
-      webText += "<tbody>";
-      for (const systemParameter of response.records.cicssystemparameter) {
-        webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
-        webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
-      }
-      webText += "</tbody>";
-      const webviewHTML = getParametersHtml(regionTree.getRegionName(), webText);
-      const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-      const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${regionTree.getRegionName()}`, column || 1, {
-        enableScripts: true,
-      });
-      panel.webview.html = webviewHTML;
+    webText += "<tbody>";
+    for (const systemParameter of response.records.cicssystemparameter) {
+      webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
+      webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
     }
+    webText += "</tbody>";
+    const webviewHTML = getParametersHtml(node.getRegionName(), webText);
+    const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
+    const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${node.getRegionName()}`, column || 1, {
+      enableScripts: true,
+    });
+    panel.webview.html = webviewHTML;
   });
 }

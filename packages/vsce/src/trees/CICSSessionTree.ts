@@ -9,21 +9,25 @@
  *
  */
 
-import { SessConstants } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { CICSSession } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSTree } from "./CICSTree";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
-  session: imperative.Session;
+  session: CICSSession;
   profile: any;
   isUnauthorized: boolean | undefined;
   iconPath = getIconFilePathFromName("profile-unverified");
 
-  constructor(profile: any) {
+  constructor(
+    profile: any,
+    private parent: CICSTree
+  ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.children = [];
     this.contextValue = `cicssession.${profile.name}`;
@@ -35,10 +39,10 @@ export class CICSSessionTree extends TreeItem {
   }
 
   public createSessionFromProfile() {
-    this.session = new imperative.Session({
-      type: SessConstants.AUTH_TYPE_TOKEN,
+    this.session = new CICSSession({
+      type: imperative.SessConstants.AUTH_TYPE_TOKEN,
       storeCookie: true,
-      tokenType: SessConstants.TOKEN_TYPE_LTPA,
+      tokenType: imperative.SessConstants.TOKEN_TYPE_LTPA,
       hostname: this.profile.profile!.host,
       port: Number(this.profile.profile!.port),
       user: this.profile.profile!.user || "",
@@ -82,8 +86,8 @@ export class CICSSessionTree extends TreeItem {
     return this.isUnauthorized;
   }
 
-  public getParent(): null {
-    return null;
+  public getParent(): CICSTree {
+    return this.parent;
   }
 
   public setIsExpanded(isExpanded: boolean) {
