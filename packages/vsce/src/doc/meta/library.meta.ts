@@ -11,12 +11,10 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ILibrary } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 import { LibraryDatasetMeta } from "./libraryDataset.meta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const LibraryMeta: IResourceMeta<ILibrary> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
@@ -26,8 +24,8 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
+  async getDefaultCriteria() {
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {
@@ -56,11 +54,11 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addLibrarySearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("library", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getLibrarySearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("library");
   },
 
   childType: LibraryDatasetMeta,

@@ -14,7 +14,7 @@ import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import PersistentStorage from "../utils/PersistentStorage";
 
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
@@ -43,79 +43,68 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     } else {
       resourceToFilter = await window.showQuickPick(["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
     }
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
+
     let resourceHistory;
-    if (resourceToFilter === "Programs") {
-      resourceHistory = persistentStorage.getProgramSearchHistory();
-    } else if (resourceToFilter === "Local Transactions") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
-    } else if (resourceToFilter === "Local Files") {
-      resourceHistory = persistentStorage.getLocalFileSearchHistory();
-    } else if (resourceToFilter === "Tasks") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
-    } else if (resourceToFilter === "Libraries") {
-      resourceHistory = persistentStorage.getLibrarySearchHistory();
-    } else if (resourceToFilter === "Regions") {
-      resourceHistory = persistentStorage.getRegionSearchHistory();
+    const settingNameMap: { [key: string]: string } = {
+      Programs: "program",
+      "Local Transactions": "transaction",
+      "Local Files": "localFile",
+      Tasks: "transaction",
+      Libraries: "library",
+      Regions: "region",
+    };
+
+    if (resourceToFilter in settingNameMap) {
+      resourceHistory = await PersistentStorage.getResourceSearchHistory(settingNameMap[resourceToFilter]);
     } else {
       window.showInformationMessage("No Selection Made");
       return;
     }
-    const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
-    if (pattern) {
-      if (resourceToFilter === "Programs") {
-        await persistentStorage.addProgramSearchHistory(pattern);
-      } else if (resourceToFilter === "Local Transactions") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
-      } else if (resourceToFilter === "Local Files") {
-        await persistentStorage.addLocalFileSearchHistory(pattern);
-      } else if (resourceToFilter === "Regions") {
-        await persistentStorage.addRegionSearchHistory(pattern);
-      } else if (resourceToFilter === "Tasks") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
-      } else if (resourceToFilter === "Libraries") {
-        await persistentStorage.addLibrarySearchHistory(pattern);
-      }
 
-      if (resourceToFilter === "Regions") {
-        chosenNode.filterRegions(pattern, tree);
-      } else {
-        await window.withProgress(
-          {
-            title: "Loading Resources",
-            location: ProgressLocation.Notification,
-            cancellable: true,
-          },
-          (_, token): Thenable<unknown> => {
-            token.onCancellationRequested(() => {});
-            for (const region of chosenNode.children) {
-              if (region instanceof CICSRegionTree) {
-                if (region.getIsActive()) {
-                  let treeToFilter;
-                  if (resourceToFilter === "Programs") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Programs."))[0];
-                  } else if (resourceToFilter === "Local Transactions") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Transactions"))[0];
-                  } else if (resourceToFilter === "Local Files") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Local Files"))[0];
-                  } else if (resourceToFilter === "Tasks") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Tasks"))[0];
-                  } else if (resourceToFilter === "Libraries") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Libraries"))[0];
-                  }
-                  if (treeToFilter) {
-                    // @ts-ignore
-                    treeToFilter.setFilter([pattern]);
-                    treeToFilter.description = pattern;
-                  }
+    const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
+
+    if (!pattern) {
+      return;
+    }
+
+    await PersistentStorage.appendResourceSearchHistory(settingNameMap[resourceToFilter], pattern);
+
+    if (resourceToFilter === "Regions") {
+      chosenNode.filterRegions(pattern, tree);
+    } else {
+      await window.withProgress(
+        {
+          title: "Loading Resources",
+          location: ProgressLocation.Notification,
+          cancellable: true,
+        },
+        (_, token): Thenable<unknown> => {
+          token.onCancellationRequested(() => {});
+          for (const region of chosenNode.children) {
+            if (region instanceof CICSRegionTree) {
+              if (region.getIsActive()) {
+                const contextNameMap: { [key: string]: string } = {
+                  "Local Transactions": "Transactions",
+                };
+
+                const treeToFilter = region.children?.filter((child: any) =>
+                  child.contextValue.includes(
+                    `CICSResourceNode.${resourceToFilter in contextNameMap ? contextNameMap[resourceToFilter] : resourceToFilter}`
+                  )
+                )[0];
+
+                if (treeToFilter) {
+                  // @ts-ignore
+                  treeToFilter.setFilter([pattern]);
+                  treeToFilter.description = pattern;
                 }
               }
             }
-            return;
           }
-        );
-      }
-      tree._onDidChangeTreeData.fire(chosenNode);
+          return;
+        }
+      );
     }
+    tree._onDidChangeTreeData.fire(chosenNode);
   });
 }

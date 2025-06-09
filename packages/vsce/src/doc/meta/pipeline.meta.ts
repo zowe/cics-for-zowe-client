@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IPipeline } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const PipelineMeta: IResourceMeta<IPipeline> = {
   resourceName: CicsCmciConstants.CICS_PIPELINE_RESOURCE,
@@ -25,8 +23,8 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_PIPELINE_RESOURCE, "pipeline");
+  async getDefaultCriteria() {
+    return PersistentStorage.getResourceDefaultFilter(CicsCmciConstants.CICS_PIPELINE_RESOURCE, "pipeline");
   },
 
   getLabel: function (resource: Resource<IPipeline>): string {
@@ -50,10 +48,10 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addPipelineSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("pipeline", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getPipelineSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("pipeline");
   },
 };

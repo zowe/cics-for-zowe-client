@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IBundle, IBundlePart } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
@@ -65,10 +63,10 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addBundlePartSearchHistory(criteria);
+    await PersistentStorage.appendResourceSearchHistory("bundlePart", criteria);
   },
 
-  getCriteriaHistory() {
-    return persistentStorage.getBundlePartSearchHistory();
+  async getCriteriaHistory() {
+    return PersistentStorage.getResourceSearchHistory("bundlePart");
   },
 };
