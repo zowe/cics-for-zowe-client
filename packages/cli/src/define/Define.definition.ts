@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { CicsSession } from "../CicsSession";
 
+import { BundleDefinition } from "./bundle/Bundle.definition";
 import { ProgramDefinition } from "./program/Program.definition";
 import { TransactionDefinition } from "./transaction/Transaction.definition";
 import { UrimapClientDefinition } from "./urimap-client/UrimapClient.definition";
@@ -40,6 +41,7 @@ const definition: ICommandDefinition = {
     UrimapClientDefinition,
     UrimapPipelineDefinition,
     WebServiceDefinition,
+    BundleDefinition,
   ],
   passOn: [
     {
