@@ -32,12 +32,11 @@ export function selectActiveRegion() {
 export async function getActiveRegion(): Promise<IActiveRegion | undefined> {
   const quickPick = Gui.createQuickPick();
   const profileNames = await getAllCICSProfiles();
-  let isPlex = false;
-  let plexName: string | undefined = undefined;
 
-  const { session, profile, activeSelectedRegion } = await updateActiveRegion(quickPick, profileNames, isPlex, plexName);
-  Gui.showMessage(l10n.t("Active region selected: {0}", activeSelectedRegion));
-  return { profile, plexName, session, activeSelectedRegion } as IActiveRegion;
+  const { profile, cicsPlex, session, activeSelectedRegion }: IActiveRegion = await updateActiveRegion(quickPick, profileNames);
+  //To verify if the user has selected a region or plex
+  Gui.showMessage(l10n.t("Active region selected: {0} and plex: {1}", activeSelectedRegion, cicsPlex || "NA"));
+  return { profile, cicsPlex, session, activeSelectedRegion } as IActiveRegion;
 }
 
 async function getPlexAndSessionFromProfileChoice(profileName: QuickPickItem) {
@@ -84,16 +83,9 @@ async function getAllCICSProfiles(): Promise<FilterDescriptor[]> {
   return cicsProfiles;
 }
 
-async function updateActiveRegion(
-  quickPick: QuickPick<QuickPickItem>,
-  profileNames: FilterDescriptor[],
-  isPlex: boolean,
-  plexName?: string
-): Promise<{
-  session: CICSSession;
-  profile: IProfileLoaded;
-  activeSelectedRegion: string;
-}> {
+async function updateActiveRegion(quickPick: QuickPick<QuickPickItem>, profileNames: FilterDescriptor[]): Promise<IActiveRegion> {
+  let isPlex: boolean = false;
+  let cicsPlex: string = undefined;
   let activeSelectedRegion: string = undefined;
   let choice = await getChoiceFromQuickPick(quickPick, "Select Profile", [...profileNames]);
   quickPick.hide();
@@ -120,13 +112,13 @@ async function updateActiveRegion(
   }
   if (isPlex) {
     //if plex is selected, we should show the regions from the plex
-    plexName = choice.label;
-    let regionInfo = await ProfileManagement.getRegionInfoInPlex(null, plexName, session);
+    cicsPlex = choice.label;
+    let regionInfo = await ProfileManagement.getRegionInfoInPlex(null, cicsPlex, session);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
     choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
     quickPick.hide();
     activeSelectedRegion = choice.label;
   }
 
-  return { session, profile, activeSelectedRegion };
+  return { profile, cicsPlex, session, activeSelectedRegion };
 }
