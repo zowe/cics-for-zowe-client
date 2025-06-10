@@ -28,7 +28,7 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   humanReadableName: "Library Datasets",
 
   buildCriteria(criteria: string[], parentResource: ILibrary) {
-    return `LIBRARY=${parentResource.name} AND (${criteria.map((n) => `DSNAME=${n}`).join(" OR ")})`;
+    return `(LIBRARY='${parentResource.name}') AND (${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;
   },
 
   getDefaultCriteria: function (parentResource: ILibrary) {
