@@ -9,7 +9,7 @@
 
 ### From the VS Code Marketplace
 
-1. Open the Extensions tab in the VS Code activity bar.
+1. Open the **Extensions** tab in the VS Code Activity Bar.
 2. Search for `IBM CICS for Zowe Explorer`.
 3. Click `Install`. (This will also install `Zowe Explorer` if not already present.).
 
