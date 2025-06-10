@@ -343,13 +343,14 @@ export class ProfileManagement {
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+  public static async getRegionInfoInPlex(plex: CICSPlexTree, plexName: string, plexSession: Session): Promise<any[]> {
     try {
-      const session: Session = plex.getSession();
+      const session: Session = plexSession ? plexSession : plex.getSession();
+      const plex_name: string = plexName ? plexName : plex.getPlexName();
       const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
-        cicsPlex: plex.getPlexName(),
+        cicsPlex: plex_name,
       });
       if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
         return toArray(response.records.cicsmanagedregion);
