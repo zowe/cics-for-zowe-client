@@ -34,9 +34,9 @@ const ResourceInspector = () => {
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
       const headerElement1 = document.getElementById("table-header-1");
-      const headerHeight1 = getComputedStyle(headerElement1).height;
+      const headerHeight1 = headerElement1.offsetHeight;
       const headerElement2 = document.getElementById("table-header-2");
-      headerElement2.style.top = headerHeight1;
+      headerElement2.style.top = headerHeight1 - 1 + "px"; // Adjust the top position of the second header based on the first header's height
     };
     vscode.addScrollerListener(handleScroll);
 
@@ -50,25 +50,28 @@ const ResourceInspector = () => {
   return (
     resourceInfo && (
       <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
-        <thead id="table-header-1" className="table-header1">
-          <th className="header-cell-1 padding-left-10">
-            <div className="div-display-1">{resourceInfo.name}</div>
-            <div className="div-display-1 div-display-2">
-              {resourceInfo.resourceName}: {resourceInfo.resource.status || resourceInfo.resource.enablestatus}
-            </div>
-          </th>
-        </thead>
-        <tbody className="padding-left-10 padding-top-20">
-          {resourceInfo.highlights.length > 0 && (
-            <tr>
-              {resourceInfo.highlights.map((highlight) => (
-                <p className="line padding-left-20">
-                  {highlight.key}: {highlight.value}
-                </p>
-              ))}
-            </tr>
-          )}
-        </tbody>
+        <table id="table-1" className="border-collapse">
+          <thead id="table-header-1" className="table-header1">
+            <th className="header-cell-1 padding-left-10">
+              <div className="div-display-1">{resourceInfo.name}</div>
+              <div className="div-display-1 div-display-2">
+                {resourceInfo.resourceName}: {resourceInfo.resource.status || resourceInfo.resource.enablestatus}
+              </div>
+            </th>
+          </thead>
+          <tbody className="padding-left-10 padding-top-20">
+            {resourceInfo.highlights.length > 0 && (
+              <tr>
+                <p className="padding-top-10"></p>
+                {resourceInfo.highlights.map((highlight) => (
+                  <p className="line padding-left-20">
+                    {highlight.key}: {highlight.value}
+                  </p>
+                ))}
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         <table className="border-collapse">
           <thead id="table-header-2" className="thead-2 vertical-align-sub">
