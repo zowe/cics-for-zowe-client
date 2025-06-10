@@ -11,11 +11,12 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, ConfigurationTarget, l10n, QuickPick, QuickPickItem, window, workspace } from "vscode";
+import { commands, ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
 import { CICSSession } from "../resources";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { initializeActiveRegionStatusBar, updateStatusBarItem } from "./activeRegionStatusBar";
 
 interface ActiveRegion {
   profile: IProfileLoaded;
@@ -23,19 +24,20 @@ interface ActiveRegion {
   session: CICSSession;
   activeSelectedRegion: string;
 }
-
+let command = "cics-extension-for-zowe.selectActiveRegion";
 export function selectActiveRegion() {
-  return commands.registerCommand("cics-extension-for-zowe.selectActiveRegion", async () => {
+  return commands.registerCommand(command, async () => {
+    initializeActiveRegionStatusBar(command, "");
     await getActiveRegion();
   });
 }
 
 export async function getActiveRegion(): Promise<ActiveRegion | undefined> {
   let activeSelectedRegion: string = workspace.getConfiguration("zowe.cics").get("activeRegion");
-
   if (activeSelectedRegion.length > 0) {
     // If default region is set, we can return it
     const { profile, plex, session } = PersistentStorage.getProfileAndPlexNameAndSession();
+    updateStatusBarItem(activeSelectedRegion);
     return { profile, plex, session, activeSelectedRegion } as ActiveRegion;
   } else {
     const quickPick = Gui.createQuickPick();
@@ -44,6 +46,7 @@ export async function getActiveRegion(): Promise<ActiveRegion | undefined> {
     let plexName: string | undefined = undefined;
 
     const { session, profile } = await updateActiveRegion(quickPick, profileNames, isPlex, plexName, activeSelectedRegion);
+    updateStatusBarItem(activeSelectedRegion);
     return { profile, plexName, session, activeSelectedRegion } as ActiveRegion;
   }
 }
