@@ -432,25 +432,25 @@
           "description": "Default filter criteria for Library",
           "scope": "window"
         },
-        "zowe.cics.CICSPipeline.filter": {
+        "zowe.cics.pipeline.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for Pipeline",
           "scope": "window"
         },
-        "zowe.cics.CICSTCPIPService.filter": {
+        "zowe.cics.tcpipService.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for TCP/IP Service",
           "scope": "window"
         },
-        "zowe.cics.CICSURIMap.filter": {
+        "zowe.cics.uriMap.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for URI Map",
           "scope": "window"
         },
-        "zowe.cics.CICSWebService.filter": {
+        "zowe.cics.webService.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for Web Service",
