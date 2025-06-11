@@ -27,6 +27,11 @@ export const WIREMOCK_PROFILE_NAME = "wiremock_server";
 export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
 
+//Plex child labels
+export const REGIONS = "Regions";
+export const REGION_COUNT = " [7/7]";
+export const REGIONS_LOADED = REGIONS + REGION_COUNT;
+
 // Program labels
 export const C128N = "C128N";
 export const DSNCUEXT = "DSNCUEXT";

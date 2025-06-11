@@ -3,7 +3,7 @@
     {
       "scenarioName": "Disable and Enable program",
       "requiredScenarioState": "Started",
-      "newScenarioState": "Load programs with C128N status as Disabled",
+      "newScenarioState": "Fetch programs with default filter for disable operation",
       "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(PROGRAM%3D'C128N')",
@@ -23,11 +23,27 @@
     },
     {
       "scenarioName": "Disable and Enable program",
-      "requiredScenarioState": "Load programs with C128N status as Disabled",
-      "newScenarioState": "Enable the program",
+      "requiredScenarioState": "Fetch programs with default filter for disable operation",
+      "newScenarioState": "Load programs with C128N status as Disabled",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-program-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable and Enable program",
+      "requiredScenarioState": "Load programs with C128N status as Disabled",
+      "newScenarioState": "Fetch programs record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
       },
       "response": {
         "status": 200,
@@ -39,8 +55,24 @@
     },
     {
       "scenarioName": "Disable and Enable program",
+      "requiredScenarioState": "Fetch programs record count for disable operation",
+      "newScenarioState": "Enable the program",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-program-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable and Enable program",
       "requiredScenarioState": "Enable the program",
-      "newScenarioState": "Load programs with C128N status as Enabled",
+      "newScenarioState": "Fetch programs with default filter for enable operation",
       "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(PROGRAM%3D'C128N')",
@@ -60,14 +92,46 @@
     },
     {
       "scenarioName": "Disable and Enable program",
-      "requiredScenarioState": "Load programs with C128N status as Enabled",
+      "requiredScenarioState": "Fetch programs with default filter for enable operation",
+      "newScenarioState": "Load programs with C128N status as Enabled",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))"
+        "url": "/CICSSystemManagement/CICSProgram/CICSEX61/IYCWENK1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-program-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable and Enable program",
+      "requiredScenarioState": "Load programs with C128N status as Enabled",
+      "newScenarioState": "Fetch programs record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
       },
       "response": {
         "status": 200,
         "bodyFileName": "programs-with-default-filter.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable and Enable program",
+      "requiredScenarioState": "Fetch programs record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-program-count.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
