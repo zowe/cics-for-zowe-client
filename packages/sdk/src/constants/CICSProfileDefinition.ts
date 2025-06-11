@@ -17,7 +17,7 @@ export const getCICSProfileDefinition = (): imperative.ICommandProfileTypeConfig
     schema: {
       type: "object",
       title: "CICS Profile",
-      version: "6.7.0",
+      version: "6.8.0",
       description:
         "A cics profile is required to issue commands in the cics command group that interact with " +
         "CICS regions. The cics profile contains your host, port, user name, and password " +
