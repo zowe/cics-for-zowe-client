@@ -76,3 +76,12 @@ export async function findProgramByLabel(programs: TreeItem[], programLabel: str
   }
   return undefined;
 }
+
+export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void> {
+  // Send the ARROW_DOWN key the specified number of times
+  const driver = VSBrowser.instance.driver;
+  for (let i = 0; i < times; i++) {
+    await driver.actions().sendKeys(Key.ARROW_DOWN).perform();
+  }
+  await driver.actions().sendKeys(Key.ENTER).perform();
+}
