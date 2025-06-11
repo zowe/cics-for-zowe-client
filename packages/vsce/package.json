@@ -240,6 +240,273 @@
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
           "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.purgeTask",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.inquireProgram",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.newCopyProgram",
+           "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.newCopyProgram",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.phaseInCommand",
+           "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showRegionAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showRegionParameters",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPrograms",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterDatasetPrograms",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterLibraries",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTCPIPServices",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showRegionLogs",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterURIMaps",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPipelines",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterWebServices",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterDatasets",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTransactions",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterTasks",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterLocalFiles",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterPlexResources",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllPrograms",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllLibraries",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllPipelines",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllWebServices",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTCPIPServices",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllURIMaps",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTransactions",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllLocalFiles",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterAllTasks",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.clearPlexFilter",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showProgramAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLibraryAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLibraryDatasetsAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTCPIPServiceAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showURIMapAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTransactionAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showLocalFileAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.localFileResourceInspectorView",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showTaskAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showPipelineAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showWebServiceAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableProgram",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableProgram",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableTransaction",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableTransaction",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableLocalFile",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableLocalFile",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableLocalFile",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.closeLocalFile",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.openLocalFile",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.inquireTransaction",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {"command": "cics-extension-for-zowe.disableLibrary",
+         "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.hideCommandPaletteView",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.manageSession",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.filterResources",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.showResourceAttributes",
+          "when": "config.cics-extension-for-zowe.hideCommandPalette"
         }
       ],
       "view/title": [
@@ -417,7 +684,7 @@
         "zowe.cics.localFile.filter": {
           "type": "string",
           "default": "file=*",
-          "description": "Default filter criteria for Local Files",
+          "description": "Default  filter criteria for Local Files",
           "scope": "window"
         },
         "zowe.cics.tasks.filter": {
