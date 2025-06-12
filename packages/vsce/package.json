@@ -64,8 +64,8 @@
     },
     "commands": [
       {
-        "command": "cics-extension-for-zowe.selectActiveRegion",
-        "title": "Select Active CICS Region",
+        "command": "cics-extension-for-zowe.selectFocusRegion",
+        "title": "Select Focus CICS Region",
         "category": "IBM CICS for Zowe Explorer"
       },
       {
