@@ -11,18 +11,8 @@
 
 import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let regionName: string;
-let csdGroup: string;
-let host: string;
-let port: number;
-let user: string;
-let password: string;
-let protocol: string;
-let rejectUnauthorized: boolean;
-let session: Session;
 let certificate: string;
 
 describe("CICS define urimap-client command", () => {
@@ -33,25 +23,7 @@ describe("CICS define urimap-client command", () => {
       installPlugin: true,
       tempProfileTypes: ["cics"]
     });
-    const cicsProperties = TEST_ENVIRONMENT.systemTestProperties.cics;
-    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
-    regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
-    host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
-    port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
-    user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
-    password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
-    protocol = TEST_ENVIRONMENT.systemTestProperties.cics.protocol;
-    rejectUnauthorized = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized;
     certificate = TEST_ENVIRONMENT.systemTestProperties.urimap.certificate;
-    session = new Session({
-      type: "basic",
-      hostname: cicsProperties.host,
-      port: cicsProperties.port,
-      user: cicsProperties.user,
-      password: cicsProperties.password,
-      rejectUnauthorized: cicsProperties.rejectUnauthorized || false,
-      protocol: cicsProperties.protocol as any || "https",
-    });
   });
 
   afterAll(async () => {
