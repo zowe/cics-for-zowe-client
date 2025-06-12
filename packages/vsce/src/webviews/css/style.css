@@ -79,10 +79,11 @@
 }
 
 .search-style{
-  width: 18.75rem;
+  width: 9.375rem;
   float: right;
   margin-bottom: 0.313rem;
   border: none;
+  max-width: 40%;
 }
 
 .width-30{
