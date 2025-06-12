@@ -170,11 +170,11 @@ export default {
             "name is eight characters.",
           BUNDLEDIR:
             "The fully qualified name of the root directory for the bundle on z/OS UNIX. " +
-            "The first character must be / and the end character /. The maximum length if 255 characters.",
+            "The first character must be / and the end character /. The maximum length is 255 characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new bundle",
-          CICSPLEX: "The name of the CICSPlex to which to define the new bundle",
+          CICSPLEX: "The name of the CICSplex to which to define the new bundle",
         },
         MESSAGES: {
           SUCCESS: "The bundle '%s' was defined successfully.",
