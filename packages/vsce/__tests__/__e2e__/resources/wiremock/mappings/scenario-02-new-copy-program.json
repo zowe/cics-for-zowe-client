@@ -31,7 +31,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "fetch-program-count-with-cachetoken.xml",
+        "bodyFileName": "fetch-resource-count-with-cachetoken.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -62,7 +62,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "fetch-program-count.xml",
+        "bodyFileName": "fetch-resource-count.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
