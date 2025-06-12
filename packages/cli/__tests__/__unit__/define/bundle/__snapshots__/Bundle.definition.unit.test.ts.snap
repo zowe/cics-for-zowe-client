@@ -20,7 +20,7 @@ exports[`cics define bundle should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex to which to define the new bundle",
+      "description": "The name of the CICSplex to which to define the new bundle",
       "name": "cics-plex",
       "type": "string",
     },
@@ -33,7 +33,7 @@ exports[`cics define bundle should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The fully qualified name of the root directory for the bundle on z/OS UNIX. The first character must be / and the end character /. The maximum length if 255 characters.",
+      "description": "The fully qualified name of the root directory for the bundle on z/OS UNIX. The first character must be / and the end character /. The maximum length is 255 characters.",
       "name": "bundleDir",
       "required": true,
       "type": "string",
