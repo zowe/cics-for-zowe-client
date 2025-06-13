@@ -101,4 +101,29 @@ describe("CicsCmciRestClient tests", () => {
     expect(processedError.msg).toContain(shouldNotDeleteMessage);
     expect(processedError.msg.indexOf()).toEqual(-1);
   });
+
+  it("should convertObjectToXML", () => {
+    expect(CicsCmciRestClient.convertObjectToXML({})).toEqual("<root/>");
+    expect(
+      CicsCmciRestClient.convertObjectToXML({
+        attribute: {
+          key: "value",
+        },
+        listHeader: [
+          "value1",
+          {
+            object: "child",
+          },
+        ],
+      })
+    ).toEqual(`<root>
+  <attribute>
+    <key>value</key>
+  </attribute>
+  <listHeader>value1</listHeader>
+  <listHeader>
+    <object>child</object>
+  </listHeader>
+</root>`);
+  });
 });
