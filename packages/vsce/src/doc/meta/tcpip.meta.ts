@@ -26,7 +26,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE);
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE, "tcpipService");
   },
 
   getLabel: function (resource: Resource<ITCPIP>): string {

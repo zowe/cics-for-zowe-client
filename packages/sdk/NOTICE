@@ -2601,7 +2601,7 @@ SOFTWARE.
 
 ------
 
-** brace-expansion; version 2.0.1 -- https://github.com/juliangruber/brace-expansion
+** brace-expansion; version 2.0.2 -- https://github.com/juliangruber/brace-expansion
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
 
 MIT License
@@ -4652,7 +4652,7 @@ THE SOFTWARE.
 
 ------
 
-** socks; version 2.8.4 -- https://github.com/JoshGlazebrook/socks/
+** socks; version 2.8.5 -- https://github.com/JoshGlazebrook/socks/
 Copyright (c) 2013 Josh Glazebrook
 
 The MIT License (MIT)

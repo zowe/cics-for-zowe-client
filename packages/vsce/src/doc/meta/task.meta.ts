@@ -26,7 +26,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_TASK);
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_TASK, "tasks");
   },
 
   getLabel: function (resource: Resource<ITask>): string {

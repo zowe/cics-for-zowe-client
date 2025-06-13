@@ -118,6 +118,7 @@ exports[`imperative config should match the snapshot 1`] = `
         "required": [],
         "title": "CICS Profile",
         "type": "object",
+        "version": "6.8.0",
       },
       "type": "cics",
     },

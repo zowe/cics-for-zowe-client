@@ -26,7 +26,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_URIMAP);
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_URIMAP, "uriMap");
   },
 
   getLabel: function (resource: Resource<IURIMap>): string {
