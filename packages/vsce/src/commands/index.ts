@@ -44,9 +44,11 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getNewCopyCommand(treeDataProv, treeview),
     getPhaseInCommand(treeDataProv, treeview),
 
+    enableCommands.getEnableBundleCommand(treeDataProv, treeview),
     enableCommands.getEnableProgramCommand(treeDataProv, treeview),
     enableCommands.getEnableTransactionCommand(treeDataProv, treeview),
     enableCommands.getEnableLocalFileCommand(treeDataProv, treeview),
+    disableCommands.getDisableBundleCommand(treeDataProv, treeview),
     disableCommands.getDisableProgramCommand(treeDataProv, treeview),
     disableCommands.getDisableTransactionCommand(treeDataProv, treeview),
     disableCommands.getDisableLocalFileCommand(treeDataProv, treeview),

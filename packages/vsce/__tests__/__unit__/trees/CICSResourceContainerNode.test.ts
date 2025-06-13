@@ -367,9 +367,9 @@ describe("CICSResourceContainerNode tests", () => {
 
     const children = await containerNode.getChildren();
 
-    expect(containerNode.children.length).toEqual(1);
+    expect(containerNode.children.length).toEqual(2);
     expect(containerNode.viewMore).toBeFalsy();
-    expect(children[0]).toBeInstanceOf(TextTreeItem);
+    expect(children[0]).toBeInstanceOf(CICSResourceContainerNode);
   });
 
   it("should get session for this node", async () => {
