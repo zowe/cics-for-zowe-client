@@ -10,15 +10,23 @@
  */
 
 import { expect } from "chai";
-import { DefaultTreeSection, InputBox, ModalDialog, SideBarView, ViewPanelAction, WebElement, Workbench } from "vscode-extension-tester";
-import { CICS, CREATE_A_CICS_PROFILE, CREATE_A_NEW_TEAM_CONFIGURATION_FILE, EDIT_TEAM_CONFIG_FILE, QUICKPICK_PLACEHOLDER } from "./util/constants";
+import { DefaultTreeSection, EditorView, InputBox, ModalDialog, SideBarView, ViewPanelAction, WebElement, Workbench } from "vscode-extension-tester";
+import {
+  CICS,
+  CONFIG_FILE_NAME,
+  CREATE_A_CICS_PROFILE,
+  CREATE_A_NEW_TEAM_CONFIGURATION_FILE,
+  EDIT_TEAM_CONFIG_FILE,
+  QUICKPICK_PLACEHOLDER,
+} from "./util/constants";
 import { sleep } from "./util/globalMocks";
-import { checkIfZoweConfigJsonFileIsOpened, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
+import { checkIfEditorTabIsOpened, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
 describe("Test Suite For Creating New Global Team Configuration File", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
+  let editorView: EditorView;
   let dialog: ModalDialog;
   let element: WebElement;
 
@@ -56,7 +64,7 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(CREATE_A_CICS_PROFILE);
     expect(plusIcon).exist;
     await plusIcon?.click();
-    cicsTree?.takeScreenshot();
+    cicsTree.takeScreenshot();
   });
 
   it("Should Verify If The Quick Pick Options Are Correct", async () => {
@@ -95,7 +103,15 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     // Push the button by title to create new configuration file
     await dialog.pushButton(`Create New`);
 
-    await checkIfZoweConfigJsonFileIsOpened();
+    await checkIfEditorTabIsOpened(CONFIG_FILE_NAME);
+    cicsTree.takeScreenshot();
+  });
+
+  it("Should Check If CICS Profile Is Present In The Configuration File", async () => {
+    editorView = new EditorView();
+    const editor = await editorView.openEditor(CONFIG_FILE_NAME);
+    const isCicsProfileAvailable = await editor.getText();
+    expect(isCicsProfileAvailable.includes(CICS)).to.be.true;
     cicsTree.takeScreenshot();
   });
 });
