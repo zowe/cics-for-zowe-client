@@ -36,9 +36,20 @@ const ResourceInspector = () => {
       const headerElement1 = document.getElementById("table-header-1");
       const headerHeight1 = headerElement1.offsetHeight;
       const headerElement2 = document.getElementById("table-header-2");
-      headerElement2.style.top = headerHeight1 - 1 + "px"; // Adjust the top position of the second header based on the first header's height
+      // Adjust the top position of the second header based on the first header's height
+      headerElement2.style.top = headerHeight1 - 1 + "px";
     };
     vscode.addScrollerListener(handleScroll);
+
+    const handleResize = () => {
+      const headerElement1 = document.getElementById("table-header-1");
+      const headerElement2 = document.getElementById("table-header-2");
+      // Adjust the width of both table headers on resize with a offset margin to maintain header alingment
+      if (headerElement1.style.width != getComputedStyle(headerElement2).width) {
+        headerElement1.style.width = Number(getComputedStyle(headerElement2).width.replace("px", "")) - 10 + "px";
+      }
+    };
+    vscode.addResizeListener(handleResize);
 
     vscode.postVscMessage({ command: "init" });
 
@@ -52,7 +63,7 @@ const ResourceInspector = () => {
       <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
         <table id="table-1" className="border-collapse">
           <thead id="table-header-1" className="table-header1">
-            <th className="header-cell-1 padding-left-10">
+            <th id="th-1" className="header-cell-1 padding-left-10">
               <div className="div-display-1">{resourceInfo.name}</div>
               <div className="div-display-1 div-display-2">
                 {resourceInfo.resourceName}: {resourceInfo.resource.status || resourceInfo.resource.enablestatus}

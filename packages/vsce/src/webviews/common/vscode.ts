@@ -37,6 +37,10 @@ export function addScrollerListener(listener: (ev: MessageEvent<TransformWebview
   window.addEventListener("scroll", listener);
 }
 
+export function addResizeListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+  window.addEventListener("resize", listener);
+}
+
 export function removeVscMessageListener(
   listener: (
     ev:
