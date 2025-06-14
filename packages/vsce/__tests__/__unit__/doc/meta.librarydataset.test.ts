@@ -38,7 +38,7 @@ describe("Library Dataset Meta", () => {
 
   it("should build criteria", () => {
     const crit = LibraryDatasetMeta.buildCriteria(["a", "b"], parentLibraryMock.attributes);
-    expect(crit).toEqual(`LIBRARY=LIB1 AND (DSNAME=a OR DSNAME=b)`);
+    expect(crit).toEqual(`(LIBRARY='LIB1') AND (DSNAME='a' OR DSNAME='b')`);
   });
   it("should get default criteria", async () => {
     const crit = await LibraryDatasetMeta.getDefaultCriteria(parentLibraryMock.attributes);
@@ -62,7 +62,7 @@ describe("Library Dataset Meta", () => {
   });
   it("should have custom child type", async () => {
     const childTypeDefaultCriteria = await LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
-    expect(childTypeDefaultCriteria).toEqual(`(librarydsn='MY.DSNAME')`);
+    expect(childTypeDefaultCriteria).toEqual(`(LIBRARYDSN='MY.DSNAME')`);
   });
 
   it("should return highlights", () => {
@@ -71,7 +71,7 @@ describe("Library Dataset Meta", () => {
       {
         key: "Library",
         value: "LIB1",
-      }
+      },
     ]);
   });
 
@@ -87,5 +87,10 @@ describe("Library Dataset Meta", () => {
     await LibraryDatasetMeta.appendCriteriaHistory(criteria);
     let history = LibraryDatasetMeta.getCriteriaHistory();
     expect(history).toEqual(["LIB1"]);
+  });
+
+  it("should do children criteria build", () => {
+    const criteriaString = LibraryDatasetMeta.childType?.buildCriteria(["c", "d"], libraryDSMock.attributes);
+    expect(criteriaString).toEqual("(LIBRARYDSN='MY.DSNAME') AND (PROGRAM=c OR PROGRAM=d)");
   });
 });

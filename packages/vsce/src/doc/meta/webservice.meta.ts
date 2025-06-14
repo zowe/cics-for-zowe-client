@@ -26,7 +26,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE);
+    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE, "webService");
   },
 
   getLabel: function (resource: Resource<IWebService>): string {
