@@ -24,11 +24,11 @@ import { ICommandParams } from "../ICommandParams";
  * @param tree - tree which contains the node
  * @param treeview - Tree View of current cics tree
  */
-export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
+export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLibrary", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, LibraryMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS program selected");
+      await window.showErrorMessage("No CICS Library selected");
       return;
     }
 

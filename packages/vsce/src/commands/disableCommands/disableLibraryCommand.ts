@@ -28,7 +28,7 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
   return commands.registerCommand("cics-extension-for-zowe.disableLibrary", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, LibraryMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS program selected");
+      await window.showErrorMessage("No CICS Library selected");
       return;
     }
 
