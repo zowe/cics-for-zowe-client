@@ -12,7 +12,7 @@
 /**
  * Constants to be used by the API
  */
-export const CicsCmciConstants: { [key: string]: any } = {
+export const CicsCmciConstants = {
   /**
      * Specifies the required part of the REST interface URI
      */
@@ -63,6 +63,11 @@ export const CicsCmciConstants: { [key: string]: any } = {
      * Specifies the required part of the REST interface URI to access CSD Group in list definitions
      */
   CICS_CSDGROUP_IN_LIST: "CICSCSDGroupInList",
+
+  /**
+     * Specifies the Result Cache part of the URI
+     */
+  CICS_RESULT_CACHE: "CICSResultCache",
 
   /**
      * ORDERBY parameter
