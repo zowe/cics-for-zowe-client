@@ -12,3 +12,4 @@
 export * from "./CICSSession";
 export * from "./Resource";
 export * from "./ResourceContainer";
+export * from "./SessionHandler"

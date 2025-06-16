@@ -15,6 +15,7 @@ import { CICSSession } from "../resources";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { IFocusRegion } from "./IFocusRegion";
+import { SessionHandler } from "../resources/SessionHandler";
 
 export function setFocusRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setFocusRegion", async () => {
@@ -35,17 +36,7 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
 async function getPlexAndSessionFromProfileChoice(profileName: QuickPickItem) {
   let plex: InfoLoaded[] = [];
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
-  const session = new CICSSession({
-    type: "token",
-    tokenType: "ltpa",
-    storeCookie: true,
-    protocol: profile.profile.protocol,
-    hostname: profile.profile.host,
-    port: Number(profile.profile.port),
-    user: profile.profile.user || "",
-    password: profile.profile.password || "",
-    rejectUnauthorized: profile.profile.rejectUnauthorized,
-  });
+  const session = SessionHandler.getInstance().getSession(profile);
   try {
     plex = await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
