@@ -2769,7 +2769,7 @@ Creative Commons may be contacted at http://creativecommons.org/.
 
 ------
 
-** caniuse-lite; version 1.0.30001722 -- https://github.com/browserslist/caniuse-lite#readme
+** caniuse-lite; version 1.0.30001723 -- https://github.com/browserslist/caniuse-lite#readme
 
 Attribution 4.0 International
 
@@ -4315,6 +4315,18 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
+** electron-to-chromium; version 1.5.167 -- https://github.com/kilian/electron-to-chromium#readme
+Copyright 2018 Kilian Valkhof
+
+Copyright 2018 Kilian Valkhof
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+------
+
 ** npm-registry-fetch; version 17.1.0 -- https://github.com/npm/npm-registry-fetch#readme
 Copyright npm, Inc.
 
@@ -5168,6 +5180,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** mimic-fn; version 4.0.0 -- https://github.com/sindresorhus/mimic-fn#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** mimic-response; version 3.1.0 -- https://github.com/sindresorhus/mimic-response#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** normalize-url; version 8.0.2 -- https://github.com/sindresorhus/normalize-url#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** npm-run-path; version 5.3.0 -- https://github.com/sindresorhus/npm-run-path#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -6801,6 +6815,82 @@ THE SOFTWARE.
 
 ------
 
+** @secretlint/config-creator; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
+Copyright (c) 2020 azu
+** @secretlint/config-loader; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
+Copyright (c) 2020 azu
+** @secretlint/core; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
+(c) 2017 azu
+Copyright (c) 2020 azu
+(c) 2017 59naga https://github.com/59naga/carrack
+** @secretlint/formatter; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
+Copyright (c) 2020 azu
+** @secretlint/node; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
+Copyright (c) 2020 azu
+** @secretlint/profiler; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
+Copyright (c) 2020 azu
+** @secretlint/resolver; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
+Copyright (c) 2020 azu
+** @secretlint/secretlint-rule-preset-recommend; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
+Copyright (c) 2020 azu
+Copyright (c) 2005 Tom Wu
+Copyright (c) 2003-2005 Tom Wu
+Copyright (c) 2005-2009 Tom Wu
+Copyright (c) 2012 Kenji Urushima
+Copyright base-x contributors (c) 2016
+Copyright (c) 2014 Digital Bazaar, Inc.
+Copyright (c) 2019 Digital Bazaar, Inc.
+Copyright 2011-2016 Digital Bazaar, Inc.
+Copyright 2011-2017 Digital Bazaar, Inc.
+Copyright (c) 2008-2013 Digital Bazaar, Inc.
+Copyright (c) 2009-2014 Digital Bazaar, Inc.
+Copyright (c) 2009-2015 Digital Bazaar, Inc.
+Copyright (c) 2010-2012 Digital Bazaar, Inc.
+Copyright (c) 2010-2013 Digital Bazaar, Inc.
+Copyright (c) 2010-2014 Digital Bazaar, Inc.
+Copyright (c) 2010-2015 Digital Bazaar, Inc.
+Copyright (c) 2010-2018 Digital Bazaar, Inc.
+Copyright (c) 2012-2014 Digital Bazaar, Inc.
+Copyright (c) 2012-2015 Digital Bazaar, Inc.
+Copyright (c) 2013-2014 Digital Bazaar, Inc.
+Copyright (c) 2014-2015 Digital Bazaar, Inc.
+Copyright (c) 2017-2019 Digital Bazaar, Inc.
+Copyright 2012 Stefan Siegl <stesie@brokenpipe.de>
+Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
+Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
+Copyright jQuery Foundation and other contributors <https://jquery.org/>
+Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+Copyright (c) Ellis Pritchard, Guardian Unlimited 2003. Contact ellis@nukinetics.com
+** @secretlint/source-creator; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
+Copyright (c) 2020 azu
+** @secretlint/types; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
+Copyright (c) 2020 azu
+** secretlint; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
+Copyright (c) 2020 azu
+
+Copyright (c) 2020 azu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
 ** has-tostringtag; version 1.0.2 -- https://github.com/inspect-js/has-tostringtag#readme
 Copyright (c) 2021 Inspect JS
 
@@ -7124,12 +7214,64 @@ SOFTWARE.
 
 ------
 
+** @secretlint/secretlint-rule-no-dotenv; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
+Copyright (c) 2020 secretlint
+
+Copyright (c) 2020 secretlint
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
 ** @sec-ant/readable-stream; version 0.4.1 -- https://github.com/Sec-ant/readable-stream
 Copyright (c) 2022 Ze-Zheng Wu
 
 MIT License
 
 Copyright (c) 2022 Ze-Zheng Wu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
+** @secretlint/secretlint-formatter-sarif; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
+Copyright (c) 2022 azu
+
+Copyright (c) 2022 azu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -7932,9 +8074,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ** @azure/core-client; version 1.9.4 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-client/
 Copyright (c) Microsoft Corporation
+** @azure/core-rest-pipeline; version 1.21.0 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-rest-pipeline/
+Copyright (c) Microsoft Corporation
 ** @azure/core-util; version 1.12.0 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-util/
 Copyright (c) Microsoft Corporation
+** @azure/identity; version 4.10.1 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
+Copyright (c) Microsoft Corporation
 ** @azure/logger; version 1.2.0 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/core/logger/README.md
+Copyright (c) Microsoft Corporation
+** @typespec/ts-http-runtime; version 0.2.3 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/ts-http-runtime/
 Copyright (c) Microsoft Corporation
 
 Copyright (c) Microsoft Corporation.
@@ -8645,6 +8793,34 @@ SOFTWARE.
 
 ------
 
+** form-data-encoder; version 4.1.0 -- https://github.com/octet-stream/form-data-encoder#readme
+Copyright (c) 2021-present Nick K.
+
+The MIT License (MIT)
+
+Copyright (c) 2021-present Nick K.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
 ** keytar; version 7.9.0 -- http://atom.github.io/node-keytar
 Copyright (c) 2013 GitHub Inc.
 
@@ -8700,6 +8876,8 @@ SOFTWARE.
 
 ------
 
+** @azure/msal-browser; version 4.13.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+Copyright (c) Microsoft Corporation
 ** @azure/msal-common; version 15.7.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
 
@@ -9489,8 +9667,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ** end-of-stream; version 1.4.4 -- https://github.com/mafintosh/end-of-stream
 Copyright (c) 2014 Mathias Buus
-** pump; version 3.0.2 -- https://github.com/mafintosh/pump#readme
-Copyright (c) 2014 Mathias Buus
 ** tar-fs; version 2.1.3 -- https://github.com/mafintosh/tar-fs
 Copyright (c) 2014 Mathias Buus
 ** tar-stream; version 2.2.0 -- https://github.com/mafintosh/tar-stream
@@ -9566,7 +9742,7 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @types/mustache; version 4.2.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mustache
 Copyright (c) Microsoft Corporation
-** @types/node; version 24.0.1 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+** @types/node; version 24.0.2 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
@@ -9802,6 +9978,37 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
+** @isaacs/balanced-match; version 4.0.1 -- https://github.com/isaacs/balanced-match#readme
+Copyright Isaac Z. Schlueter <i@izs.me>
+Copyright Julian Gruber <julian@juliangruber.com>
+
+(MIT)
+
+Original code Copyright Julian Gruber <julian@juliangruber.com>
+
+Port to TypeScript Copyright Isaac Z. Schlueter <i@izs.me>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ------
@@ -11479,6 +11686,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
+** @isaacs/brace-expansion; version 5.0.0 -- 
+Copyright Isaac Z. Schlueter <i@izs.me>
+Copyright Julian Gruber <julian@juliangruber.com>
+
+MIT License
+
+Copyright Julian Gruber <julian@juliangruber.com>
+
+TypeScript port Copyright Isaac Z. Schlueter <i@izs.me>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ------
@@ -13442,6 +13680,104 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
+** @vscode/vsce-sign; version 2.0.6 -- https://github.com/Microsoft/node-vsce-sign
+Copyright (c) Microsoft Corporation
+
+MICROSOFT SOFTWARE LICENSE TERMS
+MICROSOFT VSCE-SIGN
+  
+These license terms are an agreement between Microsoft Corporation (or based on where you live, one of its affiliates) and you. They apply to the software named above. The terms also apply to any Microsoft services or updates for the software, except to the extent those have different terms.
+
+IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+
+1. INSTALLATION AND USE RIGHTS. You may install and use any number of copies of the software only with Microsoft Visual Studio, Visual Studio for Mac, Visual Studio Code, Azure DevOps, Team Foundation Server, Code Spaces and successor Microsoft products and services (collectively, the "Visual Studio Products and Services") to develop and test your applications.
+
+2. TERMS FOR SPECIFIC COMPONENTS. The software may include third party components with separate legal notices or governed by other agreements, as may be described in the notices file(s) accompanying the software.
+
+3. SCOPE OF LICENSE. The software is licensed, not sold. This agreement only gives you some rights to use the software. Microsoft reserves all other rights. Unless applicable law gives you more rights despite this limitation, you may use the software only as expressly permitted in this agreement. In doing so, you must comply with any technical limitations in the software that only allow you to use it in certain ways. You may not
+* work around any technical limitations in the software;
+* reverse engineer, decompile or disassemble the software, or otherwise attempt to derive the source code for the software except, and only to the extent required by third party licensing terms governing the use of certain open source components that may be included in the software;
+* remove, minimize, block or modify any notices of Microsoft or its suppliers in the software; 
+* use the software in any way that is against the law; 
+* share, publish, rent or lease the software; or 
+* provide the software as a stand-alone offering or combined with any of your applications for others to use, or transfer the software or this agreement to any third party.
+
+4. EXPORT RESTRICTIONS. You must comply with all domestic and international export laws and regulations that apply to the software, which include restrictions on destinations, end users, and end use. For further information on export restrictions, visit www.microsoft.com/exporting. 
+
+5. SUPPORT SERVICES. Because this software is "as is," we may not provide support services for it.
+
+6. ENTIRE AGREEMENT. This agreement, and the terms for supplements, updates, Internet-based services and support services that you use, are the entire agreement for the software and support services.
+
+7. APPLICABLE LAW. If you acquired the software in the United States, Washington law applies to interpretation of and claims for breach of this agreement, and the laws of the state where you live apply to all other claims. If you acquired the software in any other country, its laws apply.
+
+8. CONSUMER RIGHTS; REGIONAL VARIATIONS. This agreement describes certain legal rights. You may have other rights, including consumer rights, under the laws of your state or country. Separate and apart from your relationship with Microsoft, you may also have rights with respect to the party from which you acquired the software. This agreement does not change those other rights if the laws of your state or country do not permit it to do so. For example, if you acquired the software in one of the below regions, or mandatory country law applies, then the following provisions apply to you:
+a. Australia. You have statutory guarantees under the Australian Consumer Law and nothing in this agreement is intended to affect those rights.
+
+b. Canada. If you acquired this software in Canada, you may stop receiving updates by turning off the automatic update feature, disconnecting your device from the Internet (if and when you re-connect to the Internet, however, the software will resume checking for and installing updates), or uninstalling the software. The product documentation, if any, may also specify how to turn off updates for your specific device or software.
+
+c. Germany and Austria.
+(i)	Warranty. The properly licensed software will perform substantially as described in any Microsoft materials that accompany the software. However, Microsoft gives no contractual guarantee in relation to the licensed software.
+(ii)	Limitation of Liability. In case of intentional conduct, gross negligence, claims based on the Product Liability Act, as well as, in case of death or personal or physical injury, Microsoft is liable according to the statutory law.
+Subject to the foregoing clause (ii), Microsoft will only be liable for slight negligence if Microsoft is in breach of such material contractual obligations, the fulfillment of which facilitate the due performance of this agreement, the breach of which would endanger the purpose of this agreement and the compliance with which a party may constantly trust in (so-called "cardinal obligations"). In other cases of slight negligence, Microsoft will not be liable for slight negligence.
+
+9. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED "AS-IS." YOU BEAR THE RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR CONDITIONS. TO THE EXTENT PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+10. LIMITATION ON AND EXCLUSION OF DAMAGES. YOU CAN RECOVER FROM MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS, SPECIAL, INDIRECT OR INCIDENTAL DAMAGES.
+This limitation applies to (a) anything related to the software, services, content (including code) on third party Internet sites, or third party applications; and (b) claims for breach of contract, breach of warranty, guarantee or condition, strict liability, negligence, or other tort to the extent permitted by applicable law.
+It also applies even if Microsoft knew or should have known about the possibility of the damages. The above limitation or exclusion may not apply to you because your country may not allow the exclusion or limitation of incidental, consequential or other damages.
+
+
+------
+
+** @vscode/vsce-sign-linux-x64; version 2.0.5 -- https://github.com/Microsoft/node-vscode-sign
+(c) E Pffff
+Copyright 1995-2024 Mark Adler
+Copyright 1995-2024 Jean-loup Gailly and Mark Adler Qkkbal
+
+MICROSOFT SOFTWARE LICENSE TERMS
+MICROSOFT VSCE-SIGN
+  
+These license terms are an agreement between Microsoft Corporation (or based on where you live, one of its affiliates) and you. They apply to the software named above. The terms also apply to any Microsoft services or updates for the software, except to the extent those have different terms.
+
+IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+
+1. INSTALLATION AND USE RIGHTS. You may install and use any number of copies of the software only with Microsoft Visual Studio, Visual Studio for Mac, Visual Studio Code, Azure DevOps, Team Foundation Server, Code Spaces and successor Microsoft products and services (collectively, the "Visual Studio Products and Services") to develop and test your applications.
+
+2. TERMS FOR SPECIFIC COMPONENTS. The software may include third party components with separate legal notices or governed by other agreements, as may be described in the notices file(s) accompanying the software.
+
+3. SCOPE OF LICENSE. The software is licensed, not sold. This agreement only gives you some rights to use the software. Microsoft reserves all other rights. Unless applicable law gives you more rights despite this limitation, you may use the software only as expressly permitted in this agreement. In doing so, you must comply with any technical limitations in the software that only allow you to use it in certain ways. You may not
+* work around any technical limitations in the software;
+* reverse engineer, decompile or disassemble the software, or otherwise attempt to derive the source code for the software except, and only to the extent required by third party licensing terms governing the use of certain open source components that may be included in the software;
+* remove, minimize, block or modify any notices of Microsoft or its suppliers in the software; 
+* use the software in any way that is against the law; 
+* share, publish, rent or lease the software; or 
+* provide the software as a stand-alone offering or combined with any of your applications for others to use, or transfer the software or this agreement to any third party.
+
+4. EXPORT RESTRICTIONS. You must comply with all domestic and international export laws and regulations that apply to the software, which include restrictions on destinations, end users, and end use. For further information on export restrictions, visit www.microsoft.com/exporting. 
+
+5. SUPPORT SERVICES. Because this software is "as is," we may not provide support services for it.
+
+6. ENTIRE AGREEMENT. This agreement, and the terms for supplements, updates, Internet-based services and support services that you use, are the entire agreement for the software and support services.
+
+7. APPLICABLE LAW. If you acquired the software in the United States, Washington law applies to interpretation of and claims for breach of this agreement, and the laws of the state where you live apply to all other claims. If you acquired the software in any other country, its laws apply.
+
+8. CONSUMER RIGHTS; REGIONAL VARIATIONS. This agreement describes certain legal rights. You may have other rights, including consumer rights, under the laws of your state or country. Separate and apart from your relationship with Microsoft, you may also have rights with respect to the party from which you acquired the software. This agreement does not change those other rights if the laws of your state or country do not permit it to do so. For example, if you acquired the software in one of the below regions, or mandatory country law applies, then the following provisions apply to you:
+a. Australia. You have statutory guarantees under the Australian Consumer Law and nothing in this agreement is intended to affect those rights.
+
+b. Canada. If you acquired this software in Canada, you may stop receiving updates by turning off the automatic update feature, disconnecting your device from the Internet (if and when you re-connect to the Internet, however, the software will resume checking for and installing updates), or uninstalling the software. The product documentation, if any, may also specify how to turn off updates for your specific device or software.
+
+c. Germany and Austria.
+(i)	Warranty. The properly licensed software will perform substantially as described in any Microsoft materials that accompany the software. However, Microsoft gives no contractual guarantee in relation to the licensed software.
+(ii)	Limitation of Liability. In case of intentional conduct, gross negligence, claims based on the Product Liability Act, as well as, in case of death or personal or physical injury, Microsoft is liable according to the statutory law.
+Subject to the foregoing clause (ii), Microsoft will only be liable for slight negligence if Microsoft is in breach of such material contractual obligations, the fulfillment of which facilitate the due performance of this agreement, the breach of which would endanger the purpose of this agreement and the compliance with which a party may constantly trust in (so-called "cardinal obligations"). In other cases of slight negligence, Microsoft will not be liable for slight negligence.
+
+9. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED "AS-IS." YOU BEAR THE RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR CONDITIONS. TO THE EXTENT PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+10. LIMITATION ON AND EXCLUSION OF DAMAGES. YOU CAN RECOVER FROM MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS, SPECIAL, INDIRECT OR INCIDENTAL DAMAGES.
+This limitation applies to (a) anything related to the software, services, content (including code) on third party Internet sites, or third party applications; and (b) claims for breach of contract, breach of warranty, guarantee or condition, strict liability, negligence, or other tort to the extent permitted by applicable law.
+It also applies even if Microsoft knew or should have known about the possibility of the damages. The above limitation or exclusion may not apply to you because your country may not allow the exclusion or limitation of incidental, consequential or other damages.
 
 
 ------
