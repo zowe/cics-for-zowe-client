@@ -162,3 +162,8 @@ export async function getResourceInRegion(
     await regionResources[resourceIndex].getLabel()
   );
 }
+
+export async function expectTreeItemIsSelected(treeItem: TreeItem | undefined) {
+  const isSelected = await treeItem?.getAttribute("aria-selected");
+  expect(isSelected).to.equal("true");
+}

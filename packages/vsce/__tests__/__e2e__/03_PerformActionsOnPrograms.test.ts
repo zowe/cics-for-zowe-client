@@ -22,6 +22,7 @@ import {
 import {
   clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
+  expectTreeItemIsSelected,
   getCicsSection,
   getPlexChildIndex,
   getPlexChildren,
@@ -116,6 +117,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     it("Should Disable The Program C128N", async () => {
       // Navigate to the C128N program in the tree
       await sendArrowDownKeyAndPressEnter(5);
+      await expectTreeItemIsSelected(C128NProgram);
 
       // Run the disable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -135,6 +137,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
     it("Should Enable The Program C128N", async () => {
       await sendArrowDownKeyAndPressEnter(5);
+      await expectTreeItemIsSelected(C128NProgram);
 
       // Run the enable command from the command palette
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
@@ -155,18 +158,19 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
   });
 
   describe("Test Suite For Performing New Copy Action On Program DSNCUEXT In Region IYCWENK1 In Plex CICSEX61", () => {
-    let DSNCUEXTprogram: TreeItem | undefined;
+    let DSNCUEXTProgram: TreeItem | undefined;
 
     it("Should Check If The Program DSNCUEXT Is Present In Region IYCWENK1", async () => {
-      DSNCUEXTprogram = await findProgramByLabel(programs, DSNCUEXT);
-      expect(DSNCUEXTprogram).not.undefined;
-      expect(await DSNCUEXTprogram?.getLabel()).contains(DSNCUEXT);
+      DSNCUEXTProgram = await findProgramByLabel(programs, DSNCUEXT);
+      expect(DSNCUEXTProgram).not.undefined;
+      expect(await DSNCUEXTProgram?.getLabel()).contains(DSNCUEXT);
     });
 
     it("Should Perform New Copy Action On The Program DSNCUEXT", async () => {
       await sendArrowDownKeyAndPressEnter(6);
+      await expectTreeItemIsSelected(DSNCUEXTProgram);
 
-      const newcopyIcon = await DSNCUEXTprogram?.getActionButton("New Copy");
+      const newcopyIcon = await DSNCUEXTProgram?.getActionButton("New Copy");
       expect(newcopyIcon).not.undefined;
       await newcopyIcon?.click();
 
@@ -178,7 +182,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
         await regionK1Resources[programsResourceIndex].getLabel()
       );
 
-      expect(await DSNCUEXTprogram?.getLabel()).contains(DSNCUEXT + " (New copy count: 1)");
+      expect(await DSNCUEXTProgram?.getLabel()).contains(DSNCUEXT + " (New copy count: 1)");
       cicsTree.takeScreenshot();
     });
   });
@@ -195,6 +199,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
 
     it("Should Show Attributes Of The Program DSNTIAC", async () => {
       await sendArrowDownKeyAndPressEnter(8);
+      await expectTreeItemIsSelected(DSNTIACProgram);
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
 
       editorView = new EditorView();
