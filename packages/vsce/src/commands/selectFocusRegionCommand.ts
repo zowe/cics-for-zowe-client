@@ -113,7 +113,7 @@ async function updateFocusRegion(quickPick: QuickPick<QuickPickItem>, profileNam
   if (isPlex) {
     //if plex is selected, we should show the regions from the plex
     cicsPlex = choice.label;
-    let regionInfo = await ProfileManagement.getRegionInfoInPlex(null, cicsPlex, session);
+    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlex, session);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
     choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
     quickPick.hide();
