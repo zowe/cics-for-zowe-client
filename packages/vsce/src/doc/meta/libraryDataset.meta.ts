@@ -20,7 +20,10 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
-  return Promise.resolve(`(librarydsn='${parentResource.dsname}')`);
+  return Promise.resolve(`(LIBRARYDSN='${parentResource.dsname}')`);
+};
+customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryDataset) => {
+  return `(LIBRARYDSN='${parentResource.dsname}') AND (${criteria.map((n) => `PROGRAM=${n}`).join(" OR ")})`;
 };
 
 export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
@@ -28,7 +31,7 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   humanReadableName: "Library Datasets",
 
   buildCriteria(criteria: string[], parentResource: ILibrary) {
-    return `LIBRARY=${parentResource.name} AND (${criteria.map((n) => `DSNAME=${n}`).join(" OR ")})`;
+    return `(LIBRARY='${parentResource.name}') AND (${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;
   },
 
   getDefaultCriteria: function (parentResource: ILibrary) {
