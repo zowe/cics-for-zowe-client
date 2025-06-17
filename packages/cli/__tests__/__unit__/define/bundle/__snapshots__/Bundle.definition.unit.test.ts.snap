@@ -9,7 +9,7 @@ exports[`cics define bundle should not have changed 1`] = `
   "examples": [
     {
       "description": "Define a bundle named BND123 to the region name MYREGION in the CSD group MYGRP",
-      "options": "BND123 MYGRP /user/myname/bundle1/ --region-name MYREGION",
+      "options": "BND123 /user/myname/bundle1/ MYGRP --region-name MYREGION",
     },
   ],
   "name": "bundle",
