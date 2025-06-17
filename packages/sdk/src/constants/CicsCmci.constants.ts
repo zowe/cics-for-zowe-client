@@ -85,6 +85,11 @@ export const CicsCmciConstants = {
   NO_DISCARD: "NODISCARD",
 
   /**
+     * OVERRIDEWARNINGCOUNT parameter
+     */
+  OVERRIDE_WARNING_COUNT: "OVERRIDEWARNINGCOUNT",
+
+  /**
      * CRITERIA parameter
      */
   CRITERIA: "CRITERIA",

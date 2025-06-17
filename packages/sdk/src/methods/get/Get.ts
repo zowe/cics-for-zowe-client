@@ -43,6 +43,20 @@ export async function getResource(session: AbstractSession, parms: IResourceParm
 
   if (parms.parameter != null) {
     cmciResource = cmciResource + delimiter + "PARAMETER=" + encodeURIComponent(parms.parameter);
+    delimiter = "&";
   }
+
+  if (parms.queryParams?.nodiscard) {
+    cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
+    delimiter = "&";
+  }
+  if (parms.queryParams?.summonly) {
+    cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
+    delimiter = "&";
+  }
+  if (parms.queryParams?.overrideWarningCount) {
+    cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
+  }
+
   return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, []);
 }
