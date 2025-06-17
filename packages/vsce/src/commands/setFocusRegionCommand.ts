@@ -9,22 +9,15 @@
  *
  */
 
-import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, l10n, QuickPick, QuickPickItem } from "vscode";
 import { CICSSession } from "../resources";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { IFocusRegion } from "./IFocusRegion";
 
-export interface IFocusRegion {
-  profile: IProfileLoaded;
-  cicsPlex?: string;
-  session: CICSSession;
-  focusSelectedRegion: string;
-}
-
-export function selectFocusRegion() {
-  return commands.registerCommand("cics-extension-for-zowe.selectFocusRegion", async () => {
+export function setFocusRegionCommand() {
+  return commands.registerCommand("cics-extension-for-zowe.setFocusRegion", async () => {
     await getFocusRegion();
   });
 }
@@ -35,7 +28,7 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
 
   const { profile, cicsPlex, session, focusSelectedRegion }: IFocusRegion = await updateFocusRegion(quickPick, profileNames);
   //To verify if the user has selected a region or plex
-  Gui.showMessage(l10n.t("Focus region selected: {0} and CICSplex: {1}", focusSelectedRegion, cicsPlex || "NA"));
+  Gui.showMessage(l10n.t("Focus Region selected: {0} and CICSplex: {1}", focusSelectedRegion, cicsPlex || "NA"));
   return { profile, cicsPlex, session, focusSelectedRegion } as IFocusRegion;
 }
 
@@ -106,7 +99,7 @@ async function updateFocusRegion(quickPick: QuickPick<QuickPickItem>, profileNam
       choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       isPlex = true;
     } else {
-      Gui.showMessage(l10n.t("No focus regions or CICSplexes found in the selected profile."));
+      Gui.showMessage(l10n.t("No Focus Regions or CICSplexes found in the selected profile."));
     }
     quickPick.hide();
   }

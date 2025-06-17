@@ -64,7 +64,7 @@
     },
     "commands": [
       {
-        "command": "cics-extension-for-zowe.selectFocusRegion",
+        "command": "cics-extension-for-zowe.setFocusRegion",
         "title": "Set Focus CICS Region",
         "category": "IBM CICS for Zowe Explorer"
       },
@@ -247,7 +247,7 @@
           "when": "never"
         },
         {
-           "command": "cics-extension-for-zowe.selectFocusRegion",
+           "command": "cics-extension-for-zowe.setFocusRegion",
            "when": "config.zowe.cics.resourceInspector"
         }
       ],
