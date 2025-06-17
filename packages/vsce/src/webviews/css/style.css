@@ -3,6 +3,7 @@
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
+  max-width: 75rem;
 }
 
 .table-header1 {
@@ -11,6 +12,7 @@
   padding-left: 0.625rem;
   left: 2.25rem;
   right: 2.25rem;
+  max-width: 74.375rem;
 }
 
 .padding-top-20 {
@@ -24,6 +26,8 @@
 .line {
   line-height: 0.5;
   font-size: small;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .header-cell-1 {
@@ -122,9 +126,7 @@ body.vscode-light thead {
   text-align: left;
   color: var(--vscode-foreground);
 }
-body.vscode-light th {
-  width: 73.75rem;
-}
+
 body.vscode-light tr:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -136,9 +138,7 @@ body.vscode-dark thead {
   text-align: left;
   color: var(--vscode-foreground);
 }
-body.vscode-dark th {
-  width: 73.75rem;
-}
+
 body.vscode-dark tr:nth-child(even) {
   background-color: rgba(204, 204, 204, 0.04);
 }
