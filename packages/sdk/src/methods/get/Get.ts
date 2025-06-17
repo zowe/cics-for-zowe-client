@@ -26,15 +26,15 @@ import { ICMCIApiResponse, IResourceParms } from "../../doc";
  */
 export async function getResource(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Resource name", "CICS resource name is required");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   let delimiter = "?"; // initial delimiter
 
   Logger.getAppLogger().debug("Attempting to get resource(s) with the following parameters:\n%s", JSON.stringify(parms));
 
   const cicsPlex = parms.cicsPlex == null ? "" : parms.cicsPlex + "/";
+  const regionName = parms.regionName ?? "";
   let cmciResource = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" +
-        parms.name + "/" + cicsPlex + parms.regionName;
+    parms.name + "/" + cicsPlex + regionName;
 
   if (parms.criteria != null) {
     cmciResource = cmciResource + delimiter + "CRITERIA=(" + encodeURIComponent(parms.criteria) + ")";
@@ -43,6 +43,20 @@ export async function getResource(session: AbstractSession, parms: IResourceParm
 
   if (parms.parameter != null) {
     cmciResource = cmciResource + delimiter + "PARAMETER=" + encodeURIComponent(parms.parameter);
+    delimiter = "&";
   }
+
+  if (parms.queryParams?.nodiscard) {
+    cmciResource += `${delimiter}${CicsCmciConstants.NO_DISCARD}`;
+    delimiter = "&";
+  }
+  if (parms.queryParams?.summonly) {
+    cmciResource += `${delimiter}${CicsCmciConstants.SUMM_ONLY}`;
+    delimiter = "&";
+  }
+  if (parms.queryParams?.overrideWarningCount) {
+    cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
+  }
+
   return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, []);
 }
