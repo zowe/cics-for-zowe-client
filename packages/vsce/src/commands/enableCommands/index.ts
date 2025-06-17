@@ -12,3 +12,5 @@
 export * from "./enableLocalFileCommand";
 export * from "./enableProgramCommand";
 export * from "./enableTransactionCommand";
+export * from "./enableLibraryCommand";
+

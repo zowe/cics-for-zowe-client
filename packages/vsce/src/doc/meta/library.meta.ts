@@ -26,7 +26,7 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
+  async getDefaultCriteria() {
     return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
   },
 
@@ -35,7 +35,7 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   },
 
   getContext: function (resource: Resource<ILibrary>): string {
-    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
+    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.toUpperCase()}.${resource.attributes.name}`;
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {
