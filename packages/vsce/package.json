@@ -245,6 +245,10 @@
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
           "when": "never"
+        },
+        {
+           "command": "cics-extension-for-zowe.selectFocusRegion",
+           "when": "config.zowe.cics.resourceInspector"
         }
       ],
       "view/title": [

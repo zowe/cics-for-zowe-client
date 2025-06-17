@@ -35,7 +35,7 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
 
   const { profile, cicsPlex, session, focusSelectedRegion }: IFocusRegion = await updateFocusRegion(quickPick, profileNames);
   //To verify if the user has selected a region or plex
-  Gui.showMessage(l10n.t("Focus region selected: {0} and plex: {1}", focusSelectedRegion, cicsPlex || "NA"));
+  Gui.showMessage(l10n.t("Focus region selected: {0} and CICSplex: {1}", focusSelectedRegion, cicsPlex || "NA"));
   return { profile, cicsPlex, session, focusSelectedRegion } as IFocusRegion;
 }
 
@@ -56,7 +56,7 @@ async function getPlexAndSessionFromProfileChoice(profileName: QuickPickItem) {
   try {
     plex = await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
-    await Gui.errorMessage(l10n.t("Error fetching plex information for profile with reason {0}", error.message));
+    await Gui.errorMessage(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
   }
   return { plex, session, profile };
 }
@@ -103,10 +103,10 @@ async function updateFocusRegion(quickPick: QuickPick<QuickPickItem>, profileNam
       choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...region.map((name) => new FilterDescriptor(name[0]))]);
       focusSelectedRegion = choice.label;
     } else if (plexNames.length > 0) {
-      choice = await getChoiceFromQuickPick(quickPick, "Select Plex", [...plexNames.map((name) => ({ label: name }))]);
+      choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       isPlex = true;
     } else {
-      Gui.showMessage(l10n.t("No focus regions or plexes found in the selected profile."));
+      Gui.showMessage(l10n.t("No focus regions or CICSplexes found in the selected profile."));
     }
     quickPick.hide();
   }
