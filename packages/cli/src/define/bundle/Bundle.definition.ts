@@ -58,7 +58,7 @@ export const BundleDefinition: ICommandDefinition = {
   examples: [
     {
       description: strings.EXAMPLES.EX1,
-      options: "BND123 MYGRP /user/myname/bundle1/ --region-name MYREGION",
+      options: "BND123 /user/myname/bundle1/ MYGRP --region-name MYREGION",
     },
   ],
 };
