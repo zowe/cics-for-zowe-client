@@ -101,7 +101,51 @@
   border-collapse: collapse;
 }
 
+/* Combined common table styling for both themes */
 body.vscode-light table,
+body.vscode-light th,
+body.vscode-light tr,
+body.vscode-light td,
+body.vscode-dark table,
+body.vscode-dark th,
+body.vscode-dark tr,
+body.vscode-dark td {
+  padding: 0.5rem;
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-foreground);
+}
+
+/* Light theme specific */
+body.vscode-light th,
+body.vscode-light thead {
+  background-color: #f0f0f0;
+  text-align: left;
+  color: var(--vscode-foreground);
+}
+body.vscode-light th {
+  width: 73.75rem;
+}
+body.vscode-light tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Dark theme specific */
+body.vscode-dark th,
+body.vscode-dark thead {
+  background-color: rgb(40,40,40);
+  text-align: left;
+  color: var(--vscode-foreground);
+}
+body.vscode-dark th {
+  width: 73.75rem;
+}
+body.vscode-dark tr:nth-child(even) {
+  background-color: rgba(204, 204, 204, 0.04);
+}
+body.vscode-dark input {
+  background-color: rgb(60, 60, 60);
+}
+
 body.vscode-light th,
 body.vscode-light tr,
 body.vscode-light td {
