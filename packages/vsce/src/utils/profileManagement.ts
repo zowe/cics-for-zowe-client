@@ -9,11 +9,11 @@
  *
  */
 
-import { ZoweExplorerApi, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { window } from "vscode";
 import cicsProfileMeta from "./profileDefinition";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
-import { getResource } from "@zowe/cics-for-zowe-sdk";
+import { getCache, getResource } from "@zowe/cics-for-zowe-sdk";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -41,7 +41,7 @@ export class ProfileManagement {
   }
 
   public static async profilesCacheRefresh() {
-    const apiRegiser: ZoweExplorerApi.IApiRegisterClient = ProfileManagement.getExplorerApis();
+    const apiRegiser = ProfileManagement.getExplorerApis();
     await ProfileManagement.getProfilesCache().refresh(apiRegiser);
   }
 
@@ -80,121 +80,124 @@ export class ProfileManagement {
 
 
   /**
-   * Populates the info
-   * @param profile
-   * @returns Array of type InfoLoaded
-   */
+     * Populates the info
+     * @param profile
+     * @returns Array of type InfoLoaded
+     */
   public static async getPlexInfo(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
     const infoLoaded: InfoLoaded[] = [];
     const session = ProfileManagement.getSessionFromProfile(profile.profile);
 
     if (profile.profile.cicsPlex) {
-      const managedRegionsJson = await getResource(session, {
-        name: "CICSManagedRegion",
-        cicsPlex: profile.profile.cicsPlex,
-        regionName: profile.profile.regionName,
-      });
-      const managedRegions = managedRegionsJson.response.records?.cicsmanagedregion;
-
       if (profile.profile.regionName) {
         /**
          * Both Supplied, no searching required - Only load 1 region
          */
-        const regionGroupJson = await getResource(session, {
-          name: "CICSRegionGroup",
+        let isGroup = false;
+        try {
+          const regionGroupJson = await getResource(session, {
+            name: "CICSRegionGroup",
+            cicsPlex: profile.profile.cicsPlex,
+            regionName: profile.profile.regionName,
+            criteria: "GROUP=" + profile.profile.regionName,
+          });
+          isGroup = regionGroupJson.response.resultsummary.recordcount !== "0";
+        } catch (error) {
+          console.log(error);
+        }
+        const managedRegionsJson = await getResource(session, {
+          name: "CICSManagedRegion",
           cicsPlex: profile.profile.cicsPlex,
           regionName: profile.profile.regionName,
-          criteria: "GROUP=" + profile.profile.regionName,
         });
+        const allRegions = managedRegionsJson.response.records.cicsmanagedregion;
 
-        if (regionGroupJson.response.resultsummary?._attributes?.recordcount !== "0") {
-          // CICSGroup
-          const allRegions = managedRegions?.map((item: { _attributes: any }) => item._attributes);
-          if (allRegions != null) {
-            infoLoaded.push({
-              plexname: profile.profile.cicsPlex,
-              regions: [allRegions],
-              group: true,
-            });
-          }
-        } else if (managedRegions?._attributes != null) {
-          // Region
+        if (allRegions) {
           infoLoaded.push({
             plexname: profile.profile.cicsPlex,
-            regions: [managedRegions._attributes],
-            group: false,
+            regions: [allRegions],
+            group: isGroup,
           });
-        } else {
-          window.showErrorMessage(
-            `Cannot find region ${profile.profile.regionName} in plex ${profile.profile.cicsPlex} for profile ${profile.name}`
-          );
-
-          throw new Error("Region Not Found");
         }
-      } else if (managedRegions != null) {
-        const allRegions = managedRegions.map((item: { _attributes: any }) => item._attributes);
+
+      } else {
+        /**
+         * Plex given - must search for regions
+         */
+        const managedRegionsJson = await getResource(session, {
+          name: "CICSManagedRegion",
+          cicsPlex: profile.profile.cicsPlex,
+        });
+        const allRegions = managedRegionsJson.response.records.cicsmanagedregion;
         infoLoaded.push({
           plexname: profile.profile.cicsPlex,
           regions: allRegions,
           group: false,
         });
-      } else {
-        window.showErrorMessage(`Cannot find plex ${profile.profile.cicsPlex} for profile ${profile.name}`);
 
-        throw new Error("Plex Not Found");
-      }
-    } else if (profile.profile.regionName) {
-      /**
-       * Region but no plex - Single region system, use that
-       */
-      const singleRegionJson = await getResource(session, {
-        name: "CICSRegion",
-        regionName: profile.profile.regionName,
-      })
-      if (singleRegionJson.response.records?.cicsregion?._attributes != null) {
-        infoLoaded.push({
-          plexname: null,
-          regions: [singleRegionJson.response.records?.cicsregion?._attributes],
-          group: false,
-        });
-      } else {
-        window.showErrorMessage(`Cannot find region ${profile.profile.regionName} for profile ${profile.name}`);
-
-        throw new Error("Region Not Found");
       }
     } else {
-      /**
-       * Nothing given - Test if plex and find all info
-       */
-      try {
-        // Plex
-        const cicsplexJson = await getResource(session, {
-          name: "CICSCICSPlex",
+      if (profile.profile.regionName) {
+        /**
+         * Region but no plex - Single region system, use that
+         */
+        const singleRegionJson = await getResource(session, {
+          name: "CICSRegion",
+          regionName: profile.profile.regionName,
         });
-        if (cicsplexJson.response.records?.cicscicsplex != null) {
-          const returnedPlexes = cicsplexJson.response.records?.cicscicsplex.map((item: { _attributes: any }) => item._attributes);
-          const uniqueReturnedPlexes = returnedPlexes.filter(
-            (plex: any, index: number) => index === returnedPlexes.findIndex((found: any) => found.plexname === plex.plexname)
-          );
-          for (const plex of uniqueReturnedPlexes) {
-            try {
+        if (singleRegionJson.response.records.cicsregion) {
+          infoLoaded.push({
+            plexname: null,
+            regions: [singleRegionJson.response.records?.cicsregion],
+            group: false,
+          });
+        } else {
+          window.showErrorMessage(`Cannot find region ${profile.profile.regionName} for profile ${profile.name}`);
+          throw new Error("Region Not Found");
+        }
+      } else {
+        /**
+         * Nothing given - Test if plex and find all info
+         */
+        try {
+          // Plex
+          const cicsplexJson = await getResource(session, {
+            name: "CICSCICSPlex",
+          });
+          if (cicsplexJson.response.records?.cicscicsplex) {
+            const returnedPlexes = cicsplexJson.response.records.cicscicsplex;
+            const uniqueReturnedPlexes = returnedPlexes.filter(
+              (plex: any, index: number) => index === returnedPlexes.findIndex((found: any) => found.plexname === plex.plexname)
+            );
+            for (const plex of uniqueReturnedPlexes) {
               // Regions are empty because we only load Plex when session is expanded
               infoLoaded.push({
                 plexname: plex.plexname,
                 regions: [],
                 group: false,
               });
-            } catch (error) {
-              console.log(error);
+            }
+          } else {
+            // Not Plex
+            const singleRegionJson = await getResource(session, {
+              name: "CICSRegion",
+            });
+            const returnedRegion = singleRegionJson.response.records?.cicsregion;
+            if (returnedRegion) {
+              infoLoaded.push({
+                plexname: null,
+                regions: [returnedRegion],
+                group: false,
+              });
             }
           }
-        } else {
-          // Not Plex
+        } catch (error) {
+          // Not Plex - Could be error
           const singleRegionJson = await getResource(session, {
             name: "CICSRegion",
-          })
-          const returnedRegion = singleRegionJson.response.records?.cicsregion?._attributes;
-          if (returnedRegion != null) {
+          });
+          const returnedRegion = singleRegionJson.response.records?.cicsregion;
+          if (returnedRegion) {
             infoLoaded.push({
               plexname: null,
               regions: [returnedRegion],
@@ -202,37 +205,24 @@ export class ProfileManagement {
             });
           }
         }
-      } catch (error) {
-        // Not Plex - Could be error
-        const singleRegionJson = await getResource(session, {
-          name: "CICSRegion",
-        })
-        const returnedRegion = singleRegionJson.response.records?.cicsregion?._attributes;
-        if (returnedRegion != null) {
-          infoLoaded.push({
-            plexname: null,
-            regions: [returnedRegion],
-            group: false,
-          });
-        }
       }
-    }
 
+    }
     return infoLoaded;
   }
 
   /**
-   * Return all the regions in a given plex
-   */
+     * Return all the regions in a given plex
+     */
   public static async getRegionInfoInPlex(plex: CICSPlexTree) {
     try {
-      const session = ProfileManagement.getSessionFromProfile(plex.getProfile());
+      const session = ProfileManagement.getSessionFromProfile(plex.getProfile().profile);
       const managedRegionsJson = await getResource(session, {
         name: "CICSManagedRegion",
         cicsPlex: plex.getPlexName(),
-      })
+      });
       if (managedRegionsJson.response.records?.cicsmanagedregion != null) {
-        const returnedRegions = managedRegionsJson.response.records.cicsmanagedregion.map((item: { _attributes: any }) => item._attributes);
+        const returnedRegions = managedRegionsJson.response.records.cicsmanagedregion;
         return returnedRegions;
       }
     } catch (error) {
@@ -250,10 +240,15 @@ export class ProfileManagement {
         cicsPlex: plexName,
         regionName: group,
         criteria: criteria,
-      })
+        queryParams: {
+          nodiscard: true,
+          summonly: true,
+          overrideWarningCount: true,
+        }
+      });
 
       if (allProgramsResponse.response?.resultsummary) {
-        const resultsSummary = allProgramsResponse.response.resultsummary._attributes;
+        const resultsSummary = allProgramsResponse.response.resultsummary;
         return { cacheToken: resultsSummary.cachetoken, recordCount: resultsSummary.recordcount };
       }
     } catch (error) {
@@ -265,17 +260,18 @@ export class ProfileManagement {
   public static async getCachedResources(profile: imperative.IProfileLoaded, cacheToken: string, resourceName: string, start = 1, increment = 800) {
     try {
       const session = ProfileManagement.getSessionFromProfile(profile.profile);
-      const allItemsResponse = await getResource(session, {
-        name: "CICSResultCache",
-        cicsPlex: cacheToken,
-        regionName: `${start}/${increment}`,
+      const allItemsResponse = await getCache(session, {
+        cacheToken,
+        startIndex: start,
+        count: increment,
+        nodiscard: true,
+        overrideWarningCount: true,
       });
 
       const recordAttributes = allItemsResponse.response?.records?.[resourceName.toLowerCase()];
       if (recordAttributes != null) {
         const recordAttributesArr = Array.isArray(recordAttributes) ? recordAttributes : [recordAttributes];
-        const returnedResources = recordAttributesArr.map((item: { _attributes: any }) => item._attributes);
-        return returnedResources;
+        return recordAttributesArr;
       }
     } catch (error) {
       console.log(error);
