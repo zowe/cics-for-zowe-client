@@ -9,7 +9,7 @@
  *
  */
 
-import { WebviewViewProvider, Uri, TreeView, WebviewView } from "vscode";
+import { WebviewViewProvider, Uri, WebviewView } from "vscode";
 import { ResourceInspectorView } from "./ResourceInspectorView";
 import { IContainedResource, IResource } from "../doc";
 
@@ -20,13 +20,12 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   private static refreshed = false;
 
   constructor(
-    private readonly extensionUri: Uri,
-    private readonly treeview: TreeView<any>
+    private readonly extensionUri: Uri
   ) { }
 
-  public static getInstance(extensionUri: Uri, treeview: TreeView<any>): ResourceInspectorViewProvider {
+  public static getInstance(extensionUri: Uri): ResourceInspectorViewProvider {
     if (!this.instance) {
-      this.instance = new ResourceInspectorViewProvider(extensionUri, treeview);
+      this.instance = new ResourceInspectorViewProvider(extensionUri);
     }
 
     return this.instance;
