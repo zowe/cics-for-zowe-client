@@ -23,7 +23,7 @@ export function getInspectResourceCommand(context: ExtensionContext) {
 
     if (focusRegion) {
       const type = getResourceType(resourceType);
-      let resourceContainer = new ResourceContainer<IResource>(type);
+      const resourceContainer = new ResourceContainer<IResource>(type);
       resourceContainer.setCriteria([resourceName]);
       const resources:[Resource<IResource>[], boolean] = await resourceContainer.loadResources(
         focusRegion.session,
