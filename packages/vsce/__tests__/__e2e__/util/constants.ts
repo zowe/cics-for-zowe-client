@@ -27,10 +27,8 @@ export const WIREMOCK_PROFILE_NAME = "wiremock_server";
 export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
 
-// Program labels
-export const PLIB1DS1 = "PLIB1DS1";
-export const PLIB1DS2 = "PLIB1DS2";
-export const PLIB2NONE = "PLIB2NONE";
+// Region labels
+export const PROGLIB = "PROGLIB";
 
 // Library labels
 export const LIB1 = "LIB1";
@@ -52,3 +50,6 @@ export const REGIONS_LOADED = REGIONS + REGION_COUNT;
 export const C128N = "C128N";
 export const DSNCUEXT = "DSNCUEXT";
 export const DSNTIAC = "DSNTIAC";
+export const PLIB1DS1 = "PLIB1DS1";
+export const PLIB1DS2 = "PLIB1DS2";
+export const PLIB2NONE = "PLIB2NONE";

@@ -26,6 +26,7 @@ export interface IResourceMeta<T extends IResource> {
 
   getCriteriaHistory(): string[];
   appendCriteriaHistory(criteria: string): Promise<void>;
-
+  getLibrary?(resource: Resource<T>): string;
+  getLibraryDsn?(resource: Resource<T>): string;
   childType?: IResourceMeta<IResource>;
 }

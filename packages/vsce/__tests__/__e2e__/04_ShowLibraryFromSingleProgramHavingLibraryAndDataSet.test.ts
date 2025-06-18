@@ -11,14 +11,14 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem, VSBrowser } from "vscode-extension-tester";
-import { CICSEX61, DS11, LIB1, LIBRARIES_LIB1_LABEL, PIPELINES, PLIB1DS1, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { runCommandFromCommandPalette, sleep } from "./util/globalMocks";
+import { CICSEX61, DS11, LIB1, LIBRARIES_LIB1_LABEL, PIPELINES, PLIB1DS1, PROGLIB, PROGRAMS, WIREMOCK_PROFILE_NAME } from "./util/constants";
+import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   closeAllEditorsTabs,
   getCicsSection,
   getLabelAfterArrowDown,
   openZoweExplorer,
-  setupCICSTreeProgramParams,
+  setupCICSTreeSelectedResourceParams,
   verifyProgramAttributes,
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
@@ -50,30 +50,29 @@ describe("Test Suite For Performing navigation On The Programs In CICSEX61", () 
 
   describe("Test Suite For Checking Children Of Plex CICSEX61", async () => {
     it("Should Setup Tree and Verify Program List", async () => {
-      ({ cicsex61Children, regionIndex, regions, regionPROGLIBIndex, regionResources, programsResourceIndex, programs } =
-        await setupCICSTreeProgramParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61));
+      ({
+        cicsex61Children,
+        regionIndex,
+        regions,
+        selectedRegionIndex: regionPROGLIBIndex,
+        selectedRegionResources: regionResources,
+        selectedResourceIndex: programsResourceIndex,
+        selectedResource: programs,
+      } = await setupCICSTreeSelectedResourceParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61, PROGLIB, PROGRAMS));
 
       cicsTree.takeScreenshot();
     });
-    let PLIB1DS1PROGRAM: TreeItem | undefined;
 
+    let PLIB1DS1PROGRAM: TreeItem | undefined;
     it("Should Check If The Program PLIB1DS1 Is Present In Region PROGLIB", async () => {
-      for (const program of programs) {
-        if ((await program.getLabel()).trim() === PLIB1DS1) {
-          PLIB1DS1PROGRAM = program;
-          break;
-        }
-      }
+      PLIB1DS1PROGRAM = await findProgramByLabel(programs, PLIB1DS1);
       expect(PLIB1DS1PROGRAM).not.undefined;
       expect(await PLIB1DS1PROGRAM?.getLabel()).contains(PLIB1DS1);
     });
 
-    it("Should Show Attributes Of The Program PLIB1DS1N", async () => {
+    it("Should Check the attributes of PLIB1DS1 and run show library", async () => {
       await PLIB1DS1PROGRAM?.click();
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
-    });
-
-    it("Should Check If The Attributes Of The Program PLIB1DS1 Are Shown", async () => {
       await verifyProgramAttributes(PLIB1DS1, {
         Program: PLIB1DS1,
         Library: LIB1,
@@ -81,12 +80,9 @@ describe("Test Suite For Performing navigation On The Programs In CICSEX61", () 
       });
     });
 
-    it("Should select PLIB1DS1 program", async () => {
+    it("Should Check The LIB1 Library Under Region PROGLIB", async () => {
       await PLIB1DS1PROGRAM?.click();
       await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
-    });
-
-    it("Should Check The LIB1 Library Under Region PROGLIB", async () => {
       const driver = VSBrowser.instance.driver;
       for (const item of regionResources) {
         const resourceLabel = (await item.getLabel()).trim();
@@ -99,7 +95,7 @@ describe("Test Suite For Performing navigation On The Programs In CICSEX61", () 
           let foundDSN = false;
           let foundLIB = true;
           //need to scroll down to find the DSN and stop when we find it
-          while (true || !label.includes(PIPELINES)) {
+          while (!label.includes(PIPELINES)) {
             label = await getLabelAfterArrowDown(driver);
             if (label === DS11) {
               foundDSN = true;

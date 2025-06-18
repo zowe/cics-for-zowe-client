@@ -18,6 +18,9 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
+    const labels = nodes.map((n) => (typeof n.label === "string" ? n.label : (n.label?.label ?? "")));
+    const selectedNodesLabels = labels.join(",");
+
     // Create a map: library name -> set of librarydsn (unique values)
     const libraryDSNMap = new Map<string, Set<string>>();
     for (const childNode of nodes) {
@@ -33,7 +36,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       }
     }
     if (!libraryDSNMap.size) {
-      await window.showInformationMessage("This program does not have a library");
+      await window.showInformationMessage(`${selectedNodesLabels} do not contain library`);
       return;
     }
     const libraryTree = nodes[0]
@@ -43,10 +46,13 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
         (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_RESOURCE
       )[0] as CICSResourceContainerNode<ILibrary>;
 
+    //setting up the library tree with the filtered libraries
+
     libraryTree.setFilter(Array.from(libraryDSNMap.keys()));
     const libraryNodes = await libraryTree.getChildren();
     let libNode;
     const libArray = [];
+    //iterate through the library nodes and set the filter for each library node
     for (const child of libraryNodes) {
       libNode = child as CICSResourceContainerNode<IResource>;
       const labelKey = typeof libNode.label === "string" ? libNode.label : (libNode.label?.label ?? "");
@@ -60,7 +66,6 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
         libNode.setFilter(libDsns);
         await libNode.getChildren();
         libNode.description = libDsns.join(" OR ");
-        tree._onDidChangeTreeData.fire(libNode);
         libArray.push(libNode);
       }
     }
@@ -68,6 +73,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
     libraryTree.description = Array.from(libraryDSNMap.keys()).join(" OR ");
     tree._onDidChangeTreeData.fire(libraryTree);
     await treeview.reveal(libraryTree, { expand: true });
+    //reveal the library datasets in the treeview
     for (const lib of libArray) {
       await treeview.reveal(lib, { expand: true });
     }

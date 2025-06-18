@@ -12,8 +12,8 @@
 import { IResource } from "./IResource";
 
 export interface IProgram extends IResource {
-  library?: string;
-  librarydsn?: string;
+  library: string;
+  librarydsn: string;
   program: string;
   progtype: string;
   newcopycnt: string;

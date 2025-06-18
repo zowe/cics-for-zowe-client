@@ -135,47 +135,6 @@ export async function getRegionResourceIndex(regionResources: TreeItem[], resour
   return -1;
 }
 
-export async function getResourceInRegion(
-  cicsTree: DefaultTreeSection,
-  profileName: string,
-  plexName: string,
-  regionName: string,
-  resourceName: string
-): Promise<TreeItem[]> {
-  const plexChildren = await getPlexChildren(cicsTree, profileName, plexName);
-  expect(plexChildren).not.empty;
-
-  const regionsIndex = await getPlexChildIndex(plexChildren, "Regions");
-  expect(regionsIndex).to.be.greaterThan(-1);
-
-  const regions = await getRegionsInPlex(cicsTree, profileName, plexName);
-  expect(regions).not.empty;
-
-  const regionIndex = await getRegionIndex(regions, regionName);
-  expect(regionIndex).to.be.greaterThan(-1);
-
-  const regionResources = await getRegionResources(
-    cicsTree,
-    profileName,
-    plexName,
-    await plexChildren[regionIndex].getLabel(),
-    await regions[regionIndex].getLabel()
-  );
-  expect(regionResources).not.empty;
-
-  const resourceIndex = await getRegionResourceIndex(regionResources, resourceName);
-  expect(resourceIndex).to.be.greaterThan(-1);
-
-  await regionResources[resourceIndex].click();
-  return cicsTree.openItem(
-    profileName,
-    plexName,
-    await plexChildren[regionIndex].getLabel(),
-    await regions[regionIndex].getLabel(),
-    await regionResources[resourceIndex].getLabel()
-  );
-}
-
 export async function expectTreeItemIsSelected(treeItem: TreeItem | undefined) {
   const isSelected = await treeItem?.getAttribute("aria-selected");
   expect(isSelected).to.equal("true");
@@ -237,7 +196,13 @@ export async function getLabelAfterArrowDown(driver: WebDriver): Promise<string>
   return label;
 }
 
-export async function setupCICSTreeProgramParams(cicsTree: DefaultTreeSection, profileName: string, plexName: string) {
+export async function setupCICSTreeSelectedResourceParams(
+  cicsTree: DefaultTreeSection,
+  profileName: string,
+  plexName: string,
+  regionName: string,
+  resourceName: string
+) {
   // Get children of the plex
   const cicsex61Children = await getPlexChildren(cicsTree, profileName, plexName);
   expect(cicsex61Children).not.empty;
@@ -249,34 +214,40 @@ export async function setupCICSTreeProgramParams(cicsTree: DefaultTreeSection, p
   const regions = await getRegionsInPlex(cicsTree, profileName, plexName);
   expect(regions).not.empty;
 
-  const regionPROGLIBIndex = await getRegionIndex(regions, "PROGLIB");
-  expect(regionPROGLIBIndex).to.be.greaterThan(-1);
+  const selectedRegionIndex = await getRegionIndex(regions, regionName);
+  expect(selectedRegionIndex).to.be.greaterThan(-1);
 
   // Get resources inside the region
-  const regionResources = await getRegionResources(cicsTree, profileName, plexName, REGIONS_LOADED, await regions[regionPROGLIBIndex].getLabel());
-  expect(regionResources).not.empty;
-
-  const programsResourceIndex = await getRegionResourceIndex(regionResources, "Programs");
-  expect(programsResourceIndex).to.be.greaterThan(-1);
-
-  // Open the Programs resource
-  await regionResources[programsResourceIndex].click();
-  const programs = await cicsTree.openItem(
+  const selectedRegionResources = await getRegionResources(
+    cicsTree,
     profileName,
     plexName,
     REGIONS_LOADED,
-    await regions[regionPROGLIBIndex].getLabel(),
-    await regionResources[programsResourceIndex].getLabel()
+    await regions[selectedRegionIndex].getLabel()
   );
-  expect(programs).not.empty;
+  expect(selectedRegionResources).not.empty;
+
+  const selectedResourceIndex = await getRegionResourceIndex(selectedRegionResources, resourceName);
+  expect(selectedResourceIndex).to.be.greaterThan(-1);
+
+  // Open the Programs resource
+  await selectedRegionResources[selectedResourceIndex].click();
+  const selectedResource = await cicsTree.openItem(
+    profileName,
+    plexName,
+    REGIONS_LOADED,
+    await regions[selectedRegionIndex].getLabel(),
+    await selectedRegionResources[selectedResourceIndex].getLabel()
+  );
+  expect(selectedResource).not.empty;
 
   return {
     cicsex61Children,
     regionIndex,
     regions,
-    regionPROGLIBIndex,
-    regionResources,
-    programsResourceIndex,
-    programs,
+    selectedRegionIndex,
+    selectedRegionResources,
+    selectedResourceIndex,
+    selectedResource,
   };
 }
