@@ -340,16 +340,19 @@ export class ProfileManagement {
     }
   }
 
+  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+    return await ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getSession());
+  }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+  public static async getRegionInfo(plexName: string, session: Session): Promise<any[]> {
     try {
-      const session: Session = plex.getSession();
+     
       const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
-        cicsPlex: plex.getPlexName(),
+        cicsPlex: plexName,
       });
       if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
         return toArray(response.records.cicsmanagedregion);

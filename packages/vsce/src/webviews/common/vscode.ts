@@ -33,6 +33,14 @@ export function addVscMessageListener(
   window.addEventListener('message', listener);
 }
 
+export function addScrollerListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+  window.addEventListener("scroll", listener);
+}
+
+export function addResizeListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+  window.addEventListener("resize", listener);
+}
+
 export function removeVscMessageListener(
   listener: (
     ev:

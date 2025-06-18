@@ -64,6 +64,11 @@
     },
     "commands": [
       {
+        "command": "cics-extension-for-zowe.setFocusRegion",
+        "title": "Set Focus CICS Region",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.addSession",
         "title": "Create a CICS Profile",
         "category": "IBM CICS for Zowe Explorer",
@@ -386,7 +391,7 @@
           "group": "1.CICSResourceNode.inquire"
         },
         {
-          "when": "view == cics-view && !(viewItem =~ /^CICSResourceNode.CICSProgram.(ENABLED|DISABLED).PARENT.CICSLibraryDatasetName.*/)",
+          "when": "view == cics-view && !(viewItem =~ /^CICSResourceNode.CICSProgram.(ENABLED|DISABLED).PARENT.CICSLibraryDatasetName.*/) && (viewItem =~ /^CICSResourceNode.CICSProgram.(ENABLED|DISABLED).*/)",
           "command": "cics-extension-for-zowe.showLibrary",
           "group": "1.CICSResourceNode.inquire"
         },
