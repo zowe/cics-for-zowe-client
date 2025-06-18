@@ -160,6 +160,29 @@ export default {
             "in the CSD group MYGRP where the binding file is /u/exampleapp/wsbind/example.log",
         },
       },
+      BUNDLE: {
+        DESCRIPTION: "Define a new bundle to CICS.",
+        POSITIONALS: {
+          BUNDLENAME: "The name of the new bundle to define. The maximum length of the bundle name is eight characters.",
+          CSDGROUP:
+            "The CICS system definition (CSD) Group for the new bundle that you want to define." +
+            " The maximum length of the group " +
+            "name is eight characters.",
+          BUNDLEDIR:
+            "The fully qualified name of the root directory for the bundle on z/OS UNIX. " +
+            "The first character must be / and the end character /. The maximum length is 255 characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name to which to define the new bundle",
+          CICSPLEX: "The name of the CICSplex to which to define the new bundle",
+        },
+        MESSAGES: {
+          SUCCESS: "The bundle '%s' was defined successfully.",
+        },
+        EXAMPLES: {
+          EX1: "Define a bundle named BND123 to the region name MYREGION in the CSD group MYGRP",
+        },
+      },
     },
   },
   DELETE: {
