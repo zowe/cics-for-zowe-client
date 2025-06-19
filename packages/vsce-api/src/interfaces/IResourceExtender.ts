@@ -9,12 +9,13 @@
  *
  */
 
-import { ResourceTypes } from "../resources";
-import { IResourceExtender } from "./IResourceExtender";
+import { IResourceAction } from "./IResourceAction";
 
-export interface IExtensionAPI {
-  resources: {
-    resourceExtender: IResourceExtender;
-    supportedResources: ResourceTypes[];
-  };
+export interface IResourceExtender {
+  registeredActions: IResourceAction[];
+
+  registerAction: (action: IResourceAction) => void;
+  deregisterAction: (id: string) => void;
+  getActions: () => IResourceAction[];
+  getAction: (id: string) => IResourceAction;
 }

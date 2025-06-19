@@ -9,12 +9,12 @@
  *
  */
 
-import { ResourceTypes } from "../resources";
-import { IResourceExtender } from "./IResourceExtender";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
 
-export interface IExtensionAPI {
-  resources: {
-    resourceExtender: IResourceExtender;
-    supportedResources: ResourceTypes[];
-  };
+export interface IResourceContext {
+  regionName: string;
+  cicsplexName: string;
+  profile: imperative.IProfileLoaded;
+  session: CICSSession;
 }
