@@ -65,7 +65,7 @@ export function getInspectResourceCommand(context: ExtensionContext) {
     const types: IResourceMeta<IResource>[] = SupportedResources.metaResources.filter((value) => value.resourceName == resourceName);
 
     // Should only have one
-    if (types && types.length > 0) {
+    if (types?.length > 0) {
       return types[0];
     }
     return undefined;
