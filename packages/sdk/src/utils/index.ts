@@ -9,4 +9,5 @@
  *
  */
 
+export * from "./CICSSession";
 export * from "./Utils";
