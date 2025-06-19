@@ -247,8 +247,12 @@
           "when": "never"
         },
         {
-           "command": "cics-extension-for-zowe.setFocusRegion",
-           "when": "config.zowe.cics.resourceInspector"
+          "command": "cics-extension-for-zowe.setFocusRegion",
+          "when": "config.zowe.cics.resourceInspector"
+        },
+        {
+          "command": "cics-extension-for-zowe.inspectResource",
+          "when": "never"
         }
       ],
       "view/title": [
