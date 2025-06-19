@@ -9,5 +9,5 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Utils";
+import { ConfigGlobals, createConfig } from "../../common.jest_config";
+export default createConfig("unit", "IBM CICS for Zowe Explorer API Unit Tests") as ConfigGlobals;

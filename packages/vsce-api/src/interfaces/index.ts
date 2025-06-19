@@ -9,5 +9,8 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Utils";
+export * from "./IExtensionAPI";
+export * from "./IResource";
+export * from "./IResourceAction";
+export * from "./IResourceContext";
+export * from "./IResourceExtender";

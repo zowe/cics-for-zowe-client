@@ -9,5 +9,5 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Utils";
+export * from "./interfaces";
+export * from "./resources";

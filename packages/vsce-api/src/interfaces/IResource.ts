@@ -9,5 +9,7 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Utils";
+export interface IResource {
+  eyu_cicsname: string;
+  status: string;
+}
