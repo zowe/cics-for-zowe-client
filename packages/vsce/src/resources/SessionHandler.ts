@@ -17,12 +17,14 @@ export class SessionHandler implements ISessionHandler {
   private sessions: Map<String, CICSSession>;
   private static instance: SessionHandler;
 
-  private constructor() {}
+  private constructor() {
+    this.sessions = new Map<String, CICSSession>();
+  }
+
   // Creating a singleton instance of SessionHandler
   public static getInstance(): SessionHandler {
     if (!SessionHandler.instance) {
       SessionHandler.instance = new SessionHandler();
-      SessionHandler.instance.sessions = new Map<String, CICSSession>();
     }
     return SessionHandler.instance;
   }
