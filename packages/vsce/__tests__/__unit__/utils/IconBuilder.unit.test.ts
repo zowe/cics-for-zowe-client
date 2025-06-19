@@ -9,21 +9,22 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { join } from "path";
 import { IProgram, ProgramMeta } from "../../../src/doc";
-import { CICSSession, Resource } from "../../../src/resources";
+import { Resource } from "../../../src/resources";
 import IconBuilder from "../../../src/utils/IconBuilder";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
 describe("IconBuilder tests", () => {
   it("should get session icon", () => {
-    const icon = IconBuilder.session(new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" }));
+    const icon = IconBuilder.session(new CICSSession({ ...CICSProfileMock, host: "MY.HOST" }));
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-unverified-dark.svg"));
     expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "profile-unverified-light.svg"));
   });
 
   it("should get verified session icon", () => {
-    const session = new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" });
+    const session = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
     session.setVerified(true);
 
     const icon = IconBuilder.session(session);
@@ -32,7 +33,7 @@ describe("IconBuilder tests", () => {
   });
 
   it("should get NOT verified session icon", () => {
-    const session = new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" });
+    const session = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
     session.setVerified(false);
 
     const icon = IconBuilder.session(session);

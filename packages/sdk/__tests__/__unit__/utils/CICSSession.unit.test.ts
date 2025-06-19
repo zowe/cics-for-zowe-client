@@ -12,7 +12,6 @@
 import { IProfile } from "@zowe/imperative";
 import { CICSSession } from "../../../src/utils/CICSSession";
 
-
 describe("CICSSession tests", () => {
   const profile: IProfile = {
     protocol: "http",
