@@ -23,7 +23,9 @@ describe("Program Meta", () => {
       eyu_cicsname: "MYREG",
       newcopycnt: "0",
       progtype: "COBOL",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
+      library: "MYLIB",
+      librarydsn: "MYLIBDSN",
     });
   });
 
@@ -34,6 +36,18 @@ describe("Program Meta", () => {
   it("should return label", () => {
     const label = ProgramMeta.getLabel(programMock);
     expect(label).toEqual(`MYPROG`);
+  });
+  it("should return library", () => {
+    programMock.attributes.library = "MYLIB";
+    ProgramMeta!.getLibrary = jest.fn(() => programMock.attributes.library);
+    const label = ProgramMeta.getLibrary(programMock);
+    expect(label).toEqual(`MYLIB`);
+  });
+  it("should return libraryDsn", () => {
+    programMock.attributes.librarydsn = "MYLIBDSN";
+    ProgramMeta!.getLibraryDsn = jest.fn(() => programMock.attributes.librarydsn);
+    const label = ProgramMeta.getLibraryDsn(programMock);
+    expect(label).toEqual(`MYLIBDSN`);
   });
   it("should return label with disabled", () => {
     programMock.attributes.status = "DISABLED";

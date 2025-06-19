@@ -9,8 +9,26 @@
  *
  */
 
-const prog1: IProgram = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsname: "MYREG", enablestatus: "ENABLED", progtype: "PROGRAM" };
-const prog2: IProgram = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG", enablestatus: "ENABLED", progtype: "PROGRAM" };
+const prog1: IProgram = {
+  program: "PROG1",
+  status: "ENABLED",
+  newcopycnt: "0",
+  eyu_cicsname: "MYREG",
+  enablestatus: "ENABLED",
+  progtype: "PROGRAM",
+  library: "MYLIB",
+  librarydsn: "MYLIBDSN",
+};
+const prog2: IProgram = {
+  program: "PROG2",
+  status: "DISABLED",
+  newcopycnt: "2",
+  eyu_cicsname: "MYREG",
+  enablestatus: "ENABLED",
+  progtype: "PROGRAM",
+  library: "MYLIB",
+  librarydsn: "MYLIBDSN",
+};
 
 const runGetCacheMock = jest.fn();
 
