@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ExtensionContext, window } from "vscode";
+import { commands, ExtensionContext, window, workspace } from "vscode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { getFocusRegion } from "./setFocusRegionCommand";
 import { IFocusRegion } from "./IFocusRegion";
@@ -21,6 +21,10 @@ import { CICSMessages } from "../constants/CICS.messages";
 
 export function getInspectResourceCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName: string, resourceType: string) => {
+    if (!await workspace.getConfiguration().get('zowe.cics.resourceInspector')) {
+      return;
+    };
+
     const focusRegion: IFocusRegion = await getFocusRegion();
 
     if (focusRegion) {
