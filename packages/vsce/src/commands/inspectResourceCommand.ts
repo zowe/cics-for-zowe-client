@@ -55,8 +55,7 @@ export function getInspectResourceCommand(context: ExtensionContext) {
             meta: resourceContainer.getMeta(),
           }, enbededWebview);
 
-      // Not sure why its vscode-extension-for-zowe
-      commands.executeCommand("setContext", "zowe.vscode-extension-for-zowe.showResourceInspector", true);
+      commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
       commands.executeCommand("workbench.view.extension.inspector-panel");
     }
   });

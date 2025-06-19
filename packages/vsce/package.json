@@ -58,7 +58,7 @@
           "type": "webview",
           "id": "resource-inspector",
           "name": "CICS Resource Inspector",
-          "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
+          "when": "cics-extension-for-zowe.showResourceInspector"
         }
       ]
     },
