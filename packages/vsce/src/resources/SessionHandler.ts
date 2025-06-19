@@ -10,14 +10,11 @@
  */
 
 import { IProfile, IProfileLoaded } from "@zowe/imperative";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSSession } from "./CICSSession";
 import { ISessionHandler } from "./ISessionHandler";
 
 export class SessionHandler implements ISessionHandler {
-  public sessions: Map<String, CICSSession>;
-  session: CICSSession | undefined;
-  profile: imperative.IProfile;
+  private sessions: Map<String, CICSSession>;
   private static instance: SessionHandler;
 
   private constructor() {}
@@ -30,9 +27,9 @@ export class SessionHandler implements ISessionHandler {
     return SessionHandler.instance;
   }
 
-  createSession(profile: IProfile, profileName: string): void {
-    this.session = new CICSSession(profile);
-    this.sessions.set(profileName, this.session);
+  private createSession(profile: IProfile, profileName: string): void {
+    const session = new CICSSession(profile);
+    this.sessions.set(profileName, session);
   }
 
   public getSession(profile: IProfileLoaded): CICSSession | undefined {

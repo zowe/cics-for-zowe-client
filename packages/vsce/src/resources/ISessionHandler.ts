@@ -13,8 +13,6 @@ import { IProfile } from "@zowe/imperative";
 import { CICSSession } from "./CICSSession";
 
 export interface ISessionHandler {
-  sessions: Map<String, CICSSession>;
-  createSession(profile: IProfile, profileName: string): void;
   getSession(profile: IProfile): CICSSession | undefined;
   removeSession(profileName: string): void;
   clearSessions(): void;
