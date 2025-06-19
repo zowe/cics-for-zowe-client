@@ -9,38 +9,29 @@
  *
  */
 
-import { CicsCmciConstants, ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
+import { IExtensionAPI, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import CICSResourceExtender from "./CICSResourceExtender";
 
-export class CICSExtenderApiConfig {
-  private static api: CICSExtenderApiConfig = new CICSExtenderApiConfig();
-  private config: ICICSExtenderConfig;
-
-  public static getInstance(): CICSExtenderApiConfig {
-    return this.api;
+class SCICSExtenderApiConfig {
+  private static _instance: SCICSExtenderApiConfig;
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
   }
+  private api: IExtensionAPI;
 
   private constructor() {
-    this.config = {
-      configuration: {
-        supportedResources: [
-            CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-            CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-            CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
-            CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-            CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-            CicsCmciConstants.CICS_URIMAP,
-            CicsCmciConstants.CICS_CMCI_TASK,
-            CicsCmciConstants.CICS_CMCI_PIPELINE,
-            CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
-        ],
-        resourceInspector: {
-          enabled: false
-        }
-      }
+    this.api = {
+      resources: {
+        supportedResources: SupportedResourceTypes,
+        resourceExtender: CICSResourceExtender,
+      },
     };
   }
 
-  public getConfig(): ICICSExtenderConfig {
-    return this.config;
+  getAPI(): IExtensionAPI {
+    return this.api;
   }
 }
+
+const CICSExtenderApiConfig = SCICSExtenderApiConfig.Instance;
+export default CICSExtenderApiConfig;

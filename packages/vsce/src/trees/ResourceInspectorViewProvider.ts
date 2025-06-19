@@ -9,40 +9,118 @@
  *
  */
 
-import { WebviewViewProvider, Uri, TreeView, WebviewView } from "vscode";
-import { ResourceInspectorView } from "./ResourceInspectorView";
+import { IResourceAction, IResourceContext } from "@zowe/cics-extension-for-zowe-api";
+import { HTMLTemplate } from "@zowe/zowe-explorer-api";
+import { randomUUID } from "crypto";
+import Mustache = require("mustache");
+import { WebviewViewProvider, Uri, WebviewView, Webview, commands } from "vscode";
+import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource, IResource } from "../doc";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
-  public static readonly viewType = "resource-inspector";
-  public _manager?: ResourceInspectorView;
-  private static instance: ResourceInspectorViewProvider;
-  private static refreshed = false;
 
-  constructor(
+  public static readonly viewType = "resource-inspector";
+  private static instance: ResourceInspectorViewProvider;
+
+  private webviewView?: WebviewView;
+  private resource: IContainedResource<IResource>;
+
+  private constructor(
     private readonly extensionUri: Uri,
-    private readonly treeview: TreeView<any>
+    private webviewReady: boolean = false,
   ) { }
 
-  public static getInstance(extensionUri: Uri, treeview: TreeView<any>): ResourceInspectorViewProvider {
+  public static getInstance(extensionUri: Uri): ResourceInspectorViewProvider {
     if (!this.instance) {
-      this.instance = new ResourceInspectorViewProvider(extensionUri, treeview);
+      this.instance = new ResourceInspectorViewProvider(extensionUri);
     }
-
     return this.instance;
   }
 
-  resolveWebviewView(webviewView: WebviewView) {
-    if (this._manager) {
-      this._manager.initializeWebview(webviewView);
-    }
-    ResourceInspectorViewProvider.refreshed = true;
+  // Method called by VS Code when a view first becomes visible
+  public resolveWebviewView(webviewView: WebviewView) {
+    this.webviewView = webviewView;
+    this.webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this.extensionUri],
+    };
+    this.webviewView.webview.html = this._getHtmlForWebview(this.webviewView.webview);
+
+    this.webviewView.webview.onDidReceiveMessage(async (message) => {
+      if (message.command === "init") {
+        this.webviewReady = true;
+        await this.sendResourceDataToWebView();
+      }
+      if (message.command === "action") {
+        const action = CICSResourceExtender.getAction(message.actionId);
+
+        if (typeof action.action === 'string') {
+          commands.executeCommand(action.action);
+        } else {
+          await action.action(this.resource.resource.attributes, {} as IResourceContext);
+        }
+      }
+    });
   }
 
-  reloadData(resource: IContainedResource<IResource>, webviewView: WebviewView) {
-    this._manager = new ResourceInspectorView(this.extensionUri, resource);
-    if (ResourceInspectorViewProvider.refreshed) {
-      this.resolveWebviewView(webviewView);
+  async setResource(resource: IContainedResource<IResource>) {
+    this.resource = resource;
+
+    if (this.webviewReady) {
+      await this.sendResourceDataToWebView();
     }
+  }
+
+  private async sendResourceDataToWebView() {
+    await this.webviewView.webview.postMessage({
+      data: {
+        name: this.resource.meta.getName(this.resource.resource),
+        resourceName: this.resource.meta.resourceName,
+        highlights: this.resource.meta.getHighlights(this.resource.resource),
+        resource: this.resource.resource.attributes,
+      },
+      actions: (await this.getActions()).map((action) => {
+        return {
+          id: action.id,
+          name: action.name,
+        };
+      })
+    });
+  }
+
+  private async getActions() {
+    // Required as Array.filter cannot be asyncronous
+    const asyncFilter = async (arr: IResourceAction[], predicate: (action: IResourceAction) => Promise<boolean>) => {
+      const results = await Promise.all(arr.map(predicate));
+      return arr.filter((_v, index) => results[index]);
+    };
+
+    // Gets actions for this resource type
+    let actionsForResource = CICSResourceExtender.getActionsForResourceType([this.resource.meta.resourceName]);
+
+    // Filter out resources that shouldn't be visible
+    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction) => {
+      if (!action.visibleWhen) {
+        return true;
+      }
+      if (typeof action.visibleWhen === 'boolean') {
+        return action.visibleWhen;
+      } else {
+        const visible = await action.visibleWhen(this.resource.resource.attributes, {} as IResourceContext);
+        return visible;
+      }
+    });
+
+    return actionsForResource;
+  }
+
+  private _getHtmlForWebview(webview: Webview): string {
+    const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "resourceInspectorPanelView.js"));
+    const nonce = randomUUID();
+
+    return Mustache.render(HTMLTemplate.default, {
+      uris: { resource: { script: scriptUri } },
+      nonce,
+    });
   }
 }
