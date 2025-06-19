@@ -55,7 +55,7 @@ export function getInspectResourceCommand(context: ExtensionContext) {
             meta: resourceContainer.getMeta(),
           }, enbededWebview);
 
-      commands.executeCommand("setContext", "zowe.cics-extension-for-zowe.showResourceInspector", true);
+      commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
       commands.executeCommand("workbench.view.extension.inspector-panel");
     }
   });
