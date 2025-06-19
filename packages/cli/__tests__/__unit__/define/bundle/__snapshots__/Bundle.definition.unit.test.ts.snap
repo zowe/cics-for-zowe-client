@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cics define bundle should not have changed 1`] = `
+{
+  "aliases": [
+    "bund",
+  ],
+  "description": "Define a new bundle to CICS.",
+  "examples": [
+    {
+      "description": "Define a bundle named BND123 to the region name MYREGION in the CSD group MYGRP",
+      "options": "BND123 /user/myname/bundle1/ MYGRP --region-name MYREGION",
+    },
+  ],
+  "name": "bundle",
+  "options": [
+    {
+      "description": "The CICS region name to which to define the new bundle",
+      "name": "region-name",
+      "type": "string",
+    },
+    {
+      "description": "The name of the CICSplex to which to define the new bundle",
+      "name": "cics-plex",
+      "type": "string",
+    },
+  ],
+  "positionals": [
+    {
+      "description": "The name of the new bundle to define. The maximum length of the bundle name is eight characters.",
+      "name": "bundleName",
+      "required": true,
+      "type": "string",
+    },
+    {
+      "description": "The fully qualified name of the root directory for the bundle on z/OS UNIX. The first character must be / and the end character /. The maximum length is 255 characters.",
+      "name": "bundleDir",
+      "required": true,
+      "type": "string",
+    },
+    {
+      "description": "The CICS system definition (CSD) Group for the new bundle that you want to define. The maximum length of the group name is eight characters.",
+      "name": "csdGroup",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": {
+    "optional": [
+      "cics",
+    ],
+  },
+  "type": "command",
+}
+`;

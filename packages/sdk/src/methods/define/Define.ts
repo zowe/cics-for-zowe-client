@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../../constants";
-import { ICMCIApiResponse, IGetResourceUriOptions, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
+import { IBundleParms, ICMCIApiResponse, IGetResourceUriOptions, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
@@ -325,5 +325,40 @@ export function defineWebservice(session: AbstractSession, parms: IWebServicePar
   };
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_WEBSERVICE, options);
+  return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
+}
+
+export function defineBundle(session: AbstractSession, parms: IBundleParms): Promise<ICMCIApiResponse> {
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Bundle name", "CICS bundle name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.bundleDir, "CICS Bundle directory", "CICS bundle directory is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.csdGroup, "CICS CSD Group", "CICS CSD group is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
+
+  Logger.getAppLogger().debug("Attempting to define a bundle with the following parameters:\n%s", JSON.stringify(parms));
+  const requestBody: any = {
+    request: {
+      create: {
+        parameter: {
+          $: {
+            name: "CSD",
+          },
+        },
+        attributes: {
+          $: {
+            name: parms.name,
+            bundleDir: parms.bundleDir,
+            csdgroup: parms.csdGroup,
+          },
+        },
+      },
+    },
+  };
+
+  const options: IGetResourceUriOptions = {
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+  };
+
+  const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_DEFINITION_BUNDLE, options);
   return CicsCmciRestClient.postExpectParsedXml(session, cmciResource, [], requestBody) as any;
 }
