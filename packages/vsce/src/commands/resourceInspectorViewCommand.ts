@@ -32,6 +32,6 @@ function getResourceViewProvider(selectedNodes: CICSResourceContainerNode<IResou
     const enbededWebview = resourceViewProvider?._manager?._view;
     resourceViewProvider.reloadData(item.getContainedResource(), enbededWebview);
   }
-  commands.executeCommand("setContext", "zowe.vscode-extension-for-zowe.showResourceInspector", true);
+  commands.executeCommand("setContext", "zowe.cics-extension-for-zowe.showResourceInspector", true);
   commands.executeCommand("workbench.view.extension.inspector-panel");
 }
