@@ -17,7 +17,17 @@ import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
-    const nodes = findSelectedNodes(treeview, node.getContainedResource().meta, node);
+    let meta;
+    if (node === undefined || node === null) {
+      for (const res of [...new Set([...treeview.selection, node])].filter(
+        (item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource
+      )) {
+        meta = res.getContainedResource().meta;
+      }
+    } else {
+      meta = node.getContainedResource().meta;
+    }
+    const nodes = findSelectedNodes(treeview, meta, node);
     if (!nodes || !nodes.length) {
       await window.showErrorMessage("No CICS resource selected");
       return;
