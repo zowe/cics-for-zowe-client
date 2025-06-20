@@ -18,7 +18,7 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
     let meta;
-    if (node === undefined || node === null) {
+    if (!node) {
       for (const res of [...new Set([...treeview.selection, node])].filter(
         (item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource
       )) {
