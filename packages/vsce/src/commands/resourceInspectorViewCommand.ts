@@ -19,7 +19,7 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
     let meta;
     if (!node) {
-      for (const res of [...new Set([...treeview.selection, node])].filter(
+      for (const res of [...new Set([...treeview.selection])].filter(
         (item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource
       )) {
         meta = res.getContainedResource().meta;
