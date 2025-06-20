@@ -241,7 +241,7 @@
       },
       {
         "command": "cics-extension-for-zowe.inspectResource",
-        "title": "Invoke Resource Inspector",
+        "title": "Inspect Resource",
         "category": "IBM CICS for Zowe Explorer"
       }
     ],
