@@ -58,11 +58,16 @@
           "type": "webview",
           "id": "resource-inspector",
           "name": "CICS Resource Inspector",
-          "when": "zowe.vscode-extension-for-zowe.showResourceInspector"
+          "when": "cics-extension-for-zowe.showResourceInspector"
         }
       ]
     },
     "commands": [
+      {
+        "command": "cics-extension-for-zowe.setFocusRegion",
+        "title": "Set Focus CICS Region",
+        "category": "IBM CICS for Zowe Explorer"
+      },
       {
         "command": "cics-extension-for-zowe.addSession",
         "title": "Create a CICS Profile",
@@ -244,6 +249,14 @@
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.setFocusRegion",
+          "when": "config.zowe.cics.resourceInspector"
+        },
+        {
+          "command": "cics-extension-for-zowe.inspectResource",
           "when": "never"
         }
       ],

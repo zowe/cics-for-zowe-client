@@ -9,7 +9,12 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Resource";
-export * from "./ResourceContainer";
-export * from "./SessionHandler"
+import { IProfileLoaded } from "@zowe/imperative";
+import { CICSSession } from "../resources/CICSSession";
+
+export interface IFocusRegion {
+  profile: IProfileLoaded;
+  cicsPlex?: string;
+  session: CICSSession;
+  focusSelectedRegion: string;
+}

@@ -9,7 +9,11 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Resource";
-export * from "./ResourceContainer";
-export * from "./SessionHandler"
+import { IProfile } from "@zowe/imperative";
+import { CICSSession } from "./CICSSession";
+
+export interface ISessionHandler {
+  getSession(profile: IProfile): CICSSession | undefined;
+  removeSession(profileName: string): void;
+  clearSessions(): void;
+}
