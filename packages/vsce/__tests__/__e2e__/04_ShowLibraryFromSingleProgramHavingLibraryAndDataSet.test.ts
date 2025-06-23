@@ -28,7 +28,7 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let wiremockServer: TreeItem | undefined;
-  let cicsex61Children: TreeItem[];
+  let cicsPlexChildren: TreeItem[];
   let regions: TreeItem[];
   let regionResources: TreeItem[];
   let programs: TreeItem[];
@@ -52,7 +52,7 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
 
   it("Should Setup Tree and Verify Program List", async () => {
     ({
-      cicsex61Children,
+      cicsPlexChildren,
       regionIndex,
       regions,
       selectedRegionIndex: regionPROGLIBIndex,
@@ -96,7 +96,9 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
         let foundDSN = false;
         let foundLIB = true;
         //need to scroll down to find the DSN and stop when we find it
-        while (!label.includes(PIPELINES)) {
+        let count = 0;
+        while (!label.includes(PIPELINES) && count < 10) {
+          count++;
           label = await getLabelAfterArrowDown(driver);
           if (label === DS11) {
             foundDSN = true;

@@ -77,12 +77,4 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getName(program: Resource<IProgram>): string {
     return program.attributes.program;
   },
-
-  getLibrary: function (program: Resource<IProgram>): string {
-    return program.attributes.library;
-  },
-
-  getLibraryDsn: function (program: Resource<IProgram>): string {
-    return program.attributes.librarydsn;
-  },
 };

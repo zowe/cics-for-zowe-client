@@ -37,18 +37,6 @@ describe("Program Meta", () => {
     const label = ProgramMeta.getLabel(programMock);
     expect(label).toEqual(`MYPROG`);
   });
-  it("should return library", () => {
-    programMock.attributes.library = "MYLIB";
-    ProgramMeta!.getLibrary = jest.fn(() => programMock.attributes.library);
-    const label = ProgramMeta.getLibrary(programMock);
-    expect(label).toEqual(`MYLIB`);
-  });
-  it("should return libraryDsn", () => {
-    programMock.attributes.librarydsn = "MYLIBDSN";
-    ProgramMeta!.getLibraryDsn = jest.fn(() => programMock.attributes.librarydsn);
-    const label = ProgramMeta.getLibraryDsn(programMock);
-    expect(label).toEqual(`MYLIBDSN`);
-  });
   it("should return label with disabled", () => {
     programMock.attributes.status = "DISABLED";
     const label = ProgramMeta.getLabel(programMock);

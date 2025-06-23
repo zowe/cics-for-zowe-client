@@ -204,10 +204,10 @@ export async function setupCICSTreeSelectedResourceParams(
   resourceName: string
 ) {
   // Get children of the plex
-  const cicsex61Children = await getPlexChildren(cicsTree, profileName, plexName);
-  expect(cicsex61Children).not.empty;
+  const cicsPlexChildren = await getPlexChildren(cicsTree, profileName, plexName);
+  expect(cicsPlexChildren).not.empty;
 
-  const regionIndex = await getPlexChildIndex(cicsex61Children, "Regions");
+  const regionIndex = await getPlexChildIndex(cicsPlexChildren, "Regions");
   expect(regionIndex).to.be.greaterThan(-1);
 
   // Get regions inside the plex
@@ -242,7 +242,7 @@ export async function setupCICSTreeSelectedResourceParams(
   expect(selectedResource).not.empty;
 
   return {
-    cicsex61Children,
+    cicsPlexChildren,
     regionIndex,
     regions,
     selectedRegionIndex,
