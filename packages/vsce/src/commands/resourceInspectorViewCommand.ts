@@ -22,16 +22,16 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
       await window.showErrorMessage("No CICS resource selected");
       return;
     }
-    getResourceViewProvider(nodes, context.extensionUri, treeview);
+    getResourceViewProvider(nodes, context.extensionUri);
   });
 }
 
-function getResourceViewProvider(selectedNodes: CICSResourceContainerNode<IResource>[], extensionUri: Uri, treeview: TreeView<any>) {
+function getResourceViewProvider(selectedNodes: CICSResourceContainerNode<IResource>[], extensionUri: Uri) {
   for (const item of selectedNodes) {
-    const resourceViewProvider = ResourceInspectorViewProvider.getInstance(extensionUri, treeview);
+    const resourceViewProvider = ResourceInspectorViewProvider.getInstance(extensionUri);
     const enbededWebview = resourceViewProvider?._manager?._view;
     resourceViewProvider.reloadData(item.getContainedResource(), enbededWebview);
   }
-  commands.executeCommand("setContext", "zowe.vscode-extension-for-zowe.showResourceInspector", true);
+  commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   commands.executeCommand("workbench.view.extension.inspector-panel");
 }

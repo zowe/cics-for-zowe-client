@@ -11,14 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("cics define program", () => {
-  const DEFINE_RESOURCES = 7;
-
+describe("cics define bundle", () => {
   it("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../src/define/Define.definition");
+    const definition: ICommandDefinition = require("../../../../src/define/bundle/Bundle.definition").BundleDefinition;
     expect(definition).toBeDefined();
-    expect(definition.children?.length).toBe(DEFINE_RESOURCES);
-    delete definition.children;
+    delete definition.handler;
     expect(definition).toMatchSnapshot();
   });
 });

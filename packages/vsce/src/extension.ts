@@ -121,7 +121,7 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(
     window.registerWebviewViewProvider(
       ResourceInspectorViewProvider.viewType,
-      ResourceInspectorViewProvider.getInstance(context.extensionUri, treeview)
+      ResourceInspectorViewProvider.getInstance(context.extensionUri)
     )
   );
 

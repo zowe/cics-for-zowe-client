@@ -10,6 +10,7 @@
  */
 
 import { CicsCmciConstants, ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
+import { SupportedResources } from "../model";
 
 export class CICSExtenderApiConfig {
   private static api: CICSExtenderApiConfig = new CICSExtenderApiConfig();
@@ -22,17 +23,7 @@ export class CICSExtenderApiConfig {
   private constructor() {
     this.config = {
       configuration: {
-        supportedResources: [
-            CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-            CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-            CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
-            CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-            CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-            CicsCmciConstants.CICS_URIMAP,
-            CicsCmciConstants.CICS_CMCI_TASK,
-            CicsCmciConstants.CICS_CMCI_PIPELINE,
-            CicsCmciConstants.CICS_CMCI_WEB_SERVICE,
-        ],
+        supportedResources: SupportedResources.resources,
         resourceInspector: {
           enabled: false
         }
