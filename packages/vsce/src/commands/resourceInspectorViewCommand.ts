@@ -18,21 +18,27 @@ import { findSelectedNodes } from "../utils/commandUtils";
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
     let meta;
+    const treeSelectionArray = [...new Set([...treeview.selection])];
     if (!node) {
-      for (const res of [...new Set([...treeview.selection])].filter(
-        (item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource
-      )) {
+      for (const res of treeSelectionArray.filter((item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource)) {
         meta = res.getContainedResource().meta;
       }
     } else {
       meta = node.getContainedResource().meta;
     }
     const nodes = findSelectedNodes(treeview, meta, node);
-    if (!nodes || !nodes.length) {
+    if (!nodes || !nodes.length || treeSelectionArray.length === 0) {
       await window.showErrorMessage("No CICS resource selected");
       return;
     }
     getResourceViewProvider(nodes, context.extensionUri);
+    if (treeSelectionArray.length > 1) {
+      await window.showInformationMessage(
+        "Multiple CICS resources selected. Resource with label '" +
+          treeSelectionArray[treeSelectionArray.length - 1].getLabel() +
+          "' will be inspected."
+      );
+    }
   });
 }
 
