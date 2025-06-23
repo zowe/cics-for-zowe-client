@@ -34,9 +34,7 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
     getResourceViewProvider(nodes, context.extensionUri);
     if (treeSelectionArray.length > 1) {
       await window.showInformationMessage(
-        "Multiple CICS resources selected. Resource with label '" +
-          treeSelectionArray[treeSelectionArray.length - 1].getLabel() +
-          "' will be inspected."
+        "Multiple CICS resources selected. Resource '" + treeSelectionArray[treeSelectionArray.length - 1].getLabel() + "' will be inspected."
       );
     }
   });
