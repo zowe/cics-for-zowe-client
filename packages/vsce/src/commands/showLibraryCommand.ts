@@ -1,5 +1,5 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, TreeView, window } from "vscode";
+import { TreeView, commands, window } from "vscode";
 import { ILibrary, IProgram, IResource, ProgramMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
@@ -12,6 +12,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
     if (!openSettingsForHiddenResourceType(msg, "Library")) {
       return;
     }
+
     const nodes = findSelectedNodes(treeview, ProgramMeta, node) as CICSResourceContainerNode<IProgram>[];
     if (!nodes || !nodes.length) {
       window.showErrorMessage("No CICS Program selected");
@@ -35,10 +36,12 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
         }
       }
     }
+
     if (!libraryDSNMap.size) {
       await window.showInformationMessage(`${selectedNodesLabels} do not contain library`);
       return;
     }
+
     const libraryTree = nodes[0]
       .getParent()
       .getParent()
@@ -46,13 +49,26 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
         (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_RESOURCE
       )[0] as CICSResourceContainerNode<ILibrary>;
 
-    //setting up the library tree with the filtered libraries
+    //clearing the previous filter and description
+    libraryTree.clearFilter();
+    libraryTree.description = "";
+    libraryTree.children = [];
+    libraryTree.refreshingDescription = false;
+    libraryTree.getChildResource().resources.resetCriteria();
+    libraryTree.getChildResource().resources.resources = [];
 
-    libraryTree.setFilter(Array.from(libraryDSNMap.keys()));
+    await treeview.reveal(libraryTree, { expand: true });
+
+    //set the new filter and description
+    const libraryNames = Array.from(libraryDSNMap.keys());
+    libraryTree.setFilter(libraryNames);
+    libraryTree.description = libraryNames.join(" OR ");
+    libraryTree.refreshingDescription = false;
+
     const libraryNodes = await libraryTree.getChildren();
     let libNode;
-    const libArray = [];
-    //iterate through the library nodes and set the filter for each library node
+    const libArray: CICSResourceContainerNode<IResource>[] = [];
+    //setting the filter and description for each library node
     for (const child of libraryNodes) {
       libNode = child as CICSResourceContainerNode<IResource>;
       const labelKey = typeof libNode.label === "string" ? libNode.label : (libNode.label?.label ?? "");
@@ -64,16 +80,11 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       ) {
         const libDsns = Array.from(libraryDSNMap.get(labelKey)!);
         libNode.setFilter(libDsns);
-        await libNode.getChildren();
         libNode.description = libDsns.join(" OR ");
         libArray.push(libNode);
+        libNode.refreshingDescription = false;
       }
     }
-
-    libraryTree.description = Array.from(libraryDSNMap.keys()).join(" OR ");
-    tree._onDidChangeTreeData.fire(libraryTree);
-    await treeview.reveal(libraryTree, { expand: true });
-    //reveal the library datasets in the treeview
     for (const lib of libArray) {
       await treeview.reveal(lib, { expand: true });
     }

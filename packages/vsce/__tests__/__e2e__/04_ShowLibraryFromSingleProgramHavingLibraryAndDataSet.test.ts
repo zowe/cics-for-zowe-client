@@ -14,6 +14,7 @@ import { DefaultTreeSection, SideBarView, TreeItem, VSBrowser } from "vscode-ext
 import { CICSEX61, DS11, LIB1, LIBRARIES_LIB1_LABEL, PIPELINES, PLIB1DS1, PROGLIB, PROGRAMS, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
+  clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
   getLabelAfterArrowDown,
@@ -23,7 +24,7 @@ import {
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
-describe("Test Suite For Performing navigation On The Programs In CICSEX61", () => {
+describe("Test Suite For Performing Show Library Action From Programs In CICSEX61", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let wiremockServer: TreeItem | undefined;
@@ -46,66 +47,65 @@ describe("Test Suite For Performing navigation On The Programs In CICSEX61", () 
 
   after(async () => {
     await closeAllEditorsTabs();
+    await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Test Suite For Checking Children Of Plex CICSEX61", async () => {
-    it("Should Setup Tree and Verify Program List", async () => {
-      ({
-        cicsex61Children,
-        regionIndex,
-        regions,
-        selectedRegionIndex: regionPROGLIBIndex,
-        selectedRegionResources: regionResources,
-        selectedResourceIndex: programsResourceIndex,
-        selectedResource: programs,
-      } = await setupCICSTreeSelectedResourceParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61, PROGLIB, PROGRAMS));
+  it("Should Setup Tree and Verify Program List", async () => {
+    ({
+      cicsex61Children,
+      regionIndex,
+      regions,
+      selectedRegionIndex: regionPROGLIBIndex,
+      selectedRegionResources: regionResources,
+      selectedResourceIndex: programsResourceIndex,
+      selectedResource: programs,
+    } = await setupCICSTreeSelectedResourceParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61, PROGLIB, PROGRAMS));
 
-      cicsTree.takeScreenshot();
+    cicsTree.takeScreenshot();
+  });
+
+  let PLIB1DS1PROGRAM: TreeItem | undefined;
+  it("Should Check If The Program PLIB1DS1 Is Present In Region PROGLIB", async () => {
+    PLIB1DS1PROGRAM = await findProgramByLabel(programs, PLIB1DS1);
+    expect(PLIB1DS1PROGRAM).not.undefined;
+    expect(await PLIB1DS1PROGRAM?.getLabel()).contains(PLIB1DS1);
+  });
+
+  it("Should Check the attributes of PLIB1DS1 and run show library", async () => {
+    await PLIB1DS1PROGRAM?.click();
+    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
+    await verifyProgramAttributes(PLIB1DS1, {
+      Program: PLIB1DS1,
+      Library: LIB1,
+      Librarydsn: DS11,
     });
+  });
 
-    let PLIB1DS1PROGRAM: TreeItem | undefined;
-    it("Should Check If The Program PLIB1DS1 Is Present In Region PROGLIB", async () => {
-      PLIB1DS1PROGRAM = await findProgramByLabel(programs, PLIB1DS1);
-      expect(PLIB1DS1PROGRAM).not.undefined;
-      expect(await PLIB1DS1PROGRAM?.getLabel()).contains(PLIB1DS1);
-    });
-
-    it("Should Check the attributes of PLIB1DS1 and run show library", async () => {
-      await PLIB1DS1PROGRAM?.click();
-      await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
-      await verifyProgramAttributes(PLIB1DS1, {
-        Program: PLIB1DS1,
-        Library: LIB1,
-        Librarydsn: DS11,
-      });
-    });
-
-    it("Should Check The LIB1 Library Under Region PROGLIB", async () => {
-      await PLIB1DS1PROGRAM?.click();
-      await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
-      const driver = VSBrowser.instance.driver;
-      for (const item of regionResources) {
-        const resourceLabel = (await item.getLabel()).trim();
-        if (resourceLabel.includes("Programs")) {
-          await driver.actions().move({ origin: regionResources[programsResourceIndex] }).click().perform();
-          continue;
-        }
-        if (resourceLabel.includes(LIBRARIES_LIB1_LABEL)) {
-          let label = "";
-          let foundDSN = false;
-          let foundLIB = true;
-          //need to scroll down to find the DSN and stop when we find it
-          while (!label.includes(PIPELINES)) {
-            label = await getLabelAfterArrowDown(driver);
-            if (label === DS11) {
-              foundDSN = true;
-              break;
-            }
-          }
-          expect(foundDSN).to.be.equal(true);
-          expect(foundLIB).to.be.equal(true);
-        }
+  it("Should Check The LIB1 Library Under Region PROGLIB", async () => {
+    await PLIB1DS1PROGRAM?.click();
+    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
+    const driver = VSBrowser.instance.driver;
+    for (const item of regionResources) {
+      const resourceLabel = (await item.getLabel()).trim();
+      if (resourceLabel.includes("Programs")) {
+        await driver.actions().move({ origin: regionResources[programsResourceIndex] }).click().perform();
+        continue;
       }
-    });
+      if (resourceLabel.includes(LIBRARIES_LIB1_LABEL)) {
+        let label = "";
+        let foundDSN = false;
+        let foundLIB = true;
+        //need to scroll down to find the DSN and stop when we find it
+        while (!label.includes(PIPELINES)) {
+          label = await getLabelAfterArrowDown(driver);
+          if (label === DS11) {
+            foundDSN = true;
+            break;
+          }
+        }
+        expect(foundDSN).to.be.equal(true);
+        expect(foundLIB).to.be.equal(true);
+      }
+    }
   });
 });
