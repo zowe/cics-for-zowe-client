@@ -1,0 +1,585 @@
+{
+  "name": "cics-extension-for-zowe",
+  "displayName": "IBM CICS for Zowe Explorer",
+  "description": "Adds IBM CICS support to Zowe Explorer.",
+  "publisher": "Zowe",
+  "author": "Zowe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/cics-for-zowe-client.git"
+  },
+  "version": "3.8.0",
+  "engines": {
+    "vscode": "^1.79.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:cics-extension-for-zowe.addSession",
+    "onView:cics-view",
+    "onCommand:cics-extension-for-zowe.toggleResourceSetting"
+  ],
+  "extensionDependencies": [
+    "Zowe.vscode-extension-for-zowe"
+  ],
+  "main": "./dist/extension.js",
+  "icon": "resources/zowe-cics-color.png",
+  "keywords": [
+    "Zowe",
+    "explorer",
+    "mainframe",
+    "dataset",
+    "z/OS",
+    "COBOL",
+    "CICS",
+    "CMCI"
+  ],
+  "contributes": {
+    "viewsWelcome": [],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "inspector-panel",
+          "icon": "resources/zowe_cics_logo.png",
+          "title": "CICS Resource Inspector"
+        }
+      ]
+    },
+    "views": {
+      "zowe": [
+        {
+          "id": "cics-view",
+          "name": "cics"
+        }
+      ],
+      "inspector-panel": [
+        {
+          "type": "webview",
+          "id": "resource-inspector",
+          "name": "CICS Resource Inspector",
+          "when": "cics-extension-for-zowe.showResourceInspector"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "cics-extension-for-zowe.setFocusRegion",
+        "title": "Set Focus CICS Region",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.addSession",
+        "title": "Create a CICS Profile",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/plus-dark.svg",
+          "dark": "resources/imgs/plus-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.refreshTree",
+        "title": "Refresh",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/refresh-dark.svg",
+          "dark": "resources/imgs/refresh-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.filterResources",
+        "title": "Filter Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/filter-dark.svg",
+          "dark": "resources/imgs/filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.newCopyProgram",
+        "title": "New Copy",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/newcopy-dark.svg",
+          "dark": "resources/imgs/newcopy-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.filterPlexResources",
+        "title": "Filter Plex Resources in Regions tree",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/filter-dark.svg",
+          "dark": "resources/imgs/filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.clearFilter",
+        "title": "Clear Resource Filter",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/clear-filter-dark.svg",
+          "dark": "resources/imgs/clear-filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.clearPlexFilter",
+        "title": "Clear Plex Filter",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/clear-filter-dark.svg",
+          "dark": "resources/imgs/clear-filter-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.showResourceAttributes",
+        "title": "Show Attributes",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.showRegionAttributes",
+        "title": "Show Attributes",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.showRegionLogs",
+        "title": "Show Region Logs",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.showRegionParameters",
+        "title": "Show SIT Parameters",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.enableProgram",
+        "title": "Enable Program",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.disableProgram",
+        "title": "Disable Program",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.enableTransaction",
+        "title": "Enable Transaction",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.disableTransaction",
+        "title": "Disable Transaction",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.enableLocalFile",
+        "title": "Enable Local File",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.disableLocalFile",
+        "title": "Disable Local File",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.disableLibrary",
+        "title": "Disable Library",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.closeLocalFile",
+        "title": "Close Local File",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.openLocalFile",
+        "title": "Open Local File",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.phaseInCommand",
+        "title": "Phase In",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/phasein-dark.svg",
+          "dark": "resources/imgs/phasein-light.svg"
+        }
+      },
+      {
+        "command": "cics-extension-for-zowe.manageSession",
+        "title": "Manage Profile",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.inspectTreeResource",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.inquireTransaction",
+        "title": "Inquire Transaction",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.inquireProgram",
+        "title": "Inquire Program",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.purgeTask",
+        "title": "Purge Task",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.toggleResourceSetting",
+        "title": "Toggle visible CICS Resources",
+        "category": "IBM CICS for Zowe Explorer",
+        "icon": {
+          "light": "resources/imgs/toggle-resources-dark.svg",
+          "dark": "resources/imgs/toggle-resources-light.svg"
+        }
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "cics-extension-for-zowe.inspectTreeResource",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.setFocusRegion",
+          "when": "config.zowe.cics.resourceInspector"
+        },
+        {
+          "command": "cics-extension-for-zowe.inspectResource",
+          "when": "never"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "cics-extension-for-zowe.refreshTree",
+          "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
+          "command": "cics-extension-for-zowe.addSession",
+          "when": "view == cics-view",
+          "group": "navigation"
+        },
+        {
+          "when": "view == cics-view",
+          "command": "cics-extension-for-zowe.toggleResourceSetting",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
+          "command": "cics-extension-for-zowe.newCopyProgram",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
+          "command": "cics-extension-for-zowe.inspectTreeResource",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
+          "command": "cics-extension-for-zowe.phaseInCommand",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
+          "command": "cics-extension-for-zowe.newCopyProgram",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
+          "command": "cics-extension-for-zowe.phaseInCommand",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.showRegionAttributes",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /CICSRegion.*\\.active/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.showRegionLogs",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /CICSRegion.*.active/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.showRegionParameters",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.*/",
+          "command": "cics-extension-for-zowe.filterResources",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.FILTERED/",
+          "command": "cics-extension-for-zowe.clearFilter",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsregionscontainer.*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.filterPlexResources",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicsregionscontainer.*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.clearPlexFilter",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS*/",
+          "command": "cics-extension-for-zowe.showResourceAttributes",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableProgram",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableProgram",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableTransaction",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableTransaction",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.(DISABLED|UNENABLED).*/",
+          "command": "cics-extension-for-zowe.enableLocalFile",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableLocalFile",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.(ENABLED|DISABLED).OPEN.*/",
+          "command": "cics-extension-for-zowe.closeLocalFile",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.(DISABLED|UNENABLED|ENABLED).CLOSED.*/",
+          "command": "cics-extension-for-zowe.openLocalFile",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^cicssession.*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.manageSession",
+          "group": ""
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
+          "command": "cics-extension-for-zowe.inquireTransaction",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*/",
+          "command": "cics-extension-for-zowe.inquireProgram",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSTask.*/",
+          "command": "cics-extension-for-zowe.purgeTask",
+          "group": "2.CICSResourceNode.action"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "IBM CICS for Zowe Explorer",
+      "properties": {
+        "zowe.cics.persistent": {
+          "default": {
+            "persistence": true,
+            "programSearchHistory": [],
+            "transactionSearchHistory": [],
+            "localFileSearchHistory": [],
+            "loadedCICSProfile": []
+          },
+          "description": "Zowe CICS Extension History",
+          "scope": "window"
+        },
+        "zowe.cics.program.filter": {
+          "type": "string",
+          "default": "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
+          "description": "Default filter criteria for Programs",
+          "scope": "window"
+        },
+        "zowe.cics.transaction.filter": {
+          "type": "string",
+          "default": "NOT (program=DFH* OR program=EYU*)",
+          "description": "Default filter criteria for Transactions",
+          "scope": "window"
+        },
+        "zowe.cics.localFile.filter": {
+          "type": "string",
+          "default": "file=*",
+          "description": "Default filter criteria for Local Files",
+          "scope": "window"
+        },
+        "zowe.cics.tasks.filter": {
+          "type": "string",
+          "default": "(TRANID=*)",
+          "description": "Default filter criteria for Tasks",
+          "scope": "window"
+        },
+        "zowe.cics.library.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Library",
+          "scope": "window"
+        },
+        "zowe.cics.pipeline.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Pipeline",
+          "scope": "window"
+        },
+        "zowe.cics.tcpipService.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for TCP/IP Service",
+          "scope": "window"
+        },
+        "zowe.cics.uriMap.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for URI Map",
+          "scope": "window"
+        },
+        "zowe.cics.webService.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for Web Service",
+          "scope": "window"
+        },
+        "zowe.cics.resourcePageCount": {
+          "type": "number",
+          "default": 100,
+          "description": "How many records to fetch per page of resources",
+          "scope": "window",
+          "minimum": 1
+        },
+        "zowe.cics.resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Select resources to show in CICS tree",
+          "properties": {
+            "Program": {
+              "type": "boolean",
+              "description": "CICS Program"
+            },
+            "Transaction": {
+              "type": "boolean",
+              "description": "CICS Local Transaction"
+            },
+            "LocalFile": {
+              "type": "boolean",
+              "description": "CICS Local File"
+            },
+            "Task": {
+              "type": "boolean",
+              "description": "CICS Task"
+            },
+            "Library": {
+              "type": "boolean",
+              "description": "CICS Library"
+            },
+            "Pipeline": {
+              "type": "boolean",
+              "description": "CICS Pipeline"
+            },
+            "TCP/IPService": {
+              "type": "boolean",
+              "description": "CICS TCP/IP Service"
+            },
+            "URIMap": {
+              "type": "boolean",
+              "description": "CICS URI Map"
+            },
+            "WebService": {
+              "type": "boolean",
+              "description": "CICS Web Service"
+            }
+          },
+          "default": {
+            "Program": true,
+            "Transaction": true,
+            "LocalFile": true,
+            "Task": true,
+            "Library": true,
+            "Pipeline": true,
+            "TCP/IPService": true,
+            "URIMap": true,
+            "WebService": true
+          },
+          "scope": "window"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run getPrebuilds && npm run build:production",
+    "build": "webpack --mode development",
+    "build:production": "webpack --mode production",
+    "lint": "eslint src --ext ts",
+    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "clean": "rimraf lib && rimraf dist",
+    "watch": "webpack --mode development --watch",
+    "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
+    "test:unit": "jest --config unit.jest_config.ts",
+    "test": "npm run test:unit",
+    "tsupDep": "node ./scripts/tsup-deps.js",
+    "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
+    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "test:e2e:setup": "echo \"Using global config home: $ZOWE_CLI_HOME\" && rm -rf $ZOWE_CLI_HOME && mkdir -p $ZOWE_CLI_HOME",
+    "test:e2e:run": "tsc --project __tests__/test-tsconfig.json && extest setup-and-run '__tests__/lib/**/*.test.js' -s .cics -e .cics -c max -o __tests__/__e2e__/settings.json -i --mocha_config __tests__/__e2e__/.mocharc.js",
+    "test:e2e": "export ZOWE_CLI_HOME=`pwd`/.e2e-global-settings && npm run test:e2e:setup && npm run test:e2e:run",
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.10",
+    "@types/mustache": "^4.2.6",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "@types/vscode": "~1.53.0",
+    "@vscode/vsce": "^2.32.0",
+    "chai": "^4.4.1",
+    "css-loader": "^7.1.2",
+    "mocha": "^11.1.0",
+    "mustache": "^4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "raw-loader": "^4.0.2",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.2",
+    "vscode-extension-tester": "^8.14.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-manifest-plugin": "^5.0.1",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@vscode-elements/react-elements": "^1.15.1",
+    "@zowe/cics-for-zowe-sdk": "6.8.0",
+    "@zowe/core-for-zowe-sdk": "^8.0.0",
+    "@zowe/zowe-explorer-api": "^3.2.1"
+  }
+}
