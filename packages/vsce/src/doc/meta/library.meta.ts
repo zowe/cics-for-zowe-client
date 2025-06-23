@@ -31,7 +31,12 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {
-    return `${resource.attributes.name}`;
+    let label = `${resource.attributes.name}`;
+    //Adding enabled Status as it is required in e2e test cases to check if the enabled status is set or not
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
+      label += " (Disabled)";
+    }
+    return label;
   },
 
   getContext: function (resource: Resource<ILibrary>): string {
