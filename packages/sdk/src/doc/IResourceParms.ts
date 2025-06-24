@@ -9,6 +9,8 @@
  *
  */
 
+import { IResourceQueryParams } from "./IResourceQueryParms";
+
 export interface IResourceParms {
   /**
      * The name of the resource
@@ -37,10 +39,15 @@ export interface IResourceParms {
   /**
      * The name of the CICS region of the program
      */
-  regionName: string;
+  regionName?: string;
 
   /**
      * CICS Plex of the program
      */
   cicsPlex?: string;
+
+  /**
+   *  Query parameters to be used in the HTTP request
+   */
+  queryParams?: IResourceQueryParams;
 }

@@ -26,4 +26,5 @@ export interface ICMCIResponseResultSummary {
   displayed_recordcount: string;
   successcount?: string;
   cachetoken?: string;
+  [key: string]: any;
 }
