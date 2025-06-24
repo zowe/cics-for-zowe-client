@@ -641,6 +641,30 @@
             "WebService": true
           },
           "scope": "window"
+        },
+        "zowe.cics.focusRegion": {
+          "type": "object",
+          "description": "Focus Region",
+          "properties": {
+            "regionName": {
+              "type": "string",
+              "description": "Set Focus region"
+            },
+            "plexName": {
+              "type": "string",
+              "description": "Set Focus region"
+            },
+            "profileName": {
+              "type": "string",
+              "description": "Set Focus region"
+            }
+          },
+          "default": {
+            "regionName": "",
+            "plexName": "",
+            "profileName": ""
+          },
+          "scope": "window"
         }
       }
     }
