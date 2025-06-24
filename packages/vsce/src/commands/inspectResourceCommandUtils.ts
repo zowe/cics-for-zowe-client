@@ -74,11 +74,12 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
           focusRegion.cicsPlex,
         );
 
-        await showInspectResource(context, resourcesHandler);
+        showInspectResource(context, resourcesHandler);
     }
 }
 
-async function loadResources(session: CICSSession, resourceType: IResourceMeta<IResource>, resourceName: string, regionName: string, cicsplex: string) : Promise<IResponseHandler> {
+async function loadResources(session: CICSSession, resourceType: IResourceMeta<IResource>, resourceName: string,
+   regionName: string, cicsplex: string) : Promise<IResponseHandler> {
     const resourceContainer = new ResourceContainer<IResource>(resourceType);
     if (resourceName) {
       resourceContainer.setCriteria([resourceName]);
