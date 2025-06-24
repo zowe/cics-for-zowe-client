@@ -13,34 +13,38 @@ import { ExtensionContext, TreeView, Uri, commands, window } from "vscode";
 import { IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
-    let meta;
-    const treeSelectionArray = [...new Set([...treeview.selection])];
-    if (!node) {
-      for (const res of treeSelectionArray.filter((item) => item instanceof CICSResourceContainerNode && item.getContainedResource()?.resource)) {
-        meta = res.getContainedResource().meta;
+
+    let targetNode: CICSResourceContainerNode<IResource> = node;
+
+    if (!targetNode) {
+      if (treeview.selection.length < 1) {
+        await window.showErrorMessage("No CICS resource selected");
+        return;
       }
-    } else {
-      meta = node.getContainedResource().meta;
+
+      // Gets last selected element
+      targetNode = treeview.selection.pop();
+      const targetNodeMeta = targetNode.getContainedResource().meta;
+      const targetNodeResource = targetNode.getContainedResource().resource;
+
+      if (!targetNodeMeta || !targetNodeResource) {
+        await window.showErrorMessage("No CICS resource information available to inspect");
+        return;
+      }
+
+      // If there is more than 1 selected, inform we're ignoring the others
+      if (treeview.selection.length > 1) {
+        window.showInformationMessage(
+          "Multiple CICS resources selected. Resource '" + targetNodeMeta.getName(targetNodeResource) + "' will be inspected."
+        );
+      }
+
     }
-    const nodes = findSelectedNodes(treeview, meta, node);
-    if (!nodes || !nodes.length || treeSelectionArray.length === 0) {
-      await window.showErrorMessage("No CICS resource selected");
-      return;
-    }
-    if (treeSelectionArray.length > 1) {
-      await window.showInformationMessage(
-        "Multiple CICS resources selected. Resource '" + treeSelectionArray[treeSelectionArray.length - 1].getLabel() + "' will be inspected."
-      );
-    }
-    if (!nodes || nodes.length !== 1) {
-      await window.showErrorMessage("No CICS resource selected");
-      return;
-    }
-    await getResourceViewProvider(nodes[0], context.extensionUri);
+
+    await getResourceViewProvider(targetNode, context.extensionUri);
   });
 }
 

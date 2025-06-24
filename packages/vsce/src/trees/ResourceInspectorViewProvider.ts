@@ -55,6 +55,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         await this.sendResourceDataToWebView();
       }
     });
+    this.webviewView.onDidDispose(() => {
+      this.webviewReady = false;
+      this.resource = undefined;
+    });
   }
 
   /**
