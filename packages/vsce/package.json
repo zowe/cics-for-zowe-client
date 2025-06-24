@@ -216,6 +216,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.inspectResource",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "Inquire Transaction",
         "category": "IBM CICS for Zowe Explorer"
