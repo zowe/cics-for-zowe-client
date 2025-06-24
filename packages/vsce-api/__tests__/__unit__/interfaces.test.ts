@@ -17,13 +17,15 @@ import { IResourceAction } from "../../src/interfaces/IResourceAction";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
+import { join } from "path";
 
 describe("Interfaces", () => {
   const action: IResourceAction = {
     id: "CICS.CICSProgram.NEWCOPY",
     name: "New Copy Program",
     resourceType: ResourceTypes.CICSProgram,
-    action: async (_resource: IResource, _resourceContext: IResourceContext) => {},
+    iconPath: join(__dirname, "myicon", "path.svg"),
+    action: async (_resource: IResource, _resourceContext: IResourceContext) => { },
     enabledWhen(_resource, _resourceContext) {
       return true;
     },
@@ -34,8 +36,8 @@ describe("Interfaces", () => {
 
   const extender: IResourceExtender = {
     registeredActions: [],
-    deregisterAction(_id) {},
-    registerAction(_action) {},
+    deregisterAction(_id) { },
+    registerAction(_action) { },
     getAction(_id) {
       return action;
     },
@@ -80,6 +82,7 @@ describe("Interfaces", () => {
     expect(action).toHaveProperty("id");
     expect(action).toHaveProperty("name");
     expect(action).toHaveProperty("resourceType");
+    expect(action).toHaveProperty("iconPath");
     expect(action).toHaveProperty("action");
     expect(action).toHaveProperty("enabledWhen");
     expect(action).toHaveProperty("visibleWhen");
