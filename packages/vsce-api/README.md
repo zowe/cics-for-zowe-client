@@ -21,6 +21,7 @@ if (api) {
     id: "MyExtension.OPENDS",
     name: "Open data set with my extension",
     resourceTypes: [ResourceTypes.CICSLocalFile],
+    iconPath: Path.join(__dirname, "..", "my_icon.svg"),
 
     action: async (resource: ICICSLocalFile, input: IResourceContext): Promise<void> => {
       try {
@@ -103,6 +104,7 @@ const action: IResourceAction = {
   id: "my.unique.action.ID",
   name: "Run my action",
   resourceType: [ResourceTypes.CICSProgram],
+  iconPath: Path.join(__dirname, "..", "my_icon.svg"),
 
   visibleWhen: (resource: IResource, resourceContext: IResourceContext) => {
     return resource.eyu_cicsname !== undefined;

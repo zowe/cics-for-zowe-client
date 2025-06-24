@@ -17,6 +17,7 @@ export interface IResourceAction {
   id: string;
   name: string;
   resourceType: ResourceTypes;
+  iconPath?: string;
   visibleWhen?: (resource: IResource, resourceContext: IResourceContext) => boolean | Promise<boolean>;
   enabledWhen?: (resource: IResource, resourceContext: IResourceContext) => boolean | Promise<boolean>;
   action: string | ((resource: IResource, resourceContext: IResourceContext) => void | Promise<void>);
