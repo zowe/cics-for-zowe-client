@@ -9,18 +9,23 @@
  *
  */
 
-import { WebviewViewProvider, Uri, WebviewView } from "vscode";
-import { ResourceInspectorView } from "./ResourceInspectorView";
+import { HTMLTemplate } from "@zowe/zowe-explorer-api";
+import { randomUUID } from "crypto";
+import Mustache = require("mustache");
+import { WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
 import { IContainedResource, IResource } from "../doc";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
-  public static readonly viewType = "resource-inspector";
-  public _manager?: ResourceInspectorView;
-  private static instance: ResourceInspectorViewProvider;
-  private static refreshed = false;
 
-  constructor(
-    private readonly extensionUri: Uri
+  public static readonly viewType = "resource-inspector";
+  private static instance: ResourceInspectorViewProvider;
+
+  private webviewView?: WebviewView;
+  private resource: IContainedResource<IResource>;
+
+  private constructor(
+    private readonly extensionUri: Uri,
+    private webviewReady: boolean = false,
   ) { }
 
   public static getInstance(extensionUri: Uri): ResourceInspectorViewProvider {
@@ -31,17 +36,67 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return this.instance;
   }
 
-  resolveWebviewView(webviewView: WebviewView) {
-    if (this._manager) {
-      this._manager.initializeWebview(webviewView);
-    }
-    ResourceInspectorViewProvider.refreshed = true;
+  /**
+   * Method called by VS Code when a view first becomes visible.
+   * Captures and stores the webview instance we get back to reuse for it's life.
+   * 1 event listener, 1 view, refreshable content.
+   */
+  public resolveWebviewView(webviewView: WebviewView) {
+    this.webviewView = webviewView;
+    this.webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this.extensionUri],
+    };
+    this.webviewView.webview.html = this._getHtmlForWebview(this.webviewView.webview);
+
+    this.webviewView.webview.onDidReceiveMessage(async (message) => {
+      if (message.command === "init") {
+        this.webviewReady = true;
+        await this.sendResourceDataToWebView();
+      }
+    });
+    this.webviewView.onDidDispose(() => {
+      this.webviewReady = false;
+      this.resource = undefined;
+    });
   }
 
-  reloadData(resource: IContainedResource<IResource>, webviewView: WebviewView) {
-    this._manager = new ResourceInspectorView(this.extensionUri, resource);
-    if (ResourceInspectorViewProvider.refreshed) {
-      this.resolveWebviewView(webviewView);
+  /**
+   * Updates the resource to dispaly on the webview.
+   * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
+   */
+  public async setResource(resource: IContainedResource<IResource>) {
+    this.resource = resource;
+
+    if (this.webviewReady) {
+      await this.sendResourceDataToWebView();
     }
+  }
+
+  /**
+   * Posts resource data to the react app which is listening for updates.
+   */
+  private async sendResourceDataToWebView() {
+    await this.webviewView.webview.postMessage({
+      data: {
+        name: this.resource.meta.getName(this.resource.resource),
+        resourceName: this.resource.meta.resourceName,
+        highlights: this.resource.meta.getHighlights(this.resource.resource),
+        resource: this.resource.resource.attributes,
+      },
+    });
+  }
+
+  /**
+   * Builds the HTML for the webview using the built react app.
+   */
+  private _getHtmlForWebview(webview: Webview): string {
+    const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "resourceInspectorPanelView.js"));
+    const nonce = randomUUID();
+
+    return Mustache.render(HTMLTemplate.default, {
+      uris: { resource: { script: scriptUri } },
+      nonce,
+    });
   }
 }
