@@ -16,7 +16,7 @@ export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>
 }
 
 export class FilterDescriptor implements QuickPickItem {
-  constructor(private text: string) {}
+  constructor(private text: string) { }
   get label(): string {
     return this.text;
   }
@@ -28,7 +28,7 @@ export class FilterDescriptor implements QuickPickItem {
   }
 }
 
-export async function getPatternFromFilter(resourceName: string, resourceHistory: string[]) {
+export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
   let pattern: string = "";
   const createPick = new FilterDescriptor(`\uFF0B Create New ${resourceName} Filter (use a comma to separate multiple patterns e.g. LG*,I*)`);
   const items = resourceHistory.map((loadedFilter) => {
@@ -64,8 +64,11 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
     window.showInformationMessage("You must enter a pattern");
     return;
   }
-  // Replace with upper case
-  pattern = pattern.toUpperCase();
+  // Some resources have case-sensitive filtering (bundleparts)
+  if (!filterCaseSensitive) {
+    // Replace with upper case
+    pattern = pattern.toUpperCase();
+  }
   // Remove whitespace
   return pattern.replace(/\s/g, "");
 }

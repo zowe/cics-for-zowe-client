@@ -11,6 +11,12 @@
 
 const getIconFilePathFromNameMock = jest.fn();
 const cicsCombinedTreeMock = jest.fn();
+jest.mock("@zowe/zowe-explorer-api", () => ({
+  ...jest.requireActual("@zowe/zowe-explorer-api"),
+  ZoweVsCodeExtension: {
+    getZoweExplorerApi: jest.fn().mockReturnValue({ getExplorerExtenderApi: jest.fn().mockReturnValue({ getProfilesCache: jest.fn() }) })
+  },
+}));
 
 import { IProfileLoaded } from "@zowe/imperative";
 import * as vscode from "vscode";
