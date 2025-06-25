@@ -41,6 +41,6 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
         );
       }
     }
-    await inspectResourceByNode(context, treeview, targetNode);
+    await inspectResourceByNode(context, targetNode);
   });
 }
