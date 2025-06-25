@@ -129,6 +129,8 @@ describe("CICSResourceContainerNode tests", () => {
           status: "ENABLED",
           progtype: "COBOL",
           enablestatus: "ENABLED",
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
         }),
       },
       {
@@ -159,6 +161,8 @@ describe("CICSResourceContainerNode tests", () => {
           status: "DISABLED",
           progtype: "COBOL",
           enablestatus: "ENABLED",
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
         }),
       },
       {

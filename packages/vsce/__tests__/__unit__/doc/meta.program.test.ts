@@ -23,7 +23,9 @@ describe("Program Meta", () => {
       eyu_cicsname: "MYREG",
       newcopycnt: "0",
       progtype: "COBOL",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
+      library: "MYLIB",
+      librarydsn: "MYLIBDSN",
     });
   });
 
