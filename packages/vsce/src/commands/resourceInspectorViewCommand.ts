@@ -16,7 +16,6 @@ import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewPro
 
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
-
     let targetNode: CICSResourceContainerNode<IResource> = node;
 
     if (!targetNode) {
@@ -41,7 +40,6 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
           "Multiple CICS resources selected. Resource '" + targetNodeMeta.getName(targetNodeResource) + "' will be inspected."
         );
       }
-
     }
 
     await getResourceViewProvider(targetNode, context.extensionUri);

@@ -9,91 +9,87 @@
  *
  */
 
-import { commands, ExtensionContext, TreeView, window } from "vscode";
-import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { getFocusRegion } from "./setFocusRegionCommand";
-import { IFocusRegion } from "./IFocusRegion";
-import { CICSSession, Resource, ResourceContainer } from "../resources";
+import { commands, ExtensionContext, window } from "vscode";
+import { CICSMessages } from "../constants/CICS.messages";
 import { IResource, IResourceMeta } from "../doc";
 import { SupportedResources } from "../model";
-import { CICSLogger } from "../utils/CICSLogger";
-import { CICSMessages } from "../constants/CICS.messages";
+import { CICSSession, Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
+import { CICSLogger } from "../utils/CICSLogger";
+import { IFocusRegion } from "./IFocusRegion";
+import { getFocusRegion } from "./setFocusRegionCommand";
 
-interface IResponseHandler {
+interface IResourcesHandler {
   resources: [Resource<IResource>[], boolean];
   resourceContainer: ResourceContainer<IResource>;
 }
 
-async function showInspectResource(context: ExtensionContext, resourcesHandler:IResponseHandler) {
-    // Will only have one resource
-    const resource:Resource<IResource>[] = resourcesHandler.resources[0];
+async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
+  // Will only have one resource
+  const resource: Resource<IResource>[] = resourcesHandler.resources[0];
 
-    // Makes the "CICS Resource Inspector" tab visible in the panel
-    commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
-    // Focuses on the tab in the panel - previous command not working for me??
-    commands.executeCommand("resource-inspector.focus");
+  // Makes the "CICS Resource Inspector" tab visible in the panel
+  commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
+  // Focuses on the tab in the panel - previous command not working for me??
+  commands.executeCommand("resource-inspector.focus");
 
-    await ResourceInspectorViewProvider.getInstance(context.extensionUri).setResource({
-        resource: resource[0],
-        meta: resourcesHandler.resourceContainer.getMeta(),
-      });
-
+  await ResourceInspectorViewProvider.getInstance(context.extensionUri).setResource({
+    resource: resource[0],
+    meta: resourcesHandler.resourceContainer.getMeta(),
+  });
 }
 
-export async function inspectResourceByNode(context: ExtensionContext, treeview: TreeView<any>, node: CICSResourceContainerNode<IResource>) {
-    const resourcesHandler:IResponseHandler = await loadResources(
-      node.getSession(),
-      node.getContainedResource().meta,
-      node.getContainedResourceName(),
-      node.regionName,
-      node.cicsplexName,
-    );
-    await showInspectResource(context, resourcesHandler);
+export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
+  const resourcesHandler: IResourcesHandler = await loadResources(
+    node.getSession(),
+    node.getContainedResource().meta,
+    node.getContainedResourceName(),
+    node.regionName,
+    node.cicsplexName
+  );
+  await showInspectResource(context, resourcesHandler);
 }
 
 export async function inspectResourceByName(context: ExtensionContext, resourceName: string, resourceType: string) {
-    // Inspecting a resource by its name so this will be on the focus region
-    const focusRegion: IFocusRegion = await getFocusRegion();
+  // Inspecting a resource by its name so this will be on the focus region
+  const focusRegion: IFocusRegion = await getFocusRegion();
 
-    if (focusRegion) {
-        const type = getResourceType(resourceType);
+  if (focusRegion) {
+    const type = getResourceType(resourceType);
 
-        if (!type) {
-          // Error if resource type not found
-          CICSLogger.error(CICSMessages.CICSResourceTypeNotFound.message);
-          window.showErrorMessage(CICSMessages.CICSResourceTypeNotFound.message);
-          return;
-        }
-
-        const resourcesHandler:IResponseHandler = await loadResources(
-          focusRegion.session,
-          type,
-          resourceName,
-          focusRegion.focusSelectedRegion,
-          focusRegion.cicsPlex,
-        );
-
-        showInspectResource(context, resourcesHandler);
-    }
-}
-
-async function loadResources(session: CICSSession, resourceType: IResourceMeta<IResource>, resourceName: string,
-   regionName: string, cicsplex: string) : Promise<IResponseHandler> {
-    const resourceContainer = new ResourceContainer<IResource>(resourceType);
-    if (resourceName) {
-      resourceContainer.setCriteria([resourceName]);
-    } else {
-      resourceContainer.resetCriteria();
+    if (!type) {
+      // Error if resource type not found
+      CICSLogger.error(CICSMessages.CICSResourceTypeNotFound.message);
+      window.showErrorMessage(CICSMessages.CICSResourceTypeNotFound.message);
+      return;
     }
 
-    const resources:[Resource<IResource>[], boolean] = await resourceContainer.loadResources(
-      session,
-      regionName,
-      cicsplex,
+    const resourcesHandler: IResourcesHandler = await loadResources(
+      focusRegion.session,
+      type,
+      resourceName,
+      focusRegion.focusSelectedRegion,
+      focusRegion.cicsPlex
     );
 
-    return { resources, resourceContainer };
+    showInspectResource(context, resourcesHandler);
+  }
+}
+
+async function loadResources(
+  session: CICSSession,
+  resourceType: IResourceMeta<IResource>,
+  resourceName: string,
+  regionName: string,
+  cicsplex: string
+): Promise<IResourcesHandler> {
+  const resourceContainer = new ResourceContainer<IResource>(resourceType);
+  resourceContainer.setCriteria([resourceName]);
+
+  const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
+
+  return { resources, resourceContainer };
 }
 
 function getResourceType(resourceName: string): IResourceMeta<IResource> {
