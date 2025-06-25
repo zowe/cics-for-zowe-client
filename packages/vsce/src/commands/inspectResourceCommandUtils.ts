@@ -13,12 +13,13 @@ import { commands, ExtensionContext, window } from "vscode";
 import { CICSMessages } from "../constants/CICS.messages";
 import { IResource, IResourceMeta } from "../doc";
 import { SupportedResources } from "../model";
-import { CICSSession, Resource, ResourceContainer } from "../resources";
+import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { getFocusRegion } from "./setFocusRegionCommand";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 interface IResourcesHandler {
   resources: [Resource<IResource>[], boolean];

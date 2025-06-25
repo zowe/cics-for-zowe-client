@@ -9,12 +9,12 @@
  *
  */
 
+jest.mock("@zowe/cics-for-zowe-sdk");
+
 import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSSession } from "../../../src/resources/CICSSession";
 import { SessionHandler } from "../../../src/resources/SessionHandler";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-
-jest.mock("../../../src/resources/CICSSession");
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 const profile: imperative.IProfileLoaded = {
   name: "testProfile",

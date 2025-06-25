@@ -9,8 +9,8 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfile } from "@zowe/imperative";
-import { CICSSession } from "../../resources/CICSSession";
 
 export interface ISessionHandler {
   getSession(profile: IProfile): CICSSession | undefined;

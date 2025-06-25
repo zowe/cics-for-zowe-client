@@ -9,8 +9,8 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { CICSSession } from "../../resources/CICSSession";
 
 export interface IFocusRegion {
   profile: IProfileLoaded;
