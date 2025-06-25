@@ -38,8 +38,9 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { ILibrary, IProgram, ITask, LibraryMeta, ProgramMeta, TaskMeta } from "../../../src/doc";
-import { CICSSession, Resource, ResourceContainer } from "../../../src/resources";
+import { Resource, ResourceContainer } from "../../../src/resources";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
@@ -52,7 +53,7 @@ describe("CICSResourceContainerNode tests", () => {
   let resourceContainer: ResourceContainer<IProgram>;
 
   beforeEach(() => {
-    cicsSession = new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" });
+    cicsSession = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
 
     sessionTree = new CICSSessionTree({ name: "MYPROF", profile: CICSProfileMock }, {
       _onDidChangeTreeData: { fire: () => jest.fn() },

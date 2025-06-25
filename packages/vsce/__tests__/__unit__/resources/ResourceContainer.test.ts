@@ -43,8 +43,9 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProgram, IResource, ProgramMeta } from "../../../src/doc";
-import { CICSSession, Resource } from "../../../src/resources";
+import { Resource } from "../../../src/resources";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
@@ -54,7 +55,7 @@ describe("Resource Container", () => {
 
   beforeEach(() => {
     container = new ResourceContainer(ProgramMeta);
-    cicsSessionMock = new CICSSession({ ...CICSProfileMock, hostname: "MY.HOST" });
+    cicsSessionMock = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
 
     jest.clearAllMocks();
 
