@@ -30,6 +30,7 @@ import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
 import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
+import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
@@ -80,5 +81,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInspectTreeResourceCommand(context, treeview),
     getToggleResourceSettingCommand(),
     setFocusRegionCommand(),
+    showLibraryCommand(treeDataProv, treeview),
   ];
 };

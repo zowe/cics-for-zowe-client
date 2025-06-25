@@ -1,0 +1,51 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Load LIB1 library for PROGLIB",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Fetch LIB1 library with default filter",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibraryDatasetName/CICSEX61/PROGLIB?CRITERIA=(LIBRARY%3DLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "show_library_mappings/LIB1_mappings/fetch-lib1-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Load LIB1 library for PROGLIB",
+      "requiredScenarioState": "Fetch LIB1 library with default filter",
+      "newScenarioState": "Fetch LIB1 library record count",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "show_library_mappings/LIB1_mappings/response-for-show-library-LIB1.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Load LIB1 library for PROGLIB",
+      "requiredScenarioState": "Fetch LIB1 library record count",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "show_library_mappings/LIB1_mappings/fetch-lib1-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
