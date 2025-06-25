@@ -12,7 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
 import { IResource, ITask, ITransaction, TaskMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
+import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
@@ -33,13 +33,38 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
       return;
     }
 
+    let transactionTree: CICSResourceContainerNode<ITransaction> | undefined;
+    const label = nodes[0].getParent().label;
+
+    //if the label is All Tasks, we need to get the transaction tree from the regions node
+    if (label === "All Tasks") {
+      let regionName = nodes[0].description.toString();
+      //regionName comes as (REGION_NAME),so replacing extra brackets
+      if (regionName.length > 0) {
+        regionName = regionName.match(/\(([^)]*)\)/)?.[1]?.trim() ?? regionName;
+        const regionsNode = nodes[0]
+          .getParent()
+          .getParent()
+          .children.filter((ch) => ch.label.toString().includes("Regions"))[0] as CICSRegionsContainer;
+        //reveal the regions node if not already expanded
+        await treeview.reveal(regionsNode, { expand: true });
+        const regionTree = regionsNode.children.filter((ch) => ch.label === regionName)[0];
+        //reveal the region resources if not already expanded
+        await treeview.reveal(regionTree, { expand: true });
+        transactionTree = regionTree.children.filter(
+          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LOCAL_TRANSACTION
+        )[0] as CICSResourceContainerNode<ITransaction>;
+      }
+    } else {
+      transactionTree = nodes[0]
+        .getParent()
+        .getParent()
+        .children.filter(
+          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LOCAL_TRANSACTION
+        )[0] as CICSResourceContainerNode<ITransaction>;
+    }
+
     const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.tranid);
-    const transactionTree = nodes[0]
-      .getParent()
-      .getParent()
-      .children.filter(
-        (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LOCAL_TRANSACTION
-      )[0] as CICSResourceContainerNode<ITransaction>;
 
     transactionTree.setFilter(pattern);
     transactionTree.description = pattern.join(" OR ");
