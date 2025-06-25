@@ -9,64 +9,18 @@
  *
  */
 
-import { commands, ExtensionContext, window, workspace } from "vscode";
-import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { getFocusRegion } from "./setFocusRegionCommand";
-import { IFocusRegion } from "./IFocusRegion";
-import { Resource, ResourceContainer } from "../resources";
-import { IResource, IResourceMeta } from "../doc";
-import { SupportedResources } from "../model";
-import { CICSLogger } from "../utils/CICSLogger";
-import { CICSMessages } from "../constants/CICS.messages";
+import { commands, ExtensionContext, TreeView, workspace } from "vscode";
 
-export function getInspectResourceCommand(context: ExtensionContext) {
-  return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName: string, resourceType: string) => {
-    if (!await workspace.getConfiguration().get('zowe.cics.resourceInspector')) {
+import { inspectResourceByName } from "./inspectResourceCommandUtils";
+
+export function getInspectResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {
+    if (!(await workspace.getConfiguration().get("zowe.cics.resourceInspector"))) {
       return;
     }
 
-    const focusRegion: IFocusRegion = await getFocusRegion();
-
-    if (focusRegion) {
-      const type = getResourceType(resourceType);
-
-      if (!type) {
-        // Error if resource type not found
-        CICSLogger.error(CICSMessages.CICSResourceTypeNotFound.message);
-        window.showErrorMessage(CICSMessages.CICSResourceTypeNotFound.message);
-        return;
-      }
-
-      // Makes the "CICS Resource Inspector" tab visible in the panel
-      commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
-      // Focuses on the tab in the panel - previous command not working for me??
-      commands.executeCommand("resource-inspector.focus");
-
-      const resourceContainer = new ResourceContainer<IResource>(type);
-      resourceContainer.setCriteria([resourceName]);
-      const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(
-        focusRegion.session,
-        focusRegion.focusSelectedRegion,
-        focusRegion.cicsPlex,
-      );
-      // Will only have one resource
-      const resource: Resource<IResource>[] = resources[0];
-
-      await ResourceInspectorViewProvider.getInstance(context.extensionUri)
-        .setResource({
-          resource: resource[0],
-          meta: resourceContainer.getMeta(),
-        });
+    if (resourceName && resourceType) {
+      await inspectResourceByName(context, resourceName, resourceType);
     }
   });
-
-  function getResourceType(resourceName: string): IResourceMeta<IResource> {
-    const types: IResourceMeta<IResource>[] = SupportedResources.metaResources.filter((value) => value.resourceName == resourceName);
-
-    // Should only have one
-    if (types?.length > 0) {
-      return types[0];
-    }
-    return undefined;
-  }
 }

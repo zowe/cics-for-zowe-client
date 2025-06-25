@@ -9,12 +9,12 @@
  *
  */
 
-import { ExtensionContext, TreeView, Uri, commands, window } from "vscode";
+import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
-import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
+import { inspectResourceByNode } from "./inspectResourceCommandUtils";
 
-export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
+export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
     let targetNode: CICSResourceContainerNode<IResource> = node;
 
@@ -41,16 +41,6 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
         );
       }
     }
-
-    await getResourceViewProvider(targetNode, context.extensionUri);
+    await inspectResourceByNode(context, targetNode);
   });
-}
-
-async function getResourceViewProvider(selectedNode: CICSResourceContainerNode<IResource>, extensionUri: Uri) {
-  // Makes the "CICS Resource Inspector" tab visible in the panel
-  commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
-  // Focuses on the tab in the panel - previous command not working for me??
-  commands.executeCommand("resource-inspector.focus");
-
-  await ResourceInspectorViewProvider.getInstance(extensionUri).setResource(selectedNode.getContainedResource());
 }
