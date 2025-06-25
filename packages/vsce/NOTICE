@@ -6405,59 +6405,7 @@ THE SOFTWARE.
 
 ------
 
-** @secretlint/config-creator; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
-Copyright (c) 2020 azu
-** @secretlint/config-loader; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
-Copyright (c) 2020 azu
-** @secretlint/core; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
-(c) 2017 azu
-Copyright (c) 2020 azu
-(c) 2017 59naga https://github.com/59naga/carrack
-** @secretlint/formatter; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
-Copyright (c) 2020 azu
-** @secretlint/node; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
-Copyright (c) 2020 azu
-** @secretlint/profiler; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
-Copyright (c) 2020 azu
-** @secretlint/resolver; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
-Copyright (c) 2020 azu
-** @secretlint/secretlint-rule-preset-recommend; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
-Copyright (c) 2020 azu
-Copyright (c) 2005 Tom Wu
-Copyright (c) 2003-2005 Tom Wu
-Copyright (c) 2005-2009 Tom Wu
-Copyright (c) 2012 Kenji Urushima
-Copyright base-x contributors (c) 2016
-Copyright (c) 2014 Digital Bazaar, Inc.
-Copyright (c) 2019 Digital Bazaar, Inc.
-Copyright 2011-2016 Digital Bazaar, Inc.
-Copyright 2011-2017 Digital Bazaar, Inc.
-Copyright (c) 2008-2013 Digital Bazaar, Inc.
-Copyright (c) 2009-2014 Digital Bazaar, Inc.
-Copyright (c) 2009-2015 Digital Bazaar, Inc.
-Copyright (c) 2010-2012 Digital Bazaar, Inc.
-Copyright (c) 2010-2013 Digital Bazaar, Inc.
-Copyright (c) 2010-2014 Digital Bazaar, Inc.
-Copyright (c) 2010-2015 Digital Bazaar, Inc.
-Copyright (c) 2010-2018 Digital Bazaar, Inc.
-Copyright (c) 2012-2014 Digital Bazaar, Inc.
-Copyright (c) 2012-2015 Digital Bazaar, Inc.
-Copyright (c) 2013-2014 Digital Bazaar, Inc.
-Copyright (c) 2014-2015 Digital Bazaar, Inc.
-Copyright (c) 2017-2019 Digital Bazaar, Inc.
-Copyright 2012 Stefan Siegl <stesie@brokenpipe.de>
-Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
-Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
-Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-Copyright (c) Ellis Pritchard, Guardian Unlimited 2003. Contact ellis@nukinetics.com
-** @secretlint/source-creator; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
-Copyright (c) 2020 azu
-** @secretlint/types; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
-Copyright (c) 2020 azu
 ** @textlint/resolver; version 14.8.4 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/resolver/
-Copyright (c) 2020 azu
-** secretlint; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
 Copyright (c) 2020 azu
 
 Copyright (c) 2020 azu
@@ -6806,64 +6754,12 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-rule-no-dotenv; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
-Copyright (c) 2020 secretlint
-
-Copyright (c) 2020 secretlint
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** @sec-ant/readable-stream; version 0.4.1 -- https://github.com/Sec-ant/readable-stream
 Copyright (c) 2022 Ze-Zheng Wu
 
 MIT License
 
 Copyright (c) 2022 Ze-Zheng Wu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
-** @secretlint/secretlint-formatter-sarif; version 9.3.4 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
-Copyright (c) 2022 azu
-
-Copyright (c) 2022 azu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
