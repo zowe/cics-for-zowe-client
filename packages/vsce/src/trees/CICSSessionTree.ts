@@ -9,8 +9,8 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { CICSSession } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
