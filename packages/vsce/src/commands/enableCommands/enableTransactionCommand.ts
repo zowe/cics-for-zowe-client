@@ -17,7 +17,7 @@ import { CICSSession } from "../../resources";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../ICommandParams";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {

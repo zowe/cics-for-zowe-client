@@ -17,7 +17,7 @@ import { CICSSession, Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
-import { IFocusRegion } from "./IFocusRegion";
+import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { getFocusRegion } from "./setFocusRegionCommand";
 
 interface IResourcesHandler {

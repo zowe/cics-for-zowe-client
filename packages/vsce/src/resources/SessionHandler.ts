@@ -11,7 +11,7 @@
 
 import { IProfile, IProfileLoaded } from "@zowe/imperative";
 import { CICSSession } from "./CICSSession";
-import { ISessionHandler } from "./ISessionHandler";
+import { ISessionHandler } from "../doc/resources/ISessionHandler";
 
 export class SessionHandler implements ISessionHandler {
   private sessions: Map<String, CICSSession>;
