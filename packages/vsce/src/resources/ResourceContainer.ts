@@ -9,14 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, getCache } from "@zowe/cics-for-zowe-sdk";
+import { CICSSession, CicsCmciConstants, getCache } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { IResource, IResourceMeta } from "../doc";
 import { PersistentStorage } from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSSession } from "./CICSSession";
 import { Resource } from "./Resource";
 
 export class ResourceContainer<T extends IResource> {

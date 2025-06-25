@@ -9,10 +9,10 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { ICICSTreeNode } from "../doc";
-import { CICSSession } from "../resources";
 import { TextTreeItem } from "./TextTreeItem";
 
 export class CICSTreeNode extends TreeItem {
