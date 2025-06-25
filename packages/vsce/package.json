@@ -243,13 +243,18 @@
           "light": "resources/imgs/toggle-resources-dark.svg",
           "dark": "resources/imgs/toggle-resources-light.svg"
         }
+      },
+      {
+        "command": "cics-extension-for-zowe.inspectResource",
+        "title": "Inspect Resource",
+        "category": "IBM CICS for Zowe Explorer"
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
-          "when": "never"
+          "when": "config.zowe.cics.resourceInspector"
         },
         {
           "command": "cics-extension-for-zowe.setFocusRegion",

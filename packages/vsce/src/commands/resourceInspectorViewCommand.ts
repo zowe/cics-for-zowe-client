@@ -13,25 +13,46 @@ import { ExtensionContext, TreeView, Uri, commands, window } from "vscode";
 import { IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { findSelectedNodes } from "../utils/commandUtils";
 
 export function getResourceInspectorCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
-    const nodes = findSelectedNodes(treeview, node.getContainedResource().meta, node);
-    if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS resource selected");
-      return;
+
+    let targetNode: CICSResourceContainerNode<IResource> = node;
+
+    if (!targetNode) {
+      if (treeview.selection.length < 1) {
+        await window.showErrorMessage("No CICS resource selected");
+        return;
+      }
+
+      // Gets last selected element
+      targetNode = treeview.selection.pop();
+      const targetNodeMeta = targetNode.getContainedResource().meta;
+      const targetNodeResource = targetNode.getContainedResource().resource;
+
+      if (!targetNodeMeta || !targetNodeResource) {
+        await window.showErrorMessage("No CICS resource information available to inspect");
+        return;
+      }
+
+      // If there is more than 1 selected, inform we're ignoring the others
+      if (treeview.selection.length > 1) {
+        window.showInformationMessage(
+          "Multiple CICS resources selected. Resource '" + targetNodeMeta.getName(targetNodeResource) + "' will be inspected."
+        );
+      }
+
     }
-    getResourceViewProvider(nodes, context.extensionUri);
+
+    await getResourceViewProvider(targetNode, context.extensionUri);
   });
 }
 
-function getResourceViewProvider(selectedNodes: CICSResourceContainerNode<IResource>[], extensionUri: Uri) {
-  for (const item of selectedNodes) {
-    const resourceViewProvider = ResourceInspectorViewProvider.getInstance(extensionUri);
-    const enbededWebview = resourceViewProvider?._manager?._view;
-    resourceViewProvider.reloadData(item.getContainedResource(), enbededWebview);
-  }
+async function getResourceViewProvider(selectedNode: CICSResourceContainerNode<IResource>, extensionUri: Uri) {
+  // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
-  commands.executeCommand("workbench.view.extension.inspector-panel");
+  // Focuses on the tab in the panel - previous command not working for me??
+  commands.executeCommand("resource-inspector.focus");
+
+  await ResourceInspectorViewProvider.getInstance(extensionUri).setResource(selectedNode.getContainedResource());
 }

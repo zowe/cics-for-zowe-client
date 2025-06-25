@@ -37,26 +37,26 @@ export function getInspectResourceCommand(context: ExtensionContext) {
         return;
       }
 
+      // Makes the "CICS Resource Inspector" tab visible in the panel
+      commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
+      // Focuses on the tab in the panel - previous command not working for me??
+      commands.executeCommand("resource-inspector.focus");
+
       const resourceContainer = new ResourceContainer<IResource>(type);
       resourceContainer.setCriteria([resourceName]);
-      const resources:[Resource<IResource>[], boolean] = await resourceContainer.loadResources(
+      const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(
         focusRegion.session,
         focusRegion.focusSelectedRegion,
         focusRegion.cicsPlex,
       );
-
-      const resourceViewProvider = ResourceInspectorViewProvider.getInstance(context.extensionUri);
-      const enbededWebview = resourceViewProvider?._manager?._view;
-
       // Will only have one resource
-      const resource:Resource<IResource>[] = resources[0];
-      resourceViewProvider.reloadData( {
-            resource: resource[0],
-            meta: resourceContainer.getMeta(),
-          }, enbededWebview);
+      const resource: Resource<IResource>[] = resources[0];
 
-      commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
-      commands.executeCommand("workbench.view.extension.inspector-panel");
+      await ResourceInspectorViewProvider.getInstance(context.extensionUri)
+        .setResource({
+          resource: resource[0],
+          meta: resourceContainer.getMeta(),
+        });
     }
   });
 
