@@ -17,7 +17,7 @@ import { CICSSession } from "../../resources";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../ICommandParams";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 /**
  * Performs disable on selected CICSProgram nodes.
