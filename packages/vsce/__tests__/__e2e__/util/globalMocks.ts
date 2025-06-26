@@ -9,7 +9,7 @@
  *
  */
 
-import { DefaultTreeSection, InputBox, Key, TreeItem, VSBrowser } from "vscode-extension-tester";
+import { DefaultTreeSection, InputBox, Key, TreeItem, VSBrowser, Workbench } from "vscode-extension-tester";
 
 let fs = require("fs");
 let path = require("path");
@@ -77,6 +77,17 @@ export async function findProgramByLabel(programs: TreeItem[], programLabel: str
   return undefined;
 }
 
+export async function countCicsCommands() {
+  // Open Command Palette using keyboard shortcut as contextmenu support is not available
+  const driver = VSBrowser.instance.driver;
+  await driver.actions().keyDown(Key.COMMAND).sendKeys("P").keyUp(Key.COMMAND).perform();
+  const inputBox = await InputBox.create();
+  await inputBox.setText(">IBM CICS for Zowe Explorer");
+  await sleep(3000);
+  const items = await inputBox.getQuickPicks();
+  return items.length;
+}
+
 export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void> {
   // Send the ARROW_DOWN key the specified number of times
   const driver = VSBrowser.instance.driver;
@@ -85,3 +96,15 @@ export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void
   }
   await driver.actions().sendKeys(Key.ENTER).perform();
 }
+
+export async function openCommandPaletteAndRun(command: string) {
+  const workbench = new Workbench();
+  await workbench.openCommandPrompt();
+  const inputBox = await InputBox.create();
+  await inputBox.setText(command);
+  await sleep(500);
+  await inputBox.confirm();
+  await sleep(2000); // Wait for the command to complete
+}
+
+

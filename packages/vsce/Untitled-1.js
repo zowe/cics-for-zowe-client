@@ -226,11 +226,6 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
-        "command": "cics-extension-for-zowe.showLibrary",
-        "title": "Show Library",
-        "category": "IBM CICS for Zowe Explorer"
-      },
-      {
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
         "category": "IBM CICS for Zowe Explorer"
@@ -243,129 +238,17 @@
           "light": "resources/imgs/toggle-resources-dark.svg",
           "dark": "resources/imgs/toggle-resources-light.svg"
         }
-      },
-      {
-        "command": "cics-extension-for-zowe.inspectResource",
-        "title": "Inspect Resource",
-        "category": "IBM CICS for Zowe Explorer"
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
-          "when": "config.zowe.cics.resourceInspector"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.setFocusRegion",
           "when": "config.zowe.cics.resourceInspector"
-        },
-        {
-           "command": "cics-extension-for-zowe.setFocusRegion",
-           "when": "config.zowe.cics.resourceInspector"
-        },
-        {
-          "command": "cics-extension-for-zowe.inspectResource",
-          "when": "never"
-        },
-        {
-          "command": "cics-extension-for-zowe.purgeTask",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.inquireProgram",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.newCopyProgram",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.newCopyProgram",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.phaseInCommand",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.showRegionAttributes",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.showRegionParameters",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.showRegionLogs",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.clearFilter",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.filterPlexResources",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.clearPlexFilter",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.enableProgram",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.disableProgram",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.enableTransaction",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.disableTransaction",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.enableLocalFile",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.enableLocalFile",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.disableLocalFile",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.closeLocalFile",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.openLocalFile",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.inquireTransaction",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {"command": "cics-extension-for-zowe.disableLibrary",
-         "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.manageSession",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.filterResources",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.showResourceAttributes",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.inspectResource",
@@ -508,11 +391,6 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.*/",
           "command": "cics-extension-for-zowe.inquireProgram",
-          "group": "1.CICSResourceNode.inquire"
-        },
-        {
-          "when": "view == cics-view && !(viewItem =~ /^CICSResourceNode.CICSProgram.(ENABLED|DISABLED).PARENT.CICSLibraryDatasetName.*/) && (viewItem =~ /^CICSResourceNode.CICSProgram.(ENABLED|DISABLED).*/)",
-          "command": "cics-extension-for-zowe.showLibrary",
           "group": "1.CICSResourceNode.inquire"
         },
         {

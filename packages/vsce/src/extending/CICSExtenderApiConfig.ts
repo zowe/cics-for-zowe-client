@@ -26,7 +26,10 @@ export class CICSExtenderApiConfig {
         supportedResources: SupportedResources.resources,
         resourceInspector: {
           enabled: false
-        }
+        },
+        showAllCommand: {
+      enabled: false
+}
       }
     };
   }
