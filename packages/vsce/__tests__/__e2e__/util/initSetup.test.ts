@@ -10,8 +10,21 @@
  */
 
 import { assert, expect } from "chai";
-import { ActivityBar, DefaultTreeSection, EditorView, InputBox, SideBarView, TreeItem, ViewPanelAction } from "vscode-extension-tester";
-import { CICS, EDIT_TEAM_CONFIG_FILE, PROJECT_CURRENT_WORKING_DIRECTORY, ZOWE_EXPLORER } from "./constants";
+import {
+  ActivityBar,
+  By,
+  DefaultTreeSection,
+  EditorView,
+  InputBox,
+  Key,
+  SideBarView,
+  TreeItem,
+  ViewPanelAction,
+  WebDriver,
+  WebElement,
+  WebView,
+} from "vscode-extension-tester";
+import { CICS, EDIT_TEAM_CONFIG_FILE, PROJECT_CURRENT_WORKING_DIRECTORY, REGIONS_LOADED, ZOWE_EXPLORER } from "./constants";
 
 export async function openZoweExplorer(): Promise<SideBarView> {
   const zoweExplorer = await new ActivityBar().getViewControl(ZOWE_EXPLORER);
@@ -122,48 +135,119 @@ export async function getRegionResourceIndex(regionResources: TreeItem[], resour
   return -1;
 }
 
-export async function getResourceInRegion(
+export async function expectTreeItemIsSelected(treeItem: TreeItem | undefined) {
+  const isSelected = await treeItem?.getAttribute("aria-selected");
+  expect(isSelected).to.equal("true");
+}
+
+export async function verifyProgramAttributes(programName: string, expectedAttributes: { [key: string]: string }) {
+  const editorView = new EditorView();
+
+  const webView = (await editorView.openEditor(`CICSProgram PROGLIB(${programName})`)) as WebView;
+  expect(webView).not.undefined;
+  await webView.switchToFrame();
+
+  const table = await webView.findWebElement(By.id("resultsTable"));
+  expect(table).not.undefined;
+
+  const tableRows = await table.findElements(By.css("tr"));
+  expect(tableRows).not.empty;
+
+  const searchBar = await webView.findWebElement(By.id("searchBox"));
+  expect(searchBar).not.undefined;
+
+  for (const [attributeKey, expectedValue] of Object.entries(expectedAttributes)) {
+    await searchBar.clear();
+    await searchBar.sendKeys(attributeKey);
+    await searchBar.sendKeys("\uE007"); // Enter key
+
+    const visibleRows: WebElement[] = [];
+    for (const row of tableRows) {
+      if (await row.isDisplayed()) {
+        visibleRows.push(row);
+      }
+    }
+
+    let found = false;
+    for (const row of visibleRows) {
+      const keyElement = await row.findElement(By.css("th"));
+      const key = (await keyElement.getText()).trim().toLowerCase();
+
+      if (key === attributeKey.toLowerCase()) {
+        const value = await row.findElement(By.css("td")).getText();
+        expect(value).contains(expectedValue);
+        found = true;
+        break;
+      }
+    }
+
+    expect(found, `Attribute ${attributeKey} not found`).to.be.true;
+  }
+
+  await searchBar.clear();
+  await webView.switchBack();
+}
+
+export async function getLabelAfterArrowDown(driver: WebDriver): Promise<string> {
+  await driver.actions().sendKeys(Key.ARROW_DOWN).perform();
+  const activeElement: WebElement = await driver.switchTo().activeElement();
+  const fullText: string = await activeElement.getText();
+  const label: string = fullText.split("\n")[0].trim();
+  return label;
+}
+
+export async function setupCICSTreeSelectedResourceParams(
   cicsTree: DefaultTreeSection,
   profileName: string,
   plexName: string,
   regionName: string,
   resourceName: string
-): Promise<TreeItem[]> {
-  const plexChildren = await getPlexChildren(cicsTree, profileName, plexName);
-  expect(plexChildren).not.empty;
+) {
+  // Get children of the plex
+  const cicsPlexChildren = await getPlexChildren(cicsTree, profileName, plexName);
+  expect(cicsPlexChildren).not.empty;
 
-  const regionsIndex = await getPlexChildIndex(plexChildren, "Regions");
-  expect(regionsIndex).to.be.greaterThan(-1);
+  const regionIndex = await getPlexChildIndex(cicsPlexChildren, "Regions");
+  expect(regionIndex).to.be.greaterThan(-1);
 
+  // Get regions inside the plex
   const regions = await getRegionsInPlex(cicsTree, profileName, plexName);
   expect(regions).not.empty;
 
-  const regionIndex = await getRegionIndex(regions, regionName);
-  expect(regionIndex).to.be.greaterThan(-1);
+  const selectedRegionIndex = await getRegionIndex(regions, regionName);
+  expect(selectedRegionIndex).to.be.greaterThan(-1);
 
-  const regionResources = await getRegionResources(
+  // Get resources inside the region
+  const selectedRegionResources = await getRegionResources(
     cicsTree,
     profileName,
     plexName,
-    await plexChildren[regionIndex].getLabel(),
-    await regions[regionIndex].getLabel()
+    REGIONS_LOADED,
+    await regions[selectedRegionIndex].getLabel()
   );
-  expect(regionResources).not.empty;
+  expect(selectedRegionResources).not.empty;
 
-  const resourceIndex = await getRegionResourceIndex(regionResources, resourceName);
-  expect(resourceIndex).to.be.greaterThan(-1);
+  const selectedResourceIndex = await getRegionResourceIndex(selectedRegionResources, resourceName);
+  expect(selectedResourceIndex).to.be.greaterThan(-1);
 
-  await regionResources[resourceIndex].click();
-  return cicsTree.openItem(
+  // Open the Programs resource
+  await selectedRegionResources[selectedResourceIndex].click();
+  const selectedResource = await cicsTree.openItem(
     profileName,
     plexName,
-    await plexChildren[regionIndex].getLabel(),
-    await regions[regionIndex].getLabel(),
-    await regionResources[resourceIndex].getLabel()
+    REGIONS_LOADED,
+    await regions[selectedRegionIndex].getLabel(),
+    await selectedRegionResources[selectedResourceIndex].getLabel()
   );
-}
+  expect(selectedResource).not.empty;
 
-export async function expectTreeItemIsSelected(treeItem: TreeItem | undefined) {
-  const isSelected = await treeItem?.getAttribute("aria-selected");
-  expect(isSelected).to.equal("true");
+  return {
+    cicsPlexChildren,
+    regionIndex,
+    regions,
+    selectedRegionIndex,
+    selectedRegionResources,
+    selectedResourceIndex,
+    selectedResource,
+  };
 }

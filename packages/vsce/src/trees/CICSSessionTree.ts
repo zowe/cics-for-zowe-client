@@ -9,13 +9,13 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { CICSSession } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { SessionHandler } from "../resources/SessionHandler";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -39,17 +39,8 @@ export class CICSSessionTree extends TreeItem {
   }
 
   public createSessionFromProfile() {
-    this.session = new CICSSession({
-      type: imperative.SessConstants.AUTH_TYPE_TOKEN,
-      storeCookie: true,
-      tokenType: imperative.SessConstants.TOKEN_TYPE_LTPA,
-      hostname: this.profile.profile!.host,
-      port: Number(this.profile.profile!.port),
-      user: this.profile.profile!.user || "",
-      password: this.profile.profile!.password || "",
-      rejectUnauthorized: this.profile.profile!.rejectUnauthorized,
-      protocol: this.profile.profile!.protocol,
-    });
+    SessionHandler.getInstance().removeSession(this.profile.name);
+    this.session = SessionHandler.getInstance().getSession(this.profile);
   }
 
   public addRegion(region: CICSRegionTree) {

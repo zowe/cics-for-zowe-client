@@ -3,16 +3,49 @@
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
+  max-width: 75rem;
+}
+
+.table-header1 {
+  position: fixed;
+  top: 0;
+  padding-left: 0.625rem;
+  left: 2.25rem;
+  right: 2.25rem;
+  max-width: 74.375rem;
+}
+
+.padding-top-20 {
+   padding-top: 1.25rem;
+}
+
+.padding-top-10 {
+   padding-top: 0.625rem;
 }
 
 .line {
   line-height: 0.5;
   font-size: small;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .header-cell-1 {
-  padding-left: 10px;
   vertical-align: middle;
+}
+
+.thead-2{
+  position: sticky;
+}
+
+.th-2 {
+  width: 100% !important;
+  padding-left: 1.063rem !important;
+}
+
+.th-3 {
+  width: 75% !important;
+  padding-bottom: 0.125rem !important;
 }
 
 .div-display-1{
@@ -22,22 +55,149 @@
 
 .div-display-2{
   font-size: x-small;
-  padding-left: 7px;
+  padding-left: 0.438rem;
   font-weight: 400;
 }
 
-.padding-left-20{
-  padding-left: 20px;
+.padding-left-10{
+  padding-left: 0.625rem;
 }
+
+.padding-left-20{
+  padding-left: 1.25rem;
+}
+
+.padding-left-25{
+  padding-left: 1.563rem !important;
+}
+
+.padding-left-27{
+  padding-left: 1.688rem !important;
+}
+
 .padding-right-10{
-  padding-right: 10px;
+  padding-right: 0.625rem;
 }
 .padding-right-75{
-  padding-right: 75px;
+  padding-right: 4.688rem;
 }
 
 .search-style{
-  width: 300px;
+  width: 9.375rem;
   float: right;
+  margin-bottom: 0.313rem;
+  border: none;
+  max-width: 40%;
 }
+
+.width-30{
+  width: 30%;
+}
+.width-70{
+  width: 70%;
+}
+
+.vertical-align-sub {
+  vertical-align: sub;
+}
+
+.border-collapse {
+  border-collapse: collapse;
+}
+
+/* Combined common table styling for both themes */
+body.vscode-light table,
+body.vscode-light th,
+body.vscode-light tr,
+body.vscode-light td,
+body.vscode-dark table,
+body.vscode-dark th,
+body.vscode-dark tr,
+body.vscode-dark td {
+  padding: 0.5rem;
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-foreground);
+}
+
+/* Light theme specific */
+body.vscode-light th,
+body.vscode-light thead {
+  background-color: #f0f0f0;
+  text-align: left;
+  color: var(--vscode-foreground);
+}
+
+body.vscode-light tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Dark theme specific */
+body.vscode-dark th,
+body.vscode-dark thead {
+  background-color: rgb(40,40,40);
+  text-align: left;
+  color: var(--vscode-foreground);
+}
+
+body.vscode-dark tr:nth-child(even) {
+  background-color: rgba(204, 204, 204, 0.04);
+}
+body.vscode-dark input {
+  background-color: rgb(60, 60, 60);
+}
+
+body.vscode-light th,
+body.vscode-light tr,
+body.vscode-light td {
+    padding: 0.5rem;
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-foreground);
+  }
+
+body.vscode-light th {
+    background-color: #f0f0f0;
+    text-align: left;
+    width: 73.75rem;
+    color: var(--vscode-foreground);
+  }
+
+body.vscode-light thead {
+    background-color: #f0f0f0;
+    text-align: left;
+    color: var(--vscode-foreground);
+  }
+
+ body.vscode-light tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+body.vscode-dark table,
+body.vscode-dark th,
+body.vscode-dark tr,
+body.vscode-dark td {
+    padding: 0.5rem;
+    font-family: var(--vscode-font-family);
+  }
+body.vscode-dark tr:nth-child(even) {
+  background-color: rgba(204, 204, 204, 0.04);
+}
+body.vscode-dark th {
+    background-color: 	rgb(40,40,40);
+    text-align: left;
+    width: 73.75rem;
+    color: var(--vscode-foreground);
+  }
+
+body.vscode-dark thead {
+    background-color: rgb(40,40,40);
+    text-align: left;
+    color: var(--vscode-foreground);
+  }
+
+body.vscode-dark input {
+    background-color: 	rgb(60, 60, 60);
+  }
+
+
+
 

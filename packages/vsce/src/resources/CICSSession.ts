@@ -24,7 +24,7 @@ export class CICSSession extends imperative.Session {
       storeCookie: true,
 
       protocol: profile.protocol,
-      hostname: profile.hostname,
+      hostname: profile.host,
       port: Number(profile.port),
 
       user: profile.user || "",

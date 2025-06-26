@@ -32,7 +32,7 @@ const withHost = {
   ...w,
 };
 const withHostname = {
-  hostname: "MY.HOST",
+  host: "MY.HOST",
   ...w,
 };
 

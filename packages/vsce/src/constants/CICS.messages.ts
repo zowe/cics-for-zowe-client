@@ -32,4 +32,8 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   loadingResources: {
     message: "Loading resources...",
   },
+
+  CICSResourceTypeNotFound: {
+    message: "CICS resource type not found or unsupported.",
+  },
 };
