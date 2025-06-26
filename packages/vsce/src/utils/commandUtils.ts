@@ -89,12 +89,16 @@ export async function getResourceTree<T extends IResource>(
       .getParent()
       .children.find((ch: any) => ch.label.toString().includes("Regions")) as CICSRegionsContainer;
 
-    if (!regionsNode) return;
+    if (!regionsNode) {
+      return;
+    }
 
     await treeview.reveal(regionsNode, { expand: true });
 
     const regionTree = regionsNode.children.find((ch: any) => ch.label === regionName);
-    if (!regionTree) return;
+    if (!regionTree) {
+      return;
+    }
 
     await treeview.reveal(regionTree, { expand: true });
 
