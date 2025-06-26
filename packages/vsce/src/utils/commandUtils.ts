@@ -11,7 +11,7 @@
 
 import { TreeView } from "vscode";
 import { IResource, IResourceMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
+import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 
 /**
  * Returns an array of selected nodes in the current treeview.
@@ -72,4 +72,42 @@ export function splitCmciErrorMessage(message: any) {
 
 export function toArray<T>(input: T | T[]): T[] {
   return Array.isArray(input) ? input : [input];
+}
+
+export async function getResourceTree<T extends IResource>(
+  treeview: TreeView<any>,
+  nodes: any[],
+  targetResourceName: string
+): Promise<CICSResourceContainerNode<T> | undefined> {
+  let regionName = nodes[0].description?.toString() ?? "";
+
+  if (regionName.length > 0) {
+    regionName = regionName.match(/\(([^)]*)\)/)?.[1]?.trim() ?? regionName;
+
+    const regionsNode = nodes[0]
+      .getParent()
+      .getParent()
+      .children.find((ch: any) => ch.label.toString().includes("Regions")) as CICSRegionsContainer;
+
+    if (!regionsNode) {
+      return;
+    }
+
+    await treeview.reveal(regionsNode, { expand: true });
+
+    const regionTree = regionsNode.children.find((ch: any) => ch.label === regionName);
+    if (!regionTree) {
+      return;
+    }
+
+    await treeview.reveal(regionTree, { expand: true });
+
+    const resourceTree = regionTree.children.find(
+      (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === targetResourceName
+    ) as CICSResourceContainerNode<T>;
+
+    return resourceTree;
+  }
+
+  throw new Error("Region name is missing in the node description.");
 }
