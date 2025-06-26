@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://winmvs28.hursley.ibm.com:28963/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
 	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" cachetoken="E1033298F081A060" />
 	<records>
 		<cicslibrary _keydata="C4C6C8D9D7D34040" basdefinever="0" changeagent="SYSTEM" changeagrel="0710" changetime="2025-05-19T03:10:56.000000+00:00" changeusrid="EXPAUTO" critstatus="CRITICAL" definesource="SYSTEM" definetime="2025-05-19T03:10:56.000000+00:00" enablestatus="ENABLED" eyu_cicsname="PROGLIB" eyu_cicsrel="E710" eyu_reserved="0" installagent="SYSTEM" installtime="2025-05-19T03:10:56.000000+00:00" installusrid="EXPAUTO" name="LIB1" numdsnames="6" pgmloadcnt="0" ranking="10" searchpos="1" />
