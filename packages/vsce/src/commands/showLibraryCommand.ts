@@ -1,9 +1,9 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeView, commands, window } from "vscode";
 import { ILibrary, IProgram, IResource, ProgramMeta } from "../doc";
-import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
+import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes } from "../utils/commandUtils";
+import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 
 export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
@@ -46,23 +46,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
 
     //if the label is "All Programs", we need to get the library tree from the regions node
     if (label === "All Programs") {
-      let regionName = nodes[0].description.toString();
-      //regionName comes as (REGION_NAME),so replacing extra brackets
-      if (regionName.length > 0) {
-        regionName = regionName.match(/\(([^)]*)\)/)?.[1]?.trim() ?? regionName;
-        const regionsNode = nodes[0]
-          .getParent()
-          .getParent()
-          .children.filter((ch) => ch.label.toString().includes("Regions"))[0] as CICSRegionsContainer;
-        //reveal the regions node if not already expanded
-        await treeview.reveal(regionsNode, { expand: true });
-        const regionTree = regionsNode.children.filter((ch) => ch.label === regionName)[0];
-        //reveal the region resources if not already expanded
-        await treeview.reveal(regionTree, { expand: true });
-        libraryTree = regionTree.children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_RESOURCE
-        )[0] as CICSResourceContainerNode<ILibrary>;
-      }
+      libraryTree = await getResourceTree<ILibrary>(treeview, nodes, CicsCmciConstants.CICS_LIBRARY_RESOURCE);
     } else {
       libraryTree = nodes[0]
         .getParent()
