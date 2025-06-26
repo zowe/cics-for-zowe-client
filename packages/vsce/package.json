@@ -277,6 +277,10 @@
            "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
+          "command": "cics-extension-for-zowe.newCopyProgram",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
           "command": "cics-extension-for-zowe.phaseInCommand",
            "when": "config.zowe.cics.showAllCommandsInPalette"
         },
@@ -325,6 +329,10 @@
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
+          "command": "cics-extension-for-zowe.enableLocalFile",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
           "command": "cics-extension-for-zowe.disableLocalFile",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
@@ -353,10 +361,6 @@
         },
         {
           "command": "cics-extension-for-zowe.showResourceAttributes",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
-          "command": "cics-extension-for-zowe.showLibrary",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         }
       ],
