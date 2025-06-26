@@ -22,10 +22,11 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
     if (!pattern) {
       return;
     }
-
+    //pattern is coming as "A,B,C,D..." so  need to split it into an array"
+    const patternArray = pattern.split(",").map((s) => s.trim());
     await node.getChildResource().meta.appendCriteriaHistory(pattern);
-    node.setFilter([pattern]);
-    node.description = pattern;
+    node.setFilter(patternArray);
+    node.description = node.getChildResource().resources.getFilter();
     tree._onDidChangeTreeData.fire(node);
     await treeview.reveal(node, { expand: true });
   });
