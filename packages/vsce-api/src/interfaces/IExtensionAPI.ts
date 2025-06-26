@@ -9,5 +9,12 @@
  *
  */
 
-export * from "./CICSSession";
-export * from "./Utils";
+import { ResourceTypes } from "../resources";
+import { IResourceExtender } from "./IResourceExtender";
+
+export interface IExtensionAPI {
+  resources: {
+    resourceExtender: IResourceExtender;
+    supportedResources: ResourceTypes[];
+  };
+}
