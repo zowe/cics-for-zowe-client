@@ -13,7 +13,7 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, l10n, QuickPick, QuickPickItem } from "vscode";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { IFocusRegion } from "./IFocusRegion";
+import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { SessionHandler } from "../resources/SessionHandler";
 
 export function setFocusRegionCommand() {

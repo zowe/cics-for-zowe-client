@@ -18,7 +18,7 @@ import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "./ICommandParams";
+import { ICommandParams } from "../doc/commands/ICommandParams";
 
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {
