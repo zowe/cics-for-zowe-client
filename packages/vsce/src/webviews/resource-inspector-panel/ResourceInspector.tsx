@@ -14,7 +14,7 @@ import { VscodeTextfield } from "@vscode-elements/react-elements";
 import * as React from "react";
 import * as vscode from "../common/vscode";
 
-import { IResource } from "../../doc";
+import { IResource } from "@zowe/cics-extension-for-zowe-api";
 import "../css/style.css";
 
 const ResourceInspector = () => {
@@ -26,10 +26,16 @@ const ResourceInspector = () => {
     highlights: { key: string; value: string; }[];
     resource: IResource;
   }>();
+  const [resourceActions, setResourceActions] = React.useState<{ id: string; name: string; }[]>([]);
+
+  const handleActionClick = (actionId: string) => {
+    vscode.postVscMessage({ command: "action", actionId });
+  };
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
+      setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
@@ -82,6 +88,12 @@ const ResourceInspector = () => {
           )}
         </tbody>
       </table>
+
+      <div>
+        {resourceActions && resourceActions.map(({ id, name }) => (
+          <button key={id} onClick={() => handleActionClick(id)}>{name}</button>
+        ))}
+      </div>
 
       <table className="border-collapse">
         <thead id="table-header-2" className="thead-2 vertical-align-sub">
