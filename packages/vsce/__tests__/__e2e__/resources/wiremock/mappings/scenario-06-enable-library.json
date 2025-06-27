@@ -1,0 +1,72 @@
+{
+  "mappings": [
+    {
+      "scenarioName": " Enable Library",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Fetch Libraries for enable operation",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/IYCWENK1?CRITERIA=(NAME%3D'CBSA')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"ENABLE\"/></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-enable-Library.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": " Enable Library",
+      "requiredScenarioState": "Fetch Libraries for enable operation",
+      "newScenarioState": "Load CBSA Library with status as Enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/IYCWENK1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load_library_mapping/fetch-library-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": " Enable Library",
+      "requiredScenarioState": "Load CBSA Library with status as Enabled",
+      "newScenarioState": "Fetch library record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "cbsa-library-with-enabled-status.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": " Enable Library",
+      "requiredScenarioState": "Fetch library record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load_library_mapping/fetch-library-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

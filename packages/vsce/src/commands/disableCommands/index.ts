@@ -12,3 +12,5 @@
 export * from "./disableLocalFileCommand";
 export * from "./disableProgramCommand";
 export * from "./disableTransactionCommand";
+export * from "./disableLibraryCommand";
+

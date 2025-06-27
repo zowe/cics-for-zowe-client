@@ -26,16 +26,26 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
+  async getDefaultCriteria() {
     return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {
-    return `${resource.attributes.name}`;
+    let label = `${resource.attributes.name}`;
+
+    //Adding enabled Status as it is required in e2e test cases to check if the enabled status is set or not
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
+      label += " (Disabled)";
+    }
+    return label;
   },
 
   getContext: function (resource: Resource<ILibrary>): string {
-    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
+    if (resource.attributes && resource.attributes.enablestatus) {
+      return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.toUpperCase()}.${resource.attributes.name}`;
+    }
+    // Handle the case when resource.attributes or resource.attributes.enablestatus is not defined
+    `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {

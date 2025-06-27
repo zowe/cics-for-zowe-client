@@ -279,7 +279,17 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: regionTree,
         session: cicsSession,
       },
-      undefined,
+      {
+        meta: LibraryMeta,
+        resource: new Resource({
+          eyu_cicsname: "REG",
+          status: "DISABLED",
+          enablestatus: "ENABLED",
+          name: "MYLIB",
+          dsname: "MY.DSN",
+          ranking: "10",
+        }),
+      },
       {
         meta: LibraryMeta,
         resources: new ResourceContainer(LibraryMeta),
