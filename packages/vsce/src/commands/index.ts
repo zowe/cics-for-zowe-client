@@ -50,9 +50,11 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     enableCommands.getEnableProgramCommand(treeDataProv, treeview),
     enableCommands.getEnableTransactionCommand(treeDataProv, treeview),
     enableCommands.getEnableLocalFileCommand(treeDataProv, treeview),
+    enableCommands.getEnableLibraryCommand(treeDataProv, treeview),
     disableCommands.getDisableProgramCommand(treeDataProv, treeview),
     disableCommands.getDisableTransactionCommand(treeDataProv, treeview),
     disableCommands.getDisableLocalFileCommand(treeDataProv, treeview),
+    disableCommands.getDisableLibraryCommand(treeDataProv, treeview),
 
     getCloseLocalFileCommand(treeDataProv, treeview),
     getOpenLocalFileCommand(treeDataProv, treeview),

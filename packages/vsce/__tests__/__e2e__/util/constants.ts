@@ -53,3 +53,7 @@ export const DSNTIAC = "DSNTIAC";
 export const PLIB1DS1 = "PLIB1DS1";
 export const PLIB1DS2 = "PLIB1DS2";
 export const PLIB2NONE = "PLIB2NONE";
+
+
+//Library Labels
+export const CBSA = "CBSA";
