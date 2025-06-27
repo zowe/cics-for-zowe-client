@@ -34,7 +34,7 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     let label = `${resource.attributes.name}`;
 
     //Adding enabled Status as it is required in e2e test cases to check if the enabled status is set or not
-    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
+    if (resource.attributes.enablestatus === "disabled" || resource.attributes.enablestatus === "DISABLED") {
       label += " (Disabled)";
     }
     return label;
@@ -45,7 +45,7 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
       return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.toUpperCase()}.${resource.attributes.name}`;
     }
     // Handle the case when resource.attributes or resource.attributes.enablestatus is not defined
-    `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
+    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {
