@@ -28,8 +28,9 @@ import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-import { getResourceInspectorCommand } from "./resourceInspectorViewCommand";
+import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
+import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
@@ -60,7 +61,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getPurgeTaskCommand(treeDataProv, treeview),
 
-    getInspectResourceCommand(context),
+    getInspectResourceCommand(context, treeview),
 
     showLogsCommands.getShowRegionLogs(treeview),
     showAttributesCommands.getShowResourceAttributesCommand(treeview),
@@ -79,8 +80,9 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),
 
-    getResourceInspectorCommand(context, treeview),
+    getInspectTreeResourceCommand(context, treeview),
     getToggleResourceSettingCommand(),
     setFocusRegionCommand(),
+    showLibraryCommand(treeDataProv, treeview),
   ];
 };

@@ -12,7 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import { PersistentStorage } from "../../utils/PersistentStorage";
-import { ILibrary, ILibraryDataset } from "../resources";
+import { ILibrary, ILibraryDataset, IProgram } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
 
@@ -22,6 +22,12 @@ const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
   return Promise.resolve(`(LIBRARYDSN='${parentResource.dsname}')`);
 };
+
+customProgramMeta.getContext = function (program: Resource<IProgram>): string {
+  //overriding context value of cics program because here parent of the cics program is the librarydataset
+  return `${CicsCmciConstants.CICS_PROGRAM_RESOURCE}.${program.attributes.status.trim().toUpperCase()}.PARENT.${CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE}.${program.attributes.program}`;
+};
+
 customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryDataset) => {
   return `(LIBRARYDSN='${parentResource.dsname}') AND (${criteria.map((n) => `PROGRAM=${n}`).join(" OR ")})`;
 };

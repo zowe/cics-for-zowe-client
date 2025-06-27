@@ -59,7 +59,16 @@ describe("IconBuilder tests", () => {
   it("should get resource icon", () => {
     const icon = IconBuilder.resource<IProgram>({
       meta: ProgramMeta,
-      resource: new Resource<IProgram>({ eyu_cicsname: "REG", newcopycnt: "0", program: "MYPROG", status: "ENABLED", progtype: "COBOL", enablestatus: "ENABLED", }),
+      resource: new Resource<IProgram>({
+        eyu_cicsname: "REG",
+        newcopycnt: "0",
+        program: "MYPROG",
+        status: "ENABLED",
+        progtype: "COBOL",
+        enablestatus: "ENABLED",
+        library: "MYLIB",
+        librarydsn: "MYLIBDSN",
+      }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-dark.svg"));
     expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-light.svg"));
@@ -67,7 +76,16 @@ describe("IconBuilder tests", () => {
   it("should get resource icon when disabled", () => {
     const icon = IconBuilder.resource<IProgram>({
       meta: ProgramMeta,
-      resource: new Resource<IProgram>({ eyu_cicsname: "REG", newcopycnt: "0", program: "MYPROG", status: "DISABLED", progtype: "COBOL", enablestatus: "ENABLED" }),
+      resource: new Resource<IProgram>({
+        eyu_cicsname: "REG",
+        newcopycnt: "0",
+        program: "MYPROG",
+        status: "DISABLED",
+        progtype: "COBOL",
+        enablestatus: "ENABLED",
+        library: "MYLIB",
+        librarydsn: "MYLIBDSN",
+      }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-dark.svg"));
     expect(icon.dark).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-light.svg"));

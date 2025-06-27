@@ -9,12 +9,11 @@
  *
  */
 
-import { IProfileLoaded } from "@zowe/imperative";
-import { CICSSession } from "../resources/CICSSession";
+import { IProfile } from "@zowe/imperative";
+import { CICSSession } from "../../resources/CICSSession";
 
-export interface IFocusRegion {
-  profile: IProfileLoaded;
-  cicsPlex?: string;
-  session: CICSSession;
-  focusSelectedRegion: string;
+export interface ISessionHandler {
+  getSession(profile: IProfile): CICSSession | undefined;
+  removeSession(profileName: string): void;
+  clearSessions(): void;
 }
