@@ -36,3 +36,9 @@ export const REGIONS_LOADED = REGIONS + REGION_COUNT;
 export const C128N = "C128N";
 export const DSNCUEXT = "DSNCUEXT";
 export const DSNTIAC = "DSNTIAC";
+export const PLIB1DS1 = "PLIB1DS1";
+export const PLIB1DS2 = "PLIB1DS2";
+export const PLIB2NONE = "PLIB2NONE";
+
+//Library Labels
+export const CBSA = "CBSA";

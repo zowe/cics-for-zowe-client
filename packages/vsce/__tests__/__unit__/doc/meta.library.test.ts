@@ -23,7 +23,7 @@ describe("Library Meta", () => {
       name: "LIB1",
       ranking: "10",
       status: "ENABLED",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
     });
   });
 
@@ -31,13 +31,24 @@ describe("Library Meta", () => {
     const crit = LibraryMeta.buildCriteria(["a", "b"]);
     expect(crit).toEqual(`name=a OR name=b`);
   });
-  it("should return label", () => {
+  it("should return only label if enabled", () => {
     const label = LibraryMeta.getLabel(libraryMock);
     expect(label).toEqual(`LIB1`);
   });
-  it("should return context", () => {
+  it("should return label with disabled", () => {
+    libraryMock.attributes.enablestatus = "DISABLED";
+    const label = LibraryMeta.getLabel(libraryMock);
+    expect(label).toEqual(`LIB1 (Disabled)`);
+  });
+  it("should return context with enabled status when enabled", () => {
+    libraryMock.attributes.enablestatus = "ENABLED";
     const context = LibraryMeta.getContext(libraryMock);
-    expect(context).toEqual(`CICSLibrary.LIB1`);
+    expect(context).toEqual(`CICSLibrary.ENABLED.LIB1`);
+  });
+  it("should return context with disabled status when disabled", () => {
+    libraryMock.attributes.enablestatus = "DISABLED";
+    const context = LibraryMeta.getContext(libraryMock);
+    expect(context).toEqual(`CICSLibrary.DISABLED.LIB1`);
   });
   it("should return icon name", () => {
     const iconName = LibraryMeta.getIconName(libraryMock);
@@ -54,7 +65,7 @@ describe("Library Meta", () => {
       {
         key: "Ranking",
         value: "10",
-      }
+      },
     ]);
   });
 
