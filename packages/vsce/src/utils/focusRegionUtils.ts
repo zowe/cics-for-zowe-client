@@ -10,35 +10,30 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { ConfigurationTarget, l10n, workspace } from "vscode";
-import { SessionHandler } from "../resources";
+import { ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
+import { CICSSession } from "../resources";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
-
-// export interface IFocusRegionSettings {
-//   regionName: string;
-//   cicsPlex: string;
-//   profileName: string;
-// }
+import { IProfileLoaded } from "@zowe/imperative";
 
 export async function getFocusRegionFromSettings(): Promise<{ profileName: string; focusSelectedRegion: string; cicsPlex: string }> {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
 
-  const focusSelectedRegion = config.get<string>("regionName", "");
-  const cicsPlex = config.get<string>("cicsPlex", "NA");
-  const profileName = config.get<string>("profileName", "");
+  const focusSelectedRegion = config.get<string>("regionName", undefined);
+  const cicsPlex = config.get<string>("cicsPlex", undefined);
+  const profileName = config.get<string>("profileName", undefined);
 
   return { profileName, focusSelectedRegion, cicsPlex };
 }
 
 export async function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
-  const cicsPlex = cicsPlexName == undefined ? "NA" : cicsPlexName;
+  const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
   workspace.getConfiguration("zowe.cics").update("focusRegion", { regionName, cicsPlex, profileName }, ConfigurationTarget.Global);
 }
-
+//TODO add some loggers
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
   const regionDetails = await getFocusRegionFromSettings();
   const profileNames = await getAllCICSProfiles();
-  if (regionDetails.profileName.length <= 0 || regionDetails.focusSelectedRegion.length <= 0 || regionDetails.cicsPlex.length <= 0) {
+  if (!regionDetails.profileName || !regionDetails.focusSelectedRegion) {
     return false;
   } else if (!profileNames.includes(regionDetails.profileName)) {
     await Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
@@ -48,16 +43,14 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
   return true;
 }
 
-export async function getPlexAndSessionFromProfileName(profileName: string) {
+export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: CICSSession) {
   let plex: InfoLoaded[] = [];
-  const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
-  const session = SessionHandler.getInstance().getSession(profile);
   try {
     plex = await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
     await Gui.errorMessage(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
   }
-  return { plex, session, profile };
+  return plex;
 }
 
 export async function getAllCICSProfiles(): Promise<string[]> {
@@ -66,4 +59,17 @@ export async function getAllCICSProfiles(): Promise<string[]> {
 
   const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
   return allCICSProfileNames;
+}
+
+export async function getChoiceFromQuickPick(
+  quickPick: QuickPick<QuickPickItem>,
+  placeHolder: string,
+  items: QuickPickItem[]
+): Promise<QuickPickItem | undefined> {
+  quickPick.items = items;
+  quickPick.placeholder = l10n.t(placeHolder);
+  quickPick.ignoreFocusOut = true;
+  quickPick.show();
+  const choice = await Gui.resolveQuickPick(quickPick);
+  return choice;
 }
