@@ -647,22 +647,19 @@
           "description": "Focus Region",
           "properties": {
             "regionName": {
-              "type": "string",
-              "description": "Set Focus region"
+              "type": "string"
             },
             "plexName": {
-              "type": "string",
-              "description": "Set Focus region"
+              "type": "string"
             },
             "profileName": {
-              "type": "string",
-              "description": "Set Focus region"
+              "type": "string"
             }
           },
           "default": {
-            "regionName": "",
-            "plexName": "",
-            "profileName": ""
+            "regionName": null,
+            "cicsPlexName": null,
+            "profileName": null
           },
           "scope": "window"
         }
