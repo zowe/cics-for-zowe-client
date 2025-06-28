@@ -10,9 +10,10 @@
  */
 
 import { IResourceAction, IResourceContext, IResourceExtender, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { ILocalFile, IProgram } from "../doc";
 import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
 import { openLocalFile } from "../commands/openLocalFileCommand";
+import { ILocalFile, IProgram } from "../doc";
+import path = require("path");
 
 
 const builtIns: IResourceAction[] = [
@@ -21,6 +22,7 @@ const builtIns: IResourceAction[] = [
     id: "CICS.CICSProgram.NEWCOPY",
     name: "New Copy Program",
     resourceType: ResourceTypes.CICSProgram,
+    iconPath: path.join(__dirname, "..", "resources", "imgs", "newcopy-dark.svg"),
     action: async (resource: IProgram, resourceContext: IResourceContext) => {
       await programNewcopy(resourceContext.session, {
         name: resource.program,
@@ -34,6 +36,7 @@ const builtIns: IResourceAction[] = [
     id: "CICS.CICSLocalFile.OPEN",
     name: "Open Local File",
     resourceType: ResourceTypes.CICSLocalFile,
+    iconPath: path.join(__dirname, "..", "resources", "imgs", "plus-dark.svg"),
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "OPEN",
     action: async (resource: ILocalFile, resourceContext: IResourceContext) => {
       await openLocalFile(resourceContext.session, {
