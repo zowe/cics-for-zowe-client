@@ -99,7 +99,7 @@ export class ResourceContainer<T extends IResource> {
   /**
    * Sets the region name information in current object.
    */
-  public async setRegionName(regionName: string) {
+  public setRegionName(regionName: string) {
     this.regionName = regionName;
   }
 
@@ -113,7 +113,7 @@ export class ResourceContainer<T extends IResource> {
   /**
    * Sets the profile name information in current object.
    */
-  public async setProfileName(profileName: string) {
+  public setProfileName(profileName: string) {
     this.profileName = profileName;
   }
 
@@ -127,7 +127,7 @@ export class ResourceContainer<T extends IResource> {
   /**
    * Sets the plex name information in current object.
    */
-  public async setPlexName(plexName: string) {
+  public setPlexName(plexName: string) {
     this.plexName = plexName;
   }
 
