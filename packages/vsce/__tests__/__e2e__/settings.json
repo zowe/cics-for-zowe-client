@@ -6,5 +6,6 @@
   "workbench.remoteIndicator.showExtensionRecommendations": false,
   "extensions.ignoreRecommendations": true,
   "zowe.security.secureCredentialsEnabled": false,
-  "editor.fontSize": 14
+  "editor.fontSize": 14,
+  "zowe.cics.resourceInspector": true
 }
