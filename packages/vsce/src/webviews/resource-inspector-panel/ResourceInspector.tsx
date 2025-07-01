@@ -14,7 +14,7 @@ import { VscodeTextfield } from "@vscode-elements/react-elements";
 import * as React from "react";
 import * as vscode from "../common/vscode";
 
-import { IResource } from "@zowe/cics-extension-for-zowe-api";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 
 const ResourceInspector = () => {

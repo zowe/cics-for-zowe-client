@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "@zowe/cics-extension-for-zowe-api";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();

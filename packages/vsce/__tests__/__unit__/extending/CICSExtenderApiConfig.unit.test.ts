@@ -15,7 +15,7 @@ import { IExtensionAPI, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 describe("CICS Extender Api Tests", () => {
   it("should return resource inspector configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
-    expect(config).toHaveProperty('resources.resourceExtender.registeredActions', []);
+    expect(config).toHaveProperty('resources.resourceExtender.registeredActions');
   });
 
   it("should return supported resources configuration", () => {

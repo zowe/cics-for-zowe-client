@@ -9,13 +9,13 @@
  *
  */
 
-import { IResourceAction, IResourceContext } from "@zowe/cics-extension-for-zowe-api";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
 import Mustache = require("mustache");
 import { WebviewViewProvider, Uri, WebviewView, Webview, commands } from "vscode";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource, IResource } from "../doc";
+import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
