@@ -35,7 +35,7 @@ const ResourceInspector = () => {
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
-      setResourceActions(event.data.actions);
+      // setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
@@ -89,11 +89,13 @@ const ResourceInspector = () => {
         </tbody>
       </table>
 
-      <div>
-        {resourceActions && resourceActions.map(({ id, name }) => (
-          <button key={id} onClick={() => handleActionClick(id)}>{name}</button>
-        ))}
-      </div>
+      {resourceActions && (
+        <div>
+          {resourceActions.map(({ id, name }) => (
+            <button key={id} onClick={() => handleActionClick(id)}>{name}</button>
+          ))}
+        </div>
+      )}
 
       <table className="border-collapse">
         <thead id="table-header-2" className="thead-2 vertical-align-sub">
