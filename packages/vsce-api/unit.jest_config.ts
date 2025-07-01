@@ -9,9 +9,5 @@
  *
  */
 
-export * from "./constants";
-export * from "./core";
-export * from "./doc";
-export * from "./methods";
-export * from "./rest";
-export * from "./utils";
+import { ConfigGlobals, createConfig } from "../../common.jest_config";
+export default createConfig("unit", "IBM CICS for Zowe Explorer API Unit Tests") as ConfigGlobals;

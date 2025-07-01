@@ -9,9 +9,7 @@
  *
  */
 
-export * from "./constants";
-export * from "./core";
-export * from "./doc";
-export * from "./methods";
-export * from "./rest";
-export * from "./utils";
+export interface IResource {
+  eyu_cicsname: string;
+  status: string;
+}

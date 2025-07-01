@@ -9,9 +9,8 @@
  *
  */
 
-export * from "./constants";
-export * from "./core";
-export * from "./doc";
-export * from "./methods";
-export * from "./rest";
-export * from "./utils";
+export * from "./IExtensionAPI";
+export * from "./IResource";
+export * from "./IResourceAction";
+export * from "./IResourceContext";
+export * from "./IResourceExtender";

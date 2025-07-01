@@ -9,9 +9,13 @@
  *
  */
 
-export * from "./constants";
-export * from "./core";
-export * from "./doc";
-export * from "./methods";
-export * from "./rest";
-export * from "./utils";
+import { IResourceAction } from "./IResourceAction";
+
+export interface IResourceExtender {
+  registeredActions: IResourceAction[];
+
+  registerAction: (action: IResourceAction) => void;
+  deregisterAction: (id: string) => void;
+  getActions: () => IResourceAction[];
+  getAction: (id: string) => IResourceAction;
+}
