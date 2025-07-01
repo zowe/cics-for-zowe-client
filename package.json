@@ -68,6 +68,7 @@
     "uuid": "^9.0.0"
   },
   "overrides": {
-    "brace-expansion": "^2.0.2"
+    "brace-expansion@1": "^1.1.12",
+    "brace-expansion@2": "^2.0.2"
   }
 }
