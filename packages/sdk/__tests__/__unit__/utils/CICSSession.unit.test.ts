@@ -10,7 +10,7 @@
  */
 
 import { IProfile } from "@zowe/imperative";
-import { CICSSession } from "../../../src/utils/CICSSession";
+import { CICSSession } from "../../../src/core/CICSSession";
 
 
 describe("CICSSession tests", () => {
