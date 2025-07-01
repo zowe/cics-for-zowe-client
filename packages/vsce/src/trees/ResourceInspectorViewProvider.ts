@@ -14,6 +14,7 @@ import { randomUUID } from "crypto";
 import Mustache = require("mustache");
 import { WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
 import { IContainedResource, IResource } from "../doc";
+import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
@@ -22,6 +23,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private webviewView?: WebviewView;
   private resource: IContainedResource<IResource>;
+
+  private resourceHandlerMap: { key: string; value: string }[];
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -73,6 +76,20 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     }
   }
 
+  public setResourceHandlerMap(resourceHandler: IResourcesHandler): ResourceInspectorViewProvider {
+    this.resourceHandlerMap = [];
+    this.resourceHandlerMap.push({ key: "profile", value: resourceHandler.resourceContainer.getProfileName().toUpperCase() });
+    const cicsplex = resourceHandler.resourceContainer.getPlexName();
+    const plexvalue = cicsplex === undefined ? null : cicsplex.toUpperCase();
+    this.resourceHandlerMap.push({
+      key: "cicsplex",
+      value: plexvalue,
+    });
+    this.resourceHandlerMap.push({ key: "region", value: resourceHandler.resourceContainer.getRegionName().toUpperCase() });
+
+    return this;
+  }
+
   /**
    * Posts resource data to the react app which is listening for updates.
    */
@@ -83,6 +100,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         resourceName: this.resource.meta.resourceName,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
+        profileHandler: this.resourceHandlerMap,
       },
     });
   }

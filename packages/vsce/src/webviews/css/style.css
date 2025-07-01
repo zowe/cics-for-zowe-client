@@ -8,7 +8,7 @@
 
 .table-header1 {
   position: fixed;
-  top: 0;
+  top: 1.563rem;
   padding-left: 0.625rem;
   left: 2.25rem;
   right: 2.25rem;
@@ -21,6 +21,10 @@
 
 .padding-top-10 {
    padding-top: 0.625rem;
+}
+
+.padding-top-30 {
+   padding-top: 1.875rem;
 }
 
 .line {
@@ -54,7 +58,7 @@
 }
 
 .div-display-2{
-  font-size: x-small;
+  font-size: 0.688rem;
   padding-left: 0.438rem;
   font-weight: 400;
 }
@@ -83,7 +87,7 @@
 }
 
 .search-style{
-  width: 9.375rem;
+  width: 12.5rem;
   float: right;
   margin-bottom: 0.313rem;
   border: none;
@@ -197,6 +201,42 @@ body.vscode-dark thead {
 body.vscode-dark input {
     background-color: 	rgb(60, 60, 60);
   }
+
+ul.breadcrumb {
+  list-style: none;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  padding-left: 0rem;
+}
+ul.breadcrumb li {
+  display: inline;
+  font-size: 0.688rem;
+}
+ul.breadcrumb li+li:before {
+  color: var(--vscode-foreground);
+  content: "   >   ";
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+}
+ul.breadcrumb li a {
+  color: var(--vscode-foreground);;
+  text-decoration: none;
+  font-size: 0.688rem;
+}
+ul.breadcrumb li a:hover {
+  color: var(--vscode-foreground);
+  text-decoration: underline;
+}
+.breadcrumb-div {
+  position: fixed;
+  top: 0;
+  padding-left: 1.25rem;
+  padding-top: 0.313rem;
+  height: 1.25rem;
+  background-color: var(--vscode-panel-background);
+  max-width: 74.375rem;
+  width: 73.75rem;
+}
 
 
 
