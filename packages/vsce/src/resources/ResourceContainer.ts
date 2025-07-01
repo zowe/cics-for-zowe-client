@@ -31,6 +31,10 @@ export class ResourceContainer<T extends IResource> {
 
   private filterApplied: boolean;
 
+  private regionName: string;
+  private profileName: string;
+  private plexName: string;
+
   constructor(
     private resourceMeta: IResourceMeta<T>,
     private resource?: Resource<T>
@@ -90,6 +94,48 @@ export class ResourceContainer<T extends IResource> {
 
   async resetNumberToFetch() {
     this.numberToFetch = await PersistentStorage.getNumberOfResourcesToFetch();
+  }
+
+  /**
+   * Sets the region name information in current object.
+   */
+  public async setRegionName(regionName: string) {
+    this.regionName = regionName;
+  }
+
+  /**
+   * Fetch region name from current object.
+   */
+  public getRegionName(): string {
+    return this.regionName;
+  }
+
+  /**
+   * Sets the profile name information in current object.
+   */
+  public async setProfileName(profileName: string) {
+    this.profileName = profileName;
+  }
+
+  /**
+   * Fetch profile name from current object.
+   */
+  public getProfileName(): string {
+    return this.profileName;
+  }
+
+  /**
+   * Sets the plex name information in current object.
+   */
+  public async setPlexName(plexName: string) {
+    this.plexName = plexName;
+  }
+
+  /**
+   * Fetch plex name from current object.
+   */
+  public getPlexName(): string {
+    return this.plexName;
   }
 
   async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {
