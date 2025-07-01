@@ -26,7 +26,6 @@ export const WIREMOCK_PROFILE_NAME = "wiremock_server";
 // Plex labels
 export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
-export const test= "TEST";
 
 // Region labels
 export const IYCWENK1 = "IYCWENK1";
