@@ -66,9 +66,5 @@
     "typedoc": "^0.25.9",
     "typescript": "^5.3.3",
     "uuid": "^9.0.0"
-  },
-  "overrides": {
-    "brace-expansion@1": "^1.1.12",
-    "brace-expansion@2": "^2.0.2"
   }
 }
