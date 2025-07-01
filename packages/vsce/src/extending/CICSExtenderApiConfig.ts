@@ -26,10 +26,7 @@ export class CICSExtenderApiConfig {
         supportedResources: SupportedResources.resources,
         resourceInspector: {
           enabled: false
-        },
-        showAllCommand: {
-      enabled: false
-}
+        }
       }
     };
   }
@@ -37,4 +34,5 @@ export class CICSExtenderApiConfig {
   public getConfig(): ICICSExtenderConfig {
     return this.config;
   }
+
 }

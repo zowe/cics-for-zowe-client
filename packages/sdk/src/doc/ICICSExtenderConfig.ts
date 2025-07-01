@@ -18,9 +18,6 @@ export interface ICICSExtenderConfig {
     resourceInspector: {
       enabled: boolean;
     };
-    showAllCommand: {
-      enabled: boolean;
-    };
   };
   
 }

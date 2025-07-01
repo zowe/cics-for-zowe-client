@@ -9,7 +9,7 @@
  *
  */
 
-import { DefaultTreeSection, InputBox, Key, TreeItem, VSBrowser, Workbench } from "vscode-extension-tester";
+import { DefaultTreeSection, EditorView, InputBox, Key, TextEditor, TreeItem, VSBrowser, Workbench } from "vscode-extension-tester";
 
 let fs = require("fs");
 let path = require("path");
@@ -83,7 +83,7 @@ export async function countCicsCommands() {
   await driver.actions().keyDown(Key.COMMAND).sendKeys("P").keyUp(Key.COMMAND).perform();
   const inputBox = await InputBox.create();
   await inputBox.setText(">IBM CICS for Zowe Explorer");
-  await sleep(3000);
+  await sleep(500);
   const items = await inputBox.getQuickPicks();
   return items.length;
 }
@@ -107,4 +107,39 @@ export async function openCommandPaletteAndRun(command: string) {
   await sleep(2000); // Wait for the command to complete
 }
 
+export async function openSettingsJsonEditor(): Promise<TextEditor> {
+  await sleep(500);
+  await openCommandPaletteAndRun(">Open User Settings (JSON)");
+  const editorView = new EditorView();
+  const editor = await editorView.openEditor("settings.json") as TextEditor;
+  if (editor) {
+    return editor;
+  }
+  throw new Error("settings.json editor not found!");
+}
+
+export async function writeShowAllCommandsInPaletteValue(editor: TextEditor, value: boolean) {
+  let settings: any = {};
+  try {
+    settings = JSON.parse(await editor.getText());
+  } catch {
+    settings = {};
+  }
+  settings["zowe.cics.showAllCommandsInPalette"] = value;
+  await editor.setText(JSON.stringify(settings, null, 2));
+  await editor.save();
+}
+export async function removeShowAllCommandsInPaletteSetting(editor: TextEditor) {
+  let settings: any = {};
+  try {
+    settings = JSON.parse(await editor.getText());
+  } catch {
+    settings = {};
+  }
+  if ("zowe.cics.showAllCommandsInPalette" in settings) {
+    delete settings["zowe.cics.showAllCommandsInPalette"];
+    await editor.setText(JSON.stringify(settings, null, 2));
+    await editor.save();
+  }
+}
 
