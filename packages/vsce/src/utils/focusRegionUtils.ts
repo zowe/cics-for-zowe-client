@@ -15,7 +15,7 @@ import { CICSSession } from "../resources";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
 import { IProfileLoaded } from "@zowe/imperative";
 
-export async function getFocusRegionFromSettings(): Promise<{ profileName: string; focusSelectedRegion: string; cicsPlex: string }> {
+export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlex: string } {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
 
   const focusSelectedRegion = config.get<string>("regionName", undefined);
@@ -31,7 +31,7 @@ export async function setFocusRegionIntoSettings(regionName: string, profileName
 }
 //TODO add some loggers
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
-  const regionDetails = await getFocusRegionFromSettings();
+  const regionDetails = getFocusRegionFromSettings();
   const profileNames = await getAllCICSProfiles();
   if (!regionDetails.profileName || !regionDetails.focusSelectedRegion) {
     return false;
