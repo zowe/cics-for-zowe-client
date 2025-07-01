@@ -23,7 +23,6 @@
   },
   "overrides": {
     "esbuild": "^0.25.0",
-    "@zowe/cli": "^7.29.14",
     "yamljs": {
       "glob": "^9.0.0"
     }
