@@ -596,5 +596,8 @@
     "@zowe/cics-for-zowe-sdk": "6.8.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.2.1"
+  },
+  "overrides": {
+    "brace-expansion": "2.0.2"
   }
 }
