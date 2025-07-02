@@ -85,8 +85,6 @@ async function loadResources(
 ): Promise<IResourcesHandler> {
   const resourceContainer = new ResourceContainer<IResource>(resourceType);
   resourceContainer.setCriteria([resourceName]);
-  resourceContainer.setRegionName(regionName);
-  resourceContainer.setPlexName(cicsplex);
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 

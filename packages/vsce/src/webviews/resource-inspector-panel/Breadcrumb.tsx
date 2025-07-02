@@ -14,29 +14,12 @@ import * as vscode from "../common/vscode";
 
 import "../css/style.css";
 
-const Breadcrumb = () => {
-  const [resourceInfo, setResourceInfo] = React.useState<{
-    profileHandler: { key: string; value: string }[];
-  }>();
-
-  React.useEffect(() => {
-    const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
-      setResourceInfo(event.data.data);
-    };
-    vscode.addVscMessageListener(listener);
-
-    vscode.postVscMessage({ command: "init" });
-
-    return () => {
-      vscode.removeVscMessageListener(listener);
-    };
-  }, []);
-
+const Breadcrumb = ({ profileHandler }: { profileHandler: { key: string; value: string }[] }) => {
   return (
     <div id="breadcrumb-div" className="breadcrumb-div">
       <ul className="breadcrumb">
-        {resourceInfo &&
-          resourceInfo.profileHandler
+        {profileHandler &&
+          profileHandler
             .filter((profileHandler) => profileHandler.value !== null)
             .map((profile) => (
               <li key={profile.key}>
