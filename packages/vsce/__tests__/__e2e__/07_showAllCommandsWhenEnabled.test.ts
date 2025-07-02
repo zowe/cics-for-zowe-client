@@ -1,4 +1,4 @@
-import { countCicsCommands, removeUserSetting, sleep } from "./util/globalMocks";
+import { countCicsCommands, removeUserSetting} from "./util/globalMocks";
 import { expect } from "chai";
 import {openSettingsJsonEditor,updateUserSetting,getCommandPaletteLabels} from "./util/globalMocks";
 
