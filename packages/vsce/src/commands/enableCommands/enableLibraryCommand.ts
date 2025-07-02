@@ -13,11 +13,11 @@ import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { LibraryMeta } from "../../doc";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSSession } from "../../resources";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../ICommandParams";
 
 /**
  * Performs enable on selected CICSLibrary nodes.
