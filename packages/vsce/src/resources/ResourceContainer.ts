@@ -97,13 +97,6 @@ export class ResourceContainer<T extends IResource> {
   }
 
   /**
-   * Sets the region name information in current object.
-   */
-  public setRegionName(regionName: string) {
-    this.regionName = regionName;
-  }
-
-  /**
    * Fetch region name from current object.
    */
   public getRegionName(): string {
@@ -122,13 +115,6 @@ export class ResourceContainer<T extends IResource> {
    */
   public getProfileName(): string {
     return this.profileName;
-  }
-
-  /**
-   * Sets the plex name information in current object.
-   */
-  public setPlexName(plexName: string) {
-    this.plexName = plexName;
   }
 
   /**
@@ -195,6 +181,10 @@ export class ResourceContainer<T extends IResource> {
       const newResources = toArray(response.records[this.resourceMeta.resourceName.toLowerCase()]).map((res: T) => new Resource(res));
 
       this.resources = [...currentResources, ...newResources];
+
+      //set region and plex value in current context
+      this.regionName = regionName;
+      this.plexName = cicsplexName;
     } catch (error) {
       if (
         error instanceof imperative.RestClientError &&
