@@ -35,11 +35,11 @@ describe("Test Suite For Resource Inspector For Programs", () => {
   let regionIYCWENK1Index: number;
   let programsResourceIndex: number;
   let C128NProgram: TreeItem | undefined;
-  let bottomBar: BottomBarPanel;
+  let resourceInspectorPanel: BottomBarPanel;
   let resourceInspectorRoot: WebElement;
   let tables: WebElement[];
-  let table1: WebElement;
-  let table2: WebElement;
+  let headerTable: WebElement;
+  let attributesTable: WebElement;
 
   before(async () => {
     await sleep(2000);
@@ -82,11 +82,11 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     await C128NProgram?.click();
     await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Inspect Resource");
 
-    bottomBar = new BottomBarPanel();
-    await bottomBar.openTab("CICS Resource Inspector");
+    resourceInspectorPanel = new BottomBarPanel();
+    await resourceInspectorPanel.openTab("CICS Resource Inspector");
 
     // Find the selected <li> tab and its <a> tag to verify the tab name
-    const tabElement = await bottomBar.findElement(By.css("li[role='tab'][aria-selected='true']"));
+    const tabElement = await resourceInspectorPanel.findElement(By.css("li[role='tab'][aria-selected='true']"));
     const aTag = await tabElement.findElement(By.css("a"));
     const ariaLabel = await aTag.getAttribute("aria-label");
     expect(ariaLabel).to.equal("CICS Resource Inspector");
@@ -103,12 +103,11 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     tables = await resourceInspectorRoot.findElements(By.css("table"));
     expect(tables.length).to.be.at.least(2);
 
-    table1 = tables[0];
-    // const table1 = await resourceInspectorRoot.findElement(By.id("table-1"));
-    expect(table1).not.undefined;
+    headerTable = tables[0];
+    expect(headerTable).not.undefined;
 
     // Find the header in the table and verify the name of the program
-    const header = await table1.findElements(By.css("thead th div"));
+    const header = await headerTable.findElements(By.css("thead th div"));
     const headerTexts: string[] = [];
     for (const div of header) {
       headerTexts.push(await div.getText());
@@ -122,11 +121,11 @@ describe("Test Suite For Resource Inspector For Programs", () => {
   it("Should Verify The Program Attributes In The Resource Inspector", async () => {
     await webviewView.switchToFrame();
 
-    table2 = tables[1];
-    expect(table2).not.undefined;
+    attributesTable = tables[1];
+    expect(attributesTable).not.undefined;
 
-    const rows = await table2.findElements(By.css("tbody tr"));
-    expect(rows.length).to.be.greaterThan(0);
+    const attributesTablerows = await attributesTable.findElements(By.css("tbody tr"));
+    expect(attributesTablerows.length).to.be.greaterThan(0);
 
     const expectedAttributes = [
       { attribute: "program", value: C128N },
@@ -134,7 +133,7 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     ];
 
     // Go through each row in the table and verify the expected attributes
-    for (const row of rows) {
+    for (const row of attributesTablerows) {
       const tds = await row.findElements(By.css("td"));
       if (tds.length >= 2) {
         const attribute = (await tds[0].getText()).trim().toLowerCase();
@@ -151,7 +150,7 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     }
 
     await webviewView.switchBack();
-    await bottomBar.toggle(false);
+    await resourceInspectorPanel.toggle(false);
     cicsTree.takeScreenshot();
   });
 });
