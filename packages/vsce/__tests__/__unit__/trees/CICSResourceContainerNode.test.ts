@@ -263,8 +263,8 @@ describe("CICSResourceContainerNode tests", () => {
         },
         records: {
           cicslibrary: [
-            { dsname: "MY.DSN", name: "LIB1" },
-            { dsname: "MY.DSN.2", name: "LIB2" },
+            { dsname: "MY.DSN", name: "LIB1", enableStatus: "ENABLED" },
+            { dsname: "MY.DSN.2", name: "LIB2", enableStatus: "ENABLED" },
           ],
         },
       },
@@ -279,17 +279,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: regionTree,
         session: cicsSession,
       },
-      {
-        meta: LibraryMeta,
-        resource: new Resource({
-          eyu_cicsname: "REG",
-          status: "DISABLED",
-          enablestatus: "ENABLED",
-          name: "MYLIB",
-          dsname: "MY.DSN",
-          ranking: "10",
-        }),
-      },
+      undefined,
       {
         meta: LibraryMeta,
         resources: new ResourceContainer(LibraryMeta),
