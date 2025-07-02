@@ -145,7 +145,7 @@ export class ProfileManagement {
           name: "CICSRegion",
           regionName: profile.profile.regionName,
         });
-        if (singleRegionJson.response.records.cicsregion) {
+        if (singleRegionJson.response.records?.cicsregion) {
           infoLoaded.push({
             plexname: null,
             regions: [singleRegionJson.response.records?.cicsregion],

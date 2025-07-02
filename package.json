@@ -22,7 +22,10 @@
     "license": "node scripts/updateLicenses.js"
   },
   "overrides": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "yamljs": {
+      "glob": "^9.0.0"
+    }
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
