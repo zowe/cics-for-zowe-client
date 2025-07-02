@@ -33,18 +33,14 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   getLabel: function (resource: Resource<ILibrary>): string {
     let label = `${resource.attributes.name}`;
 
-    if (resource.attributes.enablestatus === "disabled" || resource.attributes.enablestatus === "DISABLED") {
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
     }
     return label;
   },
 
   getContext: function (resource: Resource<ILibrary>): string {
-    if (resource.attributes && resource.attributes.enablestatus) {
-      return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.toUpperCase()}.${resource.attributes.name}`;
-    }
-    // Handle the case when resource.attributes or resource.attributes.enablestatus is not defined
-    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
+    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {
