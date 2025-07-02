@@ -77,9 +77,9 @@ export async function findProgramByLabel(programs: TreeItem[], programLabel: str
   return undefined;
 }
 
-export async function findLibraryByLabel(Library: TreeItem[], LibraryLabel: string): Promise<TreeItem | undefined> {
-  for (const library of Library) {
-    if ((await library.getLabel()).trim() === LibraryLabel) {
+export async function findLibraryByLabel(libraries: TreeItem[], libraryLabel: string): Promise<TreeItem | undefined> {
+  for (const library of libraries) {
+    if ((await library.getLabel()).trim() === libraryLabel) {
       return library;
     }
   }
