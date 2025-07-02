@@ -1,0 +1,41 @@
+{
+  "name": "cics-extension-extender",
+  "displayName": "cics-extension-extender",
+  "publisher": "Zowe",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/cics-for-zowe-client.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {},
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "@zowe/cics-for-zowe-sdk": "^6.8.0",
+    "@zowe/zowe-explorer-api": "^3.2.1",
+    "compare-versions": "^6.1.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@zowe/cics-for-zowe-explorer-api": "../../../../../vsce-api"
+  }
+}
