@@ -69,7 +69,7 @@ const ResourceInspector = () => {
           <th id="th-1" className="header-cell-1 padding-left-10">
             <div className="div-display-1">{resourceInfo?.name ?? "..."}</div>
             <div className="div-display-1 div-display-2">
-              {resourceInfo?.resourceName ?? "..."}: {resourceInfo ? (resourceInfo?.resource.status || resourceInfo.resource.enablestatus) : "..."}
+              {resourceInfo?.resourceName ?? "..."}: {resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
           </th>
         </thead>
