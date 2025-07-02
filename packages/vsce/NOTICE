@@ -9033,11 +9033,11 @@ SOFTWARE.
 
 ------
 
-** @jridgewell/gen-mapping; version 0.3.11 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
+** @jridgewell/gen-mapping; version 0.3.12 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/sourcemap-codec; version 1.5.3 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec
+** @jridgewell/sourcemap-codec; version 1.5.4 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/trace-mapping; version 0.3.28 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping
+** @jridgewell/trace-mapping; version 0.3.29 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
@@ -9063,9 +9063,7 @@ SOFTWARE.
 
 ------
 
-** @azure/msal-browser; version 4.13.2 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
-Copyright (c) Microsoft Corporation
-** @azure/msal-common; version 15.7.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+** @azure/msal-common; version 15.8.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
 
 MIT License
@@ -9430,7 +9428,7 @@ THE SOFTWARE.
 
 ------
 
-** @azure/msal-node; version 3.6.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+** @azure/msal-node; version 3.6.2 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) 2020 Microsoft
 Copyright (c) Microsoft Corporation
 
@@ -9903,7 +9901,7 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @types/mustache; version 4.2.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mustache
 Copyright (c) Microsoft Corporation
-** @types/node; version 24.0.8 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+** @types/node; version 24.0.10 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
