@@ -16,7 +16,6 @@ import * as vscode from "../common/vscode";
 
 import { IResource } from "../../doc";
 import "../css/style.css";
-import Breadcrumb from "./Breadcrumb";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
@@ -26,7 +25,6 @@ const ResourceInspector = () => {
     resourceName: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
-    profileHandler: { key: string; value: string }[];
   }>();
 
   React.useEffect(() => {
@@ -35,12 +33,11 @@ const ResourceInspector = () => {
     };
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
-      const breadcrumbDiv = document.getElementById("breadcrumb-div");
       const headerElement1 = document.getElementById("table-header-1");
+      const headerHeight1 = headerElement1.offsetHeight;
       const headerElement2 = document.getElementById("table-header-2");
-      // Adjust the top position of the all the headers
-      headerElement1.style.top = breadcrumbDiv.offsetHeight - 1 + "px";
-      headerElement2.style.top = breadcrumbDiv.offsetHeight + headerElement1.offsetHeight - 2 + "px";
+      // Adjust the top position of the second header based on the first header's height
+      headerElement2.style.top = headerHeight1 - 1 + "px";
     };
     vscode.addScrollerListener(handleScroll);
 
@@ -63,7 +60,6 @@ const ResourceInspector = () => {
 
   return (
     <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
-      <Breadcrumb profileHandler={resourceInfo?.profileHandler} />
       <table id="table-1" className="border-collapse">
         <thead id="table-header-1" className="table-header1">
           <th id="th-1" className="header-cell-1 padding-left-10">
@@ -76,9 +72,9 @@ const ResourceInspector = () => {
         <tbody className="padding-left-10 padding-top-20">
           {resourceInfo?.highlights.length > 0 && (
             <tr>
-              <p className="padding-top-30"></p>
+              <p className="padding-top-10"></p>
               {resourceInfo.highlights.map((highlight) => (
-                <p className="line padding-left-27">
+                <p className="line padding-left-20">
                   {highlight.key}: {highlight.value}
                 </p>
               ))}
@@ -105,17 +101,17 @@ const ResourceInspector = () => {
         </thead>
         <tbody>
           {resourceInfo && Object.entries(resourceInfo.resource)
-              .filter(([key, value]) => !key.startsWith("_"))
-              .filter(
-                ([key, value]) =>
-                  key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
-              )
-              .map(([key, value]) => (
-                <tr key={key}>
-                  <td className="padding-left-27 width-30">{key}</td>
-                  <td className="padding-right-75 width-70">{value}</td>
-                </tr>
-              ))}
+            .filter(([key, value]) => !key.startsWith("_"))
+            .filter(
+              ([key, value]) =>
+                key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
+            )
+            .map(([key, value]) => (
+              <tr key={key}>
+                <td className="padding-left-27 width-30">{key}</td>
+                <td className="padding-right-75 width-70">{value}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
