@@ -10,7 +10,6 @@
  */
 
 import * as React from "react";
-import * as vscode from "../common/vscode";
 
 import "../css/style.css";
 
