@@ -9,7 +9,7 @@
  *
  */
 
-import { ILibrary } from "../../../src/doc";
+import { ILibrary, IProgram } from "../../../src/doc";
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
 import { ILibraryDataset } from "../../../src/doc/resources/ILibraryDataset";
 import { Resource } from "../../../src/resources";
@@ -63,6 +63,17 @@ describe("Library Dataset Meta", () => {
   it("should have custom child type", async () => {
     const childTypeDefaultCriteria = await LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
     expect(childTypeDefaultCriteria).toEqual(`(LIBRARYDSN='MY.DSNAME')`);
+    const childTypeDefaultContext = LibraryDatasetMeta.childType?.getContext(new Resource<IProgram>({
+      program: "myprog",
+      enablestatus: "ENABLED",
+      eyu_cicsname: "MYREGION",
+      library: "MYLIB",
+      librarydsn: "MY.LIB.1",
+      newcopycnt: "2",
+      progtype: "COBOL",
+      status: "ENABLED",
+    }));
+    expect(childTypeDefaultContext).toEqual(`CICSProgram.ENABLED.PARENT.CICSLibraryDatasetName.myprog`);
   });
 
   it("should return highlights", () => {

@@ -9,16 +9,7 @@
  *
  */
 
-import { commands, env, extensions, window, workspace } from "vscode";
-
-export function isTheia(): boolean {
-  const VSCODE_APPNAME: string[] = ["Visual Studio Code", "VSCodium"];
-  const appName = env.appName;
-  if (appName && !VSCODE_APPNAME.includes(appName)) {
-    return true;
-  }
-  return false;
-}
+import { commands, extensions, window, workspace } from "vscode";
 
 export async function openConfigFile(filePath: string): Promise<void> {
   const document = await workspace.openTextDocument(filePath);

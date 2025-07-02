@@ -102,17 +102,26 @@ When an unsuccessful message displays, you can troubleshoot the installation by 
 
 ## Creating a user profile
 
-You can set up a CICS profile to avoid typing your connection details on every command. The profile contains your host, port, username, and password for the CMCI instance of your choice. You can create multiple profiles and switch between them if necessary. Issue the following command to create a cics profile:
+You can set up a CICS profile to avoid typing your connection details on every command. The profile contains your host, port, username, and password for the CMCI instance of your choice. You can create multiple profiles and switch between them if necessary.
 
-```console
-zowe profiles create cics <profile name> -H <host> -P <port> -u <user> -p <password>
+For example,
+
+```json
+"cics": {
+    "type": "cics",
+    "properties": {
+        "protocol": "https",
+        "port": 443,
+        "host": "cmci.example.com",
+    },
+    "secure": [
+        "user",
+        "password"
+    ]
+}
 ```
 
-**Note:** For more information, issue the following command:
-
-```console
-zowe profiles create cis --help
-```
+**Note:** For more information, see [Using team configuration](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles) in the Zowe documentation.
 
 ## Running tests
 
