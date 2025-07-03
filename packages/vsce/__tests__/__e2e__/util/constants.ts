@@ -28,7 +28,12 @@ export const CICSEX61 = "CICSEX61";
 export const DUMMY907 = "DUMMY907";
 
 // Region labels
+export const IYCWENK1 = "IYCWENK1";
 export const PROGLIB = "PROGLIB";
+
+// Region Resource labels
+export const PROGRAMS = "Programs";
+export const PIPELINES = "Pipelines";
 
 // Library labels
 export const LIB1 = "LIB1";
@@ -36,9 +41,7 @@ export const LIB2 = "LIB2";
 export const DS11 = "DS11";
 export const DS12 = "DS12";
 export const DS21 = "DS21";
-export const PIPELINES = "Pipelines";
 export const LIBRARIES_LIB1_LABEL = "LIB1 (LIBRARY='LIB1') AND (DSNAME='DS11')";
-export const PROGRAMS = "Programs";
 export const LIBRARIES_LIB2_LABEL = "Libraries LIB2";
 
 //Plex child labels
