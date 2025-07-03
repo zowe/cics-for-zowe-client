@@ -78,14 +78,16 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   public setResourceHandlerMap(resourceHandler: IResourcesHandler): ResourceInspectorViewProvider {
     this.resourceHandlerMap = [];
-    this.resourceHandlerMap.push({ key: "profile", value: resourceHandler.resourceContainer.getProfileName().toUpperCase() });
+    this.resourceHandlerMap.push({ key: "profile", value: resourceHandler.resourceContainer.getProfileName() });
     const cicsplex = resourceHandler.resourceContainer.getPlexName();
-    const plexvalue = cicsplex === undefined ? null : cicsplex.toUpperCase();
+    const plexvalue = cicsplex === undefined ? null : cicsplex;
     this.resourceHandlerMap.push({
       key: "cicsplex",
       value: plexvalue,
     });
-    this.resourceHandlerMap.push({ key: "region", value: resourceHandler.resourceContainer.getRegionName().toUpperCase() });
+    const cicsregion = resourceHandler.resourceContainer.getRegionName();
+    const regionValue = cicsregion === undefined ? null : cicsregion;
+    this.resourceHandlerMap.push({ key: "region", value: regionValue });
 
     return this;
   }
