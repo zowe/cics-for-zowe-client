@@ -77,12 +77,8 @@ export async function findProgramByLabel(programs: TreeItem[], programLabel: str
   return undefined;
 }
 
-export async function countCicsCommands() {
-  // Open Command Palette using keyboard shortcut as contextmenu support is not available
-  const driver = VSBrowser.instance.driver;
-  await driver.actions().keyDown(Key.COMMAND).sendKeys("P").keyUp(Key.COMMAND).perform();
-  const inputBox = await InputBox.create();
-  await inputBox.setText(">IBM CICS for Zowe Explorer");
+export async function countCommandsFromPalette(command: string): Promise<any>{
+  const inputBox = await openCommandPaletteAndType(command);
   await sleep(500);
   const items = await inputBox.getQuickPicks();
   return items.length;
@@ -107,7 +103,6 @@ async function openCommandPaletteAndType(command: string): Promise<InputBox> {
 export async function openCommandPaletteAndRun(command: string) {
   const inputBox = await openCommandPaletteAndType(command);
   await inputBox.confirm();
-  await sleep(2000); // Wait for the command to complete
 }
 
 export async function openSettingsJsonEditor(): Promise<TextEditor> {
@@ -157,5 +152,4 @@ export async function removeUserSetting(settingName: string):Promise<void> {
     await editor.save();
     await sleep(500);
   }
-
 }
