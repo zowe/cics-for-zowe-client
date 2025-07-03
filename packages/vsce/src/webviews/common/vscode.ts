@@ -9,13 +9,21 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 
 export interface TransformWebviewMessage {
   command: string;
-  data?: any;
-  payload?: unknown;
+  data?: {
+    name: string;
+    resourceName: string;
+    highlights: { key: string; value: string; }[];
+    resource: IResource;
+  };
+  actions?: { id: string; name: string; }[];
+  actionId?: string;
 }
 
 export function postVscMessage(

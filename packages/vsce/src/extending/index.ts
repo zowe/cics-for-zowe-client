@@ -9,6 +9,5 @@
  *
  */
 
-export * from "./getAPI";
-export * from "./interfaces";
-export * from "./resources";
+export * from "./CICSExtenderApiConfig";
+export * from "./CICSResourceExtender";
