@@ -33,7 +33,7 @@ import { IExtensionAPI } from "../../src/interfaces";
 import { ResourceTypes } from "../../src/resources";
 
 
-describe("getAPI tests", () => {
+describe("Test Suite for getAPI", () => {
 
     it("should return API with no minversion", async () => {
         const api = await getCICSForZoweExplorerAPI();
