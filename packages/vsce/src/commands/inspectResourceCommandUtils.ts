@@ -37,11 +37,12 @@ async function showInspectResource(context: ExtensionContext, resourcesHandler: 
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
+  const region = node.regionName !== undefined ? node.regionName : node.description.toString().replace("(", "").replace(")", "");
   const resourcesHandler: IResourcesHandler = await loadResources(
     node.getSession(),
     node.getContainedResource().meta,
     node.getContainedResourceName(),
-    node.regionName,
+    region,
     node.cicsplexName,
     node.getProfileName()
   );
