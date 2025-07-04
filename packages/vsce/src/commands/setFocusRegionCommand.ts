@@ -120,7 +120,7 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
     focusSelectedRegion = choice.label;
     CICSLogger.info(`Focus region set to ${focusSelectedRegion} for profile ${profileName.label} and plex ${cicsPlex || "NA"}`);
   }
-  await setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlex);
+  setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlex);
   CICSLogger.info(`Updating focus region in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlex}`);
   Gui.showMessage(l10n.t("Focus Region selected: {0} and CICSplex: {1}", focusSelectedRegion || "NA", cicsPlex || "NA"));
   return { profile, cicsPlex, session, focusSelectedRegion };

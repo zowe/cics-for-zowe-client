@@ -26,7 +26,7 @@ export function getFocusRegionFromSettings(): { profileName: string; focusSelect
   return { profileName, focusSelectedRegion, cicsPlex };
 }
 
-export async function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
+export function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
   const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
   workspace.getConfiguration("zowe.cics").update("focusRegion", { regionName, cicsPlex, profileName }, ConfigurationTarget.Global);
   CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
