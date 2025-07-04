@@ -18,13 +18,7 @@ const Breadcrumb = ({ profileHandler }: { profileHandler: { key: string; value: 
     <div id="breadcrumb-div" className="breadcrumb-div">
       <ul className="breadcrumb">
         {profileHandler &&
-          profileHandler
-            .filter((profileHandler) => profileHandler.value !== null)
-            .map((profile) => (
-              <li key={profile.key}>
-                <a>{profile.value}</a>
-              </li>
-            ))}
+          profileHandler.filter((profileHandler) => profileHandler.value !== null).map((profile) => <li key={profile.key}>{profile.value}</li>)}
       </ul>
     </div>
   );
