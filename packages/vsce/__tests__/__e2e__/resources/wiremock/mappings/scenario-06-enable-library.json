@@ -1,7 +1,7 @@
 {
   "mappings": [
     {
-      "scenarioName": " Enable Library",
+      "scenarioName": "Enable Library",
       "requiredScenarioState": "Started",
       "newScenarioState": "Fetch Libraries for enable operation",
       "request": {
@@ -22,7 +22,7 @@
       }
     },
     {
-      "scenarioName": " Enable Library",
+      "scenarioName": "Enable Library",
       "requiredScenarioState": "Fetch Libraries for enable operation",
       "newScenarioState": "Load CBSA Library with status as Enabled",
       "request": {
@@ -38,7 +38,7 @@
       }
     },
     {
-      "scenarioName": " Enable Library",
+      "scenarioName": "Enable Library",
       "requiredScenarioState": "Load CBSA Library with status as Enabled",
       "newScenarioState": "Fetch library record count for enable operation",
       "request": {
@@ -54,7 +54,7 @@
       }
     },
     {
-      "scenarioName": " Enable Library",
+      "scenarioName": "Enable Library",
       "requiredScenarioState": "Fetch library record count for enable operation",
       "request": {
         "method": "GET",

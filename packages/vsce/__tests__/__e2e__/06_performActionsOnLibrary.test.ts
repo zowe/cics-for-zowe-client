@@ -50,7 +50,7 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Test Suite For Performing Disable And Enable Library Actions On Library CBSA In Region IYCWENK1 In Plex CICSEX61", () => {
+  describe("Test Suite For Performing Disable And Enable on Library resources", () => {
     let CBSALibrary: TreeItem | undefined;
 
     it("Should Setup Tree and Verify Library List", async () => {
@@ -95,8 +95,8 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
     });
 
     it("Should Enable The Library CBSA", async () => {
-      // await sendArrowDownKeyAndPressEnter(9);
-      // await expectTreeItemIsSelected(CBSALibrary);
+      
+
       await resetAllScenarios();
       await CBSALibrary?.click();
 
