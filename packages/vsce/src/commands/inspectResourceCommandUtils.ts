@@ -19,11 +19,7 @@ import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewPro
 import { CICSLogger } from "../utils/CICSLogger";
 import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { getFocusRegion } from "./setFocusRegionCommand";
-
-interface IResourcesHandler {
-  resources: [Resource<IResource>[], boolean];
-  resourceContainer: ResourceContainer<IResource>;
-}
+import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -34,19 +30,21 @@ async function showInspectResource(context: ExtensionContext, resourcesHandler: 
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context.extensionUri).setResource({
+  await ResourceInspectorViewProvider.getInstance(context.extensionUri).setResourceHandlerMap(resourcesHandler).setResource({
     resource: resource[0],
     meta: resourcesHandler.resourceContainer.getMeta(),
   });
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
+  const region = node.regionName !== undefined ? node.regionName : node.description.toString().replace("(", "").replace(")", "");
   const resourcesHandler: IResourcesHandler = await loadResources(
     node.getSession(),
     node.getContainedResource().meta,
     node.getContainedResourceName(),
-    node.regionName,
-    node.cicsplexName
+    region,
+    node.cicsplexName,
+    node.getProfileName()
   );
   await showInspectResource(context, resourcesHandler);
 }
@@ -70,7 +68,8 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
       type,
       resourceName,
       focusRegion.focusSelectedRegion,
-      focusRegion.cicsPlex
+      focusRegion.cicsPlex,
+      focusRegion.profile.name
     );
 
     showInspectResource(context, resourcesHandler);
@@ -82,11 +81,12 @@ async function loadResources(
   resourceType: IResourceMeta<IResource>,
   resourceName: string,
   regionName: string,
-  cicsplex: string
+  cicsplex: string,
+  profileName: string
 ): Promise<IResourcesHandler> {
   const resourceContainer = new ResourceContainer<IResource>(resourceType);
   resourceContainer.setCriteria([resourceName]);
-
+  resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
   return { resources, resourceContainer };

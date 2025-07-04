@@ -31,6 +31,10 @@ export class ResourceContainer<T extends IResource> {
 
   private filterApplied: boolean;
 
+  private regionName: string;
+  private profileName: string;
+  private plexName: string;
+
   constructor(
     private resourceMeta: IResourceMeta<T>,
     private resource?: Resource<T>
@@ -92,6 +96,34 @@ export class ResourceContainer<T extends IResource> {
     this.numberToFetch = await PersistentStorage.getNumberOfResourcesToFetch();
   }
 
+  /**
+   * Fetch region name from current object.
+   */
+  public getRegionName(): string {
+    return this.regionName;
+  }
+
+  /**
+   * Sets the profile name information in current object.
+   */
+  public setProfileName(profileName: string) {
+    this.profileName = profileName;
+  }
+
+  /**
+   * Fetch profile name from current object.
+   */
+  public getProfileName(): string {
+    return this.profileName;
+  }
+
+  /**
+   * Fetch plex name from current object.
+   */
+  public getPlexName(): string {
+    return this.plexName;
+  }
+
   async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {
     // If we don't yet have a cacheToken, get one
     if (!this.cacheToken) {
@@ -149,6 +181,10 @@ export class ResourceContainer<T extends IResource> {
       const newResources = toArray(response.records[this.resourceMeta.resourceName.toLowerCase()]).map((res: T) => new Resource(res));
 
       this.resources = [...currentResources, ...newResources];
+
+      //set region and plex value in current context
+      this.regionName = regionName;
+      this.plexName = cicsplexName;
     } catch (error) {
       if (
         error instanceof imperative.RestClientError &&
