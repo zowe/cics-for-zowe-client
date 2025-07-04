@@ -4315,7 +4315,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** electron-to-chromium; version 1.5.178 -- https://github.com/kilian/electron-to-chromium#readme
+** electron-to-chromium; version 1.5.179 -- https://github.com/kilian/electron-to-chromium#readme
 Copyright 2018 Kilian Valkhof
 
 Copyright 2018 Kilian Valkhof
@@ -8145,7 +8145,7 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @azure/core-util; version 1.12.0 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-util/
 Copyright (c) Microsoft Corporation
-** @azure/identity; version 4.10.1 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
+** @azure/identity; version 4.10.2 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
 Copyright (c) Microsoft Corporation
 ** @azure/logger; version 1.2.0 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/core/logger/README.md
 Copyright (c) Microsoft Corporation
@@ -9035,6 +9035,8 @@ SOFTWARE.
 
 ** @jridgewell/gen-mapping; version 0.3.12 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
+** @jridgewell/source-map; version 0.3.10 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/source-map
+Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 ** @jridgewell/sourcemap-codec; version 1.5.4 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 ** @jridgewell/trace-mapping; version 0.3.29 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping
@@ -9063,6 +9065,8 @@ SOFTWARE.
 
 ------
 
+** @azure/msal-browser; version 4.14.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+Copyright (c) Microsoft Corporation
 ** @azure/msal-common; version 15.8.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
 
