@@ -34,4 +34,5 @@ export class CICSExtenderApiConfig {
   public getConfig(): ICICSExtenderConfig {
     return this.config;
   }
+
 }

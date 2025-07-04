@@ -40,10 +40,7 @@
     },
     "project_base": {
       "type": "base",
-      "properties": {
-        "host": "localhost",
-        "rejectUnauthorized": true
-      }
+      "properties": {}
     }
   },
   "defaults": {
