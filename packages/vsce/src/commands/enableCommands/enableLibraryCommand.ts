@@ -16,6 +16,7 @@ import { LibraryMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSSession } from "../../resources";
 import { CICSTree } from "../../trees/CICSTree";
+import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 
@@ -54,7 +55,11 @@ export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>)
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {
-            window.showErrorMessage(`Something went wrong while enabling library ${node.getContainedResourceName()}`);
+            const message = `Something went wrong while enabling library ${node.getContainedResourceName()}\n\n${JSON.stringify(
+              error.message
+            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
+            window.showErrorMessage(message);
+            CICSLogger.error(message);
           }
         }
         tree._onDidChangeTreeData.fire(nodes[0].getParent());
