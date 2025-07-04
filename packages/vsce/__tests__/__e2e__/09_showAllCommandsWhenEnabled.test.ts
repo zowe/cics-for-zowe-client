@@ -9,7 +9,7 @@ describe("Test suite for showing all commands in Command Palette", () => {
     const command = ">IBM CICS for Zowe Explorer: Purge Task";
     const labels = await getCommandPaletteLabels(command);
     // Pass the test if the command is present
-    expect(countTrue).to.be.greaterThan(5);
+    expect(countTrue).to.be.greaterThan(6);
     expect(labels).to.include(
       "IBM CICS for Zowe Explorer: Purge Task",
       `Command "IBM CICS for Zowe Explorer: Purge Task" should be present in the palette`
