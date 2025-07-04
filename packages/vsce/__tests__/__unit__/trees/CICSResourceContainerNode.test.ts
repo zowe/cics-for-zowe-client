@@ -263,8 +263,8 @@ describe("CICSResourceContainerNode tests", () => {
         },
         records: {
           cicslibrary: [
-            { dsname: "MY.DSN", name: "LIB1" },
-            { dsname: "MY.DSN.2", name: "LIB2" },
+            { dsname: "MY.DSN", name: "LIB1", enablestatus: "ENABLED" },
+            { dsname: "MY.DSN.2", name: "LIB2", enablestatus: "ENABLED" },
           ],
         },
       },

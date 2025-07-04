@@ -26,16 +26,21 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria () {
+  async getDefaultCriteria() {
     return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "library");
   },
 
   getLabel: function (resource: Resource<ILibrary>): string {
-    return `${resource.attributes.name}`;
+    let label = `${resource.attributes.name}`;
+
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
+      label += " (Disabled)";
+    }
+    return label;
   },
 
   getContext: function (resource: Resource<ILibrary>): string {
-    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.name}`;
+    return `${CicsCmciConstants.CICS_LIBRARY_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {

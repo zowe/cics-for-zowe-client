@@ -77,6 +77,15 @@ export async function findProgramByLabel(programs: TreeItem[], programLabel: str
   return undefined;
 }
 
+export async function findLibraryByLabel(libraries: TreeItem[], libraryLabel: string): Promise<TreeItem | undefined> {
+  for (const library of libraries) {
+    if ((await library.getLabel()).trim() === libraryLabel) {
+      return library;
+    }
+  }
+  return undefined;
+}
+
 export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void> {
   // Send the ARROW_DOWN key the specified number of times
   const driver = VSBrowser.instance.driver;
