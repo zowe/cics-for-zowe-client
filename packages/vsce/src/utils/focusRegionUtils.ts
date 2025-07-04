@@ -14,6 +14,7 @@ import { ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "
 import { CICSSession } from "../resources";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
 import { IProfileLoaded } from "@zowe/imperative";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlex: string } {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
@@ -28,8 +29,8 @@ export function getFocusRegionFromSettings(): { profileName: string; focusSelect
 export async function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
   const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
   workspace.getConfiguration("zowe.cics").update("focusRegion", { regionName, cicsPlex, profileName }, ConfigurationTarget.Global);
+  CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
 }
-//TODO add some loggers
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
   const regionDetails = getFocusRegionFromSettings();
   const profileNames = await getAllCICSProfiles();
@@ -37,7 +38,6 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
     return false;
   } else if (!profileNames.includes(regionDetails.profileName)) {
     await Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
-    await Gui.infoMessage(l10n.t("Kindly set Focus Region from here"));
     return false;
   }
   return true;

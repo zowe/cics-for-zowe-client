@@ -24,6 +24,7 @@ import {
 } from "../utils/focusRegionUtils";
 import { CICSSession, SessionHandler } from "../resources";
 import { IProfileLoaded } from "@zowe/imperative";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export function setFocusRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setFocusRegion", async () => {
@@ -32,14 +33,32 @@ export function setFocusRegionCommand() {
 }
 
 export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
+  const quickPick = Gui.createQuickPick();
   if (await isCICSProfileValidInSettings()) {
     const { profileName, focusSelectedRegion, cicsPlex } = await getFocusRegionFromSettings();
-    const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
-    const session = SessionHandler.getInstance().getSession(profile);
-    return { profile, cicsPlex, session, focusSelectedRegion };
+    const items = [
+      { label: "Select existing Focus Region", description: `Region: ${focusSelectedRegion} | CICSplex : ${cicsPlex || "NA"} | Profile: ${profileName}` },
+      { label: "Set New Focus Region" },
+    ];
+    const choice = await getChoiceFromQuickPick(quickPick, "Select Focus Region", [...items]);
+    quickPick.hide();
+
+    if (!choice) {
+      Gui.infoMessage(l10n.t("No selection made. Operation cancelled."));
+      return;
+    }
+    
+    if (choice.label === "Select existing Focus Region") {
+      const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
+      const session = SessionHandler.getInstance().getSession(profile);
+      return { profile, cicsPlex, session, focusSelectedRegion };
+    } else {
+      
+      return await updateFocusRegion();
+    }
   } else {
-    const { profile, cicsPlex, session, focusSelectedRegion }: IFocusRegion = await updateFocusRegion();
-    return { profile, cicsPlex, session, focusSelectedRegion } as IFocusRegion;
+    CICSLogger.info("Setting new focus region");
+    return await updateFocusRegion();
   }
 }
 
@@ -73,6 +92,7 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
     if (regions.length > 0) {
       const region = regions.map((r) => r.map((reg) => reg.applid));
       focusSelectedRegion = region[0][0];
+      CICSLogger.info(`Focus region set to ${focusSelectedRegion} for profile ${profileName.label}`);
     } else if (plexNames.length > 0) {
       choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
@@ -89,6 +109,7 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
   if (isPlex) {
     //if plex is selected, we should show the regions from the plex
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlex, session);
+    CICSLogger.info("Fetching regions for CICSplex: " + cicsPlex);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
     choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
     quickPick.hide();
@@ -97,8 +118,10 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
       return;
     }
     focusSelectedRegion = choice.label;
+    CICSLogger.info(`Focus region set to ${focusSelectedRegion} for profile ${profileName.label} and plex ${cicsPlex || "NA"}`);
   }
   await setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlex);
+  CICSLogger.info(`Updating focus region in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlex}`);
   Gui.showMessage(l10n.t("Focus Region selected: {0} and CICSplex: {1}", focusSelectedRegion || "NA", cicsPlex || "NA"));
   return { profile, cicsPlex, session, focusSelectedRegion };
 }
