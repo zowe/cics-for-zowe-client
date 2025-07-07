@@ -486,7 +486,7 @@
         },
         "zowe.cics.resourcePageCount": {
           "type": "number",
-          "default": 100,
+          "default": 250,
           "description": "How many records to fetch per page of resources",
           "scope": "window",
           "minimum": 1
