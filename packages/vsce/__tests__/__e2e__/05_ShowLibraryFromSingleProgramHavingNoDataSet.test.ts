@@ -15,6 +15,7 @@ import { CICSEX61, LIB2, LIBRARIES_LIB2_LABEL, PIPELINES, PLIB2NONE, PROGLIB, PR
 import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
+  clickRefreshIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
   getLabelAfterArrowDown,
@@ -37,12 +38,14 @@ describe("Show Library Action on Program without LIBDSNAME", () => {
   let regionIndex: number;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    clickRefreshIconInCicsTree(cicsTree);
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
     await resetAllScenarios();
+    await sleep(100);
   });
 
   after(async () => {

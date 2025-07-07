@@ -27,9 +27,10 @@ describe("Remove Wiremock Profile From Config File", async () => {
   let editorView: EditorView;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    await sleep(100);
   });
 
   after(async () => {

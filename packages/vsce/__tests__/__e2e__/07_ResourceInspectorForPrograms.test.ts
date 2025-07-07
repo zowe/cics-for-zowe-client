@@ -42,14 +42,14 @@ describe("Show Resource Inspector For Programs", () => {
   let attributesTable: WebElement;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
 
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
-
     await resetAllScenarios();
+    await sleep(100);
   });
 
   after(async () => {

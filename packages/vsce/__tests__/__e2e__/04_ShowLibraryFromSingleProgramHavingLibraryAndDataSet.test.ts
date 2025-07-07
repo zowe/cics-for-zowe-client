@@ -15,6 +15,7 @@ import { CICSEX61, DS11, LIB1, LIBRARIES_LIB1_LABEL, PIPELINES, PLIB1DS1, PROGLI
 import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
+  clickRefreshIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
   getLabelAfterArrowDown,
@@ -37,12 +38,14 @@ describe("Show Library Action on Program with Library and LIBDSNAME", () => {
   let regionIndex: number;
 
   before(async () => {
-    await sleep(2000); // Wait for the extension to load
+    await sleep(1900); // Wait for the extension to load
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    clickRefreshIconInCicsTree(cicsTree);
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
     await resetAllScenarios();
+    await sleep(100);
   });
 
   after(async () => {

@@ -30,9 +30,10 @@ describe("Adding Wiremock Profile, List CICSplexes", () => {
   let editorView: EditorView;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    await sleep(100);
   });
 
   beforeEach(async () => {
