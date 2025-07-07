@@ -21,22 +21,23 @@ import {
   selectEditProjectTeamConfigFile,
 } from "./util/initSetup.test";
 
-describe("Remove The Wiremock Profile From The Configuration File", async () => {
+describe("Remove Wiremock Profile From Config File", async () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let editorView: EditorView;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    await sleep(100);
   });
 
   after(async () => {
     await closeAllEditorsTabs();
   });
 
-  it("Should Remove Wiremock Profile", async () => {
+  it("Remove Wiremock", async () => {
     // Remove the wiremock profile from zowe.config.json
     restoreOriginalConfigFile();
 

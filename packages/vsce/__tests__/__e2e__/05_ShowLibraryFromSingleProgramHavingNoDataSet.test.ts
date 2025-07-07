@@ -15,6 +15,7 @@ import { CICSEX61, LIB2, LIBRARIES_LIB2_LABEL, PIPELINES, PLIB2NONE, PROGLIB, PR
 import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
+  clickRefreshIconInCicsTree,
   closeAllEditorsTabs,
   getCicsSection,
   getLabelAfterArrowDown,
@@ -24,7 +25,7 @@ import {
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
-describe("Test Suite For Performing Show Library Action From Programs In CICSEX61", () => {
+describe("Show Library Action on Program without LIBDSNAME", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let wiremockServer: TreeItem | undefined;
@@ -37,12 +38,14 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
   let regionIndex: number;
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
+    clickRefreshIconInCicsTree(cicsTree);
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
     await resetAllScenarios();
+    await sleep(100);
   });
 
   after(async () => {
@@ -50,7 +53,7 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  it("Should Setup Tree and Verify Program List", async () => {
+  it("Setup Tree and Verify Programs", async () => {
     ({
       cicsPlexChildren,
       regionIndex,
@@ -65,13 +68,13 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
   });
 
   let PLIB2NONEPROGRAM: TreeItem | undefined;
-  it("Should Check If The Program PLIB2NONE Is Present In Region PROGLIB", async () => {
+  it("Check Program PLIB2NONE Is In Region PROGLIB", async () => {
     PLIB2NONEPROGRAM = await findProgramByLabel(programs, PLIB2NONE);
     expect(PLIB2NONEPROGRAM).not.undefined;
     expect(await PLIB2NONEPROGRAM?.getLabel()).contains(PLIB2NONE);
   });
 
-  it("Should Check the attributes of PLIB2NONE and run show library", async () => {
+  it("Check the attributes of PLIB2NONE", async () => {
     await PLIB2NONEPROGRAM?.click();
     await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
     await verifyProgramAttributes(PLIB2NONE, {
@@ -81,7 +84,7 @@ describe("Test Suite For Performing Show Library Action From Programs In CICSEX6
     });
   });
 
-  it("Should Check The LIB1 Library Under Region PROGLIB", async () => {
+  it("Show Library on PLIB2NONE", async () => {
     await PLIB2NONEPROGRAM?.click();
     await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
     const driver = VSBrowser.instance.driver;
