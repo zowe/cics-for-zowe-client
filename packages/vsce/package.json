@@ -274,19 +274,19 @@
         },
         {
           "command": "cics-extension-for-zowe.newCopyProgram",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.phaseInCommand",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.showRegionAttributes",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.showRegionParameters",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.showRegionLogs",
@@ -340,8 +340,9 @@
           "command": "cics-extension-for-zowe.inquireTransaction",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
-        {"command": "cics-extension-for-zowe.disableLibrary",
-         "when": "config.zowe.cics.showAllCommandsInPalette"
+        {
+          "command": "cics-extension-for-zowe.disableLibrary",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.manageSession",
