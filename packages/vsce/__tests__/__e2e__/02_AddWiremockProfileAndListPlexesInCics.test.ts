@@ -23,7 +23,7 @@ import {
   selectEditProjectTeamConfigFile,
 } from "./util/initSetup.test";
 
-describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", () => {
+describe("Adding Wiremock Profile, List CICSplexes", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
@@ -45,8 +45,8 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Adding Wiremock Profile In The Configuration File", () => {
-    it("Should Add Wiremock Profile", async () => {
+  describe("Add Wiremock to Config File", () => {
+    it("Add Wiremock", async () => {
       // Add wiremock profile to the zowe.config.json
       addWiremockProfileToConfigFile();
 
@@ -63,10 +63,10 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
     });
   });
 
-  describe("Check For The Wiremock Profile And List The Plexes", async () => {
+  describe("Check For Wiremock, List Plexes", async () => {
     let wiremockServer: TreeItem | undefined;
 
-    it("Should Add The Wiremock CICS Profile To The Tree Using The Create Profile Toolbar Option", async () => {
+    it("Add The Wiremock Profile To The Tree", async () => {
       await clickPlusIconInCicsTree(cicsTree);
 
       // Find quickpick
@@ -89,7 +89,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       cicsTree.takeScreenshot();
     });
 
-    it("Should Display Wiremock Profile Under CICS Section And Title Check For The Wiremock Profile", async () => {
+    it("Check for Wiremock in CICS tree", async () => {
       // Checking if wiremock_server profile is available under the cics section
       wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
       expect(wiremockServer).exist;
@@ -100,7 +100,7 @@ describe("Test Suite For Adding Wiremock Profile And Listing The CICSplexes", ()
       cicsTree.takeScreenshot();
     });
 
-    it("Should List The CICSplexes Under Wiremock Profile", async () => {
+    it("List CICSplexes Under Wiremock", async () => {
       // Should expand the wiremock_profile and check for the plexes present under it
       const plexes = await cicsTree.openItem(WIREMOCK_PROFILE_NAME);
       expect(plexes).exist;

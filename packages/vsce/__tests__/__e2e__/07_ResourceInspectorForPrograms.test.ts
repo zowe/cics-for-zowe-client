@@ -22,7 +22,7 @@ import {
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
-describe("Test Suite For Resource Inspector For Programs", () => {
+describe("Show Resource Inspector For Programs", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let webviewView: WebviewView;
@@ -57,7 +57,7 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  it("Should Setup Tree and Verify Program List", async () => {
+  it("Setup Tree and Verify Programs", async () => {
     ({
       cicsPlexChildren: cicsPlexChildren,
       regionIndex: regionIndex,
@@ -71,14 +71,14 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Check If The Program C128N Is Present In Region IYCWENK1", async () => {
+  it("Check Program C128N Is In Region IYCWENK1", async () => {
     C128NProgram = await findProgramByLabel(programs, C128N);
     expect(C128NProgram).not.undefined;
     expect(await C128NProgram?.getLabel()).contains(C128N);
     cicsTree.takeScreenshot();
   });
 
-  it("Should Open Resource Inspector For Program C128N", async () => {
+  it("Open Resource Inspector on C128N", async () => {
     await C128NProgram?.click();
     await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Inspect Resource");
 
@@ -93,7 +93,7 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Verify The Program Name In The Header Of Resource Inspector", async () => {
+  it("Verify Program Name In Header", async () => {
     webviewView = new WebviewView();
     await webviewView.switchToFrame();
 
@@ -118,7 +118,7 @@ describe("Test Suite For Resource Inspector For Programs", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Verify The Program Attributes In The Resource Inspector", async () => {
+  it("Verify Program Attributes In Resource Inspector", async () => {
     await webviewView.switchToFrame();
 
     attributesTable = tables[1];

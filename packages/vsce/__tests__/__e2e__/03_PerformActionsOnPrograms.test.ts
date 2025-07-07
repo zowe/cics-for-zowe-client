@@ -33,7 +33,7 @@ import {
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
-describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => {
+describe("Perform Actions On Programs", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let editorView: EditorView;
@@ -61,8 +61,8 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Test Suite For Checking Children Of Plex CICSEX61", () => {
-    it("Should Check For Children Of Plex CICSEX61 And Verify If Regions Is Present", async () => {
+  describe("Checking Children of CICSEX61", () => {
+    it("Verify CICSEX61 -> Regions", async () => {
       cicsex61Children = await getPlexChildren(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61);
       expect(cicsex61Children).not.empty;
 
@@ -71,7 +71,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Check For Children Of Regions In CICSEX61 And Verify If Region IYCWENK1 Is Present", async () => {
+    it("Verify CICSEX61 -> Regions -> IYCWENK1", async () => {
       regions = await getRegionsInPlex(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61);
       expect(regions).not.empty;
 
@@ -80,7 +80,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Check For Children Of Region IYCWENK1 And Verify If Programs Is Present", async () => {
+    it("Verify CICSEX61 -> Regions -> IYCWENK1 -> Programs", async () => {
       // Open the CICStree and check for children of Region IYCWENK1 in CICSEX61 plex and make sure that Programs resource is present
       regionK1Resources = await cicsTree.openItem(WIREMOCK_PROFILE_NAME, CICSEX61, REGIONS_LOADED, await regions[regionIYCWENK1Index].getLabel());
       expect(regionK1Resources).not.empty;
@@ -90,7 +90,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Check For Programs In Region IYCWENK1", async () => {
+    it("Verify IYCWENK1 -> Programs", async () => {
       await resetAllScenarios();
       programs = await cicsTree.openItem(
         WIREMOCK_PROFILE_NAME,
@@ -104,17 +104,17 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
   });
 
-  describe("Test Suite For Performing Disable And Enable Program Actions On Program C128N In Region IYCWENK1 In Plex CICSEX61", () => {
+  describe("Performing Disable And Enable On Program CICSEX61 -> IYCWENK1 -> C128N", () => {
     let C128NProgram: TreeItem | undefined;
 
-    it("Should Check If The Program C128N Is Present In Region IYCWENK1", async () => {
+    it("Check C128N Is Present In IYCWENK1", async () => {
       C128NProgram = await findProgramByLabel(programs, C128N);
       expect(C128NProgram).not.undefined;
       expect(await C128NProgram?.getLabel()).contains(C128N);
       cicsTree.takeScreenshot();
     });
 
-    it("Should Disable The Program C128N", async () => {
+    it("Disable C128N", async () => {
       // Navigate to the C128N program in the tree
       await sendArrowDownKeyAndPressEnter(5);
       await expectTreeItemIsSelected(C128NProgram);
@@ -135,7 +135,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Enable The Program C128N", async () => {
+    it("Enable C128N", async () => {
       await sendArrowDownKeyAndPressEnter(5);
       await expectTreeItemIsSelected(C128NProgram);
 
@@ -157,16 +157,16 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
   });
 
-  describe("Test Suite For Performing New Copy Action On Program DSNCUEXT In Region IYCWENK1 In Plex CICSEX61", () => {
+  describe("Performing New Copy Action On Program CICSEX61 -> IYCWENK1 -> DSNCUEXT", () => {
     let DSNCUEXTProgram: TreeItem | undefined;
 
-    it("Should Check If The Program DSNCUEXT Is Present In Region IYCWENK1", async () => {
+    it("Check DSNCUEXT Is Present In IYCWENK1", async () => {
       DSNCUEXTProgram = await findProgramByLabel(programs, DSNCUEXT);
       expect(DSNCUEXTProgram).not.undefined;
       expect(await DSNCUEXTProgram?.getLabel()).contains(DSNCUEXT);
     });
 
-    it("Should Perform New Copy Action On The Program DSNCUEXT", async () => {
+    it("New Copy DSNCUEXT", async () => {
       await sendArrowDownKeyAndPressEnter(6);
       await expectTreeItemIsSelected(DSNCUEXTProgram);
 
@@ -187,20 +187,20 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
     });
   });
 
-  describe("Test Suite For Performing Show Attributes Action On Program DSNTIAC In Region IYCWENK1 In Plex CICSEX61", () => {
+  describe("Performing Show Attributes Action On Program CICSEX61 -> IYCWENK1 -> DSNTIAC", () => {
     let DSNTIACProgram: TreeItem | undefined;
 
-    it("Should Check If The Program DSNTIAC Is Present In Region IYCWENK1", async () => {
+    it("Check DSNTIAC Is Present In IYCWENK1", async () => {
       DSNTIACProgram = await findProgramByLabel(programs, DSNTIAC);
       expect(DSNTIACProgram).not.undefined;
       expect(await DSNTIACProgram?.getLabel()).contains(DSNTIAC);
       cicsTree.takeScreenshot();
     });
 
-    it("Should Show Attributes Of The Program DSNTIAC", async () => {
+    it("Show Attributes On DSNTIAC", async () => {
       await sendArrowDownKeyAndPressEnter(8);
       await expectTreeItemIsSelected(DSNTIACProgram);
-      await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
+      await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes");
 
       editorView = new EditorView();
       const titles = await editorView.getOpenEditorTitles();
@@ -209,7 +209,7 @@ describe("Test Suite For Performing Actions On The Programs In CICSEX61", () => 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Check If The Search Bar Is Working And The Value Of Program Is Correct In The Attributes Editor", async () => {
+    it("Search For Program Value", async () => {
       webView = (await new EditorView().openEditor("CICSProgram IYCWENK1(" + DSNTIAC + ")")) as WebView;
       expect(webView).not.undefined;
       await webView.switchToFrame();

@@ -16,7 +16,7 @@ import { CONFIG_FILE_NAME, EDIT_TEAM_CONFIG_FILE, GLOBAL_ZOWE_HOME_DIRECTORY, PR
 import { sleep } from "./util/globalMocks";
 import { checkIfEditorTabIsOpened, clickPlusIconInCicsTree, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
-describe("Test Suite For Editing Global And Project Team Configuration Files", () => {
+describe("Edit Global And Project Config Files", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
@@ -52,8 +52,8 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
     await closeAllEditorsTabs();
   });
 
-  describe("Opening The Global Team Configuration File", async () => {
-    it("Should Select The Global Option From The Quickpick", async () => {
+  describe("Open Global Config", async () => {
+    it("Choose Global From Quickpick", async () => {
       // Select the option "Global: in the Zowe home directory" from the quickpick
       const label1 = await qpItems[0].getLabel();
       expect(label1).contains(GLOBAL_ZOWE_HOME_DIRECTORY);
@@ -63,8 +63,8 @@ describe("Test Suite For Editing Global And Project Team Configuration Files", (
     });
   });
 
-  describe("Opening The Project Team Configuration File", async () => {
-    it("Should Select The Project Option From The Quickpick", async () => {
+  describe("Open Project Config", async () => {
+    it("Choose Project From Quickpick", async () => {
       // Select the option "Project: in the current working directory" from the quickpick
       const label2 = await qpItems[1].getLabel();
       expect(label2).contains(PROJECT_CURRENT_WORKING_DIRECTORY);
