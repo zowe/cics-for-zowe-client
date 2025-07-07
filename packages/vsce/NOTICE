@@ -2769,7 +2769,7 @@ Creative Commons may be contacted at http://creativecommons.org/.
 
 ------
 
-** caniuse-lite; version 1.0.30001726 -- https://github.com/browserslist/caniuse-lite#readme
+** caniuse-lite; version 1.0.30001727 -- https://github.com/browserslist/caniuse-lite#readme
 
 Attribution 4.0 International
 
@@ -4031,7 +4031,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** electron-to-chromium; version 1.5.179 -- https://github.com/kilian/electron-to-chromium#readme
+** electron-to-chromium; version 1.5.180 -- https://github.com/kilian/electron-to-chromium#readme
 Copyright 2018 Kilian Valkhof
 
 Copyright 2018 Kilian Valkhof
@@ -4847,7 +4847,7 @@ SOFTWARE.
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** @sindresorhus/merge-streams; version 2.3.0 -- https://github.com/sindresorhus/merge-streams#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** ansi-escapes; version 4.3.2 -- https://github.com/sindresorhus/ansi-escapes#readme
+** ansi-escapes; version 7.0.0 -- https://github.com/sindresorhus/ansi-escapes#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** bundle-name; version 4.1.0 -- https://github.com/sindresorhus/bundle-name#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -4863,6 +4863,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** define-lazy-prop; version 3.0.0 -- https://github.com/sindresorhus/define-lazy-prop#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** environment; version 1.1.0 -- https://github.com/sindresorhus/environment#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** execa; version 8.0.1 -- https://github.com/sindresorhus/execa#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** find-up; version 5.0.0 -- https://github.com/sindresorhus/find-up#readme
@@ -4874,6 +4876,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** got; version 14.4.7 -- https://github.com/sindresorhus/got#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** import-local; version 3.2.0 -- https://github.com/sindresorhus/import-local#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** index-to-position; version 1.1.0 -- https://github.com/sindresorhus/index-to-position#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** is-docker; version 3.0.0 -- https://github.com/sindresorhus/is-docker#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -4919,11 +4923,11 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** p-map; version 4.0.0 -- https://github.com/sindresorhus/p-map#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** parse-json; version 7.1.1 -- https://github.com/sindresorhus/parse-json#readme
+** parse-json; version 8.3.0 -- https://github.com/sindresorhus/parse-json#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** path-type; version 6.0.0 -- https://github.com/sindresorhus/path-type#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** read-pkg; version 8.1.0 -- https://github.com/sindresorhus/read-pkg#readme
+** read-pkg; version 9.0.1 -- https://github.com/sindresorhus/read-pkg#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** run-applescript; version 7.0.0 -- https://github.com/sindresorhus/run-applescript#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -5106,32 +5110,6 @@ SOFTWARE.
 
 ------
 
-** @textlint/module-interop; version 14.8.4 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/module-interop/
-Copyright (c) 2019 azu
-
-Copyright (c) 2019 azu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** jsonschema; version 1.5.0 -- https://github.com/tdegrunt/jsonschema#readme
 Copyright (c) 2012-2015 Tom
 Copyright (c) 2012-2019 Tom
@@ -5238,23 +5216,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE
-
-
-------
-
-** supports-hyperlinks; version 2.3.0 -- https://github.com/jamestalmage/supports-hyperlinks#readme
-Copyright (c) James Talmage <james@talmage.io>
-(c) James Talmage (https://github.com/jamestalmage)
-
-MIT License
-
-Copyright (c) James Talmage <james@talmage.io> (github.com/jamestalmage)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ------
@@ -6561,84 +6522,6 @@ THE SOFTWARE.
 
 ------
 
-** @secretlint/config-creator; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
-Copyright (c) 2020 azu
-** @secretlint/config-loader; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
-Copyright (c) 2020 azu
-** @secretlint/core; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
-(c) 2017 azu
-Copyright (c) 2020 azu
-(c) 2017 59naga https://github.com/59naga/carrack
-** @secretlint/formatter; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
-Copyright (c) 2020 azu
-** @secretlint/node; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
-Copyright (c) 2020 azu
-** @secretlint/profiler; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
-Copyright (c) 2020 azu
-** @secretlint/resolver; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
-Copyright (c) 2020 azu
-** @secretlint/secretlint-rule-preset-recommend; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
-Copyright (c) 2020 azu
-Copyright (c) 2005 Tom Wu
-Copyright (c) 2003-2005 Tom Wu
-Copyright (c) 2005-2009 Tom Wu
-Copyright (c) 2012 Kenji Urushima
-Copyright base-x contributors (c) 2016
-Copyright (c) 2014 Digital Bazaar, Inc.
-Copyright (c) 2019 Digital Bazaar, Inc.
-Copyright 2011-2016 Digital Bazaar, Inc.
-Copyright 2011-2017 Digital Bazaar, Inc.
-Copyright (c) 2008-2013 Digital Bazaar, Inc.
-Copyright (c) 2009-2014 Digital Bazaar, Inc.
-Copyright (c) 2009-2015 Digital Bazaar, Inc.
-Copyright (c) 2010-2012 Digital Bazaar, Inc.
-Copyright (c) 2010-2013 Digital Bazaar, Inc.
-Copyright (c) 2010-2014 Digital Bazaar, Inc.
-Copyright (c) 2010-2015 Digital Bazaar, Inc.
-Copyright (c) 2010-2018 Digital Bazaar, Inc.
-Copyright (c) 2012-2014 Digital Bazaar, Inc.
-Copyright (c) 2012-2015 Digital Bazaar, Inc.
-Copyright (c) 2013-2014 Digital Bazaar, Inc.
-Copyright (c) 2014-2015 Digital Bazaar, Inc.
-Copyright (c) 2017-2019 Digital Bazaar, Inc.
-Copyright 2012 Stefan Siegl <stesie@brokenpipe.de>
-Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
-Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
-Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-Copyright (c) Ellis Pritchard, Guardian Unlimited 2003. Contact ellis@nukinetics.com
-** @secretlint/source-creator; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
-Copyright (c) 2020 azu
-** @secretlint/types; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
-Copyright (c) 2020 azu
-** @textlint/resolver; version 14.8.4 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/resolver/
-Copyright (c) 2020 azu
-** secretlint; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
-Copyright (c) 2020 azu
-
-Copyright (c) 2020 azu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** has-tostringtag; version 1.0.2 -- https://github.com/inspect-js/has-tostringtag#readme
 Copyright (c) 2021 Inspect JS
 
@@ -6756,34 +6639,6 @@ SOFTWARE.
 
 ------
 
-** lines-and-columns; version 2.0.4 -- https://github.com/eventualbuddha/lines-and-columns#readme
-Copyright (c) 2015 Brian Donovan
-
-The MIT License (MIT)
-
-Copyright (c) 2015 Brian Donovan
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-------
-
 ** buffer-from; version 1.1.2 -- https://github.com/LinusU/buffer-from#readme
 Copyright (c) 2016, 2018 Linus Unneback
 
@@ -6878,7 +6733,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** node-sarif-builder; version 2.0.3 -- 
+** node-sarif-builder; version 3.2.0 -- 
 Copyright (c) 2022 - Nicolas Vuillamy
 
 MIT License
@@ -6962,64 +6817,12 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-rule-no-dotenv; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
-Copyright (c) 2020 secretlint
-
-Copyright (c) 2020 secretlint
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** @sec-ant/readable-stream; version 0.4.1 -- https://github.com/Sec-ant/readable-stream
 Copyright (c) 2022 Ze-Zheng Wu
 
 MIT License
 
 Copyright (c) 2022 Ze-Zheng Wu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
-** @secretlint/secretlint-formatter-sarif; version 10.1.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
-Copyright (c) 2022 azu
-
-Copyright (c) 2022 azu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -7595,41 +7398,6 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-------
-
-** @textlint/linter-formatter; version 14.8.4 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/linter-formatter
-Copyright (c) 2015 azu
-copyright 2015 oshi-shinobu
-Copyright (c) 2013 Nicholas C. Zakas
-copyright 2016 Gajus Kuizinas <gajus@gajus.com>
-
-Copyright (c) 2015 azu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-Include:
-
-    ESLint
-    Copyright (c) 2013 Nicholas C. Zakas. All rights reserved.
-    https://github.com/eslint/eslint/blob/master/LICENSE
 
 
 ------
@@ -8317,32 +8085,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Commits in this fork are (c) Ziggy Jonsson (ziggy.jonsson.nyc@gmail.com)
 and fall under same licence structure as the original repo (MIT)
-
-------
-
-** @textlint/types; version 14.8.4 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/types/
-Copyright (c) 2018 azu
-
-Copyright (c) 2018 azu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 
 ------
 
@@ -9743,32 +9485,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** @textlint/ast-node-types; version 14.8.4 -- 
-Copyright (c) 2014-present azu
-
-Copyright (c) 2014-present azu
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** has-symbols; version 1.1.0 -- https://github.com/ljharb/has-symbols#readme
 Copyright (c) 2016 Jordan Harband
 
@@ -10630,7 +10346,7 @@ SOFTWARE.
 
 ------
 
-** encoding; version 0.1.13 -- https://github.com/andris9/encoding#readme
+** encoding; version 0.1.13 -- https://github.com/andris9/encoding
 Copyright (c) 2012-2014 Andris Reinman
 
 Copyright (c) 2012-2014 Andris Reinman
@@ -10933,6 +10649,24 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
+** supports-hyperlinks; version 3.2.0 -- https://github.com/chalk/supports-hyperlinks#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+Copyright (c) James Talmage <james@talmage.io> (https://github.com/jamestalmage)
+
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+Copyright (c) James Talmage <james@talmage.io> (https://github.com/jamestalmage)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
 ** node-addon-api; version 4.3.0 -- https://github.com/nodejs/node-addon-api
 Copyright (c) 2017 Node.js
 
@@ -10997,8 +10731,6 @@ THE SOFTWARE.
 
 ------
 
-** agent-base; version 7.1.3 -- https://github.com/TooTallNate/proxy-agents#readme
-Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
 ** http-proxy-agent; version 7.0.2 -- https://github.com/TooTallNate/proxy-agents#readme
 Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
 ** https-proxy-agent; version 7.0.6 -- https://github.com/TooTallNate/proxy-agents#readme
@@ -11028,6 +10760,7 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 ------
 
@@ -11307,8 +11040,6 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 ** supports-color; version 5.5.0 -- https://github.com/chalk/supports-color#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-** terminal-link; version 2.1.1 -- https://github.com/sindresorhus/terminal-link#readme
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 
 MIT License
 
@@ -11323,8 +11054,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ------
 
-** error-ex; version 1.3.2 -- https://github.com/qix-/node-error-ex#readme
-Copyright (c) 2015 JD Ballard
 ** is-arrayish; version 0.3.2 -- https://github.com/qix-/node-is-arrayish#readme
 Copyright (c) 2015 JD Ballard
 
@@ -12551,6 +12280,508 @@ Copyright (c) 2016 azu
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
+
+------
+
+** @zowe/cics-for-zowe-sdk; version 6.8.0 -- https://github.com/zowe/cics-for-zowe-client/blob/main/packages/sdk/README.md
+(c) (tm)
+Copyright npm, Inc.
+Copyright GitHub Inc.
+Copyright (c) 2005 Tom
+Copyright (c) 2024 npm
+Copyright (c) npm, Inc.
+(c) 2010 Charlie Robbins
+Copyright (c) Felix Bohm
+Copyright (c) Meryn Stol
+Copyright (c) GitHub, Inc.
+Copyright 2013 Google Inc.
+Copyright 2014 Google Inc.
+Copyright 2017 Kat Marchan
+Copyright (c) 2003-2005 Tom
+Copyright (c) 2005-2009 Tom
+Copyright (c) 2012-2015 Tom
+Copyright (c) 2012-2019 Tom
+Copyright (c) Marak Squires
+Copyright 2015 Gareth Jones
+Copyright (c) 2013 kaelzhang
+Copyright (c) 2015, npm, Inc
+Copyright (c) 2017 winstonjs
+Copyright 2018 Stefan Penner
+Copyright 2021 (c) npm, Inc.
+Copyright Isaac Z. Schlueter
+Copyright (c) 2013 Meryn Stol
+Copyright (c) 2015 JD Ballard
+Copyright (c) 2015 Josh Junon
+Copyright (c) 2003-2005 Tom Wu
+Copyright (c) 2009 Google Inc.
+Copyright (c) 2011 Google Inc.
+Copyright (c) 2012 Google Inc.
+Copyright (c) 2012 Tim Caswell
+Copyright (c) 2013 Google Inc.
+Copyright (c) 2014 Google Inc.
+Copyright (c) 2016 David Frank
+Copyright 2014 Arnout Kazemier
+Copyright Node.js contributors
+Copyright (c) 2010 Jan Lehnardt
+Copyright (c) 2013 Gareth Jones
+Copyright (c) 2014 Gigzolo Inc.
+Copyright (c) 2014 IndigoUnited
+Copyright (c) 2015 Taylor Hakes
+Copyright (c) 2020 Vercel, Inc.
+Copyright (c) Denis Malinochkin
+Copyright (c) Ruben Bridgewater
+Copyright (c) 2013 Ozgur Ozcitak
+Copyright (c) 2015 Dmitry Ivanov
+Copyright (c) 2015 Vitaly Puzrin
+Copyright (c) 2015, Contributors
+Copyright (c) 2016, Contributors
+Copyright (c) Isaac Z. Schlueter
+Copyright (c) Meryn Stol 'Author
+Copyright 2010, 2011, 2012, 2013
+Copyright (c) 2006, Ivan Sagalaev
+Copyright (c) 2012 Heather Arthur
+Copyright (c) 2015 Marco Ziccardi
+Copyright (c) Feross Aboukhadijeh
+Copyright 2017-2022 (c) npm, Inc.
+(c) 2020-present Andrea Giammarchi
+Copyright (c) 2009 Chris Wanstrath
+Copyright (c) 2010 Charlie Robbins
+Copyright (c) 2012 Federico Romero
+Copyright (c) 2013 Josh Glazebrook
+Copyright (c) 2014 Federico Romero
+Copyright (c) 2014-2020 Teambition
+Copyright (c) 2015, Rebecca Turner
+Copyright (c) 2018-2021 Josh Junon
+Copyright (c) 2018-present, iamkun
+Copyright (c) 2011-2012 Tim Caswell
+Copyright (c) 2015 Kyle E. Mitchell
+Copyright (c) 2020 Kasper Unn Weihe
+Copyright (c) Microsoft Corporation
+Copyright 2013 The Chromium Authors
+Copyright 2018 The diff-match-patch
+Copyright 2019 Coveo Solutions Inc.
+Copyright 2022 The Sigstore Authors
+Copyright 2023 The Sigstore Authors
+Copyright (c) 2010-2014 Jan Lehnardt
+Copyright (c) 2011 by Beau Gunderson
+(c) Luke Edwards (https://lukeed.com)
+Copyright (c) 2010-2012 Mikeal Rogers
+Copyright (c) 2011-2017 JP Richardson
+Copyright (c) 2011-2024 JP Richardson
+Copyright (c) 2012 Isaac Z. Schlueter
+Copyright (c) 2015, 2019 Elan Shanker
+Copyright (c) 2018 Made With MOXY Lda
+Copyright (c) 2010-2018 Caolan McMahon
+Copyright (c) 2011 Alexander Shtuchkin
+Copyright (c) 2012-2014 Andris Reinman
+Copyright (c) 2014-2016 Mark Lagendijk
+Copyright (c) 2015-2024 Matteo Collina
+Copyright (c) 2020 argparse.js authors
+Copyright (c) 2024 Canvas Digital LLC.
+Copyright (c) 1999-2001 Gregory P. Ward
+Copyright (c) 2012-2014 Federico Romero
+Copyright (c) 2013-2017 Josh Glazebrook
+Copyright (c) 2014-2015, Jon Schlinkert
+Copyright (c) 2014-2016, Jon Schlinkert
+Copyright (c) 2014-2017, Jon Schlinkert
+Copyright (c) 2020 Node.js contributors
+(c) Gustavo Costa <gusbemacbe@gmail.com>
+Copyright (c) 2011-2015 by Vitaly Puzrin
+Copyright (c) npm, Inc. and Contributors
+Copyright 2014-present Rodrigo Fernandes
+Copyright 2004-2012 (c) 2010 Jan Lehnardt
+(c) 2020-2021 Jim Mason <jmason@ibinx.com>
+Copyright (c) 2012-2014 Isaac Z. Schlueter
+Copyright (c) 2013 Gary Court, Jens Taylor
+Copyright (c) 2014-present, Jon Schlinkert
+Copyright (c) 2015-present, Jon Schlinkert
+Copyright (c) 2017-present, Jon Schlinkert
+Copyright (c) 2018-2020, Andrea Giammarchi
+Copyright (c) 2018-2021, Andrea Giammarchi
+Copyright (c) 2018-2025, Andrea Giammarchi
+Copyright (c) 2016-2017 Thomas Watson Steen
+Copyright 2014 Contributors (ben@npmjs.com)
+Copyright Contributors to the Zowe Project.
+(c) Sindre Sorhus (https://sindresorhus.com)
+Copyright (c) DABH (https://github.com/DABH)
+Copyright (c) 2015 Douglas Christopher Wilson
+Copyright 2017 - Refael Ackermann Distributed
+Copyright Isaac Z. Schlueter and Contributors
+(c) Ivan Sagalaev <maniac@softwaremaniacs.org>
+(c) Taufik Nurrohman <hi@taufik-nurrohman.com>
+Copyright (c) 2015 Unshift.io, Arnout Kazemier
+Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin
+Copyright (c) 2015 Vitaly Puzrin, Alex Kocharin
+Copyright (c) Facebook, Inc. and its affiliates
+(c) Henri Vandersleyen <hvandersleyen@gmail.com>
+Copyright (c) 2004 Sam Hocevar <sam@hocevar.net>
+Copyright (c) 2010-2015 The mustache.js community
+Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright (c) Meta Platforms, Inc. and affiliates
+Copyright 2010 James Halliday (mail@substack.net)
+Copyright (c) 2010 LearnBoost <dev@learnboost.com>
+Copyright (c) 2010-2020 Python Software Foundation
+Copyright (c) 2014-2015 Douglas Christopher Wilson
+Copyright (c) 2022 GitHub and the TUF Contributors
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2002, 2003 Python Software Foundation
+Copyright (c) 2011 Troy Goode <troygoode@gmail.com>
+Copyright (c) 2015 Arnout Kazemier, Martijn Swaagman
+Copyright (c) 2017, Rebecca Turner <me@re-becca.org>
+Copyright (c) Robert Kowalski and Isaac Z. Schlueter
+Copyright Mathias Bynens <https://mathiasbynens.be/>
+Copyright (c) 2011 Rafael de Oleza <rafeca@gmail.com>
+Copyright (c) 2015 Charlie Robbins & the contributors
+Copyright (c) 2016 Ben Noordhuis <info@bnoordhuis.nl>
+Copyright (c) 2017 Charlie Robbins & the Contributors
+Copyright (c) Feross Aboukhadijeh (http://feross.org)
+Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2011-2016, Heather Arthur and Josh Junon
+Copyright (c) 2017 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) Feross Aboukhadijeh (https://feross.org)
+Copyright (c) 1995-2003 by Internet Software Consortium
+Copyright (c) 2012-2020 Domenic Denicola <d@domenic.me>
+Copyright (c) Donald Stufft and individual contributors
+Copyright (c) 2011 Heather Arthur <fayearthur@gmail.com>
+Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>
+Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>
+Copyright (c) 2009-2015, Kevin Decker <kpdecker@gmail.com>
+Copyright (c) 2012 Nathan Rajlich <nathan@tootallnate.net>
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
+Copyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>
+Copyright (c) Kevin Martensson <kevinmartensson@gmail.com>
+Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
+Copyright (c) 2010-2023 Isaac Z. Schlueter and Contributors
+Copyright (c) 2010-2024 Isaac Z. Schlueter and Contributors
+Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2015-2023 Isaac Z. Schlueter and Contributors
+Copyright (c) 2016-2022 Isaac Z. Schlueter and Contributors
+Copyright (c) 2019-2023 Isaac Z. Schlueter and Contributors
+Copyright 2012-2016, JP Richardson <jprichardson@gmail.com>
+Copyright (c) 2004-2010 by Internet Systems Consortium, Inc.
+Copyright (c) 2011 Felix Geisendorfer (felix@debuggable.com)
+Copyright (c) 2010-2015 Linux Foundation and its Contributors
+Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>
+Copyright (c) 2013 kaelzhang <> , contributors http://kael.me
+Copyright (c) Robert Kowalski and Isaac Z. Schlueter 'Authors
+Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>
+Copyright (c) 2014 James Talmage <james.talmage@jrtechnical.com>
+Copyright (c) 2014-2015 Arnout Kazemier <opensource@3rd-Eden.com>
+Copyright 2014-2016 Rodrigo Fernandes https://rtfpessoa.github.io
+Copyright (c) 2007-present, Alexandru Marasteanu <hello@alexei.ro>
+Copyright (c) 2010-2024 Mathias Bynens <https://mathiasbynens.be/>
+Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
+Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+Copyright 2019 David Mark Clements <david.mark.clements@gmail.com>
+Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam
+Copyright (c) 2012 James Halliday, Josh Duff, and other contributors
+Copyright (c) 2016, Jon Schlinkert (http://github.com/jonschlinkert)
+Copyright (c) 1995-2001 Corporation for National Research Initiatives
+Copyright (c) 2016, Jon Schlinkert (https://github.com/jonschlinkert)
+Copyright (c) 2018, Jon Schlinkert (https://github.com/jonschlinkert)
+Copyright (c) 2019, Jon Schlinkert (https://github.com/jonschlinkert)
+Copyright (c) 2024, Jon Schlinkert (https://github.com/jonschlinkert)
+Copyright JS Foundation and other contributors, https://js.foundation
+Copyright (c) 2011-2024 JP Richardson (https://github.com/jprichardson)
+Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors
+Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+Copyright (c) 2015-2023 Benjamin Coe, Isaac Z. Schlueter, and Contributors
+Copyright (c) Isaac Z. Schlueter, Kat Marchan, npm, Inc., and Contributors
+Copyright (c) 2011-2022 Isaac Z. Schlueter, Ben Noordhuis, and Contributors
+Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
+Copyright (c) 2017-present, Jon Schlinkert (https://github.com/jonschlinkert)
+Copyright James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)
+Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam, The Netherlands
+Copyright (c) 2011 Tim Koschutzki (tim@debuggable.com) Felix Geisendorfer (felix@debuggable.com)
+(c) 2021 Felipe Contreras <felipe.contreras@gmail.com> Website https://github.com/felipec/vim-felipec
+copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
+Copyright (c) 2009-2022 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
+(c) 2009-2024 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors Underscore
+Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Python Software Foundation
+
+Eclipse Public License - v 2.0
+
+    THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE
+    PUBLIC LICENSE ("AGREEMENT"). ANY USE, REPRODUCTION OR DISTRIBUTION
+    OF THE PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE OF THIS AGREEMENT.
+
+1. DEFINITIONS
+
+"Contribution" means:
+
+  a) in the case of the initial Contributor, the initial content
+     Distributed under this Agreement, and
+
+  b) in the case of each subsequent Contributor:
+     i) changes to the Program, and
+     ii) additions to the Program;
+  where such changes and/or additions to the Program originate from
+  and are Distributed by that particular Contributor. A Contribution
+  "originates" from a Contributor if it was added to the Program by
+  such Contributor itself or anyone acting on such Contributor's behalf.
+  Contributions do not include changes or additions to the Program that
+  are not Modified Works.
+
+"Contributor" means any person or entity that Distributes the Program.
+
+"Licensed Patents" mean patent claims licensable by a Contributor which
+are necessarily infringed by the use or sale of its Contribution alone
+or when combined with the Program.
+
+"Program" means the Contributions Distributed in accordance with this
+Agreement.
+
+"Recipient" means anyone who receives the Program under this Agreement
+or any Secondary License (as applicable), including Contributors.
+
+"Derivative Works" shall mean any work, whether in Source Code or other
+form, that is based on (or derived from) the Program and for which the
+editorial revisions, annotations, elaborations, or other modifications
+represent, as a whole, an original work of authorship.
+
+"Modified Works" shall mean any work in Source Code or other form that
+results from an addition to, deletion from, or modification of the
+contents of the Program, including, for purposes of clarity any new file
+in Source Code form that contains any contents of the Program. Modified
+Works shall not include works that contain only declarations,
+interfaces, types, classes, structures, or files of the Program solely
+in each case in order to link to, bind by name, or subclass the Program
+or Modified Works thereof.
+
+"Distribute" means the acts of a) distributing or b) making available
+in any manner that enables the transfer of a copy.
+
+"Source Code" means the form of a Program preferred for making
+modifications, including but not limited to software source code,
+documentation source, and configuration files.
+
+"Secondary License" means either the GNU General Public License,
+Version 2.0, or any later versions of that license, including any
+exceptions or additional permissions as identified by the initial
+Contributor.
+
+2. GRANT OF RIGHTS
+
+  a) Subject to the terms of this Agreement, each Contributor hereby
+  grants Recipient a non-exclusive, worldwide, royalty-free copyright
+  license to reproduce, prepare Derivative Works of, publicly display,
+  publicly perform, Distribute and sublicense the Contribution of such
+  Contributor, if any, and such Derivative Works.
+
+  b) Subject to the terms of this Agreement, each Contributor hereby
+  grants Recipient a non-exclusive, worldwide, royalty-free patent
+  license under Licensed Patents to make, use, sell, offer to sell,
+  import and otherwise transfer the Contribution of such Contributor,
+  if any, in Source Code or other form. This patent license shall
+  apply to the combination of the Contribution and the Program if, at
+  the time the Contribution is added by the Contributor, such addition
+  of the Contribution causes such combination to be covered by the
+  Licensed Patents. The patent license shall not apply to any other
+  combinations which include the Contribution. No hardware per se is
+  licensed hereunder.
+
+  c) Recipient understands that although each Contributor grants the
+  licenses to its Contributions set forth herein, no assurances are
+  provided by any Contributor that the Program does not infringe the
+  patent or other intellectual property rights of any other entity.
+  Each Contributor disclaims any liability to Recipient for claims
+  brought by any other entity based on infringement of intellectual
+  property rights or otherwise. As a condition to exercising the
+  rights and licenses granted hereunder, each Recipient hereby
+  assumes sole responsibility to secure any other intellectual
+  property rights needed, if any. For example, if a third party
+  patent license is required to allow Recipient to Distribute the
+  Program, it is Recipient's responsibility to acquire that license
+  before distributing the Program.
+
+  d) Each Contributor represents that to its knowledge it has
+  sufficient copyright rights in its Contribution, if any, to grant
+  the copyright license set forth in this Agreement.
+
+  e) Notwithstanding the terms of any Secondary License, no
+  Contributor makes additional grants to any Recipient (other than
+  those set forth in this Agreement) as a result of such Recipient's
+  receipt of the Program under the terms of a Secondary License
+  (if permitted under the terms of Section 3).
+
+3. REQUIREMENTS
+
+3.1 If a Contributor Distributes the Program in any form, then:
+
+  a) the Program must also be made available as Source Code, in
+  accordance with section 3.2, and the Contributor must accompany
+  the Program with a statement that the Source Code for the Program
+  is available under this Agreement, and informs Recipients how to
+  obtain it in a reasonable manner on or through a medium customarily
+  used for software exchange; and
+
+  b) the Contributor may Distribute the Program under a license
+  different than this Agreement, provided that such license:
+     i) effectively disclaims on behalf of all other Contributors all
+     warranties and conditions, express and implied, including
+     warranties or conditions of title and non-infringement, and
+     implied warranties or conditions of merchantability and fitness
+     for a particular purpose;
+
+     ii) effectively excludes on behalf of all other Contributors all
+     liability for damages, including direct, indirect, special,
+     incidental and consequential damages, such as lost profits;
+
+     iii) does not attempt to limit or alter the recipients' rights
+     in the Source Code under section 3.2; and
+
+     iv) requires any subsequent distribution of the Program by any
+     party to be under a license that satisfies the requirements
+     of this section 3.
+
+3.2 When the Program is Distributed as Source Code:
+
+  a) it must be made available under this Agreement, or if the
+  Program (i) is combined with other material in a separate file or
+  files made available under a Secondary License, and (ii) the initial
+  Contributor attached to the Source Code the notice described in
+  Exhibit A of this Agreement, then the Program may be made available
+  under the terms of such Secondary Licenses, and
+
+  b) a copy of this Agreement must be included with each copy of
+  the Program.
+
+3.3 Contributors may not remove or alter any copyright, patent,
+trademark, attribution notices, disclaimers of warranty, or limitations
+of liability ("notices") contained within the Program from any copy of
+the Program which they Distribute, provided that Contributors may add
+their own appropriate notices.
+
+4. COMMERCIAL DISTRIBUTION
+
+Commercial distributors of software may accept certain responsibilities
+with respect to end users, business partners and the like. While this
+license is intended to facilitate the commercial use of the Program,
+the Contributor who includes the Program in a commercial product
+offering should do so in a manner which does not create potential
+liability for other Contributors. Therefore, if a Contributor includes
+the Program in a commercial product offering, such Contributor
+("Commercial Contributor") hereby agrees to defend and indemnify every
+other Contributor ("Indemnified Contributor") against any losses,
+damages and costs (collectively "Losses") arising from claims, lawsuits
+and other legal actions brought by a third party against the Indemnified
+Contributor to the extent caused by the acts or omissions of such
+Commercial Contributor in connection with its distribution of the Program
+in a commercial product offering. The obligations in this section do not
+apply to any claims or Losses relating to any actual or alleged
+intellectual property infringement. In order to qualify, an Indemnified
+Contributor must: a) promptly notify the Commercial Contributor in
+writing of such claim, and b) allow the Commercial Contributor to control,
+and cooperate with the Commercial Contributor in, the defense and any
+related settlement negotiations. The Indemnified Contributor may
+participate in any such claim at its own expense.
+
+For example, a Contributor might include the Program in a commercial
+product offering, Product X. That Contributor is then a Commercial
+Contributor. If that Commercial Contributor then makes performance
+claims, or offers warranties related to Product X, those performance
+claims and warranties are such Commercial Contributor's responsibility
+alone. Under this section, the Commercial Contributor would have to
+defend claims against the other Contributors related to those performance
+claims and warranties, and if a court requires any other Contributor to
+pay any damages as a result, the Commercial Contributor must pay
+those damages.
+
+5. NO WARRANTY
+
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, AND TO THE EXTENT
+PERMITTED BY APPLICABLE LAW, THE PROGRAM IS PROVIDED ON AN "AS IS"
+BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF
+TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+PURPOSE. Each Recipient is solely responsible for determining the
+appropriateness of using and distributing the Program and assumes all
+risks associated with its exercise of rights under this Agreement,
+including but not limited to the risks and costs of program errors,
+compliance with applicable laws, damage to or loss of data, programs
+or equipment, and unavailability or interruption of operations.
+
+6. DISCLAIMER OF LIABILITY
+
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, AND TO THE EXTENT
+PERMITTED BY APPLICABLE LAW, NEITHER RECIPIENT NOR ANY CONTRIBUTORS
+SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING WITHOUT LIMITATION LOST
+PROFITS), HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OR DISTRIBUTION OF THE PROGRAM OR THE
+EXERCISE OF ANY RIGHTS GRANTED HEREUNDER, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES.
+
+7. GENERAL
+
+If any provision of this Agreement is invalid or unenforceable under
+applicable law, it shall not affect the validity or enforceability of
+the remainder of the terms of this Agreement, and without further
+action by the parties hereto, such provision shall be reformed to the
+minimum extent necessary to make such provision valid and enforceable.
+
+If Recipient institutes patent litigation against any entity
+(including a cross-claim or counterclaim in a lawsuit) alleging that the
+Program itself (excluding combinations of the Program with other software
+or hardware) infringes such Recipient's patent(s), then such Recipient's
+rights granted under Section 2(b) shall terminate as of the date such
+litigation is filed.
+
+All Recipient's rights under this Agreement shall terminate if it
+fails to comply with any of the material terms or conditions of this
+Agreement and does not cure such failure in a reasonable period of
+time after becoming aware of such noncompliance. If all Recipient's
+rights under this Agreement terminate, Recipient agrees to cease use
+and distribution of the Program as soon as reasonably practicable.
+However, Recipient's obligations under this Agreement and any licenses
+granted by Recipient relating to the Program shall continue and survive.
+
+Everyone is permitted to copy and distribute copies of this Agreement,
+but in order to avoid inconsistency the Agreement is copyrighted and
+may only be modified in the following manner. The Agreement Steward
+reserves the right to publish new versions (including revisions) of
+this Agreement from time to time. No one other than the Agreement
+Steward has the right to modify this Agreement. The Eclipse Foundation
+is the initial Agreement Steward. The Eclipse Foundation may assign the
+responsibility to serve as the Agreement Steward to a suitable separate
+entity. Each new version of the Agreement will be given a distinguishing
+version number. The Program (including Contributions) may always be
+Distributed subject to the version of the Agreement under which it was
+received. In addition, after a new version of the Agreement is published,
+Contributor may elect to Distribute the Program (including its
+Contributions) under the new version.
+
+Except as expressly stated in Sections 2(a) and 2(b) above, Recipient
+receives no rights or licenses to the intellectual property of any
+Contributor under this Agreement, whether expressly, by implication,
+estoppel or otherwise. All rights in the Program not expressly granted
+under this Agreement are reserved. Nothing in this Agreement is intended
+to be enforceable by any entity that is not a Contributor or Recipient.
+No third-party beneficiary rights are created under this Agreement.
+
+Exhibit A - Form of Secondary Licenses Notice
+
+"This Source Code may also be made available under the following 
+Secondary Licenses when the conditions for such availability set forth 
+in the Eclipse Public License, v. 2.0 are satisfied: {name license(s),
+version(s), and exceptions or additional permissions here}."
+
+  Simply including a copy of this Agreement, including this Exhibit A
+  is not sufficient to license the Source Code under Secondary Licenses.
+
+  If it is not possible or desirable to put the notice in a particular
+  file, then You may include the notice in a location (such as a LICENSE
+  file in a relevant directory) where a recipient would be likely to
+  look for such a notice.
+
+  You may add additional accurate notices of copyright ownership.
 
 ------
 
