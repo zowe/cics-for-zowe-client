@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { BottomBarPanel, By, DefaultTreeSection, SideBarView, TreeItem, WebElement, WebviewView } from "vscode-extension-tester";
 import { C128N, CICSEX61, IYCWENK1, PROGRAMS, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
+import { findProgramTreeNodeByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
@@ -72,7 +72,7 @@ describe("Show Resource Inspector For Programs", () => {
   });
 
   it("Check Program C128N Is In Region IYCWENK1", async () => {
-    C128NProgram = await findProgramByLabel(programs, C128N);
+    C128NProgram = await findProgramTreeNodeByLabel(programs, C128N);
     expect(C128NProgram).not.undefined;
     expect(await C128NProgram?.getLabel()).contains(C128N);
     cicsTree.takeScreenshot();

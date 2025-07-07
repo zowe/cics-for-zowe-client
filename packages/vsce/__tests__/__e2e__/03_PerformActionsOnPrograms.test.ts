@@ -13,7 +13,7 @@ import { expect } from "chai";
 import { By, DefaultTreeSection, EditorView, SideBarView, TreeItem, WebElement, WebView } from "vscode-extension-tester";
 import { C128N, CICSEX61, DSNCUEXT, DSNTIAC, REGIONS, REGIONS_LOADED, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import {
-  findProgramByLabel,
+  findProgramTreeNodeByLabel,
   runCommandAndGetTreeItems,
   runCommandFromCommandPalette,
   sendArrowDownKeyAndPressEnter,
@@ -109,7 +109,7 @@ describe("Perform Actions On Programs", () => {
     let C128NProgram: TreeItem | undefined;
 
     it("Check C128N Is Present In IYCWENK1", async () => {
-      C128NProgram = await findProgramByLabel(programs, C128N);
+      C128NProgram = await findProgramTreeNodeByLabel(programs, C128N);
       expect(C128NProgram).not.undefined;
       expect(await C128NProgram?.getLabel()).contains(C128N);
       cicsTree.takeScreenshot();
@@ -162,7 +162,7 @@ describe("Perform Actions On Programs", () => {
     let DSNCUEXTProgram: TreeItem | undefined;
 
     it("Check DSNCUEXT Is Present In IYCWENK1", async () => {
-      DSNCUEXTProgram = await findProgramByLabel(programs, DSNCUEXT);
+      DSNCUEXTProgram = await findProgramTreeNodeByLabel(programs, DSNCUEXT);
       expect(DSNCUEXTProgram).not.undefined;
       expect(await DSNCUEXTProgram?.getLabel()).contains(DSNCUEXT);
     });
@@ -192,7 +192,7 @@ describe("Perform Actions On Programs", () => {
     let DSNTIACProgram: TreeItem | undefined;
 
     it("Check DSNTIAC Is Present In IYCWENK1", async () => {
-      DSNTIACProgram = await findProgramByLabel(programs, DSNTIAC);
+      DSNTIACProgram = await findProgramTreeNodeByLabel(programs, DSNTIAC);
       expect(DSNTIACProgram).not.undefined;
       expect(await DSNTIACProgram?.getLabel()).contains(DSNTIAC);
       cicsTree.takeScreenshot();

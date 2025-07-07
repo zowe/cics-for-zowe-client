@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
 import { CBSA, CICSEX61, REGIONS_LOADED, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { findLibraryByLabel, runCommandAndGetTreeItems, sleep } from "./util/globalMocks";
+import { findLibraryTreeNodeByLabel, runCommandAndGetTreeItems, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
@@ -68,7 +68,7 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
     });
 
     it("Should Check If The Library CBSA Is Present In Region IYCWENK1", async () => {
-      CBSALibrary = await findLibraryByLabel(libraries, CBSA);
+      CBSALibrary = await findLibraryTreeNodeByLabel(libraries, CBSA);
       expect(CBSALibrary).not.undefined;
       expect(await CBSALibrary?.getLabel()).contains(CBSA);
       cicsTree.takeScreenshot();
@@ -95,8 +95,6 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
     });
 
     it("Should Enable The Library CBSA", async () => {
-      
-
       await resetAllScenarios();
       await CBSALibrary?.click();
 
