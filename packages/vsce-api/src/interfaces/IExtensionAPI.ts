@@ -10,11 +10,11 @@
  */
 
 import { ResourceTypes } from "../resources";
-import { IResourceExtender } from "./IResourceExtender";
+// import { IResourceExtender } from "./IResourceExtender";
 
 export interface IExtensionAPI {
   resources: {
-    resourceExtender: IResourceExtender;
+    // resourceExtender: IResourceExtender; <-- will be added when RI supports Actions
     supportedResources: ResourceTypes[];
   };
 }

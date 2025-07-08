@@ -9,29 +9,29 @@
  *
  */
 
-import { CicsCmciConstants, ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
-import { SupportedResources } from "../model";
+import { IExtensionAPI, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+// import CICSResourceExtender from "./CICSResourceExtender";
 
-export class CICSExtenderApiConfig {
-  private static api: CICSExtenderApiConfig = new CICSExtenderApiConfig();
-  private config: ICICSExtenderConfig;
-
-  public static getInstance(): CICSExtenderApiConfig {
-    return this.api;
+class SCICSExtenderApiConfig {
+  private static _instance: SCICSExtenderApiConfig;
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
   }
+  private api: IExtensionAPI;
 
   private constructor() {
-    this.config = {
-      configuration: {
-        supportedResources: SupportedResources.resources,
-        resourceInspector: {
-          enabled: false
-        }
-      }
+    this.api = {
+      resources: {
+        supportedResources: SupportedResourceTypes,
+        // resourceExtender: CICSResourceExtender, <-- will be added when RI supports Actions
+      },
     };
   }
 
-  public getConfig(): ICICSExtenderConfig {
-    return this.config;
+  getAPI(): IExtensionAPI {
+    return this.api;
   }
 }
+
+const CICSExtenderApiConfig = SCICSExtenderApiConfig.Instance;
+export default CICSExtenderApiConfig;
