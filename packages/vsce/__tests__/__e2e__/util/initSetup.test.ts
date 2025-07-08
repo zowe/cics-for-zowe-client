@@ -235,7 +235,7 @@ export async function setupCICSTreeSelectedResourceParams(
   const selectedResourceIndex = await getRegionResourceIndex(selectedRegionResources, resourceName);
   expect(selectedResourceIndex).to.be.greaterThan(-1);
 
-  // Open the Programs resource
+  // Open the Selected resource
   await selectedRegionResources[selectedResourceIndex].click();
   const selectedResource = await cicsTree.openItem(
     profileName,

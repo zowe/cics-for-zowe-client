@@ -43,7 +43,7 @@
       "newScenarioState": "Fetch library record count for enable operation",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/250?NODISCARD"
       },
       "response": {
         "status": 200,

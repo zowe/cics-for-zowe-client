@@ -11,7 +11,7 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
-import { CBSA, CICSEX61, REGIONS_LOADED, WIREMOCK_PROFILE_NAME } from "./util/constants";
+import { CBSA, CICSEX61, IYCWENK1, LIBRARIES, REGIONS_LOADED, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findLibraryTreeNodeByLabel, runCommandAndGetTreeItems, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
@@ -22,7 +22,7 @@ import {
 } from "./util/initSetup.test";
 import { resetAllScenarios } from "./util/resetScenarios";
 
-describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
+describe("Perform Actions On Libraries", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let wiremockServer: TreeItem | undefined;
@@ -35,13 +35,13 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
   let libraries: TreeItem[];
 
   before(async () => {
-    await sleep(2000);
+    await sleep(1900);
     view = await openZoweExplorer();
     cicsTree = await getCicsSection(view);
 
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;
-
+    await sleep(100);
     await resetAllScenarios();
   });
 
@@ -50,10 +50,10 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Test Suite For Performing Disable And Enable on Library resources", () => {
+  describe("Performing Disable And Enable On Library CICSEX61 -> IYCWENK1 -> LIBRARY -> CBSA", () => {
     let CBSALibrary: TreeItem | undefined;
 
-    it("Should Setup Tree and Verify Library List", async () => {
+    it("Verify CICSEX61 -> Regions -> IYCWENK1 -> Libraries", async () => {
       ({
         cicsPlexChildren,
         regionIndex,
@@ -62,19 +62,19 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
         selectedRegionResources: regionK1Resources,
         selectedResourceIndex: libraryResourceIndex,
         selectedResource: libraries,
-      } = await setupCICSTreeSelectedResourceParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61, "IYCWENK1", "Libraries"));
+      } = await setupCICSTreeSelectedResourceParams(cicsTree, WIREMOCK_PROFILE_NAME, CICSEX61, IYCWENK1, LIBRARIES));
 
       cicsTree.takeScreenshot();
     });
 
-    it("Should Check If The Library CBSA Is Present In Region IYCWENK1", async () => {
+    it("Verify LIBRARIES -> CBSA", async () => {
       CBSALibrary = await findLibraryTreeNodeByLabel(libraries, CBSA);
       expect(CBSALibrary).not.undefined;
       expect(await CBSALibrary?.getLabel()).contains(CBSA);
       cicsTree.takeScreenshot();
     });
 
-    it("Should Disable The Library CBSA", async () => {
+    it("Disable CBSA Library", async () => {
       // Navigate to the CBSA Library in the tree
       await CBSALibrary?.click();
 
@@ -94,7 +94,7 @@ describe("Test Suite For Performing Actions On The Library In CICSEX61", () => {
       cicsTree.takeScreenshot();
     });
 
-    it("Should Enable The Library CBSA", async () => {
+    it("Enable CBSA Library", async () => {
       await resetAllScenarios();
       await CBSALibrary?.click();
 
