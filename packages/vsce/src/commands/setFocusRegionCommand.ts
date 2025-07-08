@@ -64,8 +64,12 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
 async function updateFocusRegion(): Promise<IFocusRegion> {
   const quickPick = Gui.createQuickPick();
   const profileNames = await getAllCICSProfiles();
-  const cicsProfiles = profileNames.map((name) => new FilterDescriptor(name));
+  if (profileNames.length === 0) {
+    Gui.infoMessage(l10n.t("No CICS profiles found. Please configure a valid CICS profile"));
+    return;
+  }
 
+  const cicsProfiles = profileNames.map((name) => new FilterDescriptor(name));
   let isPlex: boolean = false;
   let cicsPlex: string = undefined;
   let focusSelectedRegion: string = undefined;
