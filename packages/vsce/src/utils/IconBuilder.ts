@@ -21,7 +21,7 @@ class SIconBuilder {
 
   private constructor() {}
 
-  private getIconFilePathFromName(iconFileName: string): { light: string; dark: string } {
+  getIconFilePathFromName(iconFileName: string): { light: string; dark: string } {
     return {
       light: join(__dirname, "..", "resources", "imgs", iconFileName + "-dark.svg"),
       dark: join(__dirname, "..", "resources", "imgs", iconFileName + "-light.svg"),

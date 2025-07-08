@@ -9,7 +9,13 @@
  *
  */
 
-export * from "./meta";
-export * from "./resources";
-export * from "./trees";
-export * from "./extending";
+import { IResourceAction } from "./IResourceAction";
+
+export interface IResourceExtender {
+  registeredActions: IResourceAction[];
+
+  registerAction: (action: IResourceAction) => void;
+  deregisterAction: (id: string) => void;
+  getActions: () => IResourceAction[];
+  getAction: (id: string) => IResourceAction;
+}

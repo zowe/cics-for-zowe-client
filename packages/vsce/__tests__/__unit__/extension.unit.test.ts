@@ -34,6 +34,7 @@ jest.mock("../../src/utils/CICSLogger");
 
 import { ExtensionContext, TreeView, window } from "vscode";
 import { activate } from "../../src/extension";
+import CICSResourceExtender from "../../src/extending/CICSResourceExtender";
 
 jest.spyOn(window, "createTreeView").mockReturnValue({
   onDidExpandElement: jest.fn(),
@@ -50,12 +51,15 @@ describe("extension", () => {
     expect(Object.keys(returnedAPI)).toHaveLength(1);
 
     expect(returnedAPI.resources).toHaveProperty("supportedResources");
-    expect(Object.keys(returnedAPI.resources)).toHaveLength(1);
+    expect(returnedAPI.resources).toHaveProperty("resourceExtender");
+    expect(Object.keys(returnedAPI.resources)).toHaveLength(2);
 
     expect(returnedAPI.resources.supportedResources).toBeInstanceOf(Array);
     expect(returnedAPI.resources.supportedResources).toHaveLength(9);
     expect(returnedAPI.resources.supportedResources).toContain("CICSProgram");
     expect(returnedAPI.resources.supportedResources).toContain("CICSTask");
     expect(returnedAPI.resources.supportedResources).toContain("CICSWebService");
+
+    expect(returnedAPI.resources.resourceExtender).toEqual(CICSResourceExtender);
   });
 });
