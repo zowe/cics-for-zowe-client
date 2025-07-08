@@ -14,13 +14,39 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
 import { IResource } from "../../src/interfaces/IResource";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
-import { SupportedResourceTypes } from "../../src/resources";
+import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
+import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 
 describe("Interfaces", () => {
+  const action: IResourceAction = {
+    id: "CICS.CICSProgram.NEWCOPY",
+    name: "New Copy Program",
+    resourceType: ResourceTypes.CICSProgram,
+    action: async (_resource: IResource, _resourceContext: IResourceContext) => { },
+    enabledWhen(_resource, _resourceContext) {
+      return true;
+    },
+    visibleWhen(_resource, _resourceContext) {
+      return true;
+    },
+  };
+
+  const extender: IResourceExtender = {
+    registeredActions: [],
+    deregisterAction(_id) { },
+    registerAction(_action) { },
+    getAction(_id) {
+      return action;
+    },
+    getActions() {
+      return [];
+    },
+  };
 
   const api: IExtensionAPI = {
     resources: {
       supportedResources: SupportedResourceTypes,
+      resourceExtender: extender,
     },
   };
 
@@ -50,9 +76,25 @@ describe("Interfaces", () => {
     session,
   };
 
+  it("should assert IResourceAction", () => {
+    expect(action).toHaveProperty("id");
+    expect(action).toHaveProperty("name");
+    expect(action).toHaveProperty("resourceType");
+    expect(action).toHaveProperty("action");
+    expect(action).toHaveProperty("enabledWhen");
+    expect(action).toHaveProperty("visibleWhen");
+  });
+  it("should assert IResourceExtender", () => {
+    expect(extender).toHaveProperty("registeredActions");
+    expect(extender).toHaveProperty("deregisterAction");
+    expect(extender).toHaveProperty("registerAction");
+    expect(extender).toHaveProperty("getAction");
+    expect(extender).toHaveProperty("getActions");
+  });
   it("should assert IExtensionAPI", () => {
     expect(api).toHaveProperty("resources");
     expect(api.resources).toHaveProperty("supportedResources");
+    expect(api.resources).toHaveProperty("resourceExtender");
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");
