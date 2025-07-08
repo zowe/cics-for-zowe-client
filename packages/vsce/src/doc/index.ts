@@ -12,4 +12,3 @@
 export * from "./meta";
 export * from "./resources";
 export * from "./trees";
-export * from "./extending";

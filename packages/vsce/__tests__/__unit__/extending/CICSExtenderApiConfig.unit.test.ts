@@ -16,7 +16,6 @@ describe("CICS Extender Api Tests", () => {
   it("should return resource configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
     expect(config).toHaveProperty('resources.supportedResources');
-    // expect(config).toHaveProperty('resources.resourceExtender.registeredActions');
   });
 
   it("should return supported resources configuration", () => {
