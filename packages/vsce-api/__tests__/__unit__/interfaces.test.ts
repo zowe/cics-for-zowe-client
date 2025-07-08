@@ -16,6 +16,7 @@ import { IResource } from "../../src/interfaces/IResource";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
+import { IResourceAction } from "../../src/interfaces/IResourceAction";
 
 describe("Interfaces", () => {
   const action: IResourceAction = {

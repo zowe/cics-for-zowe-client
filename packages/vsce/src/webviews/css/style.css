@@ -238,6 +238,27 @@ ul.breadcrumb li a:hover {
   width: 73.75rem;
 }
 
+.resource-action-button {
+  cursor: pointer;
+}
+.resource-action-button:hover {
+  background-color: #202020;
+}
 
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
 
-
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 8rem;
+  background-color: #151515;
+  color: var(--vscode-foreground);
+  text-align: center;
+  position: absolute;
+  z-index: 1;
+}

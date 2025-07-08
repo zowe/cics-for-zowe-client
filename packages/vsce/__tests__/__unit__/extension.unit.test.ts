@@ -53,7 +53,6 @@ describe("extension", () => {
     expect(returnedAPI.resources).toHaveProperty("supportedResources");
     expect(returnedAPI.resources).toHaveProperty("resourceExtender");
     expect(Object.keys(returnedAPI.resources)).toHaveLength(2);
-    expect(Object.keys(returnedAPI.resources)).toHaveLength(1);
 
     expect(returnedAPI.resources.supportedResources).toBeInstanceOf(Array);
     expect(returnedAPI.resources.supportedResources).toHaveLength(9);

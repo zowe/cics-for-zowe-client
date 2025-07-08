@@ -12,3 +12,4 @@
 export * from "./Resource";
 export * from "./ResourceContainer";
 export * from "./SessionHandler";
+export * from "./ResourceActions";

@@ -14,7 +14,8 @@ import { VscodeTextfield } from "@vscode-elements/react-elements";
 import * as React from "react";
 import * as vscode from "../common/vscode";
 
-import { IResource } from "../../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { Uri } from "vscode";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
 
@@ -26,12 +27,18 @@ const ResourceInspector = () => {
     resourceName: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
-    profileHandler: { key: string; value: string }[];
+    profileHandler: { key: string; value: string; }[];
   }>();
+  const [resourceActions, setResourceActions] = React.useState<{ id: string; name: string; iconPath?: { light: Uri; dark: Uri; }; }[]>([]);
+
+  const handleActionClick = (actionId: string) => {
+    vscode.postVscMessage({ command: "action", actionId });
+  };
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
+      setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
@@ -69,9 +76,26 @@ const ResourceInspector = () => {
           <th id="th-1" className="header-cell-1 padding-left-10">
             <div className="div-display-1">{resourceInfo?.name ?? "..."}</div>
             <div className="div-display-1 div-display-2">
+              {/* @ts-ignore */}
               {resourceInfo?.resourceName ?? "..."}: {resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
           </th>
+          {resourceActions && (
+            <th style={{ padding: 0 }}>
+              {resourceActions.map(({ id, name, iconPath }) => (
+                <>
+                  <div key={id} className="resource-action-button tooltip" onClick={() => handleActionClick(id)}
+                    style={{ width: "2rem", height: "2rem" }}>
+                    <img
+                      style={{ width: "100%", height: "100%" }}
+                      src={`${iconPath.dark.scheme}://${iconPath.dark.authority}${iconPath.dark.path}`}
+                      alt={name + " icon"} />
+                    <span className="tooltiptext">{name}</span>
+                  </div>
+                </>
+              ))}
+            </th>
+          )}
         </thead>
         <tbody className="padding-left-10 padding-top-20">
           {resourceInfo?.highlights.length > 0 && (
