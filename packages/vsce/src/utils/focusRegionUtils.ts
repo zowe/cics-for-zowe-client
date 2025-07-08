@@ -56,7 +56,6 @@ export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: C
 export async function getAllCICSProfiles(): Promise<string[]> {
   const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
   const allCICSProfiles = profileInfo.getAllProfiles("cics");
-profileInfo.updateProperty
   const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
   return allCICSProfileNames;
 }
