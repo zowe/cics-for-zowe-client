@@ -10,3 +10,4 @@
  */
 
 export * from "./CICSExtenderApiConfig";
+export * from "./CICSResourceExtender";

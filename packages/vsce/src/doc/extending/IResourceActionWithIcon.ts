@@ -9,7 +9,11 @@
  *
  */
 
-export * from "./meta";
-export * from "./resources";
-export * from "./trees";
-export * from "./extending";
+import { IResourceAction } from "@zowe/cics-for-zowe-explorer-api";
+
+export interface IResourceActionWithIcon extends IResourceAction {
+  iconPath?: {
+    light: string;
+    dark: string;
+  };
+}
