@@ -9,12 +9,12 @@
  *
  */
 
+import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
 import { CICSSession } from "../resources";
-import { InfoLoaded, ProfileManagement } from "./profileManagement";
-import { IProfileLoaded } from "@zowe/imperative";
 import { CICSLogger } from "../utils/CICSLogger";
+import { InfoLoaded, ProfileManagement } from "./profileManagement";
 
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlex: string } {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
@@ -56,7 +56,7 @@ export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: C
 export async function getAllCICSProfiles(): Promise<string[]> {
   const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
   const allCICSProfiles = profileInfo.getAllProfiles("cics");
-
+profileInfo.updateProperty
   const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
   return allCICSProfileNames;
 }
@@ -69,6 +69,7 @@ export async function getChoiceFromQuickPick(
   quickPick.items = items;
   quickPick.placeholder = l10n.t(placeHolder);
   quickPick.ignoreFocusOut = true;
+  quickPick.title = l10n.t("Select CICS Region");
   quickPick.show();
   const choice = await Gui.resolveQuickPick(quickPick);
   return choice;
