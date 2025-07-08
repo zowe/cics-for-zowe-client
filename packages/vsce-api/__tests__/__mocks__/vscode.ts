@@ -9,6 +9,4 @@
  *
  */
 
-export * from "./getAPI";
-export * from "./interfaces";
-export * from "./resources";
+module.exports = require("jest-mock-vscode").createVSCodeMock(jest);
