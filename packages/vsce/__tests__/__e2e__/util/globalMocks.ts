@@ -58,6 +58,7 @@ export async function runCommandFromCommandPalette(command: string): Promise<voi
   const quickPick = await InputBox.create();
   await quickPick.setText(command);
   await quickPick.confirm();
+  await sleep(50);
 }
 
 export async function runCommandAndGetTreeItems(cicsTree: DefaultTreeSection, command: string, ...path: string[]): Promise<TreeItem[]> {

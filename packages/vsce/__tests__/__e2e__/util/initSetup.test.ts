@@ -40,6 +40,11 @@ export async function getCicsSection(view: SideBarView): Promise<DefaultTreeSect
   return cicsTree;
 }
 
+export async function clickRefreshIconInCicsTree(cicsTree: DefaultTreeSection): Promise<void> {
+  await cicsTree.click();
+  const refreshIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Refresh`);
+  await refreshIcon?.click();
+}
 export async function clickPlusIconInCicsTree(cicsTree: DefaultTreeSection): Promise<void> {
   await cicsTree.click();
   const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);

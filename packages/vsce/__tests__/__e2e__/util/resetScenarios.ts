@@ -15,6 +15,6 @@ export function resetAllScenarios(): Promise<void> {
   });
   // Send the request and print the response
   return fetch(request).then((res) => {
-    console.log("got response: ====", res.status);
+    console.log("Resetting Wiremock: response: ====", res.status);
   });
 }

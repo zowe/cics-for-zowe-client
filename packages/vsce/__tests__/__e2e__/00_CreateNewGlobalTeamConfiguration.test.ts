@@ -22,7 +22,7 @@ import {
 import { sleep } from "./util/globalMocks";
 import { checkIfEditorTabIsOpened, closeAllEditorsTabs, getCicsSection, openZoweExplorer } from "./util/initSetup.test";
 
-describe("Test Suite For Creating New Global Team Configuration File", () => {
+describe("Create New Global Config", () => {
   let view: SideBarView;
   let cicsTree: DefaultTreeSection;
   let quickPick: InputBox;
@@ -52,13 +52,13 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     await closeAllEditorsTabs();
   });
 
-  it("Should Check The CICS Section Title", async () => {
+  it("Get CICS section", async () => {
     // Title check for cics section
     const cicsTreeTitle = await cicsTree.getTitle();
     expect(cicsTreeTitle).equals(CICS);
   });
 
-  it("Should Test If The + (Plus) Button Is Clickable", async () => {
+  it("Create CICS profile", async () => {
     // Click the + icon in the cics section
     await cicsTree.click();
     const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(CREATE_A_CICS_PROFILE);
@@ -67,7 +67,7 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Verify If The Quick Pick Options Are Correct", async () => {
+  it("Verify Quick Pick", async () => {
     // Find quickpick
     quickPick = await InputBox.create();
     const qpItems = await quickPick.getQuickPicks();
@@ -85,7 +85,7 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Create A New Configuration File", async () => {
+  it("Create config file", async () => {
     // Select the option to create a new team configuration file in the quickpick
     quickPick = await InputBox.create();
     await quickPick.selectQuickPick(0);
@@ -107,7 +107,7 @@ describe("Test Suite For Creating New Global Team Configuration File", () => {
     cicsTree.takeScreenshot();
   });
 
-  it("Should Check If CICS Profile Is Present In The Configuration File", async () => {
+  it("Check CICS profile is added to config", async () => {
     editorView = new EditorView();
     const editor = await editorView.openEditor(CONFIG_FILE_NAME);
     const isCicsProfileAvailable = await editor.getText();

@@ -109,7 +109,7 @@ jobs:
       - name: Start WireMock Standalone JAR
         run: |
           # Start WireMock in the background
-          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock/ &
+          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock/ > wiremock.log 2>&1 &
       
       - name: Wait for WireMock to be ready
         run: |
@@ -138,6 +138,15 @@ jobs:
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: npm run test:e2e
+
+      - name: Archive E2E screenshots and Wiremock log
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2eLogs
+          path: |
+            packages/vsce/.cics/screenshots
+            wiremock.log
 
   release:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected

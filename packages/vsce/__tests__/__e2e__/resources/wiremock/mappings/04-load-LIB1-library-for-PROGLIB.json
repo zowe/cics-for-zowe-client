@@ -22,7 +22,7 @@
       "newScenarioState": "Fetch LIB1 library record count",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/100?NODISCARD"
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/250?NODISCARD"
       },
       "response": {
         "status": 200,
