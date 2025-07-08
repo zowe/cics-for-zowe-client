@@ -35,23 +35,20 @@ export function setFocusRegionCommand() {
 export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
   const quickPick = Gui.createQuickPick();
   if (await isCICSProfileValidInSettings()) {
-    const { profileName, focusSelectedRegion, cicsPlex } = await getFocusRegionFromSettings();
+    const { profileName, focusSelectedRegion, cicsPlexName } = await getFocusRegionFromSettings();
     const items = [
-      { label: `Region: ${focusSelectedRegion} | CICSplex : ${cicsPlex || "NA"} | Profile: ${profileName}`, description: "Last used region" },
+      { label: `Region: ${focusSelectedRegion} | CICSplex : ${cicsPlexName || "NA"} | Profile: ${profileName}`, description: "Last used region" },
       { label: "Other CICS Region" },
     ];
     const choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...items]);
     quickPick.hide();
 
-    if (!choice) {
-      Gui.infoMessage(l10n.t("No selection made. Operation cancelled."));
-      return;
-    }
+    if (!choice) return;
 
     if (choice.label != "Other CICS Region") {
       const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
       const session = SessionHandler.getInstance().getSession(profile);
-      return { profile, cicsPlex, session, focusSelectedRegion };
+      return { profile, cicsPlexName, session, focusSelectedRegion };
     } else {
       return await updateFocusRegion();
     }
@@ -61,7 +58,7 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
   }
 }
 
-async function updateFocusRegion(): Promise<IFocusRegion> {
+async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
   const quickPick = Gui.createQuickPick();
   const profileNames = await getAllCICSProfiles();
   if (profileNames.length === 0) {
@@ -71,25 +68,22 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
 
   const cicsProfiles = profileNames.map((name) => new FilterDescriptor(name));
   let isPlex: boolean = false;
-  let cicsPlex: string = undefined;
+  let cicsPlexName: string = undefined;
   let focusSelectedRegion: string = undefined;
-  let plex: InfoLoaded[] = undefined;
+  let plexInfo: InfoLoaded[] = undefined;
   let choice = await getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
   quickPick.hide();
-  if (!choice) {
-    Gui.infoMessage(l10n.t("No selection made. Operation cancelled."));
-    return;
-  }
+  if (!choice) return;
 
   const profileName = cicsProfiles.find((item) => item === choice);
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
   const session = SessionHandler.getInstance().getSession(profile);
 
-  ({ cicsPlex, focusSelectedRegion, isPlex, plex } = await getPlexAndRegion(profile, cicsPlex, focusSelectedRegion, isPlex, plex, session));
+  ({ cicsPlexName, focusSelectedRegion, isPlex, plexInfo } = await getPlexAndRegion(profile, cicsPlexName, focusSelectedRegion, isPlex, plexInfo, session));
 
-  if (plex && !cicsPlex) {
-    const plexNames = plex.filter((p) => !p.group).map((p) => p.plexname);
-    const regions = plex.filter((p) => !p.group && p.plexname === null).map((p) => p.regions);
+  if (plexInfo && !cicsPlexName) {
+    const plexNames = plexInfo.filter((p) => !p.group).map((p) => p.plexname);
+    const regions = plexInfo.filter((p) => !p.group && p.plexname === null).map((p) => p.regions);
 
     //If profile has only regions and no plexes, we should show the regions
     if (regions.length > 0) {
@@ -99,11 +93,9 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
     } else if (plexNames.length > 0) {
       choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
-      if (!choice) {
-        Gui.infoMessage(l10n.t("No selection made. Operation cancelled."));
-        return;
-      }
-      cicsPlex = choice.label;
+      if (!choice) return;
+
+      cicsPlexName = choice.label;
       isPlex = true;
     } else {
       Gui.showMessage(l10n.t("No Regions or CICSplexes found in the selected profile."));
@@ -111,45 +103,43 @@ async function updateFocusRegion(): Promise<IFocusRegion> {
   }
   if (isPlex) {
     //if plex is selected, we should show the regions from the plex
-    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlex, session);
-    CICSLogger.info("Fetching regions for CICSplex: " + cicsPlex);
+    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
+    CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
     choice = await getChoiceFromQuickPick(quickPick, "Select CICS Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
     quickPick.hide();
-    if (!choice) {
-      Gui.infoMessage(l10n.t("No selection made. Operation cancelled."));
-      return;
-    }
+    if (!choice) return;
+
     focusSelectedRegion = choice.label;
-    CICSLogger.info(`region set to ${focusSelectedRegion} for profile ${profileName.label} and plex ${cicsPlex || "NA"}`);
+    CICSLogger.info(`region set to ${focusSelectedRegion} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
   }
-  setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlex);
-  CICSLogger.info(`Updatingregion in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlex}`);
-  Gui.showMessage(l10n.t("Region selected: {0} and CICSplex: {1}", focusSelectedRegion || "NA", cicsPlex || "NA"));
-  return { profile, cicsPlex, session, focusSelectedRegion };
+  setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlexName);
+  CICSLogger.info(`Updating region in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlexName}`);
+  Gui.showMessage(l10n.t("Region selected: {0} and CICSplex: {1}", focusSelectedRegion || "NA", cicsPlexName || "NA"));
+  return { profile, cicsPlexName, session, focusSelectedRegion };
 }
 
 
 async function getPlexAndRegion(
   profile: IProfileLoaded,
-  cicsPlex: string,
+  cicsPlexName: string,
   focusSelectedRegion: string,
   isPlex: boolean,
-  plex: InfoLoaded[],
+  plexInfo: InfoLoaded[],
   session: CICSSession
 ) {
   if (profile.profile.cicsPlex) {
     if (profile.profile.regionName) {
       //Update if cicsPlex and regionName are present.
-      cicsPlex = profile.profile.cicsPlex;
+      cicsPlexName = profile.profile.cicsPlex;
       focusSelectedRegion = profile.profile.regionName;
     } else {
       //If only cicsPlex is present
-      cicsPlex = profile.profile.cicsPlex;
+      cicsPlexName = profile.profile.cicsPlex;
       isPlex = true;
     }
   } else {
-    plex = await getPlexInfoFromProfile(profile, session);
+    plexInfo = await getPlexInfoFromProfile(profile, session);
   }
-  return { cicsPlex, focusSelectedRegion, isPlex, plex };
+  return { cicsPlexName, focusSelectedRegion, isPlex, plexInfo };
 }

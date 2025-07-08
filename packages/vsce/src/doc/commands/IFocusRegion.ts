@@ -14,7 +14,7 @@ import { CICSSession } from "../../resources/CICSSession";
 
 export interface IFocusRegion {
   profile: IProfileLoaded;
-  cicsPlex?: string;
+  cicsPlexName?: string;
   session: CICSSession;
   focusSelectedRegion: string;
 }

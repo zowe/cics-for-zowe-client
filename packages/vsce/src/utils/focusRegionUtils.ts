@@ -16,14 +16,14 @@ import { CICSSession } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
 
-export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlex: string } {
+export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
 
   const focusSelectedRegion = config.get<string>("regionName", undefined);
-  const cicsPlex = config.get<string>("cicsPlex", undefined);
+  const cicsPlexName = config.get<string>("cicsPlex", undefined);
   const profileName = config.get<string>("profileName", undefined);
 
-  return { profileName, focusSelectedRegion, cicsPlex };
+  return { profileName, focusSelectedRegion, cicsPlexName };
 }
 
 export function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
