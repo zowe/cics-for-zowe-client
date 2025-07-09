@@ -4241,6 +4241,8 @@ SOFTWARE.
 
 ------
 
+** agent-base; version 7.1.4 -- https://github.com/TooTallNate/proxy-agents#readme
+Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
 ** http-proxy-agent; version 7.0.2 -- https://github.com/TooTallNate/proxy-agents#readme
 Copyright (c) 2013 Nathan Rajlich <nathan@tootallnate.net>
 ** https-proxy-agent; version 7.0.6 -- https://github.com/TooTallNate/proxy-agents#readme
@@ -4270,7 +4272,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 ------
 
