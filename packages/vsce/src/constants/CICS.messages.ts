@@ -40,4 +40,16 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   CICSResourceNotFound: {
     message: "CICS resource not found.",
   },
+
+  CICSEnterResourceName: {
+    message: "Enter the name of a CICS Resource",
+  },
+
+  CICSInvalidResourceName: {
+    message:  "Invalid CICS Resource name",
+  },
+
+  CICSSelectResourceType: {
+    message:  "Select CICS Resource Type...",
+  }
 };

@@ -144,7 +144,7 @@ function getResourceType(resourceName: string): IResourceMeta<IResource> {
 }
 
 async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
-  const choice = await getChoiceFromQuickPick("Select Resource Type...", SupportedResources.resources);
+  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, SupportedResources.resources);
 
   if (choice) {
     return getResourceType(choice.label);
@@ -175,12 +175,12 @@ async function getChoiceFromQuickPick(
 
 async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
   const options: InputBoxOptions = {
-    prompt: "Enter the name of a resource",
+    prompt: CICSMessages.CICSEnterResourceName.message,
     value: "",
     validateInput: function(value: string): string {
       if ((resourceType === TransactionMeta && value.length > 4) ||
         (resourceType !== TransactionMeta && value.length > 8)) {
-        return "Invalid resource name";
+        return CICSMessages.CICSInvalidResourceName.message;
       }
       return undefined;
     }
