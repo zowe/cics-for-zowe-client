@@ -259,7 +259,7 @@
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
-          "when": "config.zowe.cics.resourceInspector"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.setFocusRegion",
@@ -267,7 +267,7 @@
         },
         {
           "command": "cics-extension-for-zowe.inspectResource",
-          "when": "never"
+          "when": "config.zowe.cics.resourceInspector"
         },
         {
           "command": "cics-extension-for-zowe.purgeTask",
