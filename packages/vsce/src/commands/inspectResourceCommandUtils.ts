@@ -147,7 +147,7 @@ async function getChoiceFromQuickPick(
   placeHolder: string,
   items: string[]
 ): Promise<QuickPickItem | undefined> {
-  let qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item}))];
+  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item}))];
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
