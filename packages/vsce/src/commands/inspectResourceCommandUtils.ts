@@ -68,7 +68,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
       type,
       resourceName,
       focusRegion.focusSelectedRegion,
-      focusRegion.cicsPlex,
+      focusRegion.cicsPlexName,
       focusRegion.profile.name
     );
 

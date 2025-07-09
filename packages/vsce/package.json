@@ -258,7 +258,7 @@
         },
         {
           "command": "cics-extension-for-zowe.setFocusRegion",
-          "when": "config.zowe.cics.resourceInspector"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.inspectResource",
@@ -274,11 +274,11 @@
         },
         {
           "command": "cics-extension-for-zowe.newCopyProgram",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.phaseInCommand",
-           "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.showRegionAttributes",
@@ -342,7 +342,7 @@
         },
         {
           "command": "cics-extension-for-zowe.disableLibrary",
-         "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.manageSession",
@@ -639,6 +639,27 @@
             "TCP/IPService": true,
             "URIMap": true,
             "WebService": true
+          },
+          "scope": "window"
+        },
+        "zowe.cics.focusRegion": {
+          "type": "object",
+          "description": "Focus Region",
+          "properties": {
+            "regionName": {
+              "type": "string"
+            },
+            "plexName": {
+              "type": "string"
+            },
+            "profileName": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "regionName": null,
+            "cicsPlexName": null,
+            "profileName": null
           },
           "scope": "window"
         }
