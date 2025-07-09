@@ -36,4 +36,8 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   CICSResourceTypeNotFound: {
     message: "CICS resource type not found or unsupported.",
   },
+
+  CICSResourceNotFound: {
+    message: "CICS resource not found.",
+  },
 };

@@ -254,7 +254,7 @@
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
-          "when": "never"
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.setFocusRegion",

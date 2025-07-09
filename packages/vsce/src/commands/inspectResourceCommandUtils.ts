@@ -11,7 +11,7 @@
 
 import { commands, ExtensionContext, InputBoxOptions, l10n, QuickPickItem, window } from "vscode";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IResource, IResourceMeta } from "../doc";
+import { IResource, IResourceMeta, TransactionMeta } from "../doc";
 import { SupportedResources } from "../model";
 import { CICSSession, Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -47,7 +47,10 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
     node.cicsplexName,
     node.getProfileName()
   );
-  await showInspectResource(context, resourcesHandler);
+
+  if (resourcesHandler) {
+    await showInspectResource(context, resourcesHandler);
+  }
 }
 
 export async function inspectResourceByName(context: ExtensionContext, resourceName: string, resourceType: string) {
@@ -73,7 +76,9 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
       focusRegion.profile.name
     );
 
-    showInspectResource(context, resourcesHandler);
+    if (resourcesHandler) {
+      await showInspectResource(context, resourcesHandler);
+    }
   }
 }
 
@@ -83,7 +88,7 @@ export async function inspectResource(context: ExtensionContext) {
   if (focusRegion) {
     const resourceType = await selectResourceType();
     if (resourceType) {
-      const resourceName = await selectResource();
+      const resourceName = await selectResource(resourceType);
 
       if (resourceName) {
         const resourcesHandler: IResourcesHandler = await loadResources(
@@ -95,7 +100,9 @@ export async function inspectResource(context: ExtensionContext) {
           focusRegion.profile.name
         );
 
-        showInspectResource(context, resourcesHandler);
+        if (resourcesHandler) {
+          await showInspectResource(context, resourcesHandler);
+        }
       }
     }
   }
@@ -115,6 +122,13 @@ async function loadResources(
   }
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
+
+
+  if (resources[0].length === 0 ) {
+    CICSLogger.error(CICSMessages.CICSResourceNotFound.message);
+    window.showErrorMessage(CICSMessages.CICSResourceNotFound.message);
+    return;
+  }
 
   return { resources, resourceContainer };
 }
@@ -139,8 +153,8 @@ async function selectResourceType(): Promise<IResourceMeta<IResource> | undefine
   return undefined;
 }
 
-async function selectResource(): Promise<string | undefined> {
-  return getEntryFromInputBox();
+async function selectResource(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
+  return getEntryFromInputBox(resourceType);
 }
 
 async function getChoiceFromQuickPick(
@@ -159,14 +173,20 @@ async function getChoiceFromQuickPick(
   return choice;
 }
 
-async function getEntryFromInputBox(): Promise<string | undefined> {
+async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
   const options: InputBoxOptions = {
-    prompt: "Enter resource name",
-    value: ""
+    prompt: "Enter the name of a resource",
+    value: "",
+    validateInput: function(value: string): string {
+      if ((resourceType === TransactionMeta && value.length > 4) ||
+        (resourceType !== TransactionMeta && value.length > 8)) {
+        return "Invalid resource name";
+      }
+      return undefined;
+    }
   };
 
-  if (!options.validateInput) {
-    options.validateInput = (value) => undefined;
-  }
   return (await window.showInputBox(options)) || undefined;
 }
+
+
