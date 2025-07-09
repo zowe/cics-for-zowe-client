@@ -38,15 +38,15 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   },
 
   CICSResourceNotFound: {
-    message: "CICS resource not found.",
+    message: "%resource-type% %resource-name% not found in region %region-name%.",
   },
 
   CICSEnterResourceName: {
     message: "Enter the name of a CICS Resource",
   },
 
-  CICSInvalidResourceName: {
-    message:  "Invalid CICS Resource name",
+  CICSInvalidResourceNameLength: {
+    message:  "Invalid CICS Resource name. Maximum length is %length% characters.",
   },
 
   CICSSelectResourceType: {

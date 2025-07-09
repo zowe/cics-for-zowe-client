@@ -21,6 +21,7 @@ import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { getFocusRegion } from "./setFocusRegionCommand";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Gui } from "@zowe/zowe-explorer-api";
+import constants from "../constants/CICS.defaults";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -117,16 +118,16 @@ async function loadResources(
   profileName: string
 ): Promise<IResourcesHandler> {
   const resourceContainer = new ResourceContainer<IResource>(resourceType);
-  if (resourceName) {
-    resourceContainer.setCriteria([resourceName]);
-  }
+  resourceContainer.setCriteria([resourceName]);
+
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
-
   if (resources[0].length === 0 ) {
-    CICSLogger.error(CICSMessages.CICSResourceNotFound.message);
-    window.showErrorMessage(CICSMessages.CICSResourceNotFound.message);
+    const hrn = resourceType.humanReadableName.endsWith("s") ? resourceType.humanReadableName.slice(0, resourceType.humanReadableName.length-1): resourceType.humanReadableName;
+    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", regionName);
+    CICSLogger.error(message);
+    window.showErrorMessage(message);
     return;
   }
 
@@ -178,9 +179,10 @@ async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Pro
     prompt: CICSMessages.CICSEnterResourceName.message,
     value: "",
     validateInput: function(value: string): string {
-      if ((resourceType === TransactionMeta && value.length > 4) ||
-        (resourceType !== TransactionMeta && value.length > 8)) {
-        return CICSMessages.CICSInvalidResourceName.message;
+      if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {
+        return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_TRANS_RESOURCE_NAME_LENGTH));
+      } else if (resourceType !== TransactionMeta && value.length > constants.MAX_RESOURCE_NAME_LENGTH) {
+        return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_RESOURCE_NAME_LENGTH));
       }
       return undefined;
     }
