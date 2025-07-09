@@ -34,6 +34,7 @@ export const PROGLIB = "PROGLIB";
 // Region Resource labels
 export const PROGRAMS = "Programs";
 export const PIPELINES = "Pipelines";
+export const LIBRARIES = "Libraries";
 
 // Library labels
 export const LIB1 = "LIB1";
@@ -56,3 +57,6 @@ export const DSNTIAC = "DSNTIAC";
 export const PLIB1DS1 = "PLIB1DS1";
 export const PLIB1DS2 = "PLIB1DS2";
 export const PLIB2NONE = "PLIB2NONE";
+
+//Library Labels
+export const CBSA = "CBSA";
