@@ -9,4 +9,4 @@
  *
  */
 
-export * from "./SupportedResources";
+export * from "./CICSExtenderApiConfig";
