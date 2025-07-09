@@ -21,6 +21,15 @@ jest.mock("../../../src/utils/iconUtils", () => {
     getIconFilePathFromName: getIconFilePathFromNameMock,
   };
 });
+jest.mock("@zowe/zowe-explorer-api", () => ({
+  ...jest.requireActual("@zowe/zowe-explorer-api"),
+  ZoweVsCodeExtension: { getZoweExplorerApi: jest.fn() },
+}));
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {
+    getProfilesCache: jest.fn(),
+  },
+}));
 
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
