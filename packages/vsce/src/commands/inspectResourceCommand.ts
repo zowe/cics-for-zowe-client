@@ -11,16 +11,14 @@
 
 import { commands, ExtensionContext, TreeView, workspace } from "vscode";
 
-import { inspectResourceByName } from "./inspectResourceCommandUtils";
+import { inspectResourceByName, inspectResource } from "./inspectResourceCommandUtils";
 
 export function getInspectResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {
-    if (!(await workspace.getConfiguration().get("zowe.cics.resourceInspector"))) {
-      return;
-    }
-
     if (resourceName && resourceType) {
       await inspectResourceByName(context, resourceName, resourceType);
+    } else {
+      await inspectResource(context);
     }
   });
 }

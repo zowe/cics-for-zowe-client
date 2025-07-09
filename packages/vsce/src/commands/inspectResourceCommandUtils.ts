@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ExtensionContext, window } from "vscode";
+import { commands, ExtensionContext, InputBoxOptions, l10n, QuickPickItem, window } from "vscode";
 import { CICSMessages } from "../constants/CICS.messages";
 import { IResource, IResourceMeta } from "../doc";
 import { SupportedResources } from "../model";
@@ -20,6 +20,7 @@ import { CICSLogger } from "../utils/CICSLogger";
 import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import { getFocusRegion } from "./setFocusRegionCommand";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
+import { Gui } from "@zowe/zowe-explorer-api";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -76,6 +77,30 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
   }
 }
 
+export async function inspectResource(context: ExtensionContext) {
+  const focusRegion: IFocusRegion = await getFocusRegion();
+
+  if (focusRegion) {
+    const resourceType = await selectResourceType();
+    if (resourceType) {
+      const resourceName = await selectResource();
+
+      if (resourceName) {
+        const resourcesHandler: IResourcesHandler = await loadResources(
+          focusRegion.session,
+          resourceType,
+          resourceName,
+          focusRegion.focusSelectedRegion,
+          focusRegion.cicsPlex,
+          focusRegion.profile.name
+        );
+
+        showInspectResource(context, resourcesHandler);
+      }
+    }
+  }
+}
+
 async function loadResources(
   session: CICSSession,
   resourceType: IResourceMeta<IResource>,
@@ -85,7 +110,9 @@ async function loadResources(
   profileName: string
 ): Promise<IResourcesHandler> {
   const resourceContainer = new ResourceContainer<IResource>(resourceType);
-  resourceContainer.setCriteria([resourceName]);
+  if (resourceName) {
+    resourceContainer.setCriteria([resourceName]);
+  }
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
@@ -100,4 +127,46 @@ function getResourceType(resourceName: string): IResourceMeta<IResource> {
     return types[0];
   }
   return undefined;
+}
+
+async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
+  const choice = await getChoiceFromQuickPick("Select Resource Type...", SupportedResources.resources);
+
+  if (choice) {
+    return getResourceType(choice.label);
+  }
+
+  return undefined;
+}
+
+async function selectResource(): Promise<string | undefined> {
+  return getEntryFromInputBox();
+}
+
+async function getChoiceFromQuickPick(
+  placeHolder: string,
+  items: string[]
+): Promise<QuickPickItem | undefined> {
+  let qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item}))];
+
+  const quickPick = Gui.createQuickPick();
+  quickPick.items = qpItems;
+  quickPick.placeholder = l10n.t(placeHolder);
+  quickPick.ignoreFocusOut = true;
+  quickPick.show();
+  const choice = await Gui.resolveQuickPick(quickPick);
+  quickPick.hide();
+  return choice;
+}
+
+async function getEntryFromInputBox(): Promise<string | undefined> {
+  const options: InputBoxOptions = {
+    prompt: "Enter resource name",
+    value: ""
+  };
+
+  if (!options.validateInput) {
+    options.validateInput = (value) => undefined;
+  }
+  return (await window.showInputBox(options)) || undefined;
 }

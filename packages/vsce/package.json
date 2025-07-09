@@ -261,10 +261,6 @@
           "when": "never"
         },
         {
-          "command": "cics-extension-for-zowe.inspectResource",
-          "when": "never"
-        },
-        {
           "command": "cics-extension-for-zowe.purgeTask",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
