@@ -11,9 +11,8 @@
 
 import { commands, ExtensionContext, InputBoxOptions, l10n, QuickPickItem, window } from "vscode";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IResource, IResourceMeta, TransactionMeta } from "../doc";
-import { SupportedResources } from "../model";
-import { CICSSession, Resource, ResourceContainer } from "../resources";
+import { getMetas, IResource, IResourceMeta } from "../doc";
+import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -22,6 +21,7 @@ import { getFocusRegion } from "./setFocusRegionCommand";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Gui } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -135,7 +135,7 @@ async function loadResources(
 }
 
 function getResourceType(resourceName: string): IResourceMeta<IResource> {
-  const types: IResourceMeta<IResource>[] = SupportedResources.metaResources.filter((value) => value.resourceName == resourceName);
+  const types: IResourceMeta<IResource>[] = getMetas().filter((value) => value.resourceName == resourceName);
 
   // Should only have one
   if (types?.length > 0) {

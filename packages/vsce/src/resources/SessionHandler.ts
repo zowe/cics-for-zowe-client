@@ -9,8 +9,8 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfile, IProfileLoaded } from "@zowe/imperative";
-import { CICSSession } from "./CICSSession";
 import { ISessionHandler } from "../doc/resources/ISessionHandler";
 
 export class SessionHandler implements ISessionHandler {
