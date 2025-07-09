@@ -69,10 +69,18 @@ export async function runCommandAndGetTreeItems(cicsTree: DefaultTreeSection, co
   return await cicsTree.openItem(...path);
 }
 
-export async function findProgramByLabel(programs: TreeItem[], programLabel: string): Promise<TreeItem | undefined> {
+export async function findProgramTreeNodeByLabel(programs: TreeItem[], programLabel: string): Promise<TreeItem | undefined> {
   for (const program of programs) {
     if ((await program.getLabel()).trim() === programLabel) {
       return program;
+    }
+  }
+  return undefined;
+}
+export async function findLibraryTreeNodeByLabel(libraries: TreeItem[], libraryLabel: string): Promise<TreeItem | undefined> {
+  for (const library of libraries) {
+    if ((await library.getLabel()).trim() === libraryLabel) {
+      return library;
     }
   }
   return undefined;

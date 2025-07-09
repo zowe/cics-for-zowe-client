@@ -1,0 +1,51 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Load Libraries",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Fetch libraries",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/CICSEX61/IYCWENK1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load_library_mapping/fetch-library-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Load Libraries",
+      "requiredScenarioState": "Fetch libraries",
+      "newScenarioState": "Fetch library record count",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load_library_mapping/response-for-fetch-library.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Load Libraries",
+      "requiredScenarioState": "Fetch library record count",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load_library_mapping/fetch-library-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

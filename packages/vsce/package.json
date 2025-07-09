@@ -187,6 +187,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.enableLibrary",
+        "title": "Enable Library",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.closeLocalFile",
         "title": "Close Local File",
         "category": "IBM CICS for Zowe Explorer"
@@ -345,6 +350,11 @@
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
+          "command": "cics-extension-for-zowe.enableLibrary",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+
+        },
+        {
           "command": "cics-extension-for-zowe.manageSession",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
@@ -358,6 +368,14 @@
         },
         {
           "command": "cics-extension-for-zowe.showLibrary",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableProgram",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableProgram",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         }
       ],
@@ -462,6 +480,16 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalTransaction.ENABLED.*/",
           "command": "cics-extension-for-zowe.disableTransaction",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLibrary.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableLibrary",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLibrary.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableLibrary",
           "group": "2.CICSResourceNode.action"
         },
         {

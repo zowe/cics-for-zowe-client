@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem, VSBrowser } from "vscode-extension-tester";
 import { CICSEX61, DS11, LIB1, LIBRARIES_LIB1_LABEL, PIPELINES, PLIB1DS1, PROGLIB, PROGRAMS, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
+import { findProgramTreeNodeByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   clickRefreshIconInCicsTree,
@@ -69,7 +69,7 @@ describe("Show Library Action on Program with Library and LIBDSNAME", () => {
 
   let PLIB1DS1PROGRAM: TreeItem | undefined;
   it("Check Program PLIB1DS1 Is In Region PROGLIB", async () => {
-    PLIB1DS1PROGRAM = await findProgramByLabel(programs, PLIB1DS1);
+    PLIB1DS1PROGRAM = await findProgramTreeNodeByLabel(programs, PLIB1DS1);
     expect(PLIB1DS1PROGRAM).not.undefined;
     expect(await PLIB1DS1PROGRAM?.getLabel()).contains(PLIB1DS1);
   });

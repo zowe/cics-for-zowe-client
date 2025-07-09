@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem, VSBrowser } from "vscode-extension-tester";
 import { CICSEX61, LIB2, LIBRARIES_LIB2_LABEL, PIPELINES, PLIB2NONE, PROGLIB, PROGRAMS, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { findProgramByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
+import { findProgramTreeNodeByLabel, runCommandFromCommandPalette, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   clickRefreshIconInCicsTree,
@@ -69,7 +69,7 @@ describe("Show Library Action on Program without LIBDSNAME", () => {
 
   let PLIB2NONEPROGRAM: TreeItem | undefined;
   it("Check Program PLIB2NONE Is In Region PROGLIB", async () => {
-    PLIB2NONEPROGRAM = await findProgramByLabel(programs, PLIB2NONE);
+    PLIB2NONEPROGRAM = await findProgramTreeNodeByLabel(programs, PLIB2NONE);
     expect(PLIB2NONEPROGRAM).not.undefined;
     expect(await PLIB2NONEPROGRAM?.getLabel()).contains(PLIB2NONE);
   });
