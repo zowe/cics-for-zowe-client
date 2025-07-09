@@ -15,7 +15,9 @@ import { CBSA, CICSEX61, IYCWENK1, LIBRARIES, REGIONS_LOADED, WIREMOCK_PROFILE_N
 import { findLibraryTreeNodeByLabel, runCommandAndGetTreeItems, sleep } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
+  clickRefreshIconInCicsTree,
   closeAllEditorsTabs,
+  collapseSectionInZoweExplorer,
   getCicsSection,
   openZoweExplorer,
   setupCICSTreeSelectedResourceParams,
@@ -37,7 +39,13 @@ describe("Perform Actions On Libraries", () => {
   before(async () => {
     await sleep(1900);
     view = await openZoweExplorer();
+
+    await collapseSectionInZoweExplorer(view, "Data Sets");
+    await collapseSectionInZoweExplorer(view, "Unix System Services (USS)");
+    await collapseSectionInZoweExplorer(view, "Jobs");
+
     cicsTree = await getCicsSection(view);
+    await clickRefreshIconInCicsTree(cicsTree);
 
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);
     expect(wiremockServer).exist;

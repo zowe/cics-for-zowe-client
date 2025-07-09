@@ -25,6 +25,7 @@ import {
   WebView,
 } from "vscode-extension-tester";
 import { CICS, EDIT_TEAM_CONFIG_FILE, PROJECT_CURRENT_WORKING_DIRECTORY, REGIONS_LOADED, ZOWE_EXPLORER } from "./constants";
+import { sleep } from "./globalMocks";
 
 export async function openZoweExplorer(): Promise<SideBarView> {
   const zoweExplorer = await new ActivityBar().getViewControl(ZOWE_EXPLORER);
@@ -45,6 +46,7 @@ export async function clickRefreshIconInCicsTree(cicsTree: DefaultTreeSection): 
   const refreshIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Refresh`);
   await refreshIcon?.click();
 }
+
 export async function clickPlusIconInCicsTree(cicsTree: DefaultTreeSection): Promise<void> {
   await cicsTree.click();
   const plusIcon: ViewPanelAction | undefined = await cicsTree.getAction(`Create a CICS Profile`);
@@ -255,4 +257,14 @@ export async function setupCICSTreeSelectedResourceParams(
     selectedResourceIndex,
     selectedResource,
   };
+}
+
+export async function collapseSectionInZoweExplorer(view: SideBarView, sectionName: string): Promise<void> {
+  const section = await view.getContent().getSection(sectionName);
+  if (section) {
+    await section.click();
+    await section.collapse();
+    await sleep(200);
+    expect(await section.isExpanded()).is.false;
+  }
 }
