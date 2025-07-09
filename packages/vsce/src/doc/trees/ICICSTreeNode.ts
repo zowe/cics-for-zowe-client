@@ -9,9 +9,9 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemLabel } from "vscode";
-import { CICSSession } from "../../resources/CICSSession";
 import { CICSSessionTree } from "../../trees";
 import { TextTreeItem } from "../../trees/TextTreeItem";
 
