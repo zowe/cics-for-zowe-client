@@ -44,7 +44,11 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   },
 
   getIconName: function (resource: Resource<ILibrary>): string {
-    return "library";
+    let iconName = `library`;
+    if (resource.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
+      iconName += `-disabled`;
+    }
+    return iconName;
   },
 
   getName(resource: Resource<ILibrary>): string {
