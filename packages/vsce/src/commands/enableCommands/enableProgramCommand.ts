@@ -50,7 +50,7 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
           try {
             await enableProgram(node.getSession(), {
               name: node.getContainedResourceName(),
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {

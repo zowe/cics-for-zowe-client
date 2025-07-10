@@ -47,7 +47,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
           try {
             await openLocalFile(node.getSession(), {
               name: resName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {

@@ -60,7 +60,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
               {
                 name: node.getContainedResourceName(),
                 cicsPlex: node.cicsplexName,
-                regionName: node.regionName,
+                regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               },
               busyDecision
             );

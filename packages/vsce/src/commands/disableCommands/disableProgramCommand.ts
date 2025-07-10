@@ -51,7 +51,7 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
             await disableProgram(node.getSession(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
           } catch (error) {
             window.showErrorMessage(

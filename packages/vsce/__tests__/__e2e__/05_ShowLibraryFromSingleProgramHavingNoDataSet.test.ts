@@ -76,7 +76,7 @@ describe("Show Library Action on Program without LIBDSNAME", () => {
 
   it("Check the attributes of PLIB2NONE", async () => {
     await PLIB2NONEPROGRAM?.click();
-    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showPrgramAttributes");
+    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showResourceAttributes");
     await verifyProgramAttributes(PLIB2NONE, {
       Program: PLIB2NONE,
       Library: LIB2,

@@ -40,7 +40,7 @@ export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
 
         for (const node of nodes) {
           progress.report({
@@ -51,7 +51,7 @@ export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>)
           try {
             await enableLibrary(node.getSession(), {
               name: node.getContainedResourceName(),
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {

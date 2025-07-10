@@ -46,7 +46,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
             await enableTransaction(node.getSession(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
           } catch (error) {
             window.showErrorMessage(
