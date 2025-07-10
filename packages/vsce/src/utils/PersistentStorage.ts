@@ -27,6 +27,7 @@ export class PersistentStorage {
   private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
   private static readonly bundleSearchHistory: string = "bundleSearchHistory";
   private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
+  private static readonly lastUsedRegion: string = "lastUsedRegion";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -41,6 +42,7 @@ export class PersistentStorage {
   private mWebServiceSearchHistory: string[] = [];
   private mBundleSearchHistory: string[] = [];
   private mBundlePartSearchHistory: string[] = [];
+  private mlastUsedRegion: {} = { regionName: null, cicsPlexName: null, profileName: null };
 
   constructor(schema: string) {
     this.schema = schema;
@@ -61,6 +63,7 @@ export class PersistentStorage {
     let webserviceSearchHistoryLines: string[] | undefined;
     let bundleSearchHistoryLines: string[] | undefined;
     let bundlePartSearchHistoryLines: string[] | undefined;
+    let lastUsedRegionLines: {} | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -76,7 +79,9 @@ export class PersistentStorage {
       webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
       bundleSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundleSearchHistory);
       bundlePartSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundlePartSearchHistory);
+      lastUsedRegionLines = workspace.getConfiguration(this.schema).get(PersistentStorage.lastUsedRegion);
     }
+    
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
     } else {
@@ -142,6 +147,11 @@ export class PersistentStorage {
     } else {
       await this.resetBundlePartSearchHistory();
     }
+    if (lastUsedRegionLines) {
+      this.mlastUsedRegion = lastUsedRegionLines;
+    } else {
+      await this.resetLastUsedRegion();
+    }
   }
 
   public getProgramSearchHistory(): string[] {
@@ -182,6 +192,15 @@ export class PersistentStorage {
   }
   public getBundlePartSearchHistory(): string[] {
     return this.mBundlePartSearchHistory;
+  }
+
+  public getLastUsedRegion(): { regionName: string | null; cicsPlexName: string | null; profileName: string | null } {
+    return this.mlastUsedRegion as { regionName: string | null; cicsPlexName: string | null; profileName: string | null };
+  }
+  
+  public async setLastUsedRegion(regionName: string | null, cicsPlexName: string | null, profileName: string | null): Promise<void> {
+    this.mlastUsedRegion = { regionName, cicsPlexName, profileName };
+    await this.updateLastUsedRegion();
   }
 
   public async resetProgramSearchHistory(): Promise<void> {
@@ -235,6 +254,10 @@ export class PersistentStorage {
   public async resetBundlePartSearchHistory(): Promise<void> {
     this.mBundlePartSearchHistory = [];
     await this.updateBundlePartSearchHistory();
+  }
+  public async resetLastUsedRegion(): Promise<void> {
+    this.mlastUsedRegion = { regionName: null, cicsPlexName: null, profileName: null };
+    await this.updateLastUsedRegion();
   }
 
   private async updateProgramSearchHistory(): Promise<void> {
@@ -332,6 +355,15 @@ export class PersistentStorage {
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
+
+  private async updateLastUsedRegion(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) }
+    if (settings.persistence) {
+      settings[PersistentStorage.lastUsedRegion] = this.mlastUsedRegion;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+
 
   public async addProgramSearchHistory(criteria: string): Promise<void> {
     if (criteria) {
