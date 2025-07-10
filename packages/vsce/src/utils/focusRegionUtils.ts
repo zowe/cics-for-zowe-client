@@ -12,9 +12,9 @@
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
-import { CICSSession } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
   const config = workspace.getConfiguration("zowe.cics.focusRegion");
