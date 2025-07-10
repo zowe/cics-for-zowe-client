@@ -9,4 +9,5 @@
  *
  */
 
-export * from "./SupportedResources";
+
+export * from "./CICSSession";

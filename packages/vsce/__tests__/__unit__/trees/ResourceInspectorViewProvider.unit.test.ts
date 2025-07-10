@@ -9,6 +9,13 @@
  *
  */
 
+const getProfilesCacheMock = jest.fn();
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {
+    getProfilesCache: getProfilesCacheMock,
+  },
+}));
+
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import { IPipeline, PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
@@ -17,7 +24,8 @@ import { Uri, WebviewView } from "vscode";
 jest.mock("vscode", () => {
   return {
     Uri: {
-      joinPath: jest.fn().mockReturnValue("asdf")
+      joinPath: jest.fn().mockReturnValue("asdf"),
+      parse: jest.fn(),
     },
     workspace: {
       getConfiguration: jest.fn()

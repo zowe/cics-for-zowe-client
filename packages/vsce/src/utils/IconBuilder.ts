@@ -9,9 +9,9 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { join } from "path";
 import { IContainedResource, IResource } from "../doc";
-import { CICSSession } from "../resources";
 
 class SIconBuilder {
   private static _instance: SIconBuilder;

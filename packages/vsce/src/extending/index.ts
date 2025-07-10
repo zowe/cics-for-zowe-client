@@ -9,14 +9,4 @@
  *
  */
 
-export interface ICICSExtenderConfig {
-  /**
-   * Extension configuration as returned by the extender API
-   */
-  configuration: {
-    supportedResources: string[];
-    resourceInspector: {
-      enabled: boolean;
-    };
-  };
-}
+export * from "./CICSExtenderApiConfig";

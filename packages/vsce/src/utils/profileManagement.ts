@@ -71,18 +71,6 @@ export class ProfileManagement {
     return errorMessage;
   }
 
-  public static getSessionFromProfile(profile: imperative.IProfile): Session {
-    return new Session({
-      protocol: profile.protocol,
-      hostname: profile.host,
-      port: profile.port,
-      type: "basic",
-      user: profile.user,
-      password: profile.password,
-      rejectUnauthorized: "rejectUnauthorized" in profile ? profile.rejectUnauthorized : true,
-    });
-  }
-
   public static async regionIsGroup(session: Session, profile: imperative.IProfile): Promise<boolean> {
     let isGroup = false;
     try {
