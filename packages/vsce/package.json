@@ -105,6 +105,11 @@
         }
       },
       {
+        "command": "cics-extension-for-zowe.copyNameCommand",
+        "title": "Copy Name",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.filterPlexResources",
         "title": "Filter Plex Resources in Regions tree",
         "category": "IBM CICS for Zowe Explorer",
@@ -397,6 +402,11 @@
         }
       ],
       "view/item/context": [
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.copyNameCommand",
+          "group": "1.CICSResourceNode.inquire"
+        },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.*/",
           "command": "cics-extension-for-zowe.newCopyProgram",
