@@ -9,11 +9,20 @@
  *
  */
 
-import { CicsCmciRestClient, getResource, IGetResourceUriOptions, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import {
+  CicsCmciRestClient,
+  getResource,
+  ICMCIResponseResultSummary,
+  IGetResourceUriOptions,
+  IResourceQueryParams,
+  Utils
+} from "@zowe/cics-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import constants from "../constants/CICS.defaults";
 import { getErrorCode } from "./errorUtils";
 import { CICSLogger } from "./CICSLogger";
+import { CICSResourceContainerNode } from "../trees";
+import { IResource } from "../doc";
 
 export async function runGetResource({
   session,
@@ -107,4 +116,35 @@ export async function runPutResource(
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+
+export async function pollForCompleteAction<T extends IResource>(
+  node: CICSResourceContainerNode<T>,
+  completionMet: (
+    response: {
+      resultsummary: ICMCIResponseResultSummary;
+      records: any;
+    }) => boolean,
+  cb: () => void,
+  retries: number = constants.POLL_FOR_ACTION_DEFAULT_RETRIES
+) {
+  for (let i = 0; i < retries; i++) {
+    const { response } = await runGetResource({
+      session: node.getSession(),
+      resourceName: node.getContainedResource().meta.resourceName,
+      cicsPlex: node.cicsplexName,
+      regionName: node.regionName,
+      params: {
+        criteria: node.getContainedResource().meta.buildCriteria([
+          node.getContainedResource().meta.getName(node.getContainedResource().resource)
+        ]),
+      },
+    });
+    if (completionMet(response)) {
+      break;
+    }
+    await new Promise((f) => setTimeout(f, 1000));
+  }
+
+  cb();
 }
