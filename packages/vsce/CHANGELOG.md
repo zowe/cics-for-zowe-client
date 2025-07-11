@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.9.0`
 
 - Enhancement: Removed most of the existing command palette entries for CICS where they're unhelpful  [#285](https://github.com/zowe/cics-for-zowe-client/issues/285)
 - Enhancement: Navigate from a program to the library from which it was loaded. [#292](https://github.com/zowe/cics-for-zowe-client/issues/292)
