@@ -256,7 +256,7 @@
       },
       {
         "command": "cics-extension-for-zowe.inspectResource",
-        "title": "Inspect Resource",
+        "title": "Inspect CICS Resource",
         "category": "IBM CICS for Zowe Explorer"
       }
     ],
@@ -272,7 +272,7 @@
         },
         {
           "command": "cics-extension-for-zowe.inspectResource",
-          "when": "config.zowe.cics.resourceInspector"
+          "when": "config.zowe.cics.resourceInspector && !config.zowe.cics.showAllCommandsInPalette"
         },
         {
           "command": "cics-extension-for-zowe.purgeTask",
@@ -357,7 +357,6 @@
         {
           "command": "cics-extension-for-zowe.enableLibrary",
           "when": "config.zowe.cics.showAllCommandsInPalette"
-
         },
         {
           "command": "cics-extension-for-zowe.manageSession",

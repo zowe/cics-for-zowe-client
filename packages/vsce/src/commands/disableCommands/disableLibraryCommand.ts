@@ -40,7 +40,7 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: false,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
 
         for (const node of nodes) {
           progress.report({
@@ -52,7 +52,7 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
             await disableLibrary(node.getSession(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
           } catch (error) {
             const message = `Something went wrong while disabling library ${node.getContainedResourceName()}\n\n${JSON.stringify(
