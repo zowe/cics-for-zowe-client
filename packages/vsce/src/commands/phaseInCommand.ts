@@ -50,7 +50,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
           try {
             await performPhaseIn(node.getSession(), {
               name: node.getContainedResourceName(),
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {

@@ -61,7 +61,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               node.getSession(),
               {
                 name: resName,
-                regionName: node.regionName,
+                regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
                 cicsPlex: node.cicsplexName,
               },
               purgeType

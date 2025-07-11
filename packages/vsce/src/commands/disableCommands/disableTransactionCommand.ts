@@ -46,7 +46,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             await disableTransaction(node.getSession(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
           } catch (error) {
             if (error.mMessage) {

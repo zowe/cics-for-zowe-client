@@ -65,17 +65,34 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
 
       const config = workspace.getConfiguration("zowe.cics.resources");
 
-      this.children = [
-        config.get<boolean>("Program", true) && this.buildResourceContainerNode(ProgramMeta),
-        config.get<boolean>("Transaction", true) && this.buildResourceContainerNode(TransactionMeta),
-        config.get<boolean>("LocalFile", true) && this.buildResourceContainerNode(LocalFileMeta),
-        config.get<boolean>("Task", true) && this.buildResourceContainerNode(TaskMeta),
-        config.get<boolean>("Library", true) && this.buildResourceContainerNode(LibraryMeta),
-        config.get<boolean>("Pipeline", true) && this.buildResourceContainerNode(PipelineMeta),
-        config.get<boolean>("TCP/IPService", true) && this.buildResourceContainerNode(TCPIPMeta),
-        config.get<boolean>("URIMap", true) && this.buildResourceContainerNode(URIMapMeta),
-        config.get<boolean>("WebService", true) && this.buildResourceContainerNode(WebServiceMeta),
-      ].filter((child) => child !== null);
+      this.children = [];
+      if (config.get<boolean>("Program", true)) {
+        this.children.push(this.buildResourceContainerNode(ProgramMeta));
+      }
+      if (config.get<boolean>("Transaction", true)) {
+        this.children.push(this.buildResourceContainerNode(TransactionMeta));
+      }
+      if (config.get<boolean>("LocalFile", true)) {
+        this.children.push(this.buildResourceContainerNode(LocalFileMeta));
+      }
+      if (config.get<boolean>("Task", true)) {
+        this.children.push(this.buildResourceContainerNode(TaskMeta));
+      }
+      if (config.get<boolean>("Library", true)) {
+        this.children.push(this.buildResourceContainerNode(LibraryMeta));
+      }
+      if (config.get<boolean>("Pipeline", true)) {
+        this.children.push(this.buildResourceContainerNode(PipelineMeta));
+      }
+      if (config.get<boolean>("TCP/IPService", true)) {
+        this.children.push(this.buildResourceContainerNode(TCPIPMeta));
+      }
+      if (config.get<boolean>("URIMap", true)) {
+        this.children.push(this.buildResourceContainerNode(URIMapMeta));
+      }
+      if (config.get<boolean>("WebService", true)) {
+        this.children.push(this.buildResourceContainerNode(WebServiceMeta));
+      }
     }
   }
 
