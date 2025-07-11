@@ -739,7 +739,7 @@
     "@vscode-elements/react-elements": "^1.15.1",
     "@zowe/cics-for-zowe-sdk": "6.9.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.2.1"
+    "@zowe/zowe-explorer-api": "^3.2.2"
   },
   "overrides": {
     "brace-expansion@1": "^1.1.12",
