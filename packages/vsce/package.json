@@ -548,7 +548,12 @@
             "programSearchHistory": [],
             "transactionSearchHistory": [],
             "localFileSearchHistory": [],
-            "loadedCICSProfile": []
+            "loadedCICSProfile": [],
+            "lastUsedRegion": {
+              "regionName": null,
+              "cicsPlexName": null,
+              "profileName": null
+            }
           },
           "description": "Zowe CICS Extension History",
           "scope": "window"
@@ -666,27 +671,6 @@
             "TCP/IPService": true,
             "URIMap": true,
             "WebService": true
-          },
-          "scope": "window"
-        },
-        "zowe.cics.focusRegion": {
-          "type": "object",
-          "description": "Focus Region",
-          "properties": {
-            "regionName": {
-              "type": "string"
-            },
-            "plexName": {
-              "type": "string"
-            },
-            "profileName": {
-              "type": "string"
-            }
-          },
-          "default": {
-            "regionName": null,
-            "cicsPlexName": null,
-            "profileName": null
           },
           "scope": "window"
         }
