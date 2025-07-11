@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-explorer-api",
-  "version": "6.9.0",
+  "version": "6.9.1",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS for Zowe Explorer API",
