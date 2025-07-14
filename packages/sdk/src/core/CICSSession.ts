@@ -9,18 +9,18 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
+import { IProfile, SessConstants, Session } from "@zowe/imperative";
 
-export class CICSSession extends imperative.Session {
+export class CICSSession extends Session {
   cicsplexName?: string;
   regionName?: string;
 
   private verified: boolean | undefined;
 
-  constructor(profile: imperative.IProfile) {
+  constructor(profile: IProfile) {
     super({
-      type: imperative.SessConstants.AUTH_TYPE_TOKEN,
-      tokenType: imperative.SessConstants.TOKEN_TYPE_LTPA,
+      type: SessConstants.AUTH_TYPE_TOKEN,
+      tokenType: SessConstants.TOKEN_TYPE_LTPA,
       storeCookie: true,
 
       protocol: profile.protocol,
@@ -41,7 +41,7 @@ export class CICSSession extends imperative.Session {
     this.verified = v;
   }
 
-  isVerified() {
+  isVerified(): boolean | undefined {
     return this.verified;
   }
 }

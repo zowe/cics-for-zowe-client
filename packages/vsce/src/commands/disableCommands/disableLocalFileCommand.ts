@@ -9,12 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { IResource } from "../../doc";
 import { LocalFileMeta } from "../../doc/meta/localFile.meta";
-import { CICSSession } from "../../resources";
 import { CICSResourceContainerNode } from "../../trees";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";

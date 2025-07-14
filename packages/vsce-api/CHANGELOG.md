@@ -2,6 +2,10 @@
 
 All notable changes to the IBM CICS for Zowe Explorer API will be documented in this file.
 
+## Recent Changes
+
+- Return list of supported resources - currently empty
+
 ## `6.9.1`
 
 - Initial creation of IBM CICS for Zowe Explorer API

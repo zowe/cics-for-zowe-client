@@ -10,7 +10,6 @@
  */
 
 export * from "./IBundleParms";
-export * from "./ICICSExtenderConfig";
 export * from "./ICMCIApiResponse";
 export * from "./ICMCIRequestOptions";
 export * from "./ICMCIResponseResultSummary";

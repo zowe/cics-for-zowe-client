@@ -738,6 +738,7 @@
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
     "@zowe/cics-for-zowe-sdk": "6.9.3",
+    "@zowe/cics-for-zowe-explorer-api": "6.9.3",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.2.2"
   },
