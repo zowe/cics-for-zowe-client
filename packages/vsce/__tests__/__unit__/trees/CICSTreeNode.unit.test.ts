@@ -13,9 +13,9 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
 }));
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { TreeItemCollapsibleState } from "vscode";
-import { CICSSession } from "../../../src/resources";
 import { CICSRegionTree, CICSSessionTree, CICSTree } from "../../../src/trees";
 import { CICSTreeNode } from "../../../src/trees/CICSTreeNode";
 

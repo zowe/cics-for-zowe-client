@@ -10,11 +10,20 @@
  */
 
 import { IProfile } from "@zowe/imperative";
-import { CICSSession } from "../../../src/resources";
-import * as globalMocks from "../../__utils__/globalMocks";
+import { CICSSession } from "../../../src/core/CICSSession";
+
 
 describe("CICSSession tests", () => {
-  const profile: IProfile = { ...globalMocks.CICSProfileMock, hostname: "MYHOST", regionName: "MYREG", cicsPlex: "MYPLEX" };
+  const profile: IProfile = {
+    protocol: "http",
+    host: "a.hostname",
+    port: "123",
+    user: "a",
+    password: "b",
+    rejectUnauthorized: false,
+    regionName: "MYREG",
+    cicsPlex: "MYPLEX",
+  };
 
   it("should create a cicssession", () => {
     const session = new CICSSession(profile);

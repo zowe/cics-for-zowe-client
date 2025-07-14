@@ -22,9 +22,10 @@ import {
   isCICSProfileValidInSettings,
   setFocusRegionIntoSettings,
 } from "../utils/focusRegionUtils";
-import { CICSSession, SessionHandler } from "../resources";
+import { SessionHandler } from "../resources";
 import { IProfileLoaded } from "@zowe/imperative";
 import { CICSLogger } from "../utils/CICSLogger";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 export function setFocusRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setFocusRegion", async () => {
