@@ -20,16 +20,6 @@ describe("CICS Extender Api Tests", () => {
 
   it("should return supported resources configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
-    expect(config).toHaveProperty('resources.supportedResources', [
-      ResourceTypes.CICSLocalFile,
-      ResourceTypes.CICSLocalTransaction,
-      ResourceTypes.CICSProgram,
-      ResourceTypes.CICSTCPIPService,
-      ResourceTypes.CICSLibrary,
-      ResourceTypes.CICSURIMap,
-      ResourceTypes.CICSTask,
-      ResourceTypes.CICSPipeline,
-      ResourceTypes.CICSWebService,
-    ]);
+    expect(config).toHaveProperty('resources.supportedResources', []);
   });
 });

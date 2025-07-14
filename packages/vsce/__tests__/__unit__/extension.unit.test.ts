@@ -53,9 +53,6 @@ describe("extension", () => {
     expect(Object.keys(returnedAPI.resources)).toHaveLength(1);
 
     expect(returnedAPI.resources.supportedResources).toBeInstanceOf(Array);
-    expect(returnedAPI.resources.supportedResources).toHaveLength(9);
-    expect(returnedAPI.resources.supportedResources).toContain("CICSProgram");
-    expect(returnedAPI.resources.supportedResources).toContain("CICSTask");
-    expect(returnedAPI.resources.supportedResources).toContain("CICSWebService");
+    expect(returnedAPI.resources.supportedResources).toHaveLength(0);
   });
 });

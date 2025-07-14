@@ -21,4 +21,5 @@ export enum ResourceTypes {
   CICSWebService = "CICSWebService",
 }
 
-export const SupportedResourceTypes: ResourceTypes[] = Object.values(ResourceTypes);
+// export const SupportedResourceTypes: ResourceTypes[] = Object.values(ResourceTypes);
+export const SupportedResourceTypes: ResourceTypes[] = [];
