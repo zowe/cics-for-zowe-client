@@ -10,7 +10,7 @@
  */
 
 import CICSExtenderApiConfig from "../../../src/extending/CICSExtenderApiConfig";
-import { IExtensionAPI, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
 
 describe("CICS Extender Api Tests", () => {
   it("should return resource configuration", () => {
