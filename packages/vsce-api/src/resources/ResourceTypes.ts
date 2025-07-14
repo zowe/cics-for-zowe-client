@@ -9,6 +9,8 @@
  *
  */
 
+import { workspace } from "vscode";
+
 export enum ResourceTypes {
   CICSLocalFile = "CICSLocalFile",
   CICSLocalTransaction = "CICSLocalTransaction",
@@ -21,5 +23,5 @@ export enum ResourceTypes {
   CICSWebService = "CICSWebService",
 }
 
-// export const SupportedResourceTypes: ResourceTypes[] = Object.values(ResourceTypes);
-export const SupportedResourceTypes: ResourceTypes[] = [];
+export const SupportedResourceTypes: ResourceTypes[] = workspace.getConfiguration().get<boolean>(
+  "zowe.cics.resourceInspector", false) ? Object.values(ResourceTypes) : [];
