@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-explorer-api",
-  "version": "6.9.3",
+  "version": "6.9.4",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS for Zowe Explorer API",
@@ -42,11 +42,11 @@
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "^6.9.3",
+    "@zowe/cics-for-zowe-sdk": "^6.9.4",
     "compare-versions": "^6.1.1"
   },
   "peerDependencies": {
-    "@zowe/zowe-explorer-api": "^3.2.1"
+    "@zowe/zowe-explorer-api": "^3.2.0"
   },
   "devDependencies": {
     "@types/vscode": "~1.53.0",

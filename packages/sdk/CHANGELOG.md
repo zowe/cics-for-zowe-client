@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## `6.9.4`
+
+- Added CICSSession class
+
 ## `6.9.0`
 
 - Add missing CICS resource constants. [#249](https://github.com/zowe/cics-for-zowe-client/pull/249)

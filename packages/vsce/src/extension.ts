@@ -16,9 +16,10 @@ import { getFolderIcon, getIconFilePathFromName } from "./utils/iconUtils";
 import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
+import { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
 import { getCommands } from "./commands";
 import { CICSMessages } from "./constants/CICS.messages";
-import { CICSExtenderApiConfig } from "./extending/CICSExtenderApiConfig";
+import CICSExtenderApiConfig from "./extending/CICSExtenderApiConfig";
 import { ResourceInspectorViewProvider } from "./trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "./utils/CICSLogger";
 
@@ -27,7 +28,7 @@ import { CICSLogger } from "./utils/CICSLogger";
  * @param context
  * @returns
  */
-export async function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext): Promise<IExtensionAPI> {
   const zeVersion = getZoweExplorerVersion();
 
   CICSLogger.initialize();
@@ -125,7 +126,7 @@ export async function activate(context: ExtensionContext) {
     )
   );
 
-  return CICSExtenderApiConfig.getInstance().getConfig();
+  return CICSExtenderApiConfig.getAPI();
 }
 
 export async function deactivate(): Promise<void> {

@@ -24,7 +24,7 @@ jest.mock("../../../src/utils/iconUtils", () => {
 const cicstreeMock = jest.fn();
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
 const profile = {
-  profile: { user: "user", password: "pwd", hostname: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 },
+  profile: { user: "user", password: "pwd", host: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 },
 };
 describe("Test suite for CICSSessionTree", () => {
   let sut: CICSSessionTree;

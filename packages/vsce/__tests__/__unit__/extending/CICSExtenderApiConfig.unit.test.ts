@@ -9,27 +9,17 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk/lib/constants/CicsCmci.constants";
-import { CICSExtenderApiConfig } from "../../../src/extending/CICSExtenderApiConfig";
-import { ICICSExtenderConfig } from "@zowe/cics-for-zowe-sdk";
+import CICSExtenderApiConfig from "../../../src/extending/CICSExtenderApiConfig";
+import { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
 
 describe("CICS Extender Api Tests", () => {
-  it("should return resource inspector configuration", () => {
-    const config:ICICSExtenderConfig = CICSExtenderApiConfig.getInstance().getConfig();
-    expect(config).toHaveProperty('configuration.resourceInspector.enabled', false);
+  it("should return resource configuration", () => {
+    const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
+    expect(config).toHaveProperty('resources.supportedResources');
   });
 
   it("should return supported resources configuration", () => {
-    const config:ICICSExtenderConfig  = CICSExtenderApiConfig.getInstance().getConfig();
-    expect(config).toHaveProperty('configuration.supportedResources', [
-        CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-        CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-        CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
-        CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-        CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-        CicsCmciConstants.CICS_URIMAP,
-        CicsCmciConstants.CICS_CMCI_TASK,
-        CicsCmciConstants.CICS_CMCI_PIPELINE,
-        CicsCmciConstants.CICS_CMCI_WEB_SERVICE ]);
+    const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
+    expect(config).toHaveProperty('resources.supportedResources', []);
   });
 });
