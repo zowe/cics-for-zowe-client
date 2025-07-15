@@ -12,11 +12,11 @@
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
-import { CICSSession } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
-import { InfoLoaded, ProfileManagement } from "./profileManagement";
+import { ProfileManagement } from "./profileManagement";
 import { CICSTree } from "../trees";
 import { PersistentStorage } from "./PersistentStorage";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
