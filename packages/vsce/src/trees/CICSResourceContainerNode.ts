@@ -154,7 +154,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     // No region so searching at a plex level - filter must be specified
-    if (!this.regionName && !this.childResource.resources.isFilterApplied()) {
+    // Only apply this check to top-level nodes, so resources with children can show them immediately
+    if (this.getParent() instanceof CICSPlexTree && !this.regionName && !this.childResource.resources.isFilterApplied()) {
       this.viewMore = false;
       return (this.children = [new TextTreeItem("Use the search button to filter resources", "applyfiltertext.")]);
     }
