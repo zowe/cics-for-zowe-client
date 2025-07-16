@@ -23,7 +23,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNameSingular: "Bundle Part",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
-    return `BUNDLE=${parentResource.name} AND (${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")})`;
+    return `(${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")}) AND BUNDLE=${parentResource.name}`;
   },
 
   getDefaultCriteria: function (parentResource: IBundle) {
@@ -72,4 +72,6 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   getCriteriaHistory() {
     return persistentStorage.getBundlePartSearchHistory();
   },
+
+  filterCaseSensitive: true,
 };
