@@ -11,25 +11,29 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { ConfigurationTarget, l10n, QuickPick, QuickPickItem, workspace } from "vscode";
+import { l10n, QuickPick, QuickPickItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
-import { InfoLoaded, ProfileManagement } from "./profileManagement";
+import { ProfileManagement } from "./profileManagement";
+import { CICSTree } from "../trees";
+import { PersistentStorage } from "./PersistentStorage";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
+const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
-  const config = workspace.getConfiguration("zowe.cics.focusRegion");
-
-  const focusSelectedRegion = config.get<string>("regionName", undefined);
-  const cicsPlexName = config.get<string>("cicsPlex", undefined);
-  const profileName = config.get<string>("profileName", undefined);
+  const { regionName, cicsPlexName, profileName } = persistentStorage.getLastUsedRegion();
+  const focusSelectedRegion = regionName;
 
   return { profileName, focusSelectedRegion, cicsPlexName };
 }
 
 export function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
-  const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
-  workspace.getConfiguration("zowe.cics").update("focusRegion", { regionName, cicsPlex, profileName }, ConfigurationTarget.Global);
-  CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
+  if (regionName != null && profileName != undefined) {
+    const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
+    persistentStorage.setLastUsedRegion(regionName, cicsPlex, profileName);
+    CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
+    Gui.showMessage(l10n.t("Region selected: {0} and CICSplex: {1}", regionName || "NA", cicsPlexName || "NA"));
+  }
+  //on error, do not update focus region
 }
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
   const regionDetails = getFocusRegionFromSettings();
@@ -37,23 +41,28 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
   if (!regionDetails.profileName || !regionDetails.focusSelectedRegion) {
     return false;
   } else if (!profileNames.includes(regionDetails.profileName)) {
-    await Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
+    Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
     return false;
   }
   return true;
 }
 
 export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: CICSSession) {
-  let plex: InfoLoaded[] = [];
   try {
-    plex = await ProfileManagement.getPlexInfo(profile, session);
+    return await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
-    await Gui.errorMessage(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
+    Gui.errorMessage(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
   }
-  return plex;
+  return null;
 }
 
 export async function getAllCICSProfiles(): Promise<string[]> {
+  const cicsTree: CICSTree = new CICSTree();
+  await cicsTree.refreshLoadedProfiles();
+  const loadedprofiles = cicsTree.getLoadedProfiles();
+  if (loadedprofiles.length > 0) {
+    return loadedprofiles.map((profile) => profile.label) as string[];
+  }
   const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
   const allCICSProfiles = profileInfo.getAllProfiles("cics");
   const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
@@ -65,6 +74,7 @@ export async function getChoiceFromQuickPick(
   placeHolder: string,
   items: QuickPickItem[]
 ): Promise<QuickPickItem | undefined> {
+  quickPick.busy = false;
   quickPick.items = items;
   quickPick.placeholder = l10n.t(placeHolder);
   quickPick.ignoreFocusOut = true;
