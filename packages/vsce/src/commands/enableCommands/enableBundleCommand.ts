@@ -50,7 +50,7 @@ export function getEnableBundleCommand(tree: CICSTree, treeview: TreeView<any>) 
           try {
             await enableBundle(node.getSession(), {
               name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
 
