@@ -59,7 +59,7 @@ export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
   }
 }
 
-async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
+async function updateFocusRegion(): Promise<IFocusRegion> | undefined {
   const quickPick = Gui.createQuickPick();
   const profileNames = await getAllCICSProfiles();
   if (profileNames.length === 0) {
@@ -80,7 +80,14 @@ async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
   const session = SessionHandler.getInstance().getSession(profile);
 
-  ({ cicsPlexName, focusSelectedRegion, isPlex, plexInfo } = await getPlexAndRegion(profile, cicsPlexName, focusSelectedRegion, isPlex, plexInfo, session));
+  ({ cicsPlexName, focusSelectedRegion, isPlex, plexInfo } = await getPlexAndRegion(
+    profile,
+    cicsPlexName,
+    focusSelectedRegion,
+    isPlex,
+    plexInfo,
+    session
+  ));
 
   if (plexInfo && !cicsPlexName) {
     const plexNames = plexInfo.filter((p) => !p.group).map((p) => p.plexname);
@@ -92,6 +99,10 @@ async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
       focusSelectedRegion = region[0][0];
       CICSLogger.info(`Region set to ${focusSelectedRegion} for profile ${profileName.label}`);
     } else if (plexNames.length > 0) {
+      quickPick.placeholder = l10n.t("Select CICSplex");
+      quickPick.show();
+      quickPick.busy = true;
+      quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
       choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
       if (!choice) return;
@@ -104,6 +115,10 @@ async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
   }
   if (isPlex) {
     //if plex is selected, we should show the regions from the plex
+    quickPick.placeholder = l10n.t("Select CICS Region");
+    quickPick.show();
+    quickPick.busy = true;
+    quickPick.items = [{ label: l10n.t("Loading Regions...") }];
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
     CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
@@ -116,7 +131,6 @@ async function updateFocusRegion(): Promise<IFocusRegion> | undefined{
   }
   setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlexName}`);
-  Gui.showMessage(l10n.t("Region selected: {0} and CICSplex: {1}", focusSelectedRegion || "NA", cicsPlexName || "NA"));
   return { profile, cicsPlexName, session, focusSelectedRegion };
 }
 
