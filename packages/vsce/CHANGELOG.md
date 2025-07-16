@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Adds CICS Resource Inspector panel, available from a command palette command, to inspect CICS resource attributes.
+
 ## `3.9.4`
 
 - Expose extender API containing supported CICS resource types.
