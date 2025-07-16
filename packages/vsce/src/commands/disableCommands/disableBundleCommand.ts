@@ -51,7 +51,7 @@ export function getDisableBundleCommand(tree: CICSTree, treeview: TreeView<any>)
             await disableBundle(node.getSession(), {
               name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
               cicsPlex: node.cicsplexName,
-              regionName: node.regionName,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
 
             await pollForCompleteAction(node,

@@ -40,7 +40,7 @@ describe("Bundle Part Meta", () => {
 
   it("should build criteria", () => {
     const label = BundlePartMeta.buildCriteria(["A", "B"], parentResource.attributes);
-    expect(label).toEqual(`(BUNDLEPART=A OR BUNDLEPART=B) AND BUNDLE=BUND1`);
+    expect(label).toEqual(`(BUNDLEPART='A' OR BUNDLEPART='B') AND (BUNDLE='BUND1')`);
   });
 
   it("should return default criteria", async () => {
