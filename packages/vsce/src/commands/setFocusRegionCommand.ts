@@ -29,7 +29,7 @@ import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 export function setFocusRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setFocusRegion", async () => {
-    await getFocusRegion();
+    await updateFocusRegion();
   });
 }
 
