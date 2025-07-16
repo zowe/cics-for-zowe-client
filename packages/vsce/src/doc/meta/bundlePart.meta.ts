@@ -23,7 +23,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNameSingular: "Bundle Part",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
-    return `(${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")}) AND BUNDLE=${parentResource.name}`;
+    return `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")}) AND (BUNDLE='${parentResource.name}')`;
   },
 
   getDefaultCriteria: function (parentResource: IBundle) {

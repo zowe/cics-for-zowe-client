@@ -20,6 +20,7 @@ export enum ResourceTypes {
   CICSPipeline = "CICSPipeline",
   CICSWebService = "CICSWebService",
   CICSJVMServer = "CICSJVMServer",
+  CICSBundle = "CICSBundle",
 }
 
 export const SupportedResourceTypes: ResourceTypes[] = Object.values(ResourceTypes);
