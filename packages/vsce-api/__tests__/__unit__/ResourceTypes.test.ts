@@ -13,7 +13,17 @@ import { ResourceTypes, SupportedResourceTypes } from "../../src/resources/Resou
 
 describe("ResourceType tests", () => {
   it("should return list of supported resources", () => {
-    expect(SupportedResourceTypes).toEqual([]);
+    expect(SupportedResourceTypes).toEqual([
+      "CICSLocalFile",
+      "CICSLocalTransaction",
+      "CICSProgram",
+      "CICSTCPIPService",
+      "CICSLibrary",
+      "CICSURIMap",
+      "CICSTask",
+      "CICSPipeline",
+      "CICSWebService"
+    ]);
   });
 
   it("should have enum of resource names", () => {
