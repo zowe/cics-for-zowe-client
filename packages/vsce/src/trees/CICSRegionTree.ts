@@ -12,6 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeItemCollapsibleState, workspace } from "vscode";
 import {
+  BundleMeta,
   ICICSTreeNode,
   IResource,
   IResourceMeta,
@@ -92,6 +93,9 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       }
       if (config.get<boolean>("WebService", true)) {
         this.children.push(this.buildResourceContainerNode(WebServiceMeta));
+      }
+      if (config.get<boolean>("Bundle", true)) {
+        this.children.push(this.buildResourceContainerNode(BundleMeta));
       }
     }
   }
