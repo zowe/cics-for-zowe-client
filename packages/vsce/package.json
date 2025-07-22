@@ -607,6 +607,12 @@
           "description": "Default filter criteria for Web Service",
           "scope": "window"
         },
+        "zowe.cics.jvmServer.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for JVM Server",
+          "scope": "window"
+        },
         "zowe.cics.resourcePageCount": {
           "type": "number",
           "default": 250,

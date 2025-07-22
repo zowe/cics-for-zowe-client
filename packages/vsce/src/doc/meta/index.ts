@@ -22,3 +22,4 @@ export * from "./tcpip.meta";
 export * from "./transaction.meta";
 export * from "./urimap.meta";
 export * from "./webservice.meta";
+export * from "./JVMServer.meta";

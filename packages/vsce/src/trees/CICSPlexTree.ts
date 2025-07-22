@@ -24,6 +24,7 @@ import {
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
+  JVMServerMeta,
 } from "../doc";
 import { ResourceContainer } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
@@ -182,6 +183,9 @@ export class CICSPlexTree extends TreeItem {
     }
     if (config.get<boolean>("WebService", true)) {
       this.children.push(this.buildCombinedTree("All Web Services", WebServiceMeta));
+    }
+    if (config.get<boolean>("JVMServer", true)) {
+      this.children.push(this.buildCombinedTree("All JVM Servers", JVMServerMeta));
     }
   }
 
