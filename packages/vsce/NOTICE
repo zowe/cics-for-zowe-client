@@ -2132,6 +2132,61 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
+** @lit/reactive-element; version 2.1.1 -- https://lit.dev/
+Copyright 2017 Google LLC
+Copyright 2019 Google LLC
+Copyright 2021 Google LLC
+Copyright (c) 2017 Google LLC.
+** lit; version 3.3.1 -- https://lit.dev/
+Copyright 2017 Google LLC
+Copyright 2021 Google LLC
+Copyright 2024 Google LLC
+Copyright (c) 2017 Google LLC.
+** lit-element; version 4.2.1 -- https://lit.dev/
+Copyright 2017 Google LLC
+Copyright 2021 Google LLC
+Copyright (c) 2017 Google LLC.
+** lit-html; version 3.3.1 -- https://lit.dev/
+Copyright 2017 Google LLC
+Copyright 2018 Google LLC
+Copyright 2019 Google LLC
+Copyright 2020 Google LLC
+Copyright 2021 Google LLC
+Copyright 2022 Google LLC
+Copyright 2024 Google LLC
+Copyright (c) 2017 Google LLC.
+
+BSD 3-Clause License
+
+Copyright (c) 2017 Google LLC. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+------
+
 ** serialize-javascript; version 6.0.2 -- https://github.com/yahoo/serialize-javascript
 Copyright 2014 Yahoo! Inc.
 Copyright (c) 2014, Yahoo! Inc.
@@ -3971,6 +4026,18 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
+** electron-to-chromium; version 1.5.189 -- https://github.com/kilian/electron-to-chromium#readme
+Copyright 2018 Kilian Valkhof
+
+Copyright 2018 Kilian Valkhof
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+------
+
 ** npm-registry-fetch; version 17.1.0 -- https://github.com/npm/npm-registry-fetch#readme
 Copyright npm, Inc.
 
@@ -4831,6 +4898,12 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** onetime; version 6.0.0 -- https://github.com/sindresorhus/onetime#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** open; version 10.2.0 -- https://github.com/sindresorhus/open#readme
+Copyright 2006, Kevin Krammer <kevin.krammer@gmx.at>
+Copyright 2006, Jeremy White <jwhite@codeweavers.com>
+Copyright 2009-2010, Fathi Boudra <fabo@freedesktop.org>
+Copyright 2009-2016, Rex Dieter <rdieter@fedoraproject.org>
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** p-cancelable; version 4.0.1 -- https://github.com/sindresorhus/p-cancelable#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** p-limit; version 3.1.0 -- https://github.com/sindresorhus/p-limit#readme
@@ -4858,6 +4931,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** unicorn-magic; version 0.3.0 -- https://github.com/sindresorhus/unicorn-magic#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** wrap-ansi; version 7.0.0 -- https://github.com/chalk/wrap-ansi#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** wsl-utils; version 0.1.0 -- https://github.com/sindresorhus/wsl-utils#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** yocto-queue; version 0.1.0 -- https://github.com/sindresorhus/yocto-queue#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -5307,61 +5382,6 @@ THE SOFTWARE.
 (c) Luke Childs 2017-2021 and Jared Wray 2022
 
 MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
-** undici; version 7.11.0 -- https://undici.nodejs.org
-Copyright (c) 2020 Ethan Arrowood
-Copyright (c) 2016 Luigi Pinca and contributors
-Copyright (c) 2013 Arnout Kazemier and contributors
-Copyright (c) Matteo Collina and Undici contributors
-Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-
-MIT License
-
-Copyright (c) Matteo Collina and Undici contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-MIT License
-
-Copyright (c) 2020 Ethan Arrowood
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5939,6 +5959,33 @@ SOFTWARE.
 
 ------
 
+** @vscode-elements/elements; version 1.17.0 -- https://vscode-elements.github.io
+
+MIT License
+
+Copyright (c) 2020 Adam Bender
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
 ** minizlib; version 2.1.2 -- https://github.com/isaacs/minizlib#readme
 Copyright Isaac Z. Schlueter and Contributors
 Copyright Joyent, Inc. and other Node contributors
@@ -6464,23 +6511,23 @@ THE SOFTWARE.
 
 ------
 
-** @secretlint/config-creator; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
+** @secretlint/config-creator; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
 Copyright (c) 2020 azu
-** @secretlint/config-loader; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
+** @secretlint/config-loader; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
 Copyright (c) 2020 azu
-** @secretlint/core; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
+** @secretlint/core; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
 (c) 2017 azu
 Copyright (c) 2020 azu
 (c) 2017 59naga https://github.com/59naga/carrack
-** @secretlint/formatter; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
+** @secretlint/formatter; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
 Copyright (c) 2020 azu
-** @secretlint/node; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
+** @secretlint/node; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
 Copyright (c) 2020 azu
-** @secretlint/profiler; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
+** @secretlint/profiler; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
 Copyright (c) 2020 azu
-** @secretlint/resolver; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
+** @secretlint/resolver; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
 Copyright (c) 2020 azu
-** @secretlint/secretlint-rule-preset-recommend; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
+** @secretlint/secretlint-rule-preset-recommend; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
 Copyright (c) 2020 azu
 Copyright (c) 2005 Tom Wu
 Copyright (c) 2003-2005 Tom Wu
@@ -6510,13 +6557,13 @@ Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
 Copyright jQuery Foundation and other contributors <https://jquery.org/>
 Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 Copyright (c) Ellis Pritchard, Guardian Unlimited 2003. Contact ellis@nukinetics.com
-** @secretlint/source-creator; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
+** @secretlint/source-creator; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
 Copyright (c) 2020 azu
-** @secretlint/types; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
+** @secretlint/types; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
 Copyright (c) 2020 azu
 ** @textlint/resolver; version 15.2.0 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/resolver/
 Copyright (c) 2020 azu
-** secretlint; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
+** secretlint; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
 Copyright (c) 2020 azu
 
 Copyright (c) 2020 azu
@@ -6837,7 +6884,7 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-rule-no-dotenv; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
+** @secretlint/secretlint-rule-no-dotenv; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
 Copyright (c) 2020 secretlint
 
 Copyright (c) 2020 secretlint
@@ -6891,7 +6938,7 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-formatter-sarif; version 10.2.0 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
+** @secretlint/secretlint-formatter-sarif; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
 Copyright (c) 2022 azu
 
 Copyright (c) 2022 azu
@@ -8265,7 +8312,7 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** watchpack; version 2.4.4 -- https://github.com/webpack/watchpack
 Copyright JS Foundation and other contributors
-** webpack; version 5.100.1 -- https://github.com/webpack/webpack
+** webpack; version 5.100.2 -- https://github.com/webpack/webpack
 Copyright JS Foundation and other contributors
 ** webpack-cli; version 6.0.1 -- https://github.com/webpack/webpack-cli/tree/master/packages/webpack-cli
 Copyright JS Foundation and other contributors
@@ -9515,7 +9562,7 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @types/mustache; version 4.2.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mustache
 Copyright (c) Microsoft Corporation
-** @types/node; version 24.0.13 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+** @types/node; version 24.1.0 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
@@ -9997,37 +10044,6 @@ Copyright (c) Matteo Collina and Undici contributors
 MIT License
 
 Copyright (c) Matteo Collina and Undici contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
-** cheerio; version 1.1.0 -- https://cheerio.js.org/
-Copyright (c) 2003-2014 </p> const
-Copyright (c) 2003-2014 </p> </html> const
-Copyright (c) 2022 The Cheerio contributors
-Copyright (c) 2003-2014 </p> const expectedXml
-
-MIT License
-
-Copyright (c) 2022 The Cheerio contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -12016,6 +12032,33 @@ THE SOFTWARE.
 
 ------
 
+** socks; version 2.8.6 -- https://github.com/JoshGlazebrook/socks/
+Copyright (c) 2013 Josh Glazebrook
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Josh Glazebrook
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
 ** merge2; version 1.4.1 -- https://github.com/teambition/merge2
 Copyright (c) 2014-2020 Teambition
 
@@ -12044,7 +12087,7 @@ SOFTWARE.
 
 ------
 
-** form-data; version 4.0.3 -- https://github.com/form-data/form-data#readme
+** form-data; version 4.0.4 -- https://github.com/form-data/form-data#readme
 Copyright (c) 2012 Felix Geisendorfer (felix@debuggable.com) and contributors
 
 Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
