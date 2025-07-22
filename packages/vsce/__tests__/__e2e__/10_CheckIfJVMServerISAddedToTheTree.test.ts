@@ -69,6 +69,7 @@ describe("Check if JVM server is present in the tree", () => {
       jvmServersResourceIndex = await getRegionResourceIndex(regionK1Resources, "JVM Servers");
       expect(jvmServersResourceIndex).to.be.greaterThan(-1);
       cicsTree.takeScreenshot();
+      //comment
     });
   }); 
 
