@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "6.9.4",
+  "version": "6.10.0",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "IBM CICS Plug-in for Zowe CLI",

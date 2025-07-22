@@ -2,7 +2,7 @@
 
 All notable changes to the IBM CICS for Zowe Explorer API will be documented in this file.
 
-## Recent Changes
+## `6.10.0`
 
 - Populate supported resources list
 
