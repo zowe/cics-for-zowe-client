@@ -118,7 +118,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
     treeDataProv._onDidChangeTreeData.fire(node.element);
   });
 
-  context.subscriptions.concat(getCommands(treeDataProv, treeview, context));
+  context.subscriptions.push(...getCommands(treeDataProv, treeview, context));
   context.subscriptions.push(
     window.registerWebviewViewProvider(
       ResourceInspectorViewProvider.viewType,
