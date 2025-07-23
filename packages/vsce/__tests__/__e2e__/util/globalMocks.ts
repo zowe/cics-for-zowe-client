@@ -161,3 +161,11 @@ export async function removeUserSetting(settingName: string):Promise<void> {
     await sleep(500);
   }
 }
+export async function findJVMServerTreeNodeByLabel(jvmServers: TreeItem[], jvmServerLabel: string): Promise<TreeItem | undefined> {
+  for (const jvmServer of jvmServers) {
+    if ((await jvmServer.getLabel()).trim() === jvmServerLabel) {
+      return jvmServer;
+    }
+  }
+  return undefined;
+}

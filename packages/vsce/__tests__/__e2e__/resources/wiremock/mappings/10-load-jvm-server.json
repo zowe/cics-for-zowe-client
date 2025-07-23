@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2"
+  },
+  "response": {
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CICSJVMServers><JVMServer><name>EYUCMCIJ</name><enableStatus>active</enableStatus></JVMServer></CICSJVMServers>",
+    "headers": {
+      "Content-Type": "text/xml"
+    }
+  }
+}

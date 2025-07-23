@@ -24,6 +24,7 @@ import {
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
+  JVMServerMeta
 } from "../doc";
 import { ResourceContainer } from "../resources";
 import { getIconByStatus } from "../utils/iconUtils";
@@ -92,6 +93,11 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       }
       if (config.get<boolean>("WebService", true)) {
         this.children.push(this.buildResourceContainerNode(WebServiceMeta));
+      }
+      if (config.get<boolean>("JVMServer", true)) {
+        //debug log
+        console.log("JVMServerMeta.resourceName:", JVMServerMeta.resourceName);
+        this.children.push(this.buildResourceContainerNode(JVMServerMeta));
       }
     }
   }

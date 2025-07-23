@@ -28,6 +28,7 @@ export class PersistentStorage {
   private static readonly bundleSearchHistory: string = "bundleSearchHistory";
   private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
   private static readonly lastUsedRegion: string = "lastUsedRegion";
+  private static readonly jvmServerSearchHistory: string = "jvmServerSearchHistory";
 
   private mProgramSearchHistory: string[] = [];
   private mLibrarySearchHistory: string[] = [];
@@ -43,6 +44,7 @@ export class PersistentStorage {
   private mBundleSearchHistory: string[] = [];
   private mBundlePartSearchHistory: string[] = [];
   private mlastUsedRegion: {} = { regionName: null, cicsPlexName: null, profileName: null };
+  private mJVMServerSearchHistory: string[] = [];
 
   constructor(schema: string) {
     this.schema = schema;
@@ -64,6 +66,7 @@ export class PersistentStorage {
     let bundleSearchHistoryLines: string[] | undefined;
     let bundlePartSearchHistoryLines: string[] | undefined;
     let lastUsedRegionLines: {} | undefined;
+    let jvmServerSearchHistoryLines: string[] | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -80,6 +83,7 @@ export class PersistentStorage {
       bundleSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundleSearchHistory);
       bundlePartSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundlePartSearchHistory);
       lastUsedRegionLines = workspace.getConfiguration(this.schema).get(PersistentStorage.lastUsedRegion);
+      jvmServerSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.jvmServerSearchHistory);
     }
     
     if (programSearchHistoryLines) {
@@ -152,6 +156,11 @@ export class PersistentStorage {
     } else {
       await this.resetLastUsedRegion();
     }
+      if (jvmServerSearchHistoryLines) {
+      this.mJVMServerSearchHistory = jvmServerSearchHistoryLines;
+    } else {
+      await this.resetJVMServerSearchHistory();
+    }
   }
 
   public getProgramSearchHistory(): string[] {
@@ -192,6 +201,9 @@ export class PersistentStorage {
   }
   public getBundlePartSearchHistory(): string[] {
     return this.mBundlePartSearchHistory;
+  }
+  public getJVMServerSearchHistory(): string[] {
+    return this.mJVMServerSearchHistory;
   }
 
   public getLastUsedRegion(): { regionName: string | null; cicsPlexName: string | null; profileName: string | null } {
@@ -258,6 +270,10 @@ export class PersistentStorage {
   public async resetLastUsedRegion(): Promise<void> {
     this.mlastUsedRegion = { regionName: null, cicsPlexName: null, profileName: null };
     await this.updateLastUsedRegion();
+  }
+  public async resetJVMServerSearchHistory(): Promise<void> {
+    this.mJVMServerSearchHistory = [];
+    await this.updateJVMServerSearchHistory();
   }
 
   private async updateProgramSearchHistory(): Promise<void> {
@@ -360,6 +376,13 @@ export class PersistentStorage {
     const settings: any = { ...workspace.getConfiguration(this.schema) }
     if (settings.persistence) {
       settings[PersistentStorage.lastUsedRegion] = this.mlastUsedRegion;
+      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+    }
+  }
+    private async updateJVMServerSearchHistory(): Promise<void> {
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
+    if (settings.persistence) {
+      settings[PersistentStorage.jvmServerSearchHistory] = this.mJVMServerSearchHistory;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
@@ -555,7 +578,20 @@ export class PersistentStorage {
       await this.updateBundlePartSearchHistory();
     }
   }
+  public async addJVMServerSearchHistory(criteria: string): Promise<void> {
+    if (criteria) {
+      this.mJVMServerSearchHistory = this.mJVMServerSearchHistory.filter((element) => {
+        return element.trim() !== criteria.trim();
+    });
 
+    this.mJVMServerSearchHistory.unshift(criteria);
+
+    if (this.mJVMServerSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      this.mJVMServerSearchHistory.pop();
+    }
+    await this.updateJVMServerSearchHistory();
+  }
+}
   public async removeLoadedCICSProfile(name: string): Promise<void> {
     if (name) {
       this.mLoadedCICSProfile = this.mLoadedCICSProfile.filter((element) => {
