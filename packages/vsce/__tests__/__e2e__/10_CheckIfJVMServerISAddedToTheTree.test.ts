@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
 import { WIREMOCK_PROFILE_NAME, CICSEX61, REGIONS, REGIONS_LOADED } from "./util/constants";
 import {
-  findJVMServerTreeNodeByLabel,
   sleep,
 } from "./util/globalMocks";
 import {
@@ -24,7 +23,6 @@ describe("Check if JVM server is present in the tree", () => {
   let regionsIndex: number;
   let regions: TreeItem[];
   let regionK1Resources: TreeItem[];
-  let jvmServers: TreeItem[];
   let regionIYCWENW2Index: number;
   let jvmServersResourceIndex: number;
 
