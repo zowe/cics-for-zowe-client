@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CICSJVMServers><JVMServer><name>EYUCMCIJ</name><enableStatus>active</enableStatus></JVMServer></CICSJVMServers>",
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CICSJVMServers><JVMServer><name>EYUCMCIJ</name><enableStatus>ENABLED</enableStatus></JVMServer></CICSJVMServers>",
     "headers": {
       "Content-Type": "text/xml"
     }

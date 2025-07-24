@@ -11,7 +11,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableName: "JVM Servers",
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `JVMSERVER=${n}`).join(" OR ");
+    return criteria.map((n) => `NAME=${n}`).join(" OR ");
   },
 
   async getDefaultCriteria() {
@@ -20,22 +20,22 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
 
   getLabel: function (jvmServer: Resource<IJVMServer>): string {
     let label = `${jvmServer.attributes.name}`;
-    if (jvmServer.attributes.enableStatus && jvmServer.attributes.enableStatus.toLowerCase() === "inactive") {
-      label += " (Inactive)";
+    if (jvmServer.attributes.enableStatus && jvmServer.attributes.enableStatus.toLowerCase() === "disabled") {
+      label += " (disabled)";
     }
     return label;
   },
 
-getContext: function (jvmServer: Resource<IJVMServer>): string {
+  getContext: function (jvmServer: Resource<IJVMServer>): string {
     const status = (jvmServer.attributes.enableStatus ?? "").trim().toUpperCase();
     return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${status}.${jvmServer.attributes.name}`;
-},
+  },
 
   getIconName: function (jvmServer: Resource<IJVMServer>): string {
     let iconName = `jvm-server`;
     const status = (jvmServer.attributes.enableStatus ?? "").trim().toUpperCase();
-    if (status === "INACTIVE") {
-      iconName += `-inactive`;
+    if (status === "DISABLED") {
+      iconName += `-disabled`;
     }
     return iconName;
   },

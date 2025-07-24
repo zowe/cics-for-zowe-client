@@ -156,7 +156,7 @@ export class PersistentStorage {
     } else {
       await this.resetLastUsedRegion();
     }
-      if (jvmServerSearchHistoryLines) {
+    if (jvmServerSearchHistoryLines) {
       this.mJVMServerSearchHistory = jvmServerSearchHistoryLines;
     } else {
       await this.resetJVMServerSearchHistory();

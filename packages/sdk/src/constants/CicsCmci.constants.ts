@@ -64,11 +64,6 @@ export const CicsCmciConstants = {
   CICS_DEFINITION_WEBSERVICE: "CICSDefinitionWebService",
 
   /**
-   * Specifies the required part of the REST interface URI to access jvmserver definitions
-   */
-  CICS_DEFINITION_JVMServer: "CICSDefinitionJVMServer",
-
-  /**
    * Specifies the required part of the REST interface URI to access program definitions
    */
   CICS_DEFINITION_BUNDLE: "CICSDefinitionBundle",
@@ -89,9 +84,9 @@ export const CicsCmciConstants = {
   CICS_WEBSERVICE_RESOURCE: "CICSWebService",
 
   /**
-   * Specifies the required part of the REST interface URI to access pipeline service resources
+   * Specifies the required part of the REST interface URI to access JVM server resources
    */
-  CICS_JVMSERVER_RESOURCE: "CICSJvmServer",
+  CICS_JVMSERVER_RESOURCE: "CICSJVMServer",
 
   /*
    * Specifies the required part of the REST interface URI to access URIMaps
@@ -203,11 +198,6 @@ export const CicsCmciConstants = {
    * The CICS CMCI web service
    */
   CICS_CMCI_WEB_SERVICE: "CICSWebService",
-
-  /**
-   * The CICS CMCI jvm server
-   */
-  CICS_CMCI_JVM_SERVER: "CICSJVMServer",
 
   /**
    * CICSBundle parameter

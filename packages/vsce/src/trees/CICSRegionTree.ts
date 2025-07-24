@@ -95,8 +95,6 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         this.children.push(this.buildResourceContainerNode(WebServiceMeta));
       }
       if (config.get<boolean>("JVMServer", true)) {
-        //debug log
-        console.log("JVMServerMeta.resourceName:", JVMServerMeta.resourceName);
         this.children.push(this.buildResourceContainerNode(JVMServerMeta));
       }
     }
