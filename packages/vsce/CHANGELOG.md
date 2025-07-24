@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add CICS Bundle and Bundle Part resources to the CICS tree.
+
 ## `3.9.4`
 
 - Expose extender API containing supported CICS resource types.

@@ -41,7 +41,7 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { ILibrary, IProgram, ITask, LibraryMeta, ProgramMeta, TaskMeta } from "../../../src/doc";
 import { Resource, ResourceContainer } from "../../../src/resources";
-import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
+import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
 describe("CICSResourceContainerNode tests", () => {
@@ -366,7 +366,21 @@ describe("CICSResourceContainerNode tests", () => {
   });
 
   it("should get children with no regionName", async () => {
-    containerNode.regionName = undefined;
+    containerNode = new CICSResourceContainerNode(
+      "Programs",
+      {
+        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        cicsplexName: "",
+        regionName: undefined,
+        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        session: cicsSession,
+      },
+      undefined,
+      {
+        meta: ProgramMeta,
+        resources: resourceContainer,
+      }
+    );
 
     expect(containerNode.children.length).toEqual(0);
 
