@@ -23,7 +23,7 @@ describe("ResourceType tests", () => {
       "CICSTask",
       "CICSPipeline",
       "CICSWebService",
-      "CICSJVMServer", // Added JVMServer to the list
+      "CICSJVMServer",
     ]);
   });
 
