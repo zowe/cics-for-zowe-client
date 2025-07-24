@@ -67,6 +67,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.contextValue += `.FILTERED`;
     }
 
+    this.accessibilityInformation.label = `${this.label}`;
+
     this.refreshIcon();
   }
 
@@ -125,9 +127,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     this.refreshingDescription = true;
-    this.description = `${
-      this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
-    } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
+    this.description = `${this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
+      } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
 
     this.setLoading(false);
     (this.getSessionNode().getParent() as CICSTree)._onDidChangeTreeData.fire(this);

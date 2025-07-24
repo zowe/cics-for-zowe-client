@@ -1,0 +1,17 @@
+{
+  "zowe.security.secureCredentialsEnabled": false,
+  "zowe.cics.persistent": {
+    "persistence": true,
+    "programSearchHistory": [],
+    "transactionSearchHistory": [],
+    "localFileSearchHistory": [],
+    "loadedCICSProfile": [
+      "wiremock_localhost"
+    ],
+    "lastUsedRegion": {
+      "regionName": null,
+      "cicsPlexName": null,
+      "profileName": null
+    }
+  }
+}
