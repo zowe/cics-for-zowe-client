@@ -17,10 +17,10 @@ import { IFocusRegion } from "../doc/commands/IFocusRegion";
 import {
   getAllCICSProfiles,
   getChoiceFromQuickPick,
-  getFocusRegionFromSettings,
+  getLastUsedRegion,
   getPlexInfoFromProfile,
   isCICSProfileValidInSettings,
-  setFocusRegionIntoSettings,
+  setLastUsedRegion,
 } from "../utils/focusRegionUtils";
 import { SessionHandler } from "../resources";
 import { IProfileLoaded } from "@zowe/imperative";
@@ -36,7 +36,7 @@ export function setFocusRegionCommand() {
 export async function getFocusRegion(): Promise<IFocusRegion | undefined> {
   const quickPick = Gui.createQuickPick();
   if (await isCICSProfileValidInSettings()) {
-    const { profileName, focusSelectedRegion, cicsPlexName } = await getFocusRegionFromSettings();
+    const { profileName, focusSelectedRegion, cicsPlexName } = await getLastUsedRegion();
     const items = [
       { label: `Region: ${focusSelectedRegion} | CICSplex : ${cicsPlexName || "NA"} | Profile: ${profileName}`, description: "Last used region" },
       { label: "Other CICS Region" },
@@ -129,7 +129,7 @@ async function updateFocusRegion(): Promise<IFocusRegion> | undefined {
     focusSelectedRegion = choice.label;
     CICSLogger.info(`region set to ${focusSelectedRegion} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
   }
-  setFocusRegionIntoSettings(focusSelectedRegion, profile.name, cicsPlexName);
+  setLastUsedRegion(focusSelectedRegion, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${focusSelectedRegion}, profile: ${profile.name}, plex: ${cicsPlexName}`);
   return { profile, cicsPlexName, session, focusSelectedRegion };
 }
