@@ -13,12 +13,13 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
-import { ProfileManagement } from "./profileManagement";
+import { InfoLoaded, ProfileManagement } from "./profileManagement";
 import { CICSTree } from "../trees";
 import { PersistentStorage } from "./PersistentStorage";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 const persistentStorage = new PersistentStorage("zowe.cics.persistent");
+
 export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
   const { regionName, cicsPlexName, profileName } = persistentStorage.getLastUsedRegion();
   const focusSelectedRegion = regionName;
@@ -27,7 +28,7 @@ export function getFocusRegionFromSettings(): { profileName: string; focusSelect
 }
 
 export function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
-  if (regionName != null && profileName != undefined) {
+  if (regionName != null && profileName != undefined  && regionName.length > 0 && profileName.length > 0) {
     const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
     persistentStorage.setLastUsedRegion(regionName, cicsPlex, profileName);
     CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
@@ -47,7 +48,7 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
   return true;
 }
 
-export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: CICSSession) {
+export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: CICSSession): Promise<InfoLoaded[] | null> {
   try {
     return await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
