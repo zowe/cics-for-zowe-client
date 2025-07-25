@@ -20,14 +20,14 @@ import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
-export function getFocusRegionFromSettings(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
+export function getLastUsedRegion(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
   const { regionName, cicsPlexName, profileName } = persistentStorage.getLastUsedRegion();
   const focusSelectedRegion = regionName;
 
   return { profileName, focusSelectedRegion, cicsPlexName };
 }
 
-export function setFocusRegionIntoSettings(regionName: string, profileName: string, cicsPlexName?: string) {
+export function setLastUsedRegion(regionName: string, profileName: string, cicsPlexName?: string) {
   if (regionName != null && profileName != undefined  && regionName.length > 0 && profileName.length > 0) {
     const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
     persistentStorage.setLastUsedRegion(regionName, cicsPlex, profileName);
@@ -37,7 +37,7 @@ export function setFocusRegionIntoSettings(regionName: string, profileName: stri
   //on error, do not update focus region
 }
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
-  const regionDetails = getFocusRegionFromSettings();
+  const regionDetails = getLastUsedRegion();
   const profileNames = await getAllCICSProfiles();
   if (!regionDetails.profileName || !regionDetails.focusSelectedRegion) {
     return false;
