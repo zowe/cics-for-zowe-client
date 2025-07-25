@@ -4,7 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## `6.9.4`
 
-- Adding JVM Server REST interface URI. [#382](https://github.ibm.com/CICS/cics-ts-tracking/issues/11678)
+- Added JVM Server REST interface URI.
 - Added CICSSession class
 
 ## `6.9.0`

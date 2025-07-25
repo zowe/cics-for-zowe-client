@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
+import { DefaultTreeSection, TreeItem } from "vscode-extension-tester";
 import { WIREMOCK_PROFILE_NAME, CICSEX61, REGIONS, REGIONS_LOADED } from "./util/constants";
 import {
   sleep,
