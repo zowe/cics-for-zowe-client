@@ -23,6 +23,7 @@ import { TCPIPMeta } from "./tcpip.meta";
 import { TransactionMeta } from "./transaction.meta";
 import { URIMapMeta } from "./urimap.meta";
 import { WebServiceMeta } from "./webservice.meta";
+import { JVMServerMeta } from "./JVMServer.meta";
 
 export * from "./IResourceMeta";
 export * from "./bundle.meta";
@@ -37,6 +38,7 @@ export * from "./tcpip.meta";
 export * from "./transaction.meta";
 export * from "./urimap.meta";
 export * from "./webservice.meta";
+export * from "./JVMServer.meta";
 
 export function getMetas(): IResourceMeta<IResource>[] {
   return [
@@ -52,5 +54,6 @@ export function getMetas(): IResourceMeta<IResource>[] {
     TransactionMeta,
     URIMapMeta,
     WebServiceMeta,
+    JVMServerMeta
   ];
 }

@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+Feature: Added JVM server to the tree node. [#382](https://github.ibm.com/CICS/cics-ts-tracking/issues/11678)
+
 ## `3.9.4`
 
 - Expose extender API containing supported CICS resource types.
