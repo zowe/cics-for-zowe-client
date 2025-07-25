@@ -20,10 +20,10 @@ import * as vscode from "vscode";
 import {
   getAllCICSProfiles,
   getChoiceFromQuickPick,
-  getFocusRegionFromSettings,
+  getLastUsedRegion,
   getPlexInfoFromProfile,
   isCICSProfileValidInSettings,
-  setFocusRegionIntoSettings,
+  setLastUsedRegion,
 } from "../../../src/utils/focusRegionUtils";
 import * as globalMocks from "../../__utils__/globalMocks";
 
@@ -74,45 +74,45 @@ const mockSession: CICSSession = {
 const l10nMock = jest.spyOn(vscode.l10n, "t");
 
 describe("Test suite for focusRegionUtils", () => {
-  describe("Test suite for getFocusRegionFromSettings()", () => {
+  describe("Test suite for getLastUsedRegion()", () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
-    it("should return the focus region from settings", () => {
+    it("should return the last used region", () => {
       getLastUsedRegionMock.mockReturnValueOnce(lastUsedRegion);
       const selectedRegion = {
         focusSelectedRegion: "IYK2ZXXX",
         cicsPlexName: "PLEXX",
         profileName: "Profile1",
       };
-      const result = getFocusRegionFromSettings();
+      const result = getLastUsedRegion();
 
       expect(result).toEqual(selectedRegion);
       expect(getLastUsedRegionMock).toHaveBeenCalled();
     });
   });
 
-  describe("Test suite for setFocusRegionIntoSettings()", () => {
+  describe("Test suite for setLastUsedRegion()", () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
     l10nMock.mockReturnValueOnce("Region selected: TESTREGION and CICSplex: TESTPLEX");
-    it("should set the focus region into settings", () => {
+    it("should set the last used region", () => {
       const regionName = "NEWREGION";
       const profileName = "NEWPROFILE";
       const cicsPlexName = "NEWPLEX";
 
-      setFocusRegionIntoSettings(regionName, profileName, cicsPlexName);
+      setLastUsedRegion(regionName, profileName, cicsPlexName);
       expect(setLastUsedRegionMock).toHaveBeenCalledWith(regionName, cicsPlexName, profileName);
     });
 
-    it("should not set focus region if region name is empty string", () => {
-      setFocusRegionIntoSettings("", "PROFILE");
+    it("should not set the region if region name is empty string", () => {
+      setLastUsedRegion("", "PROFILE");
       expect(setLastUsedRegionMock).not.toHaveBeenCalled();
     });
 
-    it("should not set focus region if profile name is empty string", () => {
-      setFocusRegionIntoSettings("REGION", "");
+    it("should not set the region if profile name is empty string", () => {
+      setLastUsedRegion("REGION", "");
       expect(setLastUsedRegionMock).not.toHaveBeenCalled();
     });
   });
