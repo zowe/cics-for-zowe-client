@@ -185,7 +185,7 @@ async function getChoiceFromQuickPick(
 
 async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
   const options: InputBoxOptions = {
-    prompt: CICSMessages.CICSEnterResourceName.message,
+    prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
     value: "",
     validateInput: function(value: string): string {
       if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {

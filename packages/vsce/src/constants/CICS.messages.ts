@@ -42,7 +42,7 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   },
 
   CICSEnterResourceName: {
-    message: "Enter the name of a CICS Resource",
+    message: "Enter the name of a CICS %resource-human-readable% resource.",
   },
 
   CICSInvalidResourceNameLength: {
