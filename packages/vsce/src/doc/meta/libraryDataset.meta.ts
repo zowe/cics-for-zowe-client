@@ -35,6 +35,7 @@ customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryD
 export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE,
   humanReadableName: "Library Datasets",
+  humanReadableNameSingular: "Library Dataset",
 
   buildCriteria(criteria: string[], parentResource: ILibrary) {
     return `(LIBRARY='${parentResource.name}') AND (${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;

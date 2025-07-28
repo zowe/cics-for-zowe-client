@@ -20,6 +20,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
   humanReadableName: "Programs",
+  humanReadableNameSingular: "Program",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");

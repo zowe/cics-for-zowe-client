@@ -21,6 +21,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 export const LibraryMeta: IResourceMeta<ILibrary> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
   humanReadableName: "Libraries",
+  humanReadableNameSingular: "Library",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
