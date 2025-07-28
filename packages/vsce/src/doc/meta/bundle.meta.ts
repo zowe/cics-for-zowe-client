@@ -20,7 +20,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const BundleMeta: IResourceMeta<IBundle> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE,
-  humanReadableName: "Bundles",
+  humanReadableNamePlural: "Bundles",
   humanReadableNameSingular: "Bundle",
 
   buildCriteria(criteria: string[]) {

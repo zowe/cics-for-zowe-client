@@ -19,7 +19,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
-  humanReadableName: "URI Maps",
+  humanReadableNamePlural: "URI Maps",
   humanReadableNameSingular: "URI Map",
 
   buildCriteria(criteria: string[]) {

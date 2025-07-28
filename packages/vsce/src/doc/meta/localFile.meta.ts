@@ -19,7 +19,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-  humanReadableName: "Local Files",
+  humanReadableNamePlural: "Local Files",
   humanReadableNameSingular: "Local File",
 
   buildCriteria(criteria: string[]) {

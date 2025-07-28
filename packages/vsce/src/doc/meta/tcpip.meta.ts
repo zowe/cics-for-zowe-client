@@ -19,7 +19,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-  humanReadableName: "TCP/IP Services",
+  humanReadableNamePlural: "TCP/IP Services",
   humanReadableNameSingular: "TCP/IP Service",
 
   buildCriteria(criteria: string[]) {

@@ -17,7 +17,7 @@ import { getPatternFromFilter } from "../utils/filterUtils";
 
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {
   return commands.registerCommand("cics-extension-for-zowe.filterResources", async (node: CICSResourceContainerNode<IResource>) => {
-    const pattern = await getPatternFromFilter(node.getChildResource().meta.humanReadableName, node.getChildResource().meta.getCriteriaHistory());
+    const pattern = await getPatternFromFilter(node.getChildResource().meta.humanReadableNamePlural, node.getChildResource().meta.getCriteriaHistory());
 
     if (!pattern) {
       return;

@@ -19,7 +19,7 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const PipelineMeta: IResourceMeta<IPipeline> = {
   resourceName: CicsCmciConstants.CICS_PIPELINE_RESOURCE,
-  humanReadableName: "Pipelines",
+  humanReadableNamePlural: "Pipelines",
   humanReadableNameSingular: "Pipeline",
 
   buildCriteria(criteria: string[]) {
