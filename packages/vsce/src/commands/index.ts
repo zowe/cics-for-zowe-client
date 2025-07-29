@@ -34,7 +34,7 @@ import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
-import { setFocusRegionCommand } from "./setFocusRegionCommand";
+import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getCopyNameCommand } from "./copyNameCommand";
 
@@ -83,7 +83,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getInspectTreeResourceCommand(context, treeview),
     getToggleResourceSettingCommand(),
-    setFocusRegionCommand(),
+    setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),
 
     getCopyNameCommand(context, treeview),

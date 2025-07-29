@@ -9,12 +9,8 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-
-export interface IFocusRegion {
-  profile: IProfileLoaded;
-  cicsPlexName?: string;
-  session: CICSSession;
-  focusSelectedRegion: string;
+export interface ILastUsedRegion {
+  regionName: string | null;
+  cicsPlexName: string | null;
+  profileName: string | null;
 }

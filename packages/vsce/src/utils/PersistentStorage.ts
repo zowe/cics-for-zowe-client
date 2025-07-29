@@ -11,6 +11,7 @@
 
 import { ConfigurationTarget, workspace } from "vscode";
 import constants from "../constants/CICS.defaults";
+import { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
 
 export class PersistentStorage {
   public schema: string;
@@ -43,8 +44,8 @@ export class PersistentStorage {
   private mWebServiceSearchHistory: string[] = [];
   private mBundleSearchHistory: string[] = [];
   private mBundlePartSearchHistory: string[] = [];
-  private mlastUsedRegion: {} = { regionName: null, cicsPlexName: null, profileName: null };
   private mJVMServerSearchHistory: string[] = [];
+  private mlastUsedRegion: ILastUsedRegion = { regionName: null, cicsPlexName: null, profileName: null };
 
   constructor(schema: string) {
     this.schema = schema;
@@ -65,8 +66,8 @@ export class PersistentStorage {
     let webserviceSearchHistoryLines: string[] | undefined;
     let bundleSearchHistoryLines: string[] | undefined;
     let bundlePartSearchHistoryLines: string[] | undefined;
-    let lastUsedRegionLines: {} | undefined;
     let jvmServerSearchHistoryLines: string[] | undefined;
+    let lastUsedRegionLines: ILastUsedRegion | undefined;
 
     if (workspace.getConfiguration(this.schema)) {
       programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
@@ -85,7 +86,7 @@ export class PersistentStorage {
       lastUsedRegionLines = workspace.getConfiguration(this.schema).get(PersistentStorage.lastUsedRegion);
       jvmServerSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.jvmServerSearchHistory);
     }
-    
+
     if (programSearchHistoryLines) {
       this.mProgramSearchHistory = programSearchHistoryLines;
     } else {
@@ -206,12 +207,12 @@ export class PersistentStorage {
     return this.mJVMServerSearchHistory;
   }
 
-  public getLastUsedRegion(): { regionName: string | null; cicsPlexName: string | null; profileName: string | null } {
-    return this.mlastUsedRegion as { regionName: string | null; cicsPlexName: string | null; profileName: string | null };
+  public getLastUsedRegion(): ILastUsedRegion {
+    return this.mlastUsedRegion;
   }
-  
-  public async setLastUsedRegion(regionName: string | null, cicsPlexName: string | null, profileName: string | null): Promise<void> {
-    this.mlastUsedRegion = { regionName, cicsPlexName, profileName };
+
+  public async setLastUsedRegion(lastUsedRegion: ILastUsedRegion): Promise<void> {
+    this.mlastUsedRegion = lastUsedRegion;
     await this.updateLastUsedRegion();
   }
 
@@ -373,7 +374,7 @@ export class PersistentStorage {
   }
 
   private async updateLastUsedRegion(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) }
+    const settings: any = { ...workspace.getConfiguration(this.schema) };
     if (settings.persistence) {
       settings[PersistentStorage.lastUsedRegion] = this.mlastUsedRegion;
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
@@ -386,7 +387,6 @@ export class PersistentStorage {
       await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
     }
   }
-
 
   public async addProgramSearchHistory(criteria: string): Promise<void> {
     if (criteria) {

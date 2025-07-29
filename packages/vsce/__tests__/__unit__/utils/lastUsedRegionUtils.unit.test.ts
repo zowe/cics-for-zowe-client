@@ -24,7 +24,7 @@ import {
   getPlexInfoFromProfile,
   isCICSProfileValidInSettings,
   setLastUsedRegion,
-} from "../../../src/utils/focusRegionUtils";
+} from "../../../src/utils/lastUsedRegionUtils";
 import * as globalMocks from "../../__utils__/globalMocks";
 
 jest.mock("@zowe/zowe-explorer-api", () => ({
@@ -73,7 +73,7 @@ const mockSession: CICSSession = {
 (vscode as any).l10n = { t: jest.fn() };
 const l10nMock = jest.spyOn(vscode.l10n, "t");
 
-describe("Test suite for focusRegionUtils", () => {
+describe("Test suite for lastUsedRegionUtils", () => {
   describe("Test suite for getLastUsedRegion()", () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -81,7 +81,7 @@ describe("Test suite for focusRegionUtils", () => {
     it("should return the last used region", () => {
       getLastUsedRegionMock.mockReturnValueOnce(lastUsedRegion);
       const selectedRegion = {
-        focusSelectedRegion: "IYK2ZXXX",
+        regionName: "IYK2ZXXX",
         cicsPlexName: "PLEXX",
         profileName: "Profile1",
       };
@@ -103,7 +103,7 @@ describe("Test suite for focusRegionUtils", () => {
       const cicsPlexName = "NEWPLEX";
 
       setLastUsedRegion(regionName, profileName, cicsPlexName);
-      expect(setLastUsedRegionMock).toHaveBeenCalledWith(regionName, cicsPlexName, profileName);
+      expect(setLastUsedRegionMock).toHaveBeenCalledWith({ regionName, cicsPlexName, profileName });
     });
 
     it("should not set the region if region name is empty string", () => {

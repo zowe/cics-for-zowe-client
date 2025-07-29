@@ -16,13 +16,13 @@ import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
-import { IFocusRegion } from "../doc/commands/IFocusRegion";
-import { getFocusRegion } from "./setFocusRegionCommand";
+import { getRegion } from "./setCICSRegionCommand";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Gui } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ICICSRegion } from "../doc/commands/ICICSRegion";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -57,9 +57,9 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
 
 export async function inspectResourceByName(context: ExtensionContext, resourceName: string, resourceType: string) {
   // Inspecting a resource by its name so this will be on the focus region
-  const focusRegion: IFocusRegion = await getFocusRegion();
+  const cicsRegion: ICICSRegion = await getRegion();
 
-  if (focusRegion) {
+  if (cicsRegion) {
     const type = getResourceType(resourceType);
 
     if (!type) {
@@ -70,12 +70,12 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
     }
 
     const resourcesHandler: IResourcesHandler = await loadResources(
-      focusRegion.session,
+      cicsRegion.session,
       type,
       resourceName,
-      focusRegion.focusSelectedRegion,
-      focusRegion.cicsPlexName,
-      focusRegion.profile.name
+      cicsRegion.regionName,
+      cicsRegion.cicsPlexName,
+      cicsRegion.profile.name
     );
 
     if (resourcesHandler) {
@@ -85,21 +85,21 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 }
 
 export async function inspectResource(context: ExtensionContext) {
-  const focusRegion: IFocusRegion = await getFocusRegion();
+  const cicsRegion: ICICSRegion = await getRegion();
 
-  if (focusRegion) {
+  if (cicsRegion) {
     const resourceType = await selectResourceType();
     if (resourceType) {
       const resourceName = await selectResource(resourceType);
 
       if (resourceName) {
         const resourcesHandler: IResourcesHandler = await loadResources(
-          focusRegion.session,
+          cicsRegion.session,
           resourceType,
           resourceName,
-          focusRegion.focusSelectedRegion,
-          focusRegion.cicsPlexName,
-          focusRegion.profile.name
+          cicsRegion.regionName,
+          cicsRegion.cicsPlexName,
+          cicsRegion.profile.name
         );
 
         if (resourcesHandler) {

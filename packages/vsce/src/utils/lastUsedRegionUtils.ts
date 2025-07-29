@@ -9,37 +9,32 @@
  *
  */
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
-import { CICSLogger } from "../utils/CICSLogger";
-import { InfoLoaded, ProfileManagement } from "./profileManagement";
 import { CICSTree } from "../trees";
+import { CICSLogger } from "./CICSLogger";
 import { PersistentStorage } from "./PersistentStorage";
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { InfoLoaded, ProfileManagement } from "./profileManagement";
 
 const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
-export function getLastUsedRegion(): { profileName: string; focusSelectedRegion: string; cicsPlexName: string } {
-  const { regionName, cicsPlexName, profileName } = persistentStorage.getLastUsedRegion();
-  const focusSelectedRegion = regionName;
-
-  return { profileName, focusSelectedRegion, cicsPlexName };
+export function getLastUsedRegion(): { profileName: string; regionName: string; cicsPlexName: string } {
+  return persistentStorage.getLastUsedRegion();
 }
 
 export function setLastUsedRegion(regionName: string, profileName: string, cicsPlexName?: string) {
-  if (regionName != null && profileName != undefined  && regionName.length > 0 && profileName.length > 0) {
-    const cicsPlex = cicsPlexName == undefined ? null : cicsPlexName;
-    persistentStorage.setLastUsedRegion(regionName, cicsPlex, profileName);
-    CICSLogger.info(`Focus region set to ${regionName} for profile ${profileName} and plex ${cicsPlex}`);
-    Gui.showMessage(l10n.t("Region selected: {0} and CICSplex: {1}", regionName || "NA", cicsPlexName || "NA"));
+  if (regionName != null && profileName != undefined && regionName.length > 0 && profileName.length > 0) {
+    persistentStorage.setLastUsedRegion({ regionName, cicsPlexName, profileName });
+    CICSLogger.info(`Region set to ${regionName} for profile ${profileName} and plex ${cicsPlexName}`);
   }
-  //on error, do not update focus region
+  //on error, do not update region
 }
 export async function isCICSProfileValidInSettings(): Promise<boolean> {
   const regionDetails = getLastUsedRegion();
   const profileNames = await getAllCICSProfiles();
-  if (!regionDetails.profileName || !regionDetails.focusSelectedRegion) {
+  if (!regionDetails.profileName || !regionDetails.regionName) {
     return false;
   } else if (!profileNames.includes(regionDetails.profileName)) {
     Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
