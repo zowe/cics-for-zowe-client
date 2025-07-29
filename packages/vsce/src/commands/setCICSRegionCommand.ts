@@ -17,33 +17,26 @@ import { ICICSRegion } from "../doc/commands/ICICSRegion";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { FilterDescriptor } from "../utils/filterUtils";
-import {
-  getAllCICSProfiles,
-  getChoiceFromQuickPick,
-  getLastUsedRegion,
-  getPlexInfoFromProfile,
-  isCICSProfileValidInSettings,
-  setLastUsedRegion,
-} from "../utils/lastUsedRegionUtils";
+import * as regionUtils from "../utils/lastUsedRegionUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 
 export function setCICSRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setCICSRegion", async () => {
-    await updateRegion();
+    await setCICSRegion();
   });
 }
 
-export async function getRegion(): Promise<ICICSRegion | undefined> {
+export async function getLastUsedRegion(): Promise<ICICSRegion | undefined> {
   const quickPick = Gui.createQuickPick();
-  if (await isCICSProfileValidInSettings()) {
-    const { profileName, regionName, cicsPlexName } = await getLastUsedRegion();
+  if (await regionUtils.isCICSProfileValidInSettings()) {
+    const { profileName, regionName, cicsPlexName } = await regionUtils.getLastUsedRegion();
     let lastUsedRegionLabel = `Region: ${regionName} | CICSplex : ${cicsPlexName || "NA"} | Profile: ${profileName}`;
     if (!cicsPlexName) {
       lastUsedRegionLabel = `Region: ${regionName} | Profile: ${profileName}`;
     }
 
     const items = [{ label: lastUsedRegionLabel, description: "Last used region" }, { label: "Other CICS Region" }];
-    const choice = await getChoiceFromQuickPick(quickPick, "Select Region", [...items]);
+    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Region", [...items]);
     quickPick.hide();
 
     if (!choice) return;
@@ -53,17 +46,17 @@ export async function getRegion(): Promise<ICICSRegion | undefined> {
       const session = SessionHandler.getInstance().getSession(profile);
       return { profile, cicsPlexName, session, regionName };
     } else {
-      return await updateRegion();
+      return await setCICSRegion();
     }
   } else {
     CICSLogger.info("Setting new region");
-    return await updateRegion();
+    return await setCICSRegion();
   }
 }
 
-async function updateRegion(): Promise<ICICSRegion> | undefined {
+async function setCICSRegion(): Promise<ICICSRegion> | undefined {
   const quickPick = Gui.createQuickPick();
-  const profileNames = await getAllCICSProfiles();
+  const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {
     Gui.infoMessage(l10n.t("No CICS profiles found. Please configure a valid CICS profile"));
     return;
@@ -74,7 +67,7 @@ async function updateRegion(): Promise<ICICSRegion> | undefined {
   let cicsPlexName: string = undefined;
   let regionName: string = undefined;
   let plexInfo: InfoLoaded[] = undefined;
-  let choice = await getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
+  let choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
   quickPick.hide();
   if (!choice) return;
 
@@ -98,7 +91,7 @@ async function updateRegion(): Promise<ICICSRegion> | undefined {
       quickPick.show();
       quickPick.busy = true;
       quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
-      choice = await getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
+      choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
       if (!choice) return;
 
@@ -117,14 +110,14 @@ async function updateRegion(): Promise<ICICSRegion> | undefined {
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
     CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
     regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-    choice = await getChoiceFromQuickPick(quickPick, "Select CICS Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
+    choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICS Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
     quickPick.hide();
     if (!choice) return;
 
     regionName = choice.label;
     CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
   }
-  setLastUsedRegion(regionName, profile.name, cicsPlexName);
+  regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${regionName}, profile: ${profile.name}, plex: ${cicsPlexName}`);
   return { profile, cicsPlexName, session, regionName };
 }
@@ -148,7 +141,7 @@ async function getPlexAndRegion(
       isPlex = true;
     }
   } else {
-    plexInfo = await getPlexInfoFromProfile(profile, session);
+    plexInfo = await regionUtils.getPlexInfoFromProfile(profile, session);
   }
   return { cicsPlexName, regionName, isPlex, plexInfo };
 }

@@ -16,7 +16,7 @@ import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
-import { getRegion } from "./setCICSRegionCommand";
+import { getLastUsedRegion } from "./setCICSRegionCommand";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Gui } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
@@ -57,7 +57,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
 
 export async function inspectResourceByName(context: ExtensionContext, resourceName: string, resourceType: string) {
   // Inspecting a resource by its name so this will be on the focus region
-  const cicsRegion: ICICSRegion = await getRegion();
+  const cicsRegion: ICICSRegion = await getLastUsedRegion();
 
   if (cicsRegion) {
     const type = getResourceType(resourceType);
@@ -85,7 +85,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 }
 
 export async function inspectResource(context: ExtensionContext) {
-  const cicsRegion: ICICSRegion = await getRegion();
+  const cicsRegion: ICICSRegion = await getLastUsedRegion();
 
   if (cicsRegion) {
     const resourceType = await selectResourceType();
