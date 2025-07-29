@@ -145,14 +145,20 @@ function getResourceType(resourceName: string): IResourceMeta<IResource> {
   return undefined;
 }
 
-async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
-  // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
+export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResource>> {
   const resourceTypeMap = getMetas().reduce((acc, item) => {
+    // for now we only show our externally visible types (so not LIBDSN)
     if (SupportedResourceTypes.filter((res) => res == item.resourceName).length > 0) {
       acc.set(item.humanReadableNameSingular, item);
     }
     return acc;
   }, new Map());
+  return resourceTypeMap;
+}
+
+async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
+  // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
+  const resourceTypeMap = getInspectableResourceTypes();
 
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()));
 
