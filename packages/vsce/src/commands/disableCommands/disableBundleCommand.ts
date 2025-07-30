@@ -54,6 +54,8 @@ export function getDisableBundleCommand(tree: CICSTree, treeview: TreeView<any>)
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
 
+            tree._onDidChangeTreeData.fire(node.getParent());
+
             await pollForCompleteAction(node,
               (response) => { return response.records?.cicsbundle?.enablestatus.toUpperCase() === "DISABLED"; },
               () => evaluateTreeNodes(node, tree)

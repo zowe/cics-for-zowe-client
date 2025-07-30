@@ -34,8 +34,8 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   getLabel: function (bundle: Resource<IBundle>): string {
     let label = `${bundle.attributes.name}`;
 
-    if (bundle.attributes.enablestatus.trim().toLowerCase() === "disabled") {
-      label += " (Disabled)";
+    if (bundle.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
+      label += ` (${bundle.attributes.enablestatus.trim()})`;
     }
 
     return label;
