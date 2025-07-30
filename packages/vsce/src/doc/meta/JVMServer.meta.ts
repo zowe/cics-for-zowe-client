@@ -8,7 +8,8 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
-  humanReadableName: "JVM Servers",
+  humanReadableNamePlural: "JVM Servers",
+  humanReadableNameSingular: "JVM Server",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");
