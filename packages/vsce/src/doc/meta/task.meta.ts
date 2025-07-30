@@ -19,7 +19,8 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const TaskMeta: IResourceMeta<ITask> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TASK,
-  humanReadableName: "Tasks",
+  humanReadableNamePlural: "Tasks",
+  humanReadableNameSingular: "Task",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");

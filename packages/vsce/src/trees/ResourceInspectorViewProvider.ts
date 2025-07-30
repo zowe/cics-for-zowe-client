@@ -99,7 +99,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     await this.webviewView.webview.postMessage({
       data: {
         name: this.resource.meta.getName(this.resource.resource),
-        resourceName: this.resource.meta.resourceName,
+        humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
         profileHandler: this.resourceHandlerMap,

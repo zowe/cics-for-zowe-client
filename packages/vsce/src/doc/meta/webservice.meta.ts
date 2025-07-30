@@ -19,7 +19,8 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
-  humanReadableName: "Web Services",
+  humanReadableNamePlural: "Web Services",
+  humanReadableNameSingular: "Web Service",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

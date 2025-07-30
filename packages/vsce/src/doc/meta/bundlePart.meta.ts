@@ -19,7 +19,8 @@ const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
-  humanReadableName: "Bundle Parts",
+  humanReadableNamePlural: "Bundle Parts",
+  humanReadableNameSingular: "Bundle Part",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
     return `BUNDLE=${parentResource.name} AND (${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")})`;

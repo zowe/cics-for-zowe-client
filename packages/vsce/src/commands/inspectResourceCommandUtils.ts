@@ -125,7 +125,7 @@ async function loadResources(
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
   if (resources[0].length === 0 ) {
-    const hrn = resourceType.humanReadableName.endsWith("s") ? resourceType.humanReadableName.slice(0, resourceType.humanReadableName.length-1): resourceType.humanReadableName;
+    const hrn = resourceType.humanReadableNameSingular;
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", regionName);
     CICSLogger.error(message);
     window.showErrorMessage(message);
@@ -145,11 +145,25 @@ function getResourceType(resourceName: string): IResourceMeta<IResource> {
   return undefined;
 }
 
+export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResource>> {
+  const resourceTypeMap = getMetas().reduce((acc, item) => {
+    // for now we only show our externally visible types (so not LIBDSN)
+    if (SupportedResourceTypes.filter((res) => res == item.resourceName).length > 0) {
+      acc.set(item.humanReadableNameSingular, item);
+    }
+    return acc;
+  }, new Map());
+  return resourceTypeMap;
+}
+
 async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
-  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, SupportedResourceTypes);
+  // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
+  const resourceTypeMap = getInspectableResourceTypes();
+
+  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()));
 
   if (choice) {
-    return getResourceType(choice.label);
+    return resourceTypeMap.get(choice.label);
   }
 
   return undefined;
@@ -177,7 +191,7 @@ async function getChoiceFromQuickPick(
 
 async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
   const options: InputBoxOptions = {
-    prompt: CICSMessages.CICSEnterResourceName.message,
+    prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
     value: "",
     validateInput: function(value: string): string {
       if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {

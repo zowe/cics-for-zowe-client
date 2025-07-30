@@ -102,7 +102,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
 
   private buildResourceContainerNode(meta: IResourceMeta<IResource>) {
     return new CICSResourceContainerNode(
-      meta.humanReadableName,
+      meta.humanReadableNamePlural,
       {
         parentNode: this,
         profile: this.parentSession.profile,

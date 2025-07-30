@@ -14,7 +14,8 @@ import { IResource } from "../resources/IResource";
 
 export interface IResourceMeta<T extends IResource> {
   resourceName: string;
-  humanReadableName: string;
+  humanReadableNamePlural: string;
+  humanReadableNameSingular: string;
 
   buildCriteria(criteria: string[], parentResource?: IResource): string;
   getDefaultCriteria(parentResource?: IResource): Promise<string>;
