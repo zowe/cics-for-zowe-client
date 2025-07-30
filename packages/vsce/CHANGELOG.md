@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Inspect CICS Resource command is added to give CEMT-like behaviour for viewing resource information [#281](https://github.com/zowe/cics-for-zowe-client/issues/281)
+
 ## `3.9.4`
 
 - Expose extender API containing supported CICS resource types.
