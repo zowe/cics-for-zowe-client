@@ -20,20 +20,20 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
 
   getLabel: function (jvmServer: Resource<IJVMServer>): string {
     let label = `${jvmServer.attributes.name}`;
-    if (jvmServer.attributes.enableStatus && jvmServer.attributes.enableStatus.toLowerCase() === "disabled") {
+    if (jvmServer.attributes.enablestatus && jvmServer.attributes.enablestatus.toLowerCase() === "disabled") {
       label += " (disabled)";
     }
     return label;
   },
 
   getContext: function (jvmServer: Resource<IJVMServer>): string {
-    const status = (jvmServer.attributes.enableStatus ?? "").trim().toUpperCase();
+    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
     return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${status}.${jvmServer.attributes.name}`;
   },
 
   getIconName: function (jvmServer: Resource<IJVMServer>): string {
     let iconName = `jvm-server`;
-    const status = (jvmServer.attributes.enableStatus ?? "").trim().toUpperCase();
+    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
     if (status === "DISABLED") {
       iconName += `-disabled`;
     }
@@ -44,8 +44,8 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
     return [
       {
         key: "Status",
-        value: jvmServer.attributes.enableStatus,
-      },
+        value: jvmServer.attributes.enablestatus,
+      }
     ];
   },
 

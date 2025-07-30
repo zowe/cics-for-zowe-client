@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-Feature: Added JVM server to the tree node. [#382](https://github.ibm.com/CICS/cics-ts-tracking/issues/11678)
+- Enhancement: Feature: Added JVM server to the tree node. [#382]()
 
 ## `3.9.4`
 

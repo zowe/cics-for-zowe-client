@@ -69,7 +69,7 @@ describe("JVM Servers", () => {
       cicsTree.takeScreenshot();
     });
      it("Verify JVMSERVERS -> EYUCMCIJ", async () => {
-       const JVMServerNode = await findJVMServerTreeNodeByLabel(JVMServers, EYUCMCIJ);
+       JVMServerNode = await findJVMServerTreeNodeByLabel(JVMServers, EYUCMCIJ);
        expect(JVMServerNode).not.undefined;
        expect(await JVMServerNode?.getLabel()).contains(EYUCMCIJ);
        cicsTree.takeScreenshot();
