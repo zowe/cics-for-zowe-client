@@ -35,7 +35,8 @@ export const BundleMeta: IResourceMeta<IBundle> = {
     let label = `${bundle.attributes.name}`;
 
     if (bundle.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
-      label += ` (${bundle.attributes.enablestatus.trim()})`;
+      const status = bundle.attributes.enablestatus.trim();
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
     return label;
