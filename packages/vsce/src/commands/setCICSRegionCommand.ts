@@ -13,7 +13,7 @@ import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
-import { ICICSRegion } from "../doc/commands/ICICSRegion";
+import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { FilterDescriptor } from "../utils/filterUtils";
@@ -26,7 +26,7 @@ export function setCICSRegionCommand() {
   });
 }
 
-export async function getLastUsedRegion(): Promise<ICICSRegion | undefined> {
+export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | undefined> {
   const quickPick = Gui.createQuickPick();
   if (await regionUtils.isCICSProfileValidInSettings()) {
     const { profileName, regionName, cicsPlexName } = await regionUtils.getLastUsedRegion();
@@ -54,7 +54,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegion | undefined> {
   }
 }
 
-async function setCICSRegion(): Promise<ICICSRegion> | undefined {
+async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   const quickPick = Gui.createQuickPick();
   const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {

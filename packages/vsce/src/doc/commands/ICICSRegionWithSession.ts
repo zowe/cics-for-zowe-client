@@ -12,7 +12,7 @@
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 
-export interface ICICSRegion {
+export interface ICICSRegionWithSession {
   profile: IProfileLoaded;
   cicsPlexName?: string;
   session: CICSSession;
