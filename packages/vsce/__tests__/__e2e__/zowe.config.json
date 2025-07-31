@@ -1,0 +1,48 @@
+{
+  "$schema": "./zowe.schema.json",
+  "profiles": {
+    "zosmf": {
+      "type": "zosmf",
+      "properties": {
+        "port": 443
+      }
+    },
+    "tso": {
+      "type": "tso",
+      "properties": {
+        "account": "",
+        "codePage": "1047",
+        "logonProcedure": "IZUFPROC"
+      }
+    },
+    "ssh": {
+      "type": "ssh",
+      "properties": {
+        "port": 22
+      }
+    },
+    "rse": {
+      "type": "rse",
+      "properties": {
+        "port": 6800,
+        "basePath": "rseapi",
+        "protocol": "https"
+      }
+    },
+    "wiremock_localhost": {
+      "type": "cics",
+      "properties": {
+        "protocol": "http",
+        "host": "wiremock",
+        "port": 8080
+      }
+    }
+  },
+  "defaults": {
+    "zosmf": "zosmf",
+    "tso": "tso",
+    "ssh": "ssh",
+    "rse": "rse"
+  },
+  "autoStore": false
+}
