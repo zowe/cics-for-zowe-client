@@ -22,7 +22,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   getLabel: function (jvmServer: Resource<IJVMServer>): string {
     let label = `${jvmServer.attributes.name}`;
     if (jvmServer.attributes.enablestatus && jvmServer.attributes.enablestatus.toLowerCase() === "disabled") {
-      label += " (disabled)";
+      label += " (Disabled)";
     }
     return label;
   },
