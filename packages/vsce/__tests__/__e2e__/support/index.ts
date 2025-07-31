@@ -21,6 +21,18 @@ declare global {
        * @example cy.resetWiremock()
        */
       resetWiremock(): Chainable<JQuery<HTMLElement>>;
+
+      /**
+       * Custom command to click Zowe Explorer icon.
+       * @example cy.clickZoweExplorerIcon()
+       */
+      clickZoweExplorerIcon(): Chainable<JQuery<HTMLElement>>;
+
+      /**
+       * Custom command to toggle Zowe Data set, USS, and Job trees open and closed.
+       * @example cy.toggleZoweTrees()
+       */
+      toggleZoweTrees(): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
@@ -35,4 +47,15 @@ Cypress.Commands.add("getTreeHeader", (value: string) => {
 
 Cypress.Commands.add("resetWiremock", () => {
   cy.request('POST', 'http://localhost:8080/__admin/scenarios/reset').its('status').should("equal", 200);
+});
+
+Cypress.Commands.add("clickZoweExplorerIcon", () => {
+  cy.get('a[aria-label="Zowe Explorer"]').click();
+  cy.get('h3.title').contains("cics").should("exist");
+});
+
+Cypress.Commands.add("toggleZoweTrees", () => {
+  cy.getTreeHeader("Data Sets Section").should("exist").click();
+  cy.getTreeHeader("Jobs Section").should("exist").click();
+  cy.getTreeHeader("Unix System Services (USS) Section").should("exist").click();
 });
