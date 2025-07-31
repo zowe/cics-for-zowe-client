@@ -608,6 +608,12 @@
           "description": "Default filter criteria for Pipeline",
           "scope": "window"
         },
+          "zowe.cics.jvmServer.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for JVM Server",
+          "scope": "window"
+        },
         "zowe.cics.tcpipService.filter": {
           "type": "string",
           "default": "(NAME=*)",
@@ -673,6 +679,10 @@
             "WebService": {
               "type": "boolean",
               "description": "CICS Web Service"
+            },
+            "JVMServer": {
+              "type": "boolean",
+              "description": "CICS JVM Server"
             }
           },
           "default": {
@@ -684,7 +694,8 @@
             "Pipeline": true,
             "TCP/IPService": true,
             "URIMap": true,
-            "WebService": true
+            "WebService": true,
+            "JVMServer": true
           },
           "scope": "window"
         }

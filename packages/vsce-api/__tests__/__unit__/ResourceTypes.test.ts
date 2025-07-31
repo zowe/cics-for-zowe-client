@@ -22,7 +22,8 @@ describe("ResourceType tests", () => {
       "CICSURIMap",
       "CICSTask",
       "CICSPipeline",
-      "CICSWebService"
+      "CICSWebService",
+      "CICSJVMServer",
     ]);
   });
 

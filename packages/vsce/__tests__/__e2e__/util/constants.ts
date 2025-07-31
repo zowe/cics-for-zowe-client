@@ -30,11 +30,13 @@ export const DUMMY907 = "DUMMY907";
 // Region labels
 export const IYCWENK1 = "IYCWENK1";
 export const PROGLIB = "PROGLIB";
+export const IYCWENW2 = "IYCWENW2";
 
 // Region Resource labels
 export const PROGRAMS = "Programs";
 export const PIPELINES = "Pipelines";
 export const LIBRARIES = "Libraries";
+export const JVMSERVERS = "JVM Servers";
 
 // Library labels
 export const LIB1 = "LIB1";
@@ -60,3 +62,6 @@ export const PLIB2NONE = "PLIB2NONE";
 
 //Library Labels
 export const CBSA = "CBSA";
+
+//JVMServer labels
+export const EYUCMCIJ = "EYUCMCIJ";

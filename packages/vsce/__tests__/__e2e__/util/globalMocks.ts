@@ -86,6 +86,16 @@ export async function findLibraryTreeNodeByLabel(libraries: TreeItem[], libraryL
   return undefined;
 }
 
+export async function findJVMServerTreeNodeByLabel(jvmservers: TreeItem[], libraryLabel: string): Promise<TreeItem | undefined> {
+  for (const jvmserver of jvmservers) {
+    if ((await jvmserver.getLabel()).trim() === libraryLabel) {
+      return jvmserver;
+    }
+  }
+  return undefined;
+}
+
+
 export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void> {
   // Send the ARROW_DOWN key the specified number of times
   const driver = VSBrowser.instance.driver;

@@ -64,6 +64,7 @@ export default {
   DEFAULT_CICSTASK_FILTER: meta.contributes.configuration.properties["zowe.cics.tasks.filter"].default,
   DEFAULT_CICSURIMAP_FILTER: meta.contributes.configuration.properties["zowe.cics.uriMap.filter"].default,
   DEFAULT_CICSWEBSERVICE_FILTER: meta.contributes.configuration.properties["zowe.cics.webService.filter"].default,
+  DEFAULT_CICSJVMSERVER_FILTER: meta.contributes.configuration.properties["zowe.cics.jvmServer.filter"].default,
 
   MAX_TRANS_RESOURCE_NAME_LENGTH: 4,
   MAX_RESOURCE_NAME_LENGTH: 8,

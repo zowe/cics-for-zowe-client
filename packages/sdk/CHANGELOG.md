@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Added JVM Server CICS Resource constant
+
 ## `6.9.4`
 
 - Added CICSSession class

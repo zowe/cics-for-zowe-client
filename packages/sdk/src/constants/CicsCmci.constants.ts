@@ -83,6 +83,11 @@ export const CicsCmciConstants = {
    */
   CICS_WEBSERVICE_RESOURCE: "CICSWebService",
 
+  /**
+   * Specifies the required part of the REST interface URI to access JVM server resources
+   */
+  CICS_JVMSERVER_RESOURCE: "CICSJVMServer",
+
   /*
    * Specifies the required part of the REST interface URI to access URIMaps
    */
