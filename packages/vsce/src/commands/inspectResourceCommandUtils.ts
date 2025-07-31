@@ -40,14 +40,16 @@ async function showInspectResource(context: ExtensionContext, resourcesHandler: 
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-  const region = node.regionName !== undefined ? node.regionName : node.description.toString().replace("(", "").replace(")", "");
+  const region = node.regionName !== undefined ? node.regionName : node.getContainedResource().resource.attributes.eyu_cicsname;
+  const parentResource = (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource;
   const resourcesHandler: IResourcesHandler = await loadResources(
     node.getSession(),
     node.getContainedResource().meta,
     node.getContainedResourceName(),
     region,
     node.cicsplexName,
-    node.getProfileName()
+    node.getProfileName(),
+    parentResource,
   );
 
   if (resourcesHandler) {
@@ -116,15 +118,16 @@ async function loadResources(
   resourceName: string,
   regionName: string,
   cicsplex: string,
-  profileName: string
+  profileName: string,
+  parentResource?: Resource<IResource>,
 ): Promise<IResourcesHandler> {
-  const resourceContainer = new ResourceContainer<IResource>(resourceType);
+  const resourceContainer = new ResourceContainer<IResource>(resourceType, parentResource);
   resourceContainer.setCriteria([resourceName]);
 
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
-  if (resources[0].length === 0 ) {
+  if (resources[0].length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", regionName);
     CICSLogger.error(message);
@@ -177,7 +180,7 @@ async function getChoiceFromQuickPick(
   placeHolder: string,
   items: string[]
 ): Promise<QuickPickItem | undefined> {
-  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item}))];
+  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item }))];
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
@@ -193,7 +196,7 @@ async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Pro
   const options: InputBoxOptions = {
     prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
     value: "",
-    validateInput: function(value: string): string {
+    validateInput: function (value: string): string {
       if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {
         return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_TRANS_RESOURCE_NAME_LENGTH));
       } else if (resourceType !== TransactionMeta && value.length > constants.MAX_RESOURCE_NAME_LENGTH) {

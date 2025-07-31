@@ -5,6 +5,7 @@ All notable changes to the IBM CICS for Zowe Explorer API will be documented in 
 ## Recent Changes
 
 - Added new resource type - JVM server
+- Adds CICSBundle to list of supported resources
 
 ## `6.10.0`
 
