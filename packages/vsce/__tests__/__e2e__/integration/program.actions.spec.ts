@@ -9,13 +9,8 @@ context('Program Actions', () => {
 
   it('Should expand trees to reveal program', () => {
 
-    // Clicks Zowe Explorer icon - ensures CICS tree is visible
-    cy.get('a[aria-label="Zowe Explorer"]').click();
-    cy.get('h3.title').contains("cics").should("exist");
-
-    cy.getTreeHeader("Data Sets Section").should("exist").click();
-    cy.getTreeHeader("Jobs Section").should("exist").click();
-    cy.getTreeHeader("Unix System Services (USS) Section").should("exist").click();
+    cy.clickZoweExplorerIcon();
+    cy.toggleZoweTrees();
 
     // Clicks through tree to expand programs
     cy.getTreeNode('wiremock_localhost').should("exist").should("be.visible").click();
@@ -31,9 +26,7 @@ context('Program Actions', () => {
 
   it('Should disable and enable a program', () => {
 
-    // Clicks Zowe Explorer icon - ensures CICS tree is visible
-    cy.get('a[aria-label="Zowe Explorer"]').click();
-    cy.get('h3.title').contains("cics").should("exist");
+    cy.clickZoweExplorerIcon();
 
     // Clicks through tree to expand programs
     cy.getTreeNode('wiremock_localhost').should("exist").should("be.visible").click();
@@ -55,16 +48,26 @@ context('Program Actions', () => {
     cy.getTreeNode('wiremock_localhost').should("exist").should("be.visible").click();
   });
 
-  after(() => {
-    cy.getTreeNode("wiremock_localhost").should("exist").should("be.visible").rightclick();
-    cy.wait(100);
-    cy.contains("Manage Profile").should("exist").click();
-    cy.contains("Hide Profile").should("exist").click();
-    cy.getTreeNode("wiremock_localhost").should("not.exist");
+  it('Should new copy a program', () => {
 
-    cy.getTreeHeader("Data Sets Section").should("exist").click();
-    cy.getTreeHeader("Jobs Section").should("exist").click();
-    cy.getTreeHeader("Unix System Services (USS) Section").should("exist").click();
+    cy.clickZoweExplorerIcon();
+
+    // Clicks through tree to expand programs
+    cy.getTreeNode('wiremock_localhost').should("exist").should("be.visible").click();
+    cy.getTreeNode('CICSEX61').should("exist").should("be.visible").click();
+    cy.getTreeNode('IYCWENK1').should("exist").should("be.visible").click();
+    cy.getTreeNode('Programs').should("exist").should("be.visible").click();
+    cy.getTreeNode('DSNCUEXT').should("exist").should("be.visible").click().rightclick();
+
+    cy.wait(100);
+    cy.contains("New Copy").should("exist").click();
+    cy.getTreeNode("DSNCUEXT (New copy count: 1)").should("exist");
+
+    cy.getTreeNode('wiremock_localhost').should("exist").should("be.visible").click();
+  });
+
+  after(() => {
+    cy.toggleZoweTrees();
   });
 
 });
