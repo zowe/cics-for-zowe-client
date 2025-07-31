@@ -64,8 +64,8 @@
     },
     "commands": [
       {
-        "command": "cics-extension-for-zowe.setFocusRegion",
-        "title": "Set Focus CICS Region",
+        "command": "cics-extension-for-zowe.setCICSRegion",
+        "title": "Set CICS Region",
         "category": "IBM CICS for Zowe Explorer"
       },
       {
@@ -267,7 +267,7 @@
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
-          "command": "cics-extension-for-zowe.setFocusRegion",
+          "command": "cics-extension-for-zowe.setCICSRegion",
           "when": "never"
         },
         {

@@ -44,7 +44,7 @@ const IProfileMock: IProfile = {
   regionName: "IYK2ZXXX",
 };
 
-const profile: imperative.IProfileLoaded = {
+export const profile: imperative.IProfileLoaded = {
   message: "",
   type: "type",
   failNotFound: false,
@@ -60,6 +60,7 @@ export const CICSSessionTreeMock = {
   session: imperativeSession,
   getSession: () => imperativeSession,
   getProfile: () => IProfileMock,
+  label: "Profile1",
 };
 
 export const cicsRegionTreeMock = {

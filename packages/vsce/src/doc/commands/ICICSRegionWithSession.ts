@@ -12,9 +12,9 @@
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 
-export interface IFocusRegion {
+export interface ICICSRegionWithSession {
   profile: IProfileLoaded;
   cicsPlexName?: string;
   session: CICSSession;
-  focusSelectedRegion: string;
+  regionName: string;
 }
