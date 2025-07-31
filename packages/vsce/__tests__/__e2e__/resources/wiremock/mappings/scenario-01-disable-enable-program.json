@@ -56,22 +56,6 @@
     {
       "scenarioName": "Disable and Enable program",
       "requiredScenarioState": "Fetch programs record count for disable operation",
-      "newScenarioState": "Enable the program",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/E1033298F081A060?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "fetch-resource-count.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Disable and Enable program",
-      "requiredScenarioState": "Enable the program",
       "newScenarioState": "Fetch programs with default filter for enable operation",
       "request": {
         "method": "PUT",
