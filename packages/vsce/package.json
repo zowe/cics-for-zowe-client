@@ -393,6 +393,14 @@
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
+          "command": "cics-extension-for-zowe.enableBundle",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableBundle",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
           "command": "cics-extension-for-zowe.copyResourceName",
           "when": "never"
         }
