@@ -68,7 +68,6 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   let regionName: string = undefined;
   let plexInfo: InfoLoaded[] = undefined;
   let choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
-  quickPick.hide();
   if (!choice) return;
 
   const profileName = cicsProfiles.find((item) => item === choice);
@@ -92,7 +91,6 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       quickPick.busy = true;
       quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
-      quickPick.hide();
       if (!choice) return;
 
       cicsPlexName = choice.label;
@@ -102,20 +100,27 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
     }
   }
   if (isPlex) {
-    //if plex is selected, we should show the regions from the plex
     quickPick.placeholder = l10n.t("Select CICS Region");
     quickPick.show();
     quickPick.busy = true;
-    quickPick.items = [{ label: l10n.t("Loading Regions...") }];
+    quickPick.items = [{ label: l10n.t("Loading Region...") }];
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
-    CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
-    regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-    choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICS Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
-    quickPick.hide();
-    if (!choice) return;
+    // Check if regionInfo is null or undefined
+    if (regionInfo && regionInfo.length >= 0) {
+      CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
+      regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
+      choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICS Region", [
+        ...regionInfo.map((region) => ({ label: region.cicsname })),
+      ]);
+      quickPick.hide();
+      if (!choice) return;
 
-    regionName = choice.label;
-    CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
+      regionName = choice.label;
+      CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
+    } else {
+      quickPick.hide();
+      Gui.showMessage(l10n.t(`No Active Regions found in the ${cicsPlexName}`));
+    }
   }
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${regionName}, profile: ${profile.name}, plex: ${cicsPlexName}`);
