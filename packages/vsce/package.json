@@ -207,6 +207,16 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.disableJVMServer",
+        "title": "Disable JVM Server",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.enableJVMServer",
+        "title": "Enable JVM Server",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.phaseInCommand",
         "title": "Phase In",
         "category": "IBM CICS for Zowe Explorer",
@@ -385,6 +395,14 @@
         {
           "command": "cics-extension-for-zowe.copyResourceName",
           "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableJVMServer",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         }
       ],
       "view/title": [
@@ -503,6 +521,16 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLibrary.ENABLED.*/",
           "command": "cics-extension-for-zowe.disableLibrary",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMServer",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMServer",
           "group": "2.CICSResourceNode.action"
         },
         {
