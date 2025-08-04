@@ -34,7 +34,7 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   },
 
   CICSResourceTypeNotFound: {
-    message: "CICS resource type not found or unsupported.",
+    message: "CICS resource type %resource-type% not found or unsupported.",
   },
 
   CICSResourceNotFound: {
@@ -46,10 +46,14 @@ export const CICSMessages: { [key: string]: IMessageDefinition; } = {
   },
 
   CICSInvalidResourceNameLength: {
-    message:  "Invalid CICS Resource name. Maximum length is %length% characters.",
+    message: "Invalid CICS Resource name. Maximum length is %length% characters.",
   },
 
   CICSSelectResourceType: {
-    message:  "Select CICS Resource Type...",
-  }
+    message: "Select CICS Resource Type...",
+  },
+
+  CICSLoadingResourceName: {
+    message: "Loading CICS resource '%name%'...",
+  },
 };
