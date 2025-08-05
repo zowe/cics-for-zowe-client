@@ -24,6 +24,7 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
     - [Show and filter resources in a region](#show-and-filter-resources-in-a-region)
     - [Show and filter resources in a plex](#show-and-filter-resources-in-a-plex)
     - [Show and filter resources in an 'All' resource tree](#show-and-filter-resources-in-an-all-resource-tree)
+    - [Inspect CICS resources](#inspect-cics-resources)
     - [Show attributes](#show-attributes)
     - [Enable and disable](#enable-and-disable)
     - [New Copy and Phase In](#new-copy-and-phase-in)
@@ -182,6 +183,14 @@ If the applied filter results in more than 500 records, either change the filter
 
 <p align="center">
 <img src="/packages/vsce/docs/images/record-count-increment.png" alt="Zowe CICS Explorer Record Count Increment in Setting UI" width="700px"/>
+</p>
+
+### Inspect CICS resources
+
+View resource information without using the CICS tree. Access the command palette and filter for `Inspect CICS Resource`. You'll be prompted for your Zowe CICS profile, a resource type, and a resource name. The CICS Resource Inspector opens showing the details of the specified resource.
+
+<p align="center">
+<img src="/packages/vsce/docs/images/resource-inspector.gif" alt="CICS Resource Inspector" width="800px"/>
 </p>
 
 ### Show attributes
