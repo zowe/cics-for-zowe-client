@@ -68,6 +68,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   let regionName: string = undefined;
   let plexInfo: InfoLoaded[] = undefined;
   let choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
+  quickPick.hide();
   if (!choice) return;
 
   const profileName = cicsProfiles.find((item) => item === choice);
@@ -91,6 +92,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       quickPick.busy = true;
       quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
+      quickPick.hide();
       if (!choice) return;
 
       cicsPlexName = choice.label;
