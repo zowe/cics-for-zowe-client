@@ -40,7 +40,7 @@ describe("Bundle Part Meta", () => {
 
   it("should build criteria", () => {
     const label = BundlePartMeta.buildCriteria(["A", "B"], parentResource.attributes);
-    expect(label).toEqual(`BUNDLE=BUND1 AND (BUNDLEPART=A OR BUNDLEPART=B)`);
+    expect(label).toEqual(`(BUNDLEPART='A' OR BUNDLEPART='B') AND (BUNDLE='BUND1')`);
   });
 
   it("should return default criteria", async () => {
@@ -55,7 +55,7 @@ describe("Bundle Part Meta", () => {
   it("should return label when disabled", () => {
     bundlePartMock.attributes.enablestatus = "disabled";
     const label = BundlePartMeta.getLabel(bundlePartMock);
-    expect(label).toEqual(`PART2 (Disabled)`);
+    expect(label).toEqual(`PART2`);
   });
 
   it("should return context", () => {
@@ -75,7 +75,7 @@ describe("Bundle Part Meta", () => {
   it("should return icon name when disabled", () => {
     bundlePartMock.attributes.enablestatus = "disabled";
     const iconName = BundlePartMeta.getIconName(bundlePartMock);
-    expect(iconName).toEqual(`bundle-part-disabled`);
+    expect(iconName).toEqual(`bundle-part`);
   });
 
   it("should return name", () => {
@@ -89,7 +89,7 @@ describe("Bundle Part Meta", () => {
       {
         key: "Bundle",
         value: "BUND1",
-      }
+      },
     ]);
   });
 

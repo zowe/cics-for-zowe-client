@@ -23,10 +23,11 @@ export interface IResourceMeta<T extends IResource> {
   getContext(resource: Resource<T>): string;
   getIconName(resource: Resource<T>): string;
   getName(resource: Resource<T>): string;
-  getHighlights(resource: Resource<T>): { key: string; value: string }[];
+  getHighlights(resource: Resource<T>): { key: string; value: string; }[];
 
   getCriteriaHistory(): string[];
   appendCriteriaHistory(criteria: string): Promise<void>;
 
   childType?: IResourceMeta<IResource>;
+  filterCaseSensitive?: boolean;
 }
