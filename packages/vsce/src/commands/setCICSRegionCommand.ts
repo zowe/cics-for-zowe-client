@@ -106,7 +106,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
     regionQuickPick.placeholder = l10n.t("Select CICS Region");
     regionQuickPick.show();
     regionQuickPick.busy = true;
-    regionQuickPick.items = [{ label: l10n.t("Loading Region...") }];
+    regionQuickPick.items = [{ label: l10n.t("Loading Regions...") }];
     let isCancelled = false;
     regionQuickPick.onDidHide(() => {
       // This will be called when ESC is pressed or quickPick.hide() is called
@@ -128,7 +128,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.showMessage(l10n.t(`No Active Regions found in the ${cicsPlexName}`));
+      Gui.showMessage(l10n.t(`No Active Regions found in ${cicsPlexName}`));
     }
   }
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
