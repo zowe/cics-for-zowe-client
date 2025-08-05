@@ -17,5 +17,5 @@ export interface IResourceExtender {
   registerAction: (action: IResourceAction) => void;
   deregisterAction: (id: string) => void;
   getActions: () => IResourceAction[];
-  getAction: (id: string) => IResourceAction;
+  getAction: (resType: string, id: string) => IResourceAction;
 }

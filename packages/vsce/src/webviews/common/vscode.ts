@@ -19,6 +19,7 @@ export interface TransformWebviewMessage {
   command: string;
   data?: {
     name: string;
+    refreshIconPath: { light: string; dark: string };
     resourceName: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;

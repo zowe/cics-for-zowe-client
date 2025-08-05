@@ -20,10 +20,6 @@ class SCICSResourceExtender implements IResourceExtender {
   }
   registeredActions: IResourceActionWithIcon[];
 
-  private constructor() {
-    this.registeredActions = getBuiltInResourceActions();
-  }
-
   registerAction(action: IResourceAction) {
     this.registeredActions.push(action);
   }
@@ -33,11 +29,11 @@ class SCICSResourceExtender implements IResourceExtender {
   getActions() {
     return this.registeredActions;
   }
-  getAction(id: string) {
-    return this.registeredActions.filter((action) => action.id.toUpperCase() === id.toUpperCase())[0] ?? undefined;
+  getAction(resType: string, id: string) {
+    return getBuiltInResourceActions(resType).filter((action) => action.id.toUpperCase() === id.toUpperCase())[0] ?? undefined;
   }
   getActionsForResourceType(resType: string[]): IResourceActionWithIcon[] {
-    return this.registeredActions.filter((action) => resType.includes(action.resourceType));
+    return getBuiltInResourceActions(resType[0]).filter((action) => resType.includes(action.resourceType));
   }
 }
 

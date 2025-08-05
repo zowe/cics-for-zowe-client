@@ -18,22 +18,20 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Uri } from "vscode";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
+import Contextmenu from "./Contextmenu";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
+    refreshIconPath: { light: string; dark: string };
     resourceName: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
     profileHandler: { key: string; value: string; }[];
   }>();
   const [resourceActions, setResourceActions] = React.useState<{ id: string; name: string; iconPath?: { light: Uri; dark: Uri; }; }[]>([]);
-
-  const handleActionClick = (actionId: string) => {
-    vscode.postVscMessage({ command: "action", actionId });
-  };
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
@@ -79,23 +77,8 @@ const ResourceInspector = () => {
               {/* @ts-ignore */}
               {resourceInfo?.resourceName ?? "..."}: {resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
+            {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>
-          {resourceActions && (
-            <th style={{ padding: 0 }}>
-              {resourceActions.map(({ id, name, iconPath }) => (
-                <>
-                  <div key={id} className="resource-action-button tooltip" onClick={() => handleActionClick(id)}
-                    style={{ width: "2rem", height: "2rem" }}>
-                    <img
-                      style={{ width: "100%", height: "100%" }}
-                      src={`${iconPath.dark.scheme}://${iconPath.dark.authority}${iconPath.dark.path}`}
-                      alt={name + " icon"} />
-                    <span className="tooltiptext">{name}</span>
-                  </div>
-                </>
-              ))}
-            </th>
-          )}
         </thead>
         <tbody className="padding-left-10 padding-top-20">
           {resourceInfo?.highlights.length > 0 && (

@@ -9,36 +9,39 @@
  *
  */
 
+import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import Mustache = require("mustache");
-import { WebviewViewProvider, Uri, WebviewView, Webview, commands } from "vscode";
-import CICSResourceExtender from "../extending/CICSResourceExtender";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands } from "vscode";
 import { IContainedResource, IResource } from "../doc";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
-import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { SessionHandler } from "../resources";
-import { ProfileManagement } from "../utils/profileManagement";
+import CICSResourceExtender from "../extending/CICSResourceExtender";
+import Mustache = require("mustache");
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import { executeAction } from "./ResourceInspectorUtils";
+import IconBuilder from "../utils/IconBuilder";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
-
   public static readonly viewType = "resource-inspector";
   private static instance: ResourceInspectorViewProvider;
+  private context: ExtensionContext;
 
   private webviewView?: WebviewView;
   private resource: IContainedResource<IResource>;
 
   private resourceHandlerMap: { key: string; value: string; }[];
+  private node: CICSResourceContainerNode<IResource>;
 
   private constructor(
     private readonly extensionUri: Uri,
     private webviewReady: boolean = false,
   ) { }
 
-  public static getInstance(extensionUri: Uri): ResourceInspectorViewProvider {
+  public static getInstance(context: ExtensionContext): ResourceInspectorViewProvider {
     if (!this.instance) {
-      this.instance = new ResourceInspectorViewProvider(extensionUri);
+      this.instance = new ResourceInspectorViewProvider(context.extensionUri);
     }
+    this.instance.context = context;
     return this.instance;
   }
 
@@ -59,35 +62,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
-      }
-      if (message.command === "action") {
-        const action = CICSResourceExtender.getAction(message.actionId);
-
-        if (!action) {
-          return;
-        }
-
-        if (typeof action.action === 'string') {
-          commands.executeCommand(action.action);
-        } else {
-
-          const profileName = this.resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
-          const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
-
-          const session = SessionHandler.getInstance().getSession(profile);
-          const cicsplexName = this.resourceHandlerMap.filter((itm) => itm.key === "cicsplex")[0].value;
-          const regionName = this.resourceHandlerMap.filter((itm) => itm.key === "region")[0].value;
-
-          await action.action(this.resource.resource.attributes, {
-            profile,
-            session,
-            cicsplexName,
-            regionName,
-          });
-
-          // Refetch and rerender resource information.
-          // Should be a method soon that shows RI when provided resName, resType, session, profile, plex, region.
-        }
+      } else {
+        executeAction(message.command, message, this, this.context);
       }
     });
     this.webviewView.onDidDispose(() => {
@@ -108,6 +84,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     }
   }
 
+  public async getResource(): Promise<IContainedResource<IResource>> {
+    return this.resource;
+  }
+
   public setResourceHandlerMap(resourceHandler: IResourcesHandler): ResourceInspectorViewProvider {
     this.resourceHandlerMap = [];
     this.resourceHandlerMap.push({ key: "profile", value: resourceHandler.resourceContainer.getProfileName() });
@@ -124,6 +104,19 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return this;
   }
 
+  public async getResourceHandlerMap(): Promise<{ key: string; value: string }[]> {
+    return this.resourceHandlerMap;
+  }
+
+  public setNode(node: CICSResourceContainerNode<IResource>) {
+    this.node = node;
+    return this;
+  }
+
+  public getNode(): CICSResourceContainerNode<IResource> {
+    return this.node;
+  }
+
   /**
    * Posts resource data to the react app which is listening for updates.
    */
@@ -131,6 +124,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     await this.webviewView.webview.postMessage({
       data: {
         name: this.resource.meta.getName(this.resource.resource),
+        refreshIconPath: {
+          light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
+          dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
+        },
         resourceName: this.resource.meta.resourceName,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,

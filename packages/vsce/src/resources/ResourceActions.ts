@@ -9,50 +9,21 @@
  *
  */
 
-import { IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { programNewcopy } from "@zowe/cics-for-zowe-sdk";
-import { openLocalFile } from "../commands/openLocalFileCommand";
-import { IProgram, ILocalFile, IResourceActionWithIcon } from "../doc";
-import IconBuilder from "../utils/IconBuilder";
+import { ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResourceActionWithIcon } from "../doc";
+import { getLocalFileActions } from "./actions/LocalFileActions";
+import { getProgramActions } from "./actions/ProgramActions";
 
-export function getBuiltInResourceActions(): IResourceActionWithIcon[] {
-
-  return [
-
-    {
-      id: "CICS.CICSProgram.NEWCOPY",
-      name: "New Copy Program",
-      resourceType: ResourceTypes.CICSProgram,
-      iconPath: {
-        dark: IconBuilder.getIconFilePathFromName("newcopy").dark,
-        light: IconBuilder.getIconFilePathFromName("newcopy").light,
-      },
-      action: async (resource: IProgram, resourceContext: IResourceContext) => {
-        await programNewcopy(resourceContext.session, {
-          name: resource.program,
-          regionName: resourceContext.regionName,
-          cicsPlex: resourceContext.cicsplexName,
-        });
-      },
-    },
-
-    {
-      id: "CICS.CICSLocalFile.OPEN",
-      name: "Open Local File",
-      resourceType: ResourceTypes.CICSLocalFile,
-      iconPath: {
-        dark: IconBuilder.getIconFilePathFromName("plus").dark,
-        light: IconBuilder.getIconFilePathFromName("plus").light,
-      },
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "OPEN",
-      action: async (resource: ILocalFile, resourceContext: IResourceContext) => {
-        await openLocalFile(resourceContext.session, {
-          name: resource.file,
-          regionName: resourceContext.regionName,
-          cicsPlex: resourceContext.cicsplexName,
-        });
-      },
-    },
-
-  ];
+export function getBuiltInResourceActions(resType: string): IResourceActionWithIcon[] {
+  switch (resType) {
+    case ResourceTypes.CICSLocalFile.toString(): {
+      return getLocalFileActions();
+    }
+    case ResourceTypes.CICSProgram.toString(): {
+      return getProgramActions();
+    }
+    default: {
+      return null;
+    }
+  }
 }
