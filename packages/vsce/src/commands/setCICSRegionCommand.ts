@@ -87,10 +87,6 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       regionName = region[0][0];
       CICSLogger.info(`Region set to ${regionName} for profile ${profileName.label}`);
     } else if (plexNames.length > 0) {
-      quickPick.placeholder = l10n.t("Select CICSplex");
-      quickPick.show();
-      quickPick.busy = true;
-      quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
       if (!choice) return;
@@ -102,21 +98,40 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
     }
   }
   if (isPlex) {
-    //if plex is selected, we should show the regions from the plex
-    quickPick.placeholder = l10n.t("Select CICS Region");
-    quickPick.show();
-    quickPick.busy = true;
-    quickPick.items = [{ label: l10n.t("Loading Regions...") }];
+    const regionQuickPick = Gui.createQuickPick();
+    regionQuickPick.placeholder = l10n.t("Select CICS Region");
+    regionQuickPick.show();
+    regionQuickPick.busy = true;
+    regionQuickPick.items = [{ label: l10n.t("Loading Regions...") }];
+    let isCancelled = false;
+    regionQuickPick.onDidHide(() => {
+      // This will be called when ESC is pressed or quickPick.hide() is called
+      isCancelled = true;
+    });
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
-    CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
-    regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-    choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICS Region", [...regionInfo.map((region) => ({ label: region.cicsname }))]);
-    quickPick.hide();
-    if (!choice) return;
+    if (isCancelled || !regionInfo) return;
 
-    regionName = choice.label;
-    CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
+    // Check if regionInfo is null or undefined
+    if (regionInfo && regionInfo.length >= 0) {
+      CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
+      regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
+      choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, "Select CICS Region", [
+        ...regionInfo.map((region) => ({ label: region.cicsname })),
+      ]);
+      regionQuickPick.hide();
+      if (!choice) return;
+
+      regionName = choice.label;
+      CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
+    } else {
+      regionQuickPick.hide();
+      Gui.showMessage(l10n.t(`No Active Regions found in ${cicsPlexName}`));
+    }
   }
+
+  //Cancel if no region is selected
+  if (!regionName) return null;
+
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${regionName}, profile: ${profile.name}, plex: ${cicsPlexName}`);
   return { profile, cicsPlexName, session, regionName };
@@ -141,7 +156,21 @@ async function getPlexAndRegion(
       isPlex = true;
     }
   } else {
+    const quickPick = Gui.createQuickPick();
+    let isCancelled = false;
+    quickPick.placeholder = l10n.t("Select CICSplex");
+    quickPick.show();
+    quickPick.busy = true;
+    quickPick.items = [{ label: l10n.t("Loading CICSplexes...") }];
+    quickPick.onDidHide(() => {
+      // This will be called when ESC is pressed or quickPick.hide() is called
+      isCancelled = true;
+    });
     plexInfo = await regionUtils.getPlexInfoFromProfile(profile, session);
+    if (isCancelled || !plexInfo) {
+      quickPick.hide();
+      return {};
+    }
   }
   return { cicsPlexName, regionName, isPlex, plexInfo };
 }

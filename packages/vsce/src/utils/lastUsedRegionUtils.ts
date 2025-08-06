@@ -37,7 +37,7 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
   if (!regionDetails.profileName || !regionDetails.regionName) {
     return false;
   } else if (!profileNames.includes(regionDetails.profileName)) {
-    Gui.errorMessage(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
+    CICSLogger.error(l10n.t("Profile {0} is invalid or not present", regionDetails.profileName));
     return false;
   }
   return true;
@@ -47,14 +47,15 @@ export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: C
   try {
     return await ProfileManagement.getPlexInfo(profile, session);
   } catch (error) {
-    Gui.errorMessage(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
+    CICSLogger.error(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
   }
   return null;
 }
 
 export async function getAllCICSProfiles(): Promise<string[]> {
   const cicsTree: CICSTree = new CICSTree();
-  await cicsTree.refreshLoadedProfiles();
+  cicsTree.clearLoadedProfiles();
+  await cicsTree.loadStoredProfileNames();
   const loadedprofiles = cicsTree.getLoadedProfiles();
   if (loadedprofiles.length > 0) {
     return loadedprofiles.map((profile) => profile.label) as string[];

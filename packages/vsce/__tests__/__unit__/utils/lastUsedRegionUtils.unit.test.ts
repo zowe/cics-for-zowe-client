@@ -44,7 +44,8 @@ jest.mock("../../../src/utils/PersistentStorage", () => ({
 jest.mock("../../../src/trees/CICSTree", () => ({
   CICSTree: jest.fn().mockImplementation(() => ({
     getLoadedProfiles: getLoadedProfilesMock,
-    refreshLoadedProfiles: jest.fn(),
+    clearLoadedProfiles: jest.fn(),
+    loadStoredProfileNames: jest.fn(),
   })),
 }));
 jest.mock("../../../src/utils/profileManagement", () => ({
