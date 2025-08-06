@@ -281,6 +281,10 @@
           "when": "never"
         },
         {
+          "command": "cics-extension-for-zowe.inspectResource",
+          "when": "!config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
           "command": "cics-extension-for-zowe.purgeTask",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
@@ -632,7 +636,7 @@
           "description": "Default filter criteria for Pipeline",
           "scope": "window"
         },
-          "zowe.cics.jvmServer.filter": {
+        "zowe.cics.jvmServer.filter": {
           "type": "string",
           "default": "(NAME=*)",
           "description": "Default filter criteria for JVM Server",
