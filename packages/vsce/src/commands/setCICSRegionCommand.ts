@@ -87,10 +87,6 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       regionName = region[0][0];
       CICSLogger.info(`Region set to ${regionName} for profile ${profileName.label}`);
     } else if (plexNames.length > 0) {
-      quickPick.placeholder = l10n.t("Select CICSplex");
-      quickPick.show();
-      quickPick.busy = true;
-      quickPick.items = [{ label: l10n.t("Loading CICSplex...") }];
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
       if (!choice) return;
@@ -113,7 +109,8 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       isCancelled = true;
     });
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
-    if (isCancelled) return;
+    if (isCancelled || !regionInfo) return;
+
     // Check if regionInfo is null or undefined
     if (regionInfo && regionInfo.length >= 0) {
       CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
@@ -131,6 +128,10 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       Gui.showMessage(l10n.t(`No Active Regions found in ${cicsPlexName}`));
     }
   }
+
+  //Cancel if no region is selected
+  if (!regionName) return null;
+
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${regionName}, profile: ${profile.name}, plex: ${cicsPlexName}`);
   return { profile, cicsPlexName, session, regionName };
@@ -155,7 +156,21 @@ async function getPlexAndRegion(
       isPlex = true;
     }
   } else {
+    const quickPick = Gui.createQuickPick();
+    let isCancelled = false;
+    quickPick.placeholder = l10n.t("Select CICSplex");
+    quickPick.show();
+    quickPick.busy = true;
+    quickPick.items = [{ label: l10n.t("Loading CICSplexes...") }];
+    quickPick.onDidHide(() => {
+      // This will be called when ESC is pressed or quickPick.hide() is called
+      isCancelled = true;
+    });
     plexInfo = await regionUtils.getPlexInfoFromProfile(profile, session);
+    if (isCancelled || !plexInfo) {
+      quickPick.hide();
+      return {};
+    }
   }
   return { cicsPlexName, regionName, isPlex, plexInfo };
 }
