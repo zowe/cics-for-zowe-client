@@ -12,40 +12,43 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNameSingular: "JVM Server",
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `NAME=${n}`).join(" OR ");
+    return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
   async getDefaultCriteria() {
     return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServer");
   },
 
-  getLabel: function (jvmServer: Resource<IJVMServer>): string {
-    let label = `${jvmServer.attributes.name}`;
-    if (jvmServer.attributes.enablestatus && jvmServer.attributes.enablestatus.toLowerCase() === "disabled") {
+  getLabel: function (resource: Resource<IJVMServer>): string {
+    let label = `${resource.attributes.name}`;
+
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
     }
     return label;
   },
 
-  getContext: function (jvmServer: Resource<IJVMServer>): string {
-    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
-    return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${status}.${jvmServer.attributes.name}`;
+  getContext: function (resource: Resource<IJVMServer>): string {
+    return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
 
-  getIconName: function (jvmServer: Resource<IJVMServer>): string {
+  getIconName: function (resource: Resource<IJVMServer>): string {
     let iconName = `jvm-server`;
-    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
-    if (status === "DISABLED") {
+    if (resource.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
       iconName += `-disabled`;
     }
     return iconName;
   },
 
-  getHighlights(jvmServer: Resource<IJVMServer>) {
+  getName(resource: Resource<IJVMServer>): string {
+    return resource.attributes.name;
+  },
+
+  getHighlights(resource: Resource<IJVMServer>) {
     return [
       {
         key: "Status",
-        value: jvmServer.attributes.enablestatus,
+        value: resource.attributes.enablestatus,
       }
     ];
   },
@@ -56,9 +59,5 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
 
   getCriteriaHistory() {
     return persistentStorage.getJVMServerSearchHistory();
-  },
-
-  getName(jvmServer: Resource<IJVMServer>): string {
-    return jvmServer.attributes.name;
   },
 };
