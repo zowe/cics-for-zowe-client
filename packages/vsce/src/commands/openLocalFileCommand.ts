@@ -82,7 +82,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-function openLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+export function openLocalFile(session: imperative.AbstractSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       session: session,
