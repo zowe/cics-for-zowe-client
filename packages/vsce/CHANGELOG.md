@@ -2,9 +2,11 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.11.0`
 
 - Enhancement: Added JVM server to the tree node. [#391](https://github.com/zowe/cics-for-zowe-client/issues/391)
+- Enhancement: Added CICS Bundle and Bundle Part resources to the CICS tree.
+- Enhancement: Added new "Inspect CICS Resource" command to quickly view CICS resource information. [#281](https://github.com/zowe/cics-for-zowe-client/issues/281)
 
 ## `3.9.4`
 

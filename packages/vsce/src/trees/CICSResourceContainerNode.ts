@@ -29,6 +29,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   refreshingDescription: boolean = false;
   loading: boolean = false;
 
+  defaultDescription: string;
+
   constructor(
     label: string | TreeItemLabel,
     opts: {
@@ -52,6 +54,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     );
 
     this.description = description;
+    this.defaultDescription = description;
 
     this.regionName = opts.regionName;
     this.cicsplexName = opts.cicsplexName;
@@ -88,8 +91,14 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.childResource.resources.resetContainer();
     }
 
+    const thisParent = this.getParent() as CICSPlexTree | CICSRegionTree | CICSResourceContainerNode<T>;
+    const regionToSupply =
+      thisParent instanceof CICSPlexTree || thisParent instanceof CICSRegionTree ?
+        this.regionName
+      : this.getContainedResource().resource.attributes.eyu_cicsname;
+
     // Searching for resources, with or without region
-    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getSession(), this.regionName, this.cicsplexName);
+    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getSession(), regionToSupply, this.cicsplexName);
 
     if (!resources.length) {
       Gui.infoMessage("No resources found");
@@ -125,7 +134,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     this.refreshingDescription = true;
-    this.description = `${
+    this.description = `${this.defaultDescription ? this.defaultDescription + " " : ""}${
       this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
     } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
 
@@ -154,7 +163,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     // No region so searching at a plex level - filter must be specified
-    if (!this.regionName && !this.childResource.resources.isFilterApplied()) {
+    // Only apply this check to top-level nodes, so resources with children can show them immediately
+    if (this.getParent() instanceof CICSPlexTree && !this.regionName && !this.childResource.resources.isFilterApplied()) {
       this.viewMore = false;
       return (this.children = [new TextTreeItem("Use the search button to filter resources", "applyfiltertext.")]);
     }

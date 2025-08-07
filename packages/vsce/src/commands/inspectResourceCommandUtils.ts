@@ -9,20 +9,20 @@
  *
  */
 
-import { commands, ExtensionContext, InputBoxOptions, l10n, QuickPickItem, window } from "vscode";
+import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { Gui } from "@zowe/zowe-explorer-api";
+import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
+import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import { getMetas, IResource, IResourceMeta, TransactionMeta } from "../doc";
+import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
+import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
-import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
-import { Gui } from "@zowe/zowe-explorer-api";
-import constants from "../constants/CICS.defaults";
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
   // Will only have one resource
@@ -40,14 +40,17 @@ async function showInspectResource(context: ExtensionContext, resourcesHandler: 
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-  const region = node.regionName !== undefined ? node.regionName : node.description.toString().replace("(", "").replace(")", "");
-  const resourcesHandler: IResourcesHandler = await loadResources(
+  const region = node.regionName !== undefined ? node.regionName : node.getContainedResource().resource.attributes.eyu_cicsname;
+  const parentResource = (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource;
+
+  const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
     node.getSession(),
     node.getContainedResource().meta,
     node.getContainedResourceName(),
     region,
     node.cicsplexName,
-    node.getProfileName()
+    node.getProfileName(),
+    parentResource,
   );
 
   if (resourcesHandler) {
@@ -64,12 +67,13 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     if (!type) {
       // Error if resource type not found
-      CICSLogger.error(CICSMessages.CICSResourceTypeNotFound.message);
-      window.showErrorMessage(CICSMessages.CICSResourceTypeNotFound.message);
+      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
+      CICSLogger.error(message);
+      window.showErrorMessage(message);
       return;
     }
 
-    const resourcesHandler: IResourcesHandler = await loadResources(
+    const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
       cicsRegion.session,
       type,
       resourceName,
@@ -84,6 +88,31 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
   }
 }
 
+async function loadResourcesWithProgress(
+  session: CICSSession,
+  resourceType: IResourceMeta<IResource>,
+  resourceName: string,
+  regionName: string,
+  cicsplex: string,
+  profileName: string,
+  parentResource?: Resource<IResource>
+) {
+  let resourcesHandler: IResourcesHandler;
+  await window.withProgress(
+    {
+      title: CICSMessages.CICSLoadingResourceName.message.replace("%name%", resourceName),
+      location: ProgressLocation.Notification,
+      cancellable: false,
+    },
+    async (progress, token) => {
+      token.onCancellationRequested(() => {});
+
+      resourcesHandler = await loadResources(session, resourceType, resourceName, regionName, cicsplex, profileName, parentResource);
+    }
+  );
+  return resourcesHandler;
+}
+
 export async function inspectResource(context: ExtensionContext) {
   const cicsRegion: ICICSRegionWithSession = await getLastUsedRegion();
 
@@ -93,7 +122,7 @@ export async function inspectResource(context: ExtensionContext) {
       const resourceName = await selectResource(resourceType);
 
       if (resourceName) {
-        const resourcesHandler: IResourcesHandler = await loadResources(
+        const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
           cicsRegion.session,
           resourceType,
           resourceName,
@@ -116,17 +145,19 @@ async function loadResources(
   resourceName: string,
   regionName: string,
   cicsplex: string,
-  profileName: string
+  profileName: string,
+  parentResource?: Resource<IResource>,
 ): Promise<IResourcesHandler> {
-  const resourceContainer = new ResourceContainer<IResource>(resourceType);
+  const resourceContainer = new ResourceContainer<IResource>(resourceType, parentResource);
   resourceContainer.setCriteria([resourceName]);
 
   resourceContainer.setProfileName(profileName);
   const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(session, regionName, cicsplex);
 
-  if (resources[0].length === 0 ) {
+  if (resources[0].length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", regionName);
+
     CICSLogger.error(message);
     window.showErrorMessage(message);
     return;
@@ -177,7 +208,7 @@ async function getChoiceFromQuickPick(
   placeHolder: string,
   items: string[]
 ): Promise<QuickPickItem | undefined> {
-  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item}))];
+  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item }))];
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
@@ -193,7 +224,7 @@ async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Pro
   const options: InputBoxOptions = {
     prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
     value: "",
-    validateInput: function(value: string): string {
+    validateInput: function (value: string): string {
       if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {
         return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_TRANS_RESOURCE_NAME_LENGTH));
       } else if (resourceType !== TransactionMeta && value.length > constants.MAX_RESOURCE_NAME_LENGTH) {

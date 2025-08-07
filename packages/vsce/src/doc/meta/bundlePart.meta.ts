@@ -23,7 +23,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNameSingular: "Bundle Part",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
-    return `BUNDLE=${parentResource.name} AND (${criteria.map((n) => `BUNDLEPART=${n}`).join(" OR ")})`;
+    return `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")}) AND (BUNDLE='${parentResource.name}')`;
   },
 
   getDefaultCriteria: function (parentResource: IBundle) {
@@ -31,25 +31,17 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getLabel: function (bundlePart: Resource<IBundlePart>): string {
-    let label = `${bundlePart.attributes.bundlepart}`;
-
-    if (bundlePart.attributes.enablestatus.trim().toLowerCase() === "disabled") {
-      label += " (Disabled)";
-    }
-
-    return label;
+    return `${bundlePart.attributes.bundlepart}`;
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
-    return `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART}.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
+    return `${
+      CicsCmciConstants.CICS_CMCI_BUNDLE_PART
+    }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
-  getIconName: function (bundlePart: Resource<IBundlePart>): string {
-    let iconName = `bundle-part`;
-    if (bundlePart.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
-      iconName += `-disabled`;
-    }
-    return iconName;
+  getIconName: function (_bundlePart: Resource<IBundlePart>): string {
+    return `bundle-part`;
   },
 
   getName(bundlePart: Resource<IBundlePart>) {
@@ -72,4 +64,6 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   getCriteriaHistory() {
     return persistentStorage.getBundlePartSearchHistory();
   },
+
+  filterCaseSensitive: true,
 };

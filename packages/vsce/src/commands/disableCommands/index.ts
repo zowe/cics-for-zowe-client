@@ -9,6 +9,7 @@
  *
  */
 
+export * from "./disableBundleCommand";
 export * from "./disableLocalFileCommand";
 export * from "./disableProgramCommand";
 export * from "./disableTransactionCommand";
