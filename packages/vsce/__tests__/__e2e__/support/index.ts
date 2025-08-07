@@ -1,4 +1,5 @@
 import '@testing-library/cypress/add-commands';
+import 'cypress-iframe';
 
 // cypress/support/index.ts
 declare global {
@@ -33,9 +34,19 @@ declare global {
        * @example cy.toggleZoweTrees()
        */
       toggleZoweTrees(): Chainable<JQuery<HTMLElement>>;
+
+      iframeOnload(args?: any): any;
     }
   }
 }
+
+Cypress.Commands.add('iframeOnload', { prevSubject: 'element' }, $iframe => {
+  return new Cypress.Promise(resolve => {
+    $iframe.on('load', () => {
+      resolve($iframe.contents().find('body'));
+    });
+  });
+});
 
 Cypress.Commands.add("getTreeNode", (value: string) => {
   return cy.get(`div.custom-view-tree-node-item-resourceLabel[aria-label='${value}']`);

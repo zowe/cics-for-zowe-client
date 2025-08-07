@@ -4,6 +4,8 @@
   "security.workspace.trust.startupPrompt": "never",
   "security.workspace.trust.untrustedFiles": "open",
   "zowe.security.secureCredentialsEnabled": false,
+  "zowe.cics.showAllCommandsInPalette": true,
+  "zowe.cics.resourceInspector": true,
   "zowe.cics.persistent": {
     "persistence": true,
     "programSearchHistory": [],
