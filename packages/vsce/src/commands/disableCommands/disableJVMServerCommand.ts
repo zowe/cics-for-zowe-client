@@ -21,7 +21,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
       return;
     }
 
-    let disableType = await window.showInformationMessage(
+    const disableType = await window.showInformationMessage(
       `Choose one of the following for Disabling`,
       ...["Phase Out", "Purge", "Force Purge", "Kill"]
     );
