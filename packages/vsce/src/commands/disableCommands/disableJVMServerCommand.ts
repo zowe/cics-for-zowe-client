@@ -58,7 +58,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
             CICSLogger.error(message);
           }
         }
-      tree._onDidChangeTreeData.fire(nodes[0].getParent());
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

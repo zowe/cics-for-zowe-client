@@ -28,7 +28,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
 
         for (const node of nodes) {
           progress.report({
@@ -39,18 +39,18 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
           try {
             await enableJVMServer(node.getSession(), {
               name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+              cicsPlex: node.cicsplexName,
             });
           } catch (error) {
-            const message = `Something went wrong while enabling JVMServer ${node.getContainedResourceName()}\n\n${JSON.stringify(
+            const message = `Something went wrong while enabling JVM Server ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
             ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
             window.showErrorMessage(message);
             CICSLogger.error(message);
           }
         }
-      tree._onDidChangeTreeData.fire(nodes[0].getParent());
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
