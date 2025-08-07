@@ -17,7 +17,6 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
   return commands.registerCommand("cics-extension-for-zowe.disableJVMServer", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, clickedNode);
     if (!nodes || !nodes.length) {
-<<<<<<< HEAD
       await window.showErrorMessage("No CICS JVM Server selected");
       return;
     }
@@ -27,9 +26,6 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
       ...["Phase Out", "Purge", "Force Purge", "Kill"]
     );
     if (!disableType) {
-=======
-      await window.showErrorMessage("No CICS JVMServer selected");
->>>>>>> f744e46 (Added Enable and Disable Commands)
       return;
     }
 
