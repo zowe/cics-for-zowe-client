@@ -763,10 +763,12 @@
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "@testing-library/cypress": "^10.0.3",
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.10",
     "@types/mustache": "^4.2.6",
+    "@types/node": "^24.2.0",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@types/vscode": "~1.53.0",
@@ -790,8 +792,8 @@
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
-    "@zowe/cics-for-zowe-sdk": "6.11.0",
     "@zowe/cics-for-zowe-explorer-api": "6.11.0",
+    "@zowe/cics-for-zowe-sdk": "6.11.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.2.2"
   },

@@ -88,7 +88,9 @@ jobs:
   e2e-test-mac:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ubuntu-22.04
-
+    container:
+      image: mcr.microsoft.com/playwright:v1.54.0-noble
+      options: --user 1001
     steps:
       - name: Change workspace folder so wiremock service can write
         run: |
@@ -109,12 +111,16 @@ jobs:
       - name: Package VSIX
         id: build
         run: npm run package
+      
+      # - name: Install browsers
+      #   run: npx playwright install --with-deps
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: |
-          cd packages/vsce
-          npm run test:e2e
+          cd packages/vsce/
+          npm run test:e2e:setup
+          npx playwright test -c __tests__/playwright.config.ts
 
       - name: Archive E2E screenshots and Wiremock log
         if: success() || failure()
@@ -122,7 +128,7 @@ jobs:
         with:
           name: e2eLogs
           path: |
-            packages/vsce/__tests__/__e2e__/cypress/screenshots
+            packages/vsce/__tests__/screenshots
 
   release:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
