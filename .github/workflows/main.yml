@@ -88,9 +88,6 @@ jobs:
   e2e-test-mac:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ubuntu-22.04
-    container:
-      image: mcr.microsoft.com/playwright:v1.54.0-noble
-      options: --user 1001
     steps:
       - name: Change workspace folder so wiremock service can write
         run: |
@@ -112,8 +109,8 @@ jobs:
         id: build
         run: npm run package
       
-      # - name: Install browsers
-      #   run: npx playwright install --with-deps
+      - name: Install browsers
+        run: npx playwright install --with-deps
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
