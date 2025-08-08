@@ -65,3 +65,4 @@ export const CBSA = "CBSA";
 
 //JVMServer labels
 export const EYUCMCIJ = "EYUCMCIJ";
+export const HERSHWLP = "HERSHWLP";

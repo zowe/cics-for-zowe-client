@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added Enable/Disable actions to JVM Servers [#391](https://github.com/zowe/cics-for-zowe-client/issues/391)
+
 ## `3.11.0`
 
 - Enhancement: Added JVM server to the tree node. [#391](https://github.com/zowe/cics-for-zowe-client/issues/391)
