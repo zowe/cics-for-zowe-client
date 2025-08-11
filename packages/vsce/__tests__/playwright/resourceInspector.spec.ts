@@ -51,25 +51,60 @@ test.afterEach(async ({ page }) => {
   }
 });
 
-test('Resource Inspector on Program', async ({ page }) => {
+test.describe("Resource Inspector tests", async () => {
 
-  await mockPrograms(wiremock);
-  await mockFetchOneProgram(wiremock, "C128N");
+  test('should inspect a program resource', async ({ page }) => {
+    await mockPrograms(wiremock);
+    await mockFetchOneProgram(wiremock, "C128N");
 
-  await getTreeItem(page, 'wiremock_localhost').click();
-  await getTreeItem(page, 'CICSEX61').click();
-  await getTreeItem(page, '2PRGTST').click();
-  await getTreeItem(page, 'Programs').click();
-  await getTreeItem(page, 'C128N').click({ button: "right" });
+    await getTreeItem(page, 'wiremock_localhost').click();
+    await getTreeItem(page, 'CICSEX61').click();
+    await getTreeItem(page, '2PRGTST').click();
+    await getTreeItem(page, 'Programs').click();
+    await getTreeItem(page, 'C128N').click({ button: "right" });
 
-  await page.waitForTimeout(200);
-  await page.getByText("Inspect Resource").click();
+    await page.waitForTimeout(200);
+    await page.getByText("Inspect Resource").click();
 
-  await page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("#th-1").waitFor();
-  await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").getByText("cedfstatus")).toBeDefined();
+    await page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("#th-1").waitFor();
+    await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("th").first()).toHaveText(/C128N/);
+  });
 
-  await page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("input").first().fill("library");
-  await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/1.png" });
-  await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("input").first()).toHaveValue("library");
-  await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("th").first()).toHaveText(/C128N/);
-});;
+  test("should have a filterable table", async ({ page }) => {
+    await mockPrograms(wiremock);
+    await mockFetchOneProgram(wiremock, "C128N");
+
+    await getTreeItem(page, 'wiremock_localhost').click();
+    await getTreeItem(page, 'CICSEX61').click();
+    await getTreeItem(page, '2PRGTST').click();
+    await getTreeItem(page, 'Programs').click();
+    await getTreeItem(page, 'C128N').click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("Inspect Resource").click();
+
+    await page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("#th-1").waitFor();
+    await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").getByText("cedfstatus")).toBeDefined();
+
+    await page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("input").first().fill("library");
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/1.png" });
+    await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("input").first()).toHaveValue("library");
+    await expect(page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame").locator("th").first()).toHaveText(/C128N/);
+  });
+
+  test("should show loading message", async ({ page }) => {
+    await mockPrograms(wiremock);
+    await mockFetchOneProgram(wiremock, "C128N", 600);
+
+    await getTreeItem(page, 'wiremock_localhost').click();
+    await getTreeItem(page, 'CICSEX61').click();
+    await getTreeItem(page, '2PRGTST').click();
+    await getTreeItem(page, 'Programs').click();
+    await getTreeItem(page, 'C128N').click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("Inspect Resource").click();
+
+    await expect(page.getByText("Loading CICS resource 'C128N'...", { exact: true })).toBeVisible();
+  });
+});

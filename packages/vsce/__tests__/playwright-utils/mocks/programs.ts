@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import { BodyType, IWireMockResponse, MatchingAttributes, WireMock } from "wiremock-captain";
+import { BodyType, DelayType, IWireMockResponse, MatchingAttributes, WireMock } from "wiremock-captain";
 
 const wiremockFilesPath = join(__dirname, "..", "..", "__e2e__", "resources", "wiremock", "__files");
 
@@ -215,14 +215,20 @@ export const mockEnableDisableProgram = async (wiremock: WireMock) => {
   );
 };
 
-export const mockFetchOneProgram = async (wiremock: WireMock, programName: string) => {
+export const mockFetchOneProgram = async (wiremock: WireMock, programName: string, delay: number = 0) => {
   await wiremock.register(
     {
       method: "GET",
       endpoint: `/CICSSystemManagement/CICSProgram/CICSEX61/2PRGTST?CRITERIA=(PROGRAM%3D${programName})&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`
     },
     buildResponseObj("resource_inspector_mappings/fetch-selected-program-count-with-cachetoken"),
-    { responseBodyType: BodyType.Body, }
+    {
+      responseBodyType: BodyType.Body,
+      responseDelay: {
+        constantDelay: delay,
+        type: DelayType.FIXED,
+      }
+    }
   );
   await wiremock.register(
     {
@@ -230,7 +236,13 @@ export const mockFetchOneProgram = async (wiremock: WireMock, programName: strin
       endpoint: buildEndpoint_getResultCache("E1033298F081A060")
     },
     buildResponseObj("resource_inspector_mappings/program-with-resource-inspector"),
-    { responseBodyType: BodyType.Body, }
+    {
+      responseBodyType: BodyType.Body,
+      responseDelay: {
+        constantDelay: delay,
+        type: DelayType.FIXED,
+      }
+    }
   );
   await wiremock.register(
     {
