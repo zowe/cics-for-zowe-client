@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { PROFILE_NAME, getTree, getTreeItem, isTreeItemExpanded } from "../playwright-utils/utils";
+import { WireMock } from 'wiremock-captain';
+import { mockEnableDisableProgram, mockPrograms } from '../playwright-utils/mocks/programs';
+
+const wiremock = new WireMock("http://localhost:8080");
 
 test.beforeEach(async ({ page, request }) => {
   const response = await request.post(`http://localhost:8080/__admin/scenarios/reset`, {});
@@ -23,6 +27,7 @@ test.beforeEach(async ({ page, request }) => {
     await jobTree.click();
   }
 
+  await wiremock.clearAllExceptDefault();
 });
 
 test.afterEach(async ({ page }) => {
@@ -50,16 +55,22 @@ test.afterEach(async ({ page }) => {
 test.describe("Program tests", () => {
 
   test("should expand programs tree to reveal programs", async ({ page }) => {
+
+    await mockPrograms(wiremock);
+
     await getTreeItem(page, PROFILE_NAME).click();
     await getTreeItem(page, 'CICSEX61').click();
-    await getTreeItem(page, 'IYCWENK1').click();
+    await getTreeItem(page, '2PRGTST').click();
     await getTreeItem(page, 'Programs').click();
-    await expect(getTreeItem(page, 'IBMRLIB1')).toHaveAttribute("aria-label", "IBMRLIB1 ");
+    await expect(getTreeItem(page, 'C128N')).toHaveAttribute("aria-label", "C128N ");
   });
   test("should enable and disable a program", async ({ page }) => {
+
+    await mockEnableDisableProgram(wiremock);
+
     await getTreeItem(page, PROFILE_NAME).click();
     await getTreeItem(page, 'CICSEX61').click();
-    await getTreeItem(page, 'IYCWENK1').click();
+    await getTreeItem(page, '2PRGTST').click();
     await getTreeItem(page, 'Programs').click();
     await expect(getTreeItem(page, 'C128N')).toHaveAttribute("aria-label", "C128N ");
     await getTreeItem(page, "C128N").click({ button: "right" });

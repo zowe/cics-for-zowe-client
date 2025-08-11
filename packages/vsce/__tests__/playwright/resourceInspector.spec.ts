@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { PROFILE_NAME, getTree, getTreeItem, isTreeItemExpanded } from "../playwright-utils/utils";
+import { WireMock } from 'wiremock-captain';
+import { mockFetchOneProgram, mockPrograms } from '../playwright-utils/mocks/programs';
+
+const wiremock = new WireMock("http://localhost:8080");
 
 test.beforeEach(async ({ page, request }) => {
   const response = await request.post(`http://localhost:8080/__admin/scenarios/reset`, {});
@@ -22,6 +26,8 @@ test.beforeEach(async ({ page, request }) => {
   if (await isTreeItemExpanded(jobTree)) {
     await jobTree.click();
   }
+
+  await wiremock.clearAllExceptDefault();
 });
 
 test.afterEach(async ({ page }) => {
@@ -47,9 +53,12 @@ test.afterEach(async ({ page }) => {
 
 test('Resource Inspector on Program', async ({ page }) => {
 
+  await mockPrograms(wiremock);
+  await mockFetchOneProgram(wiremock, "C128N");
+
   await getTreeItem(page, 'wiremock_localhost').click();
   await getTreeItem(page, 'CICSEX61').click();
-  await getTreeItem(page, 'IYCWENK1').click();
+  await getTreeItem(page, '2PRGTST').click();
   await getTreeItem(page, 'Programs').click();
   await getTreeItem(page, 'C128N').click({ button: "right" });
 
