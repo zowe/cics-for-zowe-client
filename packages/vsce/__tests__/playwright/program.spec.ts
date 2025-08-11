@@ -1,18 +1,5 @@
-import { test, expect, Page, Locator } from '@playwright/test';
-
-const PROFILE_NAME = "wiremock_localhost";
-
-const getTree = (page: Page, exactText: string) => {
-  return page.getByRole('button', { name: exactText, exact: true });
-};
-
-const getTreeItem = (page: Page, exactText: string) => {
-  return page.getByRole('treeitem', { name: exactText, exact: true });
-};
-
-const isTreeItemExpanded = async (treeItem: Locator) => {
-  return await treeItem.getAttribute("aria-expanded") === "true";
-};
+import { test, expect } from '@playwright/test';
+import { PROFILE_NAME, getTree, getTreeItem, isTreeItemExpanded } from "../playwright-utils/utils";
 
 test.beforeEach(async ({ page, request }) => {
   const response = await request.post(`http://localhost:8080/__admin/scenarios/reset`, {});
