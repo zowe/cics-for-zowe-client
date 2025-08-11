@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PROFILE_NAME, getTree, getTreeItem, isTreeItemExpanded } from "../playwright-utils/utils";
 import { WireMock } from 'wiremock-captain';
-import { mockEnableDisableProgram, mockPrograms } from '../playwright-utils/mocks/programs';
+import { mockEnableDisableProgram, mockNewCopyProgram, mockPrograms } from '../playwright-utils/mocks/programs';
 
 const wiremock = new WireMock("http://localhost:8080");
 
@@ -28,6 +28,7 @@ test.beforeEach(async ({ page, request }) => {
   }
 
   await wiremock.clearAllExceptDefault();
+  await wiremock.resetAllScenarios();
 });
 
 test.afterEach(async ({ page }) => {
@@ -64,8 +65,10 @@ test.describe("Program tests", () => {
     await getTreeItem(page, 'Programs').click();
     await expect(getTreeItem(page, 'C128N')).toHaveAttribute("aria-label", "C128N ");
   });
+
   test("should enable and disable a program", async ({ page }) => {
 
+    await mockPrograms(wiremock);
     await mockEnableDisableProgram(wiremock);
 
     await getTreeItem(page, PROFILE_NAME).click();
@@ -86,5 +89,23 @@ test.describe("Program tests", () => {
     await page.getByText("Enable Program").click();
 
     await expect(getTreeItem(page, 'C128N')).toHaveAttribute("aria-label", "C128N ");
+  });
+
+  test("should new copy a program", async ({ page }) => {
+
+    await mockPrograms(wiremock);
+    await mockNewCopyProgram(wiremock, "DSNCUEXT");
+
+    await getTreeItem(page, PROFILE_NAME).click();
+    await getTreeItem(page, 'CICSEX61').click();
+    await getTreeItem(page, '2PRGTST').click();
+    await getTreeItem(page, 'Programs').click();
+    await expect(getTreeItem(page, 'DSNCUEXT')).toHaveAttribute("aria-label", "DSNCUEXT ");
+    await getTreeItem(page, "DSNCUEXT").click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("New Copy").click();
+
+    await expect(getTreeItem(page, 'DSNCUEXT (New copy count: 1)')).toHaveAttribute("aria-label", "DSNCUEXT (New copy count: 1) ");
   });
 });

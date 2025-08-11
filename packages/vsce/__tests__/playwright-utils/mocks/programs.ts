@@ -73,8 +73,6 @@ export const mockPrograms = async (wiremock: WireMock) => {
 
 export const mockEnableDisableProgram = async (wiremock: WireMock) => {
 
-  await mockPrograms(wiremock);
-
   /**
    * Disable program C128N
    */
@@ -242,4 +240,71 @@ export const mockFetchOneProgram = async (wiremock: WireMock, programName: strin
     buildResponseObj("resource_inspector_mappings/fetch-selected-program-count"),
     { responseBodyType: BodyType.Body, }
   );
+};
+
+export const mockNewCopyProgram = async (wiremock: WireMock, programName: string) => {
+
+  await wiremock.register(
+    {
+      method: "PUT",
+      endpoint: `/CICSSystemManagement/CICSProgram/CICSEX61/2PRGTST?CRITERIA=(PROGRAM%3D${programName})`,
+      body: "<request><action name=\"NEWCOPY\"/></request>"
+    },
+    buildResponseObj("response-for-new-copy-program-1"),
+    {
+      responseBodyType: BodyType.Body,
+      requestBodyFeature: MatchingAttributes.EqualToXml,
+      scenario: {
+        scenarioName: "NewCopy Programs",
+        requiredScenarioState: "Started",
+        newScenarioState: "Program is NewCopied"
+      }
+    }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getProgramsCacheToken("2PRGTST"),
+    },
+    buildResponseObj("get-newcopied-program-cache-token"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "NewCopy Programs",
+        requiredScenarioState: "Program is NewCopied",
+        newScenarioState: "Got NewCopied program result cache"
+      }
+    }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: `/CICSSystemManagement/CICSResultCache/E1033298F081A199/1/15?NODISCARD`,
+    },
+    buildResponseObj("program-with-new-copy-count-1"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "NewCopy Programs",
+        requiredScenarioState: "Got NewCopied program result cache",
+        newScenarioState: "Got NewCopied program records"
+      }
+    }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A199", false),
+    },
+    buildResponseObj("fetch-resource-count"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "NewCopy Programs",
+        requiredScenarioState: "Got NewCopied program records",
+        newScenarioState: "Finished"
+      }
+    }
+  );
+
 };
