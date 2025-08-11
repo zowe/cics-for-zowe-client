@@ -51,11 +51,6 @@ describe("Perform Actions On JVM Servers", () => {
     expect(wiremockServer).exist;
     await updateUserSetting("zowe.cics.showAllCommandsInPalette",true);
 
-    // const inputBox1 = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
-    // await inputBox1.confirm();
-    // await sleep(500);
-
-    //await sleep(100);
     await resetAllScenarios();
   });
 
