@@ -85,7 +85,7 @@ jobs:
     #     name: zowe-cics-client
     #     path: dist/*
 
-  e2e-test-mac:
+  e2e-test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ubuntu-22.04
     steps:
@@ -108,7 +108,7 @@ jobs:
       - name: Package VSIX
         id: build
         run: npm run package
-      
+
       - name: Install browsers
         run: npx playwright install --with-deps
 
@@ -131,7 +131,7 @@ jobs:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
     needs:
       - test
-      - e2e-test-mac
+      - e2e-test
     runs-on: ubuntu-latest
     permissions:
       contents: write
