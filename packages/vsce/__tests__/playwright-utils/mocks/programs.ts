@@ -18,6 +18,9 @@ const buildEndpoint_getProgramsCacheToken = (regionName: string, plexName: strin
 const buildEndpoint_getResultCache = (resultCache: string, noDiscard: boolean = true) => {
   return `/CICSSystemManagement/CICSResultCache/${resultCache}${noDiscard ? "/1/250?NODISCARD" : "?SUMMONLY"}`;
 };
+const buildEndpoint_getJVMServerCacheToken = (regionName: string, plexName: string = "CICSEX61") => {
+  return `/CICSSystemManagement/CICSJVMServer/${plexName}/${regionName}?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`;
+};
 
 export const mockPrograms = async (wiremock: WireMock) => {
 
@@ -66,6 +69,58 @@ export const mockPrograms = async (wiremock: WireMock) => {
         scenarioName: "Getting Programs",
         requiredScenarioState: "Fetched program records",
         newScenarioState: "Removed result cache"
+      }
+    }
+  );
+};
+
+export const mockJVMServers = async (wiremock: WireMock) => {
+
+  /**
+   * Get all jvms and put them in tree
+   */
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getJVMServerCacheToken("2PRGTST"),
+    },
+    buildResponseObj("fetch-jvmserver-count-with-cachetoken"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "Getting JVM servers",
+        requiredScenarioState: "Started",
+        newScenarioState: "Got jvmserver result cache"
+      }
+    }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E141E7EF7EB5D244"),
+    },
+    buildResponseObj("jvmserver-with-default-filter"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "Getting JVM servers",
+        requiredScenarioState: "Got jvmserver result cache",
+        newScenarioState: "Fetched jvmserver records"
+      }
+    }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E141E7EF7EB5D244", false),
+    },
+    buildResponseObj("fetch-jvmserver-count"),
+    {
+      responseBodyType: BodyType.Body,
+      scenario: {
+        scenarioName: "Getting JVM servers",
+        requiredScenarioState: "Fetched jvmserver records",
+        newScenarioState: "Removed jvmserver result cache"
       }
     }
   );
