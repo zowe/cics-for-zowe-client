@@ -6,8 +6,8 @@ export const getTree = (page: Page, exactText: string) => {
   return page.getByRole('button', { name: exactText, exact: true });
 };
 
-export const getTreeItem = (page: Page, exactText: string) => {
-  return page.getByRole('treeitem', { name: exactText, exact: true });
+export const getTreeItem = (page: Page, text: string, exact: boolean = true) => {
+  return page.getByRole('treeitem', { name: text, exact });
 };
 
 export const isTreeItemExpanded = async (treeItem: Locator) => {

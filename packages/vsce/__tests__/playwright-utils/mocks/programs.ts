@@ -254,6 +254,89 @@ export const mockFetchOneProgram = async (wiremock: WireMock, programName: strin
   );
 };
 
+export const mockShowLibrary = async (wiremock: WireMock, programName: string) => {
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: `/CICSSystemManagement/CICSLibrary/CICSEX61/2PRGTST?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`
+    },
+    buildResponseObj("load_library_mapping/fetch-library-count-with-cachetoken"),
+    { responseBodyType: BodyType.Body }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A123")
+    },
+    buildResponseObj("load_library_mapping/response-for-fetch-library"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A123", false)
+    },
+    buildResponseObj("load_library_mapping/fetch-library-count"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: `/CICSSystemManagement/CICSLibrary/CICSEX61/2PRGTST?CRITERIA=(name%3DLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-first-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A321")
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-second-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A321", false)
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-third-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: `/CICSSystemManagement/CICSLibraryDatasetName/CICSEX61/2PRGTST?CRITERIA=(LIBRARY%3D'LIB1')%20AND%20(DSNAME%3D'DS11')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT`
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-fourth-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body }
+  );
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A333")
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-fifth-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+  await wiremock.register(
+    {
+      method: "GET",
+      endpoint: buildEndpoint_getResultCache("E1033298F081A333", false)
+    },
+    buildResponseObj("show_library_mappings/LIB1_mappings/response-for-sixth-step-of-show-lib1-library"),
+    { responseBodyType: BodyType.Body, }
+  );
+
+};
+
 export const mockNewCopyProgram = async (wiremock: WireMock, programName: string) => {
 
   await wiremock.register(
@@ -291,7 +374,7 @@ export const mockNewCopyProgram = async (wiremock: WireMock, programName: string
   await wiremock.register(
     {
       method: "GET",
-      endpoint: `/CICSSystemManagement/CICSResultCache/E1033298F081A199/1/15?NODISCARD`,
+      endpoint: `/CICSSystemManagement/CICSResultCache/E1033298F081A199/1/3?NODISCARD`,
     },
     buildResponseObj("program-with-new-copy-count-1"),
     {

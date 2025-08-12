@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PROFILE_NAME, getTree, getTreeItem, isTreeItemExpanded } from "../playwright-utils/utils";
 import { WireMock } from 'wiremock-captain';
-import { mockEnableDisableProgram, mockNewCopyProgram, mockPrograms } from '../playwright-utils/mocks/programs';
+import { mockEnableDisableProgram, mockNewCopyProgram, mockPrograms, mockShowLibrary } from '../playwright-utils/mocks/programs';
 
 const wiremock = new WireMock("http://localhost:8080");
 
@@ -106,6 +106,26 @@ test.describe("Program tests", () => {
     await page.waitForTimeout(200);
     await page.getByText("New Copy").click();
 
-    await expect(getTreeItem(page, 'DSNCUEXT (New copy count: 1)')).toHaveAttribute("aria-label", "DSNCUEXT (New copy count: 1) ");
+    await expect(getTreeItem(page, 'DSNCUEXT (New copy count: 1)', false)).toHaveCount(1);
+  });
+
+  test("should show library for program", async ({ page }) => {
+
+    await mockPrograms(wiremock);
+    await mockShowLibrary(wiremock, "PLIB1DS1");
+
+    await getTreeItem(page, PROFILE_NAME).click();
+    await getTreeItem(page, 'CICSEX61').click();
+    await getTreeItem(page, '2PRGTST').click();
+    await getTreeItem(page, 'Programs').click();
+    await expect(getTreeItem(page, 'PLIB1DS1')).toHaveAttribute("aria-label", "PLIB1DS1 ");
+    await getTreeItem(page, "PLIB1DS1").click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("Show Library").click();
+
+    await expect(getTreeItem(page, "LIB1 (LIBRARY='LIB1')", false)).toHaveCount(1);
+    await expect(getTreeItem(page, "DS11")).toHaveCount(1);
+    await expect(getTreeItem(page, "DS12")).toHaveCount(1);
   });
 });
