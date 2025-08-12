@@ -9,8 +9,12 @@
  *
  */
 
-export * from "./IExtensionAPI";
-export * from "./IResource";
-export * from "./IResourceContext";
-export * from "./IResourceExtender";
-export * from "./IResourceAction";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+
+export interface IResourceContext {
+  regionName: string;
+  cicsplexName: string;
+  profile: imperative.IProfileLoaded;
+  session: CICSSession;
+}
