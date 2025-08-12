@@ -12,9 +12,13 @@
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
 import Mustache = require("mustache");
-import { WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
+import { WebviewViewProvider, Uri, WebviewView, Webview, commands } from "vscode";
+import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource, IResource } from "../doc";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
+import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { SessionHandler } from "../resources";
+import { ProfileManagement } from "../utils/profileManagement";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
@@ -24,7 +28,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   private webviewView?: WebviewView;
   private resource: IContainedResource<IResource>;
 
-  private resourceHandlerMap: { key: string; value: string }[];
+  private resourceHandlerMap: { key: string; value: string; }[];
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -35,8 +39,23 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     if (!this.instance) {
       this.instance = new ResourceInspectorViewProvider(extensionUri);
     }
-
     return this.instance;
+  }
+
+  private getResourceContext(): IResourceContext {
+    const profileName = this.resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
+    const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
+
+    const session = SessionHandler.getInstance().getSession(profile);
+    const cicsplexName = this.resourceHandlerMap.filter((itm) => itm.key === "cicsplex")[0].value;
+    const regionName = this.resourceHandlerMap.filter((itm) => itm.key === "region")[0].value;
+
+    return {
+      profile,
+      session,
+      cicsplexName,
+      regionName,
+    };
   }
 
   /**
@@ -56,6 +75,22 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
+      }
+      if (message.command === "action") {
+        const action = CICSResourceExtender.getAction(message.actionId);
+
+        if (!action) {
+          return;
+        }
+
+        if (typeof action.action === 'string') {
+          commands.executeCommand(action.action);
+        } else {
+          await action.action(this.resource.resource.attributes, this.getResourceContext());
+
+          // Refetch and rerender resource information.
+          // Should be a method soon that shows RI when provided resName, resType, session, profile, plex, region.
+        }
       }
     });
     this.webviewView.onDidDispose(() => {
@@ -104,7 +139,39 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         resource: this.resource.resource.attributes,
         profileHandler: this.resourceHandlerMap,
       },
+      actions: (await this.getActions()).map((action) => {
+        return {
+          id: action.id,
+          name: action.name,
+        };
+      })
     });
+  }
+
+  private async getActions() {
+    // Required as Array.filter cannot be asyncronous
+    const asyncFilter = async (arr: IResourceAction[], predicate: (action: IResourceAction) => Promise<boolean>) => {
+      const results = await Promise.all(arr.map(predicate));
+      return arr.filter((_v, index) => results[index]);
+    };
+
+    // Gets actions for this resource type
+    let actionsForResource = CICSResourceExtender.getActionsForResourceType([this.resource.meta.resourceName]);
+
+    // Filter out resources that shouldn't be visible
+    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction) => {
+      if (!action.visibleWhen) {
+        return true;
+      }
+      if (typeof action.visibleWhen === 'boolean') {
+        return action.visibleWhen;
+      } else {
+        const visible = await action.visibleWhen(this.resource.resource.attributes, this.getResourceContext());
+        return visible;
+      }
+    });
+
+    return actionsForResource;
   }
 
   /**
