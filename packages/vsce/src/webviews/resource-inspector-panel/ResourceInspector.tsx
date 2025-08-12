@@ -14,7 +14,7 @@ import { VscodeTextfield } from "@vscode-elements/react-elements";
 import * as React from "react";
 import * as vscode from "../common/vscode";
 
-import { IResource } from "../../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
 
@@ -26,12 +26,21 @@ const ResourceInspector = () => {
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
-    profileHandler: { key: string; value: string }[];
+    profileHandler: { key: string; value: string; }[];
   }>();
+  const [resourceActions, setResourceActions] = React.useState<{
+    id: string;
+    name: string;
+  }[]>([]);
+
+  const handleActionClick = (actionId: string) => {
+    vscode.postVscMessage({ command: "action", actionId });
+  };
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
+      setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
     const handleScroll = () => {
@@ -69,7 +78,9 @@ const ResourceInspector = () => {
           <th id="th-1" className="header-cell-1 padding-left-10">
             <div className="div-display-1">{resourceInfo?.name ?? "..."}</div>
             <div className="div-display-1 div-display-2">
-              {resourceInfo?.humanReadableNameSingular ?? "..."}: {resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
+              {resourceInfo?.humanReadableNameSingular ?? "..."}: {
+                // @ts-ignore
+                resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
           </th>
         </thead>
