@@ -69,4 +69,34 @@ test.describe("Profile tests", () => {
     await expect(getTreeItem(page, PROFILE_NAME)).toBeVisible();
   });
 
+  test("should open team config file for edit profile", async ({ page }) => {
+    await expect(getTreeItem(page, PROFILE_NAME)).toBeVisible();
+    await getTreeItem(page, PROFILE_NAME).click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("Manage Profile", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    await page.getByText("Edit Profile").click();
+
+    await expect(page.getByRole('tab', { name: 'zowe.config.json, preview' })).toBeVisible();
+    await expect(page.getByLabel('~/workspace/zowe.config.json').getByText('zowe.config.json')).toBeVisible();
+    await expect(page.getByRole('code').locator('div').filter({ hasText: '"type": "zosmf"' }).nth(4)).toBeVisible();
+  });
+
+  test("should open team config file for delete profile", async ({ page }) => {
+    await expect(getTreeItem(page, PROFILE_NAME)).toBeVisible();
+    await getTreeItem(page, PROFILE_NAME).click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await page.getByText("Manage Profile", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    await page.getByText("Delete Profile").click();
+
+    await expect(page.getByRole('tab', { name: 'zowe.config.json, preview' })).toBeVisible();
+    await expect(page.getByLabel('~/workspace/zowe.config.json').getByText('zowe.config.json')).toBeVisible();
+    await expect(page.getByRole('code').locator('div').filter({ hasText: '"type": "zosmf"' }).nth(4)).toBeVisible();
+  });
+
 });
