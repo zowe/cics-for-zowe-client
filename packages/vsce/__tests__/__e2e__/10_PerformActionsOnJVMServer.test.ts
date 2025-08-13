@@ -97,22 +97,20 @@ describe("Perform Actions On JVM Servers", () => {
         const inputBoxforaction = await openCommandPaletteAndType(">Notifications: Accept Notification Primary Action");
         await inputBoxforaction.confirm();
 
-        await sleep(1000);
         await JAHAGWLPJVMServer?.click();
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP + " (Disabled)");
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains("Disabled");
         cicsTree.takeScreenshot();
 
 });
 
     it("Enable JVM Server", async () => {
         await JAHAGWLPJVMServer?.click();
-        await sleep(1000);
 
         // Now select the enable command from the command palette
         const inputBoxtoenable = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
         await inputBoxtoenable.confirm();
 
-        await sleep(2000);
         await JAHAGWLPJVMServer?.click();
         expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
         expect(await JAHAGWLPJVMServer?.getLabel()).not.contains("Disabled");
