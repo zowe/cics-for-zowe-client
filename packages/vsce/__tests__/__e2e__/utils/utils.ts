@@ -1,15 +1,15 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from "@playwright/test";
 
 export const PROFILE_NAME = "wiremock_localhost";
 
 export const getTree = (page: Page, exactText: string) => {
-  return page.getByRole('button', { name: exactText, exact: true });
+  return page.getByRole("button", { name: exactText, exact: true });
 };
 
 export const getTreeItem = (page: Page, text: string, exact: boolean = true) => {
-  return page.getByRole('treeitem', { name: text, exact });
+  return page.getByRole("treeitem", { name: text, exact });
 };
 
 export const isTreeItemExpanded = async (treeItem: Locator) => {
-  return await treeItem.getAttribute("aria-expanded") === "true";
+  return (await treeItem.getAttribute("aria-expanded")) === "true";
 };
