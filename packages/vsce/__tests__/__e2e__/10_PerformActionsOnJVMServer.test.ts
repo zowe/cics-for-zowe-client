@@ -11,7 +11,7 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
-import { HERSHWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME } from "./util/constants";
+import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findJVMServerTreeNodeByLabel, sleep, updateUserSetting, openCommandPaletteAndType} from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
@@ -60,8 +60,8 @@ describe("Perform Actions On JVM Servers", () => {
     await resetAllScenarios();
   });
 
-  describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers -> HERSHWLP", () => {
-    let HERSHWLPJVMServer: TreeItem | undefined;
+  describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers -> JAHAGWLP", () => {
+    let JAHAGWLPJVMServer: TreeItem | undefined;
 
     it("Verify CICSEX61 -> Regions -> IYCWENW2 -> JVM Servers", async () => {
       ({
@@ -80,16 +80,16 @@ describe("Perform Actions On JVM Servers", () => {
     });
 
     it("Verify JVM Servers -> HERSHWLP", async () => {
-      HERSHWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, HERSHWLP);
-      expect(HERSHWLPJVMServer).not.undefined;
-      expect(await HERSHWLPJVMServer?.getLabel()).contains(HERSHWLP);
+      JAHAGWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JAHAGWLP);
+      expect(JAHAGWLPJVMServer).not.undefined;
+      expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
       cicsTree.takeScreenshot();
       await resetAllScenarios();
     });
 
     it("Disable JVM Server", async () => {
         await resetAllScenarios();
-        await HERSHWLPJVMServer?.click();
+        await JAHAGWLPJVMServer?.click();
         
         // Clear all notifications before running the command
         const inputBoxfornotification = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
@@ -103,24 +103,23 @@ describe("Perform Actions On JVM Servers", () => {
         const inputBoxforaction = await openCommandPaletteAndType(">Notifications: Accept Notification Primary Action");
         await inputBoxforaction.confirm();
 
-        await HERSHWLPJVMServer?.click();
-        expect(await HERSHWLPJVMServer?.getLabel()).contains(HERSHWLP);
-        expect(await HERSHWLPJVMServer?.getLabel()).contains("Disabled");
+        await JAHAGWLPJVMServer?.click();
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains("Disabled");
         cicsTree.takeScreenshot();
 
 });
 
     it("Enable JVM Server", async () => {
-        //await resetAllScenarios();
-        await HERSHWLPJVMServer?.click();
+        await JAHAGWLPJVMServer?.click();
 
         // Now select the enable command from the command palette
         const inputBoxtoenable = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
         await inputBoxtoenable.confirm();
 
-        await HERSHWLPJVMServer?.click();
-        expect(await HERSHWLPJVMServer?.getLabel()).contains(HERSHWLP);
-        expect(await HERSHWLPJVMServer?.getLabel()).not.contains("Disabled");
+        await JAHAGWLPJVMServer?.click();
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
+        expect(await JAHAGWLPJVMServer?.getLabel()).not.contains("Disabled");
         cicsTree.takeScreenshot();
     });
   });

@@ -6,7 +6,8 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
+import { runPutResource, pollForCompleteAction } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 /**
  * Performs disable on selected CICSJVMServer nodes.
@@ -50,6 +51,16 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
+
+            tree._onDidChangeTreeData.fire(node.getParent());
+
+            await pollForCompleteAction(
+              node,
+              (response) => {
+                return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "DISABLED";
+              },
+              () => evaluateTreeNodes(node, tree)
+            );
           } catch (error) {
             const message = `Something went wrong while disabling JVMServer ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
@@ -58,7 +69,6 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
             CICSLogger.error(message);
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
