@@ -117,7 +117,7 @@ jobs:
         run: |
           cd packages/vsce/
           npm run test:e2e:setup
-          npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
+          CI=true npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
 
       - name: Archive E2E screenshots and Wiremock log
         if: success() || failure()
