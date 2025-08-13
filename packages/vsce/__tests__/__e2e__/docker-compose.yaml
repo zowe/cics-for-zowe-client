@@ -3,7 +3,7 @@ services:
     image: wiremock/wiremock:latest
     container_name: wiremock
     volumes:
-      - ./resources/wiremock:/home/wiremock
+      - ./wiremock:/home/wiremock
     ports:
       - 8080:8080
     entrypoint: ["/docker-entrypoint.sh", "--verbose"]
