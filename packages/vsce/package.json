@@ -757,9 +757,10 @@
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
     "test:e2e:setup": "cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
     "test:e2e:teardown": "cd __tests__/__e2e__ && docker compose down",
-    "test:e2e:run": "cd __tests__/__e2e__ && cypress run",
+    "test:e2e:run": "npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1",
     "test:e2e": "npm run test:e2e:setup && npm run test:e2e:run && npm run test:e2e:teardown",
-    "test:e2e:dev": "npm run test:e2e:setup && cd __tests__/__e2e__ && cypress open && npm run test:e2e:teardown",
+    "test:e2e:dev": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --ui && npm run test:e2e:teardown",
+    "test:e2e:headed": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --headed && npm run test:e2e:teardown",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "devDependencies": {
@@ -788,8 +789,7 @@
     "vscode-extension-tester": "^8.14.1",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
-    "webpack-node-externals": "^3.0.0",
-    "wiremock-captain": "^3.6.0"
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",

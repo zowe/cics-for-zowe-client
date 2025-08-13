@@ -6,7 +6,7 @@ extends:
 env:
   node: true
   es6: true
-ignorePatterns: ["**/scripts", "**/__mocks__", "**/lib"]
+ignorePatterns: ["**/scripts", "**/__mocks__", "**/lib", "**/__tests__/__e2e__"]
 overrides:
   - files: "**/__tests__/**"
     rules:
