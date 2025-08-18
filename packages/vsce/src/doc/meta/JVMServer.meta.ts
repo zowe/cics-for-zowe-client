@@ -16,23 +16,25 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   },
 
   async getDefaultCriteria() {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServer");
+    return PersistentStorage.getDefaultFilter(
+      CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
+      "jvmServer"
+    );
   },
 
-  getLabel: function (resource: Resource<IJVMServer>): string {
+  getLabel(resource: Resource<IJVMServer>): string {
     let label = `${resource.attributes.name}`;
-
     if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
     }
     return label;
   },
 
-  getContext: function (resource: Resource<IJVMServer>): string {
+  getContext(resource: Resource<IJVMServer>): string {
     return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
 
-  getIconName: function (resource: Resource<IJVMServer>): string {
+  getIconName(resource: Resource<IJVMServer>): string {
     let iconName = `jvm-server`;
     if (resource.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
       iconName += `-disabled`;
@@ -49,7 +51,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
       {
         key: "Status",
         value: resource.attributes.enablestatus,
-      }
+      },
     ];
   },
 
