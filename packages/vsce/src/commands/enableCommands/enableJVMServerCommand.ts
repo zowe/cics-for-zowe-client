@@ -44,8 +44,6 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
               cicsPlex: node.cicsplexName,
             });
 
-            tree._onDidChangeTreeData.fire(nodes[0].getParent());
-
             await pollForCompleteAction(
               node,
               (response) => {

@@ -52,8 +52,6 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
 
-            tree._onDidChangeTreeData.fire(node.getParent());
-
             await pollForCompleteAction(
               node,
               (response) => {
