@@ -121,7 +121,7 @@ jobs:
 
       - name: Save wiremock logs
         if: success() || failure()
-        run: docker logs wiremock > wiremock.log
+        run: docker logs wiremock >& wiremock.log
 
       - name: Archive E2E screenshots and Wiremock log
         if: success() || failure()
