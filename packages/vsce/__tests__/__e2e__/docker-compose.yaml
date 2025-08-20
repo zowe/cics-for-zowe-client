@@ -1,0 +1,18 @@
+services:
+  wiremock:
+    image: wiremock/wiremock:latest
+    container_name: wiremock
+    volumes:
+      - ./wiremock:/home/wiremock
+    ports:
+      - 8080:8080
+    entrypoint: ["/docker-entrypoint.sh", "--verbose"]
+
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    ports:
+      - 1234:8443
+    container_name: code-server
+    volumes:
+      - ./:/config/workspace
+      - ../../../../dist:/config/workspace/dist
