@@ -19,7 +19,7 @@
                                 "zosmf",
                                 "tso",
                                 "ssh",
-                                "zftp",
+                                "rse",
                                 "cics",
                                 "base"
                             ]
@@ -255,7 +255,7 @@
                             "if": {
                                 "properties": {
                                     "type": {
-                                        "const": "zftp"
+                                        "const": "rse"
                                     }
                                 }
                             },
@@ -263,64 +263,69 @@
                                 "properties": {
                                     "properties": {
                                         "type": "object",
-                                        "title": "Configuration profile for z/OS FTP",
-                                        "description": "Configuration profile for z/OS FTP",
+                                        "title": "IBM RSE API Zowe Profile",
+                                        "description": "A profile to issue commands to a z/OS system with a working Zowe REST server,Mediation Layer, or IBM RSE (Remote System Explorer) API server installation.",
                                         "properties": {
                                             "host": {
                                                 "type": "string",
-                                                "description": "The hostname or IP address of the z/OS server to connect to."
+                                                "description": "The z/OS host name running the Zowe REST API."
                                             },
                                             "port": {
                                                 "type": "number",
-                                                "description": "The port of the z/OS FTP server.",
-                                                "default": 21
+                                                "description": "The server port used by the REST API.",
+                                                "default": 6800
                                             },
                                             "user": {
                                                 "type": "string",
-                                                "description": "Username for authentication on z/OS"
+                                                "description": "The user name for the Zowe REST API operations."
                                             },
                                             "password": {
                                                 "type": "string",
-                                                "description": "Password to authenticate to FTP."
-                                            },
-                                            "secureFtp": {
-                                                "type": [
-                                                    "boolean",
-                                                    "null"
-                                                ],
-                                                "description": "Set to true for both control and data connection encryption, 'control' for control connection encryption only, or 'implicit' for implicitly encrypted control connection (this mode is deprecated in modern times, but usually uses port 990). Note: Unfortunately, this plugin's functionality only works with FTP and FTPS, not 'SFTP' which is FTP over SSH.",
-                                                "default": true
+                                                "description": "The password of the user for the Zowe REST API operations."
                                             },
                                             "rejectUnauthorized": {
-                                                "type": [
-                                                    "boolean",
-                                                    "null"
-                                                ],
-                                                "description": "Reject self-signed certificates. Only specify this if you are connecting to a secure FTP instance."
+                                                "type": "boolean",
+                                                "description": "Reject self-signed certificates.",
+                                                "default": true
                                             },
-                                            "servername": {
-                                                "type": [
-                                                    "string",
-                                                    "null"
-                                                ],
-                                                "description": "Server name for the SNI (Server Name Indication) TLS extension. Only specify if you are connecting securely"
+                                            "basePath": {
+                                                "type": "string",
+                                                "description": "The base path of the API for the REST API operations.",
+                                                "default": "rseapi"
                                             },
-                                            "connectionTimeout": {
-                                                "type": "number",
-                                                "description": "How long (in milliseconds) to wait for the control connection to be established.",
-                                                "default": 10000
+                                            "protocol": {
+                                                "type": "string",
+                                                "description": "Only HTTPS supported for a TLS handshake to access REST API.",
+                                                "default": "https",
+                                                "enum": [
+                                                    "https"
+                                                ]
                                             },
                                             "encoding": {
                                                 "type": "string",
-                                                "description": "The encoding for download and upload of z/OS data set."
+                                                "description": "The encoding for download and upload of z/OS data set and USS files. The encoding should be specified in the form of \"IBM-1047\"."
+                                            },
+                                            "tokenType": {
+                                                "type": "string",
+                                                "description": "JWT type assigned to profile when \"zowe rse auth login\" is used for authentication."
+                                            },
+                                            "tokenValue": {
+                                                "type": "string",
+                                                "description": "JWT value assigned to profile when \"zowe rse auth login\" is used for authentication."
+                                            },
+                                            "tokenExpiration": {
+                                                "type": "string",
+                                                "description": "JWT expiration assigned to profile when \"zowe rse auth login\" is used for authentication."
                                             }
-                                        }
+                                        },
+                                        "required": []
                                     },
                                     "secure": {
                                         "items": {
                                             "enum": [
                                                 "user",
-                                                "password"
+                                                "password",
+                                                "tokenValue"
                                             ]
                                         }
                                     }
@@ -482,8 +487,8 @@
                     "description": "Default ssh profile",
                     "type": "string"
                 },
-                "zftp": {
-                    "description": "Default zftp profile",
+                "rse": {
+                    "description": "Default rse profile",
                     "type": "string"
                 },
                 "cics": {
