@@ -16,7 +16,7 @@ export default defineConfig({
   fullyParallel: false,
   reporter: "list",
   // reporter: 'html',
-  retries: 2,
+  retries: 1,
   // use: {
   //   trace: 'on-first-retry',
   // },
