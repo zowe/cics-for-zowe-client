@@ -64,5 +64,4 @@ export const PLIB2NONE = "PLIB2NONE";
 export const CBSA = "CBSA";
 
 //JVMServer labels
-export const EYUCMCIJ = "EYUCMCIJ";
 export const JAHAGWLP = "JAHAGWLP";
