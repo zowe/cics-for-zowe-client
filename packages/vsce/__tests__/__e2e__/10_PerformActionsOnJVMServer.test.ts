@@ -51,13 +51,11 @@ describe("Perform Actions On JVM Servers", () => {
     expect(wiremockServer).exist;
     await updateUserSetting("zowe.cics.showAllCommandsInPalette",true);
 
-    await resetAllScenarios();
   });
 
   after(async () => {
     await closeAllEditorsTabs();
     await clickCollapseAllsIconInCicsTree(cicsTree);
-    await resetAllScenarios();
   });
 
   describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers -> JAHAGWLP", () => {
@@ -90,10 +88,6 @@ describe("Perform Actions On JVM Servers", () => {
     it("Disable JVM Server", async () => {
         await resetAllScenarios();
         await JAHAGWLPJVMServer?.click();
-        
-        // Clear all notifications before running the command
-        const inputBoxfornotification = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
-        await inputBoxfornotification.confirm();
 
         // Now select the disable command from the command palette
         const inputBoxforcommand = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Disable JVM Server");
@@ -103,20 +97,22 @@ describe("Perform Actions On JVM Servers", () => {
         const inputBoxforaction = await openCommandPaletteAndType(">Notifications: Accept Notification Primary Action");
         await inputBoxforaction.confirm();
 
+        await sleep(1000);
         await JAHAGWLPJVMServer?.click();
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains("Disabled");
+        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP + " (Disabled)");
         cicsTree.takeScreenshot();
 
 });
 
     it("Enable JVM Server", async () => {
         await JAHAGWLPJVMServer?.click();
+        await sleep(1000);
 
         // Now select the enable command from the command palette
         const inputBoxtoenable = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
         await inputBoxtoenable.confirm();
 
+        await sleep(2000);
         await JAHAGWLPJVMServer?.click();
         expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
         expect(await JAHAGWLPJVMServer?.getLabel()).not.contains("Disabled");

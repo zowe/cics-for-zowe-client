@@ -6,8 +6,7 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource, pollForCompleteAction } from "../../utils/resourceUtils";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
+import { runPutResource } from "../../utils/resourceUtils";
 
 /**
  * Performs enable on selected JVM Server nodes.
@@ -43,14 +42,6 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
-
-            await pollForCompleteAction(
-              node,
-              (response) => {
-                return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "ENABLED";
-              },
-              () => evaluateTreeNodes(node, tree)
-            );
           } catch (error) {
             const message = `Something went wrong while enabling JVM Server ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
