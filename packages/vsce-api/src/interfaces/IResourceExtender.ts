@@ -9,8 +9,13 @@
  *
  */
 
-export * from "./IExtensionAPI";
-export * from "./IResource";
-export * from "./IResourceContext";
-export * from "./IResourceExtender";
-export * from "./IResourceAction";
+import { IResourceAction } from "./IResourceAction";
+
+export interface IResourceExtender {
+  registeredActions: IResourceAction[];
+
+  registerAction: (action: IResourceAction) => void;
+  deregisterAction: (id: string) => void;
+  getActions: () => IResourceAction[];
+  getAction: (id: string) => IResourceAction;
+}
