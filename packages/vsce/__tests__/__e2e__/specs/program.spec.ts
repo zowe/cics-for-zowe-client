@@ -77,7 +77,7 @@ test.describe("Program tests", () => {
     await page.waitForTimeout(200);
     await page.getByText("Show Library").click();
 
-    await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(1);
+    await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(1);
     await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME)).toHaveCount(1);
   });
 });

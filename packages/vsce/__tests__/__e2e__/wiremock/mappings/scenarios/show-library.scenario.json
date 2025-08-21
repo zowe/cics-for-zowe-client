@@ -54,7 +54,7 @@
       "newScenarioState": "fetched-library-datasets-with-libraryname-summary",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(LIBRARY%3D'MYLIB1')%20AND%20(DSNAME%3D'MYLIBDS1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+        "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(DSNAME%3D'MYLIBDS1')%20AND%20(LIBRARY%3D'MYLIB1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
         "status": 200,
