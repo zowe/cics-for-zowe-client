@@ -28,6 +28,7 @@ export interface IResourceMeta<T extends IResource> {
   getCriteriaHistory(): string[];
   appendCriteriaHistory(criteria: string): Promise<void>;
 
+  maximumPrimaryKeyLength?: number;
   childType?: IResourceMeta<IResource>;
   filterCaseSensitive?: boolean;
 }
