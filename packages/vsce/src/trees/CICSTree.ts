@@ -27,7 +27,7 @@ import {
 } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSLogger } from "../utils/CICSLogger";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import PersistentStorage from "../utils/PersistentStorage";
 import { getErrorCode } from "../utils/errorUtils";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
@@ -63,10 +63,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * these as children to the CICSTree (TreeDataProvider)
    */
   public async loadStoredProfileNames() {
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     await ProfileManagement.profilesCacheRefresh();
     // Retrieve previously added profiles from persistent storage
-    for (const profilename of persistentStorage.getLoadedCICSProfile()) {
+    for (const profilename of PersistentStorage.getLoadedCICSProfiles()) {
       try {
         const profileToLoad = await ProfileManagement.getProfilesCache().loadNamedProfile(profilename, "cics");
         // avoid accidental repeats
@@ -215,8 +214,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
     CICSLogger.debug(`Loading CICS profile [${profile.name}]`);
 
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.addLoadedCICSProfile(profile.name);
+    await PersistentStorage.appendLoadedCICSProfile(profile.name);
 
     window.withProgress(
       {
@@ -225,7 +223,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -327,14 +325,12 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad, this);
     this.loadedProfiles.push(newSessionTree);
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.addLoadedCICSProfile(label);
+    await PersistentStorage.appendLoadedCICSProfile(label);
     this._onDidChangeTreeData.fire(undefined);
   }
 
   async removeSession(session: CICSSessionTree) {
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-    await persistentStorage.removeLoadedCICSProfile(session.label.toString());
+    await PersistentStorage.removeLoadedCICSProfile(session.label.toString());
     this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
     this._onDidChangeTreeData.fire(undefined);
   }

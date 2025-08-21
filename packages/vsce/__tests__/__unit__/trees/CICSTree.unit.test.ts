@@ -30,15 +30,11 @@ getProfilesCacheMock.mockReturnValue({
 import { CICSTree } from "../../../src/trees/CICSTree";
 
 jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/PersistentStorage", () => ({
-  get PersistentStorage() {
-    return jest.fn().mockImplementation(() => {
-      return {
-        getLoadedCICSProfile: profilesCacheRefreshMock,
-      };
-    });
-  },
-}));
+
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+const profilesCacheRefreshSpy = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
+profilesCacheRefreshSpy.mockReturnValue(["prof1", "prof2"]);
+
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     profilesCacheRefresh: profilesCacheRefreshMock,
