@@ -1,0 +1,205 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Fetch JVM Server by name for disable operation",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JAHAGWLP')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"/></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-disable-jvmserver.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server by name for disable operation",
+      "newScenarioState": "Fetch JVM Server by name for disable operation 2",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJAHAGWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-disable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server by name for disable operation 2",
+      "newScenarioState": "Fetch JVM Server count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJAHAGWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-disable-2.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server count for disable operation",
+      "newScenarioState": "Load JVM Server with status as Disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Load JVM Server with status as Disabled",
+      "newScenarioState": "Fetch JVM Server record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244/1/2?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "jvmserver-with-disabled-status.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server record count for disable operation",
+      "newScenarioState": "Enable the JVM Server",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Enable the JVM Server",
+      "newScenarioState": "Fetch JVM Server by name for enable operation",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JAHAGWLP')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"ENABLE\"/></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-enable-jvmserver.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server by name for enable operation",
+      "newScenarioState": "Fetch JVM Server by name for enable operation 2",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJAHAGWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-enable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server by name for enable operation 2",
+      "newScenarioState": "Fetch JVM Server count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJAHAGWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-enable-2.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server count for enable operation",
+      "newScenarioState": "Load JVM Server with status as Enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Load JVM Server with status as Enabled",
+      "newScenarioState": "Fetch JVM Server record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244/1/2?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "jvmserver-with-enabled-status.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable and Disable JVM Server",
+      "requiredScenarioState": "Fetch JVM Server record count for enable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
