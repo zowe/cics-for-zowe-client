@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ITask } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const TaskMeta: IResourceMeta<ITask> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TASK,
@@ -27,7 +25,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_CMCI_TASK, "tasks");
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_TASK, "tasks");
   },
 
   getLabel: function (resource: Resource<ITask>): string {
@@ -74,11 +72,11 @@ export const TaskMeta: IResourceMeta<ITask> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addTransactionSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getTransactionSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
   },
 
   maximumPrimaryKeyLength: 4,

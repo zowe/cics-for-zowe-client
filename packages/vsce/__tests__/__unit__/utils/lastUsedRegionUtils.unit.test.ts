@@ -9,8 +9,6 @@
  *
  */
 
-const getLastUsedRegionMock = jest.fn();
-const setLastUsedRegionMock = jest.fn();
 const getLoadedProfilesMock = jest.fn();
 const getAllProfilesMock = jest.fn();
 const getPlexInfoMock = jest.fn();
@@ -35,12 +33,12 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
   },
 }));
 jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/PersistentStorage", () => ({
-  PersistentStorage: jest.fn().mockImplementation(() => ({
-    getLastUsedRegion: getLastUsedRegionMock,
-    setLastUsedRegion: setLastUsedRegionMock,
-  })),
-}));
+
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+
+const getLastUsedRegionSpy = jest.spyOn(PersistentStorage, 'getLastUsedRegion');
+const setLastUsedRegionSpy = jest.spyOn(PersistentStorage, 'setLastUsedRegion');
+
 jest.mock("../../../src/trees/CICSTree", () => ({
   CICSTree: jest.fn().mockImplementation(() => ({
     getLoadedProfiles: getLoadedProfilesMock,
@@ -80,7 +78,7 @@ describe("Test suite for lastUsedRegionUtils", () => {
       jest.clearAllMocks();
     });
     it("should return the last used region", () => {
-      getLastUsedRegionMock.mockReturnValueOnce(lastUsedRegion);
+      getLastUsedRegionSpy.mockReturnValueOnce(lastUsedRegion);
       const selectedRegion = {
         regionName: "IYK2ZXXX",
         cicsPlexName: "PLEXX",
@@ -89,7 +87,7 @@ describe("Test suite for lastUsedRegionUtils", () => {
       const result = getLastUsedRegion();
 
       expect(result).toEqual(selectedRegion);
-      expect(getLastUsedRegionMock).toHaveBeenCalled();
+      expect(getLastUsedRegionSpy).toHaveBeenCalled();
     });
   });
 
@@ -104,17 +102,17 @@ describe("Test suite for lastUsedRegionUtils", () => {
       const cicsPlexName = "NEWPLEX";
 
       setLastUsedRegion(regionName, profileName, cicsPlexName);
-      expect(setLastUsedRegionMock).toHaveBeenCalledWith({ regionName, cicsPlexName, profileName });
+      expect(setLastUsedRegionSpy).toHaveBeenCalledWith({ regionName, cicsPlexName, profileName });
     });
 
     it("should not set the region if region name is empty string", () => {
       setLastUsedRegion("", "PROFILE");
-      expect(setLastUsedRegionMock).not.toHaveBeenCalled();
+      expect(setLastUsedRegionSpy).not.toHaveBeenCalled();
     });
 
     it("should not set the region if profile name is empty string", () => {
       setLastUsedRegion("REGION", "");
-      expect(setLastUsedRegionMock).not.toHaveBeenCalled();
+      expect(setLastUsedRegionSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -159,30 +157,30 @@ describe("Test suite for lastUsedRegionUtils", () => {
 
     it("should return true if profile name and region name is present", async () => {
       getLoadedProfilesMock.mockReturnValueOnce(loadedProfiles);
-      getLastUsedRegionMock.mockReturnValueOnce(lastUsedRegion);
+      getLastUsedRegionSpy.mockReturnValueOnce(lastUsedRegion);
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionMock).toHaveBeenCalled();
+      expect(getLastUsedRegionSpy).toHaveBeenCalled();
       expect(getLoadedProfilesMock).toHaveBeenCalled();
       expect(result).toBe(true);
     });
 
     it("should return false if profile name is not present", async () => {
       getLoadedProfilesMock.mockReturnValueOnce(loadedProfiles);
-      getLastUsedRegionMock.mockReturnValueOnce({ regionName: "IYK2XXX", cicsPlexName: "PLEX", profileName: "" });
+      getLastUsedRegionSpy.mockReturnValueOnce({ regionName: "IYK2XXX", cicsPlexName: "PLEX", profileName: "" });
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionMock).toHaveBeenCalled();
+      expect(getLastUsedRegionSpy).toHaveBeenCalled();
       expect(getLoadedProfilesMock).toHaveBeenCalled();
       expect(result).toBe(false);
     });
 
     it("should return false if profile name is not in the list of profiles", async () => {
       getLoadedProfilesMock.mockReturnValueOnce(loadedProfiles);
-      getLastUsedRegionMock.mockReturnValue({ regionName: "IYK2XXX", profileName: "Profile2" });
+      getLastUsedRegionSpy.mockReturnValue({ regionName: "IYK2XXX", profileName: "Profile2", cicsPlexName: null });
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionMock).toHaveBeenCalled();
+      expect(getLastUsedRegionSpy).toHaveBeenCalled();
       expect(getLoadedProfilesMock).toHaveBeenCalled();
       expect(result).toBe(false);
     });

@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ITCPIP } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
@@ -27,7 +25,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE, "tcpipService");
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE, "tcpipService");
   },
 
   getLabel: function (resource: Resource<ITCPIP>): string {
@@ -62,10 +60,10 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addTCPIPSSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getTCPIPSSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE);
   },
 };
