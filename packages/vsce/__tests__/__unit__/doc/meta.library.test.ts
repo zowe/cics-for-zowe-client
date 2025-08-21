@@ -54,6 +54,11 @@ describe("Library Meta", () => {
     const iconName = LibraryMeta.getIconName(libraryMock);
     expect(iconName).toEqual(`library`);
   });
+  it("should return icon name when disabled", () => {
+    libraryMock.attributes.enablestatus = "DISABLED";
+    const iconName = LibraryMeta.getIconName(libraryMock);
+    expect(iconName).toEqual(`library-disabled`);
+  });
   it("should get name", () => {
     const name = LibraryMeta.getName(libraryMock);
     expect(name).toEqual("LIB1");
