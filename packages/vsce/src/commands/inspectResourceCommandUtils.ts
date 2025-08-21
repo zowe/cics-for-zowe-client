@@ -223,14 +223,12 @@ async function getChoiceFromQuickPick(
 async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
   const options: InputBoxOptions = {
     prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
-    value: "",
-    validateInput: function (value: string): string {
-      if (resourceType === TransactionMeta && value.length > constants.MAX_TRANS_RESOURCE_NAME_LENGTH) {
-        return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_TRANS_RESOURCE_NAME_LENGTH));
-      } else if (resourceType !== TransactionMeta && value.length > constants.MAX_RESOURCE_NAME_LENGTH) {
-        return CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", String(constants.MAX_RESOURCE_NAME_LENGTH));
-      }
-      return undefined;
+
+    validateInput: (value: string): string | undefined => {
+      const maxLength = resourceType.maximumPrimaryKeyLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
+      const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
+
+      return value.length > maxLength ? tooLongErrorMessage : undefined;
     }
   };
 

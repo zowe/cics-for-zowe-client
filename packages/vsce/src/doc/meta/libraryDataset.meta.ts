@@ -38,7 +38,11 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   humanReadableNameSingular: "Library Dataset",
 
   buildCriteria(criteria: string[], parentResource: ILibrary) {
-    return `(LIBRARY='${parentResource.name}') AND (${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;
+    let criteriaString = `(${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;
+    if (parentResource) {
+      criteriaString += ` AND (LIBRARY='${parentResource.name}')`;
+    }
+    return criteriaString;
   },
 
   getDefaultCriteria: function (parentResource: ILibrary) {
@@ -79,4 +83,5 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   },
 
   childType: customProgramMeta,
+  maximumPrimaryKeyLength: 44,
 };

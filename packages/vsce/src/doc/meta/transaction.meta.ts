@@ -72,4 +72,6 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   getCriteriaHistory() {
     return persistentStorage.getTransactionSearchHistory();
   },
+
+  maximumPrimaryKeyLength: 4,
 };
