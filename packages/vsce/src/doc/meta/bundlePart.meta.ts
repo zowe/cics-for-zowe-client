@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IBundle, IBundlePart } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
@@ -31,7 +29,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getDefaultCriteria: function (parentResource: IBundle) {
-    return Promise.resolve(`BUNDLE='${parentResource.name}'`);
+    return `BUNDLE='${parentResource.name}'`;
   },
 
   getLabel: function (bundlePart: Resource<IBundlePart>): string {
@@ -61,11 +59,11 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addBundlePartSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_BUNDLE_PART, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getBundlePartSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_BUNDLE_PART);
   },
 
   filterCaseSensitive: true,

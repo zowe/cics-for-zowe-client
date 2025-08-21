@@ -14,7 +14,8 @@ import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import PersistentStorage from "../utils/PersistentStorage";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
@@ -43,20 +44,19 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     } else {
       resourceToFilter = await window.showQuickPick(["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
     }
-    const persistentStorage = new PersistentStorage("zowe.cics.persistent");
     let resourceHistory;
     if (resourceToFilter === "Programs") {
-      resourceHistory = persistentStorage.getProgramSearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_PROGRAM_RESOURCE);
     } else if (resourceToFilter === "Local Transactions") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
     } else if (resourceToFilter === "Local Files") {
-      resourceHistory = persistentStorage.getLocalFileSearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_LOCAL_FILE);
     } else if (resourceToFilter === "Tasks") {
-      resourceHistory = persistentStorage.getTransactionSearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
     } else if (resourceToFilter === "Libraries") {
-      resourceHistory = persistentStorage.getLibrarySearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LIBRARY_RESOURCE);
     } else if (resourceToFilter === "Regions") {
-      resourceHistory = persistentStorage.getRegionSearchHistory();
+      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_REGION);
     } else {
       window.showInformationMessage("No Selection Made");
       return;
@@ -64,17 +64,17 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
     if (pattern) {
       if (resourceToFilter === "Programs") {
-        await persistentStorage.addProgramSearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_PROGRAM_RESOURCE, pattern);
       } else if (resourceToFilter === "Local Transactions") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION, pattern);
       } else if (resourceToFilter === "Local Files") {
-        await persistentStorage.addLocalFileSearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, pattern);
       } else if (resourceToFilter === "Regions") {
-        await persistentStorage.addRegionSearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_REGION, pattern);
       } else if (resourceToFilter === "Tasks") {
-        await persistentStorage.addTransactionSearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION, pattern);
       } else if (resourceToFilter === "Libraries") {
-        await persistentStorage.addLibrarySearchHistory(pattern);
+        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LIBRARY_RESOURCE, pattern);
       }
 
       if (resourceToFilter === "Regions") {
@@ -87,7 +87,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
             cancellable: true,
           },
           (_, token): Thenable<unknown> => {
-            token.onCancellationRequested(() => {});
+            token.onCancellationRequested(() => { });
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
                 if (region.getIsActive()) {
