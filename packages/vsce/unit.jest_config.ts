@@ -10,4 +10,7 @@
  */
 
 import { ConfigGlobals, createConfig } from "../../common.jest_config";
-export default createConfig("unit", "Zowe CICS VSCE Unit Tests") as ConfigGlobals;
+
+const defaultConfig = createConfig("unit", "Zowe CICS VSCE Unit Tests");
+defaultConfig.testPathIgnorePatterns.push("<rootDir>/__tests__/playwright");
+export default defaultConfig as ConfigGlobals;
