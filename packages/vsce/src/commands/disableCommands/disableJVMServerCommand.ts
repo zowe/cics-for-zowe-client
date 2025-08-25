@@ -21,17 +21,19 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
       return;
     }
 
-    const disableType = await window.showInformationMessage(
-      `Choose one of the following for Disabling`,
+    let disableType = await window.showInformationMessage(
+      `Choose JVMServer disable type`,
       ...["Phase Out", "Purge", "Force Purge", "Kill"]
     );
     if (!disableType) {
       return;
     }
 
+    disableType = disableType.replace(" ", "").toUpperCase();
+
     await window.withProgress(
       {
-        title: "Disable",
+        title: "Disable JVM Server",
         location: ProgressLocation.Notification,
         cancellable: false,
       },
@@ -45,25 +47,55 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
           });
 
           try {
-            await disableJVMServer(node.getSession(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
+            await disableJVMServer(
+              node.getSession(),
+              {
+                name: node.getContainedResourceName(),
+                cicsPlex: node.cicsplexName,
+                regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+              },
+              disableType
+            );
           } catch (error) {
+            let comment = "";
+            if (disableType === "PURGE") {
+              comment = "Note: You must PHASEOUT the JVM server before you can use the PURGE option.";
+            } else if (disableType === "FORCEPURGE") {
+              comment = "Note: You must PURGE the JVM server before you can use the FORCEPURGE option.";
+            } else if (disableType === "KILL") {
+              comment = "Note: You must FORCEPURGE the JVM server before you can use the KILL option.";
+            } 
             const message = `Something went wrong while disabling JVMServer ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
+            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}\n${comment}`;
             window.showErrorMessage(message);
             CICSLogger.error(message);
           }
         }
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
 }
 
-function disableJVMServer(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function disableJVMServer(session: CICSSession, parms: ICommandParams, disableType: string): Promise<ICMCIApiResponse> {
+  const allowedTypes = ["PURGE", "FORCEPURGE", "KILL"];
+  const action: any = {
+    $: {
+      name: "DISABLE",
+    }
+  };
+
+  // Only add TYPE parameter if a valid type is selected and not empty
+  if (disableType && allowedTypes.includes(disableType)) {
+    action.parameter = {
+      $: {
+        name: "PURGETYPE",
+        value: disableType,
+      }
+    };
+  }
+
   return runPutResource(
     {
       session: session,
@@ -74,11 +106,7 @@ function disableJVMServer(session: CICSSession, parms: ICommandParams): Promise<
     },
     {
       request: {
-        action: {
-          $: {
-            name: "DISABLE",
-          },
-        },
+        action: action,
       },
     }
   );

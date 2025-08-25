@@ -50,6 +50,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
             CICSLogger.error(message);
           }
         }
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
