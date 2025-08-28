@@ -12,18 +12,24 @@
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
 import Mustache = require("mustache");
-import { WebviewViewProvider, Uri, WebviewView, Webview, commands } from "vscode";
+import { ExtensionContext, WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource, IResource } from "../doc";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import { executeAction } from "./ResourceInspectorUtils";
+import IconBuilder from "../utils/IconBuilder";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   public static readonly viewType = "resource-inspector";
   private static instance: ResourceInspectorViewProvider;
+
+  private context: ExtensionContext;
+  private node: CICSResourceContainerNode<IResource>;
 
   private webviewView?: WebviewView;
   private resource: IContainedResource<IResource>;
@@ -35,10 +41,11 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     private webviewReady: boolean = false,
   ) { }
 
-  public static getInstance(extensionUri: Uri): ResourceInspectorViewProvider {
+  public static getInstance(context: ExtensionContext): ResourceInspectorViewProvider {
     if (!this.instance) {
-      this.instance = new ResourceInspectorViewProvider(extensionUri);
+      this.instance = new ResourceInspectorViewProvider(context.extensionUri);
     }
+    this.instance.context = context;
     return this.instance;
   }
 
@@ -75,22 +82,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
-      }
-      if (message.command === "action") {
-        const action = CICSResourceExtender.getAction(message.actionId);
-
-        if (!action) {
-          return;
-        }
-
-        if (typeof action.action === 'string') {
-          commands.executeCommand(action.action);
-        } else {
-          await action.action(this.resource.resource.attributes, this.getResourceContext());
-
-          // Refetch and rerender resource information.
-          // Should be a method soon that shows RI when provided resName, resType, session, profile, plex, region.
-        }
+      } else {
+        executeAction(message.command, message, this, this.context);
       }
     });
     this.webviewView.onDidDispose(() => {
@@ -109,6 +102,35 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
     }
+  }
+
+  /**
+   * Returns the current resource being displayed.
+   */
+  public getResource(): IContainedResource<IResource> {
+    return this.resource;
+  }
+
+  /**
+   * Returns the current resource handler map being used.
+   */
+  public getResourceHandlerMap(): { key: string; value: string }[] {
+    return this.resourceHandlerMap;
+  }
+
+  /**
+   * Sets the current node being used.
+   */
+  public setNode(node: CICSResourceContainerNode<IResource>) {
+    this.node = node;
+    return this;
+  }
+
+  /**
+   * Returns the current node being used.
+   */
+  public getNode(): CICSResourceContainerNode<IResource> {
+    return this.node;
   }
 
   public setResourceHandlerMap(resourceHandler: IResourcesHandler): ResourceInspectorViewProvider {
@@ -134,6 +156,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     await this.webviewView.webview.postMessage({
       data: {
         name: this.resource.meta.getName(this.resource.resource),
+        refreshIconPath: {
+          light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
+          dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
+        },
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
