@@ -6,7 +6,8 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
+import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 /**
  * Performs disable on selected CICSJVMServer nodes.
@@ -56,6 +57,15 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               },
               disableType
             );
+
+            await pollForCompleteAction(
+              node,
+              (response) => {
+                return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "DISABLED";
+              },
+              () => evaluateTreeNodes(node, tree)
+            );
+
           } catch (error) {
             let comment = "";
             if (disableType === "PURGE") {
@@ -72,7 +82,6 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
             CICSLogger.error(message);
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

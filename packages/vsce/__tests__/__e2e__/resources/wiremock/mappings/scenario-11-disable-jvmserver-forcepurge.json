@@ -1,0 +1,88 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Disable JVM Server FORCEPURGE",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Fetch JVM Server by name for disable operation (FORCEPURGE)",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JAHAGWLP')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"><parameter name=\"PURGETYPE\" value=\"FORCEPURGE\"/></action></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-disable-jvmserver-forcepurge.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server FORCEPURGE",
+      "requiredScenarioState": "Fetch JVM Server by name for disable operation (FORCEPURGE)",
+      "newScenarioState": "Fetch JVM Server count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJAHAGWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-disable-forcepurge.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server FORCEPURGE",
+      "requiredScenarioState": "Fetch JVM Server count for disable operation",
+      "newScenarioState": "Load JVM Server with status as Disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server FORCEPURGE",
+      "requiredScenarioState": "Load JVM Server with status as Disabled",
+      "newScenarioState": "Fetch JVM Server record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244/1/2?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "jvmserver-with-disabled-status.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server FORCEPURGE",
+      "requiredScenarioState": "Fetch JVM Server record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
