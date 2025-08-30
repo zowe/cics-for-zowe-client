@@ -57,4 +57,6 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   getCriteriaHistory() {
     return persistentStorage.getWebServiceSearchHistory();
   },
+
+  maximumPrimaryKeyLength: 32,
 };

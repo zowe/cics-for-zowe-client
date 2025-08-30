@@ -80,4 +80,6 @@ export const TaskMeta: IResourceMeta<ITask> = {
   getCriteriaHistory() {
     return persistentStorage.getTransactionSearchHistory();
   },
+
+  maximumPrimaryKeyLength: 4,
 };

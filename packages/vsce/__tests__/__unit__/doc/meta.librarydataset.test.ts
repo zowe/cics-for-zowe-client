@@ -38,7 +38,7 @@ describe("Library Dataset Meta", () => {
 
   it("should build criteria", () => {
     const crit = LibraryDatasetMeta.buildCriteria(["a", "b"], parentLibraryMock.attributes);
-    expect(crit).toEqual(`(LIBRARY='LIB1') AND (DSNAME='a' OR DSNAME='b')`);
+    expect(crit).toEqual(`(DSNAME='a' OR DSNAME='b') AND (LIBRARY='LIB1')`);
   });
   it("should get default criteria", async () => {
     const crit = await LibraryDatasetMeta.getDefaultCriteria(parentLibraryMock.attributes);

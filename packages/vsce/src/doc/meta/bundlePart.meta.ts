@@ -23,7 +23,11 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNameSingular: "Bundle Part",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
-    return `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")}) AND (BUNDLE='${parentResource.name}')`;
+    let criteriaString = `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")})`;
+    if (parentResource) {
+      criteriaString += ` AND (BUNDLE='${parentResource.name}')`;
+    }
+    return criteriaString;
   },
 
   getDefaultCriteria: function (parentResource: IBundle) {
@@ -35,9 +39,8 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
-    return `${
-      CicsCmciConstants.CICS_CMCI_BUNDLE_PART
-    }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
+    return `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART
+      }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
   getIconName: function (_bundlePart: Resource<IBundlePart>): string {
@@ -66,4 +69,5 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   filterCaseSensitive: true,
+  maximumPrimaryKeyLength: 255,
 };
