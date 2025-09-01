@@ -9,9 +9,9 @@
  *
  */
 
-import { commands, ExtensionContext } from "vscode";
+import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
-import { IResource } from "../doc";
+import { IContainedResource, IResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
@@ -19,8 +19,8 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 
 export async function executeAction(command: string, message: any, instance: ResourceInspectorViewProvider, context: ExtensionContext) {
-  const resource = await instance.getResource();
-  const resourceHandlerMap = await instance.getResourceHandlerMap();
+  const resource = instance.getResource();
+  const resourceHandlerMap = instance.getResourceHandlerMap();
   const profileName = resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
   const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
 
@@ -50,7 +50,7 @@ export async function executeAction(command: string, message: any, instance: Res
     if (typeof action.action === "string") {
       await commands.executeCommand(action.action, node);
       await sleep(1000);
-      await inspectResourceCallBack(context, resource.meta.getName(resource.resource), resource.meta.resourceName, resourceHandlerMap, node);
+      await refreshWithProgress();
     } else {
       await action.action(resource.resource.attributes, {
         profile,
@@ -61,10 +61,36 @@ export async function executeAction(command: string, message: any, instance: Res
     }
   }
   if (command === "refresh") {
-    await inspectResourceCallBack(context, resource.meta.getName(resource.resource), resource.meta.resourceName, resourceHandlerMap, node);
+    await refreshWithProgress();
   }
 
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function refreshWithProgress() {
+    await window.withProgress(
+      {
+        title: "Refresh",
+        location: ProgressLocation.Notification,
+        cancellable: false,
+      },
+      async (progress, token) => {
+        token.onCancellationRequested(() => {});
+        progress.report({
+          message: ` Refreshing ` + resource.meta.humanReadableNameSingular + ` ` + resource.meta.getName(resource.resource),
+        });
+        try {
+          await inspectResourceCallBack(context, resource.meta.getName(resource.resource), resource.meta.resourceName, resourceHandlerMap, node);
+        } catch (error) {
+          window.showErrorMessage(
+            `Something went wrong while performing Refresh - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+              /(\\n\t|\\n|\\t)/gm,
+              " "
+            )}`
+          );
+        }
+      }
+    );
   }
 }
