@@ -11,7 +11,7 @@
 
 import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
-import { IContainedResource, IResource } from "../doc";
+import { IResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
@@ -71,7 +71,6 @@ export async function executeAction(command: string, message: any, instance: Res
   async function refreshWithProgress() {
     await window.withProgress(
       {
-        title: "Refresh",
         location: ProgressLocation.Notification,
         cancellable: false,
       },

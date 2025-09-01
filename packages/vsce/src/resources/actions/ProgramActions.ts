@@ -28,14 +28,14 @@ export function getProgramActions(): IResourceAction[] {
     },
     {
       id: "CICS.CICSProgram.DISABLE",
-      name: "Disable",
+      name: "Disable Program",
       resourceType: ResourceTypes.CICSProgram,
       visibleWhen: (program: IProgram, _cx: IResourceContext) => program.status !== "DISABLED",
       action: "cics-extension-for-zowe.disableProgram",
     },
     {
       id: "CICS.CICSProgram.ENABLE",
-      name: "Enable",
+      name: "Enable Program",
       resourceType: ResourceTypes.CICSProgram,
       visibleWhen: (program: IProgram, _cx: IResourceContext) => program.status !== "ENABLED",
       action: "cics-extension-for-zowe.enableProgram",
