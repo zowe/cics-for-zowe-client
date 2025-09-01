@@ -58,6 +58,8 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               disableType
             );
 
+            tree._onDidChangeTreeData.fire(node.getParent());
+            
             await pollForCompleteAction(
               node,
               (response) => {

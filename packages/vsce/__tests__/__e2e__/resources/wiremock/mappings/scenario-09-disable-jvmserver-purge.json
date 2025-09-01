@@ -72,6 +72,54 @@
     {
       "scenarioName": "Disable JVM Server PURGE",
       "requiredScenarioState": "Fetch JVM Server record count for disable operation",
+      "newScenarioState": "Fetch JVM Server count for disable operation (refresh)",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PURGE",
+      "requiredScenarioState": "Fetch JVM Server count for disable operation (refresh)",
+      "newScenarioState": "Load JVM Server with status as Disabled (refresh)",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PURGE",
+      "requiredScenarioState": "Load JVM Server with status as Disabled (refresh)",
+      "newScenarioState": "Fetch JVM Server record count for disable operation (refresh)",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "jvmserver-with-disabled-status-refresh.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PURGE",
+      "requiredScenarioState": "Fetch JVM Server record count for disable operation (refresh)",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
