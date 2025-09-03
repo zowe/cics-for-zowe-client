@@ -24,8 +24,8 @@ module.exports = {
                 displayNames: {
                     "cli": "IBM CICS Plug-in for Zowe CLI",
                     "sdk": "IBM CICS for Zowe SDK",
-                    "vsce": "IBM CICS Extension for Zowe Explorer",
-                    "vsce-api": "IBM CICS Extension for Zowe Explorer API",
+                    "vsce": "Zowe Explorer for IBM CICS Transaction Server",
+                    "vsce-api": "Zowe Explorer for IBM CICS Transaction Server API",
                 },
                 headerLine: "## Recent Changes",
             },

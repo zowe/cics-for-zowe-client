@@ -14,50 +14,50 @@
 import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 
 export class CICSLogger {
-    private static logOutputChannel: LogOutputChannel;
+  private static logOutputChannel: LogOutputChannel;
 
-    public static initialize() {
-      CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("IBM CICS for Zowe Explorer"), { log: true } )
+  public static initialize() {
+    CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("Zowe Explorer for IBM CICS Transaction Server"), { log: true });
 
-      CICSLogger.info(l10n.t("Initialized logger for IBM CICS for Zowe Explorer"));
+    CICSLogger.info(l10n.t("Initialized logger for Zowe Explorer for IBM CICS Transaction Server"));
 
-      const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON
+    const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON;
 
-      CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
-      CICSLogger.info(
-        l10n.t({
-            message: "IBM CICS for Zowe Explorer log level: {0}",
-            args: [LogLevel[this.logOutputChannel.logLevel]],
-            comment: ["Log level"],
-        })
-      );
-    }
+    CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
+    CICSLogger.info(
+      l10n.t({
+        message: "Zowe Explorer for IBM CICS Transaction Server log level: {0}",
+        args: [LogLevel[this.logOutputChannel.logLevel]],
+        comment: ["Log level"],
+      })
+    );
+  }
 
-    public static trace(message: string): void {
-      CICSLogger.logOutputChannel.trace(message);
-    }
+  public static trace(message: string): void {
+    CICSLogger.logOutputChannel.trace(message);
+  }
 
-    public static debug(message: string): void {
-      CICSLogger.logOutputChannel.debug(message);
-    }
+  public static debug(message: string): void {
+    CICSLogger.logOutputChannel.debug(message);
+  }
 
-    public static info(message: string): void {
-      CICSLogger.logOutputChannel.info(message);
-    }
+  public static info(message: string): void {
+    CICSLogger.logOutputChannel.info(message);
+  }
 
-    public static warn(message: string): void {
-      CICSLogger.logOutputChannel.warn(message);
-    }
+  public static warn(message: string): void {
+    CICSLogger.logOutputChannel.warn(message);
+  }
 
-    public static error(message: string): void {
-      CICSLogger.logOutputChannel.error(message);
-    }
+  public static error(message: string): void {
+    CICSLogger.logOutputChannel.error(message);
+  }
 
-    public static fatal(message: string): void {
-      CICSLogger.logOutputChannel.error(message);
-    }
+  public static fatal(message: string): void {
+    CICSLogger.logOutputChannel.error(message);
+  }
 
-    public static dispose(): void {
-      CICSLogger.logOutputChannel.dispose();
-    }
+  public static dispose(): void {
+    CICSLogger.logOutputChannel.dispose();
+  }
 }

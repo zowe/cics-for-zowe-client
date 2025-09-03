@@ -1,13 +1,13 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+/\*
+
+- This program and the accompanying materials are made available under the terms of the
+- Eclipse Public License v2.0 which accompanies this distribution, and is available at
+- https://www.eclipse.org/legal/epl-v20.html
+-
+- SPDX-License-Identifier: EPL-2.0
+-
+- Copyright Contributors to the Zowe Project.
+- \*/
 
 /\*
 
@@ -74,7 +74,7 @@ General conformance criteria for all extensions that add new capabilities to Zow
    <th style="background-color:#555555">v1</th>
    <th style="background-color:#AAAAAA">x</th>
    <th style="background-color:#AAAAAA"></th>
-   <th>IBM CICS for Zowe Explorer</th>
+   <th>Zowe Explorer for IBM CICS Transaction Server</th>
    <td><b>Naming:</b> If the extension uses the word "Zowe" in its name, it abides by The Linux Foundation <a href="https://www.linuxfoundation.org/trademark-usage/">Trademark Usage Guidelines</a> and <a href="https://www.openmainframeproject.org/branding-guidelines">Branding Guidelines</a> to ensure the word Zowe is used in a way intended by the Zowe community.</td>
  </tr>
 
