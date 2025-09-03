@@ -105,7 +105,7 @@ describe("Perform Actions On JVM Servers", () => {
         const notificationsCenter = await workbench.openNotificationsCenter();
         const notificationspurge = await notificationsCenter.getNotifications(NotificationType.Any);
         const notification = notificationspurge.find(
-            async n => (await n.getMessage()).includes("Choose JVMServer disable type")
+            async n => (await n.getMessage()).includes("Choose how to purge tasks while disabling the JVM server")
         );
         if (notification) {
             const actions = await notification.getActions();
@@ -156,7 +156,7 @@ describe("Perform Actions On JVM Servers", () => {
       const notificationsCenterkill2 = await workbenchkill2.openNotificationsCenter();
       const notificationskill2 = await notificationsCenterkill2.getNotifications(NotificationType.Any);
       const notificationkill2 = notificationskill2.find(
-          async n => (await n.getMessage()).includes("Choose JVMServer disable type")
+          async n => (await n.getMessage()).includes("Choose how to purge tasks while disabling the JVM server")
       );
       if (notificationkill2) {
             const actions = await notificationkill2.getActions();
