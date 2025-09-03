@@ -4,10 +4,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added Enable/Disable actions to JVM Servers [#391](https://github.com/zowe/cics-for-zowe-client/issues/391)
-
-## `3.11.0`
-
 - Validate input using maximum resource length when inspecting resource. [#402](https://github.com/zowe/cics-for-zowe-client/issues/402)
 - Enhancement: Added Enable/Disable actions to JVM Servers [#391](https://github.com/zowe/cics-for-zowe-client/issues/391)
 
