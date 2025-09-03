@@ -10,8 +10,8 @@
  */
 
 import { expect } from "chai";
-import { DefaultTreeSection, SideBarView, TreeItem } from "vscode-extension-tester";
-import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME } from "./util/constants";
+import { DefaultTreeSection, NotificationType, SideBarView, TreeItem, Workbench } from "vscode-extension-tester";
+import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME, JVMEWLP,JVMDIWLP } from "./util/constants";
 import { findJVMServerTreeNodeByLabel, sleep, updateUserSetting, openCommandPaletteAndType} from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
@@ -58,8 +58,10 @@ describe("Perform Actions On JVM Servers", () => {
     await clickCollapseAllsIconInCicsTree(cicsTree);
   });
 
-  describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers -> JAHAGWLP", () => {
+  describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers", () => {
     let JAHAGWLPJVMServer: TreeItem | undefined;
+    let JVMDIWLPJVMServer: TreeItem | undefined;
+    let JVMEWLPJVMServer: TreeItem | undefined;
 
     it("Verify CICSEX61 -> Regions -> IYCWENW2 -> JVM Servers", async () => {
       ({
@@ -77,7 +79,7 @@ describe("Perform Actions On JVM Servers", () => {
 
     });
 
-    it("Verify JVM Servers -> HERSHWLP", async () => {
+    it("Verify JVM Servers -> JAHAGWLP", async () => {
       JAHAGWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JAHAGWLP);
       expect(JAHAGWLPJVMServer).not.undefined;
       expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
@@ -85,7 +87,7 @@ describe("Perform Actions On JVM Servers", () => {
       await resetAllScenarios();
     });
 
-    it("Disable JVM Server", async () => {
+    it("Check Disable JVM Server Options", async () => {
         await resetAllScenarios();
         await JAHAGWLPJVMServer?.click();
 
@@ -93,28 +95,111 @@ describe("Perform Actions On JVM Servers", () => {
         const inputBoxforcommand = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Disable JVM Server");
         await inputBoxforcommand.confirm();
 
-        // Now select the disable command from the command palette
-        const inputBoxforaction = await openCommandPaletteAndType(">Notifications: Accept Notification Primary Action");
-        await inputBoxforaction.confirm();
+        // Notification pops up
+        const inputBoxfornotification = await openCommandPaletteAndType(">Notifications: Focus Notification Toast");
+        await inputBoxfornotification.confirm();
+        await sleep(2000);
 
-        await JAHAGWLPJVMServer?.click();
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains("Disabled");
-        cicsTree.takeScreenshot();
+        // Check the notification has 4 disable methods
+        const workbench = new Workbench();
+        const notificationsCenter = await workbench.openNotificationsCenter();
+        const notificationspurge = await notificationsCenter.getNotifications(NotificationType.Any);
+        const notification = notificationspurge.find(
+            async n => (await n.getMessage()).includes("Choose JVMServer disable type")
+        );
+        if (notification) {
+            const actions = await notification.getActions();
+            console.log('Available actions:', await Promise.all(actions.map(a => a.getText())));
+            expect(actions.length).to.be.gte(4);
+            expect(await actions[0].getText()).to.equal("Phase Out");
+            expect(await actions[1].getText()).to.equal("Purge");
+            expect(await actions[2].getText()).to.equal("Force Purge");
+            expect(await actions[3].getText()).to.equal("Kill");
+        }
+      });
 
-});
+    it("Disable JVM Server Error", async () => {
+      await resetAllScenarios();
+      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
+      await JVMEWLPJVMServer?.click();
 
-    it("Enable JVM Server", async () => {
-        await JAHAGWLPJVMServer?.click();
+      //clear all previous notifications
+      const inputBoxforcommandclear = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
+      await inputBoxforcommandclear.confirm();
 
-        // Now select the enable command from the command palette
-        const inputBoxtoenable = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
-        await inputBoxtoenable.confirm();
+      //Now select the disable command from the command palette
+      const inputBoxforcommand = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Disable JVM Server");
+      await inputBoxforcommand.confirm();
 
-        await JAHAGWLPJVMServer?.click();
-        expect(await JAHAGWLPJVMServer?.getLabel()).contains(JAHAGWLP);
-        expect(await JAHAGWLPJVMServer?.getLabel()).not.contains("Disabled");
-        cicsTree.takeScreenshot();
+      // Notification pops up
+      const inputBoxfornotification = await openCommandPaletteAndType(">Notifications: Focus Notification Toast");
+      await inputBoxfornotification.confirm();
+      await sleep(2000);
+
+      await JVMEWLPJVMServer?.click();
+
+      //clear all previous notifications
+      const inputBoxforcommandclear2 = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
+      await inputBoxforcommandclear2.confirm();
+
+      //Now select the disable command from the command palette
+      const inputBoxforcommand2 = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Disable JVM Server");
+      await inputBoxforcommand2.confirm();
+
+      // Notification pops up
+      const inputBoxfornotification2 = await openCommandPaletteAndType(">Notifications: Focus Notification Toast");
+      await inputBoxfornotification2.confirm();
+      await sleep(2000);
+
+      // Click on Kill option and check for error
+      const workbenchkill2 = new Workbench();
+      const notificationsCenterkill2 = await workbenchkill2.openNotificationsCenter();
+      const notificationskill2 = await notificationsCenterkill2.getNotifications(NotificationType.Any);
+      const notificationkill2 = notificationskill2.find(
+          async n => (await n.getMessage()).includes("Choose JVMServer disable type")
+      );
+      if (notificationkill2) {
+            const actions = await notificationkill2.getActions();
+            await actions[3].click();
+        }
+
+      // Notification pops up
+      const inputBoxfornotification1 = await openCommandPaletteAndType(">Notifications: Focus Notification Toast");
+      await inputBoxfornotification1.confirm();
+      await sleep(2000);
+
+      //expect error notification
+      const workbencherror = new Workbench();
+      const notificationsCentererror = await workbencherror.openNotificationsCenter();
+      const notificationserror = await notificationsCentererror.getNotifications(NotificationType.Error);
+      const notificationerror = notificationserror.find(
+          async n => (await n.getMessage()).includes("You must FORCEPURGE the JVM server before you can use the KILL option")
+      );
+
+      expect(notificationerror).not.undefined;
+      await sleep(2000);
+      cicsTree.takeScreenshot();  
+      await resetAllScenarios();
+      });
+
+    it("Verify JVM Servers Enable", async () => {
+      await resetAllScenarios();
+      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
+      expect(JVMEWLPJVMServer).not.undefined;
+      expect(await JVMEWLPJVMServer?.getLabel()).contains(JVMEWLP);
+      expect(await JVMEWLPJVMServer?.getLabel()).not.contains("Disabled");
+      cicsTree.takeScreenshot();
+      await resetAllScenarios();
+
+    });  
+
+    it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
+      JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
+      expect(JVMDIWLPJVMServer).not.undefined;
+      await JVMDIWLPJVMServer?.click();
+      expect(await JVMDIWLPJVMServer?.getLabel()).contains("JVMDIWLP (Disabled)");
+      cicsTree.takeScreenshot();
+      await resetAllScenarios();
     });
   });
 });

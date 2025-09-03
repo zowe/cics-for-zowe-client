@@ -65,3 +65,5 @@ export const CBSA = "CBSA";
 
 //JVMServer labels
 export const JAHAGWLP = "JAHAGWLP";
+export const JVMEWLP = "JVMEWLP";
+export const JVMDIWLP = "JVMDIWLP (Disabled)";
