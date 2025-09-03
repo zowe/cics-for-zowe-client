@@ -164,6 +164,8 @@ describe("Perform Actions On JVM Servers", () => {
     });
 
     it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
+      // with the small screen size, we're off the bottom of the page
+      cicsTree = await getCicsSection(view);
       await sendArrowDownKeyAndPressEnter(10);
 
       JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
