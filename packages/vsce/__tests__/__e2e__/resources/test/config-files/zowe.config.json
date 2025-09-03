@@ -44,6 +44,15 @@
         "host": "localhost",
         "rejectUnauthorized": true
       }
+    },
+    "wiremock_server": {
+      "type": "cics",
+      "properties": {
+        "host": "localhost",
+        "port": 8080,
+        "rejectUnauthorized": false,
+        "protocol": "http"
+      }
     }
   },
   "defaults": {

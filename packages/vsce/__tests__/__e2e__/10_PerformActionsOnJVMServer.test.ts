@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { DefaultTreeSection, NotificationType, SideBarView, TreeItem, Workbench } from "vscode-extension-tester";
 import { CICSEX61, IYCWENW2, JAHAGWLP, JVMDIWLP, JVMEWLP, JVMSERVERS, WIREMOCK_PROFILE_NAME } from "./util/constants";
-import { findJVMServerTreeNodeByLabel, openCommandPaletteAndType, sleep, updateUserSetting } from "./util/globalMocks";
+import { findJVMServerTreeNodeByLabel, openCommandPaletteAndType, sendArrowDownKeyAndPressEnter, sleep, updateUserSetting } from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   clickRefreshIconInCicsTree,
@@ -164,6 +164,8 @@ describe("Perform Actions On JVM Servers", () => {
     });
 
     it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
+      await sendArrowDownKeyAndPressEnter(10);
+
       JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
       expect(JVMDIWLPJVMServer).not.undefined;
       await JVMDIWLPJVMServer?.click();
