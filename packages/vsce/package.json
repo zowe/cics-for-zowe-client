@@ -557,7 +557,7 @@
           "group": "2.CICSResourceNode.action"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMServer.ENABLED.*/",
           "command": "cics-extension-for-zowe.disableJVMServer",
           "group": "2.CICSResourceNode.action"
         },
