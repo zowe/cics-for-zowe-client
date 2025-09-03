@@ -65,21 +65,13 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               },
               () => evaluateTreeNodes(node, tree)
             );
-
           } catch (error) {
-            let comment = "";
-            if (disableType === "PURGE") {
-              comment = "Note: You must PHASEOUT the JVM server before you can use the PURGE option.";
-            } else if (disableType === "FORCEPURGE") {
-              comment = "Note: You must PURGE the JVM server before you can use the FORCEPURGE option.";
-            } else if (disableType === "KILL") {
-              comment = "Note: You must FORCEPURGE the JVM server before you can use the KILL option.";
-            } 
-            const message = `Something went wrong while disabling JVMServer ${node.getContainedResourceName()}\n\n${JSON.stringify(
-              error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}\n${comment}`;
-            window.showErrorMessage(message);
-            CICSLogger.error(message);
+            window.showErrorMessage(
+              `Something went wrong when performing a disable - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " "
+              )}`
+            );
           }
         }
       }
