@@ -4,7 +4,6 @@ import constants from "../../constants/CICS.defaults";
 import { JVMServerMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
 import { evaluateTreeNodes } from "../../utils/treeUtils";
