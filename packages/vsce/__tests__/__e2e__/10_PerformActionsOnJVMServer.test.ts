@@ -182,17 +182,6 @@ describe("Perform Actions On JVM Servers", () => {
       await resetAllScenarios();
       });
 
-    it("Verify JVM Servers Enable", async () => {
-      await resetAllScenarios();
-      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
-      expect(JVMEWLPJVMServer).not.undefined;
-      expect(await JVMEWLPJVMServer?.getLabel()).contains(JVMEWLP);
-      expect(await JVMEWLPJVMServer?.getLabel()).not.contains("Disabled");
-      cicsTree.takeScreenshot();
-      await resetAllScenarios();
-
-    });  
-
     it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
       JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
       expect(JVMDIWLPJVMServer).not.undefined;
@@ -200,6 +189,22 @@ describe("Perform Actions On JVM Servers", () => {
       expect(await JVMDIWLPJVMServer?.getLabel()).contains("JVMDIWLP (Disabled)");
       cicsTree.takeScreenshot();
       await resetAllScenarios();
+    });
+
+    it("Enable JVM Server", async () => {
+        await resetAllScenarios();
+        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
+        await JVMDIWLPJVMServer?.click();
+    
+        //Now select the enable command from the command palette
+        const inputBoxforcommand = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
+        await inputBoxforcommand.confirm();
+    
+        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
+        expect(JVMDIWLPJVMServer).not.undefined;
+        expect(await JVMDIWLPJVMServer?.getLabel()).contains(JVMDIWLP);
+        cicsTree.takeScreenshot();
+        await resetAllScenarios();
     });
   });
 });

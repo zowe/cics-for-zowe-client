@@ -6,7 +6,7 @@
       "newScenarioState": "Fetch JVM Server count for enable operation",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JAHAGWLP')",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JVMDIWLP')",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"ENABLE\"/></request>"
