@@ -17,7 +17,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
   return commands.registerCommand("cics-extension-for-zowe.enableJVMServer", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS JVM Server selected");
+      await window.showErrorMessage("No CICS JVM server selected");
       return;
     }
 
@@ -43,7 +43,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
               cicsPlex: node.cicsplexName,
             });
           } catch (error) {
-            const message = `Something went wrong while enabling JVM Server ${node.getContainedResourceName()}\n\n${JSON.stringify(
+            const message = `Something went wrong while enabling JVM server ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
             ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
             window.showErrorMessage(message);

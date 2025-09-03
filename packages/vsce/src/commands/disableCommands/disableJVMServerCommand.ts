@@ -22,7 +22,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
     }
 
     let disableType = await window.showInformationMessage(
-      `Choose JVMServer disable type`,
+      `Choose how to purge tasks while disabling the JVM server`,
       ...["Phase Out", "Purge", "Force Purge", "Kill"]
     );
     if (!disableType) {
