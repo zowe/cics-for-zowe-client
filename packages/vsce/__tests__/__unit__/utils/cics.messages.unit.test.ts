@@ -12,9 +12,7 @@
 import { CICSMessages } from "../../../src/constants/CICS.messages";
 
 describe("CICS Messages constants", () => {
-
   it("should import constants correctly", () => {
-
     expect(CICSMessages.zoweExplorerNotFound).toHaveProperty("message");
     expect(CICSMessages.zoweExplorerNotFound.message).toBe("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed");
 
@@ -22,13 +20,14 @@ describe("CICS Messages constants", () => {
     expect(CICSMessages.zoweExplorerModified.message).toBe("Zowe Explorer was modified for the CICS Extension.");
 
     expect(CICSMessages.notInitializedCorrectly).toHaveProperty("message");
-    expect(CICSMessages.notInitializedCorrectly.message).toBe("IBM CICS for Zowe Explorer was not initialized correctly.");
+    expect(CICSMessages.notInitializedCorrectly.message).toBe("Zowe Explorer for IBM CICS Transaction Server was not initialized correctly.");
 
     expect(CICSMessages.incorrectZoweExplorerVersion).toHaveProperty("message");
-    expect(CICSMessages.incorrectZoweExplorerVersion.message).toBe("Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed");
+    expect(CICSMessages.incorrectZoweExplorerVersion.message).toBe(
+      "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed"
+    );
 
     expect(CICSMessages.loadingResources).toHaveProperty("message");
     expect(CICSMessages.loadingResources.message).toBe("Loading resources...");
-
   });
 });

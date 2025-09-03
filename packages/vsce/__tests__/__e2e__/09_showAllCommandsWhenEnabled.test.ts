@@ -1,18 +1,17 @@
-import { countCommandsFromPalette, removeUserSetting} from "./util/globalMocks";
 import { expect } from "chai";
-import {openSettingsJsonEditor,updateUserSetting,getCommandPaletteLabels} from "./util/globalMocks";
+import { countCommandsFromPalette, getCommandPaletteLabels, openSettingsJsonEditor, removeUserSetting, updateUserSetting } from "./util/globalMocks";
 
 describe("Test suite for showing all commands in Command Palette", () => {
   it("Should display more than 5 commands when the property is set to True", async function () {
-    await updateUserSetting("zowe.cics.showAllCommandsInPalette",true);
-    const countTrue = await countCommandsFromPalette(">IBM CICS for Zowe Explorer");
-    const command = ">IBM CICS for Zowe Explorer: Purge Task";
+    await updateUserSetting("zowe.cics.showAllCommandsInPalette", true);
+    const countTrue = await countCommandsFromPalette(">Zowe Explorer for IBM CICS Transaction Server");
+    const command = ">Zowe Explorer for IBM CICS Transaction Server: Purge Task";
     const labels = await getCommandPaletteLabels(command);
     // Pass the test if the command is present
     expect(countTrue).to.be.greaterThan(6);
     expect(labels).to.include(
-      "IBM CICS for Zowe Explorer: Purge Task",
-      `Command "IBM CICS for Zowe Explorer: Purge Task" should be present in the palette`
+      "Zowe Explorer for IBM CICS Transaction Server: Purge Task",
+      `Command "Zowe Explorer for IBM CICS Transaction Server: Purge Task" should be present in the palette`
     );
   });
 });
