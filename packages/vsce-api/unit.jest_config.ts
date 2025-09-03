@@ -10,4 +10,4 @@
  */
 
 import { ConfigGlobals, createConfig } from "../../common.jest_config";
-export default createConfig("unit", "IBM CICS for Zowe Explorer API Unit Tests") as ConfigGlobals;
+export default createConfig("unit", "Zowe Explorer for IBM CICS Transaction Server API Unit Tests") as ConfigGlobals;

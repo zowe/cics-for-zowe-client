@@ -90,7 +90,7 @@ describe("Perform Actions On Libraries", () => {
       // And get the Libraries in region IYCWENK1 in plex CICSEX61 to get updated state
       libraries = await runCommandAndGetTreeItems(
         cicsTree,
-        ">IBM CICS for Zowe Explorer: Disable Library",
+        ">Zowe Explorer for IBM CICS Transaction Server: Disable Library",
         WIREMOCK_PROFILE_NAME,
         CICSEX61,
         REGIONS_LOADED,
@@ -110,7 +110,7 @@ describe("Perform Actions On Libraries", () => {
       // And get the Library in region IYCWENK1 in plex CICSEX61 to get updated state
       libraries = await runCommandAndGetTreeItems(
         cicsTree,
-        ">IBM CICS for Zowe Explorer: Enable Library",
+        ">Zowe Explorer for IBM CICS Transaction Server: Enable Library",
         WIREMOCK_PROFILE_NAME,
         CICSEX61,
         REGIONS_LOADED,

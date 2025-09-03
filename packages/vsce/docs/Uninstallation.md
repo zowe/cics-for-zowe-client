@@ -1,9 +1,9 @@
-# IBM CICS for Zowe Explorer Extension Uninstallation
+# Zowe Explorer for IBM CICS Transaction Server Extension Uninstallation
 
 ## Requirements
 
 - VS Code
-- Installed IBM CICS for Zowe Explorer Extension
+- Installed Zowe Explorer for IBM CICS Transaction Server Extension
 
 ## Uninstallation
 
@@ -11,7 +11,7 @@
 
 1. Navigate to the Extensions tab of the VS Code application
 
-2. Find `IBM CICS for Zowe Explorer` and select it
+2. Find `Zowe Explorer for IBM CICS Transaction Server` and select it
 
 3. Choose `Uninstall` at the top of the screen
 

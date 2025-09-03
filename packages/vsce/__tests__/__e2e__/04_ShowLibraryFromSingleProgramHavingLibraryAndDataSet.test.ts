@@ -76,7 +76,7 @@ describe("Show Library Action on Program with Library and LIBDSNAME", () => {
 
   it("Check PLIB1DS1 attributes", async () => {
     await PLIB1DS1PROGRAM?.click();
-    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes");
+    await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS Transaction Server: Show Attributes");
     await verifyProgramAttributes(PLIB1DS1, {
       Program: PLIB1DS1,
       Library: LIB1,
@@ -86,7 +86,7 @@ describe("Show Library Action on Program with Library and LIBDSNAME", () => {
 
   it("Show Library on PLIB1DS1", async () => {
     await PLIB1DS1PROGRAM?.click();
-    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
+    await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS Transaction Server: Show Library");
     const driver = VSBrowser.instance.driver;
     for (const item of regionResources) {
       const resourceLabel = (await item.getLabel()).trim();

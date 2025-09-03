@@ -124,7 +124,7 @@ describe("Perform Actions On Programs", () => {
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
       programs = await runCommandAndGetTreeItems(
         cicsTree,
-        ">IBM CICS for Zowe Explorer: Disable Program",
+        ">Zowe Explorer for IBM CICS Transaction Server: Disable Program",
         WIREMOCK_PROFILE_NAME,
         CICSEX61,
         REGIONS_LOADED,
@@ -144,7 +144,7 @@ describe("Perform Actions On Programs", () => {
       // And get the programs in region IYCWENK1 in plex CICSEX61 to get updated state
       programs = await runCommandAndGetTreeItems(
         cicsTree,
-        ">IBM CICS for Zowe Explorer: Enable Program",
+        ">Zowe Explorer for IBM CICS Transaction Server: Enable Program",
         WIREMOCK_PROFILE_NAME,
         CICSEX61,
         REGIONS_LOADED,
@@ -201,7 +201,7 @@ describe("Perform Actions On Programs", () => {
     it("Show Attributes On DSNTIAC", async () => {
       await sendArrowDownKeyAndPressEnter(8);
       await expectTreeItemIsSelected(DSNTIACProgram);
-      await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes");
+      await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS Transaction Server: Show Attributes");
 
       editorView = new EditorView();
       const titles = await editorView.getOpenEditorTitles();

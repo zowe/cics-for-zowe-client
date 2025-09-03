@@ -76,7 +76,9 @@ describe("Show Library Action on Program without LIBDSNAME", () => {
 
   it("Check the attributes of PLIB2NONE", async () => {
     await PLIB2NONEPROGRAM?.click();
-    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Attributes cics-extension-for-zowe.showResourceAttributes");
+    await runCommandFromCommandPalette(
+      ">Zowe Explorer for IBM CICS Transaction Server: Show Attributes cics-extension-for-zowe.showResourceAttributes"
+    );
     await verifyProgramAttributes(PLIB2NONE, {
       Program: PLIB2NONE,
       Library: LIB2,
@@ -86,7 +88,7 @@ describe("Show Library Action on Program without LIBDSNAME", () => {
 
   it("Show Library on PLIB2NONE", async () => {
     await PLIB2NONEPROGRAM?.click();
-    await runCommandFromCommandPalette(">IBM CICS for Zowe Explorer: Show Library");
+    await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS Transaction Server: Show Library");
     const driver = VSBrowser.instance.driver;
     for (const item of regionResources) {
       const resourceLabel = (await item.getLabel()).trim();
