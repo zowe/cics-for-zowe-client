@@ -1,12 +1,12 @@
-# IBM CICS for Zowe Explorer API
+# Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server API
 
-This is an API package that works alongside the **IBM CICS for Zowe Explorer** VS Code extension to allow extenders to import and access interfaces relevent to extending the CICS extension.
+This is an API package that works alongside the **Zowe Explorer for IBM CICS Transaction Server** VS Code extension to allow extenders to import and access interfaces relevent to extending the CICS extension.
 
 ## Available exports
 
 ### ResourceTypes
 
-- Enum of CICS resources supported by IBM CICS for Zowe Explorer.
+- Enum of CICS resources supported by Zowe Explorer for IBM CICS Transaction Server.
 
 ```typescript
 import { ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
@@ -17,7 +17,7 @@ const programResource = ResourcesTypes.CICSProgram;
 
 ### SupportedResourceTypes
 
-- List of strings representing the names of CICS resources supported by IBM CICS for Zowe Explorer.
+- List of strings representing the names of CICS resources supported by Zowe Explorer for IBM CICS Transaction Server.
 
 ```typescript
 import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
@@ -54,7 +54,7 @@ console.log(`My resource is in region ${resourceContext.regionName} and CICSplex
 
 ### IExtensionAPI
 
-- Interface representing the whole API offered by the IBM CICS for Zowe Explorer VS Code extension.
+- Interface representing the whole API offered by the Zowe Explorer for IBM CICS Transaction Server VS Code extension.
 - Contains the ResourceTypes, and SupportedResources APIs.
 
 ```typescript

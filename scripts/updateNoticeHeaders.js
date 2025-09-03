@@ -12,7 +12,7 @@
 const fs = require("fs");
 
 const packageHeaderMap = {
-  'packages/vsce/NOTICE': "IBM CICS for Zowe Explorer",
+  'packages/vsce/NOTICE': "Zowe Explorer for IBM CICS Transaction Server",
   'packages/sdk/NOTICE': "IBM CICS for Zowe SDK",
   'packages/cli/NOTICE': "IBM CICS Plug-in for Zowe CLI"
 };

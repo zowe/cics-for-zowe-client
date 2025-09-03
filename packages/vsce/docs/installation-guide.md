@@ -1,4 +1,4 @@
-# IBM CICS for Zowe Explorer Extension Installation
+# Zowe Explorer for IBM CICS Transaction Server Extension Installation
 
 ## Requirements
 
@@ -10,7 +10,7 @@
 ### From the VS Code Marketplace
 
 1. Open the **Extensions** tab in the VS Code Activity Bar.
-2. Search for `IBM CICS for Zowe Explorer`.
+2. Search for `Zowe Explorer for IBM CICS Transaction Server`.
 3. Click `Install`. (This also installs `Zowe Explorer` if not already present.)
 
 The **Zowe** icon displays in the Activity Bar, where a **CICS** tree view displays alongside **Data Sets**, **Unit System Services (USS)**, and **Jobs**.
@@ -22,13 +22,13 @@ The **Zowe** icon displays in the Activity Bar, where a **CICS** tree view displ
 3. Select the downloaded `Zowe.cics-extension-for-zowe-3.x.x.vsix` file.
 
 <p align="center">
-<img src="./images/installing_vsix.gif" alt="Installing IBM CICS for Zowe Explorer" width="700px"/> 
+<img src="./images/installing_vsix.gif" alt="Installing Zowe Explorer for IBM CICS Transaction Server" width="700px"/> 
 </p>
 
 The successfull install message should display in the bottom right.
 
 <p align="center">
-<img src="./images/info-message-install-completed.png" alt="IBM CICS for Zowe Explorer install completed" width="550px"/> 
+<img src="./images/info-message-install-completed.png" alt="Zowe Explorer for IBM CICS Transaction Server install completed" width="550px"/> 
 </p>
 
 The Zowe Explorer pane displays tree views for **Data Sets**, **Unit System Services (USS)**, and **Jobs**, but in addition the new **CICS** view is included.
