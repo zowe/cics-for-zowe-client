@@ -94,7 +94,10 @@ export async function inspectResourceCallBack(
   context: ExtensionContext,
   resourceName: string,
   resourceType: string,
-  resourceHandlerMap: any[],
+  resourceHandlerMap: {
+    key: string;
+    value: string;
+  }[],
   node: CICSResourceContainerNode<IResource>
 ) {
   const profileValue = resourceHandlerMap.find((item) => item.key === "profile")?.value;

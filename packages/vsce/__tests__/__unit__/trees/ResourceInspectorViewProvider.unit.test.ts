@@ -23,7 +23,7 @@ import { Uri, WebviewView, ExtensionContext } from "vscode";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
-    path: "asdf",
+    path: "/mock/script/fs/path",
   } as Uri,
 
   // Minimal stubs for remaining required fields
@@ -79,5 +79,50 @@ describe("Resource Inspector View provider", () => {
     ri.setResource(myResource);
     // @ts-ignore - private property not accessible
     expect(ri.resource).toEqual(myResource);
+  });
+
+  it("should resolve webview", () => {
+    // Mock Uri.joinPath to return a dummy object or string
+    Uri.joinPath = jest.fn().mockReturnValue({
+      toString: () => "mock-script-uri",
+      fsPath: "/mock/script/fs/path",
+    } as Uri);
+
+    const webviewViewMock = {
+      webview: {
+        options: {},
+        onDidReceiveMessage: jest.fn(),
+        postMessage: jest.fn(),
+        asWebviewUri: jest.fn().mockReturnValue("asdf"),
+      },
+      onDidDispose: jest.fn(),
+    };
+
+    const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+    ri.resolveWebviewView(webviewViewMock as unknown as WebviewView);
+    // @ts-ignore - private property not accessible
+    expect(ri.webviewView?.webview.options).toEqual({
+      enableScripts: true,
+      localResourceRoots: [sampleExtensionContext.extensionUri],
+    });
+    // @ts-ignore - private property not accessible
+    expect(ri.webviewView?.webview.html).toEqual(``);
+    // @ts-ignore - private property not accessible
+    expect(ri.webviewView?.webview.onDidReceiveMessage).toBeDefined();
+  });
+
+  it("should set resource when webview ready", () => {
+    const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+    // @ts-ignore - private property not accessible
+    const sendSpy = jest.spyOn(ri, "sendResourceDataToWebView");
+    expect(sendSpy).toHaveBeenCalledTimes(0);
+
+    // @ts-ignore - private property not accessible
+    ri.webviewReady = true;
+    ri.setResource(myResource);
+    // @ts-ignore - private property not accessible
+    expect(ri.resource).toEqual(myResource);
+    expect(sendSpy).toHaveBeenCalledTimes(1);
   });
 });
