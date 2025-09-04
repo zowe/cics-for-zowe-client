@@ -120,6 +120,9 @@ describe("Perform Actions On JVM Servers", () => {
 
     it("Disable JVM Server Error", async () => {
       await resetAllScenarios();
+      cicsTree = await getCicsSection(view);
+      await sendArrowDownKeyAndPressEnter(10);
+
       JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
       await JVMEWLPJVMServer?.click();
 
