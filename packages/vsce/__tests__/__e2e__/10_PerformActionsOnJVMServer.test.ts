@@ -12,7 +12,7 @@
 import { expect } from "chai";
 import { DefaultTreeSection, NotificationType, SideBarView, TreeItem, Workbench } from "vscode-extension-tester";
 import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME, JVMEWLP,JVMDIWLP } from "./util/constants";
-import { findJVMServerTreeNodeByLabel, sleep, updateUserSetting, openCommandPaletteAndType} from "./util/globalMocks";
+import { findJVMServerTreeNodeByLabel, sleep, updateUserSetting, openCommandPaletteAndType, sendArrowDownKeyAndPressEnter} from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
   clickRefreshIconInCicsTree,
@@ -168,13 +168,11 @@ describe("Perform Actions On JVM Servers", () => {
       await inputBoxfornotification1.confirm();
       await sleep(2000);
 
-      //expect error notification
+      //expect error notification - it'll be TABLEERROR DATAERROR because we haven't done a FORCEPURGE.
       const workbencherror = new Workbench();
       const notificationsCentererror = await workbencherror.openNotificationsCenter();
       const notificationserror = await notificationsCentererror.getNotifications(NotificationType.Error);
-      const notificationerror = notificationserror.find(
-          async n => (await n.getMessage()).includes("You must FORCEPURGE the JVM server before you can use the KILL option")
-      );
+      const notificationerror = notificationserror.find(async (n) => (await n.getMessage()).includes("TABLEERROR"));
 
       expect(notificationerror).not.undefined;
       await sleep(2000);
@@ -183,6 +181,11 @@ describe("Perform Actions On JVM Servers", () => {
       });
 
     it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
+
+      // with the small screen size, we're off the bottom of the page
+      cicsTree = await getCicsSection(view);
+      await sendArrowDownKeyAndPressEnter(10);
+
       JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
       expect(JVMDIWLPJVMServer).not.undefined;
       await JVMDIWLPJVMServer?.click();
@@ -193,6 +196,11 @@ describe("Perform Actions On JVM Servers", () => {
 
     it("Enable JVM Server", async () => {
         await resetAllScenarios();
+
+        // with the small screen size, we're off the bottom of the page
+        cicsTree = await getCicsSection(view);
+        await sendArrowDownKeyAndPressEnter(10);
+
         JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
         await JVMDIWLPJVMServer?.click();
     

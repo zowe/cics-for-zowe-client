@@ -399,10 +399,6 @@
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
         {
-          "command": "cics-extension-for-zowe.disableProgram",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
-        },
-        {
           "command": "cics-extension-for-zowe.enableBundle",
           "when": "config.zowe.cics.showAllCommandsInPalette"
         },
