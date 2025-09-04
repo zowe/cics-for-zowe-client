@@ -9,7 +9,7 @@
  *
  */
 
-import { DefaultTreeSection, InputBox, Key, TreeItem, VSBrowser,TextEditor, Workbench, EditorView  } from "vscode-extension-tester";
+import { DefaultTreeSection, EditorView, InputBox, Key, TextEditor, TreeItem, VSBrowser, Workbench } from "vscode-extension-tester";
 
 let fs = require("fs");
 let path = require("path");
@@ -95,7 +95,6 @@ export async function findJVMServerTreeNodeByLabel(jvmservers: TreeItem[], libra
   return undefined;
 }
 
-
 export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void> {
   // Send the ARROW_DOWN key the specified number of times
   const driver = VSBrowser.instance.driver;
@@ -104,7 +103,13 @@ export async function sendArrowDownKeyAndPressEnter(times: number): Promise<void
   }
   await driver.actions().sendKeys(Key.ENTER).perform();
 }
-export async function countCommandsFromPalette(command: string): Promise<any>{
+
+export async function typeText(text: string): Promise<void> {
+  const driver = VSBrowser.instance.driver;
+  await driver.actions().sendKeys(text).perform();
+}
+
+export async function countCommandsFromPalette(command: string): Promise<any> {
   const inputBox = await openCommandPaletteAndType(command);
   await sleep(500);
   const items = await inputBox.getQuickPicks();
@@ -127,14 +132,14 @@ export async function openSettingsJsonEditor(): Promise<TextEditor> {
   await sleep(500);
   await openCommandPaletteAndRun(">Open User Settings (JSON)");
   const editorView = new EditorView();
-  const editor = await editorView.openEditor("settings.json") as TextEditor;
+  const editor = (await editorView.openEditor("settings.json")) as TextEditor;
   if (editor) {
     return editor;
   }
   throw new Error("settings.json editor not found!");
 }
 
-export async function updateUserSetting(settingName: string, value: any):Promise<TextEditor> {
+export async function updateUserSetting(settingName: string, value: any): Promise<TextEditor> {
   const editor = await openSettingsJsonEditor();
   let settings: any = {};
   try {
@@ -152,11 +157,11 @@ export async function updateUserSetting(settingName: string, value: any):Promise
 export async function getCommandPaletteLabels(command: string) {
   const inputBox = await openCommandPaletteAndType(command);
   const items = await inputBox.getQuickPicks();
-  const labels = await Promise.all(items.map(i => i.getLabel()));
+  const labels = await Promise.all(items.map((i) => i.getLabel()));
   return labels;
 }
 
-export async function removeUserSetting(settingName: string):Promise<void> {
+export async function removeUserSetting(settingName: string): Promise<void> {
   const editor = await openSettingsJsonEditor();
   let settings: any = {};
   try {
@@ -164,7 +169,7 @@ export async function removeUserSetting(settingName: string):Promise<void> {
   } catch {
     settings = {};
   }
-   if (settingName in settings) {
+  if (settingName in settings) {
     delete settings[settingName];
     await editor.setText(JSON.stringify(settings, null, 2));
     await editor.save();
