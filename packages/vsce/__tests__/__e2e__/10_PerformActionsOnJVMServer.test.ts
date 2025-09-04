@@ -89,6 +89,11 @@ describe("Perform Actions On JVM Servers", () => {
 
     it("Check Disable JVM Server Options", async () => {
         await resetAllScenarios();
+                
+        // with the small screen size, we're off the bottom of the page
+        cicsTree = await getCicsSection(view);
+        await sendArrowDownKeyAndPressEnter(10);
+
         await JAHAGWLPJVMServer?.click();
 
         // Now select the disable command from the command palette
@@ -98,7 +103,7 @@ describe("Perform Actions On JVM Servers", () => {
         // Notification pops up
         const inputBoxfornotification = await openCommandPaletteAndType(">Notifications: Focus Notification Toast");
         await inputBoxfornotification.confirm();
-        await sleep(2000);
+        await sleep(500);
 
         // Check the notification has 4 disable methods
         const workbench = new Workbench();
@@ -120,10 +125,13 @@ describe("Perform Actions On JVM Servers", () => {
 
     it("Disable JVM Server Error", async () => {
       await resetAllScenarios();
+
+      // with the small screen size, we're off the bottom of the page
       cicsTree = await getCicsSection(view);
       await sendArrowDownKeyAndPressEnter(10);
 
       JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
+      expect(JVMEWLPJVMServer).not.undefined;
       await JVMEWLPJVMServer?.click();
 
       //clear all previous notifications
@@ -139,7 +147,11 @@ describe("Perform Actions On JVM Servers", () => {
       await inputBoxfornotification.confirm();
       await sleep(500);
 
+      cicsTree = await getCicsSection(view);
+      await sendArrowDownKeyAndPressEnter(10);
+
       await JVMEWLPJVMServer?.click();
+
 
       //Now select the disable command from the command palette
       const inputBoxforcommand2 = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Disable JVM Server");
