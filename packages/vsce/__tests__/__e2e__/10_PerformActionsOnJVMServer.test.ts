@@ -127,7 +127,7 @@ describe("Perform Actions On JVM Servers", () => {
       await resetAllScenarios();
 
       cicsTree = await getCicsSection(view);
-      await sendArrowDownKeyAndPressEnter(10);
+      await sendArrowDownKeyAndPressEnter(15);
 
       JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
       await JVMEWLPJVMServer?.click();
