@@ -110,7 +110,7 @@ export async function countCommandsFromPalette(command: string): Promise<any>{
   const items = await inputBox.getQuickPicks();
   return items.length;
 }
-async function openCommandPaletteAndType(command: string): Promise<InputBox> {
+export async function openCommandPaletteAndType(command: string): Promise<InputBox> {
   const workbench = new Workbench();
   await workbench.openCommandPrompt();
   const inputBox = await InputBox.create();
