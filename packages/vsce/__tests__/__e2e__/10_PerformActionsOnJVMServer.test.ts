@@ -129,7 +129,7 @@ describe("Perform Actions On JVM Servers", () => {
       JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
       expect(JVMEWLPJVMServer).not.undefined;
       cicsTree = await getCicsSection(view);
-      await sendArrowDownKeyAndPressEnter(15);
+      await sendArrowDownKeyAndPressEnter(20);
       await JVMEWLPJVMServer?.click();
 
       //clear all previous notifications
