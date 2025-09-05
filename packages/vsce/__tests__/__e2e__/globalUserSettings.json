@@ -1,0 +1,32 @@
+{
+  "security.workspace.trust.banner": "never",
+  "security.workspace.trust.enabled": false,
+  "security.workspace.trust.startupPrompt": "never",
+  "security.workspace.trust.untrustedFiles": "open",
+  "zowe.security.secureCredentialsEnabled": false,
+  "zowe.cics.showAllCommandsInPalette": true,
+  "zowe.cics.resourceInspector": true,
+  "zowe.cics.persistent": {
+    "persistence": true,
+    "programSearchHistory": [],
+    "transactionSearchHistory": [],
+    "localFileSearchHistory": [],
+    "loadedCICSProfile": [
+      "wiremock_localhost"
+    ],
+    "lastUsedRegion": {
+      "regionName": null,
+      "cicsPlexName": null,
+      "profileName": null
+    },
+    "librarySearchHistory": [],
+    "datasetSearchHistory": [],
+    "regionSearchHistory": [],
+    "tcpipsSearchHistory": [],
+    "urimapsSearchHistory": [],
+    "pipelineSearchHistory": [],
+    "webserviceSearchHistory": [],
+    "bundleSearchHistory": [],
+    "bundlePartSearchHistory": []
+  }
+}

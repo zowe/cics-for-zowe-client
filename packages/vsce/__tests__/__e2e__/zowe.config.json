@@ -21,28 +21,20 @@
         "port": 22
       }
     },
-    "zftp": {
-      "type": "zftp",
+    "rse": {
+      "type": "rse",
       "properties": {
-        "port": 21,
-        "secureFtp": true
+        "port": 6800,
+        "basePath": "rseapi",
+        "protocol": "https"
       }
     },
-    "cicsplex_local": {
+    "wiremock_localhost": {
       "type": "cics",
       "properties": {
-        "port": 21,
-        "user": "****************",
-        "password": "*******************",
-        "rejectUnauthorized": false,
-        "protocol": "http"
-      }
-    },
-    "project_base": {
-      "type": "base",
-      "properties": {
-        "host": "localhost",
-        "rejectUnauthorized": true
+        "protocol": "http",
+        "host": "wiremock",
+        "port": 8080
       }
     }
   },
@@ -50,9 +42,7 @@
     "zosmf": "zosmf",
     "tso": "tso",
     "ssh": "ssh",
-    "zftp": "zftp",
-    "cics": "cicsplex_local",
-    "base": "project_base"
+    "rse": "rse"
   },
-  "autoStore": true
+  "autoStore": false
 }
