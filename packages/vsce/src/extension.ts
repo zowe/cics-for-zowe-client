@@ -120,10 +120,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
 
   context.subscriptions.push(...getCommands(treeDataProv, treeview, context));
   context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      ResourceInspectorViewProvider.viewType,
-      ResourceInspectorViewProvider.getInstance(context.extensionUri)
-    )
+    window.registerWebviewViewProvider(ResourceInspectorViewProvider.viewType, ResourceInspectorViewProvider.getInstance(context))
   );
 
   return CICSExtenderApiConfig.getAPI();

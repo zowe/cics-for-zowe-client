@@ -13,6 +13,7 @@
   left: 2.25rem;
   right: 2.25rem;
   max-width: 74.375rem;
+  z-index: 1;
 }
 
 .padding-top-20 {
@@ -236,6 +237,36 @@ ul.breadcrumb li a:hover {
   background-color: var(--vscode-panel-background);
   max-width: 74.375rem;
   width: 73.75rem;
+}
+
+.dropdown-container {
+  position: relative;
+  float: inline-end;
+  display: inline-flex;
+}
+
+.three-dots {
+  font-size: 12px;
+  padding: 2px;
+  user-select: none;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.refresh-icon{
+  padding-right: 8px;
+  padding-top: 3px;
+  cursor: pointer;
+}
+
+body.vscode-light vscode-context-menu {
+  --vscode-menu-background: #E4E3E2;
+  --vscode-menu-foreground: #000000;
+}
+
+body.vscode-dark vscode-context-menu {
+  --vscode-menu-background: #B2B1B1;
+  --vscode-menu-foreground: #000000;
 }
 
 
