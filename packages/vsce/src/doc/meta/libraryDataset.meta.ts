@@ -11,16 +11,14 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { ILibrary, ILibraryDataset, IProgram } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
 
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-
 const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
-  return Promise.resolve(`(LIBRARYDSN='${parentResource.dsname}')`);
+  return `(LIBRARYDSN='${parentResource.dsname}')`;
 };
 
 customProgramMeta.getContext = function (program: Resource<IProgram>): string {
@@ -46,7 +44,7 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   },
 
   getDefaultCriteria: function (parentResource: ILibrary) {
-    return Promise.resolve(`LIBRARY=${parentResource.name}`);
+    return `LIBRARY=${parentResource.name}`;
   },
 
   getLabel: function (resource: Resource<ILibraryDataset>): string {
@@ -75,11 +73,11 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addDatasetSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getDatasetSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE);
   },
 
   childType: customProgramMeta,

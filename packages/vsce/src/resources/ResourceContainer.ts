@@ -13,7 +13,7 @@ import { CICSSession, CicsCmciConstants, getCache } from "@zowe/cics-for-zowe-sd
 import { imperative } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { IResource, IResourceMeta } from "../doc";
-import { PersistentStorage } from "../utils/PersistentStorage";
+import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
@@ -91,8 +91,8 @@ export class ResourceContainer<T extends IResource> {
     this.numberToFetch = num;
   }
 
-  async resetNumberToFetch() {
-    this.numberToFetch = await PersistentStorage.getNumberOfResourcesToFetch();
+  resetNumberToFetch() {
+    this.numberToFetch = PersistentStorage.getNumberOfResourcesToFetch();
   }
 
   /**

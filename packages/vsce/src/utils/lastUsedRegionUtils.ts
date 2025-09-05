@@ -15,18 +15,16 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
 import { CICSTree } from "../trees";
 import { CICSLogger } from "./CICSLogger";
-import { PersistentStorage } from "./PersistentStorage";
+import PersistentStorage from "./PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
 
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
-
 export function getLastUsedRegion(): { profileName: string; regionName: string; cicsPlexName: string } {
-  return persistentStorage.getLastUsedRegion();
+  return PersistentStorage.getLastUsedRegion();
 }
 
 export function setLastUsedRegion(regionName: string, profileName: string, cicsPlexName?: string) {
   if (regionName != null && profileName != undefined && regionName.length > 0 && profileName.length > 0) {
-    persistentStorage.setLastUsedRegion({ regionName, cicsPlexName, profileName });
+    PersistentStorage.setLastUsedRegion({ regionName, cicsPlexName, profileName });
     CICSLogger.info(`Region set to ${regionName} for profile ${profileName} and plex ${cicsPlexName}`);
   }
   //on error, do not update region

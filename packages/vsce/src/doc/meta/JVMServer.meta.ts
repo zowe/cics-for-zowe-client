@@ -1,10 +1,8 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { IJVMServer } from "../resources/IJVMServer";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
@@ -15,8 +13,8 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria() {
-    return PersistentStorage.getDefaultFilter(
+  getDefaultCriteria() {
+    return PersistentStorage.getDefaultResourceFilter(
       CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
       "jvmServer"
     );
@@ -56,10 +54,10 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addJVMServerSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getJVMServerSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE);
   },
 };

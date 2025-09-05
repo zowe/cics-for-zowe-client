@@ -12,620 +12,113 @@
 import { ConfigurationTarget, workspace } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
-export class PersistentStorage {
-  public schema: string;
-  private static readonly programSearchHistory: string = "programSearchHistory";
-  private static readonly librarySearchHistory: string = "librarySearchHistory";
-  private static readonly datasetSearchHistory: string = "datasetSearchHistory";
-  private static readonly transactionSearchHistory: string = "transactionSearchHistory";
-  private static readonly localFileSearchHistory: string = "localFileSearchHistory";
-  private static readonly regionSearchHistory: string = "regionSearchHistory";
-  private static readonly loadedCICSProfile: string = "loadedCICSProfile";
-  private static readonly tcpipsSearchHistory: string = "tcpipsSearchHistory";
-  private static readonly urimapsSearchHistory: string = "urimapsSearchHistory";
-  private static readonly pipelineSearchHistory: string = "pipelineSearchHistory";
-  private static readonly webserviceSearchHistory: string = "webserviceSearchHistory";
-  private static readonly bundleSearchHistory: string = "bundleSearchHistory";
-  private static readonly bundlePartSearchHistory: string = "bundlePartSearchHistory";
-  private static readonly lastUsedRegion: string = "lastUsedRegion";
-  private static readonly jvmServerSearchHistory: string = "jvmServerSearchHistory";
-
-  private mProgramSearchHistory: string[] = [];
-  private mLibrarySearchHistory: string[] = [];
-  private mDatasetSearchHistory: string[] = [];
-  private mTransactionSearchHistory: string[] = [];
-  private mLocalFileSearchHistory: string[] = [];
-  private mRegionSearchHistory: string[] = [];
-  private mLoadedCICSProfile: string[] = [];
-  private mTCPIPSSearchHistory: string[] = [];
-  private mURIMapsSearchHistory: string[] = [];
-  private mPipelineSearchHistory: string[] = [];
-  private mWebServiceSearchHistory: string[] = [];
-  private mBundleSearchHistory: string[] = [];
-  private mBundlePartSearchHistory: string[] = [];
-  private mJVMServerSearchHistory: string[] = [];
-  private mlastUsedRegion: ILastUsedRegion = { regionName: null, cicsPlexName: null, profileName: null };
-
-  constructor(schema: string) {
-    this.schema = schema;
-    this.init();
+class SPersistentStorage {
+  private static _instance: SPersistentStorage;
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
   }
 
-  private async init(): Promise<void> {
-    let programSearchHistoryLines: string[] | undefined;
-    let librarySearchHistoryLines: string[] | undefined;
-    let datasetSearchHistoryLines: string[] | undefined;
-    let transactionSearchHistoryLines: string[] | undefined;
-    let localFileSearchHistoryLines: string[] | undefined;
-    let regionSearchHistoryLines: string[] | undefined;
-    let loadedCICSProfileLines: string[] | undefined;
-    let tcpipsSearchHistoryLines: string[] | undefined;
-    let urimapsSearchHistoryLines: string[] | undefined;
-    let pipelineSearchHistoryLines: string[] | undefined;
-    let webserviceSearchHistoryLines: string[] | undefined;
-    let bundleSearchHistoryLines: string[] | undefined;
-    let bundlePartSearchHistoryLines: string[] | undefined;
-    let jvmServerSearchHistoryLines: string[] | undefined;
-    let lastUsedRegionLines: ILastUsedRegion | undefined;
+  private constructor() {
+    this.buildSearchHistoryMap();
+  }
 
-    if (workspace.getConfiguration(this.schema)) {
-      programSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.programSearchHistory);
-      librarySearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.librarySearchHistory);
-      datasetSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.datasetSearchHistory);
-      transactionSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.transactionSearchHistory);
-      localFileSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.localFileSearchHistory);
-      regionSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.regionSearchHistory);
-      loadedCICSProfileLines = workspace.getConfiguration(this.schema).get(PersistentStorage.loadedCICSProfile);
-      tcpipsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.tcpipsSearchHistory);
-      urimapsSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.urimapsSearchHistory);
-      pipelineSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.pipelineSearchHistory);
-      webserviceSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.webserviceSearchHistory);
-      bundleSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundleSearchHistory);
-      bundlePartSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.bundlePartSearchHistory);
-      lastUsedRegionLines = workspace.getConfiguration(this.schema).get(PersistentStorage.lastUsedRegion);
-      jvmServerSearchHistoryLines = workspace.getConfiguration(this.schema).get(PersistentStorage.jvmServerSearchHistory);
+  private buildSearchHistoryMap() {
+    this.searchHistoryKeyMap = new Map<string, string>();
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_PROGRAM_RESOURCE, "programSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_LIBRARY_RESOURCE, "librarySearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_LOCAL_TRANSACTION, "transactionSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, "localFileSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE, "tcpipsSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_URIMAP, "urimapsSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_PIPELINE, "pipelineSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE, "webserviceSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_BUNDLE, "bundleSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServerSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE, "datasetSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_BUNDLE_PART, "bundlePartSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_REGION, "regionSearchHistory");
+  }
+
+  private schema: string = "zowe.cics.persistent";
+
+  private LAST_USED_REGION_KEY = "lastUsedRegion";
+  private LOADED_CICS_PROFILES_KEY = "loadedCICSProfile";
+  private RESOURCE_PAGE_COUNT_KEY = "zowe.cics.resourcePageCount";
+
+  private searchHistoryKeyMap: Map<string, string>;
+
+  getLastUsedRegion(): ILastUsedRegion {
+    return workspace.getConfiguration(this.schema).get(this.LAST_USED_REGION_KEY, { regionName: null, cicsPlexName: null, profileName: null });
+  }
+
+  async setLastUsedRegion(lastUsedRegion: ILastUsedRegion): Promise<void> {
+    await this.updateSettingsObject(this.LAST_USED_REGION_KEY, lastUsedRegion);
+  }
+
+  getSearchHistory(resourceType: string): string[] {
+    return workspace.getConfiguration(this.schema).get(this.searchHistoryKeyMap.get(resourceType), []);
+  }
+
+  async appendSearchHistory(resourceType: string, content: string): Promise<void> {
+    const currentHistory = this.getSearchHistory(resourceType);
+
+    // Append content to start of list, moving existing entry if already there, and ensuring no more than 10 items are present
+    const updatedHistory = currentHistory.filter((element) => {
+      return element.trim() !== content.trim();
+    });
+    updatedHistory.unshift(content);
+    if (updatedHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
+      updatedHistory.pop();
     }
 
-    if (programSearchHistoryLines) {
-      this.mProgramSearchHistory = programSearchHistoryLines;
-    } else {
-      await this.resetProgramSearchHistory();
-    }
-    if (librarySearchHistoryLines) {
-      this.mLibrarySearchHistory = librarySearchHistoryLines;
-    } else {
-      await this.resetLibrarySearchHistory();
-    }
-    if (datasetSearchHistoryLines) {
-      this.mDatasetSearchHistory = datasetSearchHistoryLines;
-    } else {
-      await this.resetDatasetSearchHistory();
-    }
-    if (transactionSearchHistoryLines) {
-      this.mTransactionSearchHistory = transactionSearchHistoryLines;
-    } else {
-      await this.resetTransactionSearchHistory();
-    }
-    if (localFileSearchHistoryLines) {
-      this.mLocalFileSearchHistory = localFileSearchHistoryLines;
-    } else {
-      await this.resetLocalFileSearchHistory();
-    }
-    if (regionSearchHistoryLines) {
-      this.mRegionSearchHistory = regionSearchHistoryLines;
-    } else {
-      await this.resetRegionSearchHistory();
-    }
-    if (loadedCICSProfileLines) {
-      this.mLoadedCICSProfile = loadedCICSProfileLines;
-    } else {
-      await this.resetLoadedCICSProfile();
-    }
-    if (tcpipsSearchHistoryLines) {
-      this.mTCPIPSSearchHistory = tcpipsSearchHistoryLines;
-    } else {
-      await this.resetTCPIPSSearchHistory();
-    }
-    if (urimapsSearchHistoryLines) {
-      this.mURIMapsSearchHistory = urimapsSearchHistoryLines;
-    } else {
-      await this.resetURIMapsSearchHistory();
-    }
-    if (pipelineSearchHistoryLines) {
-      this.mPipelineSearchHistory = pipelineSearchHistoryLines;
-    } else {
-      await this.resetPipelineSearchHistory();
-    }
-    if (webserviceSearchHistoryLines) {
-      this.mWebServiceSearchHistory = webserviceSearchHistoryLines;
-    } else {
-      await this.resetWebServiceSearchHistory();
-    }
-    if (bundleSearchHistoryLines) {
-      this.mBundleSearchHistory = bundleSearchHistoryLines;
-    } else {
-      await this.resetBundleSearchHistory();
-    }
-    if (bundlePartSearchHistoryLines) {
-      this.mBundlePartSearchHistory = bundlePartSearchHistoryLines;
-    } else {
-      await this.resetBundlePartSearchHistory();
-    }
-    if (lastUsedRegionLines) {
-      this.mlastUsedRegion = lastUsedRegionLines;
-    } else {
-      await this.resetLastUsedRegion();
-    }
-    if (jvmServerSearchHistoryLines) {
-      this.mJVMServerSearchHistory = jvmServerSearchHistoryLines;
-    } else {
-      await this.resetJVMServerSearchHistory();
-    }
+    await this.updateSettingsObject(this.searchHistoryKeyMap.get(resourceType), updatedHistory);
   }
 
-  public getProgramSearchHistory(): string[] {
-    return this.mProgramSearchHistory;
-  }
-  public getLibrarySearchHistory(): string[] {
-    return this.mLibrarySearchHistory;
-  }
-  public getDatasetSearchHistory(): string[] {
-    return this.mDatasetSearchHistory;
-  }
-  public getTransactionSearchHistory(): string[] {
-    return this.mTransactionSearchHistory;
-  }
-  public getLocalFileSearchHistory(): string[] {
-    return this.mLocalFileSearchHistory;
-  }
-  public getRegionSearchHistory(): string[] {
-    return this.mRegionSearchHistory;
-  }
-  public getLoadedCICSProfile(): string[] {
-    return this.mLoadedCICSProfile;
-  }
-  public getTCPIPSSearchHistory(): string[] {
-    return this.mTCPIPSSearchHistory;
-  }
-  public getURIMapSearchHistory(): string[] {
-    return this.mURIMapsSearchHistory;
-  }
-  public getPipelineSearchHistory(): string[] {
-    return this.mPipelineSearchHistory;
-  }
-  public getWebServiceSearchHistory(): string[] {
-    return this.mWebServiceSearchHistory;
-  }
-  public getBundleSearchHistory(): string[] {
-    return this.mBundleSearchHistory;
-  }
-  public getBundlePartSearchHistory(): string[] {
-    return this.mBundlePartSearchHistory;
-  }
-  public getJVMServerSearchHistory(): string[] {
-    return this.mJVMServerSearchHistory;
+  getLoadedCICSProfiles(): string[] {
+    return workspace.getConfiguration(this.schema).get(this.LOADED_CICS_PROFILES_KEY, []);
   }
 
-  public getLastUsedRegion(): ILastUsedRegion {
-    return this.mlastUsedRegion;
+  async appendLoadedCICSProfile(profileName: string) {
+    const currentProfiles = this.getLoadedCICSProfiles();
+    const updatedProfiles = currentProfiles.filter((element) => {
+      return element.trim() !== profileName.trim();
+    });
+    updatedProfiles.unshift(profileName);
+
+    await this.updateSettingsObject(this.LOADED_CICS_PROFILES_KEY, updatedProfiles);
   }
 
-  public async setLastUsedRegion(lastUsedRegion: ILastUsedRegion): Promise<void> {
-    this.mlastUsedRegion = lastUsedRegion;
-    await this.updateLastUsedRegion();
-  }
-
-  public async resetProgramSearchHistory(): Promise<void> {
-    this.mProgramSearchHistory = [];
-    await this.updateProgramSearchHistory();
-  }
-  public async resetLibrarySearchHistory(): Promise<void> {
-    this.mLibrarySearchHistory = [];
-    await this.updateLibrarySearchHistory();
-  }
-  public async resetDatasetSearchHistory(): Promise<void> {
-    this.mDatasetSearchHistory = [];
-    await this.updateDatasetSearchHistory();
-  }
-  public async resetTransactionSearchHistory(): Promise<void> {
-    this.mTransactionSearchHistory = [];
-    await this.updateTransactionSearchHistory();
-  }
-  public async resetLocalFileSearchHistory(): Promise<void> {
-    this.mLocalFileSearchHistory = [];
-    await this.updateLocalFileSearchHistory();
-  }
-  public async resetRegionSearchHistory(): Promise<void> {
-    this.mRegionSearchHistory = [];
-    await this.updateRegionSearchHistory();
-  }
-  public async resetLoadedCICSProfile(): Promise<void> {
-    this.mLoadedCICSProfile = [];
-    await this.updateLoadedCICSProfile();
-  }
-  public async resetTCPIPSSearchHistory(): Promise<void> {
-    this.mTCPIPSSearchHistory = [];
-    await this.updateTCPIPSSearchHistory();
-  }
-  public async resetURIMapsSearchHistory(): Promise<void> {
-    this.mURIMapsSearchHistory = [];
-    await this.updateURIMapsSearchHistory();
-  }
-  public async resetPipelineSearchHistory(): Promise<void> {
-    this.mPipelineSearchHistory = [];
-    await this.updatePipelineSearchHistory();
-  }
-  public async resetWebServiceSearchHistory(): Promise<void> {
-    this.mWebServiceSearchHistory = [];
-    await this.updateWebServiceSearchHistory();
-  }
-  public async resetBundleSearchHistory(): Promise<void> {
-    this.mBundleSearchHistory = [];
-    await this.updateBundleSearchHistory();
-  }
-  public async resetBundlePartSearchHistory(): Promise<void> {
-    this.mBundlePartSearchHistory = [];
-    await this.updateBundlePartSearchHistory();
-  }
-  public async resetLastUsedRegion(): Promise<void> {
-    this.mlastUsedRegion = { regionName: null, cicsPlexName: null, profileName: null };
-    await this.updateLastUsedRegion();
-  }
-  public async resetJVMServerSearchHistory(): Promise<void> {
-    this.mJVMServerSearchHistory = [];
-    await this.updateJVMServerSearchHistory();
-  }
-
-  private async updateProgramSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.programSearchHistory] = this.mProgramSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateLibrarySearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.librarySearchHistory] = this.mLibrarySearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateDatasetSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.datasetSearchHistory] = this.mDatasetSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateTransactionSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.transactionSearchHistory] = this.mTransactionSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateLocalFileSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.localFileSearchHistory] = this.mLocalFileSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateRegionSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.regionSearchHistory] = this.mRegionSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateLoadedCICSProfile(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.loadedCICSProfile] = this.mLoadedCICSProfile;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateTCPIPSSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.tcpipsSearchHistory] = this.mTCPIPSSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-  private async updateURIMapsSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.urimapsSearchHistory] = this.mURIMapsSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updatePipelineSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.pipelineSearchHistory] = this.mPipelineSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updateWebServiceSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.webserviceSearchHistory] = this.mWebServiceSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updateBundleSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.bundleSearchHistory] = this.mBundleSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updateBundlePartSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.bundlePartSearchHistory] = this.mBundlePartSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  private async updateLastUsedRegion(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.lastUsedRegion] = this.mlastUsedRegion;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-    private async updateJVMServerSearchHistory(): Promise<void> {
-    const settings: any = { ...workspace.getConfiguration(this.schema) };
-    if (settings.persistence) {
-      settings[PersistentStorage.jvmServerSearchHistory] = this.mJVMServerSearchHistory;
-      await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
-    }
-  }
-
-  public async addProgramSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mProgramSearchHistory = this.mProgramSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mProgramSearchHistory.unshift(criteria);
-
-      if (this.mProgramSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mProgramSearchHistory.pop();
-      }
-      await this.updateProgramSearchHistory();
-    }
-  }
-
-  public async addLibrarySearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mLibrarySearchHistory = this.mLibrarySearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mLibrarySearchHistory.unshift(criteria);
-
-      if (this.mLibrarySearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mLibrarySearchHistory.pop();
-      }
-      await this.updateLibrarySearchHistory();
-    }
-  }
-
-  public async addDatasetSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mDatasetSearchHistory = this.mDatasetSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mDatasetSearchHistory.unshift(criteria);
-
-      if (this.mDatasetSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mDatasetSearchHistory.pop();
-      }
-      await this.updateDatasetSearchHistory();
-    }
-  }
-
-  public async addTransactionSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mTransactionSearchHistory = this.mTransactionSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mTransactionSearchHistory.unshift(criteria);
-
-      if (this.mTransactionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mTransactionSearchHistory.pop();
-      }
-      await this.updateTransactionSearchHistory();
-    }
-  }
-
-  public async addLocalFileSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mLocalFileSearchHistory = this.mLocalFileSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mLocalFileSearchHistory.unshift(criteria);
-
-      if (this.mLocalFileSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mLocalFileSearchHistory.pop();
-      }
-      await this.updateLocalFileSearchHistory();
-    }
-  }
-
-  public async addRegionSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mRegionSearchHistory = this.mRegionSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mRegionSearchHistory.unshift(criteria);
-
-      if (this.mRegionSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mRegionSearchHistory.pop();
-      }
-      await this.updateRegionSearchHistory();
-    }
-  }
-
-  public async addLoadedCICSProfile(name: string): Promise<void> {
-    if (name) {
-      this.mLoadedCICSProfile = this.mLoadedCICSProfile.filter((element) => {
-        return element.trim() !== name.trim();
-      });
-
-      this.mLoadedCICSProfile.unshift(name);
-      await this.updateLoadedCICSProfile();
-    }
-  }
-
-  public async addTCPIPSSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mTCPIPSSearchHistory = this.mTCPIPSSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mTCPIPSSearchHistory.unshift(criteria);
-
-      if (this.mTCPIPSSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mTCPIPSSearchHistory.pop();
-      }
-      await this.updateTCPIPSSearchHistory();
-    }
-  }
-
-  public async addURIMapsSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mURIMapsSearchHistory = this.mURIMapsSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mURIMapsSearchHistory.unshift(criteria);
-
-      if (this.mURIMapsSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mURIMapsSearchHistory.pop();
-      }
-      await this.updateURIMapsSearchHistory();
-    }
-  }
-
-  public async addPipelineSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mPipelineSearchHistory = this.mPipelineSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mPipelineSearchHistory.unshift(criteria);
-
-      if (this.mPipelineSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mPipelineSearchHistory.pop();
-      }
-      await this.updatePipelineSearchHistory();
-    }
-  }
-
-  public async addWebServiceSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mWebServiceSearchHistory = this.mWebServiceSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mWebServiceSearchHistory.unshift(criteria);
-
-      if (this.mWebServiceSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mWebServiceSearchHistory.pop();
-      }
-      await this.updateWebServiceSearchHistory();
-    }
-  }
-
-  public async addBundleSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mBundleSearchHistory = this.mBundleSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mBundleSearchHistory.unshift(criteria);
-
-      if (this.mBundleSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mBundleSearchHistory.pop();
-      }
-      await this.updateBundleSearchHistory();
-    }
-  }
-
-  public async addBundlePartSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mBundlePartSearchHistory = this.mBundlePartSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
-      });
-
-      this.mBundlePartSearchHistory.unshift(criteria);
-
-      if (this.mBundlePartSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-        this.mBundlePartSearchHistory.pop();
-      }
-      await this.updateBundlePartSearchHistory();
-    }
-  }
-  public async addJVMServerSearchHistory(criteria: string): Promise<void> {
-    if (criteria) {
-      this.mJVMServerSearchHistory = this.mJVMServerSearchHistory.filter((element) => {
-        return element.trim() !== criteria.trim();
+  async removeLoadedCICSProfile(profileName: string) {
+    const currentProfiles = this.getLoadedCICSProfiles();
+    const updatedProfiles = currentProfiles.filter((element) => {
+      return element.trim() !== profileName.trim();
     });
 
-    this.mJVMServerSearchHistory.unshift(criteria);
-
-    if (this.mJVMServerSearchHistory.length > constants.PERSISTENT_STORAGE_MAX_LENGTH) {
-      this.mJVMServerSearchHistory.pop();
-    }
-    await this.updateJVMServerSearchHistory();
-  }
-}
-  public async removeLoadedCICSProfile(name: string): Promise<void> {
-    if (name) {
-      this.mLoadedCICSProfile = this.mLoadedCICSProfile.filter((element) => {
-        return element.trim() !== name.trim();
-      });
-
-      await this.updateLoadedCICSProfile();
-    }
+    await this.updateSettingsObject(this.LOADED_CICS_PROFILES_KEY, updatedProfiles);
   }
 
-  public static async getDefaultFilter(resourceName: string, settingsKey?: string): Promise<string> {
+  private async updateSettingsObject(key: string, content: any) {
+    // Get the full object, update specific property, and push back to settings
+    const settings = { ...workspace.getConfiguration(this.schema) };
+    settings[key] = content;
+
+    await workspace.getConfiguration().update(this.schema, settings, ConfigurationTarget.Global);
+  }
+
+  getDefaultResourceFilter(resourceName: string, settingsKey?: string): string {
     const constantsKey = `DEFAULT_${resourceName.toUpperCase()}_FILTER` as keyof typeof constants;
     const configKey = `zowe.cics.${settingsKey ?? resourceName}.filter`;
 
-    const filterFromConfig = await workspace.getConfiguration().get(configKey);
-
-    if (!filterFromConfig) {
-      const defaultValue = constants[constantsKey];
-      await workspace.getConfiguration().update(configKey, defaultValue);
-      return `${defaultValue}`;
-    }
-
-    return `${filterFromConfig}`;
+    return `${workspace.getConfiguration().get(configKey, constants[constantsKey])}`;
   }
 
-  public static async getNumberOfResourcesToFetch(): Promise<number> {
-    const configKey = `zowe.cics.resourcePageCount`;
-    const valFromConfig = await workspace.getConfiguration().get(configKey);
-
-    if (!valFromConfig) {
-      await workspace.getConfiguration().update(configKey, constants.DEFAULT_RESOURCE_PAGE_SIZE);
-      return constants.DEFAULT_RESOURCE_PAGE_SIZE;
-    }
-
+  getNumberOfResourcesToFetch(): number {
+    const valFromConfig = workspace.getConfiguration().get(this.RESOURCE_PAGE_COUNT_KEY, constants.DEFAULT_RESOURCE_PAGE_SIZE);
     return parseInt(`${valFromConfig}`, 10);
   }
 }
+
+const PersistentStorage = SPersistentStorage.Instance;
+export default PersistentStorage;
