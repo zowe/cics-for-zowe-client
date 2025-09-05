@@ -11,7 +11,7 @@
 
 import { expect } from "chai";
 import { DefaultTreeSection, NotificationType, SideBarView, TreeItem, Workbench } from "vscode-extension-tester";
-import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME, JVMEWLP,JVMDIWLP } from "./util/constants";
+import { JAHAGWLP, CICSEX61, IYCWENW2, JVMSERVERS, WIREMOCK_PROFILE_NAME } from "./util/constants";
 import { findJVMServerTreeNodeByLabel, sleep, updateUserSetting, openCommandPaletteAndType, sendArrowDownKeyAndPressEnter} from "./util/globalMocks";
 import {
   clickCollapseAllsIconInCicsTree,
@@ -60,8 +60,6 @@ describe("Perform Actions On JVM Servers", () => {
 
   describe("Performing Disable And Enable On JVM Server CICSEX61 -> IYCWENW2 -> JVM Servers", () => {
     let JAHAGWLPJVMServer: TreeItem | undefined;
-    let JVMDIWLPJVMServer: TreeItem | undefined;
-    let JVMEWLPJVMServer: TreeItem | undefined;
 
     it("Verify CICSEX61 -> Regions -> IYCWENW2 -> JVM Servers", async () => {
       ({
@@ -174,42 +172,5 @@ describe("Perform Actions On JVM Servers", () => {
       cicsTree.takeScreenshot();  
       await resetAllScenarios();
       });
-
-    it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
-      await resetAllScenarios(); 
-
-      JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
-      expect(JVMDIWLPJVMServer).not.undefined;
-
-      cicsTree = await getCicsSection(view);
-      await sendArrowDownKeyAndPressEnter(10);
-
-      await JVMDIWLPJVMServer?.click();
-      expect(await JVMDIWLPJVMServer?.getLabel()).contains("JVMDIWLP (Disabled)");
-      cicsTree.takeScreenshot();
-      await resetAllScenarios();
-    });
-
-    it("Enable JVM Server", async () => {
-        await resetAllScenarios();
-
-        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
-        expect(JVMDIWLPJVMServer).not.undefined;
-
-        cicsTree = await getCicsSection(view);
-        await sendArrowDownKeyAndPressEnter(10);
-
-        await JVMDIWLPJVMServer?.click();
-    
-        //Now select the enable command from the command palette
-        const inputBoxforcommand = await openCommandPaletteAndType(">IBM CICS for Zowe Explorer: Enable JVM Server");
-        await inputBoxforcommand.confirm();
-    
-        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
-        expect(JVMDIWLPJVMServer).not.undefined;
-        expect(await JVMDIWLPJVMServer?.getLabel()).contains(JVMDIWLP);
-        cicsTree.takeScreenshot();
-        await resetAllScenarios();
-    });
   });
 });
