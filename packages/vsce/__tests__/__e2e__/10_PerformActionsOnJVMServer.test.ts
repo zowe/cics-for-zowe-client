@@ -126,10 +126,10 @@ describe("Perform Actions On JVM Servers", () => {
     it("Disable JVM Server Error", async () => {
       await resetAllScenarios();
 
+      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
+      expect(JVMEWLPJVMServer).not.undefined;
       cicsTree = await getCicsSection(view);
       await sendArrowDownKeyAndPressEnter(15);
-
-      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
       await JVMEWLPJVMServer?.click();
 
       //clear all previous notifications
@@ -176,12 +176,13 @@ describe("Perform Actions On JVM Servers", () => {
 
     it("Verify JVM Servers -> JVMDIWLP -> DISABLED", async () => {
       await resetAllScenarios(); 
-      // with the small screen size, we're off the bottom of the page
-      cicsTree = await getCicsSection(view);
-      await sendArrowDownKeyAndPressEnter(10);
 
       JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
       expect(JVMDIWLPJVMServer).not.undefined;
+
+      cicsTree = await getCicsSection(view);
+      await sendArrowDownKeyAndPressEnter(10);
+
       await JVMDIWLPJVMServer?.click();
       expect(await JVMDIWLPJVMServer?.getLabel()).contains("JVMDIWLP (Disabled)");
       cicsTree.takeScreenshot();
@@ -191,11 +192,12 @@ describe("Perform Actions On JVM Servers", () => {
     it("Enable JVM Server", async () => {
         await resetAllScenarios();
 
-        // with the small screen size, we're off the bottom of the page
+        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
+        expect(JVMDIWLPJVMServer).not.undefined;
+
         cicsTree = await getCicsSection(view);
         await sendArrowDownKeyAndPressEnter(10);
 
-        JVMDIWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMDIWLP);
         await JVMDIWLPJVMServer?.click();
     
         //Now select the enable command from the command palette
