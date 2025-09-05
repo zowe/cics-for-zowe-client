@@ -126,11 +126,12 @@ describe("Perform Actions On JVM Servers", () => {
     it("Disable JVM Server Error", async () => {
       await resetAllScenarios();
 
-      JVMEWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JVMEWLP);
-      expect(JVMEWLPJVMServer).not.undefined;
+      JAHAGWLPJVMServer = await findJVMServerTreeNodeByLabel(jvmservers, JAHAGWLP);
+      expect(JAHAGWLPJVMServer).not.undefined;
       cicsTree = await getCicsSection(view);
       await sendArrowDownKeyAndPressEnter(20);
-      await JVMEWLPJVMServer?.click();
+      await JAHAGWLPJVMServer?.click();
+      await sleep(1000);
 
       //clear all previous notifications
       const inputBoxforcommandclear = await openCommandPaletteAndType(">Notifications: Clear All Notifications");
