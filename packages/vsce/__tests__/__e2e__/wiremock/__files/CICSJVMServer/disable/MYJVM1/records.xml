@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+  version="3.0" connect_version="0610">
+  <resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
+    recordcount="1" displayed_recordcount="1" />
+  <records>
+    <cicsjvmserver _keydata="C5E8E4C3D4C3C9D1" basdefinever="0" changeagent="SYSTEM"
+      changeagrel="0740" changetime="2025-07-28T12:14:36.000000+00:00" changeusrid="EXPAUTO"
+      clscachefree="0" clscachesize="0" clssstrgallc="80116776" clssstrgused="74707568"
+      codecachallc="268435456" codecachused="14913296" currentheap="133994840"
+      datacachallc="6291456" datacachused="6291456" definesource="SYSTEM"
+      definetime="2025-07-28T12:14:36.000000+00:00" enablestatus="DISABLED" eyu_cicsname="MYREG1"
+      eyu_cicsrel="E740" eyu_reserved="0" gcpolicy="-Xgcpolicy:gencon" initheap="134217728"
+      installagent="CREATESPI" installtime="2025-07-28T12:14:36.000000+00:00" installusrid="EXPAUTO"
+      javahome="/java/J8.0_64" jvmprofile="MYJVM1" lerunopts="DFHAXRO" log="//DD:JVMLOG"
+      maxheap="2147483648" name="MYJVM1" occupancy="133994840" peakheap="134007128" pid="34079645"
+      profile="/u/myuser/jvmprofs/MYREG1/MYJVM1.jvmprofile"
+      profiledir="/u/myuser/jvmprofs/MYREG1" srvcrttmegmt="2025-07-28T11:14:37.573500+00:00"
+      srvcrttmelcl="2025-07-28T12:14:37.573500+00:00" srvgcmjrcnt="0" srvgcmjrcpu="0"
+      srvgcmjrfrd="0" srvgcmnrcnt="5" srvgcmnrcpu="1049" srvgcmnrfrd="385273656" srvsysthcnt="8"
+      srvsysthdwt="0" srvsysthnwt="0" srvsysthpwt="0" srvsysthwtt="0" srvthrcurr="8" srvthrhwm="9"
+      srvthrwaits="0" srvthrwcurr="0" srvthrwhwm="0" srvthrwtime="0000:00:00.000000"
+      srvusecount="219" stderr="//DD:JVMERR" stdout="//DD:JVMOUT" threadlimit="15"
+      trace="//DD:JVMTRACE" workdir="/u/myuser" />
+  </records>
+</response>
