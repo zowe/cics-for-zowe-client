@@ -83,20 +83,21 @@ The profile defines a connection which must point to a CICS region's CICS Manage
 The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
 
 ```
-"profiles": {
-   ...
-   "cics_example": {
-      "type": "cics",
-      "properties": {
-            "host": "replace-with-host-name",
-            "port": replace-with-port-number,
-            "rejectUnauthorized": true,
-            "protocol": "http",
-            "cicsPlex": "optionally-replace-with-plex-name",
-            "regionName": "optionally-replace-with-region-name"
-      }
-   },
-   ...
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "cics_example": {
+            "type": "cics",
+            "properties": {
+                "host": "replace-with-host-name",
+                "port": replace-with-port-number,
+                "rejectUnauthorized": true,
+                "protocol": "http",
+                "cicsPlex": "optionally-replace-with-plex-name",
+                "regionName": "optionally-replace-with-region-name"
+            }
+        }
+    }
 }
 ```
 
