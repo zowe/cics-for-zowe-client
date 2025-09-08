@@ -172,7 +172,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     await this.loadPageOfResources();
     this.refreshIcon(true);
     this.viewMore = false;
-    await this.childResource.resources.resetNumberToFetch();
+    this.childResource.resources.resetNumberToFetch();
     return this.children;
   }
 

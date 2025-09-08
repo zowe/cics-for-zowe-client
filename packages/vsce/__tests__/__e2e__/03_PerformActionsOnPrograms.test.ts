@@ -22,6 +22,7 @@ import {
 import {
   clickCollapseAllsIconInCicsTree,
   closeAllEditorsTabs,
+  collapseSectionInZoweExplorer,
   expectTreeItemIsSelected,
   getCicsSection,
   getPlexChildIndex,
@@ -50,6 +51,11 @@ describe("Perform Actions On Programs", () => {
   before(async () => {
     await sleep(1900);
     view = await openZoweExplorer();
+
+    await collapseSectionInZoweExplorer(view, "Data Sets");
+    await collapseSectionInZoweExplorer(view, "Unix System Services (USS)");
+    await collapseSectionInZoweExplorer(view, "Jobs");
+
     cicsTree = await getCicsSection(view);
 
     wiremockServer = await cicsTree.findItem(WIREMOCK_PROFILE_NAME);

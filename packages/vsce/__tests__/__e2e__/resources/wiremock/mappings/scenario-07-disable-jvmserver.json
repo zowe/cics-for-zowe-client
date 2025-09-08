@@ -1,0 +1,120 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Disable JVM Server KILL",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JVMEWLP')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"><parameter name=\"PURGETYPE\" value=\"KILL\"/></action></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-disable-jvmserver-kill.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D'JVMEWLP')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"/></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "response-for-disable-jvmserver-phaseout.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "requiredScenarioState": "Fetch JVM Server by name for disable operation (PHASEOUT)",
+      "newScenarioState": "Fetch JVM Server by name for disable operation 2",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3D'JVMEWLP')"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-disable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "newScenarioState": "Fetch JVM Server count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(name%3DJVMEWLP)"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "load-jvmserver-by-name-disable-disabling.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "requiredScenarioState": "Fetch JVM Server count for disable operation",
+      "newScenarioState": "Load JVM Server with status as Disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/CICSEX61/IYCWENW2?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count-with-cachetoken.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "requiredScenarioState": "Load JVM Server with status as Disabled",
+      "newScenarioState": "Fetch JVM Server record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244/1/4?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "jvmserver-with-disabled-status.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Disable JVM Server PHASEOUT",
+      "requiredScenarioState": "Fetch JVM Server record count for disable operation",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/E141E7EF7EB5D244?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "fetch-jvmserver-count.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

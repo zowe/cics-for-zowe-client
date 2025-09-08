@@ -19,7 +19,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ------
 
 ** tunnel-agent; version 0.6.0 -- https://github.com/mikeal/tunnel-agent#readme
-** typescript; version 5.8.3 -- https://www.typescriptlang.org/
+** typescript; version 5.9.2 -- https://www.typescriptlang.org/
 (c) by W3C
 Copyright (c) 2018 WHATWG
 Copyright (c) Microsoft Corporation
@@ -1153,16 +1153,13 @@ Copyright 2015 Gareth Jones (with contributions from many other people)
 
 ------
 
-** selenium-webdriver; version 4.34.0 -- https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-webdriver#readme
+** selenium-webdriver; version 4.35.0 -- https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-webdriver#readme
 (c) 2006 Entrust
 (c) 2009 Entrust, Inc. - for
 (c) 2012 Entrust, Inc. - for
-(c) 2015 Entrust, Inc. - for
-Copyright 1995-2024 Mark Adler
 Copyright 2004-2011 Selenium committers
 Copyright 2011-2025 Software Freedom Conservancy
 Copyright 2025 Software Freedom Conservancy (SFC)
-(c) 1999 Entrust.net Limited1301 Entrust.net Certification
 
 
                                  Apache License
@@ -1691,7 +1688,7 @@ limitations under the License.
 ** binaryextensions; version 6.11.0 -- https://github.com/bevry/binaryextensions
 Copyright (c) 2000-2006, The Perl Foundation
 Copyright (c) Benjamin Lupton (https://balupton.com)
-** editions; version 6.21.0 -- https://github.com/bevry/editions
+** editions; version 6.22.0 -- https://github.com/bevry/editions
 Copyright (c) 2000-2006, The Perl Foundation
 Copyright (c) Benjamin Lupton (https://balupton.com)
 ** istextorbinary; version 9.5.0 -- https://github.com/bevry/istextorbinary
@@ -1700,7 +1697,7 @@ Copyright (c) Benjamin Lupton (https://balupton.com)
 ** textextensions; version 6.11.0 -- https://github.com/bevry/textextensions
 Copyright (c) 2000-2006, The Perl Foundation
 Copyright (c) Benjamin Lupton (https://balupton.com)
-** version-range; version 4.14.0 -- https://github.com/bevry/version-range
+** version-range; version 4.15.0 -- https://github.com/bevry/version-range
 Copyright (c) 2000-2006, The Perl Foundation
 Copyright (c) Benjamin Lupton (https://balupton.com)
 
@@ -1861,41 +1858,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** terser; version 5.43.1 -- https://terser.org
-Copyright 2012 (c) Mihai Bazon <mihai.bazon@gmail.com>
-Copyright 2012-2018 (c) Mihai Bazon <mihai.bazon@gmail.com>
-
-Copyright 2012-2018 (c) Mihai Bazon <mihai.bazon@gmail.com>
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-    * Redistributions of source code must retain the above
-      copyright notice, this list of conditions and the following
-      disclaimer.
-
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials
-      provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER “AS IS” AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE.
-
-
-------
-
 ** npm-install-checks; version 6.3.0 -- https://github.com/npm/npm-install-checks#readme
 Copyright (c) Robert Kowalski and Isaac Z. Schlueter 'Authors
 
@@ -2012,25 +1974,6 @@ Redistribution and use in source and binary forms, with or without modification,
    2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-------
-
-** uri-js; version 4.4.1 -- https://github.com/garycourt/uri-js
-(c) 2011 Gary Court
-Copyright 2011 Gary Court
-
-Copyright 2011 Gary Court. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1.	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-2.	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY GARY COURT "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GARY COURT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those of the authors and should not be interpreted as representing official policies, either expressed or implied, of Gary Court.
-
 
 ------
 
@@ -2253,44 +2196,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** sprintf-js; version 1.1.3 -- https://github.com/alexei/sprintf.js#readme
-Copyright (c) 2007-present, Alexandru Marasteanu <hello@alexei.ro>
-
-Copyright (c) 2007-present, Alexandru Mărășteanu <hello@alexei.ro>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-* Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the distribution.
-* Neither the name of this software nor the names of its contributors may be
-  used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-------
-
 ** istanbul-lib-coverage; version 3.2.2 -- https://istanbul.js.org/
 Copyright 2012-2015 Yahoo! Inc.
 Copyright 2012-2015, Yahoo Inc. Copyrights
 ** istanbul-lib-report; version 3.0.1 -- https://istanbul.js.org/
 Copyright 2012-2015 Yahoo! Inc.
 Copyright 2012-2015, Yahoo Inc. Copyrights
-** istanbul-reports; version 3.1.7 -- https://istanbul.js.org/
+** istanbul-reports; version 3.2.0 -- https://istanbul.js.org/
 (c) Sindre Sorhus
 Copyright 2012-2015 Yahoo! Inc.
 Copyright 2012-2015, Yahoo Inc. Copyrights
@@ -2324,7 +2236,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** source-map; version 0.7.4 -- https://github.com/mozilla/source-map
+** source-map; version 0.7.6 -- https://github.com/mozilla/source-map
 Copyright 2011 The Closure Compiler Authors
 Copyright 2011 Mozilla Foundation and contributors
 Copyright 2014 Mozilla Foundation and contributors
@@ -2531,14 +2443,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** fast-uri; version 3.0.6 -- https://github.com/fastify/fast-uri
+** fast-uri; version 3.1.0 -- https://github.com/fastify/fast-uri
 Copyright 2011 Gary Court
-Copyright (c) 2021 The Fastify Team
+Copyright (c) 2021-present The Fastify team
 Copyright (c) 2011-2021, Gary Court until https://github.com/garycourt/uri-js/commit/a1acf730b4bba3f1097c9f52e7d9d3aba8cdcaae
 
-Copyright (c) 2021 The Fastify Team
 Copyright (c) 2011-2021, Gary Court until https://github.com/garycourt/uri-js/commit/a1acf730b4bba3f1097c9f52e7d9d3aba8cdcaae
+Copyright (c) 2021-present The Fastify team
 All rights reserved.
+
+The Fastify team members are listed at https://github.com/fastify/fastify#team.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -2667,6 +2581,37 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ------
 
+** sprintf-js; version 1.0.3 -- https://github.com/alexei/sprintf.js#readme
+Copyright (c) 2007-2014, Alexandru Marasteanu
+
+Copyright (c) 2007-2014, Alexandru Marasteanu <hello [at) alexei (dot] ro>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+* Neither the name of this software nor the names of its contributors may be
+  used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+------
+
 ** spdx-exceptions; version 2.5.0 -- https://github.com/kemitchell/spdx-exceptions.json#readme
 Copyright (c) 2010-2015 Linux Foundation and its Contributors
 
@@ -2764,408 +2709,7 @@ Creative Commons may be contacted at http://creativecommons.org/.
 
 ------
 
-** caniuse-lite; version 1.0.30001727 -- https://github.com/browserslist/caniuse-lite#readme
-
-Attribution 4.0 International
-
-=======================================================================
-
-Creative Commons Corporation ("Creative Commons") is not a law firm and
-does not provide legal services or legal advice. Distribution of
-Creative Commons public licenses does not create a lawyer-client or
-other relationship. Creative Commons makes its licenses and related
-information available on an "as-is" basis. Creative Commons gives no
-warranties regarding its licenses, any material licensed under their
-terms and conditions, or any related information. Creative Commons
-disclaims all liability for damages resulting from their use to the
-fullest extent possible.
-
-Using Creative Commons Public Licenses
-
-Creative Commons public licenses provide a standard set of terms and
-conditions that creators and other rights holders may use to share
-original works of authorship and other material subject to copyright
-and certain other rights specified in the public license below. The
-following considerations are for informational purposes only, are not
-exhaustive, and do not form part of our licenses.
-
-     Considerations for licensors: Our public licenses are
-     intended for use by those authorized to give the public
-     permission to use material in ways otherwise restricted by
-     copyright and certain other rights. Our licenses are
-     irrevocable. Licensors should read and understand the terms
-     and conditions of the license they choose before applying it.
-     Licensors should also secure all rights necessary before
-     applying our licenses so that the public can reuse the
-     material as expected. Licensors should clearly mark any
-     material not subject to the license. This includes other CC-
-     licensed material, or material used under an exception or
-     limitation to copyright. More considerations for licensors:
-	wiki.creativecommons.org/Considerations_for_licensors
-
-     Considerations for the public: By using one of our public
-     licenses, a licensor grants the public permission to use the
-     licensed material under specified terms and conditions. If
-     the licensor's permission is not necessary for any reason--for
-     example, because of any applicable exception or limitation to
-     copyright--then that use is not regulated by the license. Our
-     licenses grant only permissions under copyright and certain
-     other rights that a licensor has authority to grant. Use of
-     the licensed material may still be restricted for other
-     reasons, including because others have copyright or other
-     rights in the material. A licensor may make special requests,
-     such as asking that all changes be marked or described.
-     Although not required by our licenses, you are encouraged to
-     respect those requests where reasonable. More_considerations
-     for the public: 
-	wiki.creativecommons.org/Considerations_for_licensees
-
-=======================================================================
-
-Creative Commons Attribution 4.0 International Public License
-
-By exercising the Licensed Rights (defined below), You accept and agree
-to be bound by the terms and conditions of this Creative Commons
-Attribution 4.0 International Public License ("Public License"). To the
-extent this Public License may be interpreted as a contract, You are
-granted the Licensed Rights in consideration of Your acceptance of
-these terms and conditions, and the Licensor grants You such rights in
-consideration of benefits the Licensor receives from making the
-Licensed Material available under these terms and conditions.
-
-
-Section 1 -- Definitions.
-
-  a. Adapted Material means material subject to Copyright and Similar
-     Rights that is derived from or based upon the Licensed Material
-     and in which the Licensed Material is translated, altered,
-     arranged, transformed, or otherwise modified in a manner requiring
-     permission under the Copyright and Similar Rights held by the
-     Licensor. For purposes of this Public License, where the Licensed
-     Material is a musical work, performance, or sound recording,
-     Adapted Material is always produced where the Licensed Material is
-     synched in timed relation with a moving image.
-
-  b. Adapter's License means the license You apply to Your Copyright
-     and Similar Rights in Your contributions to Adapted Material in
-     accordance with the terms and conditions of this Public License.
-
-  c. Copyright and Similar Rights means copyright and/or similar rights
-     closely related to copyright including, without limitation,
-     performance, broadcast, sound recording, and Sui Generis Database
-     Rights, without regard to how the rights are labeled or
-     categorized. For purposes of this Public License, the rights
-     specified in Section 2(b)(1)-(2) are not Copyright and Similar
-     Rights.
-
-  d. Effective Technological Measures means those measures that, in the
-     absence of proper authority, may not be circumvented under laws
-     fulfilling obligations under Article 11 of the WIPO Copyright
-     Treaty adopted on December 20, 1996, and/or similar international
-     agreements.
-
-  e. Exceptions and Limitations means fair use, fair dealing, and/or
-     any other exception or limitation to Copyright and Similar Rights
-     that applies to Your use of the Licensed Material.
-
-  f. Licensed Material means the artistic or literary work, database,
-     or other material to which the Licensor applied this Public
-     License.
-
-  g. Licensed Rights means the rights granted to You subject to the
-     terms and conditions of this Public License, which are limited to
-     all Copyright and Similar Rights that apply to Your use of the
-     Licensed Material and that the Licensor has authority to license.
-
-  h. Licensor means the individual(s) or entity(ies) granting rights
-     under this Public License.
-
-  i. Share means to provide material to the public by any means or
-     process that requires permission under the Licensed Rights, such
-     as reproduction, public display, public performance, distribution,
-     dissemination, communication, or importation, and to make material
-     available to the public including in ways that members of the
-     public may access the material from a place and at a time
-     individually chosen by them.
-
-  j. Sui Generis Database Rights means rights other than copyright
-     resulting from Directive 96/9/EC of the European Parliament and of
-     the Council of 11 March 1996 on the legal protection of databases,
-     as amended and/or succeeded, as well as other essentially
-     equivalent rights anywhere in the world.
-
-  k. You means the individual or entity exercising the Licensed Rights
-     under this Public License. Your has a corresponding meaning.
-
-
-Section 2 -- Scope.
-
-  a. License grant.
-
-       1. Subject to the terms and conditions of this Public License,
-          the Licensor hereby grants You a worldwide, royalty-free,
-          non-sublicensable, non-exclusive, irrevocable license to
-          exercise the Licensed Rights in the Licensed Material to:
-
-            a. reproduce and Share the Licensed Material, in whole or
-               in part; and
-
-            b. produce, reproduce, and Share Adapted Material.
-
-       2. Exceptions and Limitations. For the avoidance of doubt, where
-          Exceptions and Limitations apply to Your use, this Public
-          License does not apply, and You do not need to comply with
-          its terms and conditions.
-
-       3. Term. The term of this Public License is specified in Section
-          6(a).
-
-       4. Media and formats; technical modifications allowed. The
-          Licensor authorizes You to exercise the Licensed Rights in
-          all media and formats whether now known or hereafter created,
-          and to make technical modifications necessary to do so. The
-          Licensor waives and/or agrees not to assert any right or
-          authority to forbid You from making technical modifications
-          necessary to exercise the Licensed Rights, including
-          technical modifications necessary to circumvent Effective
-          Technological Measures. For purposes of this Public License,
-          simply making modifications authorized by this Section 2(a)
-          (4) never produces Adapted Material.
-
-       5. Downstream recipients.
-
-            a. Offer from the Licensor -- Licensed Material. Every
-               recipient of the Licensed Material automatically
-               receives an offer from the Licensor to exercise the
-               Licensed Rights under the terms and conditions of this
-               Public License.
-
-            b. No downstream restrictions. You may not offer or impose
-               any additional or different terms or conditions on, or
-               apply any Effective Technological Measures to, the
-               Licensed Material if doing so restricts exercise of the
-               Licensed Rights by any recipient of the Licensed
-               Material.
-
-       6. No endorsement. Nothing in this Public License constitutes or
-          may be construed as permission to assert or imply that You
-          are, or that Your use of the Licensed Material is, connected
-          with, or sponsored, endorsed, or granted official status by,
-          the Licensor or others designated to receive attribution as
-          provided in Section 3(a)(1)(A)(i).
-
-  b. Other rights.
-
-       1. Moral rights, such as the right of integrity, are not
-          licensed under this Public License, nor are publicity,
-          privacy, and/or other similar personality rights; however, to
-          the extent possible, the Licensor waives and/or agrees not to
-          assert any such rights held by the Licensor to the limited
-          extent necessary to allow You to exercise the Licensed
-          Rights, but not otherwise.
-
-       2. Patent and trademark rights are not licensed under this
-          Public License.
-
-       3. To the extent possible, the Licensor waives any right to
-          collect royalties from You for the exercise of the Licensed
-          Rights, whether directly or through a collecting society
-          under any voluntary or waivable statutory or compulsory
-          licensing scheme. In all other cases the Licensor expressly
-          reserves any right to collect such royalties.
-
-
-Section 3 -- License Conditions.
-
-Your exercise of the Licensed Rights is expressly made subject to the
-following conditions.
-
-  a. Attribution.
-
-       1. If You Share the Licensed Material (including in modified
-          form), You must:
-
-            a. retain the following if it is supplied by the Licensor
-               with the Licensed Material:
-
-                 i. identification of the creator(s) of the Licensed
-                    Material and any others designated to receive
-                    attribution, in any reasonable manner requested by
-                    the Licensor (including by pseudonym if
-                    designated);
-
-                ii. a copyright notice;
-
-               iii. a notice that refers to this Public License;
-
-                iv. a notice that refers to the disclaimer of
-                    warranties;
-
-                 v. a URI or hyperlink to the Licensed Material to the
-                    extent reasonably practicable;
-
-            b. indicate if You modified the Licensed Material and
-               retain an indication of any previous modifications; and
-
-            c. indicate the Licensed Material is licensed under this
-               Public License, and include the text of, or the URI or
-               hyperlink to, this Public License.
-
-       2. You may satisfy the conditions in Section 3(a)(1) in any
-          reasonable manner based on the medium, means, and context in
-          which You Share the Licensed Material. For example, it may be
-          reasonable to satisfy the conditions by providing a URI or
-          hyperlink to a resource that includes the required
-          information.
-
-       3. If requested by the Licensor, You must remove any of the
-          information required by Section 3(a)(1)(A) to the extent
-          reasonably practicable.
-
-       4. If You Share Adapted Material You produce, the Adapter's
-          License You apply must not prevent recipients of the Adapted
-          Material from complying with this Public License.
-
-
-Section 4 -- Sui Generis Database Rights.
-
-Where the Licensed Rights include Sui Generis Database Rights that
-apply to Your use of the Licensed Material:
-
-  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
-     to extract, reuse, reproduce, and Share all or a substantial
-     portion of the contents of the database;
-
-  b. if You include all or a substantial portion of the database
-     contents in a database in which You have Sui Generis Database
-     Rights, then the database in which You have Sui Generis Database
-     Rights (but not its individual contents) is Adapted Material; and
-
-  c. You must comply with the conditions in Section 3(a) if You Share
-     all or a substantial portion of the contents of the database.
-
-For the avoidance of doubt, this Section 4 supplements and does not
-replace Your obligations under this Public License where the Licensed
-Rights include other Copyright and Similar Rights.
-
-
-Section 5 -- Disclaimer of Warranties and Limitation of Liability.
-
-  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
-     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
-     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
-     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
-     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
-     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
-     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
-     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
-     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
-     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
-
-  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
-     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
-     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
-     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
-     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
-     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
-     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
-     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
-     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
-
-  c. The disclaimer of warranties and limitation of liability provided
-     above shall be interpreted in a manner that, to the extent
-     possible, most closely approximates an absolute disclaimer and
-     waiver of all liability.
-
-
-Section 6 -- Term and Termination.
-
-  a. This Public License applies for the term of the Copyright and
-     Similar Rights licensed here. However, if You fail to comply with
-     this Public License, then Your rights under this Public License
-     terminate automatically.
-
-  b. Where Your right to use the Licensed Material has terminated under
-     Section 6(a), it reinstates:
-
-       1. automatically as of the date the violation is cured, provided
-          it is cured within 30 days of Your discovery of the
-          violation; or
-
-       2. upon express reinstatement by the Licensor.
-
-     For the avoidance of doubt, this Section 6(b) does not affect any
-     right the Licensor may have to seek remedies for Your violations
-     of this Public License.
-
-  c. For the avoidance of doubt, the Licensor may also offer the
-     Licensed Material under separate terms or conditions or stop
-     distributing the Licensed Material at any time; however, doing so
-     will not terminate this Public License.
-
-  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
-     License.
-
-
-Section 7 -- Other Terms and Conditions.
-
-  a. The Licensor shall not be bound by any additional or different
-     terms or conditions communicated by You unless expressly agreed.
-
-  b. Any arrangements, understandings, or agreements regarding the
-     Licensed Material not stated herein are separate from and
-     independent of the terms and conditions of this Public License.
-
-
-Section 8 -- Interpretation.
-
-  a. For the avoidance of doubt, this Public License does not, and
-     shall not be interpreted to, reduce, limit, restrict, or impose
-     conditions on any use of the Licensed Material that could lawfully
-     be made without permission under this Public License.
-
-  b. To the extent possible, if any provision of this Public License is
-     deemed unenforceable, it shall be automatically reformed to the
-     minimum extent necessary to make it enforceable. If the provision
-     cannot be reformed, it shall be severed from this Public License
-     without affecting the enforceability of the remaining terms and
-     conditions.
-
-  c. No term or condition of this Public License will be waived and no
-     failure to comply consented to unless expressly agreed to by the
-     Licensor.
-
-  d. Nothing in this Public License constitutes or may be interpreted
-     as a limitation upon, or waiver of, any privileges and immunities
-     that apply to the Licensor or You, including from the legal
-     processes of any jurisdiction or authority.
-
-
-=======================================================================
-
-Creative Commons is not a party to its public
-licenses. Notwithstanding, Creative Commons may elect to apply one of
-its public licenses to material it publishes and in those instances
-will be considered the “Licensor.” The text of the Creative Commons
-public licenses is dedicated to the public domain under the CC0 Public
-Domain Dedication. Except for the limited purpose of indicating that
-material is shared under a Creative Commons public license or as
-otherwise permitted by the Creative Commons policies published at
-creativecommons.org/policies, Creative Commons does not authorize the
-use of the trademark "Creative Commons" or any other trademark or logo
-of Creative Commons without its prior written consent including,
-without limitation, in connection with any unauthorized modifications
-to any of its public licenses or any other arrangements,
-understandings, or agreements concerning use of licensed material. For
-the avoidance of doubt, this paragraph does not form part of the
-public licenses.
-
-Creative Commons may be contacted at creativecommons.org.
-
-
-------
-
-** spdx-license-ids; version 3.0.21 -- https://github.com/jslicense/spdx-license-ids#readme
+** spdx-license-ids; version 3.0.22 -- https://github.com/jslicense/spdx-license-ids#readme
 
 Creative Commons Legal Code
 
@@ -4026,7 +3570,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** electron-to-chromium; version 1.5.189 -- https://github.com/kilian/electron-to-chromium#readme
+** electron-to-chromium; version 1.5.214 -- https://github.com/kilian/electron-to-chromium#readme
 Copyright 2018 Kilian Valkhof
 
 Copyright 2018 Kilian Valkhof
@@ -4862,7 +4406,7 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** globby; version 14.1.0 -- https://github.com/sindresorhus/globby#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** got; version 14.4.7 -- https://github.com/sindresorhus/got#readme
+** got; version 14.4.8 -- https://github.com/sindresorhus/got#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** import-local; version 3.2.0 -- https://github.com/sindresorhus/import-local#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -4927,6 +4471,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** strip-json-comments; version 3.1.1 -- https://github.com/sindresorhus/strip-json-comments#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** system-architecture; version 0.1.0 -- https://github.com/sindresorhus/system-architecture#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** terminal-link; version 4.0.0 -- https://github.com/sindresorhus/terminal-link#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** unicorn-magic; version 0.3.0 -- https://github.com/sindresorhus/unicorn-magic#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -5101,7 +4647,7 @@ SOFTWARE.
 
 ------
 
-** @textlint/module-interop; version 15.2.0 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/module-interop/
+** @textlint/module-interop; version 15.2.2 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/module-interop/
 Copyright (c) 2019 azu
 
 Copyright (c) 2019 azu
@@ -5265,7 +4811,7 @@ SOFTWARE.
 
 ------
 
-** ts-loader; version 9.5.2 -- https://github.com/TypeStrong/ts-loader
+** ts-loader; version 9.5.4 -- https://github.com/TypeStrong/ts-loader
 Copyright (c) 2015-present TypeStrong
 
 The MIT License (MIT)
@@ -5294,7 +4840,7 @@ SOFTWARE.
 
 ------
 
-** tapable; version 2.2.2 -- https://github.com/webpack/tapable
+** tapable; version 2.2.3 -- https://github.com/webpack/tapable
 Copyright JS Foundation and other contributors
 
 The MIT License
@@ -5382,6 +4928,61 @@ THE SOFTWARE.
 (c) Luke Childs 2017-2021 and Jared Wray 2022
 
 MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
+** undici; version 7.15.0 -- https://undici.nodejs.org
+Copyright (c) 2020 Ethan Arrowood
+Copyright (c) 2016 Luigi Pinca and contributors
+Copyright (c) 2013 Arnout Kazemier and contributors
+Copyright (c) Matteo Collina and Undici contributors
+Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
+
+MIT License
+
+Copyright (c) Matteo Collina and Undici contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+MIT License
+
+Copyright (c) 2020 Ethan Arrowood
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5545,7 +5146,7 @@ THE SOFTWARE.
 
 ------
 
-** browserslist; version 4.25.1 -- https://github.com/browserslist/browserslist#readme
+** browserslist; version 4.25.4 -- https://github.com/browserslist/browserslist#readme
 Copyright 2014 Andrey Sitnik <andrey@sitnik.ru> and other contributors
 
 The MIT License (MIT)
@@ -5906,7 +5507,7 @@ SOFTWARE.
 
 ------
 
-** fs-extra; version 11.3.0 -- https://github.com/jprichardson/node-fs-extra
+** fs-extra; version 11.3.1 -- https://github.com/jprichardson/node-fs-extra
 Copyright (c) 2011-2024 JP Richardson
 Copyright (c) 2011-2024 JP Richardson (https://github.com/jprichardson)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
@@ -5960,6 +5561,7 @@ SOFTWARE.
 ------
 
 ** @vscode-elements/elements; version 1.17.0 -- https://vscode-elements.github.io
+Copyright (c) 2020 Adam Bender
 
 MIT License
 
@@ -6240,9 +5842,9 @@ Copyright (c) Meta Platforms, Inc. and affiliates
 Copyright (c) Meta Platforms, Inc. and affiliates
 ** pretty-format; version 29.7.0 -- https://github.com/jestjs/jest#readme
 Copyright (c) Meta Platforms, Inc. and affiliates
-** react; version 19.1.0 -- https://react.dev/
+** react; version 19.1.1 -- https://react.dev/
 Copyright (c) Meta Platforms, Inc. and affiliates
-** react-dom; version 19.1.0 -- https://react.dev/
+** react-dom; version 19.1.1 -- https://react.dev/
 Copyright (c) 2011 Gary Court
 Copyright (c) Meta Platforms, Inc. and affiliates
 ** scheduler; version 0.26.0 -- https://react.dev/
@@ -6511,23 +6113,23 @@ THE SOFTWARE.
 
 ------
 
-** @secretlint/config-creator; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
+** @secretlint/config-creator; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-creator/
 Copyright (c) 2020 azu
-** @secretlint/config-loader; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
+** @secretlint/config-loader; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/config-loader/
 Copyright (c) 2020 azu
-** @secretlint/core; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
+** @secretlint/core; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/core/
 (c) 2017 azu
 Copyright (c) 2020 azu
 (c) 2017 59naga https://github.com/59naga/carrack
-** @secretlint/formatter; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
+** @secretlint/formatter; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/formatter/
 Copyright (c) 2020 azu
-** @secretlint/node; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
+** @secretlint/node; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/node/
 Copyright (c) 2020 azu
-** @secretlint/profiler; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
+** @secretlint/profiler; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/profiler/
 Copyright (c) 2020 azu
-** @secretlint/resolver; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
+** @secretlint/resolver; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/resolver/
 Copyright (c) 2020 azu
-** @secretlint/secretlint-rule-preset-recommend; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
+** @secretlint/secretlint-rule-preset-recommend; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-preset-recommend/
 Copyright (c) 2020 azu
 Copyright (c) 2005 Tom Wu
 Copyright (c) 2003-2005 Tom Wu
@@ -6557,13 +6159,13 @@ Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
 Copyright jQuery Foundation and other contributors <https://jquery.org/>
 Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 Copyright (c) Ellis Pritchard, Guardian Unlimited 2003. Contact ellis@nukinetics.com
-** @secretlint/source-creator; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
+** @secretlint/source-creator; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/source-creator/
 Copyright (c) 2020 azu
-** @secretlint/types; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
+** @secretlint/types; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/types/
 Copyright (c) 2020 azu
-** @textlint/resolver; version 15.2.0 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/resolver/
+** @textlint/resolver; version 15.2.2 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/resolver/
 Copyright (c) 2020 azu
-** secretlint; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
+** secretlint; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/secretlint/
 Copyright (c) 2020 azu
 
 Copyright (c) 2020 azu
@@ -6678,7 +6280,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** node-abi; version 3.75.0 -- https://github.com/electron/node-abi#readme
+** node-abi; version 3.77.0 -- https://github.com/electron/node-abi#readme
 Copyright (c) 2016 Lukas Geiger
 
 MIT License
@@ -6884,7 +6486,7 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-rule-no-dotenv; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
+** @secretlint/secretlint-rule-no-dotenv; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-rule-no-dotenv/
 Copyright (c) 2020 secretlint
 
 Copyright (c) 2020 secretlint
@@ -6938,7 +6540,7 @@ SOFTWARE.
 
 ------
 
-** @secretlint/secretlint-formatter-sarif; version 10.2.1 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
+** @secretlint/secretlint-formatter-sarif; version 10.2.2 -- https://github.com/secretlint/secretlint/tree/master/packages/@secretlint/secretlint-formatter-sarif/
 Copyright (c) 2022 azu
 
 Copyright (c) 2022 azu
@@ -7521,7 +7123,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** @textlint/linter-formatter; version 15.2.0 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/linter-formatter
+** @textlint/linter-formatter; version 15.2.2 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/linter-formatter
 Copyright (c) 2015 azu
 copyright 2015 oshi-shinobu
 Copyright (c) 2013 Nicholas C. Zakas
@@ -7552,21 +7154,6 @@ Include:
     ESLint
     Copyright (c) 2013 Nicholas C. Zakas. All rights reserved.
     https://github.com/eslint/eslint/blob/master/LICENSE
-
-
-------
-
-** nan; version 2.23.0 -- https://github.com/nodejs/nan#readme
-
-The MIT License (MIT)
-
-Copyright (c) 2018 [NAN contributors](<https://github.com/nodejs/nan#wg-members--collaborators>)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ------
@@ -7802,7 +7389,7 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @azure/core-util; version 1.13.0 -- https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/core/core-util/
 Copyright (c) Microsoft Corporation
-** @azure/identity; version 4.10.2 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
+** @azure/identity; version 4.11.1 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/identity/identity/README.md
 Copyright (c) Microsoft Corporation
 ** @azure/logger; version 1.3.0 -- https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/core/logger/README.md
 Copyright (c) Microsoft Corporation
@@ -8261,7 +7848,7 @@ and fall under same licence structure as the original repo (MIT)
 
 ------
 
-** @textlint/types; version 15.2.0 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/types/
+** @textlint/types; version 15.2.2 -- https://github.com/textlint/textlint/tree/master/packages/@textlint/types/
 Copyright (c) 2018 azu
 
 Copyright (c) 2018 azu
@@ -8295,7 +7882,7 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** css-loader; version 7.1.2 -- https://github.com/webpack-contrib/css-loader
 Copyright JS Foundation and other contributors
-** enhanced-resolve; version 5.18.2 -- http://github.com/webpack/enhanced-resolve
+** enhanced-resolve; version 5.18.3 -- http://github.com/webpack/enhanced-resolve
 Copyright JS Foundation and other contributors
 Copyright (c) 2012-2019 JS Foundation and other contributors
 ** loader-utils; version 2.0.4 -- https://github.com/webpack/loader-utils#readme
@@ -8312,7 +7899,7 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** watchpack; version 2.4.4 -- https://github.com/webpack/watchpack
 Copyright JS Foundation and other contributors
-** webpack; version 5.100.2 -- https://github.com/webpack/webpack
+** webpack; version 5.101.3 -- https://github.com/webpack/webpack
 Copyright JS Foundation and other contributors
 ** webpack-cli; version 6.0.1 -- https://github.com/webpack/webpack-cli/tree/master/packages/webpack-cli
 Copyright JS Foundation and other contributors
@@ -8690,13 +8277,13 @@ SOFTWARE.
 
 ------
 
-** @jridgewell/gen-mapping; version 0.3.12 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
+** @jridgewell/gen-mapping; version 0.3.13 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/source-map; version 0.3.10 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/source-map
+** @jridgewell/source-map; version 0.3.11 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/source-map
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/sourcemap-codec; version 1.5.4 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec
+** @jridgewell/sourcemap-codec; version 1.5.5 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/trace-mapping; version 0.3.29 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping
+** @jridgewell/trace-mapping; version 0.3.30 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
@@ -8722,9 +8309,7 @@ SOFTWARE.
 
 ------
 
-** @azure/msal-browser; version 4.15.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
-Copyright (c) Microsoft Corporation
-** @azure/msal-common; version 15.8.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+** @azure/msal-common; version 15.12.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
 
 MIT License
@@ -9089,7 +8674,7 @@ THE SOFTWARE.
 
 ------
 
-** @azure/msal-node; version 3.6.3 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+** @azure/msal-node; version 3.7.3 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) 2020 Microsoft
 Copyright (c) Microsoft Corporation
 
@@ -9359,7 +8944,7 @@ SOFTWARE.
 
 ------
 
-** mocha; version 11.7.1 -- https://mochajs.org/
+** mocha; version 11.7.2 -- https://mochajs.org/
 Copyright Joyent, Inc. and other Node contributors
 Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 Copyright 2011-2024 OpenJS Foundation and contributors
@@ -9562,14 +9147,14 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Microsoft Corporation
 ** @types/mustache; version 4.2.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mustache
 Copyright (c) Microsoft Corporation
-** @types/node; version 24.1.0 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+** @types/node; version 24.3.1 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
 Copyright (c) Microsoft Corporation
-** @types/react; version 19.1.8 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react
+** @types/react; version 19.1.12 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react
 Copyright (c) Microsoft Corporation
-** @types/react-dom; version 19.1.6 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom
+** @types/react-dom; version 19.1.9 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom
 Copyright (c) Microsoft Corporation
 ** @types/sarif; version 2.1.7 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/sarif
 Copyright (c) Microsoft Corporation
@@ -9614,7 +9199,7 @@ Copyright (c) 2013 Gary Court, Jens Taylor
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
 ** keyv; version 4.5.4 -- https://github.com/jaredwray/keyv
 (c) Jared Wray
-** ssh2; version 1.16.0 -- https://github.com/mscdex/ssh2#readme
+** ssh2; version 1.17.0 -- https://github.com/mscdex/ssh2#readme
 Copyright Brian White
 
 MIT License
@@ -9684,7 +9269,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** @textlint/ast-node-types; version 15.2.0 -- 
+** @textlint/ast-node-types; version 15.2.2 -- 
 Copyright (c) 2014-present azu
 
 Copyright (c) 2014-present azu
@@ -10038,12 +9623,43 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** undici-types; version 7.8.0 -- https://undici.nodejs.org
+** undici-types; version 7.10.0 -- https://undici.nodejs.org
 Copyright (c) Matteo Collina and Undici contributors
 
 MIT License
 
 Copyright (c) Matteo Collina and Undici contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+------
+
+** cheerio; version 1.1.2 -- https://cheerio.js.org/
+Copyright (c) 2003-2014 </p> const
+Copyright (c) 2003-2014 </p> </html> const
+Copyright (c) 2022 The Cheerio contributors
+Copyright (c) 2003-2014 </p> const expectedXml
+
+MIT License
+
+Copyright (c) 2022 The Cheerio contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -10539,7 +10155,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** tmp; version 0.2.3 -- http://github.com/raszi/node-tmp
+** tmp; version 0.2.5 -- http://github.com/raszi/node-tmp
 Copyright (c) 2014 KARASZI Istvan
 Copyright (c) 2011-2017 KARASZI Istvan <github@spam.raszi.hu>
 
@@ -11044,7 +10660,7 @@ THE SOFTWARE.
 
 ------
 
-** jsonfile; version 6.1.0 -- https://github.com/jprichardson/node-jsonfile#readme
+** jsonfile; version 6.2.0 -- https://github.com/jprichardson/node-jsonfile#readme
 Copyright 2012-2016, JP Richardson <jprichardson@gmail.com>
 Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>
 
@@ -11713,7 +11329,7 @@ SOFTWARE.
 
 ------
 
-** ip-address; version 9.0.5 -- https://github.com/beaugunderson/ip-address#readme
+** ip-address; version 10.0.1 -- https://github.com/beaugunderson/ip-address#readme
 Copyright (c) 2011 by Beau Gunderson
 
 Copyright (C) 2011 by Beau Gunderson
@@ -11828,55 +11444,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
-------
-
-** jsbn; version 1.1.0 -- https://github.com/andyperlitch/jsbn#readme
-Copyright (c) 2005 Tom Wu
-Copyright (c) 2003-2005 Tom Wu
-Copyright (c) 2005-2009 Tom Wu
-
-Licensing
----------
-
-This software is covered under the following copyright:
-
-/*
- * Copyright (c) 2003-2005  Tom Wu
- * All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
- *
- * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
- * INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES WHATSOEVER
- * RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER OR NOT ADVISED OF
- * THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF LIABILITY, ARISING OUT
- * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *
- * In addition, the following condition applies:
- *
- * All redistributions must retain an intact copy of this copyright notice
- * and disclaimer.
- */
-
-Address all questions regarding this license to:
-
-  Tom Wu
-  tjw@cs.Stanford.EDU
 
 
 ------
@@ -12032,7 +11599,7 @@ THE SOFTWARE.
 
 ------
 
-** socks; version 2.8.6 -- https://github.com/JoshGlazebrook/socks/
+** socks; version 2.8.7 -- https://github.com/JoshGlazebrook/socks/
 Copyright (c) 2013 Josh Glazebrook
 
 The MIT License (MIT)
@@ -12818,6 +12385,25 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
+** uri-js; version 4.4.1 -- https://github.com/garycourt/uri-js
+(c) 2011 Gary Court
+Copyright 2011 Gary Court
+
+Copyright 2011 Gary Court. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1.	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2.	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY GARY COURT "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GARY COURT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those of the authors and should not be interpreted as representing official policies, either expressed or implied, of Gary Court.
+
+
+------
+
 ** esprima; version 4.0.1 -- http://esprima.org
 Copyright JS Foundation and other contributors, https://js.foundation
 
@@ -13521,6 +13107,26 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+------
+
+** nan; version 2.23.0 -- https://github.com/nodejs/nan#readme
+Copyright (c) 2018 NAN WG Members
+Copyright (c) 2018 NAN contributors
+Copyright (c) 2021 NAN contributors
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2018 NAN contributors - Rod Vagg <https://github.com/rvagg>
+
+The MIT License (MIT)
+
+Copyright (c) 2018 [NAN contributors](<https://github.com/nodejs/nan#wg-members--collaborators>)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ------

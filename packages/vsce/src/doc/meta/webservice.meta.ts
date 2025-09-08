@@ -11,11 +11,9 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IWebService } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
@@ -27,7 +25,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   getDefaultCriteria: function () {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE, "webService");
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE, "webService");
   },
 
   getLabel: function (resource: Resource<IWebService>): string {
@@ -51,11 +49,11 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addWebServiceSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getWebServiceSearchHistory();
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_WEBSERVICE_RESOURCE);
   },
 
   maximumPrimaryKeyLength: 32,

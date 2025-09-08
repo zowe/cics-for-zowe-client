@@ -1,10 +1,8 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
-import { PersistentStorage } from "../../utils/PersistentStorage";
+import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { IJVMServer } from "../resources/IJVMServer";
-
-const persistentStorage = new PersistentStorage("zowe.cics.persistent");
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
@@ -12,53 +10,54 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNameSingular: "JVM Server",
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `NAME=${n}`).join(" OR ");
+    return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
-  async getDefaultCriteria() {
-    return PersistentStorage.getDefaultFilter(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServer");
+  getDefaultCriteria() {
+    return PersistentStorage.getDefaultResourceFilter(
+      CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
+      "jvmServer"
+    );
   },
 
-  getLabel: function (jvmServer: Resource<IJVMServer>): string {
-    let label = `${jvmServer.attributes.name}`;
-    if (jvmServer.attributes.enablestatus && jvmServer.attributes.enablestatus.toLowerCase() === "disabled") {
+  getLabel(resource: Resource<IJVMServer>): string {
+    let label = `${resource.attributes.name}`;
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
     }
     return label;
   },
 
-  getContext: function (jvmServer: Resource<IJVMServer>): string {
-    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
-    return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${status}.${jvmServer.attributes.name}`;
+  getContext(resource: Resource<IJVMServer>): string {
+    return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
 
-  getIconName: function (jvmServer: Resource<IJVMServer>): string {
+  getIconName(resource: Resource<IJVMServer>): string {
     let iconName = `jvm-server`;
-    const status = (jvmServer.attributes.enablestatus ?? "").trim().toUpperCase();
-    if (status === "DISABLED") {
+    if (resource.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
       iconName += `-disabled`;
     }
     return iconName;
   },
 
-  getHighlights(jvmServer: Resource<IJVMServer>) {
+  getName(resource: Resource<IJVMServer>): string {
+    return resource.attributes.name;
+  },
+
+  getHighlights(resource: Resource<IJVMServer>) {
     return [
       {
         key: "Status",
-        value: jvmServer.attributes.enablestatus,
-      }
+        value: resource.attributes.enablestatus,
+      },
     ];
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await persistentStorage.addJVMServerSearchHistory(criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, criteria);
   },
 
   getCriteriaHistory() {
-    return persistentStorage.getJVMServerSearchHistory();
-  },
-
-  getName(jvmServer: Resource<IJVMServer>): string {
-    return jvmServer.attributes.name;
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE);
   },
 };
