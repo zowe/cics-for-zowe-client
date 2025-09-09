@@ -24,6 +24,7 @@ import { TransactionMeta } from "./transaction.meta";
 import { URIMapMeta } from "./urimap.meta";
 import { WebServiceMeta } from "./webservice.meta";
 import { JVMServerMeta } from "./JVMServer.meta";
+import { JVMEndpointMeta } from "./jvmEndpoints.meta";
 
 export * from "./IResourceMeta";
 export * from "./bundle.meta";
@@ -39,6 +40,7 @@ export * from "./transaction.meta";
 export * from "./urimap.meta";
 export * from "./webservice.meta";
 export * from "./JVMServer.meta";
+export * from "./jvmEndpoints.meta";
 
 export function getMetas(): IResourceMeta<IResource>[] {
   return [
@@ -54,6 +56,7 @@ export function getMetas(): IResourceMeta<IResource>[] {
     TransactionMeta,
     URIMapMeta,
     WebServiceMeta,
-    JVMServerMeta
+    JVMServerMeta,
+    JVMEndpointMeta
   ];
 }

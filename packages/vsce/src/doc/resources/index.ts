@@ -25,3 +25,4 @@ export * from "./ITransaction";
 export * from "./IURIMap";
 export * from "./IWebService";
 export * from "./IJVMServer";
+export * from "./IJVMEndpoint";
