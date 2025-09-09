@@ -91,7 +91,7 @@ The following example shows a CICS profile stored in a configuration file. The h
             "type": "cics",
             "properties": {
                 // replace the host, port, and protocol with your CMCI connection details
-                "host": "cics-cmci.example.com",
+                "host": "cics.example.com",
                 "port": 1490,
                 "protocol": "https",
                 // reject self-signed server certificates if using https?
