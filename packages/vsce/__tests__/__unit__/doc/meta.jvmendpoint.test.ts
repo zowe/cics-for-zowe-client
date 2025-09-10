@@ -3,7 +3,7 @@ import { IJVMEndpoint } from "../../../src/doc/resources/IJVMEndpoint";
 import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
-describe("Bundle Part Meta", () => {
+describe("JVM Endpoint Meta", () => {
   let jvmEndpointMock: Resource<IJVMEndpoint>;
   let parentResource: Resource<IJVMServer>;
 
@@ -26,30 +26,30 @@ describe("Bundle Part Meta", () => {
 
   it("should return icon name", () => {
     const iconName = JVMEndpointMeta.getIconName(jvmEndpointMock);
-    expect(iconName).toEqual(`jvm-server-endpoint`);
+    expect(iconName).toEqual("jvm-server-endpoint");
   });
   it("should build criteria", () => {
-      const crit = JVMEndpointMeta.buildCriteria(["a", "b"]);
-      expect(crit).toEqual(`name=a OR name=b`);
-    });
+    const label = JVMEndpointMeta.buildCriteria(["A", "B"], parentResource.attributes);
+    expect(label).toEqual(`(JVMENDPOINT='A' OR JVMENDPOINT='B') AND (JVMSERVER='JVM1')`);
+  });
     it("should return only label if enabled", () => {
       const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-      expect(label).toEqual(`JVME1`);
+      expect(label).toEqual("JVME1");
     });
     it("should return label with disabled", () => {
       jvmEndpointMock.attributes.enablestatus = "DISABLED";
       const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-      expect(label).toEqual(`JVME1 (Disabled)`);
+      expect(label).toEqual("JVME1 (Disabled)");
     });
     it("should return context with enabled status when enabled", () => {
       jvmEndpointMock.attributes.enablestatus = "ENABLED";
       const context = JVMEndpointMeta.getContext(jvmEndpointMock);
-      expect(context).toEqual(`CICSJVMServer.ENABLED.JVME1`);
+      expect(context).toEqual("CICSJvmEndpoint.ENABLED.JVME1");
     });
     it("should return context with disabled status when disabled", () => {
       jvmEndpointMock.attributes.enablestatus = "DISABLED";
       const context = JVMEndpointMeta.getContext(jvmEndpointMock);
-      expect(context).toEqual(`CICSJVMServer.DISABLED.JVME1`);
+      expect(context).toEqual("CICSJvmEndpoint.DISABLED.JVME1");
     });
     it("should get name", () => {
         const name = JVMEndpointMeta.getName(jvmEndpointMock);
