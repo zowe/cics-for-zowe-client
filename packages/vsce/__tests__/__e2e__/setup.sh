@@ -1,5 +1,5 @@
 
-install-extension /config/workspace/dist/cics-extension-for-zowe-3.*.vsix --extensions-dir /config/extensions
+install-extension /config/workspace/dist/`ls -t /config/workspace/dist/ | grep cics-extension-for-zowe | head -n 1` --extensions-dir /config/extensions
 
 mkdir -p /config/data/User
 
