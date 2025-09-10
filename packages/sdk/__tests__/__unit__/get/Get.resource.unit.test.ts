@@ -330,5 +330,44 @@ describe("CMCI - Get resource", () => {
       expect(error?.message).toContain("Did not receive the expected response from CMCI REST API");
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
     });
+
+    it("should send headers", async () => {
+      try {
+        response = await getResource(dummySession, resourceParms, undefined, [{ "MY-HEADER": "MY-HEADER-VALUE" }]);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
+
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, [{ "MY-HEADER": "MY-HEADER-VALUE" }]);
+    });
+
+    it("should send no headers when empty array passed", async () => {
+      try {
+        response = await getResource(dummySession, resourceParms, undefined, []);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
+
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
+
+    it("should send no headers as default value when nothing passed", async () => {
+      try {
+        response = await getResource(dummySession, resourceParms, undefined);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + resource + "/" + region;
+
+      expect(response).toEqual(okContent2Records);
+      expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
+    });
   });
 });
