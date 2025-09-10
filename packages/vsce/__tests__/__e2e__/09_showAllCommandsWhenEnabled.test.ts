@@ -4,14 +4,14 @@ import { countCommandsFromPalette, getCommandPaletteLabels, openSettingsJsonEdit
 describe("Test suite for showing all commands in Command Palette", () => {
   it("Should display more than 5 commands when the property is set to True", async function () {
     await updateUserSetting("zowe.cics.showAllCommandsInPalette", true);
-    const countTrue = await countCommandsFromPalette(">Zowe Explorer for IBM CICS Transaction Server");
-    const command = ">Zowe Explorer for IBM CICS Transaction Server: Purge Task";
+    const countTrue = await countCommandsFromPalette(">Zowe Explorer for IBM CICS TS");
+    const command = ">Zowe Explorer for IBM CICS TS: Purge Task";
     const labels = await getCommandPaletteLabels(command);
     // Pass the test if the command is present
     expect(countTrue).to.be.greaterThan(6);
     expect(labels).to.include(
-      "Zowe Explorer for IBM CICS Transaction Server: Purge Task",
-      `Command "Zowe Explorer for IBM CICS Transaction Server: Purge Task" should be present in the palette`
+      "Zowe Explorer for IBM CICS TS: Purge Task",
+      `Command "Zowe Explorer for IBM CICS TS: Purge Task" should be present in the palette`
     );
   });
 });

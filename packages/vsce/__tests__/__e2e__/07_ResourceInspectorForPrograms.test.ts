@@ -80,7 +80,7 @@ describe("Show Resource Inspector For Programs", () => {
 
   it("Open Resource Inspector on C128N", async () => {
     await C128NProgram?.click();
-    await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS Transaction Server: Inspect Resource");
+    await runCommandFromCommandPalette(">Zowe Explorer for IBM CICS TS: Inspect Resource");
 
     resourceInspectorPanel = new BottomBarPanel();
     await resourceInspectorPanel.openTab("CICS Resource Inspector");
