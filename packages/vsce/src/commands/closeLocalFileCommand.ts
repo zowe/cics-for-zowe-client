@@ -37,7 +37,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
     }
     busyDecision = busyDecision.replace(" ", "").toUpperCase();
 
-    window.withProgress(
+    await window.withProgress(
       {
         title: "Close",
         location: ProgressLocation.Notification,

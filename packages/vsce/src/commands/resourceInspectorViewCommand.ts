@@ -42,15 +42,15 @@ export function getResourceInspectorCommand(context: ExtensionContext, treeview:
       }
     }
 
-    await getResourceViewProvider(targetNode, context.extensionUri);
+    await getResourceViewProvider(targetNode, context);
   });
 }
 
-async function getResourceViewProvider(selectedNode: CICSResourceContainerNode<IResource>, extensionUri: Uri) {
+async function getResourceViewProvider(selectedNode: CICSResourceContainerNode<IResource>, context: ExtensionContext) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(extensionUri).setResource(selectedNode.getContainedResource());
+  await ResourceInspectorViewProvider.getInstance(context).setResource(selectedNode.getContainedResource());
 }

@@ -23,8 +23,10 @@ import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
+import { SessionHandler } from "../resources/SessionHandler";
+import { ProfileManagement } from "../utils/profileManagement";
 
-async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler) {
+async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler, node: CICSResourceContainerNode<IResource>) {
   // Will only have one resource
   const resource: Resource<IResource>[] = resourcesHandler.resources[0];
 
@@ -33,7 +35,7 @@ async function showInspectResource(context: ExtensionContext, resourcesHandler: 
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context.extensionUri).setResourceHandlerMap(resourcesHandler).setResource({
+  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceHandlerMap(resourcesHandler).setResource({
     resource: resource[0],
     meta: resourcesHandler.resourceContainer.getMeta(),
   });
@@ -54,7 +56,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   );
 
   if (resourcesHandler) {
-    await showInspectResource(context, resourcesHandler);
+    await showInspectResource(context, resourcesHandler, node);
   }
 }
 
@@ -83,9 +85,37 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
     );
 
     if (resourcesHandler) {
-      await showInspectResource(context, resourcesHandler);
+      await showInspectResource(context, resourcesHandler, null);
     }
   }
+}
+
+export async function inspectResourceCallBack(
+  context: ExtensionContext,
+  resourceName: string,
+  resourceType: string,
+  resourceHandlerMap: {
+    key: string;
+    value: string;
+  }[],
+  node: CICSResourceContainerNode<IResource>
+) {
+  const profileValue = resourceHandlerMap.find((item) => item.key === "profile")?.value;
+  const regionValue = resourceHandlerMap.find((item) => item.key === "region")?.value;
+  const cicsplex = resourceHandlerMap.find((item) => item.key === "cicsplex")?.value;
+  const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileValue);
+  const session = SessionHandler.getInstance().getSession(profile);
+
+  const resourcesHandler: IResourcesHandler = await loadResources(
+    session,
+    getResourceType(resourceType),
+    resourceName,
+    regionValue,
+    cicsplex,
+    profileValue
+  );
+
+  showInspectResource(context, resourcesHandler, node);
 }
 
 async function loadResourcesWithProgress(
@@ -132,7 +162,7 @@ export async function inspectResource(context: ExtensionContext) {
         );
 
         if (resourcesHandler) {
-          await showInspectResource(context, resourcesHandler);
+          await showInspectResource(context, resourcesHandler, null);
         }
       }
     }
