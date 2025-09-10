@@ -65,5 +65,9 @@ export const CBSA = "CBSA";
 
 //JVMServer labels
 export const JAHAGWLP = "JAHAGWLP";
+export const EYUCMCIJ = "EYUCMCIJ";
 export const JVMEWLP = "JVMEWLP";
 export const JVMDIWLP = "JVMDIWLP (Disabled)";
+
+//JVM Endpoint labels
+export const defaultHttpEndpoint = "defaultHttpEndpoint";
