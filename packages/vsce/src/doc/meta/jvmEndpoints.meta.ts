@@ -33,9 +33,13 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   getDefaultCriteria: function (parentResource: IJVMServer) {
     return `JVMSERVER='${parentResource.name}'`;
   },
-
-  getLabel: function (jvmEndpoint: Resource<IJVMEndpoint>): string {
-    return `${jvmEndpoint.attributes.jvmendpoint}`;
+  
+  getLabel(resource: Resource<IJVMEndpoint>): string {
+    let label = `${resource.attributes.jvmendpoint}`;
+    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
+      label += " (Disabled)";
+    }
+    return label;
   },
 
   getContext: function (jvmEndpoint: Resource<IJVMEndpoint>): string {
@@ -43,19 +47,23 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
       }.${jvmEndpoint.attributes.enablestatus.trim().toUpperCase()}.${jvmEndpoint.attributes.jvmendpoint}`;
   },
 
-  getIconName: function (_jvmEndpoint: Resource<IJVMEndpoint>): string {
-    return `jvm-endpoint`;
+  getIconName(resource: Resource<IJVMEndpoint>): string {
+    let iconName = `jvm-server-endpoint`;
+    if (resource.attributes.enablestatus.trim().toUpperCase() === "DISABLED") {
+      iconName += `-disabled`;
+    }
+    return iconName;
   },
 
-  getName(jvmEndpoint: Resource<IJVMEndpoint>) {
-    return jvmEndpoint.attributes.jvmendpoint;
+  getName(resource: Resource<IJVMEndpoint>): string {
+    return resource.attributes.jvmendpoint;
   },
 
-  getHighlights(jvmEndpoint: Resource<IJVMEndpoint>) {
+  getHighlights(resource: Resource<IJVMEndpoint>) {
     return [
       {
-        key: "Jvmendpoint",
-        value: jvmEndpoint.attributes.jvmendpoint,
+        key: "Status",
+        value: resource.attributes.enablestatus,
       },
     ];
   },
