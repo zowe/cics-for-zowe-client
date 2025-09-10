@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@zowe/cli-test-utils": "^8.0.0",
-    "@zowe/imperative": "^8.26.2",
+    "@zowe/imperative": "^8.27.0",
     "@zowe/zowe-explorer-api": "^3.2.2",
     "chalk": "^4.1.2",
     "eslint": "^8.37.0",
