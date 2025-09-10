@@ -28,6 +28,6 @@ The following information is critical to working with the code, running/writing/
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md) |
 
 ## Contribution Guidelines Specific to the CICS Plug-in
-The following guidelines apply specifically to the IBM CICS Plug-in for Zowe CLI:
+The following guidelines apply specifically to the Zowe CLI Plug-in for IBM CICS Transaction Server:
 
 -   None at this time.
