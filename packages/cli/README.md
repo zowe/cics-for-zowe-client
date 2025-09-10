@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/gh/zowe/zowe-cli-cics-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli-cics-plugin)
 
-The IBM CICS Plug-in for Zowe CLI lets you extend Zowe CLI to interact with IBM CICS programs and transactions.
+The Zowe CLI Plug-in for IBM CICS Transaction Server lets you extend Zowe CLI to interact with IBM CICS programs and transactions.
 
 - [How the plug-in works](#how-the-plug-in-works)
 - [Software requirements](#software-requirements)
@@ -31,7 +31,7 @@ Before you install and use the plug-in:
 
 - Install Zowe CLI on your computer.
 
-    **Note:** For more information, see [Installing Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-installcli/).
+  **Note:** For more information, see [Installing Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-installcli/).
 
 - Ensure that [IBM CICS Transaction Server V5.3](https://www.ibm.com/docs/en/cics-ts/5.3) or later is installed and running in your mainframe environment.
 
@@ -43,15 +43,15 @@ Use one of the following methods to install the plug-in:
 
 - Install the plug-in from an online registry or a local package.
 
-    Use the online registry / local package method when you simply want to install the plug-in to Zowe CLI and start using it.
+  Use the online registry / local package method when you simply want to install the plug-in to Zowe CLI and start using it.
 
-    For more information, see [Installing Zowe CLI plug-ins](https://docs.zowe.org/stable/user-guide/cli-installplugins/) on Zowe Docs.
+  For more information, see [Installing Zowe CLI plug-ins](https://docs.zowe.org/stable/user-guide/cli-installplugins/) on Zowe Docs.
 
 - Build the plug-in from source and install it into your Zowe CLI implementation.
 
-    Use the build from source method when you want to install the plug-in to Zowe CLI using the most current binaries and modify the behavior of the plug-in. For example, you want to create a new command and use the plug-in with the command that you created.
+  Use the build from source method when you want to install the plug-in to Zowe CLI using the most current binaries and modify the behavior of the plug-in. For example, you want to create a new command and use the plug-in with the command that you created.
 
-    For more information, see [Building from source](#building-from-source).
+  For more information, see [Building from source](#building-from-source).
 
 ## Building from source
 
@@ -59,35 +59,35 @@ Use one of the following methods to install the plug-in:
 
 **Follow these steps:**
 
-1. The first time that you clone the IBM CICS Plug-in for Zowe CLI GitHub repository, issue the following command against the local directory:
+1. The first time that you clone the Zowe CLI Plug-in for IBM CICS Transaction Server GitHub repository, issue the following command against the local directory:
 
-    ```console
-    npm install
-    ```
+   ```console
+   npm install
+   ```
 
-    The command installs the required dependencies for the plug-in and several development tools. You can run the task at any time to update the tools as needed.
+   The command installs the required dependencies for the plug-in and several development tools. You can run the task at any time to update the tools as needed.
 
 2. To build your code changes, issue the following command:
 
-    ```console
-    npm run build
-    ```
+   ```console
+   npm run build
+   ```
 
-    The first time you build your code changes, you will be prompted for the location of the Imperative CLI Framework package, which is located in the `node_modules/@zowe` folder in the Zowe CLI home directory.
+   The first time you build your code changes, you will be prompted for the location of the Imperative CLI Framework package, which is located in the `node_modules/@zowe` folder in the Zowe CLI home directory.
 
-    **Note:** When you update `package.json` to include new dependencies, or when you pull changes that affect `package.json`, issue the `npm update` command to download the dependencies.
+   **Note:** When you update `package.json` to include new dependencies, or when you pull changes that affect `package.json`, issue the `npm update` command to download the dependencies.
 
 3. Issue one of the following commands to install the plug-in:
 
-    ```console
-    zowe plugins install @zowe/cics-for-zowe-cli
-    ```
+   ```console
+   zowe plugins install @zowe/cics-for-zowe-cli
+   ```
 
-    Or:
+   Or:
 
-    ```console
-    zowe plugins install .
-    ```
+   ```console
+   zowe plugins install .
+   ```
 
 **Tip:** After the installation process completes, it validates that the plug-in was installed correct and the names of its commands, options, and arguments do not conflict with that of the other plug-ins that you installed into your Zowe CLI implementation.
 
@@ -153,9 +153,9 @@ Any failures potentially indicate an issue with the set-up of the Rest API or co
 
 1. To uninstall the plug-in from a base application, issue the following command:
 
-    ```console
-    zowe plugins uninstall @zowe/cics-for-zowe-cli
-    ```
+   ```console
+   zowe plugins uninstall @zowe/cics-for-zowe-cli
+   ```
 
 After the uninstallation process completes successfully, the product no longer contains the plug-in.
 
