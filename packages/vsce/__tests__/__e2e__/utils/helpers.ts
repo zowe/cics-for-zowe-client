@@ -64,3 +64,7 @@ export const resetZoweExplorerView = async (page: Page) => {
     }
   }
 };
+
+export const getResourceInspector = (page: Page) => {
+  return page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame");
+};

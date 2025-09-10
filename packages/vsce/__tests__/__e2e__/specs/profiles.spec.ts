@@ -16,9 +16,11 @@ test.describe("Profile tests", () => {
     await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
 
     await page.waitForTimeout(200);
+    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
     await page.getByText("Manage Profile", { exact: true }).click();
     await page.waitForTimeout(200);
 
+    await expect(page.getByText("Hide Profile")).toBeVisible();
     await page.getByText("Hide Profile").click();
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toHaveCount(0);
   });
@@ -27,10 +29,12 @@ test.describe("Profile tests", () => {
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toHaveCount(0);
 
     await page.locator(".tree-explorer-viewlet-tree-view").first().click();
+    await expect(page.getByRole("button", { name: "Create a CICS Profile" })).toBeVisible();
     await page.getByRole("button", { name: "Create a CICS Profile" }).click();
 
     await page.waitForTimeout(200);
 
+    await expect(page.getByText(constants.PROFILE_NAME, { exact: true })).toBeVisible();
     await page.getByText(constants.PROFILE_NAME, { exact: true }).click();
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
   });
@@ -40,9 +44,11 @@ test.describe("Profile tests", () => {
     await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
 
     await page.waitForTimeout(200);
+    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
     await page.getByText("Manage Profile", { exact: true }).click();
     await page.waitForTimeout(200);
 
+    await expect(page.getByText("Edit Profile")).toBeVisible();
     await page.getByText("Edit Profile").click();
 
     await expect(page.getByRole("tab", { name: `${constants.ZOWE_CONFIG_FILE_NAME}, preview` })).toBeVisible();
@@ -55,9 +61,11 @@ test.describe("Profile tests", () => {
     await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
 
     await page.waitForTimeout(200);
+    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
     await page.getByText("Manage Profile", { exact: true }).click();
     await page.waitForTimeout(200);
 
+    await expect(page.getByText("Delete Profile")).toBeVisible();
     await page.getByText("Delete Profile").click();
 
     await expect(page.getByRole("tab", { name: `${constants.ZOWE_CONFIG_FILE_NAME}, preview` })).toBeVisible();
