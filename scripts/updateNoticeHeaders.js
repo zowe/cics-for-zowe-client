@@ -13,8 +13,8 @@ const fs = require("fs");
 
 const packageHeaderMap = {
   'packages/vsce/NOTICE': "Zowe Explorer for IBM CICS Transaction Server",
-  'packages/sdk/NOTICE': "IBM CICS for Zowe SDK",
-  'packages/cli/NOTICE': "IBM CICS Plug-in for Zowe CLI"
+  'packages/sdk/NOTICE': "Zowe SDK for IBM CICS Transaction Server",
+  'packages/cli/NOTICE': "Zowe CLI Plug-in for IBM CICS Transaction Server"
 };
 const getHeader = (noticeFilePath) => {
   return `The package ${packageHeaderMap[noticeFilePath]} may contain the following external ` +

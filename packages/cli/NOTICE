@@ -1,4 +1,4 @@
-The package IBM CICS Plug-in for Zowe CLI may contain the following external packages and source code, with the applicable license information listed:
+The package Zowe CLI Plug-in for IBM CICS Transaction Server may contain the following external packages and source code, with the applicable license information listed:
 
 ** @sigstore/bundle; version 2.3.2 -- https://github.com/sigstore/sigstore-js/tree/main/packages/bundle#readme
 Copyright 2023 The Sigstore Authors

@@ -22,8 +22,8 @@ module.exports = {
             "@octorelease/changelog",
             {
                 displayNames: {
-                    "cli": "IBM CICS Plug-in for Zowe CLI",
-                    "sdk": "IBM CICS for Zowe SDK",
+                    "cli": "Zowe CLI Plug-in for IBM CICS Transaction Server",
+                    "sdk": "Zowe SDK for IBM CICS Transaction Server",
                     "vsce": "Zowe Explorer for IBM CICS Transaction Server",
                     "vsce-api": "Zowe Explorer for IBM CICS Transaction Server API",
                 },
