@@ -38,7 +38,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
 
     busyDecision = busyDecision.replace(" ", "").toUpperCase();
 
-    window.withProgress(
+    await window.withProgress(
       {
         title: "Disable",
         location: ProgressLocation.Notification,

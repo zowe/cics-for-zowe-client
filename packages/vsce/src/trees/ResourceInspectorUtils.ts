@@ -17,8 +17,14 @@ import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
+import { TransformWebviewMessage } from "../webviews/common/vscode";
 
-export async function executeAction(command: string, message: any, instance: ResourceInspectorViewProvider, context: ExtensionContext) {
+export async function executeAction(
+  command: string,
+  message: TransformWebviewMessage,
+  instance: ResourceInspectorViewProvider,
+  context: ExtensionContext
+) {
   const resource = instance.getResource();
   const resourceHandlerMap = instance.getResourceHandlerMap();
   const profileName = resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
@@ -49,7 +55,6 @@ export async function executeAction(command: string, message: any, instance: Res
     }
     if (typeof action.action === "string") {
       await commands.executeCommand(action.action, node);
-      await sleep(1000);
       await refreshWithProgress();
     } else {
       await action.action(resource.resource.attributes, {
@@ -62,10 +67,6 @@ export async function executeAction(command: string, message: any, instance: Res
   }
   if (command === "refresh") {
     await refreshWithProgress();
-  }
-
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   async function refreshWithProgress() {
