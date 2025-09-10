@@ -35,6 +35,7 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
 const runGetResourceMock = jest.fn();
 
 jest.mock("../../../src/utils/resourceUtils", () => ({
+  ...jest.requireActual("../../../src/utils/resourceUtils"),
   runGetResource: runGetResourceMock,
 }));
 

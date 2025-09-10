@@ -15,7 +15,7 @@ import constants from "../constants/CICS.defaults";
 import { IResource, IResourceMeta } from "../doc";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
-import { runGetResource } from "../utils/resourceUtils";
+import { buildUserAgentHeader, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
 
 export class ResourceContainer<T extends IResource> {
@@ -166,14 +166,20 @@ export class ResourceContainer<T extends IResource> {
         {
           failOnNoData: false,
           useCICSCmciRestError: true,
-        }
+        },
+        [buildUserAgentHeader()],
       );
 
       // Find out if there are more resources to fetch later
       this.startIndex += this.numberToFetch;
       if (this.startIndex > parseInt(response.resultsummary.recordcount)) {
         this.fetchedAll = true;
-        await getCache(cicsSession, { cacheToken: this.cacheToken, nodiscard: false, summonly: true });
+        await getCache(
+          cicsSession,
+          { cacheToken: this.cacheToken, nodiscard: false, summonly: true },
+          { failOnNoData: false, useCICSCmciRestError: true },
+          [buildUserAgentHeader()],
+        );
       }
 
       const currentResources = this.resources;

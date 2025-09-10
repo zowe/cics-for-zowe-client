@@ -9,4 +9,14 @@
  *
  */
 
-module.exports = require("jest-mock-vscode").createVSCodeMock(jest);
+import { createVSCodeMock } from "jest-mock-vscode";
+
+const mock = createVSCodeMock(jest);
+
+module.exports = {
+  ...mock,
+  extensions: {
+    getExtension: (v: string) => { }
+  }
+}
+
