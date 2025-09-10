@@ -66,12 +66,12 @@
       {
         "command": "cics-extension-for-zowe.setCICSRegion",
         "title": "Set CICS Region",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.addSession",
         "title": "Create a CICS Profile",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/plus-dark.svg",
           "dark": "resources/imgs/plus-light.svg"
@@ -80,7 +80,7 @@
       {
         "command": "cics-extension-for-zowe.refreshTree",
         "title": "Refresh",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/refresh-dark.svg",
           "dark": "resources/imgs/refresh-light.svg"
@@ -89,7 +89,7 @@
       {
         "command": "cics-extension-for-zowe.filterResources",
         "title": "Filter Resources",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/filter-dark.svg",
           "dark": "resources/imgs/filter-light.svg"
@@ -98,7 +98,7 @@
       {
         "command": "cics-extension-for-zowe.newCopyProgram",
         "title": "New Copy",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/newcopy-dark.svg",
           "dark": "resources/imgs/newcopy-light.svg"
@@ -107,7 +107,7 @@
       {
         "command": "cics-extension-for-zowe.copyResourceName",
         "title": "Copy Name",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.copyUserAgentHeader",
@@ -117,7 +117,7 @@
       {
         "command": "cics-extension-for-zowe.filterPlexResources",
         "title": "Filter Plex Resources in Regions tree",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/filter-dark.svg",
           "dark": "resources/imgs/filter-light.svg"
@@ -126,7 +126,7 @@
       {
         "command": "cics-extension-for-zowe.clearFilter",
         "title": "Clear Resource Filter",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/clear-filter-dark.svg",
           "dark": "resources/imgs/clear-filter-light.svg"
@@ -135,7 +135,7 @@
       {
         "command": "cics-extension-for-zowe.clearPlexFilter",
         "title": "Clear Plex Filter",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/clear-filter-dark.svg",
           "dark": "resources/imgs/clear-filter-light.svg"
@@ -144,82 +144,82 @@
       {
         "command": "cics-extension-for-zowe.showResourceAttributes",
         "title": "Show Attributes",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.showRegionAttributes",
         "title": "Show Attributes",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.showRegionLogs",
         "title": "Show Region Logs",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.showRegionParameters",
         "title": "Show SIT Parameters",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableProgram",
         "title": "Enable Program",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableProgram",
         "title": "Disable Program",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableBundle",
         "title": "Enable Bundle",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableBundle",
         "title": "Disable Bundle",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableTransaction",
         "title": "Enable Transaction",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableTransaction",
         "title": "Disable Transaction",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableLocalFile",
         "title": "Enable Local File",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableLocalFile",
         "title": "Disable Local File",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableLibrary",
         "title": "Disable Library",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableLibrary",
         "title": "Enable Library",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.closeLocalFile",
         "title": "Close Local File",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.openLocalFile",
         "title": "Open Local File",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.disableJVMServer",
@@ -234,7 +234,7 @@
       {
         "command": "cics-extension-for-zowe.phaseInCommand",
         "title": "Phase In",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/phasein-dark.svg",
           "dark": "resources/imgs/phasein-light.svg"
@@ -243,37 +243,37 @@
       {
         "command": "cics-extension-for-zowe.manageSession",
         "title": "Manage Profile",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.inspectTreeResource",
         "title": "Inspect Resource",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "Inquire Transaction",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.inquireProgram",
         "title": "Inquire Program",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.showLibrary",
         "title": "Show Library",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.purgeTask",
         "title": "Purge Task",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.toggleResourceSetting",
         "title": "Toggle visible CICS Resources",
-        "category": "Zowe Explorer for IBM CICS Transaction Server",
+        "category": "Zowe Explorer for IBM CICS TS",
         "icon": {
           "light": "resources/imgs/toggle-resources-dark.svg",
           "dark": "resources/imgs/toggle-resources-light.svg"
@@ -282,7 +282,7 @@
       {
         "command": "cics-extension-for-zowe.inspectResource",
         "title": "Inspect CICS Resource",
-        "category": "Zowe Explorer for IBM CICS Transaction Server"
+        "category": "Zowe Explorer for IBM CICS TS"
       }
     ],
     "menus": {
@@ -611,7 +611,7 @@
     },
     "configuration": {
       "type": "object",
-      "title": "Zowe Explorer for IBM CICS Transaction Server",
+      "title": "Zowe Explorer for IBM CICS TS",
       "properties": {
         "zowe.cics.persistent": {
           "default": {
