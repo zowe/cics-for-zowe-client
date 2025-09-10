@@ -2,9 +2,9 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## `6.12.0`
+## Recent Changes
 
-- Added headers as optional parameter to getResource and getCache methods.
+- Added JVM Endpoint CICS CMCI constant. [#410](https://github.com/zowe/cics-for-zowe-client/pull/410)
 
 ## `6.11.0`
 
