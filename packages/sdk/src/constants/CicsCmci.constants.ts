@@ -208,6 +208,10 @@ export const CicsCmciConstants = {
    * CICSBundlePart parameter
    */
   CICS_CMCI_BUNDLE_PART: "CICSBundlePart",
+  /**
+   * CICSJvmEndpoint parameter
+   */
+  CICS_CMCI_JVM_ENDPOINT: "CICSJvmEndpoint",
 
   /**
    * CICS CMCI Response 1 Codes
