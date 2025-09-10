@@ -3,7 +3,12 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD"
+        "url": "/CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD",
+        "headers": {
+          "User-Agent": {
+            "matches": "zowe.cics-extension-for-zowe/3.* zowe.vscode-extension-for-zowe/3.*"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -19,7 +24,12 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/000CICSPLEXTOKEN"
+        "url": "/CICSSystemManagement/CICSResultCache/000CICSPLEXTOKEN",
+        "headers": {
+          "User-Agent": {
+            "matches": "zowe.cics-extension-for-zowe/3.* zowe.vscode-extension-for-zowe/3.*"
+          }
+        }
       },
       "response": {
         "status": 200,
