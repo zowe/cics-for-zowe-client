@@ -817,7 +817,7 @@
     "@zowe/cics-for-zowe-explorer-api": "6.11.0",
     "@zowe/cics-for-zowe-sdk": "6.11.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.2.2"
+    "@zowe/zowe-explorer-api": "^3.3.0"
   },
   "overrides": {
     "brace-expansion@1": "^1.1.12",
