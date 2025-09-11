@@ -1,0 +1,100 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "fetched-libraries-with-libraryname-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/show-library/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "fetched-libraries-with-libraryname-summary",
+      "newScenarioState": "fetched-libraries-with-libraryname-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWLIBRARYTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/show-library/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "fetched-libraries-with-libraryname-records",
+      "newScenarioState": "fetched-libraries-with-libraryname-removed-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWLIBRARYTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/show-library/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "fetched-libraries-with-libraryname-removed-cache",
+      "newScenarioState": "fetched-library-datasets-with-libraryname-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(DSNAME%3D'MYLIBDS1')%20AND%20(LIBRARY%3D'MYLIB1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "fetched-library-datasets-with-libraryname-summary",
+      "newScenarioState": "fetched-library-datasets-with-libraryname-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0SHOWLIBDSNTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Show Program Library",
+      "requiredScenarioState": "fetched-library-datasets-with-libraryname-records",
+      "newScenarioState": "fetched-library-datasets-with-libraryname-removed-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0SHOWLIBDSNTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

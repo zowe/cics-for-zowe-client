@@ -85,37 +85,18 @@ jobs:
     #     name: zowe-cics-client
     #     path: dist/*
 
-  e2e-test-mac:
+  e2e-test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
-    runs-on: macos-latest
-
+    runs-on: ubuntu-22.04
     steps:
+      - name: Change workspace folder so wiremock service can write
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+          sudo chmod -R 777 $GITHUB_WORKSPACE
+
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
-        uses: actions/setup-java@v3.14.1
-        with:
-          distribution: 'oracle'
-          java-version: '17'
-
-      - name: Download WireMock Standalone JAR
-        run: |
-          curl -L https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.0.1/wiremock-standalone-3.0.1.jar -o wiremock-standalone.jar
-      
-      - name: Wait for WireMock to be ready
-        run: |
-          sleep 5
-      
-      - name: Start WireMock Standalone JAR
-        run: |
-          # Start WireMock in the background
-          nohup java -jar wiremock-standalone.jar --port 8080 --root-dir ${{ github.workspace }}/packages/vsce/__tests__/__e2e__/resources/wiremock/ > wiremock.log 2>&1 &
-      
-      - name: Wait for WireMock to be ready
-        run: |
-          sleep 5
-      
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
@@ -124,21 +105,23 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build Source
+      - name: Run build
         id: build
         run: npm run build
 
-      - name: List Wiremock mappings
-        if: ${{ always() && steps.build.outcome == 'success' }}
-        run: curl localhost:8080/__admin/mappings
-
-      - name: Test Wiremock route
-        if: ${{ always() && steps.build.outcome == 'success' }}
-        run: curl localhost:8080/CICSSystemManagement/CICSResultCache/E07F03C0E3C3A462
+      - name: Install browsers
+        run: npx playwright install --with-deps
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}
-        run: npm run test:e2e
+        run: |
+          cd packages/vsce/
+          npm run test:e2e:setup
+          CI=true npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
+
+      - name: Save wiremock logs
+        if: success() || failure()
+        run: docker logs wiremock >& wiremock.log
 
       - name: Archive E2E screenshots and Wiremock log
         if: success() || failure()
@@ -146,14 +129,14 @@ jobs:
         with:
           name: e2eLogs
           path: |
-            packages/vsce/.cics/screenshots
+            packages/vsce/__tests__/screenshots
             wiremock.log
 
   release:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_protected
     needs:
       - test
-      - e2e-test-mac
+      - e2e-test
     runs-on: ubuntu-latest
     permissions:
       contents: write

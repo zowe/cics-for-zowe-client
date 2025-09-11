@@ -1,0 +1,74 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "myprog1-newcopied",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"NEWCOPY\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "myprog1-newcopied",
+      "newScenarioState": "fetched-newcopied-programs-summary",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "fetched-newcopied-programs-summary",
+      "newScenarioState": "fetched-newcopied-programs-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000NEWCOPYTOKEN/1/2?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "New Copy Program",
+      "requiredScenarioState": "fetched-newcopied-programs-records",
+      "newScenarioState": "fetched-newcopied-programs-removed-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000NEWCOPYTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

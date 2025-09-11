@@ -1,0 +1,143 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "myprog1-disabled",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3D'MYPROG1')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/disable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "myprog1-disabled",
+      "newScenarioState": "fetched-disabled-programs-summary",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/disable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "fetched-disabled-programs-summary",
+      "newScenarioState": "fetched-disabled-programs-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/000DISABLEDTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/disable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "fetched-disabled-programs-records",
+      "newScenarioState": "fetched-disabled-programs-removed-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/000DISABLEDTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/disable/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "fetched-disabled-programs-removed-cache",
+      "newScenarioState": "myprog1-enabled",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3D'MYPROG1')",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/enable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "myprog1-enabled",
+      "newScenarioState": "fetched-enabled-programs-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/enable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "fetched-enabled-programs-summary",
+      "newScenarioState": "fetched-enabled-programs-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000ENABLEDTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/enable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Program",
+      "requiredScenarioState": "fetched-enabled-programs-records",
+      "newScenarioState": "fetched-enabled-programs-removed-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000ENABLEDTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/enable/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
