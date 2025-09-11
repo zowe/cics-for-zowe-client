@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { constants, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import { constants, findAndClickText, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -12,16 +12,12 @@ test.afterEach(async ({ page }) => {
 
 test.describe("Profile tests", () => {
   test("should hide profile from tree", async ({ page }) => {
-    await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
-    await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
+    await findAndClickTreeItem(page, constants.PROFILE_NAME, "right");
 
     await page.waitForTimeout(200);
-    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
-    await page.getByText("Manage Profile", { exact: true }).click();
-    await page.waitForTimeout(200);
+    await findAndClickText(page, "Manage Profile");
+    await findAndClickText(page, "Hide Profile");
 
-    await expect(page.getByText("Hide Profile")).toBeVisible();
-    await page.getByText("Hide Profile").click();
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toHaveCount(0);
   });
 
@@ -34,22 +30,16 @@ test.describe("Profile tests", () => {
 
     await page.waitForTimeout(200);
 
-    await expect(page.getByText(constants.PROFILE_NAME, { exact: true })).toBeVisible();
-    await page.getByText(constants.PROFILE_NAME, { exact: true }).click();
+    await findAndClickText(page, constants.PROFILE_NAME);
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
   });
 
   test("should open team config file for edit profile", async ({ page }) => {
-    await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
-    await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
+    await findAndClickTreeItem(page, constants.PROFILE_NAME, "right");
 
     await page.waitForTimeout(200);
-    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
-    await page.getByText("Manage Profile", { exact: true }).click();
-    await page.waitForTimeout(200);
-
-    await expect(page.getByText("Edit Profile")).toBeVisible();
-    await page.getByText("Edit Profile").click();
+    await findAndClickText(page, "Manage Profile");
+    await findAndClickText(page, "Edit Profile");
 
     await expect(page.getByRole("tab", { name: `${constants.ZOWE_CONFIG_FILE_NAME}, preview` })).toBeVisible();
     await expect(page.getByLabel(`~/workspace/${constants.ZOWE_CONFIG_FILE_NAME}`).getByText(constants.ZOWE_CONFIG_FILE_NAME)).toBeVisible();
@@ -57,16 +47,11 @@ test.describe("Profile tests", () => {
   });
 
   test("should open team config file for delete profile", async ({ page }) => {
-    await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
-    await getTreeItem(page, constants.PROFILE_NAME).click({ button: "right" });
+    await findAndClickTreeItem(page, constants.PROFILE_NAME, "right");
 
     await page.waitForTimeout(200);
-    await expect(page.getByText("Manage Profile", { exact: true })).toBeVisible();
-    await page.getByText("Manage Profile", { exact: true }).click();
-    await page.waitForTimeout(200);
-
-    await expect(page.getByText("Delete Profile")).toBeVisible();
-    await page.getByText("Delete Profile").click();
+    await findAndClickText(page, "Manage Profile");
+    await findAndClickText(page, "Delete Profile");
 
     await expect(page.getByRole("tab", { name: `${constants.ZOWE_CONFIG_FILE_NAME}, preview` })).toBeVisible();
     await expect(page.getByLabel(`~/workspace/${constants.ZOWE_CONFIG_FILE_NAME}`).getByText(constants.ZOWE_CONFIG_FILE_NAME)).toBeVisible();

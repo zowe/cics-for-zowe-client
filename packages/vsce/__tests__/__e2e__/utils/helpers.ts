@@ -68,3 +68,14 @@ export const resetZoweExplorerView = async (page: Page) => {
 export const getResourceInspector = (page: Page) => {
   return page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame");
 };
+
+export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
+  await expect(getTreeItem(page, label)).toBeVisible();
+  await expect(getTreeItem(page, label)).toHaveText(label);
+  await getTreeItem(page, label).click({ button });
+};
+
+export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
+  await expect(page.getByText(label)).toBeVisible();
+  await page.getByText(label).click({ button });
+};
