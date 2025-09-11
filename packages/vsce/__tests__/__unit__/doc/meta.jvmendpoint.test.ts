@@ -74,3 +74,5 @@ describe("JVM Endpoint Meta", () => {
     await JVMEndpointMeta.appendCriteriaHistory(criteria);
     let history = JVMEndpointMeta.getCriteriaHistory();
     expect(history).toEqual(["JVME1"]);
+  });
+});    
