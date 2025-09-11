@@ -3,6 +3,7 @@ import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { IJVMServer } from "../resources/IJVMServer";
+import { JVMEndpointMeta } from "./jvmEndpoints.meta";
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
@@ -60,4 +61,5 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   getCriteriaHistory() {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE);
   },
+  childType: JVMEndpointMeta,
 };
