@@ -77,5 +77,5 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   },
 
   filterCaseSensitive: true,
-  maximumPrimaryKeyLength: 255,
+  maximumPrimaryKeyLength: 224,
 };
