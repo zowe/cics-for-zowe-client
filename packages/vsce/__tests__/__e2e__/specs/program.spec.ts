@@ -84,4 +84,23 @@ test.describe("Program tests", () => {
     await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(1);
     await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME)).toHaveCount(1);
   });
+
+  test("should copy program name", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toHaveText(constants.PROGRAM_1_NAME);
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Copy Name");
+    await page.waitForTimeout(200);
+
+    let clipboardHeader = await page.evaluate("navigator.clipboard.readText()");
+    expect(clipboardHeader).toEqual("MYPROG1");
+  });
 });
