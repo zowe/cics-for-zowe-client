@@ -36,7 +36,7 @@ import { getShowRegionSITParametersCommand } from "./showParameterCommand";
 import { viewMoreCommand } from "./viewMoreCommand";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
-import { getCopyNameCommand } from "./copyNameCommand";
+import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -90,6 +90,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),
 
-    getCopyNameCommand(context, treeview),
+    getCopyNameCommand(),
+    getCopyUserAgentHeaderCommand(),
   ];
 };

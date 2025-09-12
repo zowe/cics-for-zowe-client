@@ -17,6 +17,11 @@ module.exports = {
   ...mock,
   extensions: {
     getExtension: (v: string) => { }
+  },
+  env: {
+    clipboard: {
+      writeText: (v: string) => { }
+    }
   }
 }
 
