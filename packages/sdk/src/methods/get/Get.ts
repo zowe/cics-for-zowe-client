@@ -25,7 +25,12 @@ import { Utils } from "../../utils";
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function getResource(session: AbstractSession, parms: IResourceParms, requestOptions?: ICMCIRequestOptions): Promise<ICMCIApiResponse> {
+export async function getResource(
+  session: AbstractSession,
+  parms: IResourceParms,
+  requestOptions?: ICMCIRequestOptions,
+  headers: { [key: string]: string; }[] = [],
+): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Resource name", "CICS resource name is required");
 
   Logger.getAppLogger().debug("Attempting to get resource(s) with the following parameters:\n%s", JSON.stringify(parms));
@@ -40,5 +45,5 @@ export async function getResource(session: AbstractSession, parms: IResourceParm
 
   const cmciResource = Utils.getResourceUri(parms.name, options);
 
-  return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, [], requestOptions);
+  return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, headers, requestOptions);
 }

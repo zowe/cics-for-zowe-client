@@ -17,7 +17,12 @@ import { IResultCacheParms } from "../../doc/IResultCacheParms";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
-export async function getCache(session: AbstractSession, parms: ICacheParms, requestOptions?: ICMCIRequestOptions): Promise<ICMCIApiResponse> {
+export async function getCache(
+  session: AbstractSession,
+  parms: ICacheParms,
+  requestOptions?: ICMCIRequestOptions,
+  headers: { [key: string]: string; }[] = [],
+): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.cacheToken, "CICS Result Cache Token", "CICS Result Cache Token is required");
   Logger.getAppLogger().debug("Attempting to get cache with the following parameters:\n%s", JSON.stringify(parms));
 
@@ -29,5 +34,5 @@ export async function getCache(session: AbstractSession, parms: ICacheParms, req
   };
   const cmciResource = Utils.getCacheUri(parms.cacheToken, options);
 
-  return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, [], requestOptions);
+  return CicsCmciRestClient.getExpectParsedXml(session, cmciResource, headers, requestOptions);
 }

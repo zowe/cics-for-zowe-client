@@ -9,6 +9,15 @@
  *
  */
 
+import type { Extension } from "vscode";
+import * as vscode from "vscode";
+
+jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
+  packageJSON: {
+    version: "1.2.3",
+  }
+} as Extension<any>);
+
 // these need to be mocked before the imports
 const getZoweExplorerApiMock = jest.fn();
 const jesApiMock = jest.fn();
@@ -49,7 +58,6 @@ import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
 jest.mock("@zowe/zowe-explorer-api", () => ({
-  ...jest.requireActual("@zowe/zowe-explorer-api"),
   ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
 }));
 

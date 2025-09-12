@@ -16,7 +16,7 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import constants from "../constants/CICS.defaults";
 import { getBestCICSplexes } from "./plexUtils";
-import { runGetResource } from "./resourceUtils";
+import { buildUserAgentHeader, runGetResource } from "./resourceUtils";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -263,7 +263,12 @@ export class ProfileManagement {
     const isPlex = await this.isPlex(session);
     if (isPlex) {
       try {
-        const { response } = await getCache(session, { cacheToken: isPlex, nodiscard: false });
+        const { response } = await getCache(
+          session,
+          { cacheToken: isPlex, nodiscard: false },
+          { failOnNoData: false, useCICSCmciRestError: true },
+          [buildUserAgentHeader()],
+        );
         if (response.records.cicscicsplex) {
           const cicscicsplexs = getBestCICSplexes(toArray(response.records.cicscicsplex));
 
@@ -336,7 +341,7 @@ export class ProfileManagement {
    */
   public static async getRegionInfo(plexName: string, session: Session): Promise<any[]> {
     try {
-     
+
       const { response } = await runGetResource({
         session,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
@@ -405,11 +410,12 @@ export class ProfileManagement {
     start = 1,
     increment = constants.RESOURCES_MAX
   ) {
-    const allItemsresponse = await getCache(session, {
-      cacheToken,
-      startIndex: start,
-      count: increment,
-    });
+    const allItemsresponse = await getCache(
+      session,
+      { cacheToken, startIndex: start, count: increment, },
+      { failOnNoData: false, useCICSCmciRestError: true },
+      [buildUserAgentHeader()],
+    );
 
     if (allItemsresponse.response.resultsummary.api_response1_alt === "OK") {
       if (allItemsresponse.response && allItemsresponse.response.records && allItemsresponse.response.records[resourceName.toLowerCase()]) {
