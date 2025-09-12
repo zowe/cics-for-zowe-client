@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import { constants, findAndClickText, findAndClickTreeItem, getClipboardContent, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -100,7 +100,7 @@ test.describe("Program tests", () => {
     await findAndClickText(page, "Copy Name");
     await page.waitForTimeout(200);
 
-    let clipboardHeader = await page.evaluate("navigator.clipboard.readText()");
-    expect(clipboardHeader).toEqual("MYPROG1");
+    const resNameInClipboard = await getClipboardContent(page);
+    expect(resNameInClipboard).toEqual("MYPROG1");
   });
 });

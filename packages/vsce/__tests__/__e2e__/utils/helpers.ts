@@ -79,3 +79,19 @@ export const findAndClickText = async (page: Page, label: string, button: "left"
   await expect(page.getByText(label)).toBeVisible();
   await page.getByText(label).click({ button });
 };
+
+export const runInCommandPalette = async (page: Page, command: string) => {
+  await page.keyboard.down("Control");
+  await page.keyboard.down("Shift");
+  await page.keyboard.press("p");
+  await page.keyboard.up("Shift");
+  await page.keyboard.up("Control");
+
+  await expect(page.getByRole("textbox").first()).toHaveValue(">");
+  await page.getByRole("textbox").fill(`>${command}`);
+  await page.keyboard.press("Enter");
+};
+
+export const getClipboardContent = async (page: Page) => {
+  return await page.evaluate("navigator.clipboard.readText()");
+};
