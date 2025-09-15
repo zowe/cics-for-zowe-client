@@ -28,7 +28,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
       return;
     }
 
-    window.withProgress(
+    await window.withProgress(
       {
         title: "Enable",
         location: ProgressLocation.Notification,

@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD",
+        "headers": {
+          "User-Agent": {
+            "matches": "zowe.cics-extension-for-zowe/3.* zowe.vscode-extension-for-zowe/3.*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSplex/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml",
+          "Set-Cookie": [
+            "LtpaToken2=B539C/NKcPuZMpY9PeBR7q8+MzgZjE2WK5Lwo+CzdazqL7DU0ZAGEgSBv1nTt0fm5pSkOLwN6NL8RSQ6wKplezgN4IQhWIb4mENItwmhqlbFCs7z3h+Qc0vA/0VI18+cvG499egGipfb95iVY0XHcQ+vNZQQgpoeQ8cfgqFPrpAEK3Y4Fxb3RC7NnJp91aU7y81CkA04Smjw5k4IA6koHY5ZcPGqzFB4wqtaGeyLiyibynOM3JnJiAMjhtHjnpk+nV+y2eHxLv4q0dPzLZgPgVdpFTEo68p4ScBTIjjcSVmt9cmx89eIlJ9uC6krx3qH; Path=/; HttpOnly"
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/000CICSPLEXTOKEN",
+        "headers": {
+          "User-Agent": {
+            "matches": "zowe.cics-extension-for-zowe/3.* zowe.vscode-extension-for-zowe/3.*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSplex/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

@@ -9,3 +9,7 @@ prebuilds/
 .cics
 .e2e-global-settings
 *.vsix
+
+/test-results/
+/playwright-report/
+__tests__/screenshots/

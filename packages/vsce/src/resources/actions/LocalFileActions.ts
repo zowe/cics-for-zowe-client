@@ -32,14 +32,14 @@ export function getLocalFileActions(): IResourceAction[] {
       id: "CICS.CICSLocalFile.ENABLE",
       name: "Enable Local File",
       resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "ENABLED",
+      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "ENABLED",
       action: "cics-extension-for-zowe.enableLocalFile",
     },
     {
       id: "CICS.CICSLocalFile.DISABLE",
       name: "Disable Local File",
       resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "DISABLED",
+      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "DISABLED",
       action: "cics-extension-for-zowe.disableLocalFile",
     },
   ];

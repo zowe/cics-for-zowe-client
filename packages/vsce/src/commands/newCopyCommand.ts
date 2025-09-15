@@ -30,7 +30,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    window.withProgress(
+    await window.withProgress(
       {
         title: "New Copy",
         location: ProgressLocation.Notification,

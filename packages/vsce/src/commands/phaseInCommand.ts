@@ -32,7 +32,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    window.withProgress(
+    await window.withProgress(
       {
         title: "Phase In",
         location: ProgressLocation.Notification,

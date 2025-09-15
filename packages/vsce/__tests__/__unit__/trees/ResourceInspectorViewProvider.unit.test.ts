@@ -19,19 +19,32 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import { IPipeline, PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
-import { Uri, WebviewView } from "vscode";
+import { Uri, WebviewView, ExtensionContext } from "vscode";
 
-jest.mock("vscode", () => {
-  return {
-    Uri: {
-      joinPath: jest.fn().mockReturnValue("asdf"),
-      parse: jest.fn(),
-    },
-    workspace: {
-      getConfiguration: jest.fn()
-    }
-  };
-});
+const sampleExtensionContext: ExtensionContext = {
+  extensionUri: {
+    path: "/mock/script/fs/path",
+  } as Uri,
+
+  // Minimal stubs for remaining required fields
+  subscriptions: [],
+  workspaceState: {} as any,
+  globalState: { setKeysForSync: () => {} } as any,
+  secrets: {} as any,
+  extensionPath: "",
+  environmentVariableCollection: {} as any,
+  asAbsolutePath: (relativePath: string) => relativePath,
+  storageUri: undefined,
+  storagePath: undefined,
+  globalStorageUri: {} as Uri,
+  globalStoragePath: "",
+  logUri: {} as Uri,
+  logPath: "",
+  extensionMode: 1,
+  extension: {} as any,
+  languageModelAccessInformation: {} as any,
+};
+
 jest.mock("@zowe/zowe-explorer-api", () => {
   return {
     HTMLTemplate: {
@@ -56,19 +69,24 @@ describe("Resource Inspector View provider", () => {
   };
 
   it("should return singleton instance", () => {
-    const instance1 = ResourceInspectorViewProvider.getInstance({} as Uri);
-    const instance2 = ResourceInspectorViewProvider.getInstance({} as Uri);
+    const instance1 = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+    const instance2 = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
     expect(instance1).toEqual(instance2);
   });
 
   it("should set resource when webview NOT ready", () => {
-    const ri = ResourceInspectorViewProvider.getInstance({} as Uri);
+    const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
     ri.setResource(myResource);
     // @ts-ignore - private property not accessible
     expect(ri.resource).toEqual(myResource);
   });
 
   it("should resolve webview", () => {
+    // Mock Uri.joinPath to return a dummy object or string
+    Uri.joinPath = jest.fn().mockReturnValue({
+      toString: () => "mock-script-uri",
+      fsPath: "/mock/script/fs/path",
+    } as Uri);
 
     const webviewViewMock = {
       webview: {
@@ -80,22 +98,21 @@ describe("Resource Inspector View provider", () => {
       onDidDispose: jest.fn(),
     };
 
-    const ri = ResourceInspectorViewProvider.getInstance({ path: "asdf" } as Uri);
+    const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
     ri.resolveWebviewView(webviewViewMock as unknown as WebviewView);
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
       enableScripts: true,
-      localResourceRoots: [{} as Uri],
+      localResourceRoots: [sampleExtensionContext.extensionUri],
     });
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.html).toEqual(``);
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.onDidReceiveMessage).toBeDefined();
-
   });
 
   it("should set resource when webview ready", () => {
-    const ri = ResourceInspectorViewProvider.getInstance({} as Uri);
+    const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
 
     // @ts-ignore - private property not accessible
     const sendSpy = jest.spyOn(ri, "sendResourceDataToWebView");
@@ -108,5 +125,4 @@ describe("Resource Inspector View provider", () => {
     expect(ri.resource).toEqual(myResource);
     expect(sendSpy).toHaveBeenCalledTimes(1);
   });
-
 });

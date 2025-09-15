@@ -18,6 +18,7 @@ export interface TransformWebviewMessage {
   command: string;
   data?: {
     name: string;
+    refreshIconPath: { light: string; dark: string };
     resourceName: string;
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];

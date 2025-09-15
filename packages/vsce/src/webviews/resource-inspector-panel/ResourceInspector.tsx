@@ -17,12 +17,14 @@ import * as vscode from "../common/vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
+import Contextmenu from "./Contextmenu";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
+    refreshIconPath: { light: string; dark: string };
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -82,6 +84,7 @@ const ResourceInspector = () => {
                 // @ts-ignore
                 resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
+            {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>
         </thead>
         <tbody className="padding-left-10 padding-top-20">
