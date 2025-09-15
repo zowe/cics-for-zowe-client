@@ -9,4 +9,4 @@
  *
  */
 
-export * from "./EventSourceTypesEnum";
+export * from "./EventSourceTypes";

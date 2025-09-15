@@ -9,12 +9,12 @@
  *
  */
 
-import { EventSourceTypesEnum } from "../enums/EventSourceTypesEnum";
+import { EventSourceTypes } from "../enums/EventSourceTypes";
 import { ResourceTypes } from "../resources/ResourceTypes";
 
 export interface IResourceInspectEvent {
 
   resourceType: ResourceTypes;
 
-  source: EventSourceTypesEnum;
+  source: EventSourceTypes;
 }

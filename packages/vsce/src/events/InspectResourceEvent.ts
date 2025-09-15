@@ -11,7 +11,7 @@
 
 import { EventEmitter, Event } from "vscode";
 
-import { EventSourceTypesEnum, IResourceInspectEvent, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { EventSourceTypes, IResourceInspectEvent, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { IResource } from "../doc/resources/IResource";
 
@@ -45,6 +45,6 @@ export class InspectResourceEvent {
   public fireByNode(node: CICSResourceContainerNode<IResource>) {
     const targetNodeMeta = node.getContainedResource().meta;
     this.fire({ resourceType:  targetNodeMeta.resourceName as keyof typeof ResourceTypes,
-    source: EventSourceTypesEnum.TREE} as IResourceInspectEvent);
+    source: EventSourceTypes.TREE} as IResourceInspectEvent);
   }
 }

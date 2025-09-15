@@ -9,7 +9,7 @@
  *
  */
 
-export enum EventSourceTypesEnum {
+export enum EventSourceTypes {
     TREE = 'tree',
     PALETTE = 'palette',
     OTHER = 'other'
