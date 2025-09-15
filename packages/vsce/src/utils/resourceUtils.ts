@@ -51,7 +51,7 @@ export async function runGetResource({
     (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : ""));
 
   const requestOptions = {
     failOnNoData: false,
@@ -76,12 +76,13 @@ export async function runGetResource({
   // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
-  return getResource(
-    session,
-    resourceParams,
-    requestOptions,
-    [buildUserAgentHeader()]
-  );
+  return await getResource(session, resourceParams, requestOptions,
+    [buildUserAgentHeader()]);
+  // const iSess = SessionHandler.getInstance();
+  // const profName = iSess.getProfileNameFromSession(session);
+  // iSess.removeSession(profName);
+  // const tempSession = iSess.getSession(iSess.getProfile(profName));
+  // return await getResource(tempSession, resourceParams, requestOptions);
 }
 
 export async function runPutResource(
@@ -111,7 +112,7 @@ export async function runPutResource(
     (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : ""));
 
   try {
     // First attempt
@@ -127,6 +128,11 @@ export async function runPutResource(
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+  // const iSess = SessionHandler.getInstance();
+  // const profName = iSess.getProfileNameFromSession(session);
+  // iSess.removeSession(profName);
+  // const tempSession = iSess.getSession(iSess.getProfile(profName));
+  // return await CicsCmciRestClient.putExpectParsedXml(tempSession, cmciResource, [], requestBody);
 }
 
 export async function pollForCompleteAction<T extends IResource>(
