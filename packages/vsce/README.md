@@ -19,6 +19,7 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
       - [Additional details for making the connection](#additional-details-for-making-the-connection)
     - [Hiding CICS profiles](#hiding-cics-profiles)
     - [Deleting CICS profiles](#deleting-cics-profiles)
+    - [Using CMCI's client allowlist](#using-cmcis-client-allowlist)
   - [CICS resources](#cics-resources)
     - [Show logs for a region](#show-logs-for-a-region)
     - [Show and filter resources in a region](#show-and-filter-resources-in-a-region)
@@ -126,6 +127,22 @@ Right-click a CICS profile and select `Manage Profile` to show profile options. 
 2. Choose **Delete Profile** to open the configuration file that contains the profile you want to delete.
 
 3. Edit the config file to remove the CICS profile entry.
+
+### Using CMCI's client allowlist
+
+If your CICS CMCI JVM server is configured with a client allowlist, the User-Agent header included in the CMCI requests must be included in this list. To check the User-Agent header that will be sent on each request, issue the `IBM CICS for Zowe Explorer: Copy User Agent Header` command from the command palette. This will copy the header to your clipboard.
+
+The header uses the format:
+
+```
+zowe.cics-extension-for-zowe/<CICS extension version number> zowe.vscode-extension-for-zowe/<Zowe Explorer version number>
+```
+
+Resulting in a header looking something like:
+
+```
+User-Agent: zowe.cics-extension-for-zowe/3.11.0 zowe.vscode-extension-for-zowe/3.3.0
+```
 
 ## CICS resources
 

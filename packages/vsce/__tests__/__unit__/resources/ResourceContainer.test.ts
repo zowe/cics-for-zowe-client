@@ -9,6 +9,15 @@
  *
  */
 
+import type { Extension } from "vscode";
+import * as vscode from "vscode";
+
+jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
+  packageJSON: {
+    version: "1.2.3",
+  }
+} as Extension<any>);
+
 const prog1: IProgram = {
   program: "PROG1",
   status: "ENABLED",
@@ -40,6 +49,7 @@ jest.mock("@zowe/cics-for-zowe-sdk", () => ({
 const runGetResourceMock = jest.fn();
 
 jest.mock("../../../src/utils/resourceUtils", () => ({
+  ...jest.requireActual("../../../src/utils/resourceUtils"),
   runGetResource: runGetResourceMock,
 }));
 
@@ -145,7 +155,8 @@ describe("Resource Container", () => {
       {
         failOnNoData: false,
         useCICSCmciRestError: true,
-      }
+      },
+      [{ "User-Agent": "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3" }]
     );
   });
 
@@ -170,7 +181,8 @@ describe("Resource Container", () => {
       {
         failOnNoData: false,
         useCICSCmciRestError: true,
-      }
+      },
+      [{ "User-Agent": "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3" }]
     );
   });
 

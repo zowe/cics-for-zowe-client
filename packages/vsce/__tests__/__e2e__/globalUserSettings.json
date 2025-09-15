@@ -3,6 +3,7 @@
   "security.workspace.trust.enabled": false,
   "security.workspace.trust.startupPrompt": "never",
   "security.workspace.trust.untrustedFiles": "open",
+  "zowe.settings.displayReleaseNotes": false,
   "zowe.security.secureCredentialsEnabled": false,
   "zowe.cics.showAllCommandsInPalette": true,
   "zowe.cics.resourceInspector": true,

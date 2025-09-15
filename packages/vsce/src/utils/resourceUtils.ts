@@ -23,6 +23,7 @@ import { getErrorCode } from "./errorUtils";
 import { CICSLogger } from "./CICSLogger";
 import { CICSResourceContainerNode } from "../trees";
 import { IResource } from "../doc";
+import { extensions } from "vscode";
 
 export async function runGetResource({
   session,
@@ -59,7 +60,12 @@ export async function runGetResource({
 
   try {
     // First attempt
-    return await getResource(session, resourceParams, requestOptions);
+    return await getResource(
+      session,
+      resourceParams,
+      requestOptions,
+      [buildUserAgentHeader()]
+    );
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
@@ -70,7 +76,12 @@ export async function runGetResource({
   // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
-  return await getResource(session, resourceParams, requestOptions);
+  return getResource(
+    session,
+    resourceParams,
+    requestOptions,
+    [buildUserAgentHeader()]
+  );
 }
 
 export async function runPutResource(
@@ -147,4 +158,16 @@ export async function pollForCompleteAction<T extends IResource>(
   }
 
   cb();
+}
+
+export function buildUserAgentHeader(): { "User-Agent": string; } {
+  const zeId = `zowe.vscode-extension-for-zowe`;
+  const cicsExtId = `zowe.cics-extension-for-zowe`;
+
+  const zeVersion = extensions.getExtension(zeId)?.packageJSON.version;
+  const cicsExtVersion = extensions.getExtension(cicsExtId)?.packageJSON.version;
+
+  const agentValue = `${cicsExtId}/${cicsExtVersion} ${zeId}/${zeVersion}`;
+
+  return { "User-Agent": agentValue };
 }

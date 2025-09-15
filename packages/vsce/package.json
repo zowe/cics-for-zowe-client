@@ -110,6 +110,11 @@
         "category": "IBM CICS for Zowe Explorer"
       },
       {
+        "command": "cics-extension-for-zowe.copyUserAgentHeader",
+        "title": "Copy User Agent Header",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.filterPlexResources",
         "title": "Filter Plex Resources in Regions tree",
         "category": "IBM CICS for Zowe Explorer",

@@ -202,5 +202,68 @@ describe("CMCI - Get Cache", () => {
       expect(response).toEqual(content);
       expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
     });
+
+    it("should send headers", async () => {
+      try {
+        response = await getCache(dummySession, cacheParms, undefined, [{ "MY-HEADER": "MY-HEADER-VALUE" }]);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD;
+
+      expect(response).toEqual(content);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [{ "MY-HEADER": "MY-HEADER-VALUE" }], undefined);
+    });
+
+    it("should send no headers when empty array passed", async () => {
+      try {
+        response = await getCache(dummySession, cacheParms, undefined, []);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD;
+
+      expect(response).toEqual(content);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
+    });
+
+    it("should send no headers as default value when nothing passed", async () => {
+      try {
+        response = await getCache(dummySession, cacheParms, undefined);
+      } catch (err) {
+        error = err;
+      }
+
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_RESULT_CACHE +
+        "/" +
+        cacheParms.cacheToken +
+        "?" +
+        CicsCmciConstants.NO_DISCARD;
+
+      expect(response).toEqual(content);
+      expect(cmciGetSpy).toHaveBeenCalledWith(dummySession, endPoint, [], undefined);
+    });
   });
 });
