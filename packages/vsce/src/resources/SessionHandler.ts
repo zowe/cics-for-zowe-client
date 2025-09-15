@@ -10,15 +10,18 @@
  */
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { IProfile, IProfileLoaded } from "@zowe/imperative";
+import { IProfileLoaded, Session } from "@zowe/imperative";
 import { ISessionHandler } from "../doc/resources/ISessionHandler";
 
 export class SessionHandler implements ISessionHandler {
   private sessions: Map<String, CICSSession>;
+  private profiles: Map<String, IProfileLoaded>;
+
   private static instance: SessionHandler;
 
   private constructor() {
     this.sessions = new Map<String, CICSSession>();
+    this.profiles = new Map<String, IProfileLoaded>();
   }
 
   // Creating a singleton instance of SessionHandler
@@ -29,14 +32,15 @@ export class SessionHandler implements ISessionHandler {
     return SessionHandler.instance;
   }
 
-  private createSession(profile: IProfile, profileName: string): void {
-    const session = new CICSSession(profile);
+  private createSession(profile: IProfileLoaded, profileName: string): void {
+    this.profiles.set(profileName, profile);
+    const session = new CICSSession(profile.profile);
     this.sessions.set(profileName, session);
   }
 
   public getSession(profile: IProfileLoaded): CICSSession | undefined {
     if (!this.sessions.has(profile.name)) {
-      this.createSession(profile.profile, profile.name);
+      this.createSession(profile, profile.name);
     }
     return this.sessions.get(profile.name);
   }
@@ -44,10 +48,25 @@ export class SessionHandler implements ISessionHandler {
   public removeSession(profileName: string): void {
     if (this.sessions.has(profileName)) {
       this.sessions.delete(profileName);
+      this.profiles.delete(profileName);
     }
   }
 
   public clearSessions(): void {
     this.sessions.clear();
+    this.profiles.clear();
+  }
+
+  public getProfileNameFromSession(session: Session): string | undefined {
+    let profileName;
+    this.sessions.forEach((sess: CICSSession, profName: string) => {
+      console.log(sess.ISession == session.ISession);
+      if (sess.ISession == session.ISession) profileName = profName;
+    });
+    return profileName;
+  }
+
+  public getProfile(profName: string): IProfileLoaded {
+    return this.profiles.get(profName);
   }
 }
