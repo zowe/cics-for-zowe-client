@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.12.0`
 
 - Validate input using maximum resource length when inspecting resource. [#402](https://github.com/zowe/cics-for-zowe-client/issues/402)
 - Action menus on Resource Inspector Header. [#333](https://github.com/zowe/cics-for-zowe-client/issues/333)
