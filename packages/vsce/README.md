@@ -19,7 +19,7 @@ This CICS Extension for Zowe Explorer adds additional functionality to the popul
       - [Additional details for making the connection](#additional-details-for-making-the-connection)
     - [Hiding CICS profiles](#hiding-cics-profiles)
     - [Deleting CICS profiles](#deleting-cics-profiles)
-    - [Using CMCI's client AllowList](#using-cmcis-client-allowlist)
+    - [Using CMCI's client allowlist](#using-cmcis-client-allowlist)
   - [CICS resources](#cics-resources)
     - [Show logs for a region](#show-logs-for-a-region)
     - [Show and filter resources in a region](#show-and-filter-resources-in-a-region)
@@ -85,21 +85,21 @@ The following example shows a CICS profile stored in a configuration file. The h
 
 ```jsonc
 {
-  "$schema": "./zowe.schema.json",
-  "profiles": {
-    // this string will be the name of your CICS connection in the tree
-    "cics-connection-name": {
-      "type": "cics",
-      "properties": {
-        // replace the host, port, and protocol with your CMCI connection details
-        "host": "cics.example.com",
-        "port": 1490,
-        "protocol": "https",
-        // reject self-signed server certificates if using https?
-        "rejectUnauthorized": true,
-      },
-    },
-  },
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        // this string will be the name of your CICS connection in the tree
+        "cics-connection-name": {
+            "type": "cics",
+            "properties": {
+                // replace the host, port, and protocol with your CMCI connection details
+                "host": "cics.example.com",
+                "port": 1490,
+                "protocol": "https",
+                // reject self-signed server certificates if using https?
+                "rejectUnauthorized": true,
+            }
+        }
+    }
 }
 ```
 
@@ -128,9 +128,9 @@ Right-click a CICS profile and select `Manage Profile` to show profile options. 
 
 3. Edit the config file to remove the CICS profile entry.
 
-### Using CMCI's client AllowList
+### Using CMCI's client allowlist
 
-If your CICS CMCI JVM server is configured with a client AllowList, the User-Agent header included in the CMCI requests must be included in this list. To get the User-Agent header that will be sent on each request, issue the `IBM CICS for Zowe Explorer: Copy User Agent Header` command from the command palette. This will copy the header to your clipboard.
+If your CICS CMCI JVM server is configured with a client allowlist, the User-Agent header included in the CMCI requests must be included in this list. To check the User-Agent header that will be sent on each request, issue the `IBM CICS for Zowe Explorer: Copy User Agent Header` command from the command palette. This will copy the header to your clipboard.
 
 The header uses the format:
 
