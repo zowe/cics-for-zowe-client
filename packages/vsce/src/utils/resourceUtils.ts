@@ -17,7 +17,7 @@ import {
   IResourceQueryParams,
   Utils
 } from "@zowe/cics-for-zowe-sdk";
-import { Session } from "@zowe/imperative";
+import { Session, AuthOrder } from "@zowe/imperative";
 import constants from "../constants/CICS.defaults";
 import { getErrorCode } from "./errorUtils";
 import { CICSLogger } from "./CICSLogger";
@@ -51,7 +51,7 @@ export async function runGetResource({
     (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : ""));
 
   const requestOptions = {
     failOnNoData: false,
@@ -60,6 +60,7 @@ export async function runGetResource({
 
   try {
     // First attempt
+    AuthOrder.makingRequestForToken(session.ISession);
     return await getResource(
       session,
       resourceParams,
@@ -76,6 +77,7 @@ export async function runGetResource({
   // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
+  AuthOrder.makingRequestForToken(session.ISession);
   return getResource(
     session,
     resourceParams,
@@ -111,10 +113,11 @@ export async function runPutResource(
     (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
     (regionName ? ", Region [" + regionName + "]" : "") +
     (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : ""));
 
   try {
     // First attempt
+    AuthOrder.makingRequestForToken(session.ISession);
     return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
@@ -126,6 +129,7 @@ export async function runPutResource(
   // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   session.ISession.tokenValue = null;
+  AuthOrder.makingRequestForToken(session.ISession);
   return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
 
