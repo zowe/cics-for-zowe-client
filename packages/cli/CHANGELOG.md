@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Renamed the CLI to `Zowe CLI Plug-in for IBM CICS Transaction Server`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
+
 ## `6.9.0`
 
 - Add ability to define bundles [#72](https://github.com/zowe/cics-for-zowe-client/issues/72)
