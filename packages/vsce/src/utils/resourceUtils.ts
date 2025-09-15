@@ -60,7 +60,7 @@ export async function runGetResource({
 
   try {
     // First attempt
-    AuthOrder.makingRequestForToken(session.ISession);
+    if (!session.ISession.tokenValue) AuthOrder.makingRequestForToken(session.ISession);
     return await getResource(
       session,
       resourceParams,
