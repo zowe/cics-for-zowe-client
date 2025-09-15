@@ -9,9 +9,12 @@
  *
  */
 
-export * from "./IExtensionAPI";
-export * from "./IResource";
-export * from "./IResourceContext";
-export * from "./IResourceExtender";
-export * from "./IResourceAction";
-export * from "./IResourceInspectEvent";
+import { EventSourceTypesEnum } from "../enums/EventSourceTypesEnum";
+import { ResourceTypes } from "../resources/ResourceTypes";
+
+export interface IResourceInspectEvent {
+
+  resourceType: ResourceTypes;
+
+  source: EventSourceTypesEnum;
+}

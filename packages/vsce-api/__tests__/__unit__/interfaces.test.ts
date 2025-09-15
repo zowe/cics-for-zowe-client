@@ -17,6 +17,8 @@ import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 import { IResourceAction } from "../../src/interfaces/IResourceAction";
+import { EventEmitter } from "vscode";
+import { IResourceInspectEvent } from "../../src/interfaces";
 
 describe("Interfaces", () => {
   const action: IResourceAction = {
@@ -44,10 +46,15 @@ describe("Interfaces", () => {
     },
   };
 
+  const eventEmitter = new EventEmitter<IResourceInspectEvent>;
+
   const api: IExtensionAPI = {
     resources: {
       supportedResources: SupportedResourceTypes,
     },
+    events: {
+      onDidInspectResourceEvent: eventEmitter.event,
+    }
   };
 
   const res: IResource = {
@@ -91,9 +98,13 @@ describe("Interfaces", () => {
     expect(extender).toHaveProperty("getAction");
     expect(extender).toHaveProperty("getActions");
   });
-  it("should assert IExtensionAPI", () => {
+  it("should assert IExtensionAPI resources", () => {
     expect(api).toHaveProperty("resources");
     expect(api.resources).toHaveProperty("supportedResources");
+  });
+  it("should assert IExtensionAPI events", () => {
+    expect(api).toHaveProperty("events");
+    expect(api.events).toHaveProperty("onDidInspectResourceEvent");
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");

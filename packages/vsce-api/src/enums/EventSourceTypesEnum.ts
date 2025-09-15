@@ -9,9 +9,8 @@
  *
  */
 
-export * from "./IExtensionAPI";
-export * from "./IResource";
-export * from "./IResourceContext";
-export * from "./IResourceExtender";
-export * from "./IResourceAction";
-export * from "./IResourceInspectEvent";
+export enum EventSourceTypesEnum {
+    TREE = 'tree',
+    PALETTE = 'palette',
+    OTHER = 'other'
+}

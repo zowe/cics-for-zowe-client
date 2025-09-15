@@ -15,7 +15,8 @@ const mockGetExtension = jest.fn().mockReturnValue({
   },
   activate: () => {
     return {
-      resources: { supportedResources: [ResourceTypes.CICSProgram] }
+      resources: { supportedResources: [ResourceTypes.CICSProgram] },
+      events: { onDidInspectResourceEvent: {}}
     } as IExtensionAPI;
   }
 });
@@ -45,15 +46,22 @@ describe("getAPI tests", () => {
   it("should return API with no minversion", async () => {
     const api = await getCICSForZoweExplorerAPI();
     expect(api).toBeDefined();
-    expect(api.resources.supportedResources).toHaveLength(1);
-    expect(api.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
+    expect(api?.resources.supportedResources).toHaveLength(1);
+    expect(api?.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
+  });
+
+  it("should return API with events", async () => {
+    const api = await getCICSForZoweExplorerAPI();
+    expect(api).toBeDefined();
+    expect(api?.events).toBeDefined();
+    expect(api?.events.onDidInspectResourceEvent).toBeDefined();
   });
 
   it("should return API with lower minimum version", async () => {
     const api = await getCICSForZoweExplorerAPI("0.2.3");
     expect(api).toBeDefined();
-    expect(api.resources.supportedResources).toHaveLength(1);
-    expect(api.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
+    expect(api?.resources.supportedResources).toHaveLength(1);
+    expect(api?.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
   });
 
   it("should return undefined with higher minimum version", async () => {

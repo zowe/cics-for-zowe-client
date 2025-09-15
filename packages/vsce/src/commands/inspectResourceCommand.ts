@@ -13,12 +13,21 @@ import { commands, ExtensionContext } from "vscode";
 
 import { inspectResourceByName, inspectResource } from "./inspectResourceCommandUtils";
 
+import { InspectResourceEvent } from "../events/InspectResourceEvent";
+import { IResourceInspectEvent, EventSourceTypesEnum, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+
+export const inspectResourceEvent: InspectResourceEvent = InspectResourceEvent.getInstance();
+
 export function getInspectResourceCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {
     if (resourceName && resourceType) {
       await inspectResourceByName(context, resourceName, resourceType);
+
+      inspectResourceEvent.fire({ resourceType: resourceType as keyof typeof ResourceTypes, source: EventSourceTypesEnum.OTHER} as IResourceInspectEvent);
     } else {
       await inspectResource(context);
+
+      inspectResourceEvent.fire({ resourceType: resourceType as keyof typeof ResourceTypes, source: EventSourceTypesEnum.PALETTE} as IResourceInspectEvent);
     }
   });
 }

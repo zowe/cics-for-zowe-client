@@ -10,9 +10,14 @@
  */
 
 import { ResourceTypes } from "../resources";
+import { Event } from "vscode";
+import { IResourceInspectEvent } from "./IResourceInspectEvent";
 
 export interface IExtensionAPI {
   resources: {
     supportedResources: ResourceTypes[];
+  },
+  events: {
+    onDidInspectResourceEvent: Event<IResourceInspectEvent>;
   };
 }
