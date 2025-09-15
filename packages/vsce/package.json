@@ -112,7 +112,7 @@
       {
         "command": "cics-extension-for-zowe.copyUserAgentHeader",
         "title": "Copy User Agent Header",
-        "category": "IBM CICS for Zowe Explorer"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.filterPlexResources",
@@ -224,12 +224,12 @@
       {
         "command": "cics-extension-for-zowe.disableJVMServer",
         "title": "Disable JVM Server",
-        "category": "IBM CICS for Zowe Explorer"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.enableJVMServer",
         "title": "Enable JVM Server",
-        "category": "IBM CICS for Zowe Explorer"
+        "category": "Zowe Explorer for IBM CICS TS"
       },
       {
         "command": "cics-extension-for-zowe.phaseInCommand",
