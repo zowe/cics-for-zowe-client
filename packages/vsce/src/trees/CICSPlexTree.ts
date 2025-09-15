@@ -34,6 +34,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { RemoteFileMeta } from "../doc/meta/remoteFile.meta";
 
 export class CICSPlexTree extends TreeItem {
   children: (CICSRegionsContainer | CICSRegionTree | CICSResourceContainerNode<IResource>)[] = [];
@@ -165,7 +166,7 @@ export class CICSPlexTree extends TreeItem {
       this.children.push(this.buildCombinedTree("All Local Transactions", TransactionMeta));
     }
     if (config.get<boolean>("LocalFile", true)) {
-      this.children.push(this.buildCombinedTree("All Local Files", LocalFileMeta));
+      this.children.push(this.buildCombinedTree("All Files", LocalFileMeta, [RemoteFileMeta]));
     }
     if (config.get<boolean>("Task", true)) {
       this.children.push(this.buildCombinedTree("All Tasks", TaskMeta));
@@ -193,8 +194,8 @@ export class CICSPlexTree extends TreeItem {
     }
   }
 
-  private buildCombinedTree<T extends IResource>(label: string, meta: IResourceMeta<T>) {
-    return new CICSResourceContainerNode<T>(
+  private buildCombinedTree(label: string, meta: IResourceMeta<IResource>, additionalMetas: IResourceMeta<IResource>[] = []) {
+    return new CICSResourceContainerNode<IResource>(
       label,
       {
         session: this.getSession(),
@@ -205,8 +206,15 @@ export class CICSPlexTree extends TreeItem {
       null,
       {
         meta,
-        resources: new ResourceContainer(meta),
-      }
+        resources: new ResourceContainer(meta, undefined, additionalMetas.length + 1),
+      },
+      undefined,
+      additionalMetas.map((additionalMeta) => {
+        return {
+          meta: additionalMeta,
+          resources: new ResourceContainer(additionalMeta, undefined, additionalMetas.length + 1),
+        };
+      })
     );
   }
 

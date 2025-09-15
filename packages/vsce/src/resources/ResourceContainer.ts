@@ -36,11 +36,12 @@ export class ResourceContainer<T extends IResource> {
 
   constructor(
     private resourceMeta: IResourceMeta<T>,
-    private resource?: Resource<T>
+    private resource?: Resource<T>,
+    numOfResourceTypesSharingPage: number = 1,
   ) {
     this.resetCriteria();
     this.resetContainer();
-    this.resetNumberToFetch();
+    this.resetNumberToFetch(numOfResourceTypesSharingPage);
   }
 
   getTotalResources() {
@@ -76,6 +77,7 @@ export class ResourceContainer<T extends IResource> {
     this.resources = [];
     this.cacheToken = null;
     this.startIndex = 1;
+    this.fetchedAll = false;
   }
 
   async resetCriteria() {
@@ -91,8 +93,8 @@ export class ResourceContainer<T extends IResource> {
     this.numberToFetch = num;
   }
 
-  resetNumberToFetch() {
-    this.numberToFetch = PersistentStorage.getNumberOfResourcesToFetch();
+  resetNumberToFetch(numOfResourceTypesSharingPage: number = 1) {
+    this.setNumberToFetch(Math.ceil(PersistentStorage.getNumberOfResourcesToFetch() / numOfResourceTypesSharingPage));
   }
 
   /**
@@ -124,6 +126,11 @@ export class ResourceContainer<T extends IResource> {
   }
 
   async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {
+
+    if (this.getFetchedAll()) {
+      return [this.resources, false];
+    }
+
     // If we don't yet have a cacheToken, get one
     if (!this.cacheToken) {
       const cacheResponse = await runGetResource({
@@ -201,7 +208,7 @@ export class ResourceContainer<T extends IResource> {
         // to 'roughly' make the tree back to the same size [length of tree without newly added resources + pagination count]
         this.cacheToken = null;
         this.startIndex = 1;
-        this.numberToFetch = this.resources.length + this.numberToFetch;
+        this.setNumberToFetch(this.resources.length + this.numberToFetch);
         this.resources = [];
         return this.loadResources(cicsSession, regionName, cicsplexName);
       }

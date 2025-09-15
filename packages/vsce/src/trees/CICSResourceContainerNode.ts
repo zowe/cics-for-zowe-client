@@ -42,7 +42,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     },
     private containedResource?: IContainedResource<T>,
     private childResource?: IChildResource<T>,
-    description?: string
+    description?: string,
+    private additionalChildResources: IChildResource<T>[] = [],
   ) {
     super(
       label,
@@ -89,57 +90,112 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
     if (!this.viewMore) {
       this.childResource.resources.resetContainer();
+      for (const child of this.additionalChildResources) {
+        child.resources.resetContainer();
+      }
     }
 
     const thisParent = this.getParent() as CICSPlexTree | CICSRegionTree | CICSResourceContainerNode<T>;
     const regionToSupply =
       thisParent instanceof CICSPlexTree || thisParent instanceof CICSRegionTree ?
         this.regionName
-      : this.getContainedResource().resource.attributes.eyu_cicsname;
+        : this.getContainedResource().resource.attributes.eyu_cicsname;
 
-    // Searching for resources, with or without region
-    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getSession(), regionToSupply, this.cicsplexName);
+    let moreToFetch = false;
+    let allResourceTreeNodes: CICSResourceContainerNode<IResource>[] = [];
 
-    if (!resources.length) {
+    if (!this.childResource.resources.getFetchedAll()) {
+
+      // Searching for resources, with or without region
+      const loadedResources = await this.childResource.resources.loadResources(this.getSession(), regionToSupply, this.cicsplexName);
+      const resources = loadedResources[0];
+      moreToFetch = loadedResources[1];
+
+      allResourceTreeNodes = resources
+        .map(
+          (resource) =>
+            new CICSResourceContainerNode(
+              this.childResource.meta.getLabel(resource),
+              {
+                parentNode: this,
+                cicsplexName: this.cicsplexName,
+                regionName: this.regionName,
+                profile: this.getProfile(),
+                session: this.getSession(),
+              },
+              {
+                resource,
+                meta: this.childResource.meta,
+              },
+              {
+                meta: this.childResource.meta.childType,
+                resources: this.childResource.meta.childType ? new ResourceContainer(this.childResource.meta.childType, resource) : null,
+              },
+              this.regionName ? null : `(${resource.attributes.eyu_cicsname})`
+            )
+        );
+
+    }
+    for (const child of this.additionalChildResources) {
+
+      const [childResources, childMoreToFetch] = await child.resources.loadResources(this.getSession(), regionToSupply, this.cicsplexName);
+      if (childMoreToFetch) {
+        moreToFetch = childMoreToFetch;
+      }
+      childResources.forEach((resource) => {
+        allResourceTreeNodes.push(new CICSResourceContainerNode(
+          child.meta.getLabel(resource),
+          {
+            parentNode: this,
+            cicsplexName: this.cicsplexName,
+            regionName: this.regionName,
+            profile: this.getProfile(),
+            session: this.getSession(),
+          },
+          {
+            resource,
+            meta: child.meta,
+          },
+          {
+            meta: child.meta.childType,
+            resources: child.meta.childType ? new ResourceContainer(child.meta.childType, resource) : null,
+          },
+          this.regionName ? null : `(${resource.attributes.eyu_cicsname})`
+        ));
+      });
+    }
+
+    if (!allResourceTreeNodes.length) {
       Gui.infoMessage("No resources found");
     }
 
-    this.children = resources
-      .map(
-        (resource) =>
-          new CICSResourceContainerNode(
-            this.childResource.meta.getLabel(resource),
-            {
-              parentNode: this,
-              cicsplexName: this.cicsplexName,
-              regionName: this.regionName,
-              profile: this.getProfile(),
-              session: this.getSession(),
-            },
-            {
-              resource,
-              meta: this.childResource.meta,
-            },
-            {
-              meta: this.childResource.meta.childType,
-              resources: this.childResource.meta.childType ? new ResourceContainer(this.childResource.meta.childType, resource) : null,
-            },
-            this.regionName ? null : `(${resource.attributes.eyu_cicsname})`
-          )
-      )
-      .sort((a, b) => (a.getContainedResourceName() > b.getContainedResourceName() ? 1 : -1));
+    allResourceTreeNodes.sort((a, b) => (a.getContainedResourceName() > b.getContainedResourceName() ? 1 : -1));
+    this.children = allResourceTreeNodes;
+
+    this.buildDescription(allResourceTreeNodes.length);
 
     if (moreToFetch) {
       this.children.push(new ViewMore(this));
     }
 
-    this.refreshingDescription = true;
-    this.description = `${this.defaultDescription ? this.defaultDescription + " " : ""}${
-      this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
-    } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
-
     this.setLoading(false);
     (this.getSessionNode().getParent() as CICSTree)._onDidChangeTreeData.fire(this);
+  }
+
+  private buildDescription(lengthOfCurrentChildren: number) {
+    const totalResources =
+      this.childResource?.resources.getTotalResources() +
+      this.additionalChildResources.reduce((a, b) => a + b.resources.getTotalResources(), 0);
+
+    this.refreshingDescription = true;
+
+    let descriptionBuilder = this.defaultDescription ? this.defaultDescription + " " : "";
+    if (this.childResource.resources.isFilterApplied()) {
+      descriptionBuilder += this.childResource.resources.getFilter();
+    }
+    descriptionBuilder += ` [${lengthOfCurrentChildren} of ${totalResources}]`;
+
+    this.description = descriptionBuilder;
   }
 
   getContainedResourceName(): string {
@@ -172,8 +228,29 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     await this.loadPageOfResources();
     this.refreshIcon(true);
     this.viewMore = false;
-    this.childResource.resources.resetNumberToFetch();
+    this.resetNumberToFetch();
     return this.children;
+  }
+
+  resetNumberToFetch() {
+    this.childResource.resources.resetNumberToFetch(this.calculateNumberOfResourceContainersToFetch());
+    for (const child of this.additionalChildResources) {
+      child.resources.resetNumberToFetch(this.calculateNumberOfResourceContainersToFetch());
+    }
+  }
+
+  /**
+   * @returns the number of Resource Containers that the total page count needs to be divided between
+   */
+  private calculateNumberOfResourceContainersToFetch() {
+    if (!this.childResource) {
+      return 0;
+    }
+    return [this.childResource, ...this.additionalChildResources].filter(({ resources }) => !resources.getFetchedAll()).length;
+  }
+
+  setNumberToFetch(num: number) {
+    this.getChildResource().resources.setNumberToFetch(Math.ceil(num / this.calculateNumberOfResourceContainersToFetch()));
   }
 
   getSessionNode() {
@@ -190,11 +267,17 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   setFilter(filter: string[]) {
     this.childResource.resources.setCriteria(filter);
+    for (const child of this.additionalChildResources) {
+      child.resources.setCriteria(filter);
+    }
     this.contextValue += `.FILTERED`;
   }
 
   async clearFilter() {
     await this.childResource.resources.resetCriteria();
+    for (const child of this.additionalChildResources) {
+      await child.resources.resetCriteria();
+    }
     this.contextValue = this.contextValue.replace(".FILTERED", "");
   }
 }

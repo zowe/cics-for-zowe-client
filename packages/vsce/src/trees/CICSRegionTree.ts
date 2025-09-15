@@ -33,13 +33,14 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
+import { RemoteFileMeta } from "../doc/meta/remoteFile.meta";
 
 export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   region: any;
   parentSession: CICSSessionTree;
   parentPlex: CICSPlexTree | undefined;
   directParent: any;
-  isActive: true | false;
+  isActive: boolean;
 
   constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
     super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.session, parentSession.profile);
@@ -51,56 +52,55 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       this.parentPlex = parentPlex;
     }
 
-    if (region.cicsstate) {
-      this.isActive = region.cicsstate === "ACTIVE" ? true : false;
-    } else {
-      this.isActive = region.cicsstatus === "ACTIVE" ? true : false;
-    }
+    this.isActive = region.cicsstate! === "ACTIVE" || region.cicsstatus! === "ACTIVE";
+    this.contextValue += this.isActive ? ".active" : ".inactive";
     this.refreshIcon();
-    if (!this.isActive) {
+
+    if (this.isActive) {
+      this.constructChildNodes();
+    } else {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
       this.refreshIcon();
-      this.contextValue += ".inactive";
-    } else {
-      this.contextValue += ".active";
+    }
+  }
 
-      const config = workspace.getConfiguration("zowe.cics.resources");
+  private constructChildNodes() {
+    const config = workspace.getConfiguration("zowe.cics.resources");
 
-      this.children = [];
-      if (config.get<boolean>("Program", true)) {
-        this.children.push(this.buildResourceContainerNode(ProgramMeta));
-      }
-      if (config.get<boolean>("Transaction", true)) {
-        this.children.push(this.buildResourceContainerNode(TransactionMeta));
-      }
-      if (config.get<boolean>("LocalFile", true)) {
-        this.children.push(this.buildResourceContainerNode(LocalFileMeta));
-      }
-      if (config.get<boolean>("Task", true)) {
-        this.children.push(this.buildResourceContainerNode(TaskMeta));
-      }
-      if (config.get<boolean>("Library", true)) {
-        this.children.push(this.buildResourceContainerNode(LibraryMeta));
-      }
-      if (config.get<boolean>("Pipeline", true)) {
-        this.children.push(this.buildResourceContainerNode(PipelineMeta));
-      }
-      if (config.get<boolean>("TCP/IPService", true)) {
-        this.children.push(this.buildResourceContainerNode(TCPIPMeta));
-      }
-      if (config.get<boolean>("URIMap", true)) {
-        this.children.push(this.buildResourceContainerNode(URIMapMeta));
-      }
-      if (config.get<boolean>("WebService", true)) {
-        this.children.push(this.buildResourceContainerNode(WebServiceMeta));
-      }
-      if (config.get<boolean>("JVMServer", true)) {
-        this.children.push(this.buildResourceContainerNode(JVMServerMeta));
-      }
-      if (config.get<boolean>("Bundle", true)) {
-        this.children.push(this.buildResourceContainerNode(BundleMeta));
-      }
+    this.children = [];
+    if (config.get<boolean>("Program", true)) {
+      this.children.push(this.buildResourceContainerNode(ProgramMeta));
+    }
+    if (config.get<boolean>("Transaction", true)) {
+      this.children.push(this.buildResourceContainerNode(TransactionMeta));
+    }
+    if (config.get<boolean>("LocalFile", true)) {
+      this.children.push(this.buildResourceContainerNode(LocalFileMeta, [RemoteFileMeta]));
+    }
+    if (config.get<boolean>("Task", true)) {
+      this.children.push(this.buildResourceContainerNode(TaskMeta));
+    }
+    if (config.get<boolean>("Library", true)) {
+      this.children.push(this.buildResourceContainerNode(LibraryMeta));
+    }
+    if (config.get<boolean>("Pipeline", true)) {
+      this.children.push(this.buildResourceContainerNode(PipelineMeta));
+    }
+    if (config.get<boolean>("TCP/IPService", true)) {
+      this.children.push(this.buildResourceContainerNode(TCPIPMeta));
+    }
+    if (config.get<boolean>("URIMap", true)) {
+      this.children.push(this.buildResourceContainerNode(URIMapMeta));
+    }
+    if (config.get<boolean>("WebService", true)) {
+      this.children.push(this.buildResourceContainerNode(WebServiceMeta));
+    }
+    if (config.get<boolean>("JVMServer", true)) {
+      this.children.push(this.buildResourceContainerNode(JVMServerMeta));
+    }
+    if (config.get<boolean>("Bundle", true)) {
+      this.children.push(this.buildResourceContainerNode(BundleMeta));
     }
   }
 
@@ -108,7 +108,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     this.iconPath = getIconByStatus("REGION", this);
   }
 
-  private buildResourceContainerNode(meta: IResourceMeta<IResource>) {
+  private buildResourceContainerNode(meta: IResourceMeta<IResource>, additionalMetas: IResourceMeta<IResource>[] = []) {
     return new CICSResourceContainerNode(
       meta.humanReadableNamePlural,
       {
@@ -120,9 +120,16 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       },
       null,
       {
-        resources: new ResourceContainer(meta),
+        resources: new ResourceContainer(meta, undefined, additionalMetas.length + 1),
         meta,
-      }
+      },
+      undefined,
+      additionalMetas.map((additionalMeta) => {
+        return {
+          meta: additionalMeta,
+          resources: new ResourceContainer(additionalMeta, undefined, additionalMetas.length + 1),
+        };
+      }),
     );
   }
 

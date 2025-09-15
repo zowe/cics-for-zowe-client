@@ -17,7 +17,7 @@ import { IResourceMeta } from "./IResourceMeta";
 
 export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-  humanReadableNamePlural: "Local Files",
+  humanReadableNamePlural: "Files",
   humanReadableNameSingular: "Local File",
 
   buildCriteria(criteria: string[]) {
