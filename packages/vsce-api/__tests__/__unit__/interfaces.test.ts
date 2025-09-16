@@ -53,7 +53,7 @@ describe("Interfaces", () => {
       supportedResources: SupportedResourceTypes,
     },
     events: {
-      onDidInspectResourceEvent: eventEmitter.event,
+      onDidInspectResource: eventEmitter.event,
     }
   };
 
@@ -104,7 +104,7 @@ describe("Interfaces", () => {
   });
   it("should assert IExtensionAPI events", () => {
     expect(api).toHaveProperty("events");
-    expect(api.events).toHaveProperty("onDidInspectResourceEvent");
+    expect(api.events).toHaveProperty("onDidInspectResource");
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");

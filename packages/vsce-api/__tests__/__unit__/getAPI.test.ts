@@ -16,7 +16,7 @@ const mockGetExtension = jest.fn().mockReturnValue({
   activate: () => {
     return {
       resources: { supportedResources: [ResourceTypes.CICSProgram] },
-      events: { onDidInspectResourceEvent: {}}
+      events: { onDidInspectResource: {}}
     } as IExtensionAPI;
   }
 });
@@ -54,7 +54,7 @@ describe("getAPI tests", () => {
     const api = await getCICSForZoweExplorerAPI();
     expect(api).toBeDefined();
     expect(api?.events).toBeDefined();
-    expect(api?.events.onDidInspectResourceEvent).toBeDefined();
+    expect(api?.events.onDidInspectResource).toBeDefined();
   });
 
   it("should return API with lower minimum version", async () => {

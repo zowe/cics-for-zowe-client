@@ -18,6 +18,6 @@ export interface IExtensionAPI {
     supportedResources: ResourceTypes[];
   },
   events: {
-    onDidInspectResourceEvent: Event<IResourceInspectEvent>;
+    onDidInspectResource: Event<IResourceInspectEvent>;
   };
 }

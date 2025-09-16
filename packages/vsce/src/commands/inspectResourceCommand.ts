@@ -13,10 +13,10 @@ import { commands, ExtensionContext } from "vscode";
 
 import { inspectResourceByName, inspectResource } from "./inspectResourceCommandUtils";
 
-import { InspectResource } from "../events/InspectResourceEvent";
+import { InspectResourceEvent } from "../events/InspectResourceEvent";
 import { IResourceInspectEvent, EventSourceTypes, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
-export const inspectResourceEvent: InspectResource = InspectResource.getInstance();
+export const inspectResourceEvent: InspectResourceEvent = InspectResourceEvent.getInstance();
 
 export function getInspectResourceCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {

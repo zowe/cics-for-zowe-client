@@ -14,8 +14,8 @@ import { EventEmitter, Event } from "vscode";
 import { IResourceInspectEvent } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceEvent } from "./IResourceEvent";
 
-export class InspectResource implements IResourceEvent<IResourceInspectEvent> {
-  private static instance: InspectResource;
+export class InspectResourceEvent implements IResourceEvent<IResourceInspectEvent> {
+  private static instance: InspectResourceEvent;
 
   private eventEmitter: EventEmitter<IResourceInspectEvent>;
   private onEvent: Event<IResourceInspectEvent>;
@@ -26,11 +26,11 @@ export class InspectResource implements IResourceEvent<IResourceInspectEvent> {
   }
 
   // Creating a singleton instance
-  public static getInstance(): InspectResource {
-    if (!InspectResource.instance) {
-      InspectResource.instance = new InspectResource();
+  public static getInstance(): InspectResourceEvent {
+    if (!InspectResourceEvent.instance) {
+      InspectResourceEvent.instance = new InspectResourceEvent();
     }
-    return InspectResource.instance;
+    return InspectResourceEvent.instance;
   }
 
   getEvent(): Event<IResourceInspectEvent> {
