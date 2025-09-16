@@ -1,4 +1,4 @@
-import { EventEmitter, Event } from "vscode";
+import { Event } from "vscode";
 
 export declare interface IResourceEvent<T> {
 
