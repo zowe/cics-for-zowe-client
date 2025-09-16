@@ -1,4 +1,4 @@
-# IBM® CICS® Plug-in for Zowe CLI
+# Zowe&reg; CLI Plug-in for IBM&reg; CICS&reg; Transaction Server
 
 [![codecov](https://codecov.io/gh/zowe/zowe-cli-cics-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli-cics-plugin)
 
