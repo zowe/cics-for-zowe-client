@@ -10,7 +10,7 @@
  */
 
 import { IExtensionAPI, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { InspectResourceEvent } from "../events/InspectResourceEvent";
+import { InspectResource } from "../events/InspectResourceEvent";
 
 class SCICSExtenderApiConfig {
   private static _instance: SCICSExtenderApiConfig;
@@ -25,7 +25,7 @@ class SCICSExtenderApiConfig {
         supportedResources: SupportedResourceTypes,
       },
       events: {
-        onDidInspectResourceEvent: InspectResourceEvent.getInstance().getOnDidInspectResourceEvent()
+        onDidInspectResourceEvent: InspectResource.getInstance().getEvent()
       }
     };
   }

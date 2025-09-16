@@ -11,40 +11,33 @@
 
 import { EventEmitter, Event } from "vscode";
 
-import { EventSourceTypes, IResourceInspectEvent, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
-import { IResource } from "../doc/resources/IResource";
+import { IResourceInspectEvent } from "@zowe/cics-for-zowe-explorer-api";
+import { IResourceEvent } from "./IResourceEvent";
 
-export class InspectResourceEvent {
-  private inspectResourceEventEmitter:  EventEmitter<IResourceInspectEvent>;
-  private onDidInspectResourceEvent: Event<IResourceInspectEvent>;
+export class InspectResource implements IResourceEvent<IResourceInspectEvent> {
+  private static instance: InspectResource;
 
-  private static instance: InspectResourceEvent;
+  private eventEmitter: EventEmitter<IResourceInspectEvent>;
+  private onEvent: Event<IResourceInspectEvent>;
 
   private constructor() {
-    this.inspectResourceEventEmitter = new EventEmitter<IResourceInspectEvent>();
-    this.onDidInspectResourceEvent = this.inspectResourceEventEmitter.event;
+    this.eventEmitter = new EventEmitter<IResourceInspectEvent>();
+    this.onEvent = this.eventEmitter.event;
   }
 
   // Creating a singleton instance
-  public static getInstance(): InspectResourceEvent {
-    if (!InspectResourceEvent.instance) {
-      InspectResourceEvent.instance = new InspectResourceEvent();
+  public static getInstance(): InspectResource {
+    if (!InspectResource.instance) {
+      InspectResource.instance = new InspectResource();
     }
-    return InspectResourceEvent.instance;
+    return InspectResource.instance;
   }
 
-  public getOnDidInspectResourceEvent(): Event<IResourceInspectEvent> {
-    return this.onDidInspectResourceEvent;
+  getEvent(): Event<IResourceInspectEvent> {
+    return this.onEvent;
   }
 
   public fire(event: IResourceInspectEvent) {
-    this.inspectResourceEventEmitter.fire(event);
-  }
-
-  public fireByNode(node: CICSResourceContainerNode<IResource>) {
-    const targetNodeMeta = node.getContainedResource().meta;
-    this.fire({ resourceType:  targetNodeMeta.resourceName as keyof typeof ResourceTypes,
-    source: EventSourceTypes.TREE} as IResourceInspectEvent);
+    this.eventEmitter.fire(event);
   }
 }
