@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
-	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" cachetoken="E178318897F3968A" />
-	<records>
-		<cicsjvmendpoint _keydata="84858681A493A3C8A3A397C5958497968995A340404040404040404040404040404040404040404040404040" enablestatus="ENABLED" eyu_cicsname="IYCWENW2" eyu_cicsrel="E740" eyu_reserved="0" host="*" jvmendpoint="defaultHttpEndpoint" jvmserver="EYUCMCIJ" port="28963" secport="N/A" type="com.ibm.ws.http" />
-	</records>
-</response>
