@@ -13,7 +13,6 @@ import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { inspectResourceByNode } from "./inspectResourceCommandUtils";
-import { InspectResource } from "../events/InspectResourceEvent";
 import { ResourceTypes } from "@zowe/cics-for-zowe-explorer-api/lib/resources/ResourceTypes";
 import { EventSourceTypes } from "@zowe/cics-for-zowe-explorer-api/lib/enums/EventSourceTypes";
 import { IResourceInspectEvent } from "@zowe/cics-for-zowe-explorer-api/lib/interfaces/IResourceInspectEvent";
