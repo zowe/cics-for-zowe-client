@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added an event to the Resource Inspector command so the subscribers can be notified os this. [#419](https://github.com/zowe/cics-for-zowe-client/pull/419)
+- Enhancement: Added an event to the Resource Inspector command so the subscribers can be notified of this. [#419](https://github.com/zowe/cics-for-zowe-client/pull/419)
 
 ## `3.12.0`
 
