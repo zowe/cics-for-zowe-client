@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added and event to the Resource Inspector command so the subscribers can be notified os this. [#419](https://github.com/zowe/cics-for-zowe-client/pull/419)
+
 ## `3.12.0`
 
 - Validate input using maximum resource length when inspecting resource. [#402](https://github.com/zowe/cics-for-zowe-client/issues/402)

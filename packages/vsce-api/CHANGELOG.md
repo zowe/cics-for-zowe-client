@@ -2,6 +2,10 @@
 
 All notable changes to the IBM CICS for Zowe Explorer API will be documented in this file.
 
+## Recent Changes
+
+- Added support for returning resource events
+
 ## `6.11.0`
 
 - Added new resource type - JVM server
