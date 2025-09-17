@@ -94,7 +94,8 @@ export class ResourceContainer<T extends IResource> {
   }
 
   resetNumberToFetch(numOfResourceTypesSharingPage: number = 1) {
-    this.setNumberToFetch(Math.ceil(PersistentStorage.getNumberOfResourcesToFetch() / numOfResourceTypesSharingPage));
+    const numberOfResourceTypes = numOfResourceTypesSharingPage && numOfResourceTypesSharingPage > 0 ? numOfResourceTypesSharingPage : 1;
+    this.setNumberToFetch(Math.ceil(PersistentStorage.getNumberOfResourcesToFetch() / numberOfResourceTypes));
   }
 
   /**

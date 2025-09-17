@@ -250,7 +250,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   setNumberToFetch(num: number) {
-    this.getChildResource().resources.setNumberToFetch(Math.ceil(num / this.calculateNumberOfResourceContainersToFetch()));
+    const numberOfResourceTypes = this.calculateNumberOfResourceContainersToFetch();
+    this.getChildResource().resources.setNumberToFetch(Math.ceil(num / (numberOfResourceTypes > 0 ? numberOfResourceTypes : 1)));
   }
 
   getSessionNode() {
