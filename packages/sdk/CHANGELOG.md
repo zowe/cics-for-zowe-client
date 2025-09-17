@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Added CICS Remote File resource constant
+
 ## `6.12.0`
 
 - Added headers as optional parameter to getResource and getCache methods.

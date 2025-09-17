@@ -92,7 +92,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         if (!parentNode.getChildResource().resources.getFetchedAll()) {
           numToFetch -= 1;
         }
-        parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
+        parentNode.setNumberToFetch(numToFetch);
 
         tree._onDidChangeTreeData.fire(parentNode);
       }

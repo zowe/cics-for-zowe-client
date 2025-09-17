@@ -18,6 +18,7 @@ export * from "./ILocalFile";
 export * from "./IPipeline";
 export * from "./IProgram";
 export * from "./IRegion";
+export * from "./IRemoteFile";
 export * from "./IResource";
 export * from "./ITCPIP";
 export * from "./ITask";
