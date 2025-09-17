@@ -26,8 +26,6 @@ export function getInspectResourceCommand(context: ExtensionContext) {
       inspectResourceEvent.fire({ resourceType: resourceType as keyof typeof ResourceTypes, source: EventSourceTypes.OTHER} as IResourceInspectEvent);
     } else {
       await inspectResource(context);
-
-      inspectResourceEvent.fire({ resourceType: resourceType as keyof typeof ResourceTypes, source: EventSourceTypes.PALETTE} as IResourceInspectEvent);
     }
   });
 }

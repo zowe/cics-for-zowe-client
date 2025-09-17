@@ -12,6 +12,7 @@
 import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { IResource } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
+import { InspectResourceEvent } from "../events/InspectResourceEvent";
 import { inspectResourceByNode } from "./inspectResourceCommandUtils";
 import { EventSourceTypes, ResourceTypes, IResourceInspectEvent } from "@zowe/cics-for-zowe-explorer-api";
 
@@ -44,8 +45,7 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
     }
     await inspectResourceByNode(context, targetNode);
 
-    const targetNodeMeta = node.getContainedResource().meta;
-    this.fire({ resourceType:  targetNodeMeta.resourceName as keyof typeof ResourceTypes,
+    InspectResourceEvent.getInstance().fire({ resourceType:  targetNode.getContainedResource().meta.resourceName as keyof typeof ResourceTypes,
       source: EventSourceTypes.TREE} as IResourceInspectEvent);
   });
 }

@@ -9,7 +9,7 @@
  *
  */
 
-import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { EventSourceTypes, IResourceInspectEvent, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
@@ -25,6 +25,7 @@ import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 import { SessionHandler } from "../resources/SessionHandler";
 import { ProfileManagement } from "../utils/profileManagement";
+import { InspectResourceEvent } from "../events/InspectResourceEvent";
 
 async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler, node: CICSResourceContainerNode<IResource>) {
   // Will only have one resource
@@ -164,6 +165,8 @@ export async function inspectResource(context: ExtensionContext) {
         if (resourcesHandler) {
           await showInspectResource(context, resourcesHandler, null);
         }
+
+        InspectResourceEvent.getInstance().fire({ resourceType: resourceType.resourceName as keyof typeof ResourceTypes, source: EventSourceTypes.PALETTE} as IResourceInspectEvent);
       }
     }
   }
