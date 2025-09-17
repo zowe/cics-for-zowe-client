@@ -164,9 +164,9 @@ export async function inspectResource(context: ExtensionContext) {
 
         if (resourcesHandler) {
           await showInspectResource(context, resourcesHandler, null);
-        }
 
-        InspectResourceEvent.getInstance().fire({ resourceType: resourceType.resourceName as keyof typeof ResourceTypes, source: EventSourceTypes.PALETTE} as IResourceInspectEvent);
+          InspectResourceEvent.getInstance().fire({ resourceType: resourceType.resourceName as keyof typeof ResourceTypes, source: EventSourceTypes.PALETTE} as IResourceInspectEvent);
+        }
       }
     }
   }
