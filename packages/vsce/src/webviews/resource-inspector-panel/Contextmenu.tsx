@@ -7,9 +7,11 @@ import "../css/style.css";
 const Contextmenu = ({
   resourceActions,
   refreshIconPath,
+  resourceHumanReadableName,
 }: {
   resourceActions: { id: string; name: string; iconPath?: { light: Uri; dark: Uri } }[];
   refreshIconPath: { light: string; dark: string };
+  resourceHumanReadableName: string;
 }) => {
   const [x, setX] = React.useState(0);
   const [y, setY] = React.useState(0);
@@ -115,6 +117,9 @@ const Contextmenu = ({
     vscode.postVscMessage({ command: "refresh" });
   };
 
+  const allowedNames = ["Transaction", "Program", "Local File"];
+  const showThreeDots = allowedNames.includes(resourceHumanReadableName);
+
   return (
     <div className="dropdown-container">
       <img
@@ -128,9 +133,11 @@ const Contextmenu = ({
           }
         }}
       />
-      <div id="three-dots" className="three-dots" onClick={handleThreeDotsClick} ref={threeDotsRef} tabIndex={0} onKeyDown={handleKeyDown}>
-        ...
-      </div>
+      {showThreeDots && (
+        <div id="three-dots" className="three-dots" onClick={handleThreeDotsClick} ref={threeDotsRef} tabIndex={0} onKeyDown={handleKeyDown}>
+          ...
+        </div>
+      )}
       {show && (
         <VscodeContextMenu
           data={resourceActions.map(({ id, name }) => ({ label: name, value: id }))}
