@@ -1,6 +1,6 @@
-# Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server API
+# Zowe Explorer for IBM CICS Transaction Server API
 
-This is an API package that works alongside the **Zowe Explorer for IBM CICS Transaction Server** VS Code extension to allow extenders to import and access interfaces relevent to extending the CICS extension.
+This is an API package that works alongside the **Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server** VS Code extension to allow extenders to import and access interfaces relevent to extending the CICS extension.
 
 ## Available exports
 
