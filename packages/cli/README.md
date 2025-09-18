@@ -1,8 +1,8 @@
-# Zowe&reg; CLI Plug-in for IBM&reg; CICS&reg; Transaction Server
+# Zowe CLI Plug-in for IBM CICS Transaction Server
 
 [![codecov](https://codecov.io/gh/zowe/zowe-cli-cics-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli-cics-plugin)
 
-The Zowe CLI Plug-in for IBM CICS Transaction Server lets you extend Zowe CLI to interact with IBM CICS programs and transactions.
+The Zowe&reg; CLI Plug-in for IBM&reg; CICS&reg; Transaction Server (previously named IBM CICS Plug-in for Zowe CLI) lets you extend Zowe CLI to interact with IBM CICS programs and transactions.
 
 - [How the plug-in works](#how-the-plug-in-works)
 - [Software requirements](#software-requirements)
