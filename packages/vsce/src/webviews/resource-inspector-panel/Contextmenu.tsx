@@ -7,11 +7,9 @@ import "../css/style.css";
 const Contextmenu = ({
   resourceActions,
   refreshIconPath,
-  resourceHumanReadableName,
 }: {
   resourceActions: { id: string; name: string; iconPath?: { light: Uri; dark: Uri } }[];
   refreshIconPath: { light: string; dark: string };
-  resourceHumanReadableName: string;
 }) => {
   const [x, setX] = React.useState(0);
   const [y, setY] = React.useState(0);

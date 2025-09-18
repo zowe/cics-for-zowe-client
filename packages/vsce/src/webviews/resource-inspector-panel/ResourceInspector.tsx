@@ -84,13 +84,7 @@ const ResourceInspector = () => {
                 // @ts-ignore
                 resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
             </div>
-            {resourceInfo && (
-              <Contextmenu
-                resourceActions={resourceActions}
-                refreshIconPath={resourceInfo?.refreshIconPath}
-                resourceHumanReadableName={resourceInfo?.humanReadableNameSingular}
-              />
-            )}
+            {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>
         </thead>
         <tbody className="padding-left-10 padding-top-20">
