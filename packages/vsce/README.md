@@ -5,7 +5,7 @@
 [![open issues](https://img.shields.io/github/issues/zowe/cics-for-zowe-client)](https://github.com/zowe/cics-for-zowe-client/issues)
 [![codecov](https://codecov.io/gh/zowe/cics-for-zowe-client/branch/main/graph/badge.svg)](https://app.codecov.io/gh/zowe/cics-for-zowe-client/branch/main/)
 
-The Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server extension (previously named IBM CICS for Zowe Explorer) adds additional functionality to the popular VS Code extension, [Zowe Explorer](https://github.com/zowe/vscode-extension-for-zowe). This extension allows interactions with CICS regions and resources, and the ability to run commands against them.
+The Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server extension (formerly IBM CICS for Zowe Explorer) adds additional functionality to the popular VS Code extension, [Zowe Explorer](https://github.com/zowe/vscode-extension-for-zowe). This extension allows interactions with CICS regions and resources, and the ability to run commands against them.
 
 ## Contents
 
