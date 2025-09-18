@@ -17,16 +17,16 @@ export class CICSLogger {
   private static logOutputChannel: LogOutputChannel;
 
   public static initialize() {
-    CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("Zowe Explorer for IBM CICS Transaction Server"), { log: true });
+    CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("Zowe Explorer for IBM CICS TS"), { log: true });
 
-    CICSLogger.info(l10n.t("Initialized logger for Zowe Explorer for IBM CICS Transaction Server"));
+    CICSLogger.info(l10n.t("Initialized logger for Zowe Explorer for IBM CICS TS"));
 
     const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON;
 
     CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
     CICSLogger.info(
       l10n.t({
-        message: "Zowe Explorer for IBM CICS Transaction Server log level: {0}",
+        message: "Zowe Explorer for IBM CICS TS log level: {0}",
         args: [LogLevel[this.logOutputChannel.logLevel]],
         comment: ["Log level"],
       })
