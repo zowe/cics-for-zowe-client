@@ -116,9 +116,8 @@ const Contextmenu = ({
   const handleRefresh = () => {
     vscode.postVscMessage({ command: "refresh" });
   };
-
-  const allowedNames = ["Transaction", "Program", "Local File"];
-  const showThreeDots = allowedNames.includes(resourceHumanReadableName);
+  
+  const showThreeDots = resourceActions.length > 0;
 
   return (
     <div className="dropdown-container">
