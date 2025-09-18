@@ -114,6 +114,8 @@ const Contextmenu = ({
   const handleRefresh = () => {
     vscode.postVscMessage({ command: "refresh" });
   };
+  
+  const showThreeDots = resourceActions.length > 0;
 
   return (
     <div className="dropdown-container">
@@ -128,9 +130,11 @@ const Contextmenu = ({
           }
         }}
       />
-      <div id="three-dots" className="three-dots" onClick={handleThreeDotsClick} ref={threeDotsRef} tabIndex={0} onKeyDown={handleKeyDown}>
-        ...
-      </div>
+      {showThreeDots && (
+        <div id="three-dots" className="three-dots" onClick={handleThreeDotsClick} ref={threeDotsRef} tabIndex={0} onKeyDown={handleKeyDown}>
+          ...
+        </div>
+      )}
       {show && (
         <VscodeContextMenu
           data={resourceActions.map(({ id, name }) => ({ label: name, value: id }))}
