@@ -453,7 +453,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection && config.zowe.cics.resourceInspector",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.inspectTreeResource",
           "group": "1.CICSResourceNode.inquire"
         },
@@ -518,7 +518,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS*/ && config.zowe.cics.showAttributes",
           "command": "cics-extension-for-zowe.showResourceAttributes",
           "group": "1.CICSResourceNode.inquire"
         },
