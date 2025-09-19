@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJvmEndpoint/CICSEX61/IYCWENW2?CRITERIA=(JVMSERVER%3D'EYUCMCIJ')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+        "url": "/CICSSystemManagement/CICSJvmEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
         "status": 200,
