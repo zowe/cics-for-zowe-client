@@ -3,7 +3,7 @@
 ## Requirements
 
 - VS Code
-- Installed Zowe Explorer for IBM CICS Transaction Server Extension
+- Installed Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server Extension
 
 ## Uninstallation
 

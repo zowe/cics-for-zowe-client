@@ -1,5 +1,5 @@
 # Contribution Guidelines
-This document is intended to be a living summary of conventions & best practices for development within IBM® CICS® Plug-in for Zowe CLI.
+This document is intended to be a living summary of conventions & best practices for development within Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server and Zowe CLI Plug-in for IBM CICS Transaction Server.
 
 ## Changelog Update Guidelines
 
