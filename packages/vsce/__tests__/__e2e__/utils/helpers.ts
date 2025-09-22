@@ -10,7 +10,7 @@ export const constants = {
   LIBRARY_1_NAME: "MYLIB1",
   LIBRARY_DS_1_NAME: "MYLIBDS1",
   JVM_SERVER_1_NAME: "MYJVM1",
-  JVM_ENDPOINT_1_NAME: "MYJVMEND1",
+  JVM_ENDPOINT_1_NAME: "MYJVMENDPOINT1",
 };
 
 export const getTree = (page: Page, exactText: string) => {

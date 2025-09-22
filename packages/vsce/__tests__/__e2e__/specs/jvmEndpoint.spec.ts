@@ -20,6 +20,7 @@ test.describe("JVM Endpoint tests", () => {
     await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME);
 
     await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText("MYJVMENDPOINT1");
 
   });
 
