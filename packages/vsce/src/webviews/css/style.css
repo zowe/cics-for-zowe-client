@@ -251,22 +251,20 @@ ul.breadcrumb {
   text-overflow: ellipsis;
 }
 ul.breadcrumb li {
-  display: inline;
+  display: inline-block;
   font-size: 13px;
   flex-shrink: 0;  /* each li won't squish too much */
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   color: var(--vscode-breadcrumb-foreground);
+  vertical-align: middle;
 }
-ul.breadcrumb li+li:before {
-  content: "";
+/* Styling for the chevron icon */
+.chevron-icon {
+  margin: 0 4px; /* Reduced horizontal margin from 8px to 4px */
+  vertical-align: text-bottom; /* Changed from middle to text-bottom for better alignment */
   display: inline-block;
-  background: url("../images/icons/chevron_outline.svg") no-repeat center;
-  background-size: 13px;
-  width: 10px;
-  height: 10px;
-  margin: 0 8px;
 }
 ul.breadcrumb li a {
   color: var(--vscode-foreground);;

@@ -44,16 +44,32 @@ const getIconByType = (type: string, resourceTypeIcons?: ResourceTypeIcons) => {
   return <img src={iconSrc} alt={type} width={16} height={16} />;
 };
 
+// Get chevron icon based on theme
+const getChevronIcon = (chevronIconPath?: { light: string; dark: string }) => {
+  if (!chevronIconPath) {
+    return null;
+  }
+  
+  const isDarkTheme = document.body.classList.contains('vscode-dark') ||
+                      document.body.classList.contains('vscode-high-contrast');
+
+  const iconSrc = isDarkTheme ? chevronIconPath.dark : chevronIconPath.light;
+  // Using CSS class instead of inline styles
+  return <img src={iconSrc} alt="chevron" className="chevron-icon" />;
+};
+
 const Breadcrumb = ({
   profileHandler,
   resourceName,
   humanReadableNameSingular,
   resourceTypeIcons,
+  chevronIconPath,
 }: {
   profileHandler: { key: string; value: string }[];
   resourceName?: string;
   humanReadableNameSingular?: string;
   resourceTypeIcons?: ResourceTypeIcons;
+  chevronIconPath?: { light: string; dark: string };
 }) => {
   const items = [
     ...(profileHandler?.filter((p) => p.value !== null && p.value != "VSCPLEX") ?? []),
@@ -73,6 +89,8 @@ const Breadcrumb = ({
         {items.map((profile, idx) => {
           // Check if this is the last item (resource item)
           const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
+          // Create chevron element if this isn't the first item
+          const chevron = idx > 0 ? getChevronIcon(chevronIconPath) : null;
           
           if (isResourceItem) {
             // Extract the type from the value (text inside parentheses)
@@ -85,16 +103,24 @@ const Breadcrumb = ({
             const resourceType = match ? ` (${match[1]})` : '';
             
             return (
-              <li key={profile.key}>
-                <span className="resource-icon">
-                  {icon}
-                </span>
-                <span className="white-color">{resourceName}</span>
-                <span>{resourceType}</span>
-              </li>
+              <React.Fragment key={profile.key}>
+                {idx > 0 && <li className="chevron-item">{chevron}</li>}
+                <li>
+                  <span className="resource-icon">
+                    {icon}
+                  </span>
+                  <span className="white-color">{resourceName}</span>
+                  <span>{resourceType}</span>
+                </li>
+              </React.Fragment>
             );
           } else {
-            return <li key={profile.key}>{profile.value}</li>;
+            return (
+              <React.Fragment key={profile.key}>
+                {idx > 0 && <li>{chevron}</li>}
+                <li>{profile.value}</li>
+              </React.Fragment>
+            );
           }
         })}
       </ul>
