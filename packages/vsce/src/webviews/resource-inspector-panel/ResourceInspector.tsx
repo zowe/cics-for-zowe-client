@@ -26,6 +26,7 @@ const ResourceInspector = () => {
     name: string;
     refreshIconPath: { light: string; dark: string };
     resourceTypeIcons?: { [key: string]: { light: string; dark: string } }; // Add resourceTypeIcons
+    chevronIconPath?: { light: string; dark: string }; // Add chevronIconPath
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -99,6 +100,7 @@ const ResourceInspector = () => {
             resourceName={resourceInfo?.name}
             humanReadableNameSingular={resourceInfo?.humanReadableNameSingular}
             resourceTypeIcons={resourceInfo?.resourceTypeIcons}
+            chevronIconPath={resourceInfo?.chevronIconPath}
             />
             {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>

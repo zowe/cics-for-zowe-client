@@ -195,6 +195,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
           dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
         },
+        chevronIconPath: {
+          light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").light)).toString(),
+          dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").dark)).toString(),
+        },
         resourceTypeIcons: resourceTypeIcons, // Add resource type icons
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
