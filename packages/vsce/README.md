@@ -212,6 +212,14 @@ View resource information without using the CICS tree. Access the command palett
 <img src="/packages/vsce/docs/images/resource-inspector.gif" alt="CICS Resource Inspector" width="800px"/>
 </p>
 
+### Show attributes
+
+Right-click and use the pop-up menu against a CICS region to list the available actions that can be performed. Currently, the support is limited to ONLY CICS region, `Show Attributes` opens a viewer listing all attributes and their values. The attributes page has a filter box at the top that lets you search for attributes matching the criteria.
+
+<p align="center">
+<img src="/packages/vsce/docs/images/show-attributes.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
+</p>
+
 ### Enable and disable
 
 Right-click against a program, local transaction, or local file to open the pop-up menu and select `Disable [CICS resource]` to disable the resource. When a resource is already disabled the first option becomes `Enable [CICS resource]` to allow its enablement state to be toggled. A disabled resource is identified by a `(Disabled)` label next to its name.
