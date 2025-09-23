@@ -13,15 +13,93 @@ import * as React from "react";
 
 import "../css/style.css";
 
-const Breadcrumb = ({ profileHandler }: { profileHandler: { key: string; value: string }[] }) => {
+/*Interface for resource type icons
+Keys are strings (representing resource types like "program", "transaction")
+Values are objects with "light" and "dark" string properties (the URIs for each theme)*/
+interface ResourceTypeIcons {
+  [key: string]: {
+    light: string;
+    dark: string;
+  };
+}
+
+
+// Get icon based on resource type using the provided icon paths
+const getIconByType = (type: string, resourceTypeIcons?: ResourceTypeIcons) => {
+  if (!resourceTypeIcons) {
+    return null;
+  }
+  const iconType = type.toLowerCase();
+  let iconPath = resourceTypeIcons[iconType];
+  console.log(iconType);
+  
+  //if icon is not found we can provide some default one
+  if (!iconPath) {
+    iconPath = resourceTypeIcons.program;
+  }
+  const isDarkTheme = document.body.classList.contains('vscode-dark') ||
+                      document.body.classList.contains('vscode-high-contrast');
+
+  const iconSrc = isDarkTheme ? iconPath.dark : iconPath.light;
+  return <img src={iconSrc} alt={type} width={16} height={16} />;
+};
+
+const Breadcrumb = ({
+  profileHandler,
+  resourceName,
+  humanReadableNameSingular,
+  resourceTypeIcons,
+}: {
+  profileHandler: { key: string; value: string }[];
+  resourceName?: string;
+  humanReadableNameSingular?: string;
+  resourceTypeIcons?: ResourceTypeIcons;
+}) => {
+  const items = [
+    ...(profileHandler?.filter((p) => p.value !== null && p.value != "VSCPLEX") ?? []),
+    resourceName
+      ? {
+          key: "resourceName",
+          value: `${resourceName}${
+            humanReadableNameSingular ? ` (${humanReadableNameSingular})` : ""
+          }`,
+        }
+      : null,
+  ].filter(Boolean) as { key: string; value: string }[];
+
   return (
     <div id="breadcrumb-div" className="breadcrumb-div">
       <ul className="breadcrumb">
-        {profileHandler &&
-          profileHandler.filter((profileHandler) => profileHandler.value !== null).map((profile) => <li key={profile.key}>{profile.value}</li>)}
+        {items.map((profile, idx) => {
+          // Check if this is the last item (resource item)
+          const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
+          
+          if (isResourceItem) {
+            // Extract the type from the value (text inside parentheses)
+            const match = profile.value.match(/\(([^)]+)\)/);
+            const type = match ? match[1] : "program"; // Default to program if no type found
+            const icon = getIconByType(type, resourceTypeIcons);
+            
+            // Split the profile value into the main part and the part in parentheses
+            const resourceName = profile.value.split(' (')[0];
+            const resourceType = match ? ` (${match[1]})` : '';
+            
+            return (
+              <li key={profile.key}>
+                <span className="resource-icon">
+                  {icon}
+                </span>
+                <span className="white-color">{resourceName}</span>
+                <span>{resourceType}</span>
+              </li>
+            );
+          } else {
+            return <li key={profile.key}>{profile.value}</li>;
+          }
+        })}
       </ul>
     </div>
   );
 };
 
-export default Breadcrumb;
+export default Breadcrumb
