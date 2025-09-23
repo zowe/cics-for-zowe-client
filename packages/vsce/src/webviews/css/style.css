@@ -9,10 +9,10 @@
 .table-header1 {
   position: fixed;
   top: 1.75rem;
-  padding-left: 0.625rem;
+  height: 32px;
+  padding: 0px 12px;
   left: 2.25rem;
   right: 2.25rem;
-  max-width: 74.375rem;
   z-index: 1;
 }
 
@@ -37,6 +37,14 @@
 
 .header-cell-1 {
   vertical-align: middle;
+  display: flex;
+  width: 100% !important;
+  max-width: 73.75rem !important;
+  height: 16px;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding:8px 0px !important;
 }
 
 .thead-2{
@@ -45,7 +53,9 @@
 
 .th-2 {
   width: 100% !important;
-  padding-left: 1.063rem !important;
+  padding-left: 12px !important;
+  height: 16px;
+  color: var(--vscode-breadcrumb-foreground) !important; 
 }
 
 .th-3 {
@@ -55,7 +65,9 @@
 
 .div-display-1{
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: middle !important;
+  color: var(--vscode-breadcrumb-foreground);
+  font-weight: normal;
 }
 
 .div-display-2{
@@ -77,23 +89,45 @@
 }
 
 .padding-left-27{
-  padding-left: 1.688rem !important;
+  padding-left: 20px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
 }
 
 .padding-right-10{
   padding-right: 0.625rem;
 }
 .padding-right-75{
-  padding-right: 4.688rem;
+ padding-left: 20px !important; /* Match the padding-left-27 for consistency */
 }
 
 .search-style{
   width: 12.5rem;
-  float: right;
-  margin-bottom: 0.313rem;
-  border: none;
   max-width: 40%;
+  border: none;
+  height: 24px;
+  position: absolute;
+  right: 0;
+  top: 4px;
+  
+  /* remove float and margin hacks */
+  float: none;
+  margin: 0;
+  
+  /* optional: center textfield nicely */
+  display: flex;
+  align-items: center;
 }
+
+
+.td {
+  padding: 8px;
+  vertical-align: middle;
+  white-space: nowrap;  /* prevents wrapping, so scrolling works */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 .width-30{
   width: 30%;
@@ -208,16 +242,31 @@ ul.breadcrumb {
   margin-top: 0rem;
   margin-bottom: 0rem;
   padding-left: 0rem;
+    /* new additions */
+  display: flex; 
+  flex: 1;          /* take remaining space */
+  min-width: 0;     /* required for ellipsis */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 ul.breadcrumb li {
   display: inline;
-  font-size: 0.688rem;
+  font-size: 13px;
+  flex-shrink: 0;  /* each li won't squish too much */
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--vscode-breadcrumb-foreground);
 }
 ul.breadcrumb li+li:before {
-  color: var(--vscode-foreground);
-  content: "   >   ";
-  padding-left: 0.625rem;
-  padding-right: 0.625rem;
+  content: "";
+  display: inline-block;
+  background: url("../images/icons/chevron_outline.svg") no-repeat center;
+  background-size: 13px;
+  width: 10px;
+  height: 10px;
+  margin: 0 8px;
 }
 ul.breadcrumb li a {
   color: var(--vscode-foreground);;
@@ -229,20 +278,34 @@ ul.breadcrumb li a:hover {
   text-decoration: underline;
 }
 .breadcrumb-div {
-  position: fixed;
-  top: 0;
-  padding-left: 1.25rem;
-  padding-top: 0.313rem;
-  height: 1.438rem;
-  background-color: var(--vscode-panel-background);
-  max-width: 74.375rem;
-  width: 73.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 0 0;
 }
 
 .dropdown-container {
   position: relative;
   float: inline-end;
   display: inline-flex;
+}
+
+.td-class{
+  padding-left : 12px !important;
+  padding-top : 4px !important;
+  padding-bottom : 0px !important;
+}
+
+.tr-class{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 52px !important;
+  width: 100%;              /* take full width of parent */
+  max-width: 1112px;        /* cap at 1112px if you want */
+  box-sizing: border-box;   /* ensures padding doesn't overflow */
+  padding-bottom: 0px !important;
+  padding-top: 34px !important;
 }
 
 .three-dots {
@@ -254,8 +317,9 @@ ul.breadcrumb li a:hover {
 }
 
 .refresh-icon{
-  padding-right: 8px;
-  padding-top: 3px;
+  padding-right: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   cursor: pointer;
 }
 
@@ -269,6 +333,56 @@ body.vscode-dark vscode-context-menu {
   --vscode-menu-foreground: #000000;
 }
 
+.highlight-key {
+  color: var(--vscode-breadcrumb-foreground);
+}
+.highlight-value {
+  color: var(--vscode-badge-foreground) !important;
+}
 
+.th-header-single {
+  text-align: left;
+  padding-left:12px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  box-sizing: border-box;
+}
 
+/* Flex layout for label + search */
+.header-container {
+  display: flex;
+  align-items: center;
+  height: 16px; /* Keep the height at 16px */
+  padding: 8px 0px; /* Keep the padding */
+  width: 100%;
+  box-sizing: content-box; /* Change to content-box to not include padding in height */
+  position: relative; /* For absolute positioning of search field */
+  min-height: 16px; /* Ensure minimum height */
+}
 
+/* Label text */
+.header-label {
+  font-weight: normal;
+  color: var(--vscode-breadcrumb-foreground);
+  flex: 1;
+  width: 30%; /* Match the width-30 class */
+  padding-left: 0; /* Reset padding */
+}
+
+.header-label-value {
+  font-weight: normal;
+  color: var(--vscode-breadcrumb-foreground);
+  padding-left: 10px; /* Reduce padding to shift left */
+  flex: 1;
+  width: 70%; /* Match the width-70 class */
+}
+
+.resource-icon{
+  margin-right: 3px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.white-color{
+  color: #ffffff
+}
