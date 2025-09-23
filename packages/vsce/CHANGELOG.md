@@ -5,7 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Removal of RI Actions component for unsupported Resources [#423](https://github.com/zowe/cics-for-zowe-client/issues/423)
-- Enhancement: Added JVM Endpoint to the JVM Server node [#410](https://github.com/zowe/cics-for-zowe-client/issues/413)
+- Enhancement: Added JVM Endpoint to the JVM Server node [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
 
 ## `3.12.0`
 
