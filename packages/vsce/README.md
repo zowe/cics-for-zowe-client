@@ -214,7 +214,9 @@ View resource information without using the CICS tree. Access the command palett
 
 ### Show attributes
 
-Right-click and use the pop-up menu against a program to list the available actions that can be performed. For every resource, including a CICS region, `Show Attributes` opens a viewer listing all attributes and their values. The attributes page has a filter box at the top that lets you search for attributes matching the criteria.
+To show the attributes for a CICS resource, right-click on the desired resource and select the `Inspect Resource` option. The `CICS Resource Inspector` opens, listing all attributes and their values. The table of attributes has a search box that lets you search for specific attributes.
+
+To show the attributes for a CICS region, right-click on the desired region and select the `Show Attributes` option. An attribute page opens, listing all attributes and their values. The attributes page has a filter box at the top that lets you search for attributes matching the criteria.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/show-attributes.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
