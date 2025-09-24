@@ -1,15 +1,15 @@
-# IBM CICS for Zowe Explorer
+# Zowe Explorer for IBM CICS Transaction Server
 
 [![version](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)](https://img.shields.io/visual-studio-marketplace/v/zowe.cics-extension-for-zowe.svg)
 [![slack](https://img.shields.io/badge/chat-on%20Slack-blue)](https://openmainframeproject.slack.com/archives/CUVE37Z5F)
 [![open issues](https://img.shields.io/github/issues/zowe/cics-for-zowe-client)](https://github.com/zowe/cics-for-zowe-client/issues)
 [![codecov](https://codecov.io/gh/zowe/cics-for-zowe-client/branch/main/graph/badge.svg)](https://app.codecov.io/gh/zowe/cics-for-zowe-client/branch/main/)
 
-This CICS Extension for Zowe Explorer adds additional functionality to the popular VS Code extension, [Zowe Explorer](https://github.com/zowe/vscode-extension-for-zowe). This extension allows interactions with CICS regions and resources, and the ability to run commands against them.
+The Zowe&reg; Explorer for IBM&reg; CICS&reg; Transaction Server extension (formerly IBM CICS for Zowe Explorer) adds additional functionality to the popular VS Code extension, [Zowe Explorer](https://github.com/zowe/vscode-extension-for-zowe). This extension allows interactions with CICS regions and resources, and the ability to run commands against them.
 
 ## Contents
 
-- [IBM CICS for Zowe Explorer](#ibm-cics-for-zowe-explorer)
+- [Zowe Explorer for IBM CICS Transaction Server](#ibm-cics-for-zowe-explorer)
   - [Contents](#contents)
   - [Software requirements](#software-requirements)
   - [Features](#features)
@@ -85,21 +85,21 @@ The following example shows a CICS profile stored in a configuration file. The h
 
 ```jsonc
 {
-    "$schema": "./zowe.schema.json",
-    "profiles": {
-        // this string will be the name of your CICS connection in the tree
-        "cics-connection-name": {
-            "type": "cics",
-            "properties": {
-                // replace the host, port, and protocol with your CMCI connection details
-                "host": "cics.example.com",
-                "port": 1490,
-                "protocol": "https",
-                // reject self-signed server certificates if using https?
-                "rejectUnauthorized": true,
-            }
-        }
-    }
+  "$schema": "./zowe.schema.json",
+  "profiles": {
+    // this string will be the name of your CICS connection in the tree
+    "cics-connection-name": {
+      "type": "cics",
+      "properties": {
+        // replace the host, port, and protocol with your CMCI connection details
+        "host": "cics.example.com",
+        "port": 1490,
+        "protocol": "https",
+        // reject self-signed server certificates if using https?
+        "rejectUnauthorized": true,
+      },
+    },
+  },
 }
 ```
 
@@ -130,7 +130,7 @@ Right-click a CICS profile and select `Manage Profile` to show profile options. 
 
 ### Using CMCI's client allowlist
 
-If your CICS CMCI JVM server is configured with a client allowlist, the User-Agent header included in the CMCI requests must be included in this list. To check the User-Agent header that will be sent on each request, issue the `IBM CICS for Zowe Explorer: Copy User Agent Header` command from the command palette. This will copy the header to your clipboard.
+If your CICS CMCI JVM server is configured with a client allowlist, the User-Agent header included in the CMCI requests must be included in this list. To check the User-Agent header that will be sent on each request, issue the `Zowe Explorer for IBM CICS TS: Copy User Agent Header` command from the command palette. This will copy the header to your clipboard.
 
 The header uses the format:
 
@@ -294,7 +294,7 @@ If the CMCI connection is using a TLS certificate that your PC does not have in 
 
 ### Checking the source of an error
 
-Before filing an issue, check if an error is arising from the IBM CICS for Zowe Explorer extension and not the Zowe Explorer extension by expanding the error message and checking if the `Source` is `IBM CICS for Zowe Explorer (Extension)`.
+Before filing an issue, check if an error is arising from the Zowe Explorer for IBM CICS Transaction Server extension and not the Zowe Explorer extension by expanding the error message and checking if the `Source` is `Zowe Explorer for IBM CICS Transaction Server (Extension)`.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/expand-error-cics.gif" alt="Zowe CICS Explorer NewCopy Program" width="600px"/>
@@ -306,4 +306,4 @@ Error messages arising from the Zowe Explorer extension identify the `Source` as
 
 Before filing an issue, check the [Troubleshooting guide](/packages/vsce/docs/Troubleshooting.md) first to ensure that the issue has not already been addressed.
 
-To file issues, use the [IBM CICS for Zowe Explorer issue list](https://github.com/zowe/cics-for-zowe-client/issues), or chat with use on [Slack](https://openmainframeproject.slack.com/archives/CUVE37Z5F) by indicating the message is for the IBM CICS for Zowe Explorer extension.
+To file issues, use the [Zowe Explorer for IBM CICS Transaction Server issue list](https://github.com/zowe/cics-for-zowe-client/issues), or chat with use on [Slack](https://openmainframeproject.slack.com/archives/CUVE37Z5F) by indicating the message is for the Zowe Explorer for IBM CICS Transaction Server extension.

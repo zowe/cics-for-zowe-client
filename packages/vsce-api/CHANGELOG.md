@@ -1,6 +1,10 @@
 # Changelog
 
-All notable changes to the IBM CICS for Zowe Explorer API will be documented in this file.
+All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
+
+## Recent Changes
+
+- Renamed the VSCE API to `Zowe Explorer for IBM CICS Transaction Server API`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
 
 ## `6.11.0`
 
@@ -17,4 +21,4 @@ All notable changes to the IBM CICS for Zowe Explorer API will be documented in 
 
 ## `6.9.1`
 
-- Initial creation of IBM CICS for Zowe Explorer API
+- Initial creation of Zowe Explorer for IBM CICS Transaction Server API
