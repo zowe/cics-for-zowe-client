@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.13.0`
 
 - Renamed the VSCE to `Zowe Explorer for IBM CICS Transaction Server`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
 - Enhancement: Replaced the Show Attributes option with Inspect Resource in resource context menu, leveraging the updated CICS Resource Inspector [#422](https://github.com/zowe/cics-for-zowe-client/issues/422)
