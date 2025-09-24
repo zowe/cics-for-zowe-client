@@ -96,7 +96,7 @@ Check the current [open issues](https://github.com/zowe/cics-for-zowe-client/iss
 
 To report a bug or request a specific feature, please open a GitHub issue using the [appropriate template](https://github.com/zowe/cics-for-zowe-client/issues/new/choose). Feature requests will be added to our backlog after it receives 10 upvotes from the community.
 
-For more information on how to contribute, see [Contributor Guidance](https://github.com/zowe/cics-for-zowe-client/wiki/Contributor-Guidance).
+For more information on how to contribute, see [Contributor Guidance](CONTRIBUTING.md).
 
 ## Project Structure and Governance
 
