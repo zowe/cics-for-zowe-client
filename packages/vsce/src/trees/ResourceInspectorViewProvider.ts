@@ -148,23 +148,15 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     return this;
   }
-
-  /**
-   * Creates a map of resource type icons with webview-accessible URIs
-   * @returns An object mapping resource types to their icon URIs
-   */
   /**
    * Creates a map of resource type icons with webview-accessible URIs
    * @returns An object mapping resource types to their icon URIs
    */
   private getResourceTypeIcons() {
-    // Helper function to create icon paths
     const createIconPaths = (iconName: string) => ({
       light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).light)).toString(),
       dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).dark)).toString(),
     });
-
-    // Create the resource type icons object with multiple key variations for each type
     const icons = {
       "program": createIconPaths("program"),
       "transaction": createIconPaths("local-transaction"), 
@@ -185,7 +177,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
-    // Get resource type icons using the dedicated function
     const resourceTypeIcons = this.getResourceTypeIcons();
 
     await this.webviewView.webview.postMessage({
@@ -199,7 +190,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").light)).toString(),
           dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").dark)).toString(),
         },
-        resourceTypeIcons: resourceTypeIcons, // Add resource type icons
+        resourceTypeIcons: resourceTypeIcons, 
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
