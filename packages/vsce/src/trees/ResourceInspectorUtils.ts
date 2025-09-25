@@ -40,7 +40,6 @@ export async function executeAction(
       "Resource Inspector Node",
       {
         parentNode: null as any,
-        session,
         profile,
         cicsplexName,
         regionName,

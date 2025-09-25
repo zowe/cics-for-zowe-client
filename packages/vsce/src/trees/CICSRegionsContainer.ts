@@ -66,9 +66,8 @@ export class CICSRegionsContainer extends TreeItem {
   public async loadRegionsInCICSGroup(tree: CICSTree) {
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
-    const session = parentPlex.getParent().getSession();
     const regionsObtained = await runGetResource({
-      session: session,
+      profileName: plexProfile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,

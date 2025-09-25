@@ -1,5 +1,6 @@
-import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { JVMServerMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
@@ -38,7 +39,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
         cancellable: false,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         for (const node of nodes) {
           progress.report({
@@ -48,7 +49,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
           try {
             await disableJVMServer(
-              node.getSession(),
+              node.getProfile(),
               {
                 name: node.getContainedResourceName(),
                 cicsPlex: node.cicsplexName,
@@ -56,7 +57,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               },
               disableType
             );
-            
+
             await pollForCompleteAction(
               node,
               (response) => {
@@ -78,12 +79,12 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
   });
 }
 
-function disableJVMServer(session: CICSSession, parms: ICommandParams, disableType: string): Promise<ICMCIApiResponse> {
+function disableJVMServer(profile: IProfileLoaded, parms: ICommandParams, disableType: string): Promise<ICMCIApiResponse> {
   const allowedTypes = ["PURGE", "FORCEPURGE", "KILL"];
   const action: any = {
     $: {
       name: "DISABLE",
-    }
+    },
   };
 
   // Only add TYPE parameter if a valid type is selected and not empty
@@ -92,13 +93,13 @@ function disableJVMServer(session: CICSSession, parms: ICommandParams, disableTy
       $: {
         name: "PURGETYPE",
         value: disableType,
-      }
+      },
     };
   }
 
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

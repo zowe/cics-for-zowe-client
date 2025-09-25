@@ -9,7 +9,6 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { Gui, imperative } from "@zowe/zowe-explorer-api";
 import { TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { CICSPlexTree, CICSTree } from ".";
@@ -35,7 +34,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     label: string | TreeItemLabel,
     opts: {
       parentNode: CICSRegionTree | CICSResourceContainerNode<IResource> | CICSPlexTree;
-      session: CICSSession;
       profile: imperative.IProfileLoaded;
       cicsplexName: string;
       regionName?: string; //Not provided means combined tree..?
@@ -49,7 +47,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       childResource?.meta ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None,
       // @ts-ignore
       opts.parentNode,
-      opts.session,
       opts.profile
     );
 
@@ -95,10 +92,10 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     const regionToSupply =
       thisParent instanceof CICSPlexTree || thisParent instanceof CICSRegionTree ?
         this.regionName
-      : this.getContainedResource().resource.attributes.eyu_cicsname;
+        : this.getContainedResource().resource.attributes.eyu_cicsname;
 
     // Searching for resources, with or without region
-    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getSession(), regionToSupply, this.cicsplexName);
+    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getProfile(), regionToSupply, this.cicsplexName);
 
     if (!resources.length) {
       Gui.infoMessage("No resources found");
@@ -114,7 +111,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
               cicsplexName: this.cicsplexName,
               regionName: this.regionName,
               profile: this.getProfile(),
-              session: this.getSession(),
             },
             {
               resource,
