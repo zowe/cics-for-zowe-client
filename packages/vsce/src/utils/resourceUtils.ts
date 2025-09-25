@@ -59,8 +59,6 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   const profile = SessionHandler.getInstance().getProfile(profileName);
   const session = SessionHandler.getInstance().getSession(profile);
 
-  console.log(session);
-
   try {
     if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
