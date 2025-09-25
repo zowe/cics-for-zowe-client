@@ -46,7 +46,7 @@ describe("CICSTreeNode tests", () => {
   const regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
 
   beforeEach(() => {
-    treeNode = new CICSTreeNode("LABEL", TreeItemCollapsibleState.Collapsed, regionTree, cicsSession, profileWithHost);
+    treeNode = new CICSTreeNode("LABEL", TreeItemCollapsibleState.Collapsed, regionTree, profileWithHost);
   });
 
   it("should default profile if not specified", () => {
@@ -54,7 +54,6 @@ describe("CICSTreeNode tests", () => {
       "LABEL",
       TreeItemCollapsibleState.Collapsed,
       regionTree,
-      cicsSession,
       // @ts-ignore - not allowed to be null
       undefined
     );
@@ -75,14 +74,7 @@ describe("CICSTreeNode tests", () => {
   });
 
   it("should get session when not provided", () => {
-    treeNode = new CICSTreeNode(
-      "LABEL",
-      TreeItemCollapsibleState.Collapsed,
-      regionTree,
-      // @ts-ignore - not allowed to be null
-      undefined,
-      profileWithHost
-    );
+    treeNode = new CICSTreeNode("LABEL", TreeItemCollapsibleState.Collapsed, regionTree, profileWithHost);
     expect(treeNode.getSession()).toEqual(cicsSession);
   });
 
@@ -95,7 +87,6 @@ describe("CICSTreeNode tests", () => {
       "LABEL",
       TreeItemCollapsibleState.Collapsed,
       regionTree,
-      cicsSession,
       // @ts-ignore - not allowed to be null
       undefined
     );
@@ -108,7 +99,6 @@ describe("CICSTreeNode tests", () => {
       TreeItemCollapsibleState.Collapsed,
       // @ts-ignore - not allowed to be null
       undefined,
-      cicsSession,
       // @ts-ignore - not allowed to be null
       undefined
     );

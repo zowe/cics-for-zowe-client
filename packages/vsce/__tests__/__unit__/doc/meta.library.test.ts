@@ -13,6 +13,10 @@ import { LibraryMeta } from "../../../src/doc/meta/library.meta";
 import { ILibrary } from "../../../src/doc/resources/ILibrary";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Library Meta", () => {
   let libraryMock: Resource<ILibrary>;
 
