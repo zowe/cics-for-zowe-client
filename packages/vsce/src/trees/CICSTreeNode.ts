@@ -13,6 +13,7 @@ import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { ICICSTreeNode } from "../doc";
+import { SessionHandler } from "../resources";
 import { TextTreeItem } from "./TextTreeItem";
 
 export class CICSTreeNode extends TreeItem {
@@ -22,7 +23,6 @@ export class CICSTreeNode extends TreeItem {
     label: string | TreeItemLabel,
     collapsibleState: TreeItemCollapsibleState,
     private parent: ICICSTreeNode,
-    protected session: CICSSession,
     protected profile: imperative.IProfileLoaded
   ) {
     super(label, collapsibleState);
@@ -36,7 +36,7 @@ export class CICSTreeNode extends TreeItem {
   }
 
   public getSession(): CICSSession {
-    return this.session ?? this.getParent()?.getSession();
+    return SessionHandler.getInstance().getSession(this.profile);
   }
 
   public getProfile(): imperative.IProfileLoaded {
