@@ -13,6 +13,10 @@ import { JVMServerMeta } from "../../../src/doc/meta/JVMServer.meta";
 import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("JVMServer Meta", () => {
   let jvmserverMock: Resource<IJVMServer>;
 

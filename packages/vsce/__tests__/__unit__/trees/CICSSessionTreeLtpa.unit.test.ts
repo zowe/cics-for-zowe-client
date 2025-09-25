@@ -15,6 +15,10 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSTree } from "../../../src/trees";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 jest.mock("../../../src/utils/iconUtils", () => {
   return { getIconFilePathFromName: getIconFilePathFromNameMock };
 });

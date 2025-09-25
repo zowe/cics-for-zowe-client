@@ -12,8 +12,15 @@
 const prog1 = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsname: "MYREG" };
 const prog2 = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG" };
 
+jest.mock("../../../src/utils/CICSLogger");
 jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
+  ProfileManagement: {
+    getProfilesCache: () => {
+      return {
+        loadNamedProfile: jest.fn(),
+      };
+    },
+  },
 }));
 
 const runGetCacheMock = jest.fn();
@@ -54,9 +61,9 @@ describe("CICSResourceContainerNode tests", () => {
   let resourceContainer: ResourceContainer<IProgram>;
 
   beforeEach(() => {
-    cicsSession = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
+    cicsSession = new CICSSession({ ...CICSProfileMock, host: "hostname" });
 
-    sessionTree = new CICSSessionTree({ name: "MYPROF", profile: CICSProfileMock }, {
+    sessionTree = new CICSSessionTree({ profile: CICSProfileMock, failNotFound: false, message: "", type: "cics", name: "MYPROF" }, {
       _onDidChangeTreeData: { fire: () => jest.fn() },
     } as unknown as CICSTree);
     regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
@@ -69,7 +76,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       {
@@ -120,7 +126,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       {
         meta: ProgramMeta,
@@ -152,7 +157,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       {
         meta: ProgramMeta,
@@ -220,23 +224,6 @@ describe("CICSResourceContainerNode tests", () => {
       },
     });
 
-    // const initialContainerNode = new CICSResourceContainerNode<ITask>(
-    //   "Tasks",
-    //   {
-    //     profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
-    //     cicsplexName: "",
-    //     regionName: "REG",
-    //     parentNode: regionTree,
-    //     session: cicsSession
-    //   },
-    //   undefined,
-    //   undefined
-    // );
-
-    // expect(initialContainerNode.children.length).toEqual(0);
-    // await initialContainerNode.getChildren();
-    // expect(initialContainerNode.children.length).toEqual(0);
-
     let newContainerNode = new CICSResourceContainerNode<ITask>(
       "Tasks",
       {
@@ -244,7 +231,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       {
@@ -279,7 +265,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       {
@@ -336,7 +321,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       undefined
@@ -374,7 +358,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: undefined,
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
-        session: cicsSession,
       },
       undefined,
       {
@@ -433,7 +416,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       undefined
@@ -448,7 +430,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       // @ts-ignore - missing resources
@@ -464,7 +445,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       {
@@ -483,7 +463,6 @@ describe("CICSResourceContainerNode tests", () => {
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSession,
       },
       undefined,
       {

@@ -13,6 +13,10 @@ import { WebServiceMeta } from "../../../src/doc/meta/webservice.meta";
 import { IWebService } from "../../../src/doc/resources/IWebService";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("WebService Meta", () => {
   let webserviceMock: Resource<IWebService>;
 

@@ -13,6 +13,10 @@ import { TCPIPMeta } from "../../../src/doc/meta/tcpip.meta";
 import { ITCPIP } from "../../../src/doc/resources/ITCPIP";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("TCP IP Meta", () => {
   let tcpipMock: Resource<ITCPIP>;
 

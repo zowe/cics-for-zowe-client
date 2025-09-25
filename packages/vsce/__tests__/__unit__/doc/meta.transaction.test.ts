@@ -13,6 +13,10 @@ import { TransactionMeta } from "../../../src/doc/meta/transaction.meta";
 import { ITransaction } from "../../../src/doc/resources/ITransaction";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Transaction Meta", () => {
   let transactionMock: Resource<ITransaction>;
 

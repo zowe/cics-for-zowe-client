@@ -13,6 +13,10 @@ import { URIMapMeta } from "../../../src/doc/meta/urimap.meta";
 import { IURIMap } from "../../../src/doc/resources/IURIMap";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("URIMap Meta", () => {
   let urimapMock: Resource<IURIMap>;
 
