@@ -9,8 +9,8 @@
  *
  */
 
-import { ImperativeError, Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, CicsCmciRestError, ICMCIApiResponse, IResourceParms, getResource } from "../../../src";
+import { ImperativeError, RestClient, Session } from "@zowe/imperative";
+import { CicsCmciConstants, CicsCmciRestError, ICMCIApiResponse, IResourceParms, getResource } from "../../../src";
 import { nodataContent, nodataXmlResponse, ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {
@@ -89,7 +89,7 @@ describe("CMCI - Get resource", () => {
   });
 
   describe("success scenarios", () => {
-    const getExpectStringMock = jest.spyOn(CicsCmciRestClient, "getExpectString");
+    const getExpectStringMock = jest.spyOn(RestClient, "getExpectString");
 
     beforeEach(() => {
       response = undefined;
