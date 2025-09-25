@@ -9,14 +9,15 @@
  *
  */
 
-import { CICSSession, CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { TransactionMeta } from "../../doc";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -42,7 +43,7 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
           });
 
           try {
-            await enableTransaction(node.getSession(), {
+            await enableTransaction(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -62,10 +63,10 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
   });
 }
 
-function enableTransaction(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableTransaction(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

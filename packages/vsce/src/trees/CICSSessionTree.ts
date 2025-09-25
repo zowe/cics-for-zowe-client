@@ -9,23 +9,21 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { SessionHandler } from "../resources/SessionHandler";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { SessionHandler } from "../resources/SessionHandler";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
-  session: CICSSession;
-  profile: any;
   isUnauthorized: boolean | undefined;
   iconPath = getIconFilePathFromName("profile-unverified");
 
   constructor(
-    profile: any,
+    private profile: IProfileLoaded,
     private parent: CICSTree
   ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
@@ -40,7 +38,7 @@ export class CICSSessionTree extends TreeItem {
 
   public createSessionFromProfile() {
     SessionHandler.getInstance().removeSession(this.profile.name);
-    this.session = SessionHandler.getInstance().getSession(this.profile);
+    SessionHandler.getInstance().getSession(this.profile);
   }
 
   public addRegion(region: CICSRegionTree) {
@@ -56,7 +54,7 @@ export class CICSSessionTree extends TreeItem {
   }
 
   public getSession() {
-    return this.session;
+    return SessionHandler.getInstance().getSession(this.profile);
   }
 
   public getChildren() {
@@ -79,6 +77,14 @@ export class CICSSessionTree extends TreeItem {
 
   public getParent(): CICSTree {
     return this.parent;
+  }
+
+  public setProfile(profile: IProfileLoaded) {
+    this.profile = profile;
+  }
+
+  public getProfile(): IProfileLoaded {
+    return this.profile;
   }
 
   public setIsExpanded(isExpanded: boolean) {

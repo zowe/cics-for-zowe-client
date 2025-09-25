@@ -65,9 +65,8 @@ export class CICSPlexTree extends TreeItem {
    */
   public async loadOnlyRegion() {
     const plexProfile = this.getProfile();
-    const session = this.getParent().getSession();
     const regionsObtained = await runGetResource({
-      session: session,
+      profileName: plexProfile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_REGION,
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
@@ -197,7 +196,6 @@ export class CICSPlexTree extends TreeItem {
     return new CICSResourceContainerNode<T>(
       label,
       {
-        session: this.getSession(),
         profile: this.getProfile(),
         parentNode: this,
         cicsplexName: this.getPlexName(),

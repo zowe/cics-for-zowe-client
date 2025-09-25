@@ -10,15 +10,19 @@
  */
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { IProfile, IProfileLoaded } from "@zowe/imperative";
+import { IProfileLoaded } from "@zowe/imperative";
 import { ISessionHandler } from "../doc/resources/ISessionHandler";
+import { ProfileManagement } from "../utils/profileManagement";
 
 export class SessionHandler implements ISessionHandler {
   private sessions: Map<String, CICSSession>;
+  private profiles: Map<String, IProfileLoaded>;
+
   private static instance: SessionHandler;
 
   private constructor() {
     this.sessions = new Map<String, CICSSession>();
+    this.profiles = new Map<String, IProfileLoaded>();
   }
 
   // Creating a singleton instance of SessionHandler
@@ -29,14 +33,15 @@ export class SessionHandler implements ISessionHandler {
     return SessionHandler.instance;
   }
 
-  private createSession(profile: IProfile, profileName: string): void {
-    const session = new CICSSession(profile);
-    this.sessions.set(profileName, session);
+  private createSession(profile: IProfileLoaded): void {
+    this.profiles.set(profile.name, profile);
+    const session = new CICSSession(profile.profile);
+    this.sessions.set(profile.name, session);
   }
 
   public getSession(profile: IProfileLoaded): CICSSession | undefined {
     if (!this.sessions.has(profile.name)) {
-      this.createSession(profile.profile, profile.name);
+      this.createSession(profile);
     }
     return this.sessions.get(profile.name);
   }
@@ -49,5 +54,15 @@ export class SessionHandler implements ISessionHandler {
 
   public clearSessions(): void {
     this.sessions.clear();
+    this.profiles.clear();
+  }
+
+  public getProfile(profName: string): IProfileLoaded {
+    if (this.profiles.has(profName)) {
+      return this.profiles.get(profName);
+    }
+
+    this.profiles.set(profName, ProfileManagement.getProfilesCache().loadNamedProfile(profName, "cics"));
+    return this.profiles.get(profName);
   }
 }

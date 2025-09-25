@@ -18,7 +18,7 @@ import { getParametersHtml } from "../utils/webviewHTML";
 export function getShowRegionSITParametersCommand() {
   return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node: CICSRegionTree) => {
     const { response } = await runGetResource({
-      session: node.parentSession.session,
+      profileName: node.getProfile().name,
       resourceName: CicsCmciConstants.CICS_SYSTEM_PARAMETER,
       regionName: `${node.label}`,
       cicsPlex: node.parentPlex ? node.parentPlex.getPlexName() : undefined,

@@ -9,7 +9,6 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
@@ -41,9 +40,9 @@ export async function isCICSProfileValidInSettings(): Promise<boolean> {
   return true;
 }
 
-export async function getPlexInfoFromProfile(profile: IProfileLoaded, session: CICSSession): Promise<InfoLoaded[] | null> {
+export async function getPlexInfoFromProfile(profile: IProfileLoaded): Promise<InfoLoaded[] | null> {
   try {
-    return await ProfileManagement.getPlexInfo(profile, session);
+    return await ProfileManagement.getPlexInfo(profile);
   } catch (error) {
     CICSLogger.error(l10n.t("Error fetching CICSplex information for profile with reason {0}", error.message));
   }

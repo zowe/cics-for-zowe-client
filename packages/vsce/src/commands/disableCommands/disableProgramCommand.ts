@@ -9,14 +9,15 @@
  *
  */
 
-import { CICSSession, CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { ProgramMeta } from "../../doc";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 /**
  * Performs disable on selected CICSProgram nodes.
@@ -47,7 +48,7 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
           });
 
           try {
-            await disableProgram(node.getSession(), {
+            await disableProgram(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -67,10 +68,10 @@ export function getDisableProgramCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-function disableProgram(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function disableProgram(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

@@ -9,7 +9,6 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
@@ -75,7 +74,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
   const session = SessionHandler.getInstance().getSession(profile);
 
-  ({ cicsPlexName, regionName, isPlex, plexInfo } = await getPlexAndRegion(profile, cicsPlexName, regionName, isPlex, plexInfo, session));
+  ({ cicsPlexName, regionName, isPlex, plexInfo } = await getPlexAndRegion(profile, cicsPlexName, regionName, isPlex, plexInfo));
 
   if (plexInfo && !cicsPlexName) {
     const plexNames = plexInfo.filter((p) => !p.group).map((p) => p.plexname);
@@ -108,7 +107,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       // This will be called when ESC is pressed or quickPick.hide() is called
       isCancelled = true;
     });
-    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, session);
+    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
     if (isCancelled || !regionInfo) return;
 
     // Check if regionInfo is null or undefined
@@ -143,7 +142,6 @@ async function getPlexAndRegion(
   regionName: string,
   isPlex: boolean,
   plexInfo: InfoLoaded[],
-  session: CICSSession
 ) {
   if (profile.profile.cicsPlex) {
     if (profile.profile.regionName) {
@@ -166,7 +164,7 @@ async function getPlexAndRegion(
       // This will be called when ESC is pressed or quickPick.hide() is called
       isCancelled = true;
     });
-    plexInfo = await regionUtils.getPlexInfoFromProfile(profile, session);
+    plexInfo = await regionUtils.getPlexInfoFromProfile(profile);
     if (isCancelled || !plexInfo) {
       quickPick.hide();
       return {};
