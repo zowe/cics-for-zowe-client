@@ -16,6 +16,10 @@ import { Resource } from "../../../src/resources";
 import IconBuilder from "../../../src/utils/IconBuilder";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("IconBuilder tests", () => {
   it("should get session icon", () => {
     const icon = IconBuilder.session(new CICSSession({ ...CICSProfileMock, host: "MY.HOST" }));

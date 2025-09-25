@@ -13,6 +13,10 @@ import { ProgramMeta } from "../../../src/doc/meta/program.meta";
 import { IProgram } from "../../../src/doc/resources/IProgram";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Program Meta", () => {
   let programMock: Resource<IProgram>;
 
