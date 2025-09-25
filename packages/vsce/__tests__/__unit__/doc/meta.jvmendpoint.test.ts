@@ -21,6 +21,7 @@ describe("JVM Endpoint Meta", () => {
       enablestatus: "ENABLED",
       jvmendpoint: "JVME1", 
       jvmserver: "JVM1",
+      port: "1420",
     });
   });
 
