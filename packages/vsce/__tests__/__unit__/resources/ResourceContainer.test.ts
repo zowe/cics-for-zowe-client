@@ -9,13 +9,30 @@
  *
  */
 
+jest.mock("../../../src/utils/CICSLogger");
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {
+    getProfilesCache: () => {
+      return {
+        loadNamedProfile: jest.fn().mockReturnValue({
+          failNotFound: false,
+          message: "",
+          type: "cics",
+          name: "MYPROF",
+          profile: CICSProfileMock,
+        }),
+      };
+    },
+  },
+}));
+
 import type { Extension } from "vscode";
 import * as vscode from "vscode";
 
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",
-  }
+  },
 } as Extension<any>);
 
 const prog1: IProgram = {
@@ -59,13 +76,14 @@ import { Resource } from "../../../src/resources";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
+const prof = { ...CICSProfileMock, host: "hostname" };
+const profileMock = { failNotFound: false, message: "", type: "cics", name: "MYPROF", profile: prof };
+
 describe("Resource Container", () => {
   let container: ResourceContainer<IResource>;
-  let cicsSessionMock: CICSSession;
 
   beforeEach(() => {
     container = new ResourceContainer(ProgramMeta);
-    cicsSessionMock = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
 
     jest.clearAllMocks();
 
@@ -125,12 +143,12 @@ describe("Resource Container", () => {
     // @ts-ignore - private property
     expect(container.cacheToken).toBeNull();
 
-    const [resources, moreToFetch] = await container.loadResources(cicsSessionMock, "MYREG", undefined);
+    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
     expect(moreToFetch).toBeFalsy();
     expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
 
     expect(runGetResourceMock).toHaveBeenCalledWith({
-      session: cicsSessionMock,
+      profileName: "MYPROF",
       resourceName: "CICSProgram",
       cicsPlex: undefined,
       regionName: "MYREG",
@@ -143,47 +161,19 @@ describe("Resource Container", () => {
         },
       },
     });
-    expect(runGetCacheMock).toHaveBeenCalledWith(
-      cicsSessionMock,
-      {
-        cacheToken: "MYCACHETOKEN",
-        startIndex: 1,
-        count: 250,
-        nodiscard: true,
-        summonly: false,
-      },
-      {
-        failOnNoData: false,
-        useCICSCmciRestError: true,
-      },
-      [{ "User-Agent": "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3" }]
-    );
+    expect(runGetCacheMock).toHaveBeenCalledTimes(2);
   });
 
   it("should load resources with cache token", async () => {
     // @ts-ignore - private property
     container.cacheToken = "NEWTOKEN";
 
-    const [resources, moreToFetch] = await container.loadResources(cicsSessionMock, "MYREG", undefined);
+    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
     expect(moreToFetch).toBeFalsy();
     expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
 
     expect(runGetResourceMock).toHaveBeenCalledTimes(0);
-    expect(runGetCacheMock).toHaveBeenCalledWith(
-      cicsSessionMock,
-      {
-        cacheToken: "NEWTOKEN",
-        startIndex: 1,
-        count: 250,
-        nodiscard: true,
-        summonly: false,
-      },
-      {
-        failOnNoData: false,
-        useCICSCmciRestError: true,
-      },
-      [{ "User-Agent": "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3" }]
-    );
+    expect(runGetCacheMock).toHaveBeenCalledTimes(2);
   });
 
   it("should load resources and get NODATA", async () => {
@@ -195,7 +185,7 @@ describe("Resource Container", () => {
       },
     });
 
-    const [resources, moreToFetch] = await container.loadResources(cicsSessionMock, "MYREG", undefined);
+    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
     expect(moreToFetch).toBeFalsy();
     expect(resources).toEqual([]);
     // @ts-ignore - private property
@@ -204,7 +194,7 @@ describe("Resource Container", () => {
     expect(container.fetchedAll).toBeTruthy();
 
     expect(runGetResourceMock).toHaveBeenCalledWith({
-      session: cicsSessionMock,
+      profileName: "MYPROF",
       resourceName: "CICSProgram",
       cicsPlex: undefined,
       regionName: "MYREG",

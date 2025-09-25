@@ -13,6 +13,10 @@ import { PipelineMeta } from "../../../src/doc/meta/pipeline.meta";
 import { IPipeline } from "../../../src/doc/resources/IPipeline";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Pipeline Meta", () => {
   let pipelineMock: Resource<IPipeline>;
 

@@ -9,6 +9,24 @@
  *
  */
 
+const profile = { user: "user", password: "pwd", host: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 };
+
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {
+    getProfilesCache: () => {
+      return {
+        loadNamedProfile: jest.fn().mockReturnValue({
+          failNotFound: false,
+          message: "",
+          type: "cics",
+          name: "MYPROF",
+          profile,
+        }),
+      };
+    },
+  },
+}));
+
 const getIconFilePathFromNameMock = jest.fn();
 
 import { CICSTree } from "../../../src/trees";
@@ -23,9 +41,7 @@ jest.mock("../../../src/utils/iconUtils", () => {
 });
 const cicstreeMock = jest.fn();
 const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
-const profile = {
-  profile: { user: "user", password: "pwd", host: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 },
-};
+
 describe("Test suite for CICSSessionTree", () => {
   let sut: CICSSessionTree;
 
@@ -33,7 +49,9 @@ describe("Test suite for CICSSessionTree", () => {
     beforeEach(() => {
       getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
 
-      sut = new CICSSessionTree(profile, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
+      sut = new CICSSessionTree({ failNotFound: false, message: "", type: "cics", profile, name: "MYPROF" }, {
+        _onDidChangeTreeData: { fire: () => jest.fn() },
+      } as unknown as CICSTree);
       sut.isUnauthorized = true;
       expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("profile-unverified");
     });

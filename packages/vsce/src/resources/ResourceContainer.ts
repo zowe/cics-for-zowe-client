@@ -9,13 +9,13 @@
  *
  */
 
-import { CICSSession, CicsCmciConstants, getCache } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { IResource, IResourceMeta } from "../doc";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
-import { buildUserAgentHeader, runGetResource } from "../utils/resourceUtils";
+import { runGetCache, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
 
 export class ResourceContainer<T extends IResource> {
@@ -123,11 +123,11 @@ export class ResourceContainer<T extends IResource> {
     return this.plexName;
   }
 
-  async loadResources(cicsSession: CICSSession, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {
+  async loadResources(profile: imperative.IProfileLoaded, regionName: string, cicsplexName?: string): Promise<[Resource<T>[], boolean]> {
     // If we don't yet have a cacheToken, get one
     if (!this.cacheToken) {
       const cacheResponse = await runGetResource({
-        session: cicsSession,
+        profileName: profile.name,
         resourceName: this.resourceMeta.resourceName,
         cicsPlex: cicsplexName,
         regionName,
@@ -154,31 +154,20 @@ export class ResourceContainer<T extends IResource> {
 
     try {
       // Retrieve a set of results from the cache
-      const { response } = await getCache(
-        cicsSession,
-        {
-          cacheToken: this.cacheToken,
-          startIndex: this.startIndex,
-          count: this.numberToFetch,
-          nodiscard: true,
-          summonly: false,
-        },
-        {
-          failOnNoData: false,
-          useCICSCmciRestError: true,
-        },
-        [buildUserAgentHeader()],
-      );
+      const { response } = await runGetCache({
+        profileName: profile.name,
+        cacheToken: this.cacheToken,
+        startIndex: this.startIndex,
+        count: this.numberToFetch,
+      });
 
       // Find out if there are more resources to fetch later
       this.startIndex += this.numberToFetch;
       if (this.startIndex > parseInt(response.resultsummary.recordcount)) {
         this.fetchedAll = true;
-        await getCache(
-          cicsSession,
-          { cacheToken: this.cacheToken, nodiscard: false, summonly: true },
-          { failOnNoData: false, useCICSCmciRestError: true },
-          [buildUserAgentHeader()],
+        await runGetCache(
+          { profileName: profile.name, cacheToken: this.cacheToken, startIndex: null, count: null, },
+          { nodiscard: false, summonly: true, }
         );
       }
 
@@ -203,7 +192,7 @@ export class ResourceContainer<T extends IResource> {
         this.startIndex = 1;
         this.numberToFetch = this.resources.length + this.numberToFetch;
         this.resources = [];
-        return this.loadResources(cicsSession, regionName, cicsplexName);
+        return this.loadResources(profile, regionName, cicsplexName);
       }
       throw error;
     }
