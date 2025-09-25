@@ -9,9 +9,6 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
-
 const profilesCacheRefreshMock = jest.fn();
 profilesCacheRefreshMock.mockReturnValue(["prof1", "prof2"]);
 const getProfilesCacheMock = jest.fn();
@@ -26,21 +23,22 @@ getProfilesCacheMock.mockReturnValue({
     };
   },
 });
-
-import { CICSTree } from "../../../src/trees/CICSTree";
-
-jest.mock("../../../src/utils/CICSLogger");
-
-import PersistentStorage from "../../../src/utils/PersistentStorage";
-const profilesCacheRefreshSpy = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
-profilesCacheRefreshSpy.mockReturnValue(["prof1", "prof2"]);
-
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     profilesCacheRefresh: profilesCacheRefreshMock,
     getProfilesCache: getProfilesCacheMock,
   },
 }));
+
+import { imperative } from "@zowe/zowe-explorer-api";
+import { CICSTree } from "../../../src/trees/CICSTree";
+import { CICSProfileMock } from "../../__utils__/globalMocks";
+
+jest.mock("../../../src/utils/CICSLogger");
+
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+const profilesCacheRefreshSpy = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
+profilesCacheRefreshSpy.mockReturnValue(["prof1", "prof2"]);
 
 describe("Test suite for CICSTree", () => {
   let sut: CICSTree;
