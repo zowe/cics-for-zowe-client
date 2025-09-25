@@ -16,4 +16,5 @@ export interface IJVMEndpoint extends IResource {
   jvmendpoint: string;
   jvmserver: string;
   enablestatus: string;
+  port: string;
 }
