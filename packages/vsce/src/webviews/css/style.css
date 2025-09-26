@@ -1,4 +1,4 @@
-.maindiv {
+.resource-inspector-container{
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-.table-header1 {
+.resource-info-table-header {
   position: fixed;
   top: 1.75rem;
   height: 32px;
@@ -18,26 +18,7 @@
   background-color: var(--vscode-editor-background);
 }
 
-.padding-top-20 {
-  padding-top: 1.25rem;
-}
-
-.padding-top-10 {
-  padding-top: 0.625rem;
-}
-
-.padding-top-30 {
-  padding-top: 1.875rem;
-}
-
-.line {
-  line-height: 0.5;
-  font-size: small;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.header-cell-1 {
+.resource-title {
   vertical-align: middle;
   display: flex;
   width: 100% !important;
@@ -49,63 +30,17 @@
   padding: 8px 0px !important;
 }
 
-.thead-2 {
+.attributes-header-section {
   position: sticky;
   z-index: 5;
   background-color: var(--vscode-editor-background);
-}
-
-.th-2 {
-  width: 100% !important;
-  padding-left: 12px !important;
-  height: 16px;
-  color: var(--vscode-breadcrumb-foreground) !important;
-}
-
-.th-3 {
-  width: 75% !important;
-  padding-bottom: 0.125rem !important;
-}
-
-.div-display-1 {
-  display: inline-block;
-  vertical-align: middle !important;
-  color: var(--vscode-breadcrumb-foreground);
-  font-weight: normal;
-}
-
-.div-display-2 {
-  font-size: 0.688rem;
-  padding-left: 0.438rem;
-  font-weight: 400;
 }
 
 .padding-left-10 {
   padding-left: 0.625rem;
 }
 
-.padding-left-20 {
-  padding-left: 1.25rem;
-}
-
-.padding-left-25 {
-  padding-left: 1.563rem !important;
-}
-
-.padding-left-27 {
-  padding-left: 20px !important;
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
-}
-
-.padding-right-10 {
-  padding-right: 0.625rem;
-}
-.padding-right-75 {
-  padding-left: 20px !important; /* Match the padding-left-27 for consistency */
-}
-
-.search-style {
+.attribute-search {
   width: 12.5rem;
   max-width: 40%;
   border: none;
@@ -113,12 +48,8 @@
   position: absolute;
   right: 0;
   top: 4px;
-
-  /* remove float and margin hacks */
   float: none;
   margin: 0;
-
-  /* optional: center textfield nicely */
   display: flex;
   align-items: center;
 }
@@ -126,16 +57,21 @@
 .td {
   padding: 8px;
   vertical-align: middle;
-  white-space: nowrap; /* prevents wrapping, so scrolling works */
+  white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.width-30 {
+.header-label-div {
   width: 30%;
+  height: 16px;
+  line-height: 16px;
 }
-.width-70 {
+
+.header-label-value-div {
   width: 70%;
+  height: 16px;
+  line-height: 16px;
 }
 
 .vertical-align-sub {
@@ -156,14 +92,14 @@
   pointer-events: none;
 }
 
-table:not(#table-1) {
+table:not(#resource-info-table) {
   margin-top: 8px;
   position: relative;
   width: 100%; 
   box-sizing: border-box;
 }
 
-.maindiv {
+.resource-inspector-container {
   position: relative;
   width: 100%;
   box-sizing: border-box;
@@ -178,7 +114,7 @@ table tbody tr {
   background-color: var(--vscode-editor-background);
 }
 
-.th-header-single {
+.attributes-title {
   width: 100%;
 }
 
@@ -280,30 +216,29 @@ ul.breadcrumb {
   margin-top: 0rem;
   margin-bottom: 0rem;
   padding-left: 0rem;
-  /* new additions */
   display: flex;
-  flex: 1; /* take remaining space */
-  min-width: 0; /* required for ellipsis */
+  flex: 1; 
+  min-width: 0; 
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  align-items: center; /* Center all items vertically */
+  align-items: center; 
 }
 ul.breadcrumb li {
-  display: inline-flex; /* Changed from inline-block to inline-flex for better alignment */
-  align-items: center; /* Center items vertically */
+  display: inline-flex; 
+  align-items: center; 
   font-size: 13px;
-  flex-shrink: 0; /* each li won't squish too much */
+  flex-shrink: 0; 
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   color: var(--vscode-breadcrumb-foreground);
 }
-/* Styling for the chevron icon */
+
 .chevron-icon {
-  display: inline-flex; /* Changed to inline-flex for better alignment */
-  align-items: center; /* Center vertically */
-  margin: 0 4px; /* Keep consistent horizontal margin */
+  display: inline-flex; 
+  align-items: center; 
+  margin: 0 4px; 
 }
 ul.breadcrumb li a {
   color: var(--vscode-foreground);
@@ -327,20 +262,20 @@ ul.breadcrumb li a:hover {
   display: inline-flex;
 }
 
-.td-class {
+.resource-info-row {
   padding-left: 12px !important;
   padding-top: 4px !important;
   padding-bottom: 0px !important;
 }
 
-.tr-class {
+.resource-info-rows {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding-top: 52px !important;
-  width: 100%; /* take full width of parent */
-  max-width: 1112px; /* cap at 1112px if you want */
-  box-sizing: border-box; /* ensures padding doesn't overflow */
+  width: 100%; 
+  max-width: 1112px; 
+  box-sizing: border-box;
   padding-bottom: 0px !important;
   padding-top: 34px !important;
 }
@@ -370,14 +305,7 @@ body.vscode-dark vscode-context-menu {
   --vscode-menu-foreground: #000000;
 }
 
-.highlight-key {
-  color: var(--vscode-breadcrumb-foreground);
-}
-.highlight-value {
-  color: var(--vscode-badge-foreground) !important;
-}
-
-.th-header-single {
+.attributes-title {
   text-align: left;
   padding-left:12px !important;
   padding-top: 0px !important;
@@ -385,19 +313,17 @@ body.vscode-dark vscode-context-menu {
   box-sizing: border-box;
 }
 
-/* Flex layout for label + search */
-.header-container {
+.attributes-header-row {
   display: flex;
   align-items: center;
-  height: 16px; /* Keep the height at 16px */
-  padding: 8px 0px; /* Keep the padding */
+  height: 16px; 
+  padding: 8px 0px; 
   width: 100%;
-  box-sizing: content-box; /* Change to content-box to not include padding in height */
-  position: relative; /* For absolute positioning of search field */
-  min-height: 16px; /* Ensure minimum height */
+  box-sizing: content-box; 
+  position: relative; 
+  min-height: 16px; 
 }
 
-/* Label text */
 .header-label {
   font-weight: normal;
   color: var(--vscode-breadcrumb-foreground);
@@ -419,12 +345,31 @@ body.vscode-dark vscode-context-menu {
   align-items: center;
 }
 
-.white-color {
+.vscode-badge-foreground-color {
   color: var(--vscode-badge-foreground);
+}
+
+.vscode-badge-foreground-color {
+  color: var(--vscode-breadcrumb-foreground);
 }
 
 .resource-item {
   display: flex;
   align-items: center;
   gap: 4px; 
+}
+
+.resource-attr-key {
+  color: var(--vscode-badge-foreground) !important;
+  padding-left: 20px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  width: 30%;
+}
+
+.resource-attr-value {
+  color: var(--vscode-badge-foreground) !important;
+  padding-left: 20px !important;
+  width: 70%;
+
 }
