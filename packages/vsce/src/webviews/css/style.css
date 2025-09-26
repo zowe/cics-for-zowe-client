@@ -10,8 +10,8 @@
 .resource-info-table-header {
   position: fixed;
   top: 1.75rem;
-  height: 32px;
-  padding: 0px 12px;
+  height: 2rem;
+  padding: 0 0.75rem;
   left: 2.25rem;
   right: 2.25rem;
   z-index: 10;
@@ -23,11 +23,11 @@
   display: flex;
   width: 100% !important;
   max-width: 73.75rem !important;
-  height: 16px;
+  height: 1rem;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   flex-shrink: 0;
-  padding: 8px 0px !important;
+  padding: 0.5rem 0 !important;
 }
 
 .attributes-header-section {
@@ -44,10 +44,10 @@
   width: 12.5rem;
   max-width: 40%;
   border: none;
-  height: 24px;
+  height: 1.5rem;
   position: absolute;
   right: 0;
-  top: 4px;
+  top: 0.25rem;
   float: none;
   margin: 0;
   display: flex;
@@ -55,7 +55,7 @@
 }
 
 .td {
-  padding: 8px;
+  padding: 0.5rem;
   vertical-align: middle;
   white-space: nowrap; 
   overflow: hidden;
@@ -64,14 +64,14 @@
 
 .header-label-div {
   width: 30%;
-  height: 16px;
-  line-height: 16px;
+  height: 1rem;
+  line-height: 1rem;
 }
 
 .header-label-value-div {
   width: 70%;
-  height: 16px;
-  line-height: 16px;
+  height: 1rem;
+  line-height: 1rem;
 }
 
 .vertical-align-sub {
@@ -101,7 +101,7 @@ body.vscode-dark{
 }
 
 table:not(#resource-info-table) {
-  margin-top: 8px;
+  margin-top: 0.5rem;
   position: relative;
   width: 100%; 
   box-sizing: border-box;
@@ -235,7 +235,7 @@ ul.breadcrumb {
 ul.breadcrumb li {
   display: inline-flex; 
   align-items: center; 
-  font-size: 13px;
+  font-size: 0.813rem;
   flex-shrink: 0; 
   font-style: normal;
   font-weight: 400;
@@ -246,7 +246,7 @@ ul.breadcrumb li {
 .chevron-icon {
   display: inline-flex; 
   align-items: center; 
-  margin: 0 4px; 
+  margin: 0 0.25rem;
 }
 ul.breadcrumb li a {
   color: var(--vscode-foreground);
@@ -260,7 +260,7 @@ ul.breadcrumb li a:hover {
 .breadcrumb-div {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   flex: 1 0 0;
 }
 
@@ -271,35 +271,35 @@ ul.breadcrumb li a:hover {
 }
 
 .resource-info-row {
-  padding-left: 12px !important;
-  padding-top: 4px !important;
-  padding-bottom: 0px !important;
+  padding-left: 0.75rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0 !important;
 }
 
 .resource-info-rows {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: 52px !important;
-  width: 100%; 
-  max-width: 1112px; 
+  padding-top: 3.25rem !important;
+  width: 100%;
+  max-width: 69.5rem;
   box-sizing: border-box;
-  padding-bottom: 0px !important;
-  padding-top: 34px !important;
+  padding-bottom: 0 !important;
+  padding-top: 2.125rem !important;
 }
 
 .three-dots {
-  font-size: 12px;
-  padding: 2px;
+  font-size: 0.75rem;
+  padding: 0.125rem;
   user-select: none;
   cursor: pointer;
   font-weight: bolder;
 }
 
 .refresh-icon{
-  padding-right: 6px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-right: 0.375rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   cursor: pointer;
 }
 
@@ -315,21 +315,21 @@ body.vscode-dark vscode-context-menu {
 
 .attributes-title {
   text-align: left;
-  padding-left:12px !important;
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
+  padding-left: 0.75rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   box-sizing: border-box;
 }
 
 .attributes-header-row {
   display: flex;
   align-items: center;
-  height: 16px; 
-  padding: 8px 0px; 
+  height: 1rem;
+  padding: 0.5rem 0;
   width: 100%;
   box-sizing: content-box; 
   position: relative; 
-  min-height: 16px; 
+  min-height: 1rem;
 }
 
 .header-label {
@@ -343,7 +343,7 @@ body.vscode-dark vscode-context-menu {
 .header-label-value {
   font-weight: normal;
   color: var(--vscode-breadcrumb-foreground);
-  padding-left: 10px; 
+  padding-left: 0.625rem;
   flex: 1;
   width: 70%; 
 }
@@ -364,20 +364,20 @@ body.vscode-dark vscode-context-menu {
 .resource-item {
   display: flex;
   align-items: center;
-  gap: 4px; 
+  gap: 0.25rem;
 }
 
 .resource-attr-key {
   color: var(--vscode-badge-foreground) !important;
-  padding-left: 20px !important;
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
+  padding-left: 1.25rem !important;
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
   width: 30%;
 }
 
 .resource-attr-value {
   color: var(--vscode-badge-foreground) !important;
-  padding-left: 20px !important;
+  padding-left: 1.25rem !important;
   width: 70%;
 
 }
