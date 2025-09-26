@@ -32,8 +32,8 @@ const ResourceInspector = () => {
     profileHandler: { key: string; value: string; }[];
   }>();
   const [resourceActions, setResourceActions] = React.useState<{
-      id: string;
-      name: string;
+    id: string;
+    name: string;
   }[]>([]);
 
   const handleActionClick = (actionId: string) => {
@@ -48,19 +48,19 @@ const ResourceInspector = () => {
     vscode.addVscMessageListener(listener);
 
     const handleResize = () => {
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      const mainDiv = document.querySelector(".maindiv");
+      const headerElement1 = document.getElementById("resource-info-table-header");
+      const headerElement2 = document.getElementById("attributes-header");
+      const mainDiv = document.querySelector(".resource-inspector-container");
 
       if (headerElement1 && headerElement2 && mainDiv) {
         // Let CSS handle the width with left/right positioning
         // This ensures the header maintains its spacing from both sides
         headerElement1.style.width = ""; // Remove any inline width
-        
+
         // For header2, we still need to set a width that matches the content area
         const contentWidth = mainDiv.clientWidth || window.innerWidth - 36; // 36px = 2.25rem * 16px (left + right margins)
         headerElement2.style.width = contentWidth + "px";
-        
+
         // Update the mask width as well
         const maskElement = document.getElementById("header-mask");
         if (maskElement) {
@@ -70,9 +70,9 @@ const ResourceInspector = () => {
     };
 
     const handleScroll = () => {
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      const mainDiv = document.querySelector(".maindiv");
+      const headerElement1 = document.getElementById("resource-info-table-header");
+      const headerElement2 = document.getElementById("attributes-header");
+      const mainDiv = document.querySelector(".resource-inspector-container");
 
       if (headerElement1 && headerElement2 && mainDiv) {
         // Use fixed values for header positioning
@@ -81,11 +81,11 @@ const ResourceInspector = () => {
         // Position the second header below the first one
         const firstHeaderHeight = headerElement1.offsetHeight || 32;
         headerElement2.style.top = (8 + firstHeaderHeight) + "px";
-        
+
         // For header2, set width that matches the content area
         const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
         headerElement2.style.width = contentWidth + "px";
-        
+
         // Create a mask element if it doesn't exist
         let maskElement = document.getElementById("header-mask");
         if (!maskElement) {
@@ -94,7 +94,7 @@ const ResourceInspector = () => {
           maskElement.className = "header-mask";
           document.body.appendChild(maskElement);
         }
-        
+
         // Position the mask to cover the area of the first header
         maskElement.style.top = "0px";
         maskElement.style.height = (8 + firstHeaderHeight) + "px";
@@ -109,7 +109,7 @@ const ResourceInspector = () => {
       handleScroll();
       handleResize();
     }, 0);
-    
+
     // Add event listeners
     vscode.addResizeListener(handleResize);
     window.addEventListener('resize', handleResize);
@@ -122,10 +122,10 @@ const ResourceInspector = () => {
   }, []);
 
   return (
-    <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
-      <table id="table-1" className="border-collapse">
-        <thead id="table-header-1" className="table-header1">
-          <th id="th-1" className="header-cell-1">
+    <div className="resource-inspector-container" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
+      <table id="resource-info-table" className="border-collapse">
+        <thead id="resource-info-table-header" className="resource-info-table-header">
+          <th id="resource-title" className="resource-title">
             <Breadcrumb
               profileHandler={resourceInfo?.profileHandler ?? []}
               resourceName={resourceInfo?.name}
@@ -137,10 +137,10 @@ const ResourceInspector = () => {
         </thead>
         <tbody className="padding-left-10">
           {resourceInfo?.highlights.length > 0 && (
-            <tr className="tr-class">
+            <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
-                <td key={highlight.key} className="td-class">
-                  <span className="highlight-key">{highlight.key}:</span> <span className="highlight-value">{highlight.value}</span>
+                <td key={highlight.key} className="resource-info-row">
+                  <span className="vscode-badge-foreground-color">{highlight.key}:</span> <span className="vscode-badge-foreground-color">{highlight.value}</span>
                 </td>
               ))}
             </tr>
@@ -149,14 +149,14 @@ const ResourceInspector = () => {
       </table>
 
       <table className="border-collapse">
-        <thead id="table-header-2" className="thead-2">
+        <thead id="attributes-header" className="attributes-header-section">
           <tr>
-            <th className="th-header-single" colSpan={2}>
-              <div className="header-container">
-                <div className="width-30" style={{ height: "16px", lineHeight: "16px" }}>
+            <th className="attributes-title" colSpan={2}>
+              <div className="attributes-header-row">
+                <div className="header-label-div">
                   <span className="header-label">ATTRIBUTE</span>
                 </div>
-                <div className="width-70" style={{ height: "16px", lineHeight: "16px" }}>
+                <div className="header-label-value-div">
                   <span className="header-label-value">VALUE</span>
                 </div>
                 <VscodeTextfield
@@ -164,7 +164,7 @@ const ResourceInspector = () => {
                   placeholder="Keyword search..."
                   onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
                   value={search}
-                  className="search-style"
+                  className="attribute-search"
                 />
               </div>
             </th>
@@ -180,8 +180,8 @@ const ResourceInspector = () => {
               )
               .map(([key, value]) => (
                 <tr key={key}>
-                  <td className="padding-left-27 width-30 highlight-value">{key.toUpperCase()}</td>
-                  <td className="padding-right-75 width-70 highlight-value">{value}</td>
+                  <td className="resource-attr-key">{key.toUpperCase()}</td>
+                  <td className="resource-attr-value">{value}</td>
                 </tr>
               ))}
         </tbody>
