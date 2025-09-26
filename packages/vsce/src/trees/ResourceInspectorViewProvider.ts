@@ -148,27 +148,29 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     return this;
   }
+
   /**
    * Creates a map of resource type icons with webview-accessible URIs
    * @returns An object mapping resource types to their icon URIs
    */
-  private getResourceTypeIcons() {
+  private getIconsMapping() {
     const createIconPaths = (iconName: string) => ({
       light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).light)).toString(),
       dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).dark)).toString(),
     });
     const icons = {
-      "program": createIconPaths("program"),
-      "transaction": createIconPaths("local-transaction"), 
+      program: createIconPaths("program"),
+      transaction: createIconPaths("local-transaction"),
       "local file": createIconPaths("local-file"),
-      "task": createIconPaths("task-running"),
-      "library": createIconPaths("library"), 
-      "pipeline": createIconPaths("pipeline"), 
+      task: createIconPaths("task-running"),
+      library: createIconPaths("library"),
+      pipeline: createIconPaths("pipeline"),
       "tcp/ip service": createIconPaths("tcp-ip-service"),
       "uri map": createIconPaths("uri-map"),
       "web service": createIconPaths("web-services"),
       "jvm server": createIconPaths("jvm-server"),
-      "bundle": createIconPaths("bundles")
+      bundle: createIconPaths("bundles"),
+      chevron: createIconPaths("chevron"),
     };
     return icons;
   }
@@ -177,8 +179,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
-    const resourceTypeIcons = this.getResourceTypeIcons();
-
     await this.webviewView.webview.postMessage({
       data: {
         name: this.resource.meta.getName(this.resource.resource),
@@ -186,11 +186,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
           dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
         },
-        chevronIconPath: {
-          light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").light)).toString(),
-          dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("chevron").dark)).toString(),
-        },
-        resourceTypeIcons: resourceTypeIcons, 
+        iconsMapping: this.getIconsMapping(),
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
