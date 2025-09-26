@@ -10,12 +10,16 @@
  */
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 
 import "../css/style.css";
 
 /*Interface for resource type icons
-Keys are strings (representing resource types like "program", "transaction")
-Values are objects with "light" and "dark" string properties (the URIs for each theme)*/
+"program":{
+  light: url;
+  dark: url;
+};
+}*/
 interface IconsMapping {
   [key: string]: {
     light: string;
@@ -25,14 +29,48 @@ interface IconsMapping {
 
 
 // Get icon based on resource type using the provided icon paths
-const getIconByType = (type: string, iconsMapping?: IconsMapping) => {
+const getIconByType = (type: string, isDarkTheme: boolean, iconsMapping?: IconsMapping) => {
   const iconType = type.toLowerCase();
   let iconPath = iconsMapping[iconType];
   //if icon is not found we can provide some default one
   iconPath = !iconPath && iconsMapping.program ? iconsMapping.program : iconPath;
-  const isDarkTheme = document.body.classList.contains("vscode-dark") || document.body.classList.contains("vscode-high-contrast");
   const iconSrc = isDarkTheme ? iconPath.dark : iconPath.light;
   return <img src={iconSrc} alt={type} width={16} height={16} />;
+};
+
+function isDarkThemeActive(): boolean {
+  return document.body.classList.contains("vscode-dark") || document.body.classList.contains("vscode-high-contrast");
+}
+
+/**
+ * Creates breadcrumb items array from profile handler and resource information
+ */
+const createBreadcrumbItems = (
+  profileHandler: { key: string; value: string }[],
+  resourceName?: string,
+  humanReadableNameSingular?: string
+): { key: string; value: string }[] => {
+  const filteredProfiles = profileHandler?.filter(p => p.value !== null && p.key !== "profile") ?? [];
+  const resourceItem = resourceName ? {
+    key: "resourceName",
+    value: `${resourceName}${humanReadableNameSingular ? ` (${humanReadableNameSingular})` : ""}`
+  } : null;
+  return [...filteredProfiles, resourceItem].filter(Boolean) as { key: string; value: string }[];
+};
+
+
+const extractResourceType = (value: string): { resourceName: string, resourceType: string } => {
+  const typeMatch = value.match(/^(.+?)\s*\(([^)]+)\)$/);
+  if (typeMatch) {
+    return {
+      resourceName: typeMatch[1].trim(),
+      resourceType: typeMatch[2]
+    };
+  }
+  return {
+    resourceName: value,
+    resourceType: ""
+  };
 };
 
 const Breadcrumb = ({
@@ -46,55 +84,66 @@ const Breadcrumb = ({
   humanReadableNameSingular?: string;
   iconsMapping?: IconsMapping;
 }) => {
-  const items = [
-    ...(profileHandler?.filter((p) => p.value !== null && p.key != "profile") ?? []),
-    resourceName ?
-      {
-        key: "resourceName",
-        value: `${resourceName}${humanReadableNameSingular ? ` (${humanReadableNameSingular})` : ""}`,
+  const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeActive());
+  useEffect(() => {
+    const updateTheme = () => setIsDarkTheme(isDarkThemeActive());
+    window.addEventListener("vscode-theme-changed", updateTheme);
+    // Create a MutationObserver to watch for class changes on the body element
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'class') {
+          updateTheme();
+        }
       }
-    : null,
-  ].filter(Boolean) as { key: string; value: string }[];
+    });
+    observer.observe(document.body, { attributes: true });
+    return () => {
+      window.removeEventListener("vscode-theme-changed", updateTheme);
+      observer.disconnect();
+    };
+  }, []);
+
+  // Memoize items array to prevent unnecessary recalculations
+  const items = React.useMemo(() =>
+    createBreadcrumbItems(profileHandler, resourceName, humanReadableNameSingular),
+    [profileHandler, resourceName, humanReadableNameSingular]);
+
+  const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
+    const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
+    const showChevron = idx > 0 && iconsMapping;
+    const chevron = showChevron ? getIconByType("chevron", isDarkTheme, iconsMapping) : null;
+
+    if (!isResourceItem) {
+      return (
+        <React.Fragment key={profile.key}>
+          {showChevron && <li className="chevron-icon">{chevron}</li>}
+          <li>{profile.value}</li>
+        </React.Fragment>
+      );
+    }
+
+    const { resourceName, resourceType } = extractResourceType(profile.value);
+    const icon = iconsMapping ? getIconByType(resourceType, isDarkTheme, iconsMapping) : null;
+
+    return (
+      <React.Fragment key={profile.key}>
+        {showChevron && <li className="chevron-icon">{chevron}</li>}
+        <li className="resource-item">
+          {icon && <span className="resource-icon">{icon}</span>}
+          <span className="vscode-badge-foreground-color">{resourceName}</span>
+          {resourceType && <span>({resourceType})</span>}
+        </li>
+      </React.Fragment>
+    );
+  };
 
   return (
     <div id="breadcrumb-div" className="breadcrumb-div">
       <ul className="breadcrumb">
-        {items.map((profile, idx) => {
-          const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
-          const chevron = idx > 0 && iconsMapping ? getIconByType("chevron", iconsMapping) : null;
-
-          if (isResourceItem) {
-            // Extract the type from the value (text inside parentheses)
-            const match = profile.value.match(/\(([^)]+)\)/);
-            const type = match ? match[1] : "program"; // Default to program if no type found
-            const icon = iconsMapping ? getIconByType(type, iconsMapping) : null;
-
-            // Split the profile value into the main part and the part in parentheses
-            const resourceName = profile.value.split(" (")[0];
-            const resourceType = match ? ` (${match[1]})` : "";
-
-            return (
-              <React.Fragment key={profile.key}>
-                {idx > 0 && <li className="chevron-icon">{chevron}</li>}
-                <li className="resource-item">
-                  {icon && <span className="resource-icon">{icon}</span>}
-                  <span className="white-color">{resourceName}</span>
-                  <span>{resourceType}</span>
-                </li>
-              </React.Fragment>
-            );
-          } else {
-            return (
-              <React.Fragment key={profile.key}>
-                {idx > 0 && <li className="chevron-icon">{chevron}</li>}
-                <li className="resource-item">{profile.value}</li>
-              </React.Fragment>
-            );
-          }
-        })}
+        {items.map(renderBreadcrumbItem)}
       </ul>
     </div>
   );
 };
 
-export default Breadcrumb
+export default Breadcrumb;
