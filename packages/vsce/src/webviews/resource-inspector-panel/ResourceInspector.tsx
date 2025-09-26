@@ -50,37 +50,69 @@ const ResourceInspector = () => {
     const handleResize = () => {
       const headerElement1 = document.getElementById("table-header-1");
       const headerElement2 = document.getElementById("table-header-2");
+      const mainDiv = document.querySelector(".maindiv");
 
-      if (headerElement1 && headerElement2) {
+      if (headerElement1 && headerElement2 && mainDiv) {
         // Let CSS handle the width with left/right positioning
         // This ensures the header maintains its spacing from both sides
         headerElement1.style.width = ""; // Remove any inline width
-        headerElement2.style.width = ""; // Remove any inline width
-
+        
         // For header2, we still need to set a width that matches the content area
-        const contentWidth = document.querySelector(".maindiv")?.clientWidth || window.innerWidth - 36; // 36px = 2.25rem * 16px (left + right margins)
+        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36; // 36px = 2.25rem * 16px (left + right margins)
         headerElement2.style.width = contentWidth + "px";
+        
+        // Update the mask width as well
+        const maskElement = document.getElementById("header-mask");
+        if (maskElement) {
+          maskElement.style.width = "100%";
+        }
       }
     };
 
     const handleScroll = () => {
       const headerElement1 = document.getElementById("table-header-1");
       const headerElement2 = document.getElementById("table-header-2");
+      const mainDiv = document.querySelector(".maindiv");
 
-      if (headerElement1 && headerElement2) {
+      if (headerElement1 && headerElement2 && mainDiv) {
         // Use fixed values for header positioning
         headerElement1.style.top = "8px";
 
         // Position the second header below the first one
         const firstHeaderHeight = headerElement1.offsetHeight || 32;
         headerElement2.style.top = (8 + firstHeaderHeight) + "px";
+        
+        // For header2, set width that matches the content area
+        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
+        headerElement2.style.width = contentWidth + "px";
+        
+        // Create a mask element if it doesn't exist
+        let maskElement = document.getElementById("header-mask");
+        if (!maskElement) {
+          maskElement = document.createElement("div");
+          maskElement.id = "header-mask";
+          maskElement.className = "header-mask";
+          document.body.appendChild(maskElement);
+        }
+        
+        // Position the mask to cover the area of the first header
+        maskElement.style.top = "0px";
+        maskElement.style.height = (8 + firstHeaderHeight) + "px";
+        maskElement.style.left = "0px";
+        maskElement.style.width = "100%";
       }
     };
     vscode.addScrollerListener(handleScroll);
 
-    // Call handleScroll once to set initial positions
-    setTimeout(handleScroll, 0);
+    // Call handleScroll and handleResize once to set initial positions and sizes
+    setTimeout(() => {
+      handleScroll();
+      handleResize();
+    }, 0);
+    
+    // Add event listeners
     vscode.addResizeListener(handleResize);
+    window.addEventListener('resize', handleResize);
 
     vscode.postVscMessage({ command: "init" });
 
