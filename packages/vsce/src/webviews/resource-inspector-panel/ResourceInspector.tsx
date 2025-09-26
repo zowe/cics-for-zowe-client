@@ -25,6 +25,7 @@ const ResourceInspector = () => {
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
     refreshIconPath: { light: string; dark: string };
+    iconsMapping?: { [key: string]: { light: string; dark: string } };
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -45,25 +46,73 @@ const ResourceInspector = () => {
       setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
+
+    const handleResize = () => {
+      const headerElement1 = document.getElementById("resource-info-table-header");
+      const headerElement2 = document.getElementById("attributes-header");
+      const mainDiv = document.querySelector(".resource-inspector-container");
+
+      if (headerElement1 && headerElement2 && mainDiv) {
+        // Let CSS handle the width with left/right positioning
+        // This ensures the header maintains its spacing from both sides
+        headerElement1.style.width = ""; // Remove any inline width
+
+        // For header2, we still need to set a width that matches the content area
+        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36; // 36px = 2.25rem * 16px (left + right margins)
+        headerElement2.style.width = contentWidth + "px";
+
+        // Update the mask width as well
+        const maskElement = document.getElementById("header-mask");
+        if (maskElement) {
+          maskElement.style.width = "100%";
+        }
+      }
+    };
+
     const handleScroll = () => {
-      const breadcrumbDiv = document.getElementById("breadcrumb-div");
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      // Adjust the top position of the all the headers
-      headerElement1.style.top = breadcrumbDiv.offsetHeight - 1 + "px";
-      headerElement2.style.top = breadcrumbDiv.offsetHeight + headerElement1.offsetHeight - 2 + "px";
+      const headerElement1 = document.getElementById("resource-info-table-header");
+      const headerElement2 = document.getElementById("attributes-header");
+      const mainDiv = document.querySelector(".resource-inspector-container");
+
+      if (headerElement1 && headerElement2 && mainDiv) {
+        // Use fixed values for header positioning
+        headerElement1.style.top = "8px";
+
+        // Position the second header below the first one
+        const firstHeaderHeight = headerElement1.offsetHeight || 32;
+        headerElement2.style.top = (8 + firstHeaderHeight) + "px";
+
+        // For header2, set width that matches the content area
+        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
+        headerElement2.style.width = contentWidth + "px";
+
+        // Create a mask element if it doesn't exist
+        let maskElement = document.getElementById("header-mask");
+        if (!maskElement) {
+          maskElement = document.createElement("div");
+          maskElement.id = "header-mask";
+          maskElement.className = "header-mask";
+          document.body.appendChild(maskElement);
+        }
+
+        // Position the mask to cover the area of the first header
+        maskElement.style.top = "0px";
+        maskElement.style.height = (8 + firstHeaderHeight) + "px";
+        maskElement.style.left = "0px";
+        maskElement.style.width = "100%";
+      }
     };
     vscode.addScrollerListener(handleScroll);
 
-    const handleResize = () => {
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      // Adjust the width of both table headers on resize with a offset margin to maintain header alingment
-      if (headerElement1.style.width != getComputedStyle(headerElement2).width) {
-        headerElement1.style.width = Number(getComputedStyle(headerElement2).width.replace("px", "")) - 10 + "px";
-      }
-    };
+    // Call handleScroll and handleResize once to set initial positions and sizes
+    setTimeout(() => {
+      handleScroll();
+      handleResize();
+    }, 0);
+
+    // Add event listeners
     vscode.addResizeListener(handleResize);
+    window.addEventListener('resize', handleResize);
 
     vscode.postVscMessage({ command: "init" });
 
@@ -73,28 +122,26 @@ const ResourceInspector = () => {
   }, []);
 
   return (
-    <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
-      <Breadcrumb profileHandler={resourceInfo?.profileHandler} />
-      <table id="table-1" className="border-collapse">
-        <thead id="table-header-1" className="table-header1">
-          <th id="th-1" className="header-cell-1 padding-left-10">
-            <div className="div-display-1">{resourceInfo?.name ?? "..."}</div>
-            <div className="div-display-1 div-display-2">
-              {resourceInfo?.humanReadableNameSingular ?? "..."}: {
-                // @ts-ignore
-                resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
-            </div>
+    <div className="resource-inspector-container" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
+      <table id="resource-info-table" className="border-collapse">
+        <thead id="resource-info-table-header" className="resource-info-table-header">
+          <th id="resource-title" className="resource-title">
+            <Breadcrumb
+              profileHandler={resourceInfo?.profileHandler ?? []}
+              resourceName={resourceInfo?.name}
+              humanReadableNameSingular={resourceInfo?.humanReadableNameSingular}
+              iconsMapping={resourceInfo?.iconsMapping}
+            />
             {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>
         </thead>
-        <tbody className="padding-left-10 padding-top-20">
+        <tbody className="padding-left-10">
           {resourceInfo?.highlights.length > 0 && (
-            <tr>
-              <p className="padding-top-30"></p>
+            <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
-                <p className="line padding-left-27">
-                  {highlight.key}: {highlight.value}
-                </p>
+                <td key={highlight.key} className="resource-info-row">
+                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="vscode-badge-foreground-color">{highlight.value}</span>
+                </td>
               ))}
             </tr>
           )}
@@ -102,34 +149,41 @@ const ResourceInspector = () => {
       </table>
 
       <table className="border-collapse">
-        <thead id="table-header-2" className="thead-2 vertical-align-sub">
-          <th className="div-display-1 th-2">Attribute</th>
-          <th className="padding-right-10 th-3">
-            <div>
-              <div className="div-display-1 vertical-align-sub">Value</div>
-              <VscodeTextfield
-                type="text"
-                placeholder="Keyword search..."
-                onInput={(e: { target: HTMLInputElement; }) => setSearch(e.target.value)}
-                value={search}
-                className="search-style div-display-1"
-              ></VscodeTextfield>
-            </div>
-          </th>
+        <thead id="attributes-header" className="attributes-header-section">
+          <tr>
+            <th className="attributes-title" colSpan={2}>
+              <div className="attributes-header-row">
+                <div className="header-label-div">
+                  <span className="header-label">ATTRIBUTE</span>
+                </div>
+                <div className="header-label-value-div">
+                  <span className="header-label-value">VALUE</span>
+                </div>
+                <VscodeTextfield
+                  type="text"
+                  placeholder="Keyword search..."
+                  onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
+                  value={search}
+                  className="attribute-search"
+                />
+              </div>
+            </th>
+          </tr>
         </thead>
         <tbody>
-          {resourceInfo && Object.entries(resourceInfo.resource)
-            .filter(([key, value]) => !key.startsWith("_"))
-            .filter(
-              ([key, value]) =>
-                key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
-            )
-            .map(([key, value]) => (
-              <tr key={key}>
-                <td className="padding-left-27 width-30">{key}</td>
-                <td className="padding-right-75 width-70">{value}</td>
-              </tr>
-            ))}
+          {resourceInfo &&
+            Object.entries(resourceInfo.resource)
+              .filter(([key, value]) => !key.startsWith("_"))
+              .filter(
+                ([key, value]) =>
+                  key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
+              )
+              .map(([key, value]) => (
+                <tr key={key}>
+                  <td className="resource-attr-key">{key.toUpperCase()}</td>
+                  <td className="resource-attr-value">{value}</td>
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>

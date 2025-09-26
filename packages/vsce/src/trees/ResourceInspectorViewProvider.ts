@@ -150,6 +150,32 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   }
 
   /**
+   * Creates a map of resource type icons with webview-accessible URIs
+   * @returns An object mapping resource types to their icon URIs
+   */
+  private getIconsMapping() {
+    const createIconPaths = (iconName: string) => ({
+      light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).light)).toString(),
+      dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName(iconName).dark)).toString(),
+    });
+    const icons = {
+      program: createIconPaths("program"),
+      transaction: createIconPaths("local-transaction"),
+      "local file": createIconPaths("local-file"),
+      task: createIconPaths("task-running"),
+      library: createIconPaths("library"),
+      pipeline: createIconPaths("pipeline"),
+      "tcp/ip service": createIconPaths("tcp-ip-service"),
+      "uri map": createIconPaths("uri-map"),
+      "web service": createIconPaths("web-services"),
+      "jvm server": createIconPaths("jvm-server"),
+      bundle: createIconPaths("bundles"),
+      chevron: createIconPaths("chevron"),
+    };
+    return icons;
+  }
+
+  /**
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
@@ -160,6 +186,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
           dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
         },
+        iconsMapping: this.getIconsMapping(),
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
