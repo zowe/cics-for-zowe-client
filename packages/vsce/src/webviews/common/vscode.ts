@@ -19,8 +19,7 @@ export interface TransformWebviewMessage {
   data?: {
     name: string;
     refreshIconPath: { light: string; dark: string };
-    resourceTypeIcons?: { [key: string]: { light: string; dark: string } };
-    chevronIconPath?: { light: string; dark: string };
+    iconsMapping?: { [key: string]: { light: string; dark: string } };
     resourceName: string;
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
