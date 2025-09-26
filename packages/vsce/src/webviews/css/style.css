@@ -92,6 +92,14 @@
   pointer-events: none;
 }
 
+body.vscode-light{
+ background-color: var(--vscode-editor-background);
+}
+
+body.vscode-dark{
+  background-color: var(--vscode-editor-background);
+}
+
 table:not(#resource-info-table) {
   margin-top: 8px;
   position: relative;
@@ -349,7 +357,7 @@ body.vscode-dark vscode-context-menu {
   color: var(--vscode-badge-foreground);
 }
 
-.vscode-badge-foreground-color {
+.vscode-breadcrumb-foreground-color {
   color: var(--vscode-breadcrumb-foreground);
 }
 
