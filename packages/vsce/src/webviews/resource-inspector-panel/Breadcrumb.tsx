@@ -47,7 +47,7 @@ const Breadcrumb = ({
   iconsMapping?: IconsMapping;
 }) => {
   const items = [
-    ...(profileHandler?.filter((p) => p.value !== null && p.value != "VSCPLEX") ?? []),
+    ...(profileHandler?.filter((p) => p.value !== null && p.key != "profile") ?? []),
     resourceName ?
       {
         key: "resourceName",

@@ -3,7 +3,8 @@
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
-  max-width: 75rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .table-header1 {
@@ -13,7 +14,8 @@
   padding: 0px 12px;
   left: 2.25rem;
   right: 2.25rem;
-  z-index: 1;
+  z-index: 10;
+  background-color: var(--vscode-editor-background);
 }
 
 .padding-top-20 {
@@ -49,6 +51,8 @@
 
 .thead-2 {
   position: sticky;
+  z-index: 5;
+  background-color: var(--vscode-editor-background);
 }
 
 .th-2 {
@@ -140,6 +144,42 @@
 
 .border-collapse {
   border-collapse: collapse;
+}
+
+.header-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9;
+  background-color: var(--vscode-editor-background);
+  pointer-events: none;
+}
+
+table:not(#table-1) {
+  margin-top: 8px;
+  position: relative;
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+.maindiv {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+table {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+table tbody tr {
+  background-color: var(--vscode-editor-background);
+}
+
+.th-header-single {
+  width: 100%;
 }
 
 /* Combined common table styling for both themes */
@@ -380,7 +420,7 @@ body.vscode-dark vscode-context-menu {
 }
 
 .white-color {
-  color: #ffffff;
+  color: var(--vscode-badge-foreground);
 }
 
 .resource-item {
