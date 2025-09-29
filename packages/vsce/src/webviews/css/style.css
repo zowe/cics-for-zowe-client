@@ -22,12 +22,12 @@
   vertical-align: middle;
   display: flex;
   width: 100% !important;
+  max-width: 73.75rem !important;
   height: 1rem;
   align-items: center;
   gap: 0.25rem;
   flex-shrink: 0;
   padding: 0.5rem 0 !important;
-  position: relative;
 }
 
 .attributes-header-section {
@@ -265,11 +265,9 @@ ul.breadcrumb li a:hover {
 }
 
 .dropdown-container {
-  position: absolute;
-  right: 0;
+  position: relative;
+  float: inline-end;
   display: inline-flex;
-  align-items: center;
-  height: 100%;
 }
 
 .resource-info-row {
@@ -296,15 +294,13 @@ ul.breadcrumb li a:hover {
   user-select: none;
   cursor: pointer;
   font-weight: bolder;
-  display: flex;
-  align-items: center;
 }
 
 .refresh-icon{
-  padding-right: 0.25rem;
+  padding-right: 0.375rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
 }
 
 body.vscode-light vscode-context-menu {
