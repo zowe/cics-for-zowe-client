@@ -45,9 +45,8 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
     return label;
   },
 
-  getContext: function (jvmEndpoint: Resource<IJVMEndpoint>): string {
-    return `${CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT
-      }.${jvmEndpoint.attributes.enablestatus.trim().toUpperCase()}.${jvmEndpoint.attributes.jvmendpoint}`;
+  getContext(resource: Resource<IJVMEndpoint>): string {
+    return `CICSResourceNode.CICSJVMEndpoint.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.jvmendpoint}`;
   },
 
   getIconName(resource: Resource<IJVMEndpoint>): string {
