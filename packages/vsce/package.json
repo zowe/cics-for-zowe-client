@@ -717,6 +717,12 @@
           "description": "Default filter criteria for Web Service",
           "scope": "window"
         },
+        "zowe.cics.jvmEndpoint.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for JVM Endpoint",
+          "scope": "window"
+        },
         "zowe.cics.CICSBundle.filter": {
           "type": "string",
           "default": "(NAME=*)",
@@ -778,6 +784,10 @@
             "Bundle": {
               "type": "boolean",
               "description": "CICS Bundle"
+            },
+            "JVMEndpoint": {
+              "type": "boolean",
+              "description": "CICS JVM Endpoint"
             }
           },
           "default": {
@@ -791,7 +801,8 @@
             "URIMap": true,
             "WebService": true,
             "JVMServer": true,
-            "Bundle": true
+            "Bundle": true,
+            "JVMEndpoint": true
           },
           "scope": "window"
         }
