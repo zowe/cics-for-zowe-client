@@ -46,22 +46,15 @@ const ResourceInspector = () => {
       setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
-
     const handleResize = () => {
       const headerElement1 = document.getElementById("resource-info-table-header");
       const headerElement2 = document.getElementById("attributes-header");
       const mainDiv = document.querySelector(".resource-inspector-container");
 
       if (headerElement1 && headerElement2 && mainDiv) {
-        // Let CSS handle the width with left/right positioning
-        // This ensures the header maintains its spacing from both sides
-        headerElement1.style.width = ""; // Remove any inline width
-
-        // For header2, we still need to set a width that matches the content area
-        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36; // 36px = 2.25rem * 16px (left + right margins)
+        headerElement1.style.width = "";
+        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
         headerElement2.style.width = contentWidth + "px";
-
-        // Update the mask width as well
         const maskElement = document.getElementById("header-mask");
         if (maskElement) {
           maskElement.style.width = "100%";
@@ -75,18 +68,11 @@ const ResourceInspector = () => {
       const mainDiv = document.querySelector(".resource-inspector-container");
 
       if (headerElement1 && headerElement2 && mainDiv) {
-        // Use fixed values for header positioning
         headerElement1.style.top = "8px";
-
-        // Position the second header below the first one
         const firstHeaderHeight = headerElement1.offsetHeight || 32;
         headerElement2.style.top = (8 + firstHeaderHeight) + "px";
-
-        // For header2, set width that matches the content area
         const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
         headerElement2.style.width = contentWidth + "px";
-
-        // Create a mask element if it doesn't exist
         let maskElement = document.getElementById("header-mask");
         if (!maskElement) {
           maskElement = document.createElement("div");
@@ -94,8 +80,6 @@ const ResourceInspector = () => {
           maskElement.className = "header-mask";
           document.body.appendChild(maskElement);
         }
-
-        // Position the mask to cover the area of the first header
         maskElement.style.top = "0px";
         maskElement.style.height = (8 + firstHeaderHeight) + "px";
         maskElement.style.left = "0px";
@@ -103,24 +87,17 @@ const ResourceInspector = () => {
       }
     };
     vscode.addScrollerListener(handleScroll);
-
-    // Call handleScroll and handleResize once to set initial positions and sizes
     setTimeout(() => {
       handleScroll();
       handleResize();
     }, 0);
-
-    // Add event listeners
     vscode.addResizeListener(handleResize);
     window.addEventListener('resize', handleResize);
-
     vscode.postVscMessage({ command: "init" });
-
     return () => {
       vscode.removeVscMessageListener(listener);
     };
   }, []);
-
   return (
     <div className="resource-inspector-container" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
       <table id="resource-info-table" className="border-collapse">
@@ -147,7 +124,6 @@ const ResourceInspector = () => {
           )}
         </tbody>
       </table>
-
       <table className="border-collapse">
         <thead id="attributes-header" className="attributes-header-section">
           <tr>
