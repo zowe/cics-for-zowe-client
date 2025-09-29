@@ -140,7 +140,7 @@ const Contextmenu = ({
             {
               position: "fixed",
               top: y,
-              left: x - (menuWidth + 100),
+              right: window.innerWidth - x,
               fontWeight: "900",
               minWidth: 0, // Allow shrinking to content width
               paddingLeft: "2px", // Set 2px left padding
