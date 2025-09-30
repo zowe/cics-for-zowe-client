@@ -12,7 +12,7 @@
 import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
-import { JVMEndpointMeta } from "../../doc";
+import { IJVMEndpoint, JVMEndpointMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
@@ -34,31 +34,34 @@ export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<
 
     await window.withProgress(
       {
-        title: "Disable",
+        title: "Disable JVM Endpoint",
         location: ProgressLocation.Notification,
         cancellable: false,
       },
       async (progress, token) => {
         token.onCancellationRequested(() => { });
 
-        for (const node of nodes) {
-          progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
+      progress.report({
+        message: `Disabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
+        increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
+      });
 
-          try {
-            await disableJVMEndpoint(node.getSession(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
-          } catch (error) {
-            const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-              error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-            window.showErrorMessage(message);
-            CICSLogger.error(message);
+      try {
+        await disableJVMEndpoint(node.getSession(), {
+          name: resource.jvmendpoint,
+          cicsPlex: node.cicsplexName,
+          regionName: node.regionName ?? resource.eyu_cicsname,
+          jvmserver: resource.jvmserver,
+        } as ICommandParams & { jvmserver: string });
+      } catch (error) {
+        const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
+          error.message
+        ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
+        window.showErrorMessage(message);
+        CICSLogger.error(message);
           }
         }
         tree._onDidChangeTreeData.fire(nodes[0].getParent());
@@ -68,13 +71,14 @@ export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<
 }
 
 function disableJVMEndpoint(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+  const jvmserver = (parms as any).jvmserver;
   return runPutResource(
     {
       session: session,
       resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,
-      params: { criteria: `JVMENDPOINT='${parms.name}'` },
+      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmserver}')` }, 
     },
     {
       request: {
