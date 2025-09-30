@@ -19,5 +19,9 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Enforce prettier on save
   "editor.formatOnSave": true,
-  "npm.packageManager": "npm"
+  "npm.packageManager": "npm",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "zowe",
+    "projectKey": "zowe_cics-for-zowe-client"
+  }
 }
