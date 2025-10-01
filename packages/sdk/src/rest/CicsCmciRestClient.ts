@@ -13,7 +13,6 @@ import { AbstractSession, IImperativeError, ImperativeError, Logger, RestClient,
 import { Builder, Parser } from "xml2js";
 import { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
 import { CicsCmciMessages } from "../constants/CicsCmci.messages";
-import { isString } from "util";
 
 /**
  * Wrapper for invoke CICS CMCI API through the RestClient to perform common error
@@ -140,7 +139,7 @@ export class CicsCmciRestClient extends RestClient {
      * @returns {string} the XML that can be used as the request body
      */
   private static convertPayloadToXML(payload: any): string {
-    if (isString(payload)) {
+    if (typeof payload == "string") {
       // if it's already a string, use it verbatim
       return payload;
     } else {
