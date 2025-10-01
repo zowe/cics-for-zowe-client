@@ -37,6 +37,8 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { userUnAuthorizedError } from "../errors/CICSErrorHandler";
+import errorConstants from "../constants/CICS.errorMessages";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -238,6 +240,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               sessionTree.setAuthorized();
             } catch (error) {
               if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
+                const errorMessage =  l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, profile.name)
+                userUnAuthorizedError({errorMessage: errorMessage});
                 sessionTree.setUnauthorized();
                 profile = await updateProfile(profile, sessionTree);
 

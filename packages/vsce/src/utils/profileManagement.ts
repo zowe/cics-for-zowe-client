@@ -113,19 +113,12 @@ export class ProfileManagement {
       });
       return response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? response.resultsummary.cachetoken : null;
     } catch (error) {
-      let errorMessage = `Error requesting CICSCICSPlex`;
-
       if (error instanceof imperative.RestClientError) {
         if (`${error.mDetails.errorCode}` === `${constants.HTTP_ERROR_NOT_FOUND}` || `${error.errorCode}` === `${constants.HTTP_ERROR_NOT_FOUND}`) {
           // Not a failure, just means it's not a Plex
           return null;
         }
-        errorMessage = this.formatRestClientError(error);
       }
-
-      Gui.showMessage(errorMessage, {
-        severity: MessageSeverity.ERROR,
-      });
       throw error;
     }
   }
