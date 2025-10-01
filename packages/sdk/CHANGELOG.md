@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated SDK to be compatible with Node 24. [#435](https://github.com/zowe/cics-for-zowe-client/pull/435)
+
 ## `5.0.9`
 
 - Updated dependencies for technical currency. [#233](https://github.com/zowe/cics-for-zowe-client/pull/233)
