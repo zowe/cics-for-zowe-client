@@ -9,13 +9,13 @@
  *
  */
 
-import { SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IResource, IResourceMeta, TransactionMeta } from "../doc";
+import { getMetas, IResourceMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
 import { Resource, ResourceContainer } from "../resources";

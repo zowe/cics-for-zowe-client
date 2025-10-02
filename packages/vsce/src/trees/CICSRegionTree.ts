@@ -14,7 +14,6 @@ import { TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   ICICSTreeNode,
-  IResource,
   IResourceMeta,
   LibraryMeta,
   LocalFileMeta,
@@ -33,6 +32,7 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   region: any;
