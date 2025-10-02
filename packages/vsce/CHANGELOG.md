@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Expose an extender API containing resourceExtender.
+
 ## `3.13.0`
 
 - Renamed the VSCE to `Zowe Explorer for IBM CICS Transaction Server`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
