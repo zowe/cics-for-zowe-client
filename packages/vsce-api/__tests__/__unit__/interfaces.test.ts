@@ -52,7 +52,6 @@ describe("Interfaces", () => {
 
   const res: IResource = {
     eyu_cicsname: "REGION1",
-    status: "ENABLED",
   };
 
   const profile: imperative.IProfileLoaded = {
@@ -97,7 +96,6 @@ describe("Interfaces", () => {
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");
-    expect(res).toHaveProperty("status");
   });
   it("should assert IResourceContext", () => {
     expect(cx).toHaveProperty("session");

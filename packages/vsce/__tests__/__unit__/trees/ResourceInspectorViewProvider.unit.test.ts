@@ -64,7 +64,7 @@ describe("Resource Inspector View provider", () => {
     resource: new Resource<IPipeline>({
       eyu_cicsname: "MYREGION",
       name: "PIP1",
-      status: "ENABLED",
+      enablestatus: "ENABLED",
     })
   };
 

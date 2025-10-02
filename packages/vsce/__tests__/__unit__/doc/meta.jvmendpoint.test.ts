@@ -21,7 +21,6 @@ describe("JVM Endpoint Meta", () => {
     parentResource = new Resource<IJVMServer>({
       eyu_cicsname: "MYREG",
       name: "JVM1",
-      status: "ENABLED",
       enablestatus: "ENABLED",
     });
     jvmEndpointMock = new Resource({
