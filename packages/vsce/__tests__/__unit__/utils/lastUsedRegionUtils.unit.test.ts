@@ -194,19 +194,19 @@ describe("Test suite for lastUsedRegionUtils", () => {
     it("should return plex info from profile", async () => {
       const mockPlexInfo = { plexName: "PLEX1" };
       getPlexInfoMock.mockResolvedValueOnce(mockPlexInfo);
-      const result = await getPlexInfoFromProfile(globalMocks.profile, mockSession);
+      const result = await getPlexInfoFromProfile(globalMocks.profile);
 
       expect(result).toEqual(mockPlexInfo);
-      expect(getPlexInfoMock).toHaveBeenCalledWith(globalMocks.profile, mockSession);
+      expect(getPlexInfoMock).toHaveBeenCalledWith(globalMocks.profile);
     });
 
     it("should handle error while fetching plex info and return null", async () => {
       const errorMessage = "Error fetching plex info";
       getPlexInfoMock.mockRejectedValue(new Error(errorMessage));
-      const result = await getPlexInfoFromProfile(globalMocks.profile, mockSession);
+      const result = await getPlexInfoFromProfile(globalMocks.profile);
 
       expect(result).toBeNull();
-      expect(getPlexInfoMock).toHaveBeenCalledWith(globalMocks.profile, mockSession);
+      expect(getPlexInfoMock).toHaveBeenCalledWith(globalMocks.profile);
     });
   });
 

@@ -12,7 +12,10 @@
         "cwd": "${workspaceFolder}/packages/vsce"
       },
       "command": "npm",
-      "args": ["run", "watch"],
+      "args": [
+        "run",
+        "watch"
+      ],
       "problemMatcher": {
         "owner": "typescript",
         "source": "ts",
@@ -34,10 +37,10 @@
         "background": {
           "activeOnStart": true,
           "beginsPattern": {
-            "regexp": "CLI Change detected:(.*?)"
+            "regexp": "(.*?)Compiler starting...(.*?)"
           },
           "endsPattern": {
-            "regexp": "(.*?)DTS ⚡️ Build success in(.*?)"
+            "regexp": "(.*?)Compiler is watching files for updates...(.*?)"
           }
         }
       }
