@@ -13,6 +13,7 @@ describe("JVM Endpoint Meta", () => {
       name: "JVM1",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      jvmserver: "JVM1",
     });
     jvmEndpointMock = new Resource({
       eyu_cicsname: "MYREG",
@@ -21,6 +22,7 @@ describe("JVM Endpoint Meta", () => {
       enablestatus: "ENABLED",
       jvmendpoint: "JVME1", 
       jvmserver: "JVM1",
+      port: "1420",
     });
   });
 
@@ -48,13 +50,13 @@ describe("JVM Endpoint Meta", () => {
   it("should return context with enabled status when enabled", () => {
     jvmEndpointMock.attributes.enablestatus = "ENABLED";
     const context = JVMEndpointMeta.getContext(jvmEndpointMock);
-    expect(context).toEqual("CICSJvmEndpoint.ENABLED.JVME1");
+    expect(context).toEqual("CICSJVMEndpoint.ENABLED.JVME1");
   });
 
   it("should return context with disabled status when disabled", () => {
     jvmEndpointMock.attributes.enablestatus = "DISABLED";
     const context = JVMEndpointMeta.getContext(jvmEndpointMock);
-    expect(context).toEqual("CICSJvmEndpoint.DISABLED.JVME1");
+    expect(context).toEqual("CICSJVMEndpoint.DISABLED.JVME1");
   });
 
   it("should get name", () => {
