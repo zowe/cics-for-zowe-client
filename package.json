@@ -55,7 +55,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-html-reporter": "^3.7.1",
     "jest-junit": "^15.0.0",
-    "jest-stare": "^2.5.0",
+    "jest-stare": "^2.5.3",
     "js-yaml": "^4.1.0",
     "madge": "^6.0.0",
     "npm-lockfile": "^4.0.0",
