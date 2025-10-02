@@ -62,13 +62,13 @@ To build the project locally, follow these steps:
    npm run build
    ```
 
-4. Run tests (optional):
+4. Run tests:
 
    ```bash
    npm run test:unit
    ```
 
-5. Run e2e tests (optional):
+5. Run e2e tests (or check results in the CI build if you don't have a suitable Docker environment):
 
    ```bash
    npm run test:e2e
