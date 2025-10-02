@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceAction } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceAction } from "@zowe/cics-for-zowe-explorer-api";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getTransactionActions } from "./TransactionActions";

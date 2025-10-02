@@ -9,8 +9,8 @@
  *
  */
 
+import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 import { WebServiceMeta } from "../../../src/doc/meta/webservice.meta";
-import { IWebService } from "../../../src/doc/resources/IWebService";
 import { Resource } from "../../../src/resources";
 
 describe("WebService Meta", () => {
