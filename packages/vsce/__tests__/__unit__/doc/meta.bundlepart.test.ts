@@ -9,9 +9,8 @@
  *
  */
 
-import { IBundle } from "../../../src/doc";
+import { IBundlePart, IBundle } from "@zowe/cics-for-zowe-explorer-api";
 import { BundlePartMeta } from "../../../src/doc/meta/bundlePart.meta";
-import { IBundlePart } from "../../../src/doc/resources/IBundlePart";
 import { Resource } from "../../../src/resources";
 
 describe("Bundle Part Meta", () => {

@@ -9,9 +9,8 @@
  *
  */
 
+import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "../../../src/doc/meta/jvmEndpoints.meta";
-import { IJVMEndpoint } from "../../../src/doc/resources/IJVMEndpoint";
-import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
 describe("JVM Endpoint Meta", () => {
