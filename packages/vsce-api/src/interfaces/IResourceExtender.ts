@@ -10,12 +10,13 @@
  */
 
 import { IResourceAction } from "./IResourceAction";
+import { IResource } from "./resources";
 
 export interface IResourceExtender {
-  registeredActions: IResourceAction[];
+  registeredActions: IResourceAction<IResource>[];
 
-  registerAction: (action: IResourceAction) => void;
+  registerAction: (action: IResourceAction<IResource>) => void;
   deregisterAction: (id: string) => void;
-  getActions: () => IResourceAction[];
-  getAction: (id: string) => IResourceAction;
+  getActions: () => IResourceAction<IResource>[];
+  getAction: (id: string) => IResourceAction<IResource>;
 }

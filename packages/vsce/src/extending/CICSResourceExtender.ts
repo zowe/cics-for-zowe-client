@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceExtender } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceAction, IResourceExtender } from "@zowe/cics-for-zowe-explorer-api";
 import { getBuiltInResourceActions } from "../resources/actions";
 
 class SCICSResourceExtender implements IResourceExtender {
@@ -17,13 +17,13 @@ class SCICSResourceExtender implements IResourceExtender {
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
-  registeredActions: IResourceAction[];
+  registeredActions: IResourceAction<IResource>[];
 
   private constructor() {
     this.registeredActions = getBuiltInResourceActions();
   }
 
-  registerAction(action: IResourceAction) {
+  registerAction(action: IResourceAction<IResource>) {
     this.registeredActions.push(action);
   }
   deregisterAction(id: string) {
@@ -35,7 +35,7 @@ class SCICSResourceExtender implements IResourceExtender {
   getAction(id: string) {
     return this.registeredActions.filter((action) => action.id.toUpperCase() === id.toUpperCase())[0] ?? undefined;
   }
-  getActionsForResourceType(resType: string[]): IResourceAction[] {
+  getActionsForResourceType(resType: string[]): IResourceAction<IResource>[] {
     return this.registeredActions.filter((action) => resType.includes(action.resourceType));
   }
 }

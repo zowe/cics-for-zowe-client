@@ -11,7 +11,7 @@
 
 import { ILocalFile, IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
-export function getLocalFileActions(): IResourceAction[] {
+export function getLocalFileActions(): IResourceAction<ILocalFile>[] {
   return [
     {
       id: "CICS.CICSLocalFile.OPEN",

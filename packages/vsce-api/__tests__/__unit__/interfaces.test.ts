@@ -19,14 +19,12 @@ import { IResourceAction } from "../../src/interfaces/IResourceAction";
 import { IResource } from "../../src/interfaces/resources";
 
 describe("Interfaces", () => {
-  const action: IResourceAction = {
+
+  const action: IResourceAction<IResource> = {
     id: "CICS.CICSProgram.NEWCOPY",
     name: "New Copy Program",
     resourceType: ResourceTypes.CICSProgram,
     action: async (_resource: IResource, _resourceContext: IResourceContext) => { },
-    enabledWhen(_resource, _resourceContext) {
-      return true;
-    },
     visibleWhen(_resource, _resourceContext) {
       return true;
     },
@@ -47,6 +45,7 @@ describe("Interfaces", () => {
   const api: IExtensionAPI = {
     resources: {
       supportedResources: SupportedResourceTypes,
+      resourceExtender: extender,
     },
   };
 
@@ -80,7 +79,6 @@ describe("Interfaces", () => {
     expect(action).toHaveProperty("name");
     expect(action).toHaveProperty("resourceType");
     expect(action).toHaveProperty("action");
-    expect(action).toHaveProperty("enabledWhen");
     expect(action).toHaveProperty("visibleWhen");
   });
   it("should assert IResourceExtender", () => {
@@ -93,6 +91,7 @@ describe("Interfaces", () => {
   it("should assert IExtensionAPI", () => {
     expect(api).toHaveProperty("resources");
     expect(api.resources).toHaveProperty("supportedResources");
+    expect(api.resources).toHaveProperty("resourceExtender");
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");

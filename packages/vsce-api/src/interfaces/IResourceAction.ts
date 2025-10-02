@@ -13,11 +13,10 @@ import { ResourceTypes } from "../resources";
 import { IResource } from "./resources/IResource";
 import { IResourceContext } from "./IResourceContext";
 
-export interface IResourceAction {
+export interface IResourceAction<T extends IResource> {
   id: string;
   name: string;
   resourceType: ResourceTypes;
-  visibleWhen?: (resource: IResource, resourceContext: IResourceContext) => boolean | Promise<boolean>;
-  enabledWhen?: (resource: IResource, resourceContext: IResourceContext) => boolean | Promise<boolean>;
-  action: string | ((resource: IResource, resourceContext: IResourceContext) => void | Promise<void>);
+  visibleWhen?: (resource: T, resourceContext: IResourceContext) => boolean | Promise<boolean>;
+  action: string | ((resource: T, resourceContext: IResourceContext) => void | Promise<void>);
 }

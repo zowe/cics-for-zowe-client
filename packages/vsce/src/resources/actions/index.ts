@@ -14,7 +14,7 @@ import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getTransactionActions } from "./TransactionActions";
 
-export function getBuiltInResourceActions(): IResourceAction[] {
+export function getBuiltInResourceActions(): IResourceAction<IResource>[] {
   return [...getProgramActions(), ...getLocalFileActions(), ...getTransactionActions()];
 }
 
