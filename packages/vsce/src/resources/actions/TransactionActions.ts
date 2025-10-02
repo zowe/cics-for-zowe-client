@@ -11,7 +11,7 @@
 
 import { IResourceAction, IResourceContext, ITransaction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
-export function getTransactionActions(): IResourceAction[] {
+export function getTransactionActions(): IResourceAction<ITransaction>[] {
   return [
     {
       id: "CICS.CICSLocalTransaction.INQUIRE",

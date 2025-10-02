@@ -11,7 +11,7 @@
 
 import { IProgram, IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
-export function getProgramActions(): IResourceAction[] {
+export function getProgramActions(): IResourceAction<IProgram>[] {
   return [
     {
       id: "CICS.CICSProgram.NEWCOPY",

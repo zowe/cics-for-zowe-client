@@ -176,7 +176,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActions() {
     // Required as Array.filter cannot be asyncronous
-    const asyncFilter = async (arr: IResourceAction[], predicate: (action: IResourceAction) => Promise<boolean>) => {
+    const asyncFilter = async (arr: IResourceAction<IResource>[], predicate: (action: IResourceAction<IResource>) => Promise<boolean>) => {
       const results = await Promise.all(arr.map(predicate));
       return arr.filter((_v, index) => results[index]);
     };
@@ -185,7 +185,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     let actionsForResource = CICSResourceExtender.getActionsForResourceType([this.resource.meta.resourceName]);
 
     // Filter out resources that shouldn't be visible
-    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction) => {
+    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction<IResource>) => {
       if (!action.visibleWhen) {
         return true;
       }
