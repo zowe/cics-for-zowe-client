@@ -9,8 +9,9 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithStatus } from "./IResource";
 
-export interface IPipeline extends IResource {
-  name: string;
+export interface ITransaction extends IResourceWithStatus {
+  tranid: string;
+  program: string;
 }

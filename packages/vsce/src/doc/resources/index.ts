@@ -9,20 +9,5 @@
  *
  */
 
-export * from "./IBundle";
-export * from "./IBundlePart";
 export * from "./ICICSplex";
-export * from "./ILibrary";
-export * from "./ILibraryDataset";
-export * from "./ILocalFile";
-export * from "./IPipeline";
-export * from "./IProgram";
 export * from "./IRegion";
-export * from "./IResource";
-export * from "./ITCPIP";
-export * from "./ITask";
-export * from "./ITransaction";
-export * from "./IURIMap";
-export * from "./IWebService";
-export * from "./IJVMServer";
-export * from "./IJVMEndpoint";
