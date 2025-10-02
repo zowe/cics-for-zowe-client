@@ -19,7 +19,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ------
 
 ** tunnel-agent; version 0.6.0 -- https://github.com/mikeal/tunnel-agent#readme
-** typescript; version 5.9.2 -- https://www.typescriptlang.org/
+** typescript; version 5.9.3 -- https://www.typescriptlang.org/
 (c) by W3C
 Copyright (c) 2018 WHATWG
 Copyright (c) Microsoft Corporation
@@ -1973,7 +1973,7 @@ Copyright 2019 Coveo Solutions Inc.
 ** @sigstore/verify; version 1.2.1 -- https://github.com/sigstore/sigstore-js/tree/main/packages/verify#readme
 Copyright 2023 The Sigstore Authors
 ** @xtuc/long; version 4.2.2 -- https://github.com/dcodeIO/long.js#readme
-** baseline-browser-mapping; version 2.8.9 -- https://github.com/web-platform-dx/baseline-browser-mapping#readme
+** baseline-browser-mapping; version 2.8.10 -- https://github.com/web-platform-dx/baseline-browser-mapping#readme
 ** detect-libc; version 2.1.1 -- https://github.com/lovell/detect-libc#readme
 Copyright 2017 Lovell Fuller and others.
 ** spdx-correct; version 3.2.0 -- https://github.com/jslicense/spdx-correct.js#readme
@@ -4400,7 +4400,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** electron-to-chromium; version 1.5.227 -- https://github.com/kilian/electron-to-chromium#readme
+** electron-to-chromium; version 1.5.228 -- https://github.com/kilian/electron-to-chromium#readme
 Copyright 2018 Kilian Valkhof
 
 Copyright 2018 Kilian Valkhof
@@ -5240,6 +5240,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** import-local; version 3.2.0 -- https://github.com/sindresorhus/import-local#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+** index-to-position; version 1.2.0 -- https://github.com/sindresorhus/index-to-position#readme
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** is-docker; version 3.0.0 -- https://github.com/sindresorhus/is-docker#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** is-inside-container; version 1.0.0 -- https://github.com/sindresorhus/is-inside-container#readme
@@ -5946,7 +5948,7 @@ THE SOFTWARE.
 
 ------
 
-** browserslist; version 4.26.2 -- https://github.com/browserslist/browserslist#readme
+** browserslist; version 4.26.3 -- https://github.com/browserslist/browserslist#readme
 Copyright 2014 Andrey Sitnik <andrey@sitnik.ru> and other contributors
 
 The MIT License (MIT)
@@ -6638,12 +6640,12 @@ Copyright (c) Meta Platforms, Inc. and affiliates
 Copyright (c) Meta Platforms, Inc. and affiliates
 ** pretty-format; version 29.7.0 -- https://github.com/jestjs/jest#readme
 Copyright (c) Meta Platforms, Inc. and affiliates
-** react; version 19.1.1 -- https://react.dev/
+** react; version 19.2.0 -- https://react.dev/
 Copyright (c) Meta Platforms, Inc. and affiliates
-** react-dom; version 19.1.1 -- https://react.dev/
+** react-dom; version 19.2.0 -- https://react.dev/
 Copyright (c) 2011 Gary Court
 Copyright (c) Meta Platforms, Inc. and affiliates
-** scheduler; version 0.26.0 -- https://react.dev/
+** scheduler; version 0.27.0 -- https://react.dev/
 Copyright (c) Meta Platforms, Inc. and affiliates
 
 MIT License
@@ -6731,8 +6733,6 @@ Copyright Mathias Bynens <https://mathiasbynens.be/>
 ** emoji-regex; version 8.0.0 -- https://mths.be/emoji-regex
 Copyright Mathias Bynens <https://mathiasbynens.be/>
 ** he; version 1.2.0 -- https://mths.be/he
-Copyright Mathias Bynens <https://mathiasbynens.be/>
-** jsesc; version 3.1.0 -- https://mths.be/jsesc
 Copyright Mathias Bynens <https://mathiasbynens.be/>
 ** punycode; version 2.3.1 -- https://mths.be/punycode
 Copyright Mathias Bynens <https://mathiasbynens.be/>
@@ -9018,6 +9018,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ** call-bind; version 1.0.8 -- https://github.com/ljharb/call-bind#readme
 Copyright (c) 2020 Jordan Harband
+** get-intrinsic; version 1.3.0 -- https://github.com/ljharb/get-intrinsic#readme
+Copyright (c) 2020 Jordan Harband
 
 MIT License
 
@@ -9045,8 +9047,6 @@ SOFTWARE.
 ------
 
 ** @jridgewell/gen-mapping; version 0.3.13 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping
-Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
-** @jridgewell/remapping; version 2.3.5 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/remapping
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
 ** @jridgewell/source-map; version 0.3.11 -- https://github.com/jridgewell/sourcemaps/tree/main/packages/source-map
 Copyright 2024 Justin Ridgewell <justin@ridgewell.name>
@@ -9078,7 +9078,7 @@ SOFTWARE.
 
 ------
 
-** @azure/msal-browser; version 4.24.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
+** @azure/msal-browser; version 4.24.1 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
 ** @azure/msal-common; version 15.13.0 -- https://github.com/AzureAD/microsoft-authentication-library-for-js#readme
 Copyright (c) Microsoft Corporation
@@ -9331,42 +9331,7 @@ SOFTWARE.
 
 ** @babel/code-frame; version 7.27.1 -- https://babel.dev/docs/en/next/babel-code-frame
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/compat-data; version 7.28.4 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/core; version 7.28.4 -- https://babel.dev/docs/en/next/babel-core
-Copyright Node.js contributors
-Copyright (c) 2021 Titus Wormer
-Copyright Joyent, Inc. and other Node contributors
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/generator; version 7.28.3 -- https://babel.dev/docs/en/next/babel-generator
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-compilation-targets; version 7.27.2 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-globals; version 7.28.0 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-module-imports; version 7.27.1 -- https://babel.dev/docs/en/next/babel-helper-module-imports
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-module-transforms; version 7.28.3 -- https://babel.dev/docs/en/next/babel-helper-module-transforms
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-plugin-utils; version 7.27.1 -- https://babel.dev/docs/en/next/babel-helper-plugin-utils
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-string-parser; version 7.27.1 -- https://babel.dev/docs/en/next/babel-helper-string-parser
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
 ** @babel/helper-validator-identifier; version 7.27.1 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/helper-validator-option; version 7.27.1 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/plugin-proposal-export-namespace-from; version 7.18.9 -- https://babel.dev/docs/en/next/babel-plugin-proposal-export-namespace-from
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/plugin-syntax-export-namespace-from; version 7.8.3 -- 
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/plugin-transform-modules-commonjs; version 7.27.1 -- https://babel.dev/docs/en/next/babel-plugin-transform-modules-commonjs
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/template; version 7.27.2 -- https://babel.dev/docs/en/next/babel-template
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/traverse; version 7.28.4 -- https://babel.dev/docs/en/next/babel-traverse
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-** @babel/types; version 7.28.4 -- https://babel.dev/docs/en/next/babel-types
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 MIT License
@@ -9750,6 +9715,38 @@ SOFTWARE.
 
 ------
 
+** mocha; version 11.7.4 -- https://mochajs.org/
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+Copyright 2011-2024 OpenJS Foundation and contributors
+Copyright (c) 2011-2024 OpenJS Foundation and contributors, https://openjsf.org
+
+(The MIT License)
+
+Copyright (c) 2011-2024 OpenJS Foundation and contributors, https://openjsf.org
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
 ** commander; version 6.2.1 -- https://github.com/tj/commander.js#readme
 Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 
@@ -9842,37 +9839,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** @babel/helpers; version 7.28.4 -- https://babel.dev/docs/en/next/babel-helpers
-Copyright (c) 2014-present, Facebook, Inc.
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-MIT License
-
-Copyright (c) 2014-present Sebastian McKenzie and other contributors
-Copyright (c) 2014-present, Facebook, Inc. (ONLY ./src/helpers/regenerator* files)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-------
-
 ** end-of-stream; version 1.4.5 -- https://github.com/mafintosh/end-of-stream
 Copyright (c) 2014 Mathias Buus
 ** pump; version 3.0.3 -- https://github.com/mafintosh/pump#readme
@@ -9929,7 +9895,9 @@ Copyright Node.js contributors
 Copyright (c) Microsoft Corporation
 ** @types/normalize-package-data; version 2.4.4 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/normalize-package-data
 Copyright (c) Microsoft Corporation
-** @types/react-dom; version 19.1.9 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom
+** @types/react; version 19.2.0 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react
+Copyright (c) Microsoft Corporation
+** @types/react-dom; version 19.2.0 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom
 Copyright (c) Microsoft Corporation
 ** @types/sarif; version 2.1.7 -- https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/sarif
 Copyright (c) Microsoft Corporation
@@ -10397,34 +10365,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** undici-types; version 7.10.0 -- https://undici.nodejs.org
-Copyright (c) Matteo Collina and Undici contributors
-
-MIT License
-
-Copyright (c) Matteo Collina and Undici contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-------
-
 ** cheerio; version 1.1.2 -- https://cheerio.js.org/
 Copyright (c) 2003-2014 </p> const
 Copyright (c) 2003-2014 </p> </html> const
@@ -10533,34 +10473,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-------
-
-** async-function; version 1.0.0 -- https://github.com/ljharb/async-function#readme
-Copyright (c) 2016 EduardoRFS
-
-MIT License
-
-Copyright (c) 2016 EduardoRFS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 ------
@@ -10841,10 +10753,12 @@ THE SOFTWARE.
 
 ------
 
-** @babel/parser; version 7.28.4 -- https://babel.dev/docs/en/next/babel-parser
-Copyright (c) 2012-2014 by various contributors
+** to-buffer; version 1.2.2 -- https://github.com/browserify/to-buffer
+Copyright (c) 2016 Mathias Buus
 
-Copyright (C) 2012-2014 by various contributors (see AUTHORS)
+The MIT License (MIT)
+
+Copyright (c) 2016 Mathias Buus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -10863,20 +10777,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-------
-
-** gensync; version 1.0.0-beta.2 -- https://github.com/loganfsmyth/gensync
-Copyright 2018 Logan Smyth <loganfsmyth@gmail.com>
-
-Copyright 2018 Logan Smyth <loganfsmyth@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ------
@@ -11659,6 +11559,8 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 ** is-fullwidth-code-point; version 3.0.0 -- https://github.com/sindresorhus/is-fullwidth-code-point#readme
 (c) Sindre Sorhus (https://sindresorhus.com)
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+** is-path-inside; version 3.0.3 -- https://github.com/sindresorhus/is-path-inside#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 ** is-plain-obj; version 2.1.0 -- https://github.com/sindresorhus/is-plain-obj#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
@@ -13646,12 +13548,6 @@ terms above.
 
 ------
 
-** fix-esm; version 1.0.1 -- 
-
-CC0-1.0 OR WTFPL OR (CC0-1.0 AND WTFPL)
-
-------
-
 ** jszip; version 3.10.1 -- https://github.com/Stuk/jszip#readme
 (c) 2009-2016 Stuart Knightley
 (c) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -13893,6 +13789,54 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+------
+
+** @vscode/vsce-sign; version 2.0.8 -- https://github.com/Microsoft/node-vsce-sign
+Copyright (c) Microsoft Corporation
+
+MICROSOFT SOFTWARE LICENSE TERMS
+MICROSOFT VSCE-SIGN
+  
+These license terms are an agreement between Microsoft Corporation (or based on where you live, one of its affiliates) and you. They apply to the software named above. The terms also apply to any Microsoft services or updates for the software, except to the extent those have different terms.
+
+IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+
+1. INSTALLATION AND USE RIGHTS. You may install and use any number of copies of the software only with Microsoft Visual Studio, Visual Studio for Mac, Visual Studio Code, Azure DevOps, Team Foundation Server, Code Spaces and successor Microsoft products and services (collectively, the "Visual Studio Products and Services") to develop and test your applications.
+
+2. TERMS FOR SPECIFIC COMPONENTS. The software may include third party components with separate legal notices or governed by other agreements, as may be described in the notices file(s) accompanying the software.
+
+3. SCOPE OF LICENSE. The software is licensed, not sold. This agreement only gives you some rights to use the software. Microsoft reserves all other rights. Unless applicable law gives you more rights despite this limitation, you may use the software only as expressly permitted in this agreement. In doing so, you must comply with any technical limitations in the software that only allow you to use it in certain ways. You may not
+* work around any technical limitations in the software;
+* reverse engineer, decompile or disassemble the software, or otherwise attempt to derive the source code for the software except, and only to the extent required by third party licensing terms governing the use of certain open source components that may be included in the software;
+* remove, minimize, block or modify any notices of Microsoft or its suppliers in the software; 
+* use the software in any way that is against the law; 
+* share, publish, rent or lease the software; or 
+* provide the software as a stand-alone offering or combined with any of your applications for others to use, or transfer the software or this agreement to any third party.
+
+4. EXPORT RESTRICTIONS. You must comply with all domestic and international export laws and regulations that apply to the software, which include restrictions on destinations, end users, and end use. For further information on export restrictions, visit www.microsoft.com/exporting. 
+
+5. SUPPORT SERVICES. Because this software is "as is," we may not provide support services for it.
+
+6. ENTIRE AGREEMENT. This agreement, and the terms for supplements, updates, Internet-based services and support services that you use, are the entire agreement for the software and support services.
+
+7. APPLICABLE LAW. If you acquired the software in the United States, Washington law applies to interpretation of and claims for breach of this agreement, and the laws of the state where you live apply to all other claims. If you acquired the software in any other country, its laws apply.
+
+8. CONSUMER RIGHTS; REGIONAL VARIATIONS. This agreement describes certain legal rights. You may have other rights, including consumer rights, under the laws of your state or country. Separate and apart from your relationship with Microsoft, you may also have rights with respect to the party from which you acquired the software. This agreement does not change those other rights if the laws of your state or country do not permit it to do so. For example, if you acquired the software in one of the below regions, or mandatory country law applies, then the following provisions apply to you:
+a. Australia. You have statutory guarantees under the Australian Consumer Law and nothing in this agreement is intended to affect those rights.
+
+b. Canada. If you acquired this software in Canada, you may stop receiving updates by turning off the automatic update feature, disconnecting your device from the Internet (if and when you re-connect to the Internet, however, the software will resume checking for and installing updates), or uninstalling the software. The product documentation, if any, may also specify how to turn off updates for your specific device or software.
+
+c. Germany and Austria.
+(i)	Warranty. The properly licensed software will perform substantially as described in any Microsoft materials that accompany the software. However, Microsoft gives no contractual guarantee in relation to the licensed software.
+(ii)	Limitation of Liability. In case of intentional conduct, gross negligence, claims based on the Product Liability Act, as well as, in case of death or personal or physical injury, Microsoft is liable according to the statutory law.
+Subject to the foregoing clause (ii), Microsoft will only be liable for slight negligence if Microsoft is in breach of such material contractual obligations, the fulfillment of which facilitate the due performance of this agreement, the breach of which would endanger the purpose of this agreement and the compliance with which a party may constantly trust in (so-called "cardinal obligations"). In other cases of slight negligence, Microsoft will not be liable for slight negligence.
+
+9. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED "AS-IS." YOU BEAR THE RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR CONDITIONS. TO THE EXTENT PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+10. LIMITATION ON AND EXCLUSION OF DAMAGES. YOU CAN RECOVER FROM MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS, SPECIAL, INDIRECT OR INCIDENTAL DAMAGES.
+This limitation applies to (a) anything related to the software, services, content (including code) on third party Internet sites, or third party applications; and (b) claims for breach of contract, breach of warranty, guarantee or condition, strict liability, negligence, or other tort to the extent permitted by applicable law.
+It also applies even if Microsoft knew or should have known about the possibility of the damages. The above limitation or exclusion may not apply to you because your country may not allow the exclusion or limitation of incidental, consequential or other damages.
 
 
 ------
