@@ -103,13 +103,19 @@ const ResourceInspector = () => {
       <table id="resource-info-table" className="border-collapse">
         <thead id="resource-info-table-header" className="resource-info-table-header">
           <th id="resource-title" className="resource-title">
-            <Breadcrumb
-              profileHandler={resourceInfo?.profileHandler ?? []}
-              resourceName={resourceInfo?.name}
-              humanReadableNameSingular={resourceInfo?.humanReadableNameSingular}
-              iconsMapping={resourceInfo?.iconsMapping}
-            />
-            {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
+            <div className="resource-title-container">
+              <div className="breadcrumb-container">
+                <Breadcrumb
+                  profileHandler={resourceInfo?.profileHandler ?? []}
+                  resourceName={resourceInfo?.name}
+                  humanReadableNameSingular={resourceInfo?.humanReadableNameSingular}
+                  iconsMapping={resourceInfo?.iconsMapping}
+                />
+              </div>
+              <div className="context-menu-container">
+                {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
+              </div>
+            </div>
           </th>
         </thead>
         <tbody className="padding-left-10">
