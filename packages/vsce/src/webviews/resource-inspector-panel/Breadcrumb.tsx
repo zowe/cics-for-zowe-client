@@ -39,7 +39,7 @@ const getIconByType = (type: string, isDarkTheme: boolean, iconsMapping?: IconsM
 };
 
 function isDarkThemeActive(): boolean {
-  return document.body.classList.contains("vscode-dark") || document.body.classList.contains("vscode-high-contrast");
+  return document.body.classList.contains("vscode-dark") || (document.body.classList.contains("vscode-high-contrast") && !document.body.classList.contains("vscode-high-contrast-light"));
 }
 
 /**
