@@ -32,7 +32,7 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await getResourceInspector(page).locator("#th-1").waitFor();
+    await getResourceInspector(page).locator("#resource-title").waitFor();
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
   });
 
@@ -46,7 +46,7 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await getResourceInspector(page).locator("#th-1").waitFor();
+    await getResourceInspector(page).locator("#resource-title").waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
