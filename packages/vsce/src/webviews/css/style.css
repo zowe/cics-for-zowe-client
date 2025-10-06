@@ -339,6 +339,7 @@ body.vscode-dark vscode-context-menu {
 .attributes-title {
   text-align: left;
   padding-left: 0.75rem !important;
+  padding-right:0.25rem !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   box-sizing: border-box;
@@ -434,4 +435,10 @@ body.vscode-dark .vscode-badge-foreground-color {
   flex-shrink: 0;
   display: flex;
   align-items: center;
+}
+
+.codicon-chevron-right:before {
+    content: "\eab6";
+    padding-left: 4px;
+    padding-right: 4px;
 }
