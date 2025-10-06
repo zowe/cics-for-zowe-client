@@ -11,6 +11,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import '@vscode/codicons/dist/codicon.css';
 
 import "../css/style.css";
 
@@ -111,12 +112,12 @@ const Breadcrumb = ({
   const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
     const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
     const showChevron = idx > 0 && iconsMapping;
-    const chevron = showChevron ? getIconByType("chevron", isDarkTheme, iconsMapping) : null;
+    const chevron = showChevron ? <span className="codicon codicon-chevron-right" /> : null;
 
     if (!isResourceItem) {
       return (
         <React.Fragment key={profile.key}>
-          {showChevron && <li className="chevron-icon">{chevron}</li>}
+          {showChevron && <li>{chevron}</li>}
           <li>{profile.value}</li>
         </React.Fragment>
       );
@@ -127,7 +128,7 @@ const Breadcrumb = ({
 
     return (
       <React.Fragment key={profile.key}>
-        {showChevron && <li className="chevron-icon">{chevron}</li>}
+        {showChevron && <li>{chevron}</li>}
         <li className="resource-item">
           {icon && <span className="resource-icon">{icon}</span>}
           <span className="vscode-badge-foreground-color">{resourceName}</span>

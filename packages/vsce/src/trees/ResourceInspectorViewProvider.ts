@@ -170,7 +170,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       "web service": createIconPaths("web-services"),
       "jvm server": createIconPaths("jvm-server"),
       bundle: createIconPaths("bundles"),
-      chevron: createIconPaths("chevron"),
     };
     return icons;
   }

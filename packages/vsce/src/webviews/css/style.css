@@ -265,11 +265,6 @@ ul.breadcrumb li {
   color: var(--vscode-breadcrumb-foreground);
 }
 
-.chevron-icon {
-  display: inline-flex; 
-  align-items: center; 
-  margin: 0 0.25rem;
-}
 ul.breadcrumb li a {
   color: var(--vscode-foreground);
   text-decoration: none;
