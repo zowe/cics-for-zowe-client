@@ -204,7 +204,7 @@ body.vscode-high-contrast-light td
 }
 
 body.vscode-dark tr:nth-child(even) {
-  background-color: #282828;
+  background-color: rgba(204, 204, 204, 0.04);;
 }
 body.vscode-dark th {
   background-color: rgb(40, 40, 40);
