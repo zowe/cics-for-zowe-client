@@ -15,7 +15,7 @@
   left: 2.25rem;
   right: 2.25rem;
   z-index: 10;
-  background-color: var(--vscode-editor-background);
+  background-color: rgba(204, 204, 204, 0.04);
   width: calc(100% - 4.5rem) !important;
   max-width: 69.375rem;
   min-width: 26.875rem;
@@ -85,7 +85,13 @@
   background-color: var(--vscode-editor-background);
   pointer-events: none;
 }
-
+.attribute-header-mask {
+  position: fixed;
+  z-index: 4;
+  background-color: var(--vscode-editor-background);
+  pointer-events: none;
+  box-sizing: border-box;
+}
 body.vscode-light{
  background-color: var(--vscode-editor-background);
 }
@@ -144,7 +150,6 @@ body.vscode-light tr:nth-child(even) {
 /* Dark theme specific */
 body.vscode-dark th,
 body.vscode-dark thead {
-  background-color: rgb(40,40,40);
   text-align: left;
   color: #ffffff;
 }
@@ -204,10 +209,9 @@ body.vscode-high-contrast-light td
 }
 
 body.vscode-dark tr:nth-child(even) {
-  background-color: rgba(204, 204, 204, 0.04);;
+  background-color: rgba(204, 204, 204, 0.04);
 }
 body.vscode-dark th {
-  background-color: rgb(40, 40, 40);
   text-align: left;
   width: 73.75rem;
   color: #ffffff;
@@ -221,7 +225,6 @@ body.vscode-high-contrast th {
 }
 
 body.vscode-dark thead {
-  background-color: rgb(40, 40, 40);
   text-align: left;
   color: var(--vscode-foreground);
 }
@@ -329,7 +332,6 @@ body.vscode-dark vscode-context-menu {
 .attributes-header-section {
   position: sticky;
   z-index: 5;
-  background-color: var(--vscode-editor-background);
 }
 .attributes-title {
   text-align: left;
@@ -340,6 +342,7 @@ body.vscode-dark vscode-context-menu {
   width: 100%;
   max-width: 69.375rem;
   min-width: 26.875rem;
+  background-color: rgba(204, 204, 204, 0.04);
 }
 
 .attributes-header-row {
