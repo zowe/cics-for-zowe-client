@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Changes to JVM Endpoint CICS CMCI constant. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
+
 ## `6.13.0`
 
 - Added JVM Endpoint CICS CMCI constant. [#410](https://github.com/zowe/cics-for-zowe-client/pull/410)
