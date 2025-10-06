@@ -10,7 +10,7 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import { constants, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView, findAndClickText } from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -33,6 +33,27 @@ test.describe("JVM Endpoint tests", () => {
     await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText("MYJVMENDPOINT1");
 
+  });
+
+  test("should enable and disable a program", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "JVM Servers");
+    await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME);
+
+    await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toHaveText(constants.JVM_SERVER_1_NAME);
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/enable-jvmendpoints/1.png" });
+    await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toBeVisible();
+
+    await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME, "right");
+
+    await page.waitForTimeout(200);
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/enable-jvmendpoints/1.5.png" });
+    await findAndClickText(page, "Disable JVM Endpoint");
+
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/enable-jvmendpoints/2.png" });
+    await expect(getTreeItem(page, `${constants.JVM_SERVER_1_NAME} (Disabled)`)).toHaveText(`${constants.JVM_SERVER_1_NAME} (Disabled)`);
   });
 
 });

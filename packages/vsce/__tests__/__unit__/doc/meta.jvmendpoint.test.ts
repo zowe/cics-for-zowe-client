@@ -23,8 +23,7 @@ describe("JVM Endpoint Meta", () => {
       eyu_cicsname: "MYREG",
       name: "JVM1",
       status: "ENABLED",
-      enablestatus: "ENABLED",
-      jvmserver: "JVM1",
+      enablestatus: "ENABLED"
     });
     jvmEndpointMock = new Resource({
       eyu_cicsname: "MYREG",
@@ -49,13 +48,13 @@ describe("JVM Endpoint Meta", () => {
 
   it("should return only label if enabled", () => {
     const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-    expect(label).toEqual("JVME1");
+    expect(label).toEqual("JVME1 (1420)");
   });
 
   it("should return label with disabled", () => {
     jvmEndpointMock.attributes.enablestatus = "DISABLED";
     const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-    expect(label).toEqual("JVME1 (Disabled)");
+    expect(label).toEqual("JVME1 (1420) (Disabled)");
   });
 
   it("should return context with enabled status when enabled", () => {
