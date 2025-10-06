@@ -206,8 +206,7 @@ const ResourceInspector = () => {
           </tr>
         </thead>
         <tbody>
-          {resourceInfo &&
-            Object.entries(resourceInfo.resource)
+          {resourceInfo && Object.entries(resourceInfo.resource)
               .filter(([key, value]) => !key.startsWith("_"))
               .filter(
                 ([key, value]) =>
