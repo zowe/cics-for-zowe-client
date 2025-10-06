@@ -36,24 +36,49 @@ const ResourceInspector = () => {
     name: string;
   }[]>([]);
 
+  // Utility function to get DOM elements needed for layout
+  const getLayoutElements = () => {
+    const headerElement1 = document.getElementById("resource-info-table-header");
+    const headerElement2 = document.getElementById("attributes-header");
+    const mainDiv = document.querySelector(".resource-inspector-container");
+    return { headerElement1, headerElement2, mainDiv };
+  };
+
+  // Utility function to get CSS variables
+  const getCssVariables = () => {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      headerTopSpacing: styles.getPropertyValue('--header-top-spacing'),
+      maskTopPosition: styles.getPropertyValue('--mask-top-position'),
+      maskLeftPosition: styles.getPropertyValue('--mask-left-position')
+    };
+  };
+
   const handleActionClick = (actionId: string) => {
     vscode.postVscMessage({ command: "action", actionId });
   };
 
   // Common function to handle attribute header mask creation and positioning
+  const createOrUpdateMaskElement = (id: string, className: string) => {
+    let element = document.getElementById(id);
+    if (!element) {
+      element = document.createElement("div");
+      element.id = id;
+      element.className = className;
+      document.body.appendChild(element);
+    }
+    return element;
+  };
+
   const updateAttributeHeaderMaskWithScroll = (headerElement: HTMLElement | null, createIfMissing: boolean = false) => {
     if (!headerElement) return;
     let attrHeaderMask = document.getElementById("attribute-header-mask");
     if (!attrHeaderMask && createIfMissing) {
-      attrHeaderMask = document.createElement("div");
-      attrHeaderMask.id = "attribute-header-mask";
-      attrHeaderMask.className = "attribute-header-mask";
-      document.body.appendChild(attrHeaderMask);
+      attrHeaderMask = createOrUpdateMaskElement("attribute-header-mask", "attribute-header-mask");
     }
     
     if (attrHeaderMask) {
       const attrHeaderRect = headerElement.getBoundingClientRect();
-      // Only show the mask when scrolling, not initially
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop > 0) {
         attrHeaderMask.style.display = "block";
@@ -73,43 +98,34 @@ const ResourceInspector = () => {
     };
     vscode.addVscMessageListener(listener);
     const handleResize = () => {
-      const headerElement1 = document.getElementById("resource-info-table-header");
-      const headerElement2 = document.getElementById("attributes-header");
-      const mainDiv = document.querySelector(".resource-inspector-container");
+      const { headerElement1, headerElement2, mainDiv } = getLayoutElements();
 
       if (headerElement1 && headerElement2 && mainDiv) {
         headerElement1.style.width = "";
-        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
+        const contentWidth = mainDiv.clientWidth;
         headerElement2.style.width = contentWidth + "px";
-        const maskElement = document.getElementById("header-mask");
-        if (maskElement) {
-          maskElement.style.width = "100%";
-        }
+        const maskElement = createOrUpdateMaskElement("header-mask", "header-mask");
+        maskElement.style.width = "100%";
         updateAttributeHeaderMaskWithScroll(headerElement2, false);
       }
     };
 
     const handleScroll = () => {
-      const headerElement1 = document.getElementById("resource-info-table-header");
-      const headerElement2 = document.getElementById("attributes-header");
-      const mainDiv = document.querySelector(".resource-inspector-container");
+      const { headerElement1, headerElement2, mainDiv } = getLayoutElements();
   
       if (headerElement1 && headerElement2 && mainDiv) {
-        headerElement1.style.top = "8px";
-        const firstHeaderHeight = headerElement1.offsetHeight || 32;
-        headerElement2.style.top = (8 + firstHeaderHeight) + "px";
-        const contentWidth = mainDiv.clientWidth || window.innerWidth - 36;
+        // Get CSS variables
+        const { headerTopSpacing, maskTopPosition, maskLeftPosition } = getCssVariables();
+        headerElement1.style.top = headerTopSpacing;
+        const firstHeaderHeight = headerElement1.offsetHeight;
+        const headerTopSpacingValue = parseInt(headerTopSpacing);
+        headerElement2.style.top = `${headerTopSpacingValue + firstHeaderHeight}px`;
+        const contentWidth = mainDiv.clientWidth;
         headerElement2.style.width = contentWidth + "px";
-        let maskElement = document.getElementById("header-mask");
-        if (!maskElement) {
-          maskElement = document.createElement("div");
-          maskElement.id = "header-mask";
-          maskElement.className = "header-mask";
-          document.body.appendChild(maskElement);
-        }
-        maskElement.style.top = "0px";
-        maskElement.style.height = (8 + firstHeaderHeight) + "px";
-        maskElement.style.left = "0px";
+        const maskElement = createOrUpdateMaskElement("header-mask", "header-mask");
+        maskElement.style.top = maskTopPosition;
+        maskElement.style.height = `${headerTopSpacingValue + firstHeaderHeight}px`;
+        maskElement.style.left = maskLeftPosition;
         maskElement.style.width = "100%";
         updateAttributeHeaderMaskWithScroll(headerElement2, true);
       }
@@ -124,7 +140,6 @@ const ResourceInspector = () => {
     vscode.postVscMessage({ command: "init" });
     return () => {
       vscode.removeVscMessageListener(listener);
-      // Clean up mask elements
       const headerMask = document.getElementById("header-mask");
       if (headerMask) {
         headerMask.remove();

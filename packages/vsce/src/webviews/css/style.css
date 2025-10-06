@@ -1,3 +1,11 @@
+:root {
+  --header-top-spacing: 8px;
+  --header-fallback-height: 32px;
+  --content-margin: 36px;
+  --mask-top-position: 0px;
+  --mask-left-position: 0px;
+}
+
 .resource-inspector-container{
   display: flex;
   flex-direction: column;
