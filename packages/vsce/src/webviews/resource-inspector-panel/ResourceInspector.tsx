@@ -136,7 +136,6 @@ const ResourceInspector = () => {
       handleResize();
     }, 0);
     vscode.addResizeListener(handleResize);
-    //window.addEventListener('resize', handleResize);
     vscode.postVscMessage({ command: "init" });
     return () => {
       vscode.removeVscMessageListener(listener);

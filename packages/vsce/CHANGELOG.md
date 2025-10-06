@@ -5,6 +5,9 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 - CICS Resource Inspector visual update [#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
+ 1. Added icons and codicons to the resource inspector breadcrumbs.
+ 2. CSS related changes to the resource inspector like colour, padding, and spacing etc.
+ 
 
 ## `3.13.0`
 

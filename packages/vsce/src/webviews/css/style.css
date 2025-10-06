@@ -4,6 +4,7 @@
   --content-margin: 36px;
   --mask-top-position: 0px;
   --mask-left-position: 0px;
+  --subtle-background-color: rgba(204, 204, 204, 0.04);
 }
 
 .resource-inspector-container{
@@ -23,7 +24,7 @@
   left: 2.25rem;
   right: 2.25rem;
   z-index: 10;
-  background-color: rgba(204, 204, 204, 0.04);
+  background-color: var(--subtle-background-color);
   width: calc(100% - 4.5rem) !important;
   max-width: 69.375rem;
   min-width: 26.875rem;
@@ -163,7 +164,7 @@ body.vscode-dark thead {
 }
 
 body.vscode-dark tr:nth-child(even) {
-  background-color: rgba(204, 204, 204, 0.04);
+  background-color: var(--subtle-background-color);
 }
 body.vscode-dark input {
   background-color: rgb(60, 60, 60);
@@ -217,7 +218,7 @@ body.vscode-high-contrast-light td
 }
 
 body.vscode-dark tr:nth-child(even) {
-  background-color: rgba(204, 204, 204, 0.04);
+  background-color: var(--subtle-background-color);
 }
 body.vscode-dark th {
   text-align: left;
@@ -346,7 +347,7 @@ body.vscode-dark vscode-context-menu {
   width: 100%;
   max-width: 69.375rem;
   min-width: 26.875rem;
-  background-color: rgba(204, 204, 204, 0.04);
+  background-color: var(--subtle-background-color);
 }
 
 .attributes-header-row {
