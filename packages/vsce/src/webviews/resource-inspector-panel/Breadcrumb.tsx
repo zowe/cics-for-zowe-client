@@ -34,7 +34,7 @@ const getIconByType = (type: string, isDarkTheme: boolean, iconsMapping?: IconsM
   const iconType = type.toLowerCase();
   let iconPath = iconsMapping[iconType];
   //if icon is not found we can provide some default one
-  iconPath = !iconPath && iconsMapping.program ? iconsMapping.program : iconPath;
+  if (!iconPath) iconPath = iconsMapping.program
   const iconSrc = isDarkTheme ? iconPath.dark : iconPath.light;
   return <img src={iconSrc} alt={type} width={16} height={16} />;
 };
