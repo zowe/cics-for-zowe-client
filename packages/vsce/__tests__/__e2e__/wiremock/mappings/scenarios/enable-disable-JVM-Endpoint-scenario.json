@@ -1,7 +1,7 @@
 {
   "mappings": [
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
+      "scenarioName": "Enable Disable JVM Endpoints",
       "requiredScenarioState": "Started",
       "newScenarioState": "myjvme1-disabled",
       "request": {
@@ -22,9 +22,10 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
+      "scenarioName": "Enable Disable JVM Endpoints",
       "requiredScenarioState": "myjvme1-disabled",
-      "newScenarioState": "fetched-disabled-jvmendpoint-summary",
+      "newScenarioState": "fetched-disabled-jvmendpoints-summary",
+      "priority": 1,
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
@@ -38,9 +39,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "fetched-disabled-jvmendpoint-summary",
-      "newScenarioState": "fetched-disabled-jvmendpoint-records",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "fetched-disabled-jvmendpoints-summary",
+      "newScenarioState": "fetched-disabled-jvmendpoints-records",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/JE1DISABLEDTOKEN/1/250?NODISCARD"
@@ -54,9 +55,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "fetched-disabled-jvmendpoint-records",
-      "newScenarioState": "fetched-disabled-jvmendpoint-removed-cache",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "fetched-disabled-jvmendpoints-records",
+      "newScenarioState": "fetched-disabled-jvmendpoints-removed-cache",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/JE1DISABLEDTOKEN?SUMMONLY"
@@ -70,9 +71,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "fetched-disabled-jvmendpoint-removed-cache",
-      "newScenarioState": "jvmendpoint1-enabled",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "fetched-disabled-jvmendpoints-removed-cache",
+      "newScenarioState": "myjvme1-enabled",
       "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMENDPOINT%3D'MYJVMENDPOINT1')%20AND%20(JVMSERVER%3D'MYJVM1')",
@@ -91,9 +92,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "jvmendpoint1-enabled",
-      "newScenarioState": "fetched-enabled-jvmendpoint-summary",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "myjvme1-enabled",
+      "newScenarioState": "fetched-enabled-jvmendpoints-summary",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
@@ -107,9 +108,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "fetched-enabled-jvmendpoint-summary",
-      "newScenarioState": "fetched-enabled-jvmendpoint-records",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "fetched-enabled-jvmendpoints-summary",
+      "newScenarioState": "fetched-enabled-jvmendpoints-records",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/0JE1ENABLEDTOKEN/1/250?NODISCARD"
@@ -123,8 +124,9 @@
       }
     },
     {
-      "scenarioName": "Enable Disable JVM Endpoint",
-      "requiredScenarioState": "fetched-enabled-jvmendpoint-records",
+      "scenarioName": "Enable Disable JVM Endpoints",
+      "requiredScenarioState": "fetched-enabled-jvmendpoints-records",
+      "newScenarioState": "fetched-enabled-jvmendpoints-removed-cache",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/0JE1ENABLEDTOKEN?SUMMONLY"

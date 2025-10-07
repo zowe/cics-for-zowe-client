@@ -35,4 +35,31 @@ test.describe("JVM Endpoint tests", () => {
 
   });
 
+  test("should enable and disable a jvm endpoint", async ({ page }) => {
+      await findAndClickTreeItem(page, constants.PROFILE_NAME);
+      await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+      await findAndClickTreeItem(page, constants.REGION_NAME);
+      await findAndClickTreeItem(page, "JVM Servers");
+      await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME);
+      await findAndClickTreeItem(page, constants.JVM_ENDPOINT_1_NAME);
+
+      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText(constants.JVM_ENDPOINT_1_NAME);
+      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
+
+      await findAndClickTreeItem(page, constants.JVM_ENDPOINT_1_NAME, "right");
+
+      await page.waitForTimeout(200);
+      await findAndClickText(page, "Disable JVM Endpoint");
+
+      await expect(getTreeItem(page, `${constants.JVM_ENDPOINT_1_NAME} (Disabled)`)).toHaveText(`${constants.JVM_ENDPOINT_1_NAME} (Disabled)`);
+
+      await findAndClickTreeItem(page, `${constants.JVM_ENDPOINT_1_NAME} (Disabled)`, "right");
+
+      await page.waitForTimeout(200);
+      await findAndClickText(page, "Enable JVM Endpoint");
+
+      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
+      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText(constants.JVM_ENDPOINT_1_NAME);
+  });
+
 });
