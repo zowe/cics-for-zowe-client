@@ -49,7 +49,6 @@ const ResourceInspector = () => {
     };
     vscode.addVscMessageListener(listener);
     vscode.postVscMessage({ command: "init" });
-    
     return () => {
       vscode.removeVscMessageListener(listener);
     };
