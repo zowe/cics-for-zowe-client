@@ -11,24 +11,25 @@
 
 import { MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
-import { IBaseError } from "./IBaseError";
 import { IError } from "./IError";
 import { Gui } from "@zowe/zowe-explorer-api";
 
-export class CICSExtensionError extends Error implements IBaseError {
-  constructor() {
+export class CICSExtensionError extends Error {
+  error: IError;
+  constructor(error?: IError) {
     super();
+    this.error = error;
   }
+}
 
-  notifyErrorMessage({ errorMessage, additionalInfo, action }: IError): Thenable<string | MessageItem> {
+export function notifyErrorMessage({ errorMessage, additionalInfo, action }: IError): Thenable<string | MessageItem> {
     if (additionalInfo) {
       CICSLogger.error(`${errorMessage} ${additionalInfo}`);
     } else {
       CICSLogger.error(`${errorMessage}`);
     }
     if (action) {
-      return Gui.errorMessage(errorMessage, {items: [...action]});
+      return Gui.errorMessage(errorMessage, { items: [...action] });
     }
     return Gui.errorMessage(errorMessage);
   }
-}

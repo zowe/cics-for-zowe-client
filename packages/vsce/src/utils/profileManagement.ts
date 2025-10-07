@@ -17,6 +17,7 @@ import { toArray } from "./commandUtils";
 import constants from "../constants/CICS.defaults";
 import { getBestCICSplexes } from "./plexUtils";
 import { buildUserAgentHeader, runGetResource } from "./resourceUtils";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -119,7 +120,7 @@ export class ProfileManagement {
           return null;
         }
       }
-      throw error;
+      throw new CICSExtensionError({ errorMessage: error });
     }
   }
 
@@ -302,7 +303,7 @@ export class ProfileManagement {
         Gui.showMessage(errorMessage, {
           severity: MessageSeverity.ERROR,
         });
-        throw error;
+        throw new CICSExtensionError({ errorMessage: errorMessage });
       }
     }
 

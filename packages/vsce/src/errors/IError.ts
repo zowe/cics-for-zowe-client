@@ -12,9 +12,9 @@
 export interface IError {
   /* Message to display in the error notification
    */
-  errorMessage: string;
+  errorMessage: any;
   /* Additional information to print in the logs */
   additionalInfo?: string;
   /* Additional placeholder to add buttons in the notification */
-  action?: any; 
+  action?: any;
 }
