@@ -18,13 +18,17 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
 import Contextmenu from "./Contextmenu";
+import useThemeDetection from "./hooks/useThemeDetection";
+import useLayoutManager from "./hooks/useLayoutManager";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
+  const isDarkTheme = useThemeDetection();
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
     refreshIconPath: { light: string; dark: string };
+    resourceIconPath: { light: string; dark: string };
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -35,9 +39,8 @@ const ResourceInspector = () => {
     name: string;
   }[]>([]);
 
-  const handleActionClick = (actionId: string) => {
-    vscode.postVscMessage({ command: "action", actionId });
-  };
+  // Use the layout manager hook to handle DOM-related operations
+  const { containerRef } = useLayoutManager();
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
@@ -45,91 +48,87 @@ const ResourceInspector = () => {
       setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
-    const handleScroll = () => {
-      const breadcrumbDiv = document.getElementById("breadcrumb-div");
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      // Adjust the top position of the all the headers
-      headerElement1.style.top = breadcrumbDiv.offsetHeight - 1 + "px";
-      headerElement2.style.top = breadcrumbDiv.offsetHeight + headerElement1.offsetHeight - 2 + "px";
-    };
-    vscode.addScrollerListener(handleScroll);
-
-    const handleResize = () => {
-      const headerElement1 = document.getElementById("table-header-1");
-      const headerElement2 = document.getElementById("table-header-2");
-      // Adjust the width of both table headers on resize with a offset margin to maintain header alingment
-      if (headerElement1.style.width != getComputedStyle(headerElement2).width) {
-        headerElement1.style.width = Number(getComputedStyle(headerElement2).width.replace("px", "")) - 10 + "px";
-      }
-    };
-    vscode.addResizeListener(handleResize);
-
     vscode.postVscMessage({ command: "init" });
-
     return () => {
       vscode.removeVscMessageListener(listener);
     };
   }, []);
-
   return (
-    <div className="maindiv" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
-      <Breadcrumb profileHandler={resourceInfo?.profileHandler} />
-      <table id="table-1" className="border-collapse">
-        <thead id="table-header-1" className="table-header1">
-          <th id="th-1" className="header-cell-1 padding-left-10">
-            <div className="div-display-1">{resourceInfo?.name ?? "..."}</div>
-            <div className="div-display-1 div-display-2">
-              {resourceInfo?.humanReadableNameSingular ?? "..."}: {
-                // @ts-ignore
-                resourceInfo ? (resourceInfo?.resource.status || resourceInfo?.resource.enablestatus) : "..."}
+    <div
+      className="resource-inspector-container"
+      data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'
+      ref={containerRef}
+    >
+      <table id="resource-info-table" className="border-collapse">
+        <thead id="resource-info-table-header" className="resource-info-table-header">
+          <th id="resource-title" className="resource-title">
+            <div className="resource-title-container">
+              <div className="breadcrumb-container">
+                <Breadcrumb
+                  profileHandler={resourceInfo?.profileHandler ?? []}
+                  resourceName={resourceInfo?.name}
+                  resourceType={resourceInfo?.humanReadableNameSingular}
+                  resourceIconPath={resourceInfo?.resourceIconPath}
+                  isDarkTheme={isDarkTheme}
+                />
+              </div>
+              <div className="context-menu-container">
+                {resourceInfo && <Contextmenu
+                  resourceActions={resourceActions}
+                  refreshIconPath={resourceInfo?.refreshIconPath}
+                  isDarkTheme={isDarkTheme}
+                />}
+              </div>
             </div>
-            {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
           </th>
         </thead>
-        <tbody className="padding-left-10 padding-top-20">
+        <tbody className="padding-left-10">
           {resourceInfo?.highlights.length > 0 && (
-            <tr>
-              <p className="padding-top-30"></p>
+            <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
-                <p className="line padding-left-27">
-                  {highlight.key}: {highlight.value}
-                </p>
+                <td key={highlight.key} className="resource-info-row">
+                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{highlight.value}</span>
+                </td>
               ))}
             </tr>
           )}
         </tbody>
       </table>
-
       <table className="border-collapse">
-        <thead id="table-header-2" className="thead-2 vertical-align-sub">
-          <th className="div-display-1 th-2">Attribute</th>
-          <th className="padding-right-10 th-3">
-            <div>
-              <div className="div-display-1 vertical-align-sub">Value</div>
-              <VscodeTextfield
-                type="text"
-                placeholder="Keyword search..."
-                onInput={(e: { target: HTMLInputElement; }) => setSearch(e.target.value)}
-                value={search}
-                className="search-style div-display-1"
-              ></VscodeTextfield>
-            </div>
-          </th>
+        <thead id="attributes-header" className="attributes-header-section">
+          <tr>
+            <th className="attributes-title" colSpan={2}>
+              <div className="attributes-header-row">
+                <div className="header-label-div">
+                  <span className="header-label">ATTRIBUTE</span>
+                </div>
+                <div className="header-label-value-div">
+                  <span className="header-label-value">VALUE</span>
+                </div>
+                <VscodeTextfield
+                  type="text"
+                  placeholder="Keyword search..."
+                  onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
+                  value={search}
+                  className="attribute-search"
+                />
+              </div>
+            </th>
+          </tr>
         </thead>
         <tbody>
           {resourceInfo && Object.entries(resourceInfo.resource)
-            .filter(([key, value]) => !key.startsWith("_"))
-            .filter(
-              ([key, value]) =>
-                key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
-            )
-            .map(([key, value]) => (
-              <tr key={key}>
-                <td className="padding-left-27 width-30">{key}</td>
-                <td className="padding-right-75 width-70">{value}</td>
-              </tr>
-            ))}
+              .filter(([key, value]) => !key.startsWith("_"))
+              .filter(
+                ([key, value]) =>
+                  key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
+              )
+              .map(([key, value]) => (
+                <tr key={key}>
+                  <td className="resource-attr-key">{key.toUpperCase()}</td>
+                  <td className="resource-attr-value">{value}</td>
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>

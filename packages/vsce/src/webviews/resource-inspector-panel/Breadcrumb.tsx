@@ -10,15 +10,87 @@
  */
 
 import * as React from "react";
+import '@vscode/codicons/dist/codicon.css';
 
 import "../css/style.css";
 
-const Breadcrumb = ({ profileHandler }: { profileHandler: { key: string; value: string }[] }) => {
+interface IconPath {
+  light: string;
+  dark: string;
+}
+
+// Render icon using the provided icon path
+const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
+  const iconSrc = isDarkTheme ? resourceIconPath.dark : resourceIconPath.light;
+  return <img src={iconSrc} alt={alt} width={16} height={16} />;
+};
+
+/**
+ * Creates breadcrumb items array from profile handler and resource information
+ */
+const createBreadcrumbItems = (
+  profileHandler: { key: string; value: string }[],
+  resourceName: string,
+  humanReadableNameSingular: string
+): { key: string; value: string }[] => {
+  const filteredProfiles = profileHandler.filter(p => p.key !== "profile" && p.value);
+  filteredProfiles.push({
+    key: "resourceName",
+    value: `${resourceName} (${humanReadableNameSingular})`
+  });
+  return filteredProfiles;
+};
+
+const Breadcrumb = ({
+  profileHandler,
+  resourceName,
+  resourceType,
+  resourceIconPath,
+  isDarkTheme,
+}: {
+  profileHandler: { key: string; value: string }[];
+  resourceName: string;
+  resourceType: string;
+  resourceIconPath: IconPath;
+  isDarkTheme: boolean;
+}) => {
+
+  // Memoize items array to prevent unnecessary recalculations
+  const items = React.useMemo(() =>
+    createBreadcrumbItems(profileHandler, resourceName, resourceType),
+    [profileHandler, resourceName, resourceType]);
+
+  const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
+    const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
+    const showChevron = idx > 0 && resourceIconPath;
+    const chevron = <span className="codicon codicon-chevron-right" />;
+
+    if (!isResourceItem) {
+      return (
+        <React.Fragment key={profile.key}>
+          {showChevron && <li>{chevron}</li>}
+          <li>{profile.value}</li>
+        </React.Fragment>
+      );
+    }
+    const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
+
+    return (
+      <React.Fragment key={profile.key}>
+        {showChevron && <li>{chevron}</li>}
+        <li className="resource-item">
+          {icon && <span className="resource-icon">{icon}</span>}
+          <span className="label-text-color">{resourceName}</span>
+          {resourceType && <span>({resourceType})</span>}
+        </li>
+      </React.Fragment>
+    );
+  };
+
   return (
     <div id="breadcrumb-div" className="breadcrumb-div">
       <ul className="breadcrumb">
-        {profileHandler &&
-          profileHandler.filter((profileHandler) => profileHandler.value !== null).map((profile) => <li key={profile.key}>{profile.value}</li>)}
+        {items.map(renderBreadcrumbItem)}
       </ul>
     </div>
   );

@@ -2,12 +2,18 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+
+## Recent Changes
+- Enhancement: Integrate Resource Inspector breadcrumb with header to make better use of space. [#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
+ 
+
 ## `3.13.0`
 
 - Renamed the VSCE to `Zowe Explorer for IBM CICS Transaction Server`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
 - Enhancement: Replaced the Show Attributes option with Inspect Resource in resource context menu, leveraging the updated CICS Resource Inspector [#422](https://github.com/zowe/cics-for-zowe-client/issues/422)
 - Bug: Removal of RI Actions component for unsupported Resources [#423](https://github.com/zowe/cics-for-zowe-client/issues/423)
 - Enhancement: Added JVM Endpoint to the JVM Server node [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
+
 
 ## `3.12.0`
 

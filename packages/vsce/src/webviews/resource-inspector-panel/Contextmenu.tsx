@@ -7,14 +7,15 @@ import "../css/style.css";
 const Contextmenu = ({
   resourceActions,
   refreshIconPath,
+  isDarkTheme,
 }: {
   resourceActions: { id: string; name: string; iconPath?: { light: Uri; dark: Uri } }[];
   refreshIconPath: { light: string; dark: string };
+  isDarkTheme: boolean;
 }) => {
   const [x, setX] = React.useState(0);
   const [y, setY] = React.useState(0);
   const [show, setShow] = React.useState(false);
-  const [vscodeTheme, setVscodeTheme] = React.useState<"light" | "dark">("light");
   const [menuWidth, setMenuWidth] = React.useState(0);
 
   const menuRef = React.useRef<HTMLDivElement | null>(null);
@@ -43,19 +44,6 @@ const Contextmenu = ({
     }
   };
 
-  // Theme Detection
-  React.useEffect(() => {
-    const getTheme = () => {
-      if (document.body.classList.contains("vscode-dark")) return "dark";
-      return "light";
-    };
-    setVscodeTheme(getTheme());
-    const observer = new MutationObserver(() => {
-      setVscodeTheme(getTheme());
-    });
-    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
 
   // Handle click outside to close
   React.useEffect(() => {
@@ -120,7 +108,7 @@ const Contextmenu = ({
   return (
     <div className="dropdown-container">
       <img
-        src={vscodeTheme === "dark" ? refreshIconPath.dark : refreshIconPath.light}
+        src={isDarkTheme ? refreshIconPath.dark : refreshIconPath.light}
         className="refresh-icon"
         onClick={handleRefresh}
         tabIndex={0}

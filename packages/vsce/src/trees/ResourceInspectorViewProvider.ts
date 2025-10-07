@@ -150,16 +150,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   }
 
   /**
+   * Creates webview-accessible URIs for icon paths
+   * @param iconPath The icon path object with light and dark variants
+   * @returns An object with webview-accessible URIs for both light and dark themes
+   */
+  private createIconPaths(iconPath: { light: string; dark: string }) {
+    return {
+      light: this.webviewView.webview.asWebviewUri(Uri.parse(iconPath.light)).toString(),
+      dark: this.webviewView.webview.asWebviewUri(Uri.parse(iconPath.dark)).toString(),
+    };
+  }
+
+  /**
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
     await this.webviewView.webview.postMessage({
       data: {
         name: this.resource.meta.getName(this.resource.resource),
-        refreshIconPath: {
-          light: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").light)).toString(),
-          dark: this.webviewView.webview.asWebviewUri(Uri.parse(IconBuilder.getIconFilePathFromName("refresh").dark)).toString(),
-        },
+        refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
+        resourceIconPath: this.createIconPaths(IconBuilder.resource(this.resource)),
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
