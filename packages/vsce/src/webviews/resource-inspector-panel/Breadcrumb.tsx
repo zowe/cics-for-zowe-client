@@ -36,8 +36,8 @@ const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: strin
  */
 const createBreadcrumbItems = (
   profileHandler: { key: string; value: string }[],
-  resourceName?: string,
-  humanReadableNameSingular?: string
+  resourceName: string,
+  humanReadableNameSingular: string
 ): { key: string; value: string }[] => {
   const filteredProfiles = profileHandler?.filter(p => p.value !== null && p.key !== "profile") ?? [];
   const resourceItem = resourceName ? {
@@ -55,9 +55,9 @@ const Breadcrumb = ({
   isDarkTheme,
 }: {
   profileHandler: { key: string; value: string }[];
-  resourceName?: string;
-  resourceType?: string;
-  resourceIconPath?: IconPath;
+  resourceName: string;
+  resourceType: string;
+  resourceIconPath: IconPath;
   isDarkTheme: boolean;
 }) => {
 
