@@ -10,7 +10,6 @@
  */
 
 import * as React from "react";
-import { useState, useEffect } from "react";
 import '@vscode/codicons/dist/codicon.css';
 
 import "../css/style.css";
