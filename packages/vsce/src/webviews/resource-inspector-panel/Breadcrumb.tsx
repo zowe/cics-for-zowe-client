@@ -20,22 +20,15 @@ import "../css/style.css";
   dark: url;
 };
 }*/
-interface IconsMapping {
-  [key: string]: {
-    light: string;
-    dark: string;
-  };
+interface IconPath {
+  light: string;
+  dark: string;
 }
 
-
-// Get icon based on resource type using the provided icon paths
-const getIconByType = (type: string, isDarkTheme: boolean, iconsMapping?: IconsMapping) => {
-  const iconType = type.toLowerCase();
-  let iconPath = iconsMapping[iconType];
-  //if icon is not found we can provide some default one
-  if (!iconPath) iconPath = iconsMapping.program
+// Render icon using the provided icon path
+const renderIcon = (iconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
   const iconSrc = isDarkTheme ? iconPath.dark : iconPath.light;
-  return <img src={iconSrc} alt={type} width={16} height={16} />;
+  return <img src={iconSrc} alt={alt} width={16} height={16} />;
 };
 
 /**
@@ -58,13 +51,13 @@ const Breadcrumb = ({
   profileHandler,
   resourceName,
   resourceType,
-  iconsMapping,
+  iconPath,
   isDarkTheme,
 }: {
   profileHandler: { key: string; value: string }[];
   resourceName?: string;
   resourceType?: string;
-  iconsMapping?: IconsMapping;
+  iconPath?: IconPath;
   isDarkTheme: boolean;
 }) => {
 
@@ -75,7 +68,7 @@ const Breadcrumb = ({
 
   const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
     const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
-    const showChevron = idx > 0 && iconsMapping;
+    const showChevron = idx > 0 && iconPath;
     const chevron = showChevron ? <span className="codicon codicon-chevron-right" /> : null;
 
     if (!isResourceItem) {
@@ -86,7 +79,7 @@ const Breadcrumb = ({
         </React.Fragment>
       );
     }
-    const icon = iconsMapping ? getIconByType(resourceType.toLowerCase(), isDarkTheme, iconsMapping) : null;
+    const icon = iconPath ? renderIcon(iconPath, isDarkTheme, resourceType) : null;
 
     return (
       <React.Fragment key={profile.key}>

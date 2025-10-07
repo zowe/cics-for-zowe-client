@@ -26,7 +26,7 @@ const ResourceInspector = () => {
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
     refreshIconPath: { light: string; dark: string };
-    iconsMapping?: { [key: string]: { light: string; dark: string } };
+    iconPath?: { light: string; dark: string };
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -189,7 +189,7 @@ const ResourceInspector = () => {
                   profileHandler={resourceInfo?.profileHandler ?? []}
                   resourceName={resourceInfo?.name}
                   resourceType={resourceInfo?.humanReadableNameSingular}
-                  iconsMapping={resourceInfo?.iconsMapping}
+                  iconPath={resourceInfo?.iconPath}
                   isDarkTheme={isDarkTheme}
                 />
               </div>
