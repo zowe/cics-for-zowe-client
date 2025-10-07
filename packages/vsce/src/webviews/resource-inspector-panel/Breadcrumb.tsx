@@ -14,12 +14,6 @@ import '@vscode/codicons/dist/codicon.css';
 
 import "../css/style.css";
 
-/*Interface for resource type icons
-"program":{
-  light: url;
-  dark: url;
-};
-}*/
 interface IconPath {
   light: string;
   dark: string;
