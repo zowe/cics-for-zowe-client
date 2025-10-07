@@ -33,12 +33,12 @@ const createBreadcrumbItems = (
   resourceName: string,
   humanReadableNameSingular: string
 ): { key: string; value: string }[] => {
-  const filteredProfiles = profileHandler?.filter(p => p.value !== null && p.key !== "profile") ?? [];
-  const resourceItem = resourceName ? {
+  const filteredProfiles = profileHandler.filter(p => p.key !== "profile" && p.value);
+  filteredProfiles.push({
     key: "resourceName",
-    value: `${resourceName}${humanReadableNameSingular ? ` (${humanReadableNameSingular})` : ""}`
-  } : null;
-  return [...filteredProfiles, resourceItem].filter(Boolean) as { key: string; value: string }[];
+    value: `${resourceName} (${humanReadableNameSingular})`
+  });
+  return filteredProfiles;
 };
 
 const Breadcrumb = ({
