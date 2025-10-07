@@ -18,15 +18,17 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
 import Contextmenu from "./Contextmenu";
+import useThemeDetection from "./hooks/useThemeDetection";
+import useLayoutManager from "./hooks/useLayoutManager";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
-  const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+  const isDarkTheme = useThemeDetection();
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
     refreshIconPath: { light: string; dark: string };
-    iconPath?: { light: string; dark: string };
+    resourceIconPath?: { light: string; dark: string };
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
@@ -37,87 +39,8 @@ const ResourceInspector = () => {
     name: string;
   }[]>([]);
 
-  // Function to check if dark theme is active
-  const isDarkThemeActive = (): boolean => {
-    return document.body.classList.contains("vscode-dark") ||
-           (document.body.classList.contains("vscode-high-contrast") &&
-            !document.body.classList.contains("vscode-high-contrast-light"));
-  };
-
-  // Utility function to get DOM elements needed for layout
-  const getLayoutElements = () => {
-    const headerElement1 = document.getElementById("resource-info-table-header");
-    const headerElement2 = document.getElementById("attributes-header");
-    const mainDiv = document.querySelector(".resource-inspector-container");
-    return { headerElement1, headerElement2, mainDiv };
-  };
-
-  // Utility function to get CSS variables
-  const getCssVariables = () => {
-    const styles = getComputedStyle(document.documentElement);
-    return {
-      headerTopSpacing: styles.getPropertyValue('--header-top-spacing'),
-      maskTopPosition: styles.getPropertyValue('--mask-top-position'),
-      maskLeftPosition: styles.getPropertyValue('--mask-left-position')
-    };
-  };
-
-  const handleActionClick = (actionId: string) => {
-    vscode.postVscMessage({ command: "action", actionId });
-  };
-
-  // Common function to handle attribute header mask creation and positioning
-  const createOrUpdateMaskElement = (id: string, className: string) => {
-    let element = document.getElementById(id);
-    if (!element) {
-      element = document.createElement("div");
-      element.id = id;
-      element.className = className;
-      document.body.appendChild(element);
-    }
-    return element;
-  };
-
-  const updateAttributeHeaderMaskWithScroll = (headerElement: HTMLElement | null, createIfMissing: boolean = false) => {
-    if (!headerElement) return;
-    let attrHeaderMask = document.getElementById("attribute-header-mask");
-    if (!attrHeaderMask && createIfMissing) {
-      attrHeaderMask = createOrUpdateMaskElement("attribute-header-mask", "attribute-header-mask");
-    }
-    
-    if (attrHeaderMask) {
-      const attrHeaderRect = headerElement.getBoundingClientRect();
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      if (scrollTop > 0) {
-        attrHeaderMask.style.display = "block";
-        attrHeaderMask.style.top = attrHeaderRect.top + "px";
-        attrHeaderMask.style.height = attrHeaderRect.height + "px";
-        attrHeaderMask.style.left = attrHeaderRect.left + "px";
-        attrHeaderMask.style.width = attrHeaderRect.width + "px";
-      } else {
-        attrHeaderMask.style.display = "none";
-      }
-    }
-  };
-  // Effect for theme detection
-  React.useEffect(() => {
-    setIsDarkTheme(isDarkThemeActive());
-    const updateTheme = () => setIsDarkTheme(isDarkThemeActive());
-    window.addEventListener("vscode-theme-changed", updateTheme);
-    // Create a MutationObserver to watch for class changes on the body element
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.attributeName === 'class') {
-          updateTheme();
-        }
-      }
-    });
-    observer.observe(document.body, { attributes: true });
-    return () => {
-      window.removeEventListener("vscode-theme-changed", updateTheme);
-      observer.disconnect();
-    };
-  }, []);
+  // Use the layout manager hook to handle DOM-related operations
+  const { containerRef } = useLayoutManager();
 
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
@@ -125,61 +48,18 @@ const ResourceInspector = () => {
       setResourceActions(event.data.actions);
     };
     vscode.addVscMessageListener(listener);
-    const handleResize = () => {
-      const { headerElement1, headerElement2, mainDiv } = getLayoutElements();
-
-      if (headerElement1 && headerElement2 && mainDiv) {
-        headerElement1.style.width = "";
-        const contentWidth = mainDiv.clientWidth;
-        headerElement2.style.width = contentWidth + "px";
-        const maskElement = createOrUpdateMaskElement("header-mask", "header-mask");
-        maskElement.style.width = "100%";
-        updateAttributeHeaderMaskWithScroll(headerElement2, false);
-      }
-    };
-
-    const handleScroll = () => {
-      const { headerElement1, headerElement2, mainDiv } = getLayoutElements();
-  
-      if (headerElement1 && headerElement2 && mainDiv) {
-        // Get CSS variables
-        const { headerTopSpacing, maskTopPosition, maskLeftPosition } = getCssVariables();
-        headerElement1.style.top = headerTopSpacing;
-        const firstHeaderHeight = headerElement1.offsetHeight;
-        const headerTopSpacingValue = parseInt(headerTopSpacing);
-        headerElement2.style.top = `${headerTopSpacingValue + firstHeaderHeight}px`;
-        const contentWidth = mainDiv.clientWidth;
-        headerElement2.style.width = contentWidth + "px";
-        const maskElement = createOrUpdateMaskElement("header-mask", "header-mask");
-        maskElement.style.top = maskTopPosition;
-        maskElement.style.height = `${headerTopSpacingValue + firstHeaderHeight}px`;
-        maskElement.style.left = maskLeftPosition;
-        maskElement.style.width = "100%";
-        updateAttributeHeaderMaskWithScroll(headerElement2, true);
-      }
-    };
-    vscode.addScrollerListener(handleScroll);
-    setTimeout(() => {
-      handleScroll();
-      handleResize();
-    }, 0);
-    vscode.addResizeListener(handleResize);
     vscode.postVscMessage({ command: "init" });
+    
     return () => {
       vscode.removeVscMessageListener(listener);
-      const headerMask = document.getElementById("header-mask");
-      if (headerMask) {
-        headerMask.remove();
-      }
-      const attrHeaderMask = document.getElementById("attribute-header-mask");
-      if (attrHeaderMask) {
-        attrHeaderMask.remove();
-      }
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
   return (
-    <div className="resource-inspector-container" data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
+    <div
+      className="resource-inspector-container"
+      data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'
+      ref={containerRef}
+    >
       <table id="resource-info-table" className="border-collapse">
         <thead id="resource-info-table-header" className="resource-info-table-header">
           <th id="resource-title" className="resource-title">
@@ -189,7 +69,7 @@ const ResourceInspector = () => {
                   profileHandler={resourceInfo?.profileHandler ?? []}
                   resourceName={resourceInfo?.name}
                   resourceType={resourceInfo?.humanReadableNameSingular}
-                  iconPath={resourceInfo?.iconPath}
+                  resourceIconPath={resourceInfo?.resourceIconPath}
                   isDarkTheme={isDarkTheme}
                 />
               </div>

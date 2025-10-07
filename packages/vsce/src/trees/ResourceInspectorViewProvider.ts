@@ -169,7 +169,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       data: {
         name: this.resource.meta.getName(this.resource.resource),
         refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
-        iconPath: this.createIconPaths(IconBuilder.resource(this.resource)),
+        resourceIconPath: this.createIconPaths(IconBuilder.resource(this.resource)),
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,

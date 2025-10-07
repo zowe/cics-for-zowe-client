@@ -26,8 +26,8 @@ interface IconPath {
 }
 
 // Render icon using the provided icon path
-const renderIcon = (iconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
-  const iconSrc = isDarkTheme ? iconPath.dark : iconPath.light;
+const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
+  const iconSrc = isDarkTheme ? resourceIconPath.dark : resourceIconPath.light;
   return <img src={iconSrc} alt={alt} width={16} height={16} />;
 };
 
@@ -51,13 +51,13 @@ const Breadcrumb = ({
   profileHandler,
   resourceName,
   resourceType,
-  iconPath,
+  resourceIconPath,
   isDarkTheme,
 }: {
   profileHandler: { key: string; value: string }[];
   resourceName?: string;
   resourceType?: string;
-  iconPath?: IconPath;
+  resourceIconPath?: IconPath;
   isDarkTheme: boolean;
 }) => {
 
@@ -68,7 +68,7 @@ const Breadcrumb = ({
 
   const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
     const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
-    const showChevron = idx > 0 && iconPath;
+    const showChevron = idx > 0 && resourceIconPath;
     const chevron = showChevron ? <span className="codicon codicon-chevron-right" /> : null;
 
     if (!isResourceItem) {
@@ -79,7 +79,7 @@ const Breadcrumb = ({
         </React.Fragment>
       );
     }
-    const icon = iconPath ? renderIcon(iconPath, isDarkTheme, resourceType) : null;
+    const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
 
     return (
       <React.Fragment key={profile.key}>
