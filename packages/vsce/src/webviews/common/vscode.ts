@@ -19,7 +19,7 @@ export interface TransformWebviewMessage {
   data?: {
     name: string;
     refreshIconPath: { light: string; dark: string };
-    resourceIconPath?: { light: string; dark: string };
+    resourceIconPath: { light: string; dark: string };
     resourceName: string;
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
