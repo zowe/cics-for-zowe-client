@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 
-## Recent Changes
+## `3.13.1`
 - Enhancement: Integrate Resource Inspector breadcrumb with header to make better use of space. [#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
  
 
