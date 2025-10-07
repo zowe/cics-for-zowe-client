@@ -59,30 +59,15 @@ const createBreadcrumbItems = (
   return [...filteredProfiles, resourceItem].filter(Boolean) as { key: string; value: string }[];
 };
 
-
-const extractResourceType = (value: string): { resourceName: string, resourceType: string } => {
-  const typeMatch = value.match(/^(.+?)\s*\(([^)]+)\)$/);
-  if (typeMatch) {
-    return {
-      resourceName: typeMatch[1].trim(),
-      resourceType: typeMatch[2]
-    };
-  }
-  return {
-    resourceName: value,
-    resourceType: ""
-  };
-};
-
 const Breadcrumb = ({
   profileHandler,
   resourceName,
-  humanReadableNameSingular,
+  resourceType,
   iconsMapping,
 }: {
   profileHandler: { key: string; value: string }[];
   resourceName?: string;
-  humanReadableNameSingular?: string;
+  resourceType?: string;
   iconsMapping?: IconsMapping;
 }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeActive());
@@ -106,8 +91,8 @@ const Breadcrumb = ({
 
   // Memoize items array to prevent unnecessary recalculations
   const items = React.useMemo(() =>
-    createBreadcrumbItems(profileHandler, resourceName, humanReadableNameSingular),
-    [profileHandler, resourceName, humanReadableNameSingular]);
+    createBreadcrumbItems(profileHandler, resourceName, resourceType),
+    [profileHandler, resourceName, resourceType]);
 
   const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
     const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
@@ -122,9 +107,7 @@ const Breadcrumb = ({
         </React.Fragment>
       );
     }
-
-    const { resourceName, resourceType } = extractResourceType(profile.value);
-    const icon = iconsMapping ? getIconByType(resourceType, isDarkTheme, iconsMapping) : null;
+    const icon = iconsMapping ? getIconByType(resourceType.toLowerCase(), isDarkTheme, iconsMapping) : null;
 
     return (
       <React.Fragment key={profile.key}>

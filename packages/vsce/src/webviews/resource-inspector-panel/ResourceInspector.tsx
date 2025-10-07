@@ -160,7 +160,7 @@ const ResourceInspector = () => {
                 <Breadcrumb
                   profileHandler={resourceInfo?.profileHandler ?? []}
                   resourceName={resourceInfo?.name}
-                  humanReadableNameSingular={resourceInfo?.humanReadableNameSingular}
+                  resourceType={resourceInfo?.humanReadableNameSingular}
                   iconsMapping={resourceInfo?.iconsMapping}
                 />
               </div>
