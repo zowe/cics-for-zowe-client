@@ -63,7 +63,7 @@ const Breadcrumb = ({
   const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
     const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
     const showChevron = idx > 0 && resourceIconPath;
-    const chevron = showChevron ? <span className="codicon codicon-chevron-right" /> : null;
+    const chevron = <span className="codicon codicon-chevron-right" />;
 
     if (!isResourceItem) {
       return (
