@@ -383,8 +383,8 @@ body.vscode-dark vscode-context-menu {
   align-items: center;
 }
 
-.vscode-badge-foreground-color {
-  color: var(--vscode-badge-foreground);
+.vscode-editor-foreground-color {
+  color: var(--vscode-editor-foreground);
 }
 body.vscode-high-contrast-light .vscode-badge-foreground-color {
   color: #000000;
@@ -443,3 +443,4 @@ body.vscode-dark .vscode-badge-foreground-color {
     padding-left: 4px;
     padding-right: 4px;
 }
+
