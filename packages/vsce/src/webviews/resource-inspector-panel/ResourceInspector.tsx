@@ -21,6 +21,7 @@ import Contextmenu from "./Contextmenu";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
+  const [isDarkTheme, setIsDarkTheme] = React.useState(false);
 
   const [resourceInfo, setResourceInfo] = React.useState<{
     name: string;
@@ -35,6 +36,13 @@ const ResourceInspector = () => {
     id: string;
     name: string;
   }[]>([]);
+
+  // Function to check if dark theme is active
+  const isDarkThemeActive = (): boolean => {
+    return document.body.classList.contains("vscode-dark") ||
+           (document.body.classList.contains("vscode-high-contrast") &&
+            !document.body.classList.contains("vscode-high-contrast-light"));
+  };
 
   // Utility function to get DOM elements needed for layout
   const getLayoutElements = () => {
@@ -91,6 +99,26 @@ const ResourceInspector = () => {
       }
     }
   };
+  // Effect for theme detection
+  React.useEffect(() => {
+    setIsDarkTheme(isDarkThemeActive());
+    const updateTheme = () => setIsDarkTheme(isDarkThemeActive());
+    window.addEventListener("vscode-theme-changed", updateTheme);
+    // Create a MutationObserver to watch for class changes on the body element
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'class') {
+          updateTheme();
+        }
+      }
+    });
+    observer.observe(document.body, { attributes: true });
+    return () => {
+      window.removeEventListener("vscode-theme-changed", updateTheme);
+      observer.disconnect();
+    };
+  }, []);
+
   React.useEffect(() => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
@@ -162,10 +190,15 @@ const ResourceInspector = () => {
                   resourceName={resourceInfo?.name}
                   resourceType={resourceInfo?.humanReadableNameSingular}
                   iconsMapping={resourceInfo?.iconsMapping}
+                  isDarkTheme={isDarkTheme}
                 />
               </div>
               <div className="context-menu-container">
-                {resourceInfo && <Contextmenu resourceActions={resourceActions} refreshIconPath={resourceInfo?.refreshIconPath} />}
+                {resourceInfo && <Contextmenu
+                  resourceActions={resourceActions}
+                  refreshIconPath={resourceInfo?.refreshIconPath}
+                  isDarkTheme={isDarkTheme}
+                />}
               </div>
             </div>
           </th>

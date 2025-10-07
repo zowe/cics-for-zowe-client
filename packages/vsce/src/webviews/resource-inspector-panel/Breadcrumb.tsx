@@ -39,10 +39,6 @@ const getIconByType = (type: string, isDarkTheme: boolean, iconsMapping?: IconsM
   return <img src={iconSrc} alt={type} width={16} height={16} />;
 };
 
-function isDarkThemeActive(): boolean {
-  return document.body.classList.contains("vscode-dark") || (document.body.classList.contains("vscode-high-contrast") && !document.body.classList.contains("vscode-high-contrast-light"));
-}
-
 /**
  * Creates breadcrumb items array from profile handler and resource information
  */
@@ -64,30 +60,14 @@ const Breadcrumb = ({
   resourceName,
   resourceType,
   iconsMapping,
+  isDarkTheme,
 }: {
   profileHandler: { key: string; value: string }[];
   resourceName?: string;
   resourceType?: string;
   iconsMapping?: IconsMapping;
+  isDarkTheme: boolean;
 }) => {
-  const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeActive());
-  useEffect(() => {
-    const updateTheme = () => setIsDarkTheme(isDarkThemeActive());
-    window.addEventListener("vscode-theme-changed", updateTheme);
-    // Create a MutationObserver to watch for class changes on the body element
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.attributeName === 'class') {
-          updateTheme();
-        }
-      }
-    });
-    observer.observe(document.body, { attributes: true });
-    return () => {
-      window.removeEventListener("vscode-theme-changed", updateTheme);
-      observer.disconnect();
-    };
-  }, []);
 
   // Memoize items array to prevent unnecessary recalculations
   const items = React.useMemo(() =>
