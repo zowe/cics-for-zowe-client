@@ -80,7 +80,7 @@ const Breadcrumb = ({
         {showChevron && <li>{chevron}</li>}
         <li className="resource-item">
           {icon && <span className="resource-icon">{icon}</span>}
-          <span className="vscode-editor-foreground-color">{resourceName}</span>
+          <span className="label-text-color">{resourceName}</span>
           {resourceType && <span>({resourceType})</span>}
         </li>
       </React.Fragment>

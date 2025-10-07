@@ -87,7 +87,7 @@ const ResourceInspector = () => {
             <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
                 <td key={highlight.key} className="resource-info-row">
-                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="vscode-badge-foreground-color">{highlight.value}</span>
+                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{highlight.value}</span>
                 </td>
               ))}
             </tr>

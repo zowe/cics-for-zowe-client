@@ -383,13 +383,13 @@ body.vscode-dark vscode-context-menu {
   align-items: center;
 }
 
-.vscode-editor-foreground-color {
-  color: var(--vscode-editor-foreground);
+body.vscode-light .label-text-color,
+body.vscode-high-contrast-light .label-text-color {
+  color: #000000 !important;
 }
-body.vscode-high-contrast-light .vscode-badge-foreground-color {
-  color: #000000;
-}
-body.vscode-dark .vscode-badge-foreground-color {
+
+body.vscode-dark .label-text-color,
+body:not(.vscode-high-contrast-light) .label-text-color {
   color: #ffffff
 }
 
