@@ -12,12 +12,13 @@
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
-import { IJVMEndpoint, JVMEndpointMeta } from "../../doc";
+import { JVMEndpointMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Performs enable on selected CICSJVMEndpoint nodes.

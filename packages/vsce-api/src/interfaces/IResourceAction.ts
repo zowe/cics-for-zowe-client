@@ -10,7 +10,7 @@
  */
 
 import { ResourceTypes } from "../resources";
-import { IResource } from "./IResource";
+import { IResource } from "./resources";
 import { IResourceContext } from "./IResourceContext";
 
 export interface IResourceAction {
