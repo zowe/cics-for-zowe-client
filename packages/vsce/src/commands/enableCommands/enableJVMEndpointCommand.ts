@@ -41,27 +41,30 @@ export function getEnableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<a
       async (progress, token) => {
         token.onCancellationRequested(() => { });
 
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
-      progress.report({
-        message: `Enabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
-        increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
-      });
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
+          progress.report({
+            message: `Enabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
+            increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
+          });
 
-      try {
-        await enableJVMEndpoint(node.getSession(), {
-          name: resource.jvmendpoint,
-          cicsPlex: node.cicsplexName,
-          regionName: node.regionName ?? resource.eyu_cicsname,
-          jvmserver: resource.jvmserver,
-        } as ICommandParams & { jvmserver: string });
-      } catch (error) {
-        const message = `Something went wrong while enabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-          error.message
-        ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-        window.showErrorMessage(message);
-        CICSLogger.error(message);
+          try {
+            await enableJVMEndpoint(
+              node.getSession(),
+              {
+                name: resource.jvmendpoint,
+                cicsPlex: node.cicsplexName,
+                regionName: node.regionName ?? resource.eyu_cicsname,
+              } as ICommandParams,
+              resource.jvmserver
+            );
+          } catch (error) {
+            const message = `Something went wrong while enabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
+              error.message
+            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
+            window.showErrorMessage(message);
+            CICSLogger.error(message);
           }
         }
         tree._onDidChangeTreeData.fire(nodes[0].getParent());
@@ -70,15 +73,18 @@ export function getEnableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<a
   });
 }
 
-function enableJVMEndpoint(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  const jvmserver = (parms as any).jvmserver;
+function enableJVMEndpoint(
+  session: CICSSession,
+  parms: ICommandParams,
+  jvmServerName: string
+): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       session: session,
       resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,
-      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmserver}')` }, 
+      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmServerName}')` },
     },
     {
       request: {

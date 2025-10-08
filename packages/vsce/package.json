@@ -801,8 +801,7 @@
             "URIMap": true,
             "WebService": true,
             "JVMServer": true,
-            "Bundle": true,
-            "JVMEndpoint": true
+            "Bundle": true
           },
           "scope": "window"
         }

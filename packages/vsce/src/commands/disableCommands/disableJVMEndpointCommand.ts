@@ -25,60 +25,69 @@ import { runPutResource } from "../../utils/resourceUtils";
  * @param treeview - Tree View of current cics tree
  */
 export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.disableJVMEndpoint", async (clickedNode) => {
-    const nodes = findSelectedNodes(treeview, JVMEndpointMeta, clickedNode);
-    if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS JVMEndpoint selected");
-      return;
-    }
-
-    await window.withProgress(
-      {
-        title: "Disable JVM Endpoint",
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => { });
-
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
-      progress.report({
-        message: `Disabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
-        increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
-      });
-
-      try {
-        await disableJVMEndpoint(node.getSession(), {
-          name: resource.jvmendpoint,
-          cicsPlex: node.cicsplexName,
-          regionName: node.regionName ?? resource.eyu_cicsname,
-          jvmserver: resource.jvmserver,
-        } as ICommandParams & { jvmserver: string });
-      } catch (error) {
-        const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-          error.message
-        ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-        window.showErrorMessage(message);
-        CICSLogger.error(message);
-          }
-        }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
+  return commands.registerCommand(
+    "cics-extension-for-zowe.disableJVMEndpoint",
+    async (clickedNode) => {
+      const nodes = findSelectedNodes(treeview, JVMEndpointMeta, clickedNode);
+      if (!nodes || !nodes.length) {
+        await window.showErrorMessage("No CICS JVMEndpoint selected");
+        return;
       }
-    );
-  });
+
+      await window.withProgress(
+        {
+          title: "Disable JVM Endpoint",
+          location: ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async (progress, token) => {
+          token.onCancellationRequested(() => { });
+
+          for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
+            progress.report({
+              message: `Disabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
+              increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
+            });
+
+            try {
+              await disableJVMEndpoint(
+                node.getSession(),
+                {
+                  name: resource.jvmendpoint,
+                  cicsPlex: node.cicsplexName,
+                  regionName: node.regionName ?? resource.eyu_cicsname,
+                } as ICommandParams,
+                resource.jvmserver
+              );
+            } catch (error) {
+              const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
+                error.message
+              ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
+              window.showErrorMessage(message);
+              CICSLogger.error(message);
+            }
+          }
+          tree._onDidChangeTreeData.fire(nodes[0].getParent());
+        }
+      );
+    }
+  );
 }
 
-function disableJVMEndpoint(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  const jvmserver = (parms as any).jvmserver;
+function disableJVMEndpoint(
+  session: CICSSession,
+  parms: ICommandParams,
+  jvmServerName: string
+): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       session: session,
       resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,
-      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmserver}')` }, 
+      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmServerName}')` },
     },
     {
       request: {

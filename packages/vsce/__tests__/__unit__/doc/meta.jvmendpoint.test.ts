@@ -49,13 +49,13 @@ describe("JVM Endpoint Meta", () => {
 
   it("should return only label if enabled", () => {
     const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-    expect(label).toEqual("JVME1 (N/A|1420)");
+    expect(label).toEqual("JVME1 (1420)");
   });
 
   it("should return label with disabled", () => {
     jvmEndpointMock.attributes.enablestatus = "DISABLED";
     const label = JVMEndpointMeta.getLabel(jvmEndpointMock);
-    expect(label).toEqual("JVME1 (N/A|1420) (Disabled)");
+    expect(label).toEqual("JVME1 (1420) (Disabled)");
   });
 
   it("should return context with enabled status when enabled", () => {

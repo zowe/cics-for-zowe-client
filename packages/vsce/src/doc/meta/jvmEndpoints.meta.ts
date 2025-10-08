@@ -36,13 +36,10 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   
   getLabel(resource: Resource<IJVMEndpoint>): string {
     let label = `${resource.attributes.jvmendpoint}`;
-    if (resource.attributes.secport || resource.attributes.port) {
-      label += " (";
-      label += resource.attributes.secport ? resource.attributes.secport : "N/A";
-      if (resource.attributes.port) {
-        label += `|${resource.attributes.port}`;
-      }
-      label += ")";
+    if (resource.attributes.secport && resource.attributes.secport !== "N/A"){
+      label += ` (🔒${resource.attributes.secport} / ${resource.attributes.port})`;
+    } else if (resource.attributes.port) {
+      label += ` (${resource.attributes.port})`;
     }
     if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
