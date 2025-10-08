@@ -3,7 +3,7 @@
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
 ## Recent Changes
-BugFix: show codicon icons on CICS Resource Inspector panel”
+BugFix: show codicon icons on CICS Resource Inspector panel”.[#445](https://github.com/zowe/cics-for-zowe-client/pull/445)
 
 
 ## `3.13.1`
