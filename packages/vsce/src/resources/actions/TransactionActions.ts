@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceContext, ITransaction, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, IResourceContext, ITransaction, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSLocalTransaction>[] = [
   {
