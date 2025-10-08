@@ -103,7 +103,10 @@ describe("Resource Inspector View provider", () => {
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
       enableScripts: true,
-      localResourceRoots: [sampleExtensionContext.extensionUri],
+      localResourceRoots: [
+        sampleExtensionContext.extensionUri,
+        Uri.joinPath(sampleExtensionContext.extensionUri, 'dist')
+      ],
     });
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.html).toEqual(``);

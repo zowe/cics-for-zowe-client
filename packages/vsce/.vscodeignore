@@ -7,6 +7,8 @@
 # Allowlist what we need
 !dist/*.js
 !dist/*.js.map
+!dist/codicon.css
+!dist/codicon.ttf
 !prebuilds/*
 # !out/src/nls.metadata*.json
 !resources/**/*.png
