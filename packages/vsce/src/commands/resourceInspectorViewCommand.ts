@@ -10,7 +10,7 @@
  */
 
 import { ExtensionContext, TreeView, Uri, commands, window } from "vscode";
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSResourceContainerNode } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 

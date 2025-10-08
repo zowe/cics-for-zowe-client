@@ -9,7 +9,6 @@
  *
  */
 
-import { IResource } from "../resources";
 import { BundleMeta } from "./bundle.meta";
 import { BundlePartMeta } from "./bundlePart.meta";
 import { IResourceMeta } from "./IResourceMeta";
@@ -25,6 +24,7 @@ import { URIMapMeta } from "./urimap.meta";
 import { WebServiceMeta } from "./webservice.meta";
 import { JVMServerMeta } from "./JVMServer.meta";
 import { JVMEndpointMeta } from "./jvmEndpoints.meta";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export * from "./IResourceMeta";
 export * from "./bundle.meta";

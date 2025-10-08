@@ -22,7 +22,7 @@ import constants from "../constants/CICS.defaults";
 import { getErrorCode } from "./errorUtils";
 import { CICSLogger } from "./CICSLogger";
 import { CICSResourceContainerNode } from "../trees";
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { extensions } from "vscode";
 
 export async function runGetResource({
