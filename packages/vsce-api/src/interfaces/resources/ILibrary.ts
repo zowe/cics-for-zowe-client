@@ -9,9 +9,10 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IJVMServer extends IResource {
-    name: string;
-    enablestatus: string;
+export interface ILibrary extends IResourceWithEnableStatus {
+  name: string;
+  dsname: string;
+  ranking: string;
 }

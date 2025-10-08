@@ -12,11 +12,10 @@
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
-import { IResource } from "../../src/interfaces/IResource";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
-import { IResourceAction } from "../../src/interfaces/IResourceAction";
+import { IProgram, IResource } from "../../src/interfaces/resources";
 
 describe("Interfaces", () => {
   const action: IResourceAction = {
@@ -52,7 +51,6 @@ describe("Interfaces", () => {
 
   const res: IResource = {
     eyu_cicsname: "REGION1",
-    status: "ENABLED",
   };
 
   const profile: imperative.IProfileLoaded = {
@@ -97,7 +95,6 @@ describe("Interfaces", () => {
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");
-    expect(res).toHaveProperty("status");
   });
   it("should assert IResourceContext", () => {
     expect(cx).toHaveProperty("session");

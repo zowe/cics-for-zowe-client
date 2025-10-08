@@ -9,10 +9,9 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithStatus } from "./IResource";
 
-export interface ILibrary extends IResource {
-  name: string;
-  dsname: string;
-  ranking: string;
+export interface ITransaction extends IResourceWithStatus {
+  tranid: string;
+  program: string;
 }

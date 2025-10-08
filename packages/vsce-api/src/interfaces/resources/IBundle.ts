@@ -9,10 +9,12 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IURIMap extends IResource {
+export interface IBundle extends IResourceWithEnableStatus {
+  bundledir: string;
+  bundleid: string;
+  enablestatus: string;
   name: string;
-  scheme: string;
-  path: string;
+  partcount: string;
 }
