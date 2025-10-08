@@ -9,8 +9,8 @@
  *
  */
 
+import { ILibrary } from "@zowe/cics-for-zowe-explorer-api";
 import { LibraryMeta } from "../../../src/doc/meta/library.meta";
-import { ILibrary } from "../../../src/doc/resources/ILibrary";
 import { Resource } from "../../../src/resources";
 
 describe("Library Meta", () => {
