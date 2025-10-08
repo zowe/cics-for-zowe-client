@@ -17,6 +17,7 @@ const path = require("path");
 const WebpackManifestPlugin = require("webpack-manifest-plugin").WebpackManifestPlugin;
 const webpack = require("webpack");
 const fs = require("fs");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -32,7 +33,21 @@ const extensionConfig = {
     libraryTarget: "commonjs2",
     devtoolModuleFilenameTemplate: "../[resource-path]",
   },
-  plugins: [new webpack.BannerPlugin(fs.readFileSync("../../LICENSE_HEADER", "utf8"))],
+  plugins: [
+    new webpack.BannerPlugin(fs.readFileSync("../../LICENSE_HEADER", "utf8")),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '../../node_modules', '@vscode', 'codicons', 'dist', 'codicon.css'),
+          to: path.resolve(__dirname, 'dist', 'codicon.css')
+        },
+        {
+          from: path.resolve(__dirname, '../../node_modules', '@vscode', 'codicons', 'dist', 'codicon.ttf'),
+          to: path.resolve(__dirname, 'dist', 'codicon.ttf')
+        }
+      ]
+    })
+  ],
   externals: [
     {
       vscode: "commonjs vscode",
