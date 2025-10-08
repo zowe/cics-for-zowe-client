@@ -8,6 +8,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Bugfix: Refresh CICS Resource Inspector panel after performing action. [#433](https://github.com/zowe/cics-for-zowe-client/issues/433)
 - Enhancement: Add Update Credentials option to the Manage Profile menu. [#451](https://github.com/zowe/cics-for-zowe-client/issues/451)
 - Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
+- Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
 
 ## `3.13.2`
 
