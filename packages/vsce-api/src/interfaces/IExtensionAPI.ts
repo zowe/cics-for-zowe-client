@@ -10,9 +10,11 @@
  */
 
 import { ResourceTypes } from "../resources";
+import { IResourceExtender } from "./IResourceExtender";
 
 export interface IExtensionAPI {
   resources: {
     supportedResources: ResourceTypes[];
+    resourceExtender: IResourceExtender;
   };
 }
