@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
-  IResource,
   IResourceMeta,
   LibraryMeta,
   LocalFileMeta,
@@ -34,6 +33,7 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSPlexTree extends TreeItem {
   children: (CICSRegionsContainer | CICSRegionTree | CICSResourceContainerNode<IResource>)[] = [];

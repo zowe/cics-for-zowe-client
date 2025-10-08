@@ -9,8 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { ITransaction } from "../../doc";
+import { IResourceAction, IResourceContext, ITransaction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
 export function getTransactionActions(): IResourceAction[] {
   return [

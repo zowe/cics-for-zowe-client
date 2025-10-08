@@ -12,7 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITCPIP } from "../resources";
+import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {

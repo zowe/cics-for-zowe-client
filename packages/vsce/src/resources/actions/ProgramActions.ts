@@ -9,8 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { IProgram } from "../../doc";
+import { IProgram, IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
 export function getProgramActions(): IResourceAction[] {
   return [

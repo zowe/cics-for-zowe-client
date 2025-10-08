@@ -11,7 +11,8 @@
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { join } from "path";
-import { IContainedResource, IResource } from "../doc";
+import { IContainedResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 class SIconBuilder {
   private static _instance: SIconBuilder;

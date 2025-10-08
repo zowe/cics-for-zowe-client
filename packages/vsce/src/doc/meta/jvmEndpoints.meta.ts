@@ -13,9 +13,7 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMEndpoint } from "../resources/IJVMEndpoint";
-import { IJVMServer } from "../resources/IJVMServer";
-
+import { IJVMServer, IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
 
 export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,

@@ -13,7 +13,7 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMServer } from "../resources/IJVMServer";
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "./jvmEndpoints.meta";
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {

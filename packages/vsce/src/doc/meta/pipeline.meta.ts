@@ -12,7 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IPipeline } from "../resources";
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const PipelineMeta: IResourceMeta<IPipeline> = {

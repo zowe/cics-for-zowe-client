@@ -12,13 +12,14 @@
 import { Gui, imperative } from "@zowe/zowe-explorer-api";
 import { TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { CICSPlexTree, CICSTree } from ".";
-import { ICICSTreeNode, IChildResource, IContainedResource, IResource } from "../doc";
+import { ICICSTreeNode, IChildResource, IContainedResource } from "../doc";
 import { ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
 import { TextTreeItem } from "./TextTreeItem";
 import { ViewMore } from "./ViewMore";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode implements ICICSTreeNode {
   regionName?: string;
