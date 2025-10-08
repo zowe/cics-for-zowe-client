@@ -51,7 +51,7 @@ test.describe("JVM Endpoint tests", () => {
       await page.waitForTimeout(200);
       await findAndClickText(page, "Disable JVM Endpoint");
 
-      await expect(getTreeItem(page, `${constants.JVM_ENDPOINT_1_NAME} (Disabled)`)).toHaveText(`${constants.JVM_ENDPOINT_1_NAME} (Disabled)`);
+      await expect(getTreeItem(page, `${constants.JVM_ENDPOINT_1_NAME} (Disabled)`)).toHaveText("MYJVMENDPOINT1 (9080) (Disabled)");
 
       await findAndClickTreeItem(page, `${constants.JVM_ENDPOINT_1_NAME} (Disabled)`, "right");
 
@@ -59,7 +59,7 @@ test.describe("JVM Endpoint tests", () => {
       await findAndClickText(page, "Enable JVM Endpoint");
 
       await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
-      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText(constants.JVM_ENDPOINT_1_NAME);
+      await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText("MYJVMENDPOINT1 (9080)");
   });
 
 });
