@@ -9,8 +9,8 @@
  *
  */
 
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc/meta/program.meta";
-import { IProgram } from "../../../src/doc/resources/IProgram";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

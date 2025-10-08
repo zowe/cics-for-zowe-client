@@ -9,8 +9,8 @@
  *
  */
 
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMServerMeta } from "../../../src/doc/meta/JVMServer.meta";
-import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
