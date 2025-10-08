@@ -40,7 +40,7 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
       label += " (";
       label += resource.attributes.secport ? resource.attributes.secport : "N/A";
       if (resource.attributes.port) {
-        label += `/${resource.attributes.port}`;
+        label += `|${resource.attributes.port}`;
       }
       label += ")";
     }
