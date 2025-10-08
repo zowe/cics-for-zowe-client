@@ -13,12 +13,13 @@ import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../constants/CICS.defaults";
-import { ILocalFile, LocalFileMeta } from "../doc";
+import { LocalFileMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
 import { ICommandParams } from "../doc/commands/ICommandParams";
+import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {

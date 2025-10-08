@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSResourceContainerNode, CICSTree } from "../trees";
 
 export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, tree: CICSTree) {

@@ -10,7 +10,7 @@
  */
 
 import { commands, window, env } from "vscode";
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSResourceContainerNode } from "../trees";
 import { buildUserAgentHeader } from "../utils/resourceUtils";
 

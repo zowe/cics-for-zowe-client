@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class Resource<T extends IResource> {
   attributes: T;
