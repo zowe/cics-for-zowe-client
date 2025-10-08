@@ -9,12 +9,8 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-// /CICSSystemManagement/CICSBundlePart/VSCDSMSJ?CRITERIA=BUNDLE='WRITE2Q'
-export interface IBundlePart extends IResource {
-  bundle: string;
-  bundlepart: string;
-  enablestatus: string;
-  partclass: string;
+export interface IPipeline extends IResourceWithEnableStatus {
+  name: string;
 }

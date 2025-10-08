@@ -9,13 +9,12 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithStatus } from "./IResource";
 
-export interface IJVMEndpoint extends IResource {
-
-  jvmendpoint: string;
-  jvmserver: string;
-  enablestatus: string;
-  port: string;
-  secport: string;
+export interface IProgram extends IResourceWithStatus {
+  library: string;
+  librarydsn: string;
+  program: string;
+  progtype: string;
+  newcopycnt: string;
 }
