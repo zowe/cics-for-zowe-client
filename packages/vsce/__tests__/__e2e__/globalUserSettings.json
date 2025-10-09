@@ -5,8 +5,6 @@
   "security.workspace.trust.untrustedFiles": "open",
   "zowe.settings.displayReleaseNotes": false,
   "zowe.security.secureCredentialsEnabled": false,
-  "zowe.cics.showAllCommandsInPalette": true,
-  "zowe.cics.resourceInspector": true,
   "zowe.cics.persistent": {
     "persistence": true,
     "programSearchHistory": [],
