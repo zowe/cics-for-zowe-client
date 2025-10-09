@@ -162,7 +162,7 @@ You must have a connection configured in Zowe Explorer with access to the CICS r
 
 ### Show and filter resources in a region
 
-The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP Services`, `URI Maps`, and `Web Services`, `JVM Servers` and `Bundles`.
+The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP services`, `URI maps`, and `Web services`, `JVM servers` and `Bundles`.
 
 Expand a CICS region to show folders containing each resource type. The number of resources in a resource tree appear in square brackets next to the tree name.
 
