@@ -12,7 +12,6 @@
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { l10n, QuickPick, QuickPickItem } from "vscode";
-import { CICSTree } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import PersistentStorage from "./PersistentStorage";
 import { InfoLoaded, ProfileManagement } from "./profileManagement";
@@ -50,17 +49,13 @@ export async function getPlexInfoFromProfile(profile: IProfileLoaded): Promise<I
 }
 
 export async function getAllCICSProfiles(): Promise<string[]> {
-  const cicsTree: CICSTree = new CICSTree();
-  cicsTree.clearLoadedProfiles();
-  await cicsTree.loadStoredProfileNames();
-  const loadedprofiles = cicsTree.getLoadedProfiles();
-  if (loadedprofiles.length > 0) {
-    return loadedprofiles.map((profile) => profile.label) as string[];
+  const loadedProfiles = PersistentStorage.getLoadedCICSProfiles();
+  if (loadedProfiles.length > 0) {
+    return loadedProfiles;
   }
   const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
   const allCICSProfiles = profileInfo.getAllProfiles("cics");
-  const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
-  return allCICSProfileNames;
+  return allCICSProfiles.map((prof) => prof.profName);
 }
 
 export async function getChoiceFromQuickPick(
