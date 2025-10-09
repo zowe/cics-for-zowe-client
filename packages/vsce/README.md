@@ -162,7 +162,7 @@ You must have a connection configured in Zowe Explorer with access to the CICS r
 
 ### Show and filter resources in a region
 
-The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP Services`, `URI Maps`, and `Web Services`.
+The resource types supported by the CICS extension are `Programs`, `Transactions`, `Local Files`, `Tasks`, `Libraries`, `Pipelines`, `TCP/IP services`, `URI maps`, and `Web services`, `JVM servers` and `Bundles`.
 
 Expand a CICS region to show folders containing each resource type. The number of resources in a resource tree appear in square brackets next to the tree name.
 
@@ -224,7 +224,7 @@ To show the attributes for a CICS region, right-click on the desired region and 
 
 ### Enable and disable
 
-Right-click against a program, local transaction, or local file to open the pop-up menu and select `Disable [CICS resource]` to disable the resource. When a resource is already disabled the first option becomes `Enable [CICS resource]` to allow its enablement state to be toggled. A disabled resource is identified by a `(Disabled)` label next to its name.
+Right-click against a program, local transaction, local file, JVM server or bundle to open the pop-up menu and select `Disable [CICS resource]` to disable the resource. When a resource is already disabled the first option becomes `Enable [CICS resource]` to allow its enablement state to be toggled. A disabled resource is identified by a `(Disabled)` label next to its name.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/disable-enable.gif" alt="Zowe CICS Explorer Filter" width="700px"/>

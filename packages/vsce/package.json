@@ -232,6 +232,16 @@
         "category": "Zowe Explorer for IBM CICS TS"
       },
       {
+        "command": "cics-extension-for-zowe.disableJVMEndpoint",
+        "title": "Disable JVM Endpoint",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
+        "command": "cics-extension-for-zowe.enableJVMEndpoint",
+        "title": "Enable JVM Endpoint",
+        "category": "IBM CICS for Zowe Explorer"
+      },
+      {
         "command": "cics-extension-for-zowe.phaseInCommand",
         "title": "Phase In",
         "category": "Zowe Explorer for IBM CICS TS",
@@ -422,6 +432,14 @@
         {
           "command": "cics-extension-for-zowe.enableJVMServer",
           "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.disableJVMEndpoint",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
+        },
+        {
+          "command": "cics-extension-for-zowe.enableJVMEndpoint",
+          "when": "config.zowe.cics.showAllCommandsInPalette"
         }
       ],
       "view/title": [
@@ -563,6 +581,16 @@
           "group": "2.CICSResourceNode.action"
         },
         {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMEndpoint.DISABLED.*/",
+          "command": "cics-extension-for-zowe.enableJVMEndpoint",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSJVMEndpoint.ENABLED.*/",
+          "command": "cics-extension-for-zowe.disableJVMEndpoint",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.(DISABLED|UNENABLED).*/",
           "command": "cics-extension-for-zowe.enableLocalFile",
           "group": "2.CICSResourceNode.action"
@@ -689,6 +717,12 @@
           "description": "Default filter criteria for Web Service",
           "scope": "window"
         },
+        "zowe.cics.jvmEndpoint.filter": {
+          "type": "string",
+          "default": "(NAME=*)",
+          "description": "Default filter criteria for JVM Endpoint",
+          "scope": "window"
+        },
         "zowe.cics.CICSBundle.filter": {
           "type": "string",
           "default": "(NAME=*)",
@@ -750,6 +784,10 @@
             "Bundle": {
               "type": "boolean",
               "description": "CICS Bundle"
+            },
+            "JVMEndpoint": {
+              "type": "boolean",
+              "description": "CICS JVM Endpoint"
             }
           },
           "default": {

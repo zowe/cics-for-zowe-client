@@ -36,15 +36,24 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   
   getLabel(resource: Resource<IJVMEndpoint>): string {
     let label = `${resource.attributes.jvmendpoint}`;
+    const secport = resource.attributes.secport;
+    const port = resource.attributes.port;
+
+    if (secport && secport !== "N/A" && port && port !== "N/A") {
+      label += ` (🔒${secport} / ${port})`;
+    } else if (secport && secport !== "N/A") {
+      label += ` (🔒${secport})`;
+    } else if (port && port !== "N/A") {
+      label += ` (${port})`;
+    }
     if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
     }
     return label;
   },
 
-  getContext: function (jvmEndpoint: Resource<IJVMEndpoint>): string {
-    return `${CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT
-      }.${jvmEndpoint.attributes.enablestatus.trim().toUpperCase()}.${jvmEndpoint.attributes.jvmendpoint}`;
+  getContext(resource: Resource<IJVMEndpoint>): string {
+    return `${CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.jvmendpoint}`;
   },
 
   getIconName(resource: Resource<IJVMEndpoint>): string {
@@ -65,6 +74,14 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
         key: "Status",
         value: resource.attributes.enablestatus,
       },
+      {
+        key: "Port",
+        value: resource.attributes.port,
+      },
+      {
+        key: "Secure Port",
+        value: resource.attributes.secport,
+      }
     ];
   },
 
@@ -79,3 +96,4 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   filterCaseSensitive: true,
   maximumPrimaryKeyLength: 224,
 };
+
