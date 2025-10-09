@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 Enhancement: Added Enable/Disable actions to JVM Endpoints. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
+- Bugfix: Refresh CICS Resource Inspector panel after performing action. [#433](https://github.com/zowe/cics-for-zowe-client/issues/433)
 
 ## `3.13.2`
 
