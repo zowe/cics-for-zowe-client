@@ -23,9 +23,8 @@ const getZoweExplorerApiMock = jest.fn();
 const jesApiMock = jest.fn();
 
 import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
+import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import * as globalMocks from "../../__utils__/globalMocks";
 
 const zoweExplorerAPI = { getJesApi: jesApiMock };
 
@@ -60,6 +59,8 @@ import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 jest.mock("@zowe/zowe-explorer-api", () => ({
   ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
 }));
+jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => { });
+
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {
@@ -74,7 +75,7 @@ function createProfile(name: string, type: string, host: string, user?: string) 
   } as imperative.IProfileLoaded;
 }
 
-const sessionTree = new CICSSessionTree({ profile: globalMocks.CICSProfileMock }, {
+const sessionTree = new CICSSessionTree({ profile: { host: "abc" }, failNotFound: false, message: "", type: "cics", name: "MYPROF" }, {
   _onDidChangeTreeData: { fire: () => jest.fn() },
 } as unknown as CICSTree);
 const regionTree = new CICSRegionTree("IYK2ZXXX", { jobid: "TheOtherJobId" }, sessionTree, undefined, sessionTree);
@@ -151,6 +152,8 @@ describe("Test suite for getJobIdForRegion", () => {
     });
     let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
+    region.region.cicsname = "MYREG";
+
     const jobId = await showLogsCommand.getJobIdForRegion(region);
     expect(jobId).toEqual("TheOtherJobId");
   });

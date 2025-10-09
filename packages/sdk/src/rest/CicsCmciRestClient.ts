@@ -9,7 +9,7 @@
  *
  */
 
-import { AbstractSession, IImperativeError, ImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
+import { AbstractRestClient, AbstractSession, IImperativeError, ImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
 import { Builder, Parser } from "xml2js";
 import { CicsCmciConstants } from "../constants";
 import { CicsCmciMessages } from "../constants/CicsCmci.messages";
@@ -24,7 +24,7 @@ import { CicsCmciRestError } from "./CicsCmciRestError";
  * @class CicsCmciRestClient
  * @extends {RestClient}
  */
-export class CicsCmciRestClient extends RestClient {
+export class CicsCmciRestClient extends AbstractRestClient {
   /**
    * If the API request is successful, this value should be in
    * api_response1 in  the resultsummary object in the response
@@ -63,7 +63,7 @@ export class CicsCmciRestClient extends RestClient {
     reqHeaders: any[] = [],
     requestOptions?: ICMCIRequestOptions
   ): Promise<ICMCIApiResponse> {
-    const data = await CicsCmciRestClient.getExpectString(session, resource, reqHeaders);
+    const data = await RestClient.getExpectString.call(AbstractRestClient, session, resource, reqHeaders);
     const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
     if (requestOptions?.failOnNoData === false && !apiResponse.response.records) {
       const resourceName = resource.split(`${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/`)[1].split("/")[0].toLowerCase();
@@ -83,7 +83,7 @@ export class CicsCmciRestClient extends RestClient {
    * @throws {ImperativeError} verifyResponseCodes fails
    */
   public static async deleteExpectParsedXml(session: AbstractSession, resource: string, reqHeaders: any[] = []): Promise<ICMCIApiResponse> {
-    const data = await CicsCmciRestClient.deleteExpectString(session, resource, reqHeaders);
+    const data = await RestClient.deleteExpectString.call(AbstractRestClient, session, resource, reqHeaders);
     const apiResponse = CicsCmciRestClient.parseStringSync(data);
     return CicsCmciRestClient.verifyResponseCodes(apiResponse);
   }
@@ -108,7 +108,7 @@ export class CicsCmciRestClient extends RestClient {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
     }
-    const data = await CicsCmciRestClient.putExpectString(session, resource, reqHeaders, payload);
+    const data = await RestClient.putExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
     const apiResponse = CicsCmciRestClient.parseStringSync(data);
     return CicsCmciRestClient.verifyResponseCodes(apiResponse);
   }
@@ -133,7 +133,7 @@ export class CicsCmciRestClient extends RestClient {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
     }
-    const data = await CicsCmciRestClient.postExpectString(session, resource, reqHeaders, payload);
+    const data = await RestClient.postExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
     const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
     return CicsCmciRestClient.verifyResponseCodes(apiResponse);
   }

@@ -9,16 +9,17 @@
  *
  */
 
-import { CICSSession, CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { IResource } from "../../doc";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { LocalFileMeta } from "../../doc/meta/localFile.meta";
 import { CICSResourceContainerNode } from "../../trees";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -35,7 +36,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
         cancellable: false,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         for (const node of nodes) {
           progress.report({
@@ -44,7 +45,7 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
           });
 
           try {
-            await enableLocalFile(node.getSession(), {
+            await enableLocalFile(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -64,10 +65,10 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
   });
 }
 
-function enableLocalFile(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableLocalFile(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

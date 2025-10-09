@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
+import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { IProgram, ProgramMeta } from "../doc";
@@ -48,7 +48,7 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
           });
 
           try {
-            await performPhaseIn(node.getSession(), {
+            await performPhaseIn(node.getProfile(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
@@ -85,10 +85,10 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
   });
 }
 
-async function performPhaseIn(session: imperative.AbstractSession, parms: { cicsPlex: string | null; regionName: string; name: string }) {
+async function performPhaseIn(profile: IProfileLoaded, parms: { cicsPlex: string | null; regionName: string; name: string }) {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

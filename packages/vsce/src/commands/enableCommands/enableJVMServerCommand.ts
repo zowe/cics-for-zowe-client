@@ -9,8 +9,9 @@
  *
  */
 
-import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { JVMServerMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
@@ -39,7 +40,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         for (const node of nodes) {
           progress.report({
@@ -48,7 +49,7 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
           });
 
           try {
-            await enableJVMServer(node.getSession(), {
+            await enableJVMServer(node.getProfile(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
@@ -67,10 +68,10 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
   });
 }
 
-function enableJVMServer(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function enableJVMServer(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,
