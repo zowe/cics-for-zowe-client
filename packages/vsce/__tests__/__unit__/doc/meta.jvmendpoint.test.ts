@@ -88,4 +88,37 @@ describe("JVM Endpoint Meta", () => {
     let history = JVMEndpointMeta.getCriteriaHistory();
     expect(history).toEqual(["JVME1"]);
   });
+describe("JVMEndpointMeta.getLabel", () => {
+  it("should show both secure port and port when both are present and not N/A", () => {
+    jvmEndpointMock.attributes.secport = "9443";
+    jvmEndpointMock.attributes.port = "9080";
+    jvmEndpointMock.attributes.enablestatus = "ENABLED";
+    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080)");
+  });
+
+  it("should show only secure port when port is N/A", () => {
+    jvmEndpointMock.attributes.secport = "9443";
+    jvmEndpointMock.attributes.port = "N/A";
+    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443)");
+  });
+
+  it("should show only port when secure port is N/A", () => {
+    jvmEndpointMock.attributes.secport = "N/A";
+    jvmEndpointMock.attributes.port = "9080";
+    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (9080)");
+  });
+
+  it("should show neither port nor secure port when both are N/A", () => {
+    jvmEndpointMock.attributes.secport = "N/A";
+    jvmEndpointMock.attributes.port = "N/A";
+    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1");
+  });
+
+  it("should append (Disabled) when enablestatus is disabled", () => {
+    jvmEndpointMock.attributes.secport = "9443";
+    jvmEndpointMock.attributes.port = "9080";
+    jvmEndpointMock.attributes.enablestatus = "DISABLED";
+    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080) (Disabled)");
+  });
+});
 });    
