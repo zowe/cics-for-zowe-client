@@ -9,13 +9,17 @@
  *
  */
 
-import { IResourceAction } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getTransactionActions } from "./TransactionActions";
 
-export function getBuiltInResourceActions(): IResourceAction[] {
-  return [...getProgramActions(), ...getLocalFileActions(), ...getTransactionActions()];
+export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
+  const map = new Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>();
+  map.set(ResourceTypes.CICSProgram, getProgramActions());
+  map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
+  map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
+  return map;
 }
 
 export * from "./LocalFileActions";

@@ -11,7 +11,7 @@
 
 import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
@@ -57,7 +57,7 @@ export async function executeAction(
       await commands.executeCommand(action.action, node);
       await refreshWithProgress();
     } else {
-      await action.action(resource.resource.attributes, {
+      await action.action(resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], {
         profile,
         session,
         cicsplexName,

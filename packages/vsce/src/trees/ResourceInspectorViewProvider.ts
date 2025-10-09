@@ -16,7 +16,7 @@ import { ExtensionContext, WebviewViewProvider, Uri, WebviewView, Webview } from
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource } from "../doc";
 import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
-import { IResource, IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, ResourceAction, IResourceContext, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
@@ -117,7 +117,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   /**
    * Returns the current resource handler map being used.
    */
-  public getResourceHandlerMap(): { key: string; value: string }[] {
+  public getResourceHandlerMap(): { key: string; value: string; }[] {
     return this.resourceHandlerMap;
   }
 
@@ -189,23 +189,24 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActions() {
     // Required as Array.filter cannot be asyncronous
-    const asyncFilter = async (arr: IResourceAction[], predicate: (action: IResourceAction) => Promise<boolean>) => {
+    const asyncFilter = async (arr: ResourceAction<keyof ResourceTypeMap>[], predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>) => {
       const results = await Promise.all(arr.map(predicate));
       return arr.filter((_v, index) => results[index]);
     };
 
     // Gets actions for this resource type
-    let actionsForResource = CICSResourceExtender.getActionsForResourceType([this.resource.meta.resourceName]);
+    // @ts-ignore - NEEDS FIXING
+    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resource.meta.resourceName]);
 
     // Filter out resources that shouldn't be visible
-    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction) => {
+    actionsForResource = await asyncFilter(actionsForResource, async (action: ResourceAction<keyof ResourceTypeMap>) => {
       if (!action.visibleWhen) {
         return true;
       }
       if (typeof action.visibleWhen === 'boolean') {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resource.resource.attributes, this.getResourceContext());
+        const visible = await action.visibleWhen(this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], this.getResourceContext());
         return visible;
       }
     });

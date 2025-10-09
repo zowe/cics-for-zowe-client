@@ -2,13 +2,17 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
+
 ## `3.13.2`
+
 BugFix: show codicon icons on CICS Resource Inspector panel.[#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
 
-
 ## `3.13.1`
-- Enhancement: Integrate Resource Inspector breadcrumb with header to make better use of space. [#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
- 
+
+- Enhancement: Integrate Resource Inspector breadcrumb with header to make better use of space. [#440](https://github.com/zowe/cics-for-zowe-client/issues/440) 
 
 ## `3.13.0`
 
