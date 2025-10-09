@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { IJVMEndpoint, JVMEndpointMeta } from "../../doc";
@@ -53,7 +53,7 @@ export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<
 
             try {
               await disableJVMEndpoint(
-                node.getSession(),
+                node.getProfileName(),
                 {
                   name: resource.jvmendpoint,
                   cicsPlex: node.cicsplexName,
@@ -77,13 +77,13 @@ export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<
 }
 
 function disableJVMEndpoint(
-  session: CICSSession,
+  profileName: string,
   parms: ICommandParams,
   jvmServerName: string
 ): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName,
       resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,
