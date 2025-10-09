@@ -9,12 +9,21 @@
  *
  */
 
+import { IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import * as React from "react";
 import "../css/style.css";
 
 interface IconPath {
   light: string;
   dark: string;
+}
+
+interface IBreadcrumbProps {
+  resourceContext: IResourceProfileNameInfo;
+  resourceName: string;
+  resourceType: string;
+  resourceIconPath: IconPath;
+  isDarkTheme: boolean;
 }
 
 // Render icon using the provided icon path
@@ -27,54 +36,47 @@ const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: strin
  * Creates breadcrumb items array from profile handler and resource information
  */
 const createBreadcrumbItems = (
-  profileHandler: { key: string; value: string }[],
+  resourceContext: IResourceProfileNameInfo,
   resourceName: string,
   humanReadableNameSingular: string
-): { key: string; value: string }[] => {
-  const filteredProfiles = profileHandler.filter(p => p.key !== "profile" && p.value);
-  filteredProfiles.push({
-    key: "resourceName",
-    value: `${resourceName} (${humanReadableNameSingular})`
-  });
-  return filteredProfiles;
+): string[] => {
+  const items = [resourceContext.regionName, `${resourceName} (${humanReadableNameSingular})`];
+  if (resourceContext.cicsplexName) {
+    items.unshift(resourceContext.cicsplexName);
+  }
+  return items;
 };
 
 const Breadcrumb = ({
-  profileHandler,
+  resourceContext,
   resourceName,
   resourceType,
   resourceIconPath,
   isDarkTheme,
-}: {
-  profileHandler: { key: string; value: string }[];
-  resourceName: string;
-  resourceType: string;
-  resourceIconPath: IconPath;
-  isDarkTheme: boolean;
-}) => {
+}: IBreadcrumbProps) => {
 
   // Memoize items array to prevent unnecessary recalculations
   const items = React.useMemo(() =>
-    createBreadcrumbItems(profileHandler, resourceName, resourceType),
-    [profileHandler, resourceName, resourceType]);
+    createBreadcrumbItems(resourceContext, resourceName, resourceType),
+    [resourceContext, resourceName, resourceType]);
 
-  const renderBreadcrumbItem = (profile: { key: string; value: string }, idx: number) => {
-    const isResourceItem = idx === items.length - 1 && profile.key === "resourceName";
+  const renderBreadcrumbItem = (item: string, idx: number) => {
+    const isResourceItem = idx === items.length - 1;
     const showChevron = idx > 0 && resourceIconPath;
     const chevron = <span className="codicon codicon-chevron-right" />;
 
     if (!isResourceItem) {
       return (
-        <React.Fragment key={profile.key}>
+        <React.Fragment key={item}>
           {showChevron && <li>{chevron}</li>}
-          <li>{profile.value}</li>
+          <li>{item}</li>
         </React.Fragment>
       );
     }
     const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
 
     return (
-      <React.Fragment key={profile.key}>
+      <React.Fragment key={item}>
         {showChevron && <li>{chevron}</li>}
         <li className="resource-item">
           {icon && <span className="resource-icon">{icon}</span>}

@@ -15,10 +15,8 @@ import Mustache = require("mustache");
 import { ExtensionContext, WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { IContainedResource, IResource } from "../doc";
-import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
-import { IResourceAction, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { IResourceAction, IResourceContext, IResourceProfileInfo } from "@zowe/cics-for-zowe-explorer-api";
 import { SessionHandler } from "../resources";
-import { ProfileManagement } from "../utils/profileManagement";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import IconBuilder from "../utils/IconBuilder";
@@ -34,7 +32,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   private webviewView?: WebviewView;
   private resource: IContainedResource<IResource>;
 
-  private resourceHandlerMap: { key: string; value: string; }[];
+  private resourceContext: IResourceProfileInfo;
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -49,19 +47,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return this.instance;
   }
 
-  private getResourceContext(): IResourceContext {
-    const profileName = this.resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
-    const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
-
-    const session = SessionHandler.getInstance().getSession(profile);
-    const cicsplexName = this.resourceHandlerMap.filter((itm) => itm.key === "cicsplex")[0].value;
-    const regionName = this.resourceHandlerMap.filter((itm) => itm.key === "region")[0].value;
-
+  getResourceContext(): IResourceContext {
     return {
-      profile,
-      session,
-      cicsplexName,
-      regionName,
+      ...this.resourceContext,
+      session: SessionHandler.getInstance().getSession(this.resourceContext.profile),
     };
   }
 
@@ -115,16 +104,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   }
 
   /**
-   * Returns the current resource handler map being used.
-   */
-  public getResourceHandlerMap(): { key: string; value: string }[] {
-    return this.resourceHandlerMap;
-  }
-
-  /**
    * Sets the current node being used.
    */
-  public setNode(node: CICSResourceContainerNode<IResource>) {
+  public setNode(node?: CICSResourceContainerNode<IResource>) {
     this.node = node;
     return this;
   }
@@ -136,19 +118,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return this.node;
   }
 
-  public setResourceHandlerMap(resourceHandler: IResourcesHandler): ResourceInspectorViewProvider {
-    this.resourceHandlerMap = [];
-    this.resourceHandlerMap.push({ key: "profile", value: resourceHandler.resourceContainer.getProfileName() });
-    const cicsplex = resourceHandler.resourceContainer.getPlexName();
-    const plexvalue = cicsplex === undefined ? null : cicsplex;
-    this.resourceHandlerMap.push({
-      key: "cicsplex",
-      value: plexvalue,
-    });
-    const cicsregion = resourceHandler.resourceContainer.getRegionName();
-    const regionValue = cicsregion === undefined ? null : cicsregion;
-    this.resourceHandlerMap.push({ key: "region", value: regionValue });
-
+  public setResourceContext(context: IResourceProfileInfo): ResourceInspectorViewProvider {
+    this.resourceContext = context;
     return this;
   }
 
@@ -176,7 +147,11 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
         highlights: this.resource.meta.getHighlights(this.resource.resource),
         resource: this.resource.resource.attributes,
-        profileHandler: this.resourceHandlerMap,
+        resourceContext: {
+          profileName: this.resourceContext.profile.name,
+          cicsplexName: this.resourceContext.cicsplexName,
+          regionName: this.resourceContext.regionName,
+        },
       },
       actions: (await this.getActions()).map((action) => {
         return {

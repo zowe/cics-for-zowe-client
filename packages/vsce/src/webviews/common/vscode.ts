@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();
@@ -24,7 +24,7 @@ export interface TransformWebviewMessage {
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
-    profileHandler: { key: string; value: string; }[];
+    resourceContext: IResourceProfileNameInfo;
   };
   actions?: {
     id: string;
