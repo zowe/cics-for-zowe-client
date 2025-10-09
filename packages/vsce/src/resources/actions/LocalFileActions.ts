@@ -9,8 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { ILocalFile } from "../../doc";
+import { ILocalFile, IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
 export function getLocalFileActions(): IResourceAction[] {
   return [

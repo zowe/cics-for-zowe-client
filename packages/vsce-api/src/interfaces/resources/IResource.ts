@@ -9,12 +9,14 @@
  *
  */
 
-import { IResource } from "./IResource";
+export interface IResource {
+  eyu_cicsname: string;
+}
 
-export interface IProgram extends IResource {
-  library: string;
-  librarydsn: string;
-  program: string;
-  progtype: string;
-  newcopycnt: string;
+export interface IResourceWithStatus extends IResource {
+  status: string;
+}
+
+export interface IResourceWithEnableStatus extends IResource {
+  enablestatus: string;
 }

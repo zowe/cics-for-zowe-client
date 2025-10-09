@@ -9,8 +9,11 @@
  *
  */
 
-export interface IResource {
-  eyu_cicsname: string;
-  status: string;
-  enablestatus: string;
+import { IResourceWithEnableStatus } from "./IResource";
+
+export interface IJVMEndpoint extends IResourceWithEnableStatus {
+  jvmendpoint: string;
+  jvmserver: string;
+  port: string;
+  secport: string;
 }

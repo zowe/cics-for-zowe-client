@@ -9,8 +9,10 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IPipeline extends IResource {
+export interface IURIMap extends IResourceWithEnableStatus {
   name: string;
+  scheme: string;
+  path: string;
 }
