@@ -74,7 +74,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     this.webviewView = webviewView;
     this.webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [this.extensionUri],
+      localResourceRoots: [
+        this.extensionUri,
+        Uri.joinPath(this.extensionUri, 'dist')
+      ],
     };
     this.webviewView.webview.html = this._getHtmlForWebview(this.webviewView.webview);
 
@@ -215,10 +218,22 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    */
   private _getHtmlForWebview(webview: Webview): string {
     const scriptUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "resourceInspectorPanelView.js"));
+    const codiconCssUri = webview.asWebviewUri(Uri.joinPath(this.extensionUri, "dist", "codicon.css"));
     const nonce = randomUUID();
 
-    return Mustache.render(HTMLTemplate.default, {
-      uris: { resource: { script: scriptUri } },
+    // Create a custom template that includes the codicon CSS
+    const htmlTemplate = HTMLTemplate.default.replace(
+      '<head>',
+      `<head>
+        <link href="${codiconCssUri}" rel="stylesheet" />`
+    );
+
+    return Mustache.render(htmlTemplate, {
+      uris: {
+        resource: {
+          script: scriptUri
+        }
+      },
       nonce,
     });
   }

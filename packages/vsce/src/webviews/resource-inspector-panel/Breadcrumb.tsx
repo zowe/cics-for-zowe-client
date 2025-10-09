@@ -10,8 +10,6 @@
  */
 
 import * as React from "react";
-import '@vscode/codicons/dist/codicon.css';
-
 import "../css/style.css";
 
 interface IconPath {
