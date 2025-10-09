@@ -72,12 +72,13 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
 
         // Work out how many programs to re-fetch
         const parentNode = nodes[0].getParent() as CICSResourceContainerNode<IProgram>;
-        let numToFetch = parentNode.children.length;
-        if (!parentNode.getChildResource().resources.getFetchedAll()) {
-          numToFetch -= 1;
+        if (parentNode) {
+          let numToFetch = parentNode.children.length;
+          if (!parentNode.getChildResource().resources.getFetchedAll()) {
+            numToFetch -= 1;
+          }
+          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
         }
-        parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-
         tree._onDidChangeTreeData.fire(parentNode);
       }
     );
