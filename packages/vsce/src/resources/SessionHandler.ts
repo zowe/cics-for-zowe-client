@@ -52,6 +52,12 @@ export class SessionHandler implements ISessionHandler {
     }
   }
 
+  public removeProfile(profileName: string): void {
+    if (this.profiles.has(profileName)) {
+      this.profiles.delete(profileName);
+    }
+  }
+
   public clearSessions(): void {
     this.sessions.clear();
     this.profiles.clear();
