@@ -4,12 +4,13 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-Enhancement: Added Enable/Disable actions to JVM Endpoints. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
+- Enhancement: Added Enable/Disable actions to JVM Endpoints. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
 - Bugfix: Refresh CICS Resource Inspector panel after performing action. [#433](https://github.com/zowe/cics-for-zowe-client/issues/433)
+- Enhancement: Add Update Credentials option to the Manage Profile menu. [#451](https://github.com/zowe/cics-for-zowe-client/issues/451)
 
 ## `3.13.2`
 
-BugFix: show codicon icons on CICS Resource Inspector panel.[#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
+- BugFix: show codicon icons on CICS Resource Inspector panel.[#440](https://github.com/zowe/cics-for-zowe-client/issues/440)
 
 ## `3.13.1`
 
