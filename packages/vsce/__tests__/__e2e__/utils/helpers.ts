@@ -87,6 +87,11 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
   await getTreeItem(page, label).click({ button });
 };
 
+export const waitForNotification = async (page: Page, string: string) => {
+  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 1000 });
+  await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
+};
+
 export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
   await expect(page.getByText(label)).toBeVisible();
   await page.getByText(label).click({ button });
