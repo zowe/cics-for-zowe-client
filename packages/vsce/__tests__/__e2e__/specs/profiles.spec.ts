@@ -68,4 +68,22 @@ test.describe("Profile tests", () => {
     await expect(page.getByLabel(`~/workspace/${constants.ZOWE_CONFIG_FILE_NAME}`).getByText(constants.ZOWE_CONFIG_FILE_NAME)).toBeVisible();
     await expect(page.getByRole("code").locator("div").filter({ hasText: '"type": "zosmf"' }).nth(4)).toBeVisible();
   });
+
+  test("should prompt for credentials when choosing update credentials", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME, "right");
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Manage Profile");
+    await findAndClickText(page, "Update Credentials");
+
+    await expect(page.getByRole("textbox", { name: "User Name" })).toBeVisible();
+    await page.getByRole("textbox", { name: "User Name" }).fill("MYUSER");
+    await page.keyboard.press("Enter");
+
+    await expect(page.getByRole("textbox", { name: "Password" })).toBeVisible();
+    await page.getByRole("textbox", { name: "Password" }).fill("MYPASS");
+    await page.keyboard.press("Enter");
+
+    await expect(page.getByText(`Credentials updated for profile ${constants.PROFILE_NAME}`, { exact: true })).toBeVisible();
+  });
 });
