@@ -57,7 +57,7 @@
     {
       "scenarioName": "New Copy Program",
       "requiredScenarioState": "fetched-newcopied-programs-records",
-      "newScenarioState": "fetched-newcopied-programs-removed-cache",
+      "newScenarioState": "myprog1-newcopied-refresh",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSResultCache/0000NEWCOPYTOKEN?SUMMONLY"
@@ -65,6 +65,23 @@
       "response": {
         "status": 200,
         "bodyFileName": "CICSProgram/new-copy/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "myprog1-newcopied-refresh",
+      "newScenarioState": "fetched-newcopied-programs-summary",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/summary.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
