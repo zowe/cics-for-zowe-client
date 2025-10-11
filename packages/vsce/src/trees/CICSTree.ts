@@ -37,6 +37,7 @@ import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
+import { SessionHandler } from "../resources";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -85,12 +86,17 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    * @param treeview CICSTree View
    * *@param node current selected node
    */
-  async manageProfile(treeview: TreeView<any>, node: CICSSessionTree) {
+  async manageProfile(node: CICSSessionTree) {
     try {
       const configInstance = await ProfileManagement.getConfigInstance();
       if (configInstance.getTeamConfig().exists) {
-        const currentProfile = await ProfileManagement.getProfilesCache().getProfileFromConfig(String(node.label));
+        const loadedProfile = ProfileManagement.getProfilesCache().loadNamedProfile(node.getProfile().name);
+        const profileAttributes = await ProfileManagement.getProfilesCache().getProfileFromConfig(loadedProfile.name, loadedProfile.type);
 
+        const updateCreds: QuickPickItem = {
+          label: `$(refresh) ${l10n.t(`Update Credentials`)}`,
+          description: l10n.t(`Update the selected profile's credentials`),
+        };
         const deleteProfile: QuickPickItem = {
           label: `$(trash) ${l10n.t(`Delete Profile`)}`,
           description: l10n.t(`Delete the selected Profile`),
@@ -106,7 +112,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
         const quickpick = Gui.createQuickPick();
         const addProfilePlaceholder = "Choose user action for selected profile";
-        quickpick.items = [editProfile, hideProfile, deleteProfile];
+        quickpick.items = [updateCreds, editProfile, hideProfile, deleteProfile];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
         quickpick.show();
@@ -119,9 +125,25 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         } else if (choice === hideProfile) {
           await this.removeSession(node);
           return;
+        } else if (choice === updateCreds) {
+          const updatedProfile = await ZoweVsCodeExtension.updateCredentials(
+            {
+              profile: loadedProfile,
+              rePrompt: true,
+            },
+            ProfileManagement.getExplorerApis()
+          );
+          if (updatedProfile) {
+            node.setProfile(updatedProfile);
+            SessionHandler.getInstance().removeProfile(updatedProfile.name);
+            SessionHandler.getInstance().removeSession(updatedProfile.name);
+            SessionHandler.getInstance().getSession(updatedProfile);
+            Gui.showMessage(`Credentials updated for profile ${updatedProfile.name}`);
+            return;
+          }
         } else {
           // editProfile or deleteProfile
-          const filePath = currentProfile.profLoc.osLoc[0];
+          const filePath = profileAttributes.profLoc.osLoc[0];
           await openConfigFile(filePath);
           return;
         }
