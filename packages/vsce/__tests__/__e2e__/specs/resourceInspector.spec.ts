@@ -42,6 +42,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickText(page, "Inspect Resource");
 
     await getResourceInspector(page).locator("#resource-title").waitFor();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/1.png" });
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
   });
 
@@ -59,7 +60,7 @@ test.describe("Resource Inspector tests", async () => {
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
-    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/1.png" });
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
   });
@@ -75,6 +76,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickText(page, "Inspect Resource");
 
     await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/3.png" });
   });
 
   test("should refresh resource when clicking refresh icon", async ({ page }) => {
@@ -96,12 +98,14 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
 
     // Click on "New Copy" in the context menu
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/4.png" });
     await findAndClickText(page, "New Copy");
 
     // Now check resource inspector hasn't updated
     await getResourceInspector(page).locator("#resource-title").waitFor();
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
     const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
     await expect(newCopyCountRow).toBeVisible();
     await expect(newCopyCountRow.locator("..")).toContainText("0");
 
@@ -109,12 +113,14 @@ test.describe("Resource Inspector tests", async () => {
     const refreshIcon = getResourceInspector(page).locator("#refresh-icon");
     await expect(refreshIcon).toBeVisible();
     await refreshIcon.click();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/6.png" });
 
     // Verify that the refresh occurs
     await waitForNotification(page, `Refreshing Program ${constants.PROGRAM_1_NAME}`);
 
     // New Copy Count should now be 1 after the New Copy operation
     const newCopyCountRow2 = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/7.png" });
     await expect(newCopyCountRow2).toBeVisible();
     await expect(newCopyCountRow2.locator("..")).toContainText("1");
   });
