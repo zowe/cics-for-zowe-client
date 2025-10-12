@@ -21,8 +21,6 @@ export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
   private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
-  constructor() {}
-
   public static apiDoesExist() {
     if (ProfileManagement.zoweExplorerAPI) {
       return true;

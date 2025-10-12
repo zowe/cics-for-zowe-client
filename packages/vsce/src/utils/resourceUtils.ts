@@ -68,7 +68,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
     ]);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+    if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
       throw error;
     }
   }
@@ -99,7 +99,7 @@ export async function runGetCache(
   const session = SessionHandler.getInstance().getSession(profile);
 
   try {
-    if (!session.ISession.tokenValue) {
+    if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
     return await getCache(session, { cacheToken, startIndex, count, nodiscard, summonly }, { failOnNoData: false, useCICSCmciRestError: true }, [
@@ -107,7 +107,7 @@ export async function runGetCache(
     ]);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
       throw error;
     }
   }
@@ -146,14 +146,14 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
 
   try {
     // First attempt
-    if (!session.ISession.tokenValue) {
+    if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
 
     return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [buildUserAgentHeader()], requestBody);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
       throw error;
     }
   }

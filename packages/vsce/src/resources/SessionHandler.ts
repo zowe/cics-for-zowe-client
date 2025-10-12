@@ -39,7 +39,7 @@ export class SessionHandler implements ISessionHandler {
     this.sessions.set(profile.name, session);
   }
 
-  public getSession(profile: IProfileLoaded): CICSSession | undefined {
+  public getSession(profile: IProfileLoaded): CICSSession {
     if (!this.sessions.has(profile.name)) {
       this.createSession(profile);
     }
