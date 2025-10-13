@@ -1,0 +1,69 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "refresh-summary",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "refresh-summary",
+      "newScenarioState": "refresh-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000NEWCOPYTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "refresh-records",
+      "newScenarioState": "refresh-removed",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000NEWCOPYTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/new-copy/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "refresh-removed",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

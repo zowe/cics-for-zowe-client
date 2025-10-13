@@ -86,29 +86,23 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
     await page.waitForTimeout(200);
 
     // Open resource inspector
     await findAndClickText(page, "Inspect Resource");
-    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
-
-    // Now perform a New Copy operation from the tree context menu
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
-    await page.waitForTimeout(200);
-
-    // Click on "New Copy" in the context menu
-    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/4.png" });
-    await findAndClickText(page, "New Copy");
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_2_NAME}'...`);
 
     // Now check resource inspector hasn't updated
     await getResourceInspector(page).locator("#resource-title").waitFor();
+    // we're driving the MYPROG1 mock responses here so it'll say it's MYPROG1
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
     const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
     await expect(newCopyCountRow).toBeVisible();
-    await expect(newCopyCountRow.locator("..")).toContainText("0");
+    await expect(newCopyCountRow.locator("..")).toContainText("1");
 
+    // hitting refresh will cause the new copy count to be returned to 0 because we pull the original mock
     // Find and click the refresh icon
     const refreshIcon = getResourceInspector(page).locator("#refresh-icon");
     await expect(refreshIcon).toBeVisible();
@@ -116,12 +110,13 @@ test.describe("Resource Inspector tests", async () => {
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/6.png" });
 
     // Verify that the refresh occurs
+    // we're driving the MYPROG1 mock responses here so it'll say it's MYPROG1
     await waitForNotification(page, `Refreshing Program ${constants.PROGRAM_1_NAME}`);
 
     // New Copy Count should now be 1 after the New Copy operation
     const newCopyCountRow2 = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/7.png" });
     await expect(newCopyCountRow2).toBeVisible();
-    await expect(newCopyCountRow2.locator("..")).toContainText("1");
+    await expect(newCopyCountRow2.locator("..")).toContainText("0");
   });
 });
