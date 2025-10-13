@@ -14,6 +14,10 @@ import { IJVMEndpoint } from "../../../src/doc/resources/IJVMEndpoint";
 import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("JVM Endpoint Meta", () => {
   let jvmEndpointMock: Resource<IJVMEndpoint>;
   let parentResource: Resource<IJVMServer>;

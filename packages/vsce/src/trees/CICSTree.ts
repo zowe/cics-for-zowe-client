@@ -67,7 +67,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     // Retrieve previously added profiles from persistent storage
     for (const profilename of PersistentStorage.getLoadedCICSProfiles()) {
       try {
-        const profileToLoad = await ProfileManagement.getProfilesCache().loadNamedProfile(profilename, "cics");
+        const profileToLoad = ProfileManagement.getProfilesCache().loadNamedProfile(profilename, "cics");
         // avoid accidental repeats
         if (!this.loadedProfiles.filter((sessionTree) => sessionTree.label === profilename).length) {
           const newSessionTree = new CICSSessionTree(profileToLoad, this);
@@ -234,7 +234,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             // Initialise session tree
             let plexInfo: InfoLoaded[];
             try {
-              plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+              plexInfo = await ProfileManagement.getPlexInfo(profile);
               sessionTree.setAuthorized();
             } catch (error) {
               if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
@@ -245,9 +245,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   throw error;
                 }
 
-                sessionTree.profile = profile;
+                sessionTree.setProfile(profile);
                 sessionTree.createSessionFromProfile();
-                plexInfo = await ProfileManagement.getPlexInfo(profile, sessionTree.getSession());
+                plexInfo = await ProfileManagement.getPlexInfo(profile);
                 sessionTree.setAuthorized();
               } else {
                 throw error;
@@ -260,7 +260,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               // No plex
               if (item.plexname === null) {
                 const regionsObtained = await runGetResource({
-                  session: sessionTree.getSession(),
+                  profileName: sessionTree.getProfile().name,
                   resourceName: CicsCmciConstants.CICS_CMCI_REGION,
                   regionName: item.regions[0].applid,
                 });
@@ -331,7 +331,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
   async removeSession(session: CICSSessionTree) {
     await PersistentStorage.removeLoadedCICSProfile(session.label.toString());
-    this.loadedProfiles = this.loadedProfiles.filter((p) => p.profile.name !== session.label?.toString());
+    this.loadedProfiles = this.loadedProfiles.filter((p) => p.getProfile().name !== session.label?.toString());
     this._onDidChangeTreeData.fire(undefined);
   }
 

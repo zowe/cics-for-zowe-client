@@ -13,6 +13,10 @@ import { LocalFileMeta } from "../../../src/doc/meta/localFile.meta";
 import { ILocalFile } from "../../../src/doc/resources/ILocalFile";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Local File Meta", () => {
   let localFileMock: Resource<ILocalFile>;
 

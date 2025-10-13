@@ -9,14 +9,15 @@
  *
  */
 
-import { CICSSession, CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { TransactionMeta } from "../../doc";
+import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -42,7 +43,7 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
           });
 
           try {
-            await disableTransaction(node.getSession(), {
+            await disableTransaction(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -71,10 +72,10 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
   });
 }
 
-function disableTransaction(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function disableTransaction(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

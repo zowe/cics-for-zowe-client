@@ -22,15 +22,15 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
 }));
 
-
-import { copyUserAgentHeaderToClipboard, copyResourceNameToClipboard } from "../../../src/commands/copyCommand";
-import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
+import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../../../src/commands/copyCommand";
 import { IProgram, ProgramMeta } from "../../../src/doc";
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
 
 let mockedClipboard = ``;
 jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => { mockedClipboard = v; });
+
+const profile = { name: "MYPROF", profile: CICSProfileMock, failNotFound: false, message: "", type: "cics" };
 
 describe("Test suite for copy commands", () => {
 
@@ -49,10 +49,7 @@ describe("Test suite for copy commands", () => {
   });
 
   it("should copy resource name to clipboard", async () => {
-
-    const cicsSessionMock = new CICSSession({ ...CICSProfileMock, host: "MY.HOST" });
-
-    const sessionTree = new CICSSessionTree({ name: "MYPROF", profile: CICSProfileMock }, {
+    const sessionTree = new CICSSessionTree(profile, {
       _onDidChangeTreeData: { fire: () => jest.fn() },
     } as unknown as CICSTree);
     const regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
@@ -60,11 +57,10 @@ describe("Test suite for copy commands", () => {
     const mockedResourceNode = new CICSResourceContainerNode<IProgram>(
       "MOCK",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "",
         regionName: "REG",
         parentNode: regionTree,
-        session: cicsSessionMock,
       },
       {
         meta: ProgramMeta,

@@ -10,15 +10,15 @@
  */
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { IProfileLoaded } from "@zowe/imperative";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { ITask, TaskMeta } from "../doc";
+import { ICommandParams } from "../doc/commands/ICommandParams";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "../doc/commands/ICommandParams";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -58,7 +58,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
           const resName = node.getContainedResourceName();
           try {
             await purgeTask(
-              node.getSession(),
+              node.getProfile(),
               {
                 name: resName,
                 regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -102,15 +102,15 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
 
 /**
  * CMCI Purge Task request
- * @param session
+ * @param profile
  * @param parms
  * @param purgeType
  * @returns
  */
-function purgeTask(session: imperative.AbstractSession, parms: ICommandParams, purgeType: string): Promise<ICMCIApiResponse> {
+function purgeTask(profile: IProfileLoaded, parms: ICommandParams, purgeType: string): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_TASK,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

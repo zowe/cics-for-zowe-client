@@ -9,7 +9,8 @@
  *
  */
 
-import { CicsCmciConstants, CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { BundleMeta } from "../../doc";
@@ -48,7 +49,7 @@ export function getDisableBundleCommand(tree: CICSTree, treeview: TreeView<any>)
           });
 
           try {
-            await disableBundle(node.getSession(), {
+            await disableBundle(node.getProfile(), {
               name: node.getContainedResource().meta.getName(node.getContainedResource().resource),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -77,10 +78,10 @@ export function getDisableBundleCommand(tree: CICSTree, treeview: TreeView<any>)
   });
 }
 
-function disableBundle(session: CICSSession, parms: ICommandParams): Promise<ICMCIApiResponse> {
+function disableBundle(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

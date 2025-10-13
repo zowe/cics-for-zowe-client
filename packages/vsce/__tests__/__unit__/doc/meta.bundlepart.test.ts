@@ -14,6 +14,10 @@ import { BundlePartMeta } from "../../../src/doc/meta/bundlePart.meta";
 import { IBundlePart } from "../../../src/doc/resources/IBundlePart";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Bundle Part Meta", () => {
   let bundlePartMock: Resource<IBundlePart>;
   let parentResource: Resource<IBundle>;

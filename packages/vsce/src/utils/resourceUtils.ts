@@ -9,146 +9,216 @@
  *
  */
 
-import {
-  CicsCmciRestClient,
-  getResource,
-  ICMCIResponseResultSummary,
-  IGetResourceUriOptions,
-  IResourceQueryParams,
-  Utils
-} from "@zowe/cics-for-zowe-sdk";
-import { Session } from "@zowe/imperative";
-import constants from "../constants/CICS.defaults";
-import { getErrorCode } from "./errorUtils";
-import { CICSLogger } from "./CICSLogger";
-import { CICSResourceContainerNode } from "../trees";
-import { IResource } from "../doc";
+import { CicsCmciRestClient, getCache, getResource, ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
+import constants from "../constants/CICS.defaults";
+import { IResource } from "../doc";
+import { SessionHandler } from "../resources";
+import { CICSResourceContainerNode } from "../trees";
+import { CICSLogger } from "./CICSLogger";
+import { getErrorCode } from "./errorUtils";
 
-export async function runGetResource({
-  session,
-  resourceName,
-  regionName,
-  cicsPlex,
-  params,
-}: {
-  session: Session;
+interface IReqParams {
+  criteria?: string;
+  parameter?: string;
+  queryParams?: IResourceQueryParams;
+}
+
+interface IRunGetPutResourceParams {
+  profileName: string;
   resourceName: string;
   regionName?: string;
   cicsPlex?: string;
-  params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
-}) {
-  const resourceParams = {
-    name: resourceName,
-    ...(regionName && { regionName: regionName }),
-    ...(cicsPlex && { cicsPlex: cicsPlex }),
-    ...(params?.criteria && { criteria: params.criteria }),
-    ...(params?.parameter && { parameter: params.parameter }),
-    ...(params?.queryParams && { queryParams: params.queryParams }),
-  };
+  params?: IReqParams;
+}
 
-  CICSLogger.debug("GET request - Resource [" + resourceName + "]" +
-    (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
-    (regionName ? ", Region [" + regionName + "]" : "") +
-    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+interface IRunGetCacheParams {
+  profileName: string;
+  cacheToken: string;
+  startIndex?: number;
+  count?: number;
+}
 
-  const requestOptions = {
-    failOnNoData: false,
-    useCICSCmciRestError: true,
-  };
+interface IRunGetCacheQueryParams {
+  nodiscard: boolean;
+  summonly: boolean;
+}
+
+export async function runGetResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams) {
+  CICSLogger.debug(
+    buildRequestLoggerString("GET", resourceName, {
+      regionName,
+      cicsPlex,
+      criteria: params?.criteria,
+      parameters: params?.parameter,
+      ...params?.queryParams,
+    })
+  );
+
+  const profile = SessionHandler.getInstance().getProfile(profileName);
+  const session = SessionHandler.getInstance().getSession(profile);
 
   try {
-    // First attempt
-    return await getResource(
-      session,
-      resourceParams,
-      requestOptions,
-      [buildUserAgentHeader()]
-    );
+    if (!session.ISession?.tokenValue) {
+      AuthOrder.makingRequestForToken(session.ISession);
+    }
+    return await getResource(session, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
+      buildUserAgentHeader(),
+    ]);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+    if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
       throw error;
     }
   }
 
-  // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
-  session.ISession.tokenValue = null;
-  return getResource(
-    session,
-    resourceParams,
-    requestOptions,
+  const newSession = buildNewSession(profile);
+
+  return await getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
+    buildUserAgentHeader(),
+  ]);
+}
+
+export async function runGetCache(
+  { profileName, cacheToken, startIndex, count }: IRunGetCacheParams,
+  { nodiscard, summonly }: IRunGetCacheQueryParams = { nodiscard: true, summonly: false }
+) {
+  CICSLogger.debug(
+    buildRequestLoggerString("GET", "CICSResultCache", {
+      cacheToken,
+      startIndex,
+      count,
+      nodiscard,
+      summonly,
+    })
+  );
+
+  const profile = SessionHandler.getInstance().getProfile(profileName);
+  const session = SessionHandler.getInstance().getSession(profile);
+
+  try {
+    if (!session.ISession?.tokenValue) {
+      AuthOrder.makingRequestForToken(session.ISession);
+    }
+    return await getCache(session, { cacheToken, startIndex, count, nodiscard, summonly }, { failOnNoData: false, useCICSCmciRestError: true }, [
+      buildUserAgentHeader(),
+    ]);
+  } catch (error) {
+    // Make sure the error is not caused by the ltpa token expiring
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
+      throw error;
+    }
+  }
+
+  CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
+
+  const newSession = buildNewSession(profile);
+
+  return await getCache(
+    newSession,
+    { cacheToken, startIndex, count, nodiscard: true, summonly: false },
+    { failOnNoData: false, useCICSCmciRestError: true },
     [buildUserAgentHeader()]
   );
 }
 
-export async function runPutResource(
-  {
-    session,
-    resourceName,
-    regionName,
-    cicsPlex,
-    params,
-  }: {
-    session: Session;
-    resourceName: string;
-    regionName?: string;
-    cicsPlex?: string;
-    params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
-  },
-  requestBody: any
-) {
-  const options: IGetResourceUriOptions = {
+export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
+  const cmciResource = Utils.getResourceUri(resourceName, {
     cicsPlex: cicsPlex,
     regionName: regionName,
     ...params,
-  };
-  const cmciResource = Utils.getResourceUri(resourceName, options);
+  });
 
-  CICSLogger.debug("PUT request - Resource [" + resourceName + "]" +
-    (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
-    (regionName ? ", Region [" + regionName + "]" : "") +
-    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : "") );
+  CICSLogger.debug(
+    buildRequestLoggerString("PUT", resourceName, {
+      cicsPlex,
+      regionName,
+      criteria: params?.criteria,
+      parameters: params?.parameter,
+      ...params?.queryParams,
+    })
+  );
+
+  const profile = SessionHandler.getInstance().getProfile(profileName);
+  const session = SessionHandler.getInstance().getSession(profile);
 
   try {
     // First attempt
-    return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+    if (!session.ISession?.tokenValue) {
+      AuthOrder.makingRequestForToken(session.ISession);
+    }
+
+    return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [buildUserAgentHeader()], requestBody);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
       throw error;
     }
   }
 
-  // Making a second attempt as ltpa token has expired
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
-  session.ISession.tokenValue = null;
-  return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+
+  const newSession = buildNewSession(profile);
+
+  return await CicsCmciRestClient.putExpectParsedXml(newSession, cmciResource, [buildUserAgentHeader()], requestBody);
 }
+
+export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {
+  return {
+    name: resourceName,
+    ...(regionName && { regionName }),
+    ...(cicsplexName && { cicsPlex: cicsplexName }),
+    ...(params?.criteria && { criteria: params.criteria }),
+    ...(params?.parameter && { parameter: params.parameter }),
+    ...(params?.queryParams && { queryParams: params.queryParams }),
+  };
+};
+
+export const buildRequestOptions = () => {
+  return {
+    failOnNoData: false,
+    useCICSCmciRestError: true,
+  };
+};
+
+export const buildNewSession = (profile: IProfileLoaded) => {
+  SessionHandler.getInstance().removeSession(profile.name);
+  const newSession = SessionHandler.getInstance().getSession(profile);
+  AuthOrder.makingRequestForToken(newSession.ISession);
+
+  return newSession;
+};
+
+export const buildRequestLoggerString = (
+  method: "GET" | "PUT" | "POST",
+  resourceName: string,
+  opts: { [key: string]: string | boolean | number; } = {}
+): string => {
+  let output = `${method.toUpperCase()} - Resource [${resourceName}]`;
+  for (const [k, v] of Object.entries(opts)) {
+    if (v) {
+      output += `, ${k.toUpperCase()} [${v}]`;
+    }
+  }
+  return output;
+};
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  completionMet: (
-    response: {
-      resultsummary: ICMCIResponseResultSummary;
-      records: any;
-    }) => boolean,
+  completionMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
   cb: () => void,
   retries: number = constants.POLL_FOR_ACTION_DEFAULT_RETRIES
 ) {
   for (let i = 0; i < retries; i++) {
     const { response } = await runGetResource({
-      session: node.getSession(),
+      profileName: node.getProfile().name,
       resourceName: node.getContainedResource().meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
-        criteria: node.getContainedResource().meta.buildCriteria([
-          node.getContainedResource().meta.getName(node.getContainedResource().resource)
-        ]),
+        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)]),
       },
     });
     if (completionMet(response)) {

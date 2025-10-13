@@ -71,7 +71,7 @@ describe("Test suite for CICSRegionTree", () => {
     workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
     get.mockReturnValue(true);
 
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock }, {
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
       _onDidChangeTreeData: { fire: () => jest.fn() },
     } as unknown as CICSTree);
     sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
@@ -85,7 +85,7 @@ describe("Test suite for CICSRegionTree", () => {
   });
 
   it("Should load region Tree when cicsstate is DISABLED", () => {
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock }, {
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
       _onDidChangeTreeData: { fire: () => jest.fn() },
     } as unknown as CICSTree);
     sut = new CICSRegionTree("regionName", region_disable, parent, undefined, parent);
@@ -95,7 +95,7 @@ describe("Test suite for CICSRegionTree", () => {
   });
 
   it("Should load region Tree when cicsstate is ACTIVE", () => {
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock }, {
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
       _onDidChangeTreeData: { fire: () => jest.fn() },
     } as unknown as CICSTree);
     sut = new CICSRegionTree("regionName", region_undefined, parent, undefined, parent);
@@ -115,9 +115,9 @@ describe("Test suite for CICSRegionTree", () => {
 
   it("Should return parent", () => {
     expect(sut.getParent()).toBeDefined();
-    expect(sut.getParent().profile).toEqual({
-      profile: globalMocks.CICSProfileMock,
-    });
+    expect(sut.getParent().profile).toBeDefined();
+    expect(sut.getParent().profile).toHaveProperty("profile");
+    expect(sut.getParent().profile.profile).toEqual(globalMocks.CICSProfileMock);
   });
 
   it("Should return isActive", () => {

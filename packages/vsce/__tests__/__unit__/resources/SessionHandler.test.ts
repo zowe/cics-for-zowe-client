@@ -11,10 +11,14 @@
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { SessionHandler } from "../../../src/resources/SessionHandler";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
 
 const profile: imperative.IProfileLoaded = {
   name: "testProfile",

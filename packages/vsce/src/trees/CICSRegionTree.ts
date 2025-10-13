@@ -42,7 +42,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   isActive: true | false;
 
   constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
-    super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.session, parentSession.profile);
+    super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.getProfile());
     this.region = region;
     this.contextValue = `${CicsCmciConstants.CICS_CMCI_REGION}.${regionName}`;
     this.parentSession = parentSession;
@@ -113,8 +113,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       meta.humanReadableNamePlural,
       {
         parentNode: this,
-        profile: this.parentSession.profile,
-        session: this.parentSession.session,
+        profile: this.parentSession.getProfile(),
         cicsplexName: this.parentPlex?.plexName,
         regionName: this.getRegionName(),
       },

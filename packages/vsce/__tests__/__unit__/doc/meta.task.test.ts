@@ -13,6 +13,10 @@ import { TaskMeta } from "../../../src/doc/meta/task.meta";
 import { ITask } from "../../../src/doc/resources/ITask";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Task Meta", () => {
   let taskMock: Resource<ITask>;
 

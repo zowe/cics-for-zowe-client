@@ -10,15 +10,15 @@
  */
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { IProfileLoaded } from "@zowe/imperative";
+import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { ILocalFile, LocalFileMeta } from "../doc";
+import { ICommandParams } from "../doc/commands/ICommandParams";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "../doc/commands/ICommandParams";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -54,7 +54,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
 
           try {
             await closeLocalFile(
-              node.getSession(),
+              node.getProfile(),
               {
                 name: node.getContainedResourceName(),
                 regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -97,10 +97,10 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
   });
 }
 
-async function closeLocalFile(session: imperative.AbstractSession, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
+async function closeLocalFile(profile: IProfileLoaded, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
-      session: session,
+      profileName: profile.name,
       resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
       cicsPlex: parms.cicsPlex,
       regionName: parms.regionName,

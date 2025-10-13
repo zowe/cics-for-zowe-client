@@ -106,7 +106,7 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
   if (!jobid) {
     try {
       const { response } = await runGetResource({
-        session: selectedRegion.parentSession.getSession(),
+        profileName: selectedRegion.getProfile().name,
         resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         regionName: selectedRegion.region.cicsname,
         cicsPlex: selectedRegion.parentPlex?.plexName,
