@@ -11,6 +11,7 @@
 
 import { ImperativeError } from "@zowe/imperative";
 import { ICMCIResponseResultSummary } from "../doc";
+import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
 
 export class CicsCmciRestError extends ImperativeError {
   resultSummary: ICMCIResponseResultSummary;
@@ -25,9 +26,10 @@ export class CicsCmciRestError extends ImperativeError {
   EIBFN_ALT: string;
   FEEDBACKRESP_ALT: string;
 
-  constructor(msg: string , resultSummary: ICMCIResponseResultSummary) {
+  constructor(msg: string , resultSummary: ICMCIResponseResultSummary, errorFeedback?: ICMCIResponseErrors) {
     super({msg});
     this.resultSummary = resultSummary;
+    this.resultSummary.errors = errorFeedback;
     this.parseResultSummary();
   }
 

@@ -13,6 +13,7 @@
  * Interface representing API response from CMCI's web interface, parsed from XML to a javascript object
  * using the xml2js package.
  */
+import { ICMCIResponseErrors } from "./ICMCIResponseErrors";
 import { ICMCIResponseResultSummary } from "./ICMCIResponseResultSummary";
 
 export interface ICMCIApiResponse {
@@ -31,5 +32,10 @@ export interface ICMCIApiResponse {
      * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_records_element.html
      */
     records: any;
+    /**
+     * See the following link for more information:
+     * https://www.ibm.com/support/knowledgecenter/SSGMCP_5.2.0/com.ibm.cics.ts.clientapi.doc/topics/clientapi_errors_element.html
+     */
+    errors?: ICMCIResponseErrors;
   };
 }

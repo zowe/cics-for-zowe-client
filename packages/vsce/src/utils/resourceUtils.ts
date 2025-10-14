@@ -153,17 +153,14 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   const profile = SessionHandler.getInstance().getProfile(profileName);
   const session = SessionHandler.getInstance().getSession(profile);
 
-  const requestOptions = {
-    failOnNoData: false,
-    useCICSCmciRestError: true,
-  };
+
   try {
     // First attempt
     if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
     return await putResource(session, buildResourceParms(resourceName, regionName, cicsPlex, params)
-      , [buildUserAgentHeader()], requestBody, requestOptions);
+      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
     
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
@@ -176,7 +173,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   const newSession = buildNewSession(profile);
 
   return putResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params)
-      , [buildUserAgentHeader()], requestBody, requestOptions);
+      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
 }
 
 export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {

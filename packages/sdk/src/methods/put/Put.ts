@@ -37,7 +37,9 @@ export async function putResource(
   const options: IGetResourceUriOptions = {
     cicsPlex: parms.cicsPlex,
     regionName: parms.regionName,
-    ...parms,
+    criteria: parms.criteria,
+    parameter: parms.parameter,
+    queryParams: parms.queryParams,
   };
 
   const cmciResource = Utils.getResourceUri(parms.name, options);

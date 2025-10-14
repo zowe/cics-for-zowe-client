@@ -109,7 +109,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
     }
-    const data = await RestClient.putExpectString.call(AbstractRestClient, resource, reqHeaders, payload);
+    const data = await RestClient.putExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
     const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
     if (requestOptions?.failOnNoData === false && !apiResponse.response.records) {
       const resourceName = resource.split(`${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/`)[1].split("/")[0].toLowerCase();
@@ -213,7 +213,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     }
 
     if (requestOptions?.useCICSCmciRestError) {
-      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary);
+      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary, apiResponse.response.errors);
     }
 
     throw new ImperativeError({
