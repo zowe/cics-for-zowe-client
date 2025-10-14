@@ -34,10 +34,10 @@ export function findSelectedNodes(
   const selectedNodes = treeview.selection;
 
   if (!clickedNode) {
-    return selectedNodes.filter((node) => node.getContainedResource().meta.resourceName === expectedMeta.resourceName);
+    return selectedNodes?.filter((node) => node.getContainedResource().meta.resourceName === expectedMeta.resourceName);
   }
 
-  if (selectedNodes.includes(clickedNode)) {
+  if (selectedNodes?.includes(clickedNode)) {
     return selectedNodes.filter((node) => node.getContainedResource().meta.resourceName === expectedMeta.resourceName);
   } else {
     return [clickedNode];
