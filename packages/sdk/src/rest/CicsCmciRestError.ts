@@ -19,11 +19,14 @@ export class CicsCmciRestError extends ImperativeError {
   RESPONSE_2: number;
   RESPONSE_1_ALT: string;
   RESPONSE_2_ALT: string;
+  FEEDBACKRESP: number;
+  FEEDBACKRESP_2: number;
+  FEEDBACK_ACTION: string
+  EIBFN_ALT: string;
+  FEEDBACKRESP_ALT: string;
 
-  constructor(msg: string, resultSummary: ICMCIResponseResultSummary) {
-    super({
-      msg,
-    });
+  constructor(msg: string , resultSummary: ICMCIResponseResultSummary) {
+    super({msg});
     this.resultSummary = resultSummary;
     this.parseResultSummary();
   }
@@ -33,5 +36,10 @@ export class CicsCmciRestError extends ImperativeError {
     this.RESPONSE_2 = parseInt(this.resultSummary.api_response2);
     this.RESPONSE_1_ALT = this.resultSummary.api_response1_alt;
     this.RESPONSE_2_ALT = this.resultSummary.api_response2_alt;
+    this.FEEDBACKRESP = parseInt(this.resultSummary.errors?.feedback?.resp);
+    this.FEEDBACKRESP_2 = parseInt(this.resultSummary.errors?.feedback?.resp2);
+    this.FEEDBACK_ACTION = this.resultSummary.errors?.feedback?.action;
+    this.FEEDBACKRESP_ALT = this.resultSummary.errors?.feedback?.resp_alt;
+    this.EIBFN_ALT = this.resultSummary.errors?.feedback?.eibfn_alt
   }
 }

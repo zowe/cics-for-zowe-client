@@ -38,6 +38,9 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { SessionHandler } from "../resources";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import errorConstants from "../constants/CICS.errorMessages";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
@@ -245,7 +248,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         progress.report({
           message: `Loading ${profile.name}`,
@@ -259,23 +262,26 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               plexInfo = await ProfileManagement.getPlexInfo(profile);
               sessionTree.setAuthorized();
             } catch (error) {
-              if (getErrorCode(error) === constants.HTTP_ERROR_UNAUTHORIZED) {
-                sessionTree.setUnauthorized();
-                profile = await updateProfile(profile, sessionTree);
+              if (error instanceof CICSExtensionError) {
+                if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
+                  error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, profile.name);
+                  new CICSErrorHandler().handleCMCIRestError(error);
+                  sessionTree.setUnauthorized();
+                  profile = await updateProfile(profile, sessionTree);
 
-                if (!profile) {
-                  throw error;
+                  if (!profile) {
+                    throw error;
+                  }
+
+                  sessionTree.setProfile(profile);
+                  sessionTree.createSessionFromProfile();
+                  plexInfo = await ProfileManagement.getPlexInfo(profile);
+                  sessionTree.setAuthorized();
+                } else {
+                  new CICSErrorHandler().handleCMCIRestError(error);
                 }
-
-                sessionTree.setProfile(profile);
-                sessionTree.createSessionFromProfile();
-                plexInfo = await ProfileManagement.getPlexInfo(profile);
-                sessionTree.setAuthorized();
-              } else {
-                throw error;
               }
             }
-
             // For each InfoLoaded object - happens if there are multiple plexes
             sessionTree.clearChildren();
             for (const item of plexInfo) {
