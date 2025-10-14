@@ -14,7 +14,6 @@ import {
   getCache,
   getResource,
   ICMCIResponseResultSummary,
-  IGetResourceUriOptions,
   IResourceQueryParams,
   putResource,
   Utils
@@ -86,7 +85,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
 
-  return await getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
+  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
     buildUserAgentHeader(),
   ]);
 }
@@ -126,7 +125,7 @@ export async function runGetCache(
 
   const newSession = buildNewSession(profile);
 
-  return await getCache(
+  return getCache(
     newSession,
     { cacheToken, startIndex, count, nodiscard: true, summonly: false },
     { failOnNoData: false, useCICSCmciRestError: true },
@@ -163,8 +162,9 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
     if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
-
-    return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [buildUserAgentHeader()], requestBody);
+    return await putResource(session, buildResourceParms(resourceName, regionName, cicsPlex, params)
+      , [buildUserAgentHeader()], requestBody, requestOptions);
+    
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
@@ -173,10 +173,10 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   }
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
-
   const newSession = buildNewSession(profile);
 
-  return CicsCmciRestClient.putExpectParsedXml(newSession, cmciResource, [buildUserAgentHeader()], requestBody);
+  return putResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params)
+      , [buildUserAgentHeader()], requestBody, requestOptions);
 }
 
 export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {

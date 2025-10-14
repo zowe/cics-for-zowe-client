@@ -10,13 +10,13 @@
  */
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { ICMCIApiResponse, IGetResourceUriOptions, IResourceQueryParams } from "../../doc";
+import { ICMCIApiResponse, IGetResourceUriOptions, IResourceParms } from "../../doc";
 import { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 
 /**
- * Get resources on in CICS through CMCI REST API
+ * Put resources on in CICS through CMCI REST API
  * @param {AbstractSession} session - the session to connect to CMCI with
  * @param {IResourceParms} parms - parameters for getting resources
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response (XML parsed into a javascript object)
@@ -26,37 +26,29 @@ import { Utils } from "../../utils";
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
 export async function putResource(
-   {
-    session,
-    resourceName,
-    regionName,
-    cicsPlex,
-    params,
-    requestOptions
-  }: {
-    session: AbstractSession;
-    resourceName: string;
-    regionName?: string;
-    cicsPlex?: string;
-    params?: { criteria?: string; parameter?: string; queryParams?: IResourceQueryParams };
-    requestOptions?: ICMCIRequestOptions
-  },
-  requestBody: any
+  session: AbstractSession,
+  parms: IResourceParms,
+  headers: { [key: string]: string; }[] = [],
+  requestBody: any,
+  requestOptions?: ICMCIRequestOptions
 ): Promise<ICMCIApiResponse> {
-  ImperativeExpect.toBeDefinedAndNonBlank(resourceName, "CICS Resource name", "CICS resource name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Resource name", "CICS resource name is required");
 
   const options: IGetResourceUriOptions = {
-    cicsPlex: cicsPlex,
-    regionName: regionName,
-    ...params,
+    cicsPlex: parms.cicsPlex,
+    regionName: parms.regionName,
+    ...parms,
   };
-  const cmciResource = Utils.getResourceUri(resourceName, options);
 
-  Logger.getAppLogger().debug("PUT request - Resource [" + resourceName + "]" +
-    (cicsPlex ? ", CICSplex [" + cicsPlex + "]" : "") +
-    (regionName ? ", Region [" + regionName + "]" : "") +
-    (params?.criteria ? ", Criteria [" + params?.criteria + "]" : "") +
-    (params?.parameter ? ", Parameter [" + params?.parameter + "]" : ""));
+  const cmciResource = Utils.getResourceUri(parms.name, options);
 
-  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody, requestOptions);
+  Logger.getAppLogger().debug(
+    "PUT request - Resource [" + parms.name + "]" +
+      (parms.cicsPlex ? ", CICSplex [" + parms.cicsPlex + "]" : "") +
+      (parms.regionName ? ", Region [" + parms.regionName + "]" : "") +
+      (parms?.criteria ? ", Criteria [" + parms?.criteria + "]" : "") +
+      (parms?.parameter ? ", Parameter [" + parms?.parameter + "]" : "")
+  );
+
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, headers, requestBody, requestOptions);
 }

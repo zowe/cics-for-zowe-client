@@ -28,7 +28,6 @@ import {
 import constants from "../constants/CICS.defaults";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
-import { getErrorCode } from "../utils/errorUtils";
 import { FilterDescriptor } from "../utils/filterUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { updateProfile } from "../utils/profileUtils";
