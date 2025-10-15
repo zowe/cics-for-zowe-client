@@ -12,6 +12,7 @@
 import { ImperativeError } from "@zowe/imperative";
 import { ICMCIResponseResultSummary } from "../doc";
 import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
+import { CicsCmciConstants } from "../constants";
 
 export class CicsCmciRestError extends ImperativeError {
   resultSummary: ICMCIResponseResultSummary;
@@ -22,7 +23,7 @@ export class CicsCmciRestError extends ImperativeError {
   RESPONSE_2_ALT: string;
   FEEDBACKRESP: number;
   FEEDBACKRESP_2: number;
-  FEEDBACK_ACTION: string
+  FEEDBACK_ACTION: string;
   EIBFN_ALT: string;
   FEEDBACKRESP_ALT: string;
 
@@ -38,8 +39,8 @@ export class CicsCmciRestError extends ImperativeError {
     this.RESPONSE_2 = parseInt(this.resultSummary.api_response2);
     this.RESPONSE_1_ALT = this.resultSummary.api_response1_alt;
     this.RESPONSE_2_ALT = this.resultSummary.api_response2_alt;
-    this.FEEDBACKRESP = parseInt(this.resultSummary.errors?.feedback?.resp);
-    this.FEEDBACKRESP_2 = parseInt(this.resultSummary.errors?.feedback?.resp2);
+    this.FEEDBACKRESP = parseInt(this.resultSummary.errors?.feedback?.resp || CicsCmciConstants.DEFAULT_RESP_CODE);
+    this.FEEDBACKRESP_2 = parseInt(this.resultSummary.errors?.feedback?.resp2 || CicsCmciConstants.DEFAULT_RESP_CODE);
     this.FEEDBACK_ACTION = this.resultSummary.errors?.feedback?.action;
     this.FEEDBACKRESP_ALT = this.resultSummary.errors?.feedback?.resp_alt;
     this.EIBFN_ALT = this.resultSummary.errors?.feedback?.eibfn_alt

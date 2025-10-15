@@ -40,15 +40,18 @@ export class CICSErrorHandler implements ICICSErrorHandler {
     additionalInfo?: string;
     action?: MessageItem[];
   }): Thenable<string | MessageItem> {
-    errorMessage = errorMessage.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
     if (additionalInfo) {
-      CICSLogger.error(`${errorMessage} ${additionalInfo}`);
+      CICSLogger.error(`${this.trimLineBreaks(errorMessage)} ${additionalInfo}`);
     } else {
-      CICSLogger.error(`${errorMessage}`);
+      CICSLogger.error(`${this.trimLineBreaks(errorMessage)}`);
     }
     if (action) {
       return Gui.errorMessage(errorMessage, { items: [...action] });
     }
     return Gui.errorMessage(errorMessage);
+  }
+
+  private trimLineBreaks(msg: string) {
+    return msg.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
   }
 }

@@ -117,8 +117,8 @@ export class ProfileManagement {
           // Not a failure, just means it's not a Plex
           return null;
         }
-        throw new CICSExtensionError({ baseError: error });
       }
+      throw new CICSExtensionError({ baseError: error });
     }
   }
 

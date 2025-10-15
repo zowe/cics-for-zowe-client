@@ -11,9 +11,28 @@
 
 export interface IError {
 
+  /*
+  * Error message to display in the error notification
+  */
   errorMessage: string;
+  
+  /*
+  * HTTP Status code of CMCI CICS REST API
+  */
   statusCode: number;
+  
+  /*
+  * Generic error from the catch statement
+  */
   baseError: any;
+
+  /*
+  * Resp1 Code from the ResultSummary
+  */
   resp1Code: number;
+  
+  /*
+  * Resp1 Code from the ResultSummary
+  */
   resp2Code: number;
 }

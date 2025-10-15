@@ -10,13 +10,11 @@
  */
 
 import {
-  CicsCmciRestClient,
   getCache,
   getResource,
   ICMCIResponseResultSummary,
   IResourceQueryParams,
   putResource,
-  Utils
 } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import constants from "../constants/CICS.defaults";
@@ -78,7 +76,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw error;
+      throw new CICSExtensionError({baseError: error});
     }
   }
 
@@ -134,11 +132,6 @@ export async function runGetCache(
 }
 
 export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
-  const cmciResource = Utils.getResourceUri(resourceName, {
-    cicsPlex: cicsPlex,
-    regionName: regionName,
-    ...params,
-  });
 
   CICSLogger.debug(
     buildRequestLoggerString("PUT", resourceName, {
@@ -165,7 +158,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({baseError: error})
+      throw new CICSExtensionError({ baseError: error });
     }
   }
 
