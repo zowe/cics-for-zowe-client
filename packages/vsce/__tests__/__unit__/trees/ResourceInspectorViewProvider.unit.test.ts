@@ -57,6 +57,11 @@ jest.mock("@zowe/zowe-explorer-api", () => {
   };
 });
 
+const resCxt = {
+  profileName: "MYPROF",
+  regionName: "MYREG"
+};
+
 describe("Resource Inspector View provider", () => {
 
   const myResource = {
@@ -99,6 +104,7 @@ describe("Resource Inspector View provider", () => {
     };
 
     const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+    ri.setResourceContext(resCxt);
     ri.resolveWebviewView(webviewViewMock as unknown as WebviewView);
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
@@ -116,6 +122,7 @@ describe("Resource Inspector View provider", () => {
 
   it("should set resource when webview ready", () => {
     const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+    ri.setResourceContext(resCxt);
 
     // @ts-ignore - private property not accessible
     const sendSpy = jest.spyOn(ri, "sendResourceDataToWebView");
