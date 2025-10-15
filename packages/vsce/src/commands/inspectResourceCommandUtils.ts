@@ -16,7 +16,7 @@ import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import { getMetas, IContainedResource, IResourceMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { Resource, ResourceContainer, SessionHandler } from "../resources";
+import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -58,14 +58,11 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
 }
 
 export async function inspectResourceByName(context: ExtensionContext, resourceName: string, resourceType: string) {
-  // Inspecting a resource by its name so this will be on the focus region
   const cicsRegion: ICICSRegionWithSession = await getLastUsedRegion();
-
   if (cicsRegion) {
     const type = getResourceType(resourceType);
 
     if (!type) {
-      // Error if resource type not found
       const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
@@ -92,11 +89,8 @@ export async function inspectResourceCallBack(
   node?: CICSResourceContainerNode<IResource>,
 ) {
 
-  const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
-  await showInspectResource(context, {
-    meta: resource.meta,
-    resource: resources[0]
-  }, resourceContext, node);
+  const upToDateResource = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
+  await showInspectResource(context, upToDateResource, resourceContext, node);
 }
 
 async function loadResourcesWithProgress(
@@ -112,17 +106,14 @@ async function loadResourcesWithProgress(
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => {});
+      token.onCancellationRequested(() => { });
 
-      const resources = await loadResources(resourceType, resourceName, resourceContext, parentResource);
-      if (!resources) {
+      const resource = await loadResources(resourceType, resourceName, resourceContext, parentResource);
+      if (!resource) {
         return;
       }
 
-      return {
-        meta: resourceType,
-        resource: resources[0],
-      };
+      return resource;
     }
   );
 }
@@ -156,12 +147,12 @@ async function loadResources(
   resourceName: string,
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
-): Promise<Resource<IResource>[]> {
-  const resourceContainer = new ResourceContainer(resourceType, parentResource);
+): Promise<IContainedResource<IResource>> {
+  const resourceContainer = new ResourceContainer([resourceType], resourceContext, parentResource);
   resourceContainer.setCriteria([resourceName]);
-  const resources = await resourceContainer.loadResources(SessionHandler.getInstance().getProfile(resourceContext.profileName), resourceContext.regionName, resourceContext.cicsplexName);
+  const resources = await resourceContainer.fetchNextPage();
 
-  if (resources[0].length === 0) {
+  if (resources.length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
 
