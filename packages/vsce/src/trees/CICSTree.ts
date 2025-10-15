@@ -40,10 +40,18 @@ import { SessionHandler } from "../resources";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import errorConstants from "../constants/CICS.errorMessages";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
+
+    commands.registerCommand("cics-extension-for-zowe.viewMore", async (node: CICSResourceContainerNode<IResource>) => {
+      await node.fetchNextPage();
+      this.refresh(node);
+    });
+
     this.loadStoredProfileNames();
   }
   public getLoadedProfiles() {
@@ -410,7 +418,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return element;
   }
   getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
-    return element === undefined ? this.loadedProfiles : element.getChildren();
+    return !element ? this.loadedProfiles : element.getChildren();
   }
 
   getParent(element: any): ProviderResult<any> {
@@ -424,4 +432,12 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(node);
   }
 
+  hookCollapseWatcher(view: TreeView<TreeItem>) {
+    view.onDidCollapseElement((e) => {
+      if (e.element instanceof CICSResourceContainerNode) {
+        e.element.reset();
+        this.refresh(e.element);
+      }
+    });
+  }
 }
