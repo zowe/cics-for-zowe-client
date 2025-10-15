@@ -45,13 +45,13 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
         .getParent()
         .getParent()
         .children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_PROGRAM_RESOURCE
+          (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.map((type) => type.resourceName).includes(CicsCmciConstants.CICS_PROGRAM_RESOURCE)
         )[0] as CICSResourceContainerNode<IProgram>;
     }
 
     const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.program);
 
-    programTree.setFilter(pattern);
+    programTree.setCriteria(pattern);
     programTree.description = pattern.join(" OR ");
     tree._onDidChangeTreeData.fire(programTree);
     await treeview.reveal(programTree, { expand: true });

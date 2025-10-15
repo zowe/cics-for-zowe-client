@@ -71,5 +71,5 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LIBRARY_RESOURCE);
   },
 
-  childType: LibraryDatasetMeta,
+  childType: [LibraryDatasetMeta],
 };

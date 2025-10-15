@@ -69,37 +69,37 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
 
       this.children = [];
       if (config.get<boolean>("Program", true)) {
-        this.children.push(this.buildResourceContainerNode(ProgramMeta));
+        this.children.push(this.buildResourceContainerNode([ProgramMeta]));
       }
       if (config.get<boolean>("Transaction", true)) {
-        this.children.push(this.buildResourceContainerNode(TransactionMeta));
+        this.children.push(this.buildResourceContainerNode([TransactionMeta]));
       }
       if (config.get<boolean>("LocalFile", true)) {
-        this.children.push(this.buildResourceContainerNode(LocalFileMeta));
+        this.children.push(this.buildResourceContainerNode([LocalFileMeta]));
       }
       if (config.get<boolean>("Task", true)) {
-        this.children.push(this.buildResourceContainerNode(TaskMeta));
+        this.children.push(this.buildResourceContainerNode([TaskMeta]));
       }
       if (config.get<boolean>("Library", true)) {
-        this.children.push(this.buildResourceContainerNode(LibraryMeta));
+        this.children.push(this.buildResourceContainerNode([LibraryMeta]));
       }
       if (config.get<boolean>("Pipeline", true)) {
-        this.children.push(this.buildResourceContainerNode(PipelineMeta));
+        this.children.push(this.buildResourceContainerNode([PipelineMeta]));
       }
       if (config.get<boolean>("TCP/IPService", true)) {
-        this.children.push(this.buildResourceContainerNode(TCPIPMeta));
+        this.children.push(this.buildResourceContainerNode([TCPIPMeta]));
       }
       if (config.get<boolean>("URIMap", true)) {
-        this.children.push(this.buildResourceContainerNode(URIMapMeta));
+        this.children.push(this.buildResourceContainerNode([URIMapMeta]));
       }
       if (config.get<boolean>("WebService", true)) {
-        this.children.push(this.buildResourceContainerNode(WebServiceMeta));
+        this.children.push(this.buildResourceContainerNode([WebServiceMeta]));
       }
       if (config.get<boolean>("JVMServer", true)) {
-        this.children.push(this.buildResourceContainerNode(JVMServerMeta));
+        this.children.push(this.buildResourceContainerNode([JVMServerMeta]));
       }
       if (config.get<boolean>("Bundle", true)) {
-        this.children.push(this.buildResourceContainerNode(BundleMeta));
+        this.children.push(this.buildResourceContainerNode([BundleMeta]));
       }
     }
   }
@@ -108,9 +108,9 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     this.iconPath = getIconByStatus("REGION", this);
   }
 
-  private buildResourceContainerNode(meta: IResourceMeta<IResource>) {
+  private buildResourceContainerNode(metas: IResourceMeta<IResource>[], label?: string) {
     return new CICSResourceContainerNode(
-      meta.humanReadableNamePlural,
+      label ?? metas[0].humanReadableNamePlural,
       {
         parentNode: this,
         profile: this.parentSession.getProfile(),
@@ -118,10 +118,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         regionName: this.getRegionName(),
       },
       null,
-      {
-        resources: new ResourceContainer(meta),
-        meta,
-      }
+      metas
     );
   }
 

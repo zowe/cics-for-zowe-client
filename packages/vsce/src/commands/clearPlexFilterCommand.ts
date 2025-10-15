@@ -46,7 +46,7 @@ export function getClearPlexFilterCommand(tree: CICSTree) {
     for (const region of node.children) {
       if (region.getIsActive() && region.children) {
         for (const child of region.children) {
-          await (child as CICSResourceContainerNode<IResource>).clearFilter();
+          (child as CICSResourceContainerNode<IResource>).clearCriteria();
         }
         tree._onDidChangeTreeData.fire(region);
       }

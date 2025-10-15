@@ -21,16 +21,10 @@ export function evaluateTreeNodes<T extends IResource>(
   response: ICMCIApiResponse,
   meta: IResourceMeta<T>
 ) {
-  const parentNode = node.getParent() as CICSResourceContainerNode<T>;
-
   if (response?.response?.records[meta.resourceName.toLowerCase()]) {
     const singleResource = toArray(response.response.records[meta.resourceName.toLowerCase()])[0];
     const updatedResource = new Resource<T>(singleResource);
-    node.setContainedResource(updatedResource);
-    node.buildProperties();
 
-    if (parentNode) {
-      parentNode.refreshingDescription = true;
-    }
+    (node.getParent() as CICSResourceContainerNode<T>).updateStoredItem({ meta, resource: updatedResource });
   }
 }
