@@ -13,8 +13,6 @@ import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
-import { SessionHandler } from "../resources";
-import { ProfileManagement } from "../utils/profileManagement";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 import { TransformWebviewMessage } from "../webviews/common/vscode";
@@ -26,13 +24,7 @@ export async function executeAction(
   context: ExtensionContext
 ) {
   const resource = instance.getResource();
-  const resourceHandlerMap = instance.getResourceHandlerMap();
-  const profileName = resourceHandlerMap.filter((itm) => itm.key === "profile")[0].value;
-  const profile = ProfileManagement.getProfilesCache().loadNamedProfile(profileName, "cics");
-
-  const session = SessionHandler.getInstance().getSession(profile);
-  const cicsplexName = resourceHandlerMap.filter((itm) => itm.key === "cicsplex")[0].value;
-  const regionName = resourceHandlerMap.filter((itm) => itm.key === "region")[0].value;
+  const resourceContext = instance.getResourceContext();
 
   const node =
     instance.getNode() ??
@@ -40,9 +32,9 @@ export async function executeAction(
       "Resource Inspector Node",
       {
         parentNode: null as any,
-        profile,
-        cicsplexName,
-        regionName,
+        profile: resourceContext.profile,
+        cicsplexName: resourceContext.cicsplexName,
+        regionName: resourceContext.regionName,
       },
       resource
     );
@@ -56,12 +48,7 @@ export async function executeAction(
       await commands.executeCommand(action.action, node);
       await refreshWithProgress();
     } else {
-      await action.action(resource.resource.attributes, {
-        profile,
-        session,
-        cicsplexName,
-        regionName,
-      });
+      await action.action(resource.resource.attributes, resourceContext);
     }
   }
   if (command === "refresh") {
@@ -80,7 +67,12 @@ export async function executeAction(
           message: ` Refreshing ` + resource.meta.humanReadableNameSingular + ` ` + resource.meta.getName(resource.resource),
         });
         try {
-          await inspectResourceCallBack(context, resource.meta.getName(resource.resource), resource.meta.resourceName, resourceHandlerMap, node);
+          await inspectResourceCallBack(
+            context,
+            resource,
+            { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
+            instance.getNode()
+          );
         } catch (error) {
           window.showErrorMessage(
             `Something went wrong while performing Refresh - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

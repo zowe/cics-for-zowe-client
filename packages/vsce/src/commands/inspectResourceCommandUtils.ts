@@ -9,52 +9,51 @@
  *
  */
 
-import { IProfileLoaded } from "@zowe/imperative";
-import { IResource, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceProfileNameInfo, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IResourceMeta } from "../doc";
+import { getMetas, IContainedResource, IResourceMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { IResourcesHandler } from "../doc/resources/IResourcesHandler";
-import { Resource, ResourceContainer } from "../resources";
+import { Resource, ResourceContainer, SessionHandler } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
-import { ProfileManagement } from "../utils/profileManagement";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
-async function showInspectResource(context: ExtensionContext, resourcesHandler: IResourcesHandler, node: CICSResourceContainerNode<IResource>) {
-  // Will only have one resource
-  const resource: Resource<IResource>[] = resourcesHandler.resources[0];
+async function showInspectResource(
+  context: ExtensionContext,
+  resource: IContainedResource<IResource>,
+  resourceContext: IResourceProfileNameInfo,
+  node?: CICSResourceContainerNode<IResource>
+) {
 
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceHandlerMap(resourcesHandler).setResource({
-    resource: resource[0],
-    meta: resourcesHandler.resourceContainer.getMeta(),
-  });
+  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceContext(resourceContext).setResource(resource);
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-  const region = node.regionName !== undefined ? node.regionName : node.getContainedResource().resource.attributes.eyu_cicsname;
-  const parentResource = (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource;
 
-  const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
+  const resourceContext: IResourceProfileNameInfo = {
+    profileName: node.getProfile().name,
+    cicsplexName: node.cicsplexName,
+    regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+  };
+
+  const upToDateResource = await loadResourcesWithProgress(
     node.getContainedResource().meta,
     node.getContainedResourceName(),
-    region,
-    node.cicsplexName,
-    node.getProfile(),
-    parentResource
+    resourceContext,
+    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource,
   );
 
-  if (resourcesHandler) {
-    await showInspectResource(context, resourcesHandler, node);
+  if (upToDateResource) {
+    await showInspectResource(context, upToDateResource, resourceContext, node);
   }
 }
 
@@ -73,50 +72,40 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
       return;
     }
 
-    const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
-      type,
-      resourceName,
-      cicsRegion.regionName,
-      cicsRegion.cicsPlexName,
-      cicsRegion.profile
-    );
+    const resourceContext: IResourceProfileNameInfo = {
+      profileName: cicsRegion.profile.name,
+      cicsplexName: cicsRegion.cicsPlexName,
+      regionName: cicsRegion.regionName,
+    };
 
-    if (resourcesHandler) {
-      await showInspectResource(context, resourcesHandler, null);
+    const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
+    if (upToDateResource) {
+      await showInspectResource(context, upToDateResource, resourceContext);
     }
   }
 }
 
 export async function inspectResourceCallBack(
   context: ExtensionContext,
-  resourceName: string,
-  resourceType: string,
-  resourceHandlerMap: {
-    key: string;
-    value: string;
-  }[],
-  node: CICSResourceContainerNode<IResource>
+  resource: IContainedResource<IResource>,
+  resourceContext: IResourceProfileNameInfo,
+  node?: CICSResourceContainerNode<IResource>,
 ) {
-  const profileValue = resourceHandlerMap.find((item) => item.key === "profile")?.value;
-  const regionValue = resourceHandlerMap.find((item) => item.key === "region")?.value;
-  const cicsplex = resourceHandlerMap.find((item) => item.key === "cicsplex")?.value;
-  const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileValue);
 
-  const resourcesHandler: IResourcesHandler = await loadResources(getResourceType(resourceType), resourceName, regionValue, cicsplex, profile);
-
-  showInspectResource(context, resourcesHandler, node);
+  const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
+  await showInspectResource(context, {
+    meta: resource.meta,
+    resource: resources[0]
+  }, resourceContext, node);
 }
 
 async function loadResourcesWithProgress(
   resourceType: IResourceMeta<IResource>,
   resourceName: string,
-  regionName: string,
-  cicsplex: string,
-  profile: IProfileLoaded,
+  resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
 ) {
-  let resourcesHandler: IResourcesHandler;
-  await window.withProgress(
+  return await window.withProgress(
     {
       title: CICSMessages.CICSLoadingResourceName.message.replace("%name%", resourceName),
       location: ProgressLocation.Notification,
@@ -125,10 +114,17 @@ async function loadResourcesWithProgress(
     async (progress, token) => {
       token.onCancellationRequested(() => {});
 
-      resourcesHandler = await loadResources(resourceType, resourceName, regionName, cicsplex, profile, parentResource);
+      const resources = await loadResources(resourceType, resourceName, resourceContext, parentResource);
+      if (!resources) {
+        return;
+      }
+
+      return {
+        meta: resourceType,
+        resource: resources[0],
+      };
     }
   );
-  return resourcesHandler;
 }
 
 export async function inspectResource(context: ExtensionContext) {
@@ -140,16 +136,15 @@ export async function inspectResource(context: ExtensionContext) {
       const resourceName = await selectResource(resourceType);
 
       if (resourceName) {
-        const resourcesHandler: IResourcesHandler = await loadResourcesWithProgress(
-          resourceType,
-          resourceName,
-          cicsRegion.regionName,
-          cicsRegion.cicsPlexName,
-          cicsRegion.profile
-        );
+        const resourceContext: IResourceProfileNameInfo = {
+          profileName: cicsRegion.profile.name,
+          cicsplexName: cicsRegion.cicsPlexName,
+          regionName: cicsRegion.regionName,
+        };
 
-        if (resourcesHandler) {
-          await showInspectResource(context, resourcesHandler, null);
+        const upToDateResource = await loadResourcesWithProgress(resourceType, resourceName, resourceContext);
+        if (upToDateResource) {
+          await showInspectResource(context, upToDateResource, resourceContext);
         }
       }
     }
@@ -159,27 +154,23 @@ export async function inspectResource(context: ExtensionContext) {
 async function loadResources(
   resourceType: IResourceMeta<IResource>,
   resourceName: string,
-  regionName: string,
-  cicsplex: string,
-  profile: IProfileLoaded,
+  resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
-): Promise<IResourcesHandler> {
-  const resourceContainer = new ResourceContainer<IResource>(resourceType, parentResource);
+): Promise<Resource<IResource>[]> {
+  const resourceContainer = new ResourceContainer(resourceType, parentResource);
   resourceContainer.setCriteria([resourceName]);
-
-  resourceContainer.setProfileName(profile.name);
-  const resources: [Resource<IResource>[], boolean] = await resourceContainer.loadResources(profile, regionName, cicsplex);
+  const resources = await resourceContainer.loadResources(SessionHandler.getInstance().getProfile(resourceContext.profileName), resourceContext.regionName, resourceContext.cicsplexName);
 
   if (resources[0].length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
-    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", regionName);
+    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
     return;
   }
 
-  return { resources, resourceContainer };
+  return resources[0];
 }
 
 function getResourceType(resourceName: string): IResourceMeta<IResource> {

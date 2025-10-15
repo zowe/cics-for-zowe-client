@@ -14,7 +14,7 @@ import { VscodeTextfield } from "@vscode-elements/react-elements";
 import * as React from "react";
 import * as vscode from "../common/vscode";
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import "../css/style.css";
 import Breadcrumb from "./Breadcrumb";
 import Contextmenu from "./Contextmenu";
@@ -32,7 +32,7 @@ const ResourceInspector = () => {
     humanReadableNameSingular: string;
     highlights: { key: string; value: string; }[];
     resource: IResource;
-    profileHandler: { key: string; value: string; }[];
+    resourceContext: IResourceProfileNameInfo;
   }>();
   const [resourceActions, setResourceActions] = React.useState<{
     id: string;
@@ -64,13 +64,15 @@ const ResourceInspector = () => {
           <th id="resource-title" className="resource-title">
             <div className="resource-title-container">
               <div className="breadcrumb-container">
-                <Breadcrumb
-                  profileHandler={resourceInfo?.profileHandler ?? []}
-                  resourceName={resourceInfo?.name}
-                  resourceType={resourceInfo?.humanReadableNameSingular}
-                  resourceIconPath={resourceInfo?.resourceIconPath}
-                  isDarkTheme={isDarkTheme}
-                />
+                {resourceInfo && (
+                  <Breadcrumb
+                    resourceContext={resourceInfo?.resourceContext}
+                    resourceName={resourceInfo?.name}
+                    resourceType={resourceInfo?.humanReadableNameSingular}
+                    resourceIconPath={resourceInfo?.resourceIconPath}
+                    isDarkTheme={isDarkTheme}
+                  />
+                )}
               </div>
               <div className="context-menu-container">
                 {resourceInfo && <Contextmenu
