@@ -45,13 +45,13 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
         .getParent()
         .getParent()
         .children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LOCAL_TRANSACTION
+          (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.map((type) => type.resourceName).includes(CicsCmciConstants.CICS_LOCAL_TRANSACTION)
         )[0] as CICSResourceContainerNode<ITransaction>;
     }
 
     const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.tranid);
 
-    transactionTree.setFilter(pattern);
+    transactionTree.setCriteria(pattern);
     transactionTree.description = pattern.join(" OR ");
     tree._onDidChangeTreeData.fire(transactionTree);
     await treeview.reveal(transactionTree, { expand: true });

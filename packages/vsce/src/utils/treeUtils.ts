@@ -16,19 +16,17 @@ import { CICSResourceContainerNode, CICSTree } from "../trees";
 import { toArray } from "./commandUtils";
 import { IResourceMeta } from "../doc";
 
-export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, tree: CICSTree, response: ICMCIApiResponse, meta: IResourceMeta<T>) {
-  const parentNode = node.getParent() as CICSResourceContainerNode<T>;
-
+export function evaluateTreeNodes<T extends IResource>(
+  node: CICSResourceContainerNode<T>,
+  tree: CICSTree,
+  response: ICMCIApiResponse,
+  meta: IResourceMeta<T>
+) {
   if (response?.response?.records[meta.resourceName.toLowerCase()]) {
     const singleResource = toArray(response.response.records[meta.resourceName.toLowerCase()])[0];
     const updatedResource = new Resource<T>(singleResource);
-    node.setContainedResource(updatedResource);
-    node.buildProperties();
 
-    if (parentNode) {
-      parentNode.refreshingDescription = true;
-    }
+    (node.getParent() as CICSResourceContainerNode<T>).updateStoredItem({ meta, resource: updatedResource });
+    tree.refresh(node.getParent());
   }
-
-  tree.refresh(parentNode);
 }

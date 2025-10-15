@@ -11,9 +11,7 @@
 
 import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
-import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 import { TransformWebviewMessage } from "../webviews/common/vscode";
 
@@ -26,26 +24,13 @@ export async function executeAction(
   const resource = instance.getResource();
   const resourceContext = instance.getResourceContext();
 
-  const node =
-    instance.getNode() ??
-    new CICSResourceContainerNode<IResource>(
-      "Resource Inspector Node",
-      {
-        parentNode: null as any,
-        profile: resourceContext.profile,
-        cicsplexName: resourceContext.cicsplexName,
-        regionName: resourceContext.regionName,
-      },
-      resource
-    );
-
   if (command === "action") {
     const action = CICSResourceExtender.getAction(message.actionId);
     if (!action) {
       return;
     }
     if (typeof action.action === "string") {
-      await commands.executeCommand(action.action, node);
+      await commands.executeCommand(action.action, instance.getNode());
       await refreshWithProgress();
     } else {
       await action.action(resource.resource.attributes, resourceContext);
