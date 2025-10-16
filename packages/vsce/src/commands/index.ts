@@ -41,7 +41,7 @@ import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
     getAddSessionCommand(treeDataProv),
-    getManageSessionCommand(treeDataProv, treeview),
+    getManageSessionCommand(treeDataProv),
 
     getRefreshCommand(treeDataProv),
 
