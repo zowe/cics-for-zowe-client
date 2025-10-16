@@ -12,6 +12,7 @@
 import { IError } from "./IError";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
+import constants from "../constants/CICS.defaults";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: IError;
@@ -53,7 +54,7 @@ export class CICSExtensionError extends Error {
           `Please refer to the IBM documentation for resp code details`;
       }
     } else if (error instanceof imperative.RestClientError) {
-      const errorCode = error.mDetails.errorCode || error.errorCode;
+      const errorCode = error.mDetails.errorCode || error.errorCode || `${constants.HTTP_ERROR_NOT_FOUND}`;
       const resource = error.mDetails.resource;
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
