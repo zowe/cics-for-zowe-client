@@ -31,5 +31,22 @@
       "enableTurboSourcemaps": true,
       "sourceMaps": true
   },
+      {
+      "name": "Run CICS Extension for Zowe (FR)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vsce",
+        "--locale=fr",
+        "--verbose"
+      ],
+      "outFiles": ["${workspaceFolder}/packages/vsce/dist/**/*.js"],
+      "preLaunchTask": "npm run watch",
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"],
+      "enableTurboSourcemaps": true,
+      "sourceMaps": true
+    }
   ]
 }

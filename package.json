@@ -21,7 +21,8 @@
     "lintErrors": "npm run lintErrors --workspaces",
     "prepare": "husky install",
     "license": "node scripts/updateLicenses.js",
-    "pretty": "turbo pretty --no-cache"
+    "pretty": "turbo pretty --no-cache",
+    "l10n:export": "turbo run l10n:export"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
@@ -32,6 +33,7 @@
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
+    "@vscode/l10n-dev": "^0.0.35",
     "@zowe/cli-test-utils": "^8.0.0",
     "@zowe/imperative": "^8.28.0",
     "@zowe/zowe-explorer-api": "^3.3.1",
