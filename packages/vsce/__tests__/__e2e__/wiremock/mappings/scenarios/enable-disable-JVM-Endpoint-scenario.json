@@ -24,27 +24,11 @@
     {
       "scenarioName": "Enable Disable JVM Endpoints",
       "requiredScenarioState": "myjvme1-disabled",
-      "newScenarioState": "fetched-disabled-jvmendpoints-summary",
+      "newScenarioState": "fetched-disabled-jvmendpoints",
       "priority": 1,
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/disable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM Endpoints",
-      "requiredScenarioState": "fetched-disabled-jvmendpoints-summary",
-      "newScenarioState": "fetched-disabled-jvmendpoints-records",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JE1DISABLEDTOKEN/1/250?NODISCARD"
+        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMENDPOINT%3D'MYJVMENDPOINT1')%20AND%20(JVMSERVER%3D'MYJVM1')"
       },
       "response": {
         "status": 200,
@@ -56,23 +40,7 @@
     },
     {
       "scenarioName": "Enable Disable JVM Endpoints",
-      "requiredScenarioState": "fetched-disabled-jvmendpoints-records",
-      "newScenarioState": "fetched-disabled-jvmendpoints-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JE1DISABLEDTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/disable/remove-cache.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM Endpoints",
-      "requiredScenarioState": "fetched-disabled-jvmendpoints-removed-cache",
+      "requiredScenarioState": "fetched-disabled-jvmendpoints",
       "newScenarioState": "myjvme1-enabled",
       "request": {
         "method": "PUT",
@@ -94,46 +62,15 @@
     {
       "scenarioName": "Enable Disable JVM Endpoints",
       "requiredScenarioState": "myjvme1-enabled",
-      "newScenarioState": "fetched-enabled-jvmendpoints-summary",
+      "newScenarioState": "fetched-enabled-jvmendpoints",
+      "priority": 1,
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/enable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM Endpoints",
-      "requiredScenarioState": "fetched-enabled-jvmendpoints-summary",
-      "newScenarioState": "fetched-enabled-jvmendpoints-records",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0JE1ENABLEDTOKEN/1/250?NODISCARD"
+        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMENDPOINT%3D'MYJVMENDPOINT1')%20AND%20(JVMSERVER%3D'MYJVM1')"
       },
       "response": {
         "status": 200,
         "bodyFileName": "CICSJVMEndpoint/enable/records.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM Endpoints",
-      "requiredScenarioState": "fetched-enabled-jvmendpoints-records",
-      "newScenarioState": "fetched-enabled-jvmendpoints-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0JE1ENABLEDTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/enable/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
