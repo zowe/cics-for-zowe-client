@@ -17,8 +17,10 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
-import { IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
+import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
+import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
+import { CICSResourceContainerNode } from "../../trees";
 
 /**
  * Performs enable on selected CICSJVMEndpoint nodes.
@@ -60,6 +62,15 @@ export function getEnableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<a
               } as ICommandParams,
               resource.jvmserver
             );
+
+            await pollForCompleteAction(
+              node,
+              (response) => {
+                return response.records?.cicsjvmendpoint?.enablestatus.toUpperCase() === "ENABLED";
+              },
+              (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta),
+              (node.getParent() as CICSResourceContainerNode<IJVMServer>).getContainedResource().resource.attributes
+            );
           } catch (error) {
             const message = `Something went wrong while enabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
@@ -68,7 +79,6 @@ export function getEnableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<a
             CICSLogger.error(message);
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

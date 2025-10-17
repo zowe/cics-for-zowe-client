@@ -18,6 +18,7 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 /**
  * Performs enable on selected CICSProgram nodes.
@@ -48,11 +49,14 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
           });
 
           try {
-            await enableProgram(node.getProfile(), {
+            const response = await enableProgram(node.getProfile(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, ProgramMeta);
+
           } catch (error) {
             window.showErrorMessage(
               `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -62,7 +66,6 @@ export function getEnableProgramCommand(tree: CICSTree, treeview: TreeView<any>)
             );
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

@@ -20,6 +20,7 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
@@ -55,7 +56,7 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
           });
 
           try {
-            await disableLocalFile(
+            const response = await disableLocalFile(
               node.getProfile(),
               {
                 name: node.getContainedResourceName(),
@@ -64,6 +65,9 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
               },
               busyDecision
             );
+
+            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
+
           } catch (error) {
             window.showErrorMessage(
               `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -73,7 +77,6 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
             );
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
