@@ -9,9 +9,8 @@
  *
  */
 
+import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "../../../src/doc/meta/jvmEndpoints.meta";
-import { IJVMEndpoint } from "../../../src/doc/resources/IJVMEndpoint";
-import { IJVMServer } from "../../../src/doc/resources/IJVMServer";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
@@ -26,8 +25,7 @@ describe("JVM Endpoint Meta", () => {
     parentResource = new Resource<IJVMServer>({
       eyu_cicsname: "MYREG",
       name: "JVM1",
-      status: "ENABLED",
-      enablestatus: "ENABLED"
+      enablestatus: "ENABLED",
     });
     jvmEndpointMock = new Resource({
       eyu_cicsname: "MYREG",

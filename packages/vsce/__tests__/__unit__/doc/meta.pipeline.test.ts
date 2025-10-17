@@ -9,8 +9,8 @@
  *
  */
 
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { PipelineMeta } from "../../../src/doc/meta/pipeline.meta";
-import { IPipeline } from "../../../src/doc/resources/IPipeline";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

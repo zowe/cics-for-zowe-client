@@ -40,7 +40,6 @@ const prog1: IProgram = {
   status: "ENABLED",
   newcopycnt: "0",
   eyu_cicsname: "MYREG",
-  enablestatus: "ENABLED",
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
@@ -50,7 +49,6 @@ const prog2: IProgram = {
   status: "DISABLED",
   newcopycnt: "2",
   eyu_cicsname: "MYREG",
-  enablestatus: "ENABLED",
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
@@ -71,10 +69,11 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
 }));
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { IProgram, IResource, ProgramMeta } from "../../../src/doc";
+import { ProgramMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 const prof = { ...CICSProfileMock, host: "hostname" };
 const profileMock = { failNotFound: false, message: "", type: "cics", name: "MYPROF", profile: prof };

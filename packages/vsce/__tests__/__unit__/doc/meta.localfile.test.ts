@@ -9,8 +9,8 @@
  *
  */
 
+import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { LocalFileMeta } from "../../../src/doc/meta/localFile.meta";
-import { ILocalFile } from "../../../src/doc/resources/ILocalFile";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

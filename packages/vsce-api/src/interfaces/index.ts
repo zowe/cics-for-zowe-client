@@ -10,7 +10,7 @@
  */
 
 export * from "./IExtensionAPI";
-export * from "./IResource";
+export * from "./resources";
 export * from "./IResourceContext";
 export * from "./IResourceExtender";
 export * from "./IResourceAction";

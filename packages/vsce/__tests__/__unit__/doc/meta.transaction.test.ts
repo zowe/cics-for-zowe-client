@@ -9,8 +9,8 @@
  *
  */
 
+import { ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { TransactionMeta } from "../../../src/doc/meta/transaction.meta";
-import { ITransaction } from "../../../src/doc/resources/ITransaction";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

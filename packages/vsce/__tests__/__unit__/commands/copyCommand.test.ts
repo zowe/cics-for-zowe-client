@@ -22,10 +22,12 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
 }));
 
-import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../../../src/commands/copyCommand";
-import { IProgram, ProgramMeta } from "../../../src/doc";
+
+import { copyUserAgentHeaderToClipboard, copyResourceNameToClipboard } from "../../../src/commands/copyCommand";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
+import { ProgramMeta } from "../../../src/doc";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 let mockedClipboard = ``;
 jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => { mockedClipboard = v; });
@@ -70,7 +72,6 @@ describe("Test suite for copy commands", () => {
             status: "ENABLED",
             newcopycnt: "0",
             eyu_cicsname: "MYREG",
-            enablestatus: "ENABLED",
             progtype: "PROGRAM",
             library: "MYLIB",
             librarydsn: "MYLIBDSN",

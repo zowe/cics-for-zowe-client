@@ -47,10 +47,11 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
 }));
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { ILibrary, IProgram, ITask, LibraryMeta, ProgramMeta, TaskMeta } from "../../../src/doc";
+import { LibraryMeta, ProgramMeta, TaskMeta } from "../../../src/doc";
 import { Resource, ResourceContainer } from "../../../src/resources";
 import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { IProgram, ITask, ILibrary } from "@zowe/cics-for-zowe-explorer-api";
 
 describe("CICSResourceContainerNode tests", () => {
   let containerNode: CICSResourceContainerNode<IProgram>;

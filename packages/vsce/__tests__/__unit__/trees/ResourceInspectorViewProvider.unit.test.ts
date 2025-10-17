@@ -17,9 +17,10 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 }));
 
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
-import { IPipeline, PipelineMeta } from "../../../src/doc";
+import { PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { Uri, WebviewView, ExtensionContext } from "vscode";
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -61,10 +62,9 @@ describe("Resource Inspector View provider", () => {
   const myResource = {
     meta: PipelineMeta,
     resource: new Resource<IPipeline>({
-      enablestatus: "ENABLED",
       eyu_cicsname: "MYREGION",
       name: "PIP1",
-      status: "ENABLED",
+      enablestatus: "ENABLED",
     })
   };
 

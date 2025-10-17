@@ -9,8 +9,8 @@
  *
  */
 
+import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 import { URIMapMeta } from "../../../src/doc/meta/urimap.meta";
-import { IURIMap } from "../../../src/doc/resources/IURIMap";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

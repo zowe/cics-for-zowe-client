@@ -9,8 +9,8 @@
  *
  */
 
+import { IBundle } from "@zowe/cics-for-zowe-explorer-api";
 import { BundleMeta } from "../../../src/doc/meta/bundle.meta";
-import { IBundle } from "../../../src/doc/resources/IBundle";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({

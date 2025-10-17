@@ -11,11 +11,12 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeView, commands, window } from "vscode";
-import { ILibrary, ILibraryDataset, IProgram, IResource, LibraryMeta, ProgramMeta } from "../doc";
+import { LibraryMeta, ProgramMeta } from "../doc";
 import { CICSRegionsContainer, CICSRegionTree, CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
+import { ILibrary, ILibraryDataset, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 
 const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map<string, Map<string, Set<string>>> => {

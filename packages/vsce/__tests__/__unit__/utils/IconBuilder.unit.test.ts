@@ -11,10 +11,11 @@
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { join } from "path";
-import { IProgram, ProgramMeta } from "../../../src/doc";
+import { ProgramMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import IconBuilder from "../../../src/utils/IconBuilder";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
@@ -70,7 +71,6 @@ describe("IconBuilder tests", () => {
         program: "MYPROG",
         status: "ENABLED",
         progtype: "COBOL",
-        enablestatus: "ENABLED",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
       }),
@@ -87,7 +87,6 @@ describe("IconBuilder tests", () => {
         program: "MYPROG",
         status: "DISABLED",
         progtype: "COBOL",
-        enablestatus: "ENABLED",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
       }),

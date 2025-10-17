@@ -9,9 +9,12 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithStatus } from "./IResource";
 
-export interface ITransaction extends IResource {
-  tranid: string;
+export interface IProgram extends IResourceWithStatus {
+  library: string;
+  librarydsn: string;
   program: string;
+  progtype: string;
+  newcopycnt: string;
 }

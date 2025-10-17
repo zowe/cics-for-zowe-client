@@ -9,13 +9,15 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IJVMEndpoint extends IResource {
-
-  jvmendpoint: string;
-  jvmserver: string;
-  enablestatus: string;
-  port: string;
-  secport: string;
+export interface ILocalFile extends IResourceWithEnableStatus {
+  file: string;
+  vsamtype: string;
+  read: string;
+  browse: string;
+  keylength: string;
+  recordsize: string;
+  dsname: string;
+  openstatus: string;
 }

@@ -18,13 +18,13 @@ import {
 } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import constants from "../constants/CICS.defaults";
-import { IResource } from "../doc";
-import { SessionHandler } from "../resources";
-import { CICSResourceContainerNode } from "../trees";
-import { CICSLogger } from "./CICSLogger";
 import { getErrorCode } from "./errorUtils";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { extensions } from "vscode";
+import { CICSLogger } from "./CICSLogger";
+import { CICSResourceContainerNode } from "../trees";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { SessionHandler } from "../resources";
 
 interface IReqParams {
   criteria?: string;

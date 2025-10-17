@@ -11,11 +11,12 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
-import { IResource, ITask, ITransaction, TaskMeta } from "../doc";
+import { TaskMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
+import { ITask, ITransaction, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Inquire the associated transaction tree item from a task tree item

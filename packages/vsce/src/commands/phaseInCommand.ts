@@ -13,11 +13,12 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
-import { IProgram, ProgramMeta } from "../doc";
+import { ProgramMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Performs PHASE IN on selected CICSProgram nodes.

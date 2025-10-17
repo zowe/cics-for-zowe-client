@@ -9,16 +9,12 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface ILocalFile extends IResource {
-  file: string;
-  vsamtype: string;
-  read: string;
-  browse: string;
-  keylength: string;
-  recordsize: string;
-  dsname: string;
+export interface IBundle extends IResourceWithEnableStatus {
+  bundledir: string;
+  bundleid: string;
   enablestatus: string;
-  openstatus: string;
+  name: string;
+  partcount: string;
 }

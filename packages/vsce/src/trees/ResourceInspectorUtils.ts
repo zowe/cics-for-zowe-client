@@ -11,7 +11,7 @@
 
 import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
-import { IResource } from "../doc";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
 import { ProfileManagement } from "../utils/profileManagement";

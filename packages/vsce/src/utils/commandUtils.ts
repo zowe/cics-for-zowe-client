@@ -10,8 +10,9 @@
  */
 
 import { TreeView } from "vscode";
-import { IResource, IResourceMeta } from "../doc";
+import { IResourceMeta } from "../doc";
 import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Returns an array of selected nodes in the current treeview.

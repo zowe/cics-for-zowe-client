@@ -13,12 +13,13 @@ import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
-import { ITask, TaskMeta } from "../doc";
-import { ICommandParams } from "../doc/commands/ICommandParams";
+import { TaskMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
+import { ICommandParams } from "../doc/commands/ICommandParams";
+import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents

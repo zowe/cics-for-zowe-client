@@ -9,9 +9,8 @@
  *
  */
 
-import { ILibrary, IProgram } from "../../../src/doc";
+import { ILibraryDataset, ILibrary, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
-import { ILibraryDataset } from "../../../src/doc/resources/ILibraryDataset";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
@@ -69,7 +68,6 @@ describe("Library Dataset Meta", () => {
     expect(childTypeDefaultCriteria).toEqual(`(LIBRARYDSN='MY.DSNAME')`);
     const childTypeDefaultContext = LibraryDatasetMeta.childType?.getContext(new Resource<IProgram>({
       program: "myprog",
-      enablestatus: "ENABLED",
       eyu_cicsname: "MYREGION",
       library: "MYLIB",
       librarydsn: "MY.LIB.1",

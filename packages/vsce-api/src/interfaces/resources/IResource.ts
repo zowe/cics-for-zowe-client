@@ -9,10 +9,14 @@
  *
  */
 
-import { IResource } from "./IResource";
+export interface IResource {
+  eyu_cicsname: string;
+}
 
-export interface IURIMap extends IResource {
-  name: string;
-  scheme: string;
-  path: string;
+export interface IResourceWithStatus extends IResource {
+  status: string;
+}
+
+export interface IResourceWithEnableStatus extends IResource {
+  enablestatus: string;
 }

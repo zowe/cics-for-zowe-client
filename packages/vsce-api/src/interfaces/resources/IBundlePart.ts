@@ -9,12 +9,10 @@
  *
  */
 
-import { IResource } from "./IResource";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IBundle extends IResource {
-  bundledir: string;
-  bundleid: string;
-  enablestatus: string;
-  name: string;
-  partcount: string;
+export interface IBundlePart extends IResourceWithEnableStatus {
+  bundle: string;
+  bundlepart: string;
+  partclass: string;
 }

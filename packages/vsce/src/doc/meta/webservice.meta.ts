@@ -12,8 +12,8 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IWebService } from "../resources";
 import { IResourceMeta } from "./IResourceMeta";
+import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,

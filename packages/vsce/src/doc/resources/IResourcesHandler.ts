@@ -9,8 +9,8 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Resource, ResourceContainer } from "../../resources";
-import { IResource } from "./IResource";
 
 export interface IResourcesHandler {
   resources: [Resource<IResource>[], boolean];

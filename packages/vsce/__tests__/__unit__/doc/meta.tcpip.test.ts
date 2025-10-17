@@ -9,8 +9,8 @@
  *
  */
 
+import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { TCPIPMeta } from "../../../src/doc/meta/tcpip.meta";
-import { ITCPIP } from "../../../src/doc/resources/ITCPIP";
 import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
