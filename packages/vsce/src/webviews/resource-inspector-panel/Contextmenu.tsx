@@ -44,7 +44,6 @@ const Contextmenu = ({
     }
   };
 
-
   // Handle click outside to close
   React.useEffect(() => {
     if (!show) return;
@@ -102,12 +101,13 @@ const Contextmenu = ({
   const handleRefresh = () => {
     vscode.postVscMessage({ command: "refresh" });
   };
-  
+
   const showThreeDots = resourceActions.length > 0;
 
   return (
     <div className="dropdown-container">
       <img
+        id="refresh-icon"
         src={isDarkTheme ? refreshIconPath.dark : refreshIconPath.light}
         className="refresh-icon"
         onClick={handleRefresh}
