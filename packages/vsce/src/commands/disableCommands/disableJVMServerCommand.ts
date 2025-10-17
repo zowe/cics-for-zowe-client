@@ -11,7 +11,8 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import * as vscode from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { JVMServerMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
@@ -20,6 +21,32 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
 import { evaluateTreeNodes } from "../../utils/treeUtils";
 
+// Define ICommandProviderDialogs interface
+interface ICommandProviderDialogs {
+  noServerSelected: string;
+  choosePurgeType: string;
+  phaseOut: string;
+  purge: string;
+  forcePurge: string;
+  kill: string;
+  progressTitle: string;
+  progressMessage: (current: number, total: number) => string;
+  errorMessage: (error: any) => string;
+}
+
+// Externalized dialogs object
+const dialogs: ICommandProviderDialogs = {
+  noServerSelected: vscode.l10n.t("cics.disableJVM.noServerSelected"),
+  choosePurgeType: vscode.l10n.t("cics.disableJVM.choosePurgeType"),
+  phaseOut: vscode.l10n.t("cics.disableJVM.phaseOut"),
+  purge: vscode.l10n.t("cics.disableJVM.purge"),
+  forcePurge: vscode.l10n.t("cics.disableJVM.forcePurge"),
+  kill: vscode.l10n.t("cics.disableJVM.kill"),
+  progressTitle: vscode.l10n.t("cics.disableJVM.progressTitle"),
+  progressMessage: (current, total) => vscode.l10n.t("cics.disableJVM.progressMessage", current, total),
+  errorMessage: (error) =>
+    vscode.l10n.t("cics.disableJVM.errorMessage", JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ")),
+};
 /**
  * Performs disable on selected CICSJVMServer nodes.
  * @param tree - tree which contains the node
@@ -29,14 +56,11 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
   return commands.registerCommand("cics-extension-for-zowe.disableJVMServer", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS JVM Server selected");
+      await window.showErrorMessage(dialogs.noServerSelected);
       return;
     }
 
-    let disableType = await window.showInformationMessage(
-      `Choose how to purge tasks while disabling the JVM server`,
-      ...["Phase Out", "Purge", "Force Purge", "Kill"]
-    );
+    let disableType = await window.showInformationMessage(dialogs.choosePurgeType, dialogs.phaseOut, dialogs.purge, dialogs.forcePurge, dialogs.kill);
     if (!disableType) {
       return;
     }
@@ -45,7 +69,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
     await window.withProgress(
       {
-        title: "Disable JVM Server",
+        title: dialogs.progressTitle,
         location: ProgressLocation.Notification,
         cancellable: false,
       },
@@ -54,7 +78,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
         for (const node of nodes) {
           progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            message: dialogs.progressMessage(nodes.indexOf(node) + 1, nodes.length),
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
@@ -77,12 +101,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               () => evaluateTreeNodes(node, tree)
             );
           } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when performing a disable - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
+            window.showErrorMessage(dialogs.errorMessage(error));
           }
         }
       }
