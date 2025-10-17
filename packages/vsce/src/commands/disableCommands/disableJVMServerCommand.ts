@@ -36,19 +36,16 @@ interface ICommandProviderDialogs {
 
 // Externalized dialogs object
 const dialogs: ICommandProviderDialogs = {
-  noServerSelected: vscode.l10n.t("No CICS JVM Server selected"),
-  choosePurgeType: vscode.l10n.t("Choose how to purge tasks while disabling the JVM server"),
-  phaseOut: vscode.l10n.t("Phase Out"),
-  purge: vscode.l10n.t("Purge"),
-  forcePurge: vscode.l10n.t("Force Purge"),
-  kill: vscode.l10n.t("Kill"),
-  progressTitle: vscode.l10n.t("Disable JVM Server"),
-  progressMessage: (current, total) => vscode.l10n.t("Disabling {0} of {1}", current, total),
+  noServerSelected: vscode.l10n.t("cics.disableJVM.noServerSelected"),
+  choosePurgeType: vscode.l10n.t("cics.disableJVM.choosePurgeType"),
+  phaseOut: vscode.l10n.t("cics.disableJVM.phaseOut"),
+  purge: vscode.l10n.t("cics.disableJVM.purge"),
+  forcePurge: vscode.l10n.t("cics.disableJVM.forcePurge"),
+  kill: vscode.l10n.t("cics.disableJVM.kill"),
+  progressTitle: vscode.l10n.t("cics.disableJVM.progressTitle"),
+  progressMessage: (current, total) => vscode.l10n.t("cics.disableJVM.progressMessage", current, total),
   errorMessage: (error) =>
-    vscode.l10n.t(
-      "Something went wrong when performing a disable - {0}",
-      JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
-    ),
+    vscode.l10n.t("cics.disableJVM.errorMessage", JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ")),
 };
 /**
  * Performs disable on selected CICSJVMServer nodes.
