@@ -33,7 +33,7 @@ describe("Task Meta", () => {
 
   it("should build criteria", () => {
     const crit = TaskMeta.buildCriteria(["a", "b"]);
-    expect(crit).toEqual(`TRANID=a OR TRANID=b`);
+    expect(crit).toEqual(`TASK=a OR TASK=b`);
   });
   it("should return label", () => {
     const label = TaskMeta.getLabel(taskMock);

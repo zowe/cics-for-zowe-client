@@ -74,6 +74,8 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
     canSelectMany: true,
   });
 
+  treeDataProv.hookCollapseWatcher(treeview);
+
   const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
     cicssession: async (node: any) => {
       await sessionExpansionHandler(node.element, treeDataProv);
