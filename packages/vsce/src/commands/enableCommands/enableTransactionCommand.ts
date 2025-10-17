@@ -18,6 +18,7 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -43,11 +44,14 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
           });
 
           try {
-            await enableTransaction(node.getProfile(), {
+            const response = await enableTransaction(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, TransactionMeta);
+
           } catch (error) {
             window.showErrorMessage(
               `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -57,7 +61,6 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
             );
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

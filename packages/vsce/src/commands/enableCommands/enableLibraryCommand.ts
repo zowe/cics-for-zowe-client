@@ -19,6 +19,7 @@ import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 /**
  * Performs enable on selected CICSLibrary nodes.
@@ -49,11 +50,14 @@ export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>)
           });
 
           try {
-            await enableLibrary(node.getProfile(), {
+            const response = await enableLibrary(node.getProfile(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, LibraryMeta);
+
           } catch (error) {
             const message = `Something went wrong while enabling library ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
@@ -62,7 +66,6 @@ export function getEnableLibraryCommand(tree: CICSTree, treeview: TreeView<any>)
             CICSLogger.error(message);
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

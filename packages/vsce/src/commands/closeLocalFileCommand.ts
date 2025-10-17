@@ -14,12 +14,11 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { LocalFileMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
 import { ICommandParams } from "../doc/commands/ICommandParams";
-import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -54,7 +53,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
           });
 
           try {
-            await closeLocalFile(
+            const response = await closeLocalFile(
               node.getProfile(),
               {
                 name: node.getContainedResourceName(),
@@ -63,6 +62,9 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
               },
               busyDecision
             );
+
+            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
+
           } catch (error) {
             // @ts-ignore
             if (error.mMessage) {
@@ -84,16 +86,6 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
             }
           }
         }
-        // Work out how many files to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<ILocalFile>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
       }
     );
   });
