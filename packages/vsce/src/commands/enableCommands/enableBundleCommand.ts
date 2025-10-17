@@ -57,14 +57,12 @@ export function getEnableBundleCommand(tree: CICSTree, treeview: TreeView<any>) 
               cicsPlex: node.cicsplexName,
             });
 
-            tree._onDidChangeTreeData.fire(node.getParent());
-
             await pollForCompleteAction(
               node,
               (response) => {
                 return response.records?.cicsbundle?.enablestatus.toUpperCase() === "ENABLED";
               },
-              () => evaluateTreeNodes(node, tree)
+              (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta)
             );
           } catch (error) {
             if (error instanceof CICSExtensionError) {

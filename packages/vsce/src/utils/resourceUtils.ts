@@ -12,6 +12,7 @@
 import {
   getCache,
   getResource,
+  ICMCIApiResponse,
   ICMCIResponseResultSummary,
   IResourceQueryParams,
   putResource,
@@ -212,26 +213,31 @@ export const buildRequestLoggerString = (
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
   completionMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
-  cb: () => void,
-  retries: number = constants.POLL_FOR_ACTION_DEFAULT_RETRIES
+  cb: (response: ICMCIApiResponse) => void,
+  parentResource?: IResource,
 ) {
-  for (let i = 0; i < retries; i++) {
-    const { response } = await runGetResource({
+  let response: ICMCIApiResponse;
+  for (let i = 0; i < constants.POLL_FOR_ACTION_DEFAULT_RETRIES; i++) {
+    response = await runGetResource({
       profileName: node.getProfile().name,
       resourceName: node.getContainedResource().meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
-        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)]),
+        queryParams: {
+          summonly: false,
+          nodiscard: false,
+        },
+        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)], parentResource),
       },
     });
-    if (completionMet(response)) {
+    if (completionMet(response.response)) {
       break;
     }
     await new Promise((f) => setTimeout(f, 1000));
   }
 
-  cb();
+  cb(response);
 }
 
 export function buildUserAgentHeader(): { "User-Agent": string; } {

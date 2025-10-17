@@ -74,7 +74,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               (response) => {
                 return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "DISABLED";
               },
-              () => evaluateTreeNodes(node, tree)
+              (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta)
             );
           } catch (error) {
             window.showErrorMessage(

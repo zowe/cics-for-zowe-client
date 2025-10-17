@@ -13,7 +13,7 @@ import { Gui, imperative } from "@zowe/zowe-explorer-api";
 import { TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { CICSPlexTree, CICSTree } from ".";
 import { ICICSTreeNode, IChildResource, IContainedResource } from "../doc";
-import { ResourceContainer } from "../resources";
+import { Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
@@ -51,15 +51,19 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       opts.profile
     );
 
-    this.description = description;
     this.defaultDescription = description;
-
     this.regionName = opts.regionName;
     this.cicsplexName = opts.cicsplexName;
 
+    this.buildProperties();
+  }
+
+  buildProperties() {
+    this.description = this.defaultDescription;
     this.contextValue = `CICSResourceNode.${this.label}`;
     if (this.containedResource?.meta) {
       this.contextValue = `CICSResourceNode.${this.containedResource.meta.getContext(this.containedResource.resource)}`;
+      this.label = this.containedResource.meta.getLabel(this.containedResource.resource);
     }
     if (this.childResource?.meta) {
       this.contextValue += `.FILTERABLE`;
@@ -179,6 +183,13 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   getContainedResource(): IContainedResource<T> {
     return this.containedResource;
+  }
+
+  setContainedResource(resource: Resource<T>) {
+    this.containedResource = {
+      meta: this.containedResource.meta,
+      resource,
+    };
   }
 
   getChildResource(): IChildResource<T> {

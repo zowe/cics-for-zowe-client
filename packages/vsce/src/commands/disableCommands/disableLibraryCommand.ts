@@ -19,6 +19,7 @@ import { CICSTree } from "../../trees/CICSTree";
 import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 /**
  * Performs disable on selected CICSLibrary nodes.
@@ -49,11 +50,14 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
           });
 
           try {
-            await disableLibrary(node.getProfile(), {
+            const response = await disableLibrary(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, LibraryMeta);
+
           } catch (error) {
             const message = `Something went wrong while disabling library ${node.getContainedResourceName()}\n\n${JSON.stringify(
               error.message
@@ -62,7 +66,6 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
             CICSLogger.error(message);
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

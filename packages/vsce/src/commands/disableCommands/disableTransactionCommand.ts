@@ -18,6 +18,7 @@ import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -43,11 +44,14 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
           });
 
           try {
-            await disableTransaction(node.getProfile(), {
+            const response = await disableTransaction(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, TransactionMeta);
+
           } catch (error) {
             if (error.mMessage) {
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
@@ -66,7 +70,6 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
             }
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });

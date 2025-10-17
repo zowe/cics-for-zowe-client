@@ -20,6 +20,7 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../../utils/treeUtils";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -45,11 +46,14 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
           });
 
           try {
-            await enableLocalFile(node.getProfile(), {
+            const response = await enableLocalFile(node.getProfile(), {
               name: node.getContainedResourceName(),
               cicsPlex: node.cicsplexName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
             });
+
+            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
+
           } catch (error) {
             window.showErrorMessage(
               `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
@@ -59,7 +63,6 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
             );
           }
         }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
       }
     );
   });
