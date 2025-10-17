@@ -9,15 +9,22 @@
  *
  */
 
-import { CicsCmciRestClient, getCache, getResource, ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import {
+  getCache,
+  getResource,
+  ICMCIResponseResultSummary,
+  IResourceQueryParams,
+  putResource,
+} from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
-import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { IResource } from "../doc";
 import { SessionHandler } from "../resources";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { getErrorCode } from "./errorUtils";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
+import { extensions } from "vscode";
 
 interface IReqParams {
   criteria?: string;
@@ -69,14 +76,14 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw error;
+      throw new CICSExtensionError({baseError: error});
     }
   }
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
 
-  return await getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
+  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
     buildUserAgentHeader(),
   ]);
 }
@@ -107,8 +114,8 @@ export async function runGetCache(
     ]);
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw error;
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+      throw new CICSExtensionError({baseError: error});
     }
   }
 
@@ -116,7 +123,7 @@ export async function runGetCache(
 
   const newSession = buildNewSession(profile);
 
-  return await getCache(
+  return getCache(
     newSession,
     { cacheToken, startIndex, count, nodiscard: true, summonly: false },
     { failOnNoData: false, useCICSCmciRestError: true },
@@ -125,11 +132,6 @@ export async function runGetCache(
 }
 
 export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
-  const cmciResource = Utils.getResourceUri(resourceName, {
-    cicsPlex: cicsPlex,
-    regionName: regionName,
-    ...params,
-  });
 
   CICSLogger.debug(
     buildRequestLoggerString("PUT", resourceName, {
@@ -144,25 +146,27 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   const profile = SessionHandler.getInstance().getProfile(profileName);
   const session = SessionHandler.getInstance().getSession(profile);
 
+
   try {
     // First attempt
     if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
-
-    return await CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [buildUserAgentHeader()], requestBody);
+    return await putResource(session, buildResourceParms(resourceName, regionName, cicsPlex, params)
+      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
+    
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
-    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw error;
+    if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
+      throw new CICSExtensionError({ baseError: error });
     }
   }
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
-
   const newSession = buildNewSession(profile);
 
-  return await CicsCmciRestClient.putExpectParsedXml(newSession, cmciResource, [buildUserAgentHeader()], requestBody);
+  return putResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params)
+      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
 }
 
 export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {

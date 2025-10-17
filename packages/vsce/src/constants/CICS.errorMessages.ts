@@ -9,15 +9,10 @@
  *
  */
 
-export * from "./add-to-list";
-export * from "./cache";
-export * from "./define";
-export * from "./delete";
-export * from "./disable";
-export * from "./discard";
-export * from "./enable";
-export * from "./get";
-export * from "./install";
-export * from "./remove-from-list";
-export * from "./set";
-export * from "./put";
+
+export default {
+  NO_CICS_RESOURCE_SELECTED: "No CICS resource was selected.",
+  INVALID_USER_OR_SESSION_EXPIRED: "Invalid credentials or your token has expired. Please login again for profile {0}."
+};
+
+

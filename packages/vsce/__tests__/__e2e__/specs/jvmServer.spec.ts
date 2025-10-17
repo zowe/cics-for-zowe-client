@@ -99,6 +99,6 @@ test.describe("JVM server tests", () => {
 
     await expect(page.getByRole("button", { name: "Kill", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Kill", exact: true }).click();
-    await expect(page.getByRole("dialog", { name: "TABLEERROR", exact: false })).toBeVisible();
+    await expect(page.getByText("Error: Something went wrong when performing a disable", { exact: false })).toBeVisible();
   });
 });
