@@ -95,14 +95,12 @@ test.describe("Resource Inspector tests", async () => {
 
     // Now check resource inspector hasn't updated
     await getResourceInspector(page).locator("#resource-title").waitFor();
-    // we're driving the MYPROG1 mock responses here so it'll say it's MYPROG1
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
     const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
     await expect(newCopyCountRow).toBeVisible();
     await expect(newCopyCountRow.locator("..")).toContainText("0");
 
-    // hitting refresh will cause the new copy count to be returned to 0 because we pull the original mock
     // Find and click the refresh icon
     const refreshIcon = getResourceInspector(page).locator("#refresh-icon");
     await expect(refreshIcon).toBeVisible();
