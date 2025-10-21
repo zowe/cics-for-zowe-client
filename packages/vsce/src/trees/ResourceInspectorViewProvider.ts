@@ -9,20 +9,19 @@
  *
  */
 
+import { IResource, IResourceAction, IResourceContext, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import Mustache = require("mustache");
-import { ExtensionContext, WebviewViewProvider, Uri, WebviewView, Webview } from "vscode";
-import CICSResourceExtender from "../extending/CICSResourceExtender";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
 import { IContainedResource } from "../doc";
-import { IResource, IResourceAction, IResourceContext, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
+import IconBuilder from "../utils/IconBuilder";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
-import IconBuilder from "../utils/IconBuilder";
+import Mustache = require("mustache");
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
-
   public static readonly viewType = "resource-inspector";
   private static instance: ResourceInspectorViewProvider;
 
@@ -36,8 +35,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private constructor(
     private readonly extensionUri: Uri,
-    private webviewReady: boolean = false,
-  ) { }
+    private webviewReady: boolean = false
+  ) {}
 
   public static getInstance(context: ExtensionContext): ResourceInspectorViewProvider {
     if (!this.instance) {
@@ -67,10 +66,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     this.webviewView = webviewView;
     this.webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [
-        this.extensionUri,
-        Uri.joinPath(this.extensionUri, 'dist')
-      ],
+      localResourceRoots: [this.extensionUri, Uri.joinPath(this.extensionUri, "dist")],
     };
     this.webviewView.webview.html = this._getHtmlForWebview(this.webviewView.webview);
 
@@ -159,7 +155,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           id: action.id,
           name: action.name,
         };
-      })
+      }),
     });
   }
 
@@ -178,7 +174,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (!action.visibleWhen) {
         return true;
       }
-      if (typeof action.visibleWhen === 'boolean') {
+      if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
         const visible = await action.visibleWhen(this.resource.resource.attributes, this.getResourceContext());
@@ -199,7 +195,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     // Create a custom template that includes the codicon CSS
     const htmlTemplate = HTMLTemplate.default.replace(
-      '<head>',
+      "<head>",
       `<head>
         <link href="${codiconCssUri}" rel="stylesheet" />`
     );
@@ -207,8 +203,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return Mustache.render(htmlTemplate, {
       uris: {
         resource: {
-          script: scriptUri
-        }
+          script: scriptUri,
+        },
       },
       nonce,
     });
