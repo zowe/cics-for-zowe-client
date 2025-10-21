@@ -99,8 +99,8 @@ export const runInCommandPalette = async (page: Page, command: string) => {
   await page.keyboard.up("Shift");
   await page.keyboard.up("Control");
 
-  await expect(page.getByRole("textbox").first()).toHaveValue(">");
-  await page.getByRole("textbox").fill(`>${command}`);
+  await expect(page.getByRole("textbox", { name: "Type the name of a command to run.", exact: true })).toHaveValue(">");
+  await page.getByRole("textbox", { name: "Type the name of a command to run.", exact: true }).fill(`>${command}`);
   await page.keyboard.press("Enter");
 };
 
