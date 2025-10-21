@@ -116,8 +116,7 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: |
           cd packages/vsce/
-          npm run test:e2e:setup
-          CI=true npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
+          npm run test:e2e
 
       - name: Save wiremock logs
         if: success() || failure()
