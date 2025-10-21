@@ -48,8 +48,8 @@ export async function putResource(
     "PUT request - Resource [" + parms.name + "]" +
       (parms.cicsPlex ? ", CICSplex [" + parms.cicsPlex + "]" : "") +
       (parms.regionName ? ", Region [" + parms.regionName + "]" : "") +
-      (parms?.criteria ? ", Criteria [" + parms?.criteria + "]" : "") +
-      (parms?.parameter ? ", Parameter [" + parms?.parameter + "]" : "")
+      (parms.criteria ? ", Criteria [" + parms.criteria + "]" : "") +
+      (parms.parameter ? ", Parameter [" + parms.parameter + "]" : "")
   );
 
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, headers, requestBody, requestOptions);
