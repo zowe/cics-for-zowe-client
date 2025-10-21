@@ -1756,7 +1756,6 @@ Copyright 2015 Gareth Jones (with contributions from many other people)
 ** @sigstore/verify; version 1.2.1 -- https://github.com/sigstore/sigstore-js/tree/main/packages/verify#readme
 Copyright 2023 The Sigstore Authors
 ** @xtuc/long; version 4.2.2 -- https://github.com/dcodeIO/long.js#readme
-** baseline-browser-mapping; version 2.8.18 -- https://github.com/web-platform-dx/baseline-browser-mapping#readme
 ** detect-libc; version 2.1.2 -- https://github.com/lovell/detect-libc#readme
 Copyright 2017 Lovell Fuller and others.
 ** spdx-correct; version 3.2.0 -- https://github.com/jslicense/spdx-correct.js#readme
