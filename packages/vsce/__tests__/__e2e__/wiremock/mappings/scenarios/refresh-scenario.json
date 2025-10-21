@@ -1,0 +1,102 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "summary",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-0/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "summary",
+      "newScenarioState": "records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-0/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "records",
+      "newScenarioState": "removed",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-0/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "removed",
+      "newScenarioState": "refresh-summary",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "refresh-summary",
+      "newScenarioState": "refresh-records",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Refresh New Copied Program",
+      "requiredScenarioState": "refresh-records",
+      "newScenarioState": "Started",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG2/new-copy-count-1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
