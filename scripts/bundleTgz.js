@@ -20,7 +20,8 @@ process.chdir(rootDir);
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const sdkPkgJson = JSON.parse(fsE.readFileSync(path.join(cliPkgDir, "../sdk/package.json"), "utf-8"));
-const npmInstallCmd = "npm install --ignore-scripts --workspaces=false";
+const zoweRegistry = sdkPkgJson.publishConfig.registry;
+const npmInstallCmd = `npm install --ignore-scripts --workspaces=false --@zowe:registry=${zoweRegistry}`;
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
 fsE.mkdirpSync("dist");
 
