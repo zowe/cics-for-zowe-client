@@ -9,37 +9,39 @@
  *
  */
 
-import { ILocalFile, IResourceAction, IResourceContext, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ILocalFile, ResourceAction, IResourceContext, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
 
-export function getLocalFileActions(): IResourceAction[] {
-  return [
-    {
-      id: "CICS.CICSLocalFile.OPEN",
-      name: "Open Local File",
-      resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "OPEN",
-      action: "cics-extension-for-zowe.openLocalFile",
-    },
-    {
-      id: "CICS.CICSLocalFile.CLOSE",
-      name: "Close Local File",
-      resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "CLOSED",
-      action: "cics-extension-for-zowe.closeLocalFile",
-    },
-    {
-      id: "CICS.CICSLocalFile.ENABLE",
-      name: "Enable Local File",
-      resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "ENABLED",
-      action: "cics-extension-for-zowe.enableLocalFile",
-    },
-    {
-      id: "CICS.CICSLocalFile.DISABLE",
-      name: "Disable Local File",
-      resourceType: ResourceTypes.CICSLocalFile,
-      visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "DISABLED",
-      action: "cics-extension-for-zowe.disableLocalFile",
-    },
-  ];
+const actions: ResourceActionOptions<ResourceTypes.CICSLocalFile>[] = [
+  {
+    id: "CICS.CICSLocalFile.OPEN",
+    name: "Open Local File",
+    resourceType: ResourceTypes.CICSLocalFile,
+    visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "OPEN",
+    action: "cics-extension-for-zowe.openLocalFile",
+  },
+  {
+    id: "CICS.CICSLocalFile.CLOSE",
+    name: "Close Local File",
+    resourceType: ResourceTypes.CICSLocalFile,
+    visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "CLOSED",
+    action: "cics-extension-for-zowe.closeLocalFile",
+  },
+  {
+    id: "CICS.CICSLocalFile.ENABLE",
+    name: "Enable Local File",
+    resourceType: ResourceTypes.CICSLocalFile,
+    visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "ENABLED",
+    action: "cics-extension-for-zowe.enableLocalFile",
+  },
+  {
+    id: "CICS.CICSLocalFile.DISABLE",
+    name: "Disable Local File",
+    resourceType: ResourceTypes.CICSLocalFile,
+    visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "DISABLED",
+    action: "cics-extension-for-zowe.disableLocalFile",
+  },
+];
+
+export function getLocalFileActions(): ResourceAction<ResourceTypes.CICSLocalFile>[] {
+  return actions.map((action) => new ResourceAction<ResourceTypes.CICSLocalFile>(action));
 }

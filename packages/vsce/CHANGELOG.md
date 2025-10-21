@@ -19,6 +19,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Add Update Credentials option to the Manage Profile menu. [#451](https://github.com/zowe/cics-for-zowe-client/issues/451)
 - Enhancement: Show CICS bundlepart enablestatus in label and icon. [#467](https://github.com/zowe/cics-for-zowe-client/issues/467)
 - Bugfix: Enable MFA CMCI connections using LTPA tokens. [#381](https://github.com/zowe/cics-for-zowe-client/issues/381)
+- Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
 
 ## `3.13.2`
 
