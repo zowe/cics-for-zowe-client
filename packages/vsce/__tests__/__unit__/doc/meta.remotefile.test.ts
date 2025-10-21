@@ -13,6 +13,10 @@ import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 import { RemoteFileMeta } from "../../../src/doc/meta/remoteFile.meta";
 import { Resource } from "../../../src/resources";
 
+jest.mock("../../../src/utils/profileManagement", () => ({
+  ProfileManagement: {},
+}));
+
 describe("Remote File Meta", () => {
   let remoteFileMock: Resource<IRemoteFile>;
 
