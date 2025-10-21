@@ -134,8 +134,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    */
   private createIconPaths(iconPath: { light: string; dark: string }) {
     return {
-      light: this.webviewView.webview.asWebviewUri(Uri.parse(iconPath.light)).toString(),
-      dark: this.webviewView.webview.asWebviewUri(Uri.parse(iconPath.dark)).toString(),
+      // Use Uri.file to handle Windows as well as Mac paths correctly
+      light: this.webviewView.webview.asWebviewUri(Uri.file(iconPath.light)).toString(),
+      dark: this.webviewView.webview.asWebviewUri(Uri.file(iconPath.dark)).toString(),
     };
   }
 
