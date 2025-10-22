@@ -25,6 +25,8 @@ describe("ResourceType tests", () => {
       "CICSWebService",
       "CICSJVMServer",
       "CICSBundle",
+      "CICSTSQueue",
+      "CICSSharedTSQueue",
     ]);
   });
 
