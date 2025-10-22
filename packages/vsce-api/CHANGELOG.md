@@ -5,6 +5,7 @@ All notable changes to the Zowe Explorer for IBM CICS Transaction Server API wil
 ## Recent Changes
 
 - Add CICS resource interfaces containing specific attributes. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
+- Add TS Queue and Shared TS Queue to supported resources. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
 
 ## `6.13.0`
 
