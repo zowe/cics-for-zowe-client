@@ -21,32 +21,6 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
 import { evaluateTreeNodes } from "../../utils/treeUtils";
 
-// Define ICommandProviderDialogs interface
-interface ICommandProviderDialogs {
-  noServerSelected: string;
-  choosePurgeType: string;
-  phaseOut: string;
-  purge: string;
-  forcePurge: string;
-  kill: string;
-  progressTitle: string;
-  progressMessage: (current: number, total: number) => string;
-  errorMessage: (error: any) => string;
-}
-
-// Externalized dialogs object
-const dialogs: ICommandProviderDialogs = {
-  noServerSelected: vscode.l10n.t("cics.disableJVM.noServerSelected"),
-  choosePurgeType: vscode.l10n.t("cics.disableJVM.choosePurgeType"),
-  phaseOut: vscode.l10n.t("cics.disableJVM.phaseOut"),
-  purge: vscode.l10n.t("cics.disableJVM.purge"),
-  forcePurge: vscode.l10n.t("cics.disableJVM.forcePurge"),
-  kill: vscode.l10n.t("cics.disableJVM.kill"),
-  progressTitle: vscode.l10n.t("cics.disableJVM.progressTitle"),
-  progressMessage: (current, total) => vscode.l10n.t("cics.disableJVM.progressMessage", current, total),
-  errorMessage: (error) =>
-    vscode.l10n.t("cics.disableJVM.errorMessage", JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ")),
-};
 /**
  * Performs disable on selected CICSJVMServer nodes.
  * @param tree - tree which contains the node
@@ -56,11 +30,17 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
   return commands.registerCommand("cics-extension-for-zowe.disableJVMServer", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(dialogs.noServerSelected);
+      await window.showErrorMessage(vscode.l10n.t("profile.invalid"));
       return;
     }
 
-    let disableType = await window.showInformationMessage(dialogs.choosePurgeType, dialogs.phaseOut, dialogs.purge, dialogs.forcePurge, dialogs.kill);
+    let disableType = await window.showInformationMessage(
+      vscode.l10n.t("cics.disableJVM.choosePurgeType"),
+      vscode.l10n.t("cics.disableJVM.phaseOut"),
+      vscode.l10n.t("cics.disableJVM.purge"),
+      vscode.l10n.t("cics.disableJVM.forcePurge"),
+      vscode.l10n.t("cics.disableJVM.kill")
+    );
     if (!disableType) {
       return;
     }
@@ -69,7 +49,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
     await window.withProgress(
       {
-        title: dialogs.progressTitle,
+        title: vscode.l10n.t("cics.disableJVM.progressTitle"),
         location: ProgressLocation.Notification,
         cancellable: false,
       },
@@ -78,7 +58,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
         for (const node of nodes) {
           progress.report({
-            message: dialogs.progressMessage(nodes.indexOf(node) + 1, nodes.length),
+            message: vscode.l10n.t("cics.disableJVM.progressMessage", nodes.indexOf(node) + 1, nodes.length),
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
@@ -101,7 +81,8 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               () => evaluateTreeNodes(node, tree)
             );
           } catch (error) {
-            window.showErrorMessage(dialogs.errorMessage(error));
+            const formatted = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
+            await window.showErrorMessage(vscode.l10n.t("cics.disableJVM.errorMessage", formatted));
           }
         }
       }

@@ -1,5 +1,5 @@
 {
-  "cics.disableJVM.noServerSelected": "No CICS JVM Server selected",
+  "profile.invalid": "Profile is invalid",
   "cics.disableJVM.choosePurgeType": "Choose how to purge tasks while disabling the JVM server",
   "cics.disableJVM.phaseOut": "Phase Out",
   "cics.disableJVM.purge": "Purge",
@@ -7,6 +7,5 @@
   "cics.disableJVM.kill": "Kill",
   "cics.disableJVM.progressTitle": "Disable JVM Server",
   "cics.disableJVM.progressMessage": "Disabling {0} of {1}",
-  "cics.disableJVM.errorMessage": "Something went wrong when performing a disable - {0}",
-  "cics.disableJVM.title": "Disable JVM Endpoint"
+  "cics.disableJVM.errorMessage": "Error occurred when disabling JVM Endpoint: {0}"
 }
