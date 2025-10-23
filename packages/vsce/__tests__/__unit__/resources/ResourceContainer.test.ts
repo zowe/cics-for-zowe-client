@@ -68,7 +68,6 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { ProgramMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
