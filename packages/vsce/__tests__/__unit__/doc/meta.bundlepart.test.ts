@@ -57,7 +57,7 @@ describe("Bundle Part Meta", () => {
   it("should return label when disabled", () => {
     bundlePartMock.attributes.enablestatus = "disabled";
     const label = BundlePartMeta.getLabel(bundlePartMock);
-    expect(label).toEqual(`PART2`);
+    expect(label).toEqual(`PART2 (Disabled)`);
   });
 
   it("should return context", () => {
@@ -77,7 +77,7 @@ describe("Bundle Part Meta", () => {
   it("should return icon name when disabled", () => {
     bundlePartMock.attributes.enablestatus = "disabled";
     const iconName = BundlePartMeta.getIconName(bundlePartMock);
-    expect(iconName).toEqual(`bundle-part`);
+    expect(iconName).toEqual(`bundle-part-disabled`);
   });
 
   it("should return name", () => {
