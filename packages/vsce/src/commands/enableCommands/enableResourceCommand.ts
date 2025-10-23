@@ -61,7 +61,12 @@ export const enableTreeItem = async (
           nodesToRefresh.add(node.getParent());
 
           if (pollCriteria) {
-            await pollForCompleteAction(node, pollCriteria, (_response: ICMCIApiResponse) => evaluateTreeNodes(node, _response, node.getContainedResource().meta));
+            await pollForCompleteAction(
+              node,
+              pollCriteria,
+              (_response: ICMCIApiResponse) => evaluateTreeNodes(node, _response, node.getContainedResource().meta),
+              getParentResource(node.getParent() as CICSResourceContainerNode<IResource>)
+            );
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }

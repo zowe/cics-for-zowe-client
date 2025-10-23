@@ -6,7 +6,7 @@
       "newScenarioState": "mylib1-disabled",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYLIB1')",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"DISABLE\"/> </request>"
@@ -27,7 +27,7 @@
       "newScenarioState": "myprog1-enabled",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYLIB1')",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
