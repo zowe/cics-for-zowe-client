@@ -97,7 +97,7 @@ describe("Tree Utils tests", () => {
       }
     };
     const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "setContainedResource");
-    evaluateTreeNodes(resourceNode, cicsTree, apiResp, ProgramMeta);
+    evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
 
     expect(updateItemSpy).not.toHaveBeenCalled();
   });
@@ -114,7 +114,7 @@ describe("Tree Utils tests", () => {
       }
     };
     const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "setContainedResource");
-    evaluateTreeNodes(resourceNode, cicsTree, apiResp, ProgramMeta);
+    evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
 
     expect(updateItemSpy).toHaveBeenCalledTimes(1);
     expect(updateItemSpy).toHaveBeenCalledWith({ attributes: updatedProgram });
