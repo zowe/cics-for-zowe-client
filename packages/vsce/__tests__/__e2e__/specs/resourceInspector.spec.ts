@@ -10,7 +10,16 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getResourceInspector, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import {
+  constants,
+  findAndClickText,
+  findAndClickTreeItem,
+  getResourceInspector,
+  prepareZoweExplorerView,
+  resetWiremock,
+  resetZoweExplorerView,
+  waitForNotification,
+} from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -33,6 +42,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickText(page, "Inspect Resource");
 
     await getResourceInspector(page).locator("#resource-title").waitFor();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/1.png" });
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
   });
 
@@ -50,7 +60,7 @@ test.describe("Resource Inspector tests", async () => {
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
-    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/1.png" });
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
   });
@@ -65,6 +75,44 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await expect(page.getByText(`Loading CICS resource '${constants.PROGRAM_1_NAME}'...`, { exact: true })).toBeVisible();
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/3.png" });
+  });
+
+  test("should refresh resource when clicking refresh icon", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await waitForNotification(page, `Loading regions`);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
+    await page.waitForTimeout(200);
+
+    // Open resource inspector
+    await findAndClickText(page, "Inspect Resource");
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_2_NAME}'...`);
+
+    // Now check resource inspector hasn't updated
+    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
+    const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
+    await expect(newCopyCountRow).toBeVisible();
+    await expect(newCopyCountRow.locator("..")).toContainText("0");
+
+    // Find and click the refresh icon
+    const refreshIcon = getResourceInspector(page).locator("#refresh-icon");
+    await expect(refreshIcon).toBeVisible();
+    await refreshIcon.click();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/6.png" });
+
+    // Verify that the refresh occurs
+    await waitForNotification(page, `Refreshing Program ${constants.PROGRAM_2_NAME}`);
+
+    const newCopyCountRow2 = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/7.png" });
+    await expect(newCopyCountRow2).toBeVisible();
+    await expect(newCopyCountRow2.locator("..")).toContainText("1");
   });
 });

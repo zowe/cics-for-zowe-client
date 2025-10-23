@@ -18,6 +18,7 @@ export const constants = {
   CICSPLEX_NAME: "MYPLEX1",
   REGION_NAME: "MYREG1",
   PROGRAM_1_NAME: "MYPROG1",
+  PROGRAM_2_NAME: "MYPROG2",
   LIBRARY_1_NAME: "MYLIB1",
   LIBRARY_DS_1_NAME: "MYLIBDS1",
   JVM_SERVER_1_NAME: "MYJVM1",
@@ -85,6 +86,11 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
   await expect(getTreeItem(page, label)).toBeVisible();
   await expect(getTreeItem(page, label)).toHaveText(label);
   await getTreeItem(page, label).click({ button });
+};
+
+export const waitForNotification = async (page: Page, string: string) => {
+  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 1000 });
+  await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
 };
 
 export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
