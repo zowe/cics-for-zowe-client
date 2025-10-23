@@ -9,18 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
+import { TreeView, commands, window } from "vscode";
 import { JVMEndpointMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
-import { CICSTree } from "../../trees/CICSTree";
-import { CICSLogger } from "../../utils/CICSLogger";
-import { findSelectedNodes } from "../../utils/commandUtils";
-import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
-import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
 import { CICSResourceContainerNode } from "../../trees";
+import { CICSTree } from "../../trees/CICSTree";
+import { findSelectedNodes } from "../../utils/commandUtils";
+import { disableTreeItem } from "./disableResourceCommand";
 
 /**
  * Performs disable on selected CICSJVMEndpoint nodes.
@@ -37,77 +32,11 @@ export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<
         return;
       }
 
-      await window.withProgress(
-        {
-          title: "Disable JVM Endpoint",
-          location: ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => { });
-
-          for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
-            progress.report({
-              message: `Disabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
-              increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
-            });
-
-            try {
-              await disableJVMEndpoint(
-                node.getProfileName(),
-                {
-                  name: resource.jvmendpoint,
-                  cicsPlex: node.cicsplexName,
-                  regionName: node.regionName ?? resource.eyu_cicsname,
-                } as ICommandParams,
-                resource.jvmserver
-              );
-
-              await pollForCompleteAction(
-                node,
-                (response) => {
-                  return response.records?.cicsjvmendpoint?.enablestatus.toUpperCase() === "DISABLED";
-                },
-                (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta),
-                (node.getParent() as CICSResourceContainerNode<IJVMServer>).getContainedResource().resource.attributes
-              );
-            } catch (error) {
-              const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-                error.message
-              ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-              window.showErrorMessage(message);
-              CICSLogger.error(message);
-            }
-          }
-        }
-      );
-    }
-  );
-}
-
-function disableJVMEndpoint(
-  profileName: string,
-  parms: ICommandParams,
-  jvmServerName: string
-): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName,
-      resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmServerName}')` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "DISABLE",
-          },
-        },
-      },
+      await disableTreeItem(nodes, tree, (node: CICSResourceContainerNode<IJVMServer>) => {
+        return node.getContainedResource().resource.attributes;
+      }, (response) => {
+        return response.records?.cicsjvmendpoint?.enablestatus.toUpperCase() === "DISABLED";
+      });
     }
   );
 }
