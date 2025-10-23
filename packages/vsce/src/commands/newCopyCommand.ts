@@ -39,13 +39,17 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
             message: `New Copying ${nodes.indexOf(node) + 1} of ${nodes.length}`,
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
+
+          nodesToRefresh.add(node.getParent());
 
           try {
             const response = await programNewcopy(node.getSession(), {
@@ -54,7 +58,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
               cicsPlex: node.cicsplexName,
             });
 
-            evaluateTreeNodes(clickedNode, tree, response, ProgramMeta);
+            evaluateTreeNodes(clickedNode, response, ProgramMeta);
 
           } catch (error) {
             if (error.mMessage) {
@@ -74,6 +78,11 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });
