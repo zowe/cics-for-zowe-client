@@ -673,7 +673,7 @@
         },
         "zowe.cics.tasks.filter": {
           "type": "string",
-          "default": "(TRANID=*)",
+          "default": "",
           "description": "Default filter criteria for Tasks",
           "scope": "window"
         },
