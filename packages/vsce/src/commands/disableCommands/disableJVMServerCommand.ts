@@ -11,7 +11,8 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import * as vscode from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { JVMServerMeta } from "../../doc";
 import { ICommandParams } from "../../doc/commands/ICommandParams";
@@ -29,13 +30,16 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
   return commands.registerCommand("cics-extension-for-zowe.disableJVMServer", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS JVM Server selected");
+      await window.showErrorMessage(vscode.l10n.t("profile.invalid"));
       return;
     }
 
     let disableType = await window.showInformationMessage(
-      `Choose how to purge tasks while disabling the JVM server`,
-      ...["Phase Out", "Purge", "Force Purge", "Kill"]
+      vscode.l10n.t("cics.disableJVM.choosePurgeType"),
+      vscode.l10n.t("cics.disableJVM.phaseOut"),
+      vscode.l10n.t("cics.disableJVM.purge"),
+      vscode.l10n.t("cics.disableJVM.forcePurge"),
+      vscode.l10n.t("cics.disableJVM.kill")
     );
     if (!disableType) {
       return;
@@ -45,7 +49,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
     await window.withProgress(
       {
-        title: "Disable JVM Server",
+        title: vscode.l10n.t("cics.disableJVM.progressTitle"),
         location: ProgressLocation.Notification,
         cancellable: false,
       },
@@ -54,7 +58,7 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
 
         for (const node of nodes) {
           progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            message: vscode.l10n.t("cics.disableJVM.progressMessage", nodes.indexOf(node) + 1, nodes.length),
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
@@ -77,12 +81,8 @@ export function getDisableJVMServerCommand(tree: CICSTree, treeview: TreeView<an
               () => evaluateTreeNodes(node, tree)
             );
           } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when performing a disable - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
+            const formatted = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
+            await window.showErrorMessage(vscode.l10n.t("cics.disableJVM.errorMessage", formatted));
           }
         }
       }

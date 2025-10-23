@@ -10,6 +10,7 @@
  */
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import * as vscode from "vscode";
 import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../../constants/CICS.defaults";
 import { JVMEndpointMeta } from "../../doc";
@@ -20,68 +21,83 @@ import { findSelectedNodes } from "../../utils/commandUtils";
 import { runPutResource } from "../../utils/resourceUtils";
 import { IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
 
+// Define ICommandProviderDialogs interface if not imported from elsewhere
+interface ICommandProviderDialogs {
+  errorMessage: string;
+  message: string;
+}
+
 /**
  * Performs disable on selected CICSJVMEndpoint nodes.
  * @param tree - tree which contains the node
  * @param treeview - Tree View of current cics tree
  */
-export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand(
-    "cics-extension-for-zowe.disableJVMEndpoint",
-    async (clickedNode) => {
-      const nodes = findSelectedNodes(treeview, JVMEndpointMeta, clickedNode);
-      if (!nodes || !nodes.length) {
-        await window.showErrorMessage("No CICS JVMEndpoint selected");
-        return;
-      }
 
-      await window.withProgress(
-        {
-          title: "Disable JVM Endpoint",
-          location: ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async (progress, token) => {
-          token.onCancellationRequested(() => { });
+export class DisableJVMEndpointHandler {
+  public readonly dialogs: ICommandProviderDialogs = {
+    errorMessage: vscode.l10n.t("Error occurred when disabling JVM Endpoint: {0}"),
+    message: vscode.l10n.t("Disabling JVM Endpoint..."),
+  };
 
-          for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
-            progress.report({
-              message: `Disabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
-              increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
-            });
-
-            try {
-              await disableJVMEndpoint(
-                node.getProfileName(),
-                {
-                  name: resource.jvmendpoint,
-                  cicsPlex: node.cicsplexName,
-                  regionName: node.regionName ?? resource.eyu_cicsname,
-                } as ICommandParams,
-                resource.jvmserver
-              );
-            } catch (error) {
-              const message = `Something went wrong while disabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-                error.message
-              ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-              window.showErrorMessage(message);
-              CICSLogger.error(message);
-            }
-          }
-          tree._onDidChangeTreeData.fire(nodes[0].getParent());
-        }
-      );
-    }
-  );
+  constructor(
+    private tree: any,
+    private treeview: TreeView<any>
+  ) {}
 }
 
-function disableJVMEndpoint(
-  profileName: string,
-  parms: ICommandParams,
-  jvmServerName: string
-): Promise<ICMCIApiResponse> {
+export function getDisableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.disableJVMEndpoint", async (clickedNode) => {
+    const handler = new DisableJVMEndpointHandler(tree, treeview); // Instantiate your handler
+    const nodes = findSelectedNodes(treeview, JVMEndpointMeta, clickedNode);
+    if (!nodes || !nodes.length) {
+      await window.showErrorMessage("No CICS JVMEndpoint selected");
+      return;
+    }
+
+    await window.withProgress(
+      {
+        title: "Disable JVM Endpoint",
+        location: ProgressLocation.Notification,
+        cancellable: false,
+      },
+      async (progress, token) => {
+        token.onCancellationRequested(() => {});
+
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
+          progress.report({
+            message: `${handler.dialogs.message} '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
+            increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
+          });
+
+          try {
+            await disableJVMEndpoint(
+              node.getProfileName(),
+              {
+                name: resource.jvmendpoint,
+                cicsPlex: node.cicsplexName,
+                regionName: node.regionName ?? resource.eyu_cicsname,
+              } as ICommandParams,
+              resource.jvmserver
+            );
+          } catch (error) {
+            const message = vscode.l10n.t(
+              "Something went wrong while disabling JVM Endpoint {0}\n\n{1}",
+              node.getContainedResourceName(),
+              JSON.stringify(error.message).replace(/(\\n\t|\\n|\\t)/gm, " ")
+            );
+            window.showErrorMessage(message);
+            CICSLogger.error(message);
+          }
+        }
+        tree._onDidChangeTreeData.fire(nodes[0].getParent());
+      }
+    );
+  });
+}
+
+function disableJVMEndpoint(profileName: string, parms: ICommandParams, jvmServerName: string): Promise<ICMCIApiResponse> {
   return runPutResource(
     {
       profileName,
