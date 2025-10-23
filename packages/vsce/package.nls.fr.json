@@ -1,5 +1,5 @@
 {
-  "cics.disableJVM.noServerSelected": "Aucun serveur JVM CICS sélectionné",
+  "profile.invalid": "Le profil est invalide",
   "cics.disableJVM.choosePurgeType": "Choisissez comment purger les tâches lors de la désactivation du serveur JVM",
   "cics.disableJVM.phaseOut": "Phase de sortie",
   "cics.disableJVM.purge": "Purger",
@@ -7,6 +7,5 @@
   "cics.disableJVM.kill": "Arrêter",
   "cics.disableJVM.progressTitle": "Désactiver le serveur JVM",
   "cics.disableJVM.progressMessage": "Désactivation {0} de {1}",
-  "cics.disableJVM.errorMessage": "Une erreur s'est produite lors de la désactivation - {0}",
-  "cics.disableJVM.title": "Désactiver le point de terminaison JVM"
+  "cics.disableJVM.errorMessage": "Une erreur s'est produite lors de la désactivation : {0}"
 }
