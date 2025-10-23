@@ -14,11 +14,10 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { ProgramMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 /**
  * Performs PHASE IN on selected CICSProgram nodes.
@@ -40,7 +39,9 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
@@ -48,12 +49,17 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
+          nodesToRefresh.add(node.getParent());
+
           try {
-            await performPhaseIn(node.getProfile(), {
+            const response = await performPhaseIn(node.getProfile(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
+
+            evaluateTreeNodes(clickedNode, response, ProgramMeta);
+
           } catch (error) {
             if (error.mMessage) {
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
@@ -72,16 +78,11 @@ export function getPhaseInCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
-        // Work out how many programs to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<IProgram>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

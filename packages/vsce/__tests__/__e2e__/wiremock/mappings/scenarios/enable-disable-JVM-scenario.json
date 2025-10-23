@@ -6,10 +6,10 @@
       "newScenarioState": "myjvm1-disabling",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYJVM1')",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(name%3DMYJVM1)",
         "bodyPatterns": [
           {
-            "equalToXml": "<request><action name=\"DISABLE\"/> </request>"
+            "equalToXml": "<request>\n  <action name=\"DISABLE\">\n    <parameter name=\"PURGETYPE\" value=\"PHASEOUT\"/>\n  </action>\n</request>"
           }
         ]
       },
@@ -40,59 +40,10 @@
     {
       "scenarioName": "Enable Disable JVM server",
       "requiredScenarioState": "myjvm1-disabled",
-      "newScenarioState": "myjvm1-disabled-fetched-cache-token",
-      "priority": 1,
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMServer/disable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM server",
-      "requiredScenarioState": "myjvm1-disabled-fetched-cache-token",
-      "newScenarioState": "myjvm1-disabled-fetched-results",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JVMDISABLEDTOKEN/1/1?NODISCARD"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMServer/disable/records.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM server",
-      "requiredScenarioState": "myjvm1-disabled-fetched-results",
-      "newScenarioState": "myjvm1-disabled-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JVMDISABLEDTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMServer/disable/remove-cache.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM server",
-      "requiredScenarioState": "myjvm1-disabled-removed-cache",
       "newScenarioState": "myjvm1-enabling",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYJVM1')",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(name%3DMYJVM1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
@@ -110,47 +61,14 @@
     {
       "scenarioName": "Enable Disable JVM server",
       "requiredScenarioState": "myjvm1-enabling",
-      "newScenarioState": "myjvm1-enabled-fetched-cache-token",
-      "priority": 1,
+      "newScenarioState": "myjvm1-enabled",
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(name%3DMYJVM1)"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSJVMServer/enable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM server",
-      "requiredScenarioState": "myjvm1-enabled-fetched-cache-token",
-      "newScenarioState": "myjvm1-enabled-fetched-results",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0JVMENABLEDTOKEN/1/250?NODISCARD"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMServer/enable/records.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable JVM server",
-      "requiredScenarioState": "myjvm1-enabled-fetched-results",
-      "newScenarioState": "myjvm1-enabled-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0JVMENABLEDTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSJVMServer/enable/remove-cache.xml",
+        "bodyFileName": "CICSJVMServer/enable/response.xml",
         "headers": {
           "Content-Type": "text/xml"
         }

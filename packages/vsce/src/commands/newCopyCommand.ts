@@ -17,6 +17,7 @@ import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 /**
  * Performs new copy on selected CICSProgram nodes.
@@ -24,7 +25,7 @@ import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
  * @param treeview - Tree View of current cics tree
  */
 export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.newCopyProgram", async (clickedNode) => {
+  return commands.registerCommand("cics-extension-for-zowe.newCopyProgram", async (clickedNode: CICSResourceContainerNode<IProgram>) => {
     const nodes = findSelectedNodes(treeview, ProgramMeta, clickedNode);
     if (!nodes || !nodes.length) {
       await window.showErrorMessage("No CICS program selected");
@@ -38,7 +39,9 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
@@ -46,12 +49,17 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
+          nodesToRefresh.add(node.getParent());
+
           try {
-            await programNewcopy(node.getSession(), {
+            const response = await programNewcopy(node.getSession(), {
               name: node.getContainedResourceName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
+
+            evaluateTreeNodes(clickedNode, response, ProgramMeta);
+
           } catch (error) {
             if (error.mMessage) {
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
@@ -71,16 +79,10 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
           }
         }
 
-        // Work out how many programs to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<IProgram>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

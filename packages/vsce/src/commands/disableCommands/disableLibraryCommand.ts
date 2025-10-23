@@ -9,16 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { commands, TreeView, window } from "vscode";
 import { LibraryMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
+import { disableTreeItem } from "./disableResourceCommand";
 
 /**
  * Performs disable on selected CICSLibrary nodes.
@@ -33,58 +28,6 @@ export function getDisableLibraryCommand(tree: CICSTree, treeview: TreeView<any>
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Disable",
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            await disableLibrary(node.getProfile(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
-          } catch (error) {
-            const message = `Something went wrong while disabling library ${node.getContainedResourceName()}\n\n${JSON.stringify(
-              error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-            window.showErrorMessage(message);
-            CICSLogger.error(message);
-          }
-        }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
-      }
-    );
+    await disableTreeItem(nodes, tree);
   });
-}
-
-function disableLibrary(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `NAME='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "DISABLE",
-          },
-        },
-      },
-    }
-  );
 }

@@ -14,12 +14,11 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { LocalFileMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
+import { ICommandParams } from "../doc/commands/ICommandParams";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "../doc/commands/ICommandParams";
-import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {
@@ -36,7 +35,9 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
@@ -44,13 +45,18 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
+          nodesToRefresh.add(node.getParent());
+
           const resName = node.getContainedResourceName();
           try {
-            await openLocalFile(node.getProfile(), {
+            const response = await openLocalFile(node.getProfile(), {
               name: resName,
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsPlex: node.cicsplexName,
             });
+
+            evaluateTreeNodes(clickedNode, response, LocalFileMeta);
+
           } catch (error) {
             // @ts-ignore
             if (error.mMessage) {
@@ -69,16 +75,11 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
             }
           }
         }
-        // Work out how many files to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<ILocalFile>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

@@ -9,15 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { TreeView, commands, window } from "vscode";
 import { TransactionMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
+import { enableTreeItem } from "./enableResourceCommand";
 
 export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.enableTransaction", async (clickedNode) => {
@@ -27,59 +23,6 @@ export function getEnableTransactionCommand(tree: CICSTree, treeview: TreeView<a
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Enable",
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Enabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            await enableTransaction(node.getProfile(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
-        }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
-      }
-    );
+    await enableTreeItem(nodes, tree);
   });
-}
-
-function enableTransaction(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `TRANID='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "ENABLE",
-          },
-        },
-      },
-    }
-  );
 }

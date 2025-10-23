@@ -9,17 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { TreeView, commands, window } from "vscode";
 import { LocalFileMeta } from "../../doc/meta/localFile.meta";
 import { CICSResourceContainerNode } from "../../trees";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { enableTreeItem } from "./enableResourceCommand";
 
 export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.enableLocalFile", async (clickedNode) => {
@@ -29,59 +25,6 @@ export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CIC
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Enable",
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Enabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            await enableLocalFile(node.getProfile(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
-        }
-        tree._onDidChangeTreeData.fire(nodes[0].getParent());
-      }
-    );
+    await enableTreeItem(nodes, tree);
   });
-}
-
-function enableLocalFile(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `FILE='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "ENABLE",
-          },
-        },
-      },
-    }
-  );
 }
