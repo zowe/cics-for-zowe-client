@@ -9,18 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, TreeView, window } from "vscode";
 import { LocalFileMeta } from "../../doc/meta/localFile.meta";
 import { CICSResourceContainerNode } from "../../trees";
 import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
+import { disableTreeItem } from "./disableResourceCommand";
 
 export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.disableLocalFile", async (clickedNode) => {
@@ -40,71 +35,6 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CI
 
     busyDecision = busyDecision.replace(" ", "").toUpperCase();
 
-    await window.withProgress(
-      {
-        title: "Disable",
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            const response = await disableLocalFile(
-              node.getProfile(),
-              {
-                name: node.getContainedResourceName(),
-                cicsPlex: node.cicsplexName,
-                regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-              },
-              busyDecision
-            );
-
-            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
-
-          } catch (error) {
-            window.showErrorMessage(
-              `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                /(\\n\t|\\n|\\t)/gm,
-                " "
-              )}`
-            );
-          }
-        }
-      }
-    );
+    await disableTreeItem(nodes, tree, undefined, undefined, { name: "BUSY", value: busyDecision });
   });
-}
-
-function disableLocalFile(profile: IProfileLoaded, parms: ICommandParams, busyDecision: string): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `FILE='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "DISABLE",
-          },
-          parameter: {
-            $: {
-              name: "BUSY",
-              value: busyDecision,
-            },
-          },
-        },
-      },
-    }
-  );
 }

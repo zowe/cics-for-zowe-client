@@ -9,16 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { TreeView, commands, window } from "vscode";
 import { TransactionMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
-import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
-import { runPutResource } from "../../utils/resourceUtils";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
+import { findSelectedNodes } from "../../utils/commandUtils";
+import { disableTreeItem } from "./disableResourceCommand";
 
 export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.disableTransaction", async (clickedNode) => {
@@ -28,70 +23,6 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Disable",
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Disabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            const response = await disableTransaction(node.getProfile(), {
-              name: node.getContainedResourceName(),
-              cicsPlex: node.cicsplexName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-            });
-
-            evaluateTreeNodes(clickedNode, tree, response, TransactionMeta);
-
-          } catch (error) {
-            if (error.mMessage) {
-              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-              window.showErrorMessage(
-                `Perform DISABLE on Transaction "${node
-                  .getContainedResource()
-                  .meta.getName(node.getContainedResource().resource)}" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
-              );
-            } else {
-              window.showErrorMessage(
-                `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-        }
-      }
-    );
+    await disableTreeItem(nodes, tree);
   });
-}
-
-function disableTransaction(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `TRANID='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "DISABLE",
-          },
-        },
-      },
-    }
-  );
 }
