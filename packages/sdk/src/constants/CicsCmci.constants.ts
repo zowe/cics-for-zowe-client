@@ -242,8 +242,4 @@ export const CicsCmciConstants = {
      */
     INVALIDDATA: 1041,
   },
-  /*
-  * Default Resp Code 
-  */
-  DEFAULT_RESP_CODE: "0000",
 };
