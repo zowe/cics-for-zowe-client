@@ -9,18 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
+import { TreeView, commands, window } from "vscode";
 import { JVMEndpointMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
-import { CICSTree } from "../../trees/CICSTree";
-import { CICSLogger } from "../../utils/CICSLogger";
-import { findSelectedNodes } from "../../utils/commandUtils";
-import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
-import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
 import { CICSResourceContainerNode } from "../../trees";
+import { CICSTree } from "../../trees/CICSTree";
+import { findSelectedNodes } from "../../utils/commandUtils";
+import { enableTreeItem } from "./enableResourceCommand";
 
 /**
  * Performs enable on selected CICSJVMEndpoint nodes.
@@ -35,76 +30,10 @@ export function getEnableJVMEndpointCommand(tree: CICSTree, treeview: TreeView<a
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Enable JVM Endpoint",
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => { });
-
-        for (let i = 0; i < nodes.length; i++) {
-          const node = nodes[i];
-          const resource = node.getContainedResource().resource.attributes as IJVMEndpoint;
-          progress.report({
-            message: `Enabling JVM Endpoint '${resource.jvmendpoint}' (${i + 1} of ${nodes.length})`,
-            increment: ((i + 1) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            await enableJVMEndpoint(
-              node.getProfileName(),
-              {
-                name: resource.jvmendpoint,
-                cicsPlex: node.cicsplexName,
-                regionName: node.regionName ?? resource.eyu_cicsname,
-              } as ICommandParams,
-              resource.jvmserver
-            );
-
-            await pollForCompleteAction(
-              node,
-              (response) => {
-                return response.records?.cicsjvmendpoint?.enablestatus.toUpperCase() === "ENABLED";
-              },
-              (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta),
-              (node.getParent() as CICSResourceContainerNode<IJVMServer>).getContainedResource().resource.attributes
-            );
-          } catch (error) {
-            const message = `Something went wrong while enabling JVMEndpoint ${node.getContainedResourceName()}\n\n${JSON.stringify(
-              error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-            window.showErrorMessage(message);
-            CICSLogger.error(message);
-          }
-        }
-      }
-    );
+    await enableTreeItem(nodes, tree, (node: CICSResourceContainerNode<IJVMServer>) => {
+      return node.getContainedResource().resource.attributes;
+    }, (response) => {
+      return response.records?.cicsjvmendpoint?.enablestatus.toUpperCase() === "ENABLED";
+    });
   });
-}
-
-function enableJVMEndpoint(
-  profileName: string,
-  parms: ICommandParams,
-  jvmServerName: string
-): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName,
-      resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `(JVMENDPOINT='${parms.name}') AND (JVMSERVER='${jvmServerName}')` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "ENABLE",
-          },
-        },
-      },
-    }
-  );
 }

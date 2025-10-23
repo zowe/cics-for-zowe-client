@@ -9,17 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
-import constants from "../../constants/CICS.defaults";
+import { commands, TreeView, window } from "vscode";
 import { JVMServerMeta } from "../../doc";
-import { ICommandParams } from "../../doc/commands/ICommandParams";
 import { CICSTree } from "../../trees/CICSTree";
-import { CICSLogger } from "../../utils/CICSLogger";
 import { findSelectedNodes } from "../../utils/commandUtils";
-import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
-import { evaluateTreeNodes } from "../../utils/treeUtils";
+import { enableTreeItem } from "./enableResourceCommand";
 
 /**
  * Performs enable on selected JVM Server nodes.
@@ -34,65 +28,8 @@ export function getEnableJVMServerCommand(tree: CICSTree, treeview: TreeView<any
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Enable",
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Enabling ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          try {
-            await enableJVMServer(node.getProfile(), {
-              name: node.getContainedResourceName(),
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-              cicsPlex: node.cicsplexName,
-            });
-
-            await pollForCompleteAction(
-              node,
-              (response) => {
-                return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "ENABLED";
-              },
-              (response: ICMCIApiResponse) => evaluateTreeNodes(node, tree, response, node.getContainedResource().meta)
-            );
-          } catch (error) {
-            const message = `Something went wrong while enabling JVM server ${node.getContainedResourceName()}\n\n${JSON.stringify(
-              error.message
-            ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`;
-            window.showErrorMessage(message);
-            CICSLogger.error(message);
-          }
-        }
-      }
-    );
+    await enableTreeItem(nodes, tree, undefined, (response) => {
+      return response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "ENABLED";
+    });
   });
-}
-
-function enableJVMServer(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `NAME='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "ENABLE",
-          },
-        },
-      },
-    }
-  );
 }
