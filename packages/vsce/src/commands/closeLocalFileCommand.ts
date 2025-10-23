@@ -44,13 +44,17 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
             message: `Closing ${nodes.indexOf(node) + 1} of ${nodes.length}`,
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
+
+          nodesToRefresh.add(node.getParent());
 
           try {
             const response = await closeLocalFile(
@@ -63,7 +67,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
               busyDecision
             );
 
-            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
+            evaluateTreeNodes(clickedNode, response, LocalFileMeta);
 
           } catch (error) {
             // @ts-ignore
@@ -86,6 +90,11 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
             }
           }
         }
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

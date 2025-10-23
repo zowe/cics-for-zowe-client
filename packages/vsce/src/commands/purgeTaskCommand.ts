@@ -47,13 +47,17 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
             message: `Purging ${nodes.indexOf(node) + 1} of ${nodes.length}`,
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
+
+          nodesToRefresh.add(node.getParent());
 
           const resName = node.getContainedResourceName();
           try {
@@ -67,7 +71,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               purgeType
             );
 
-            evaluateTreeNodes(clickedNode, tree, response, TaskMeta);
+            evaluateTreeNodes(clickedNode, response, TaskMeta);
 
           } catch (error) {
             // @ts-ignore
@@ -88,6 +92,11 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

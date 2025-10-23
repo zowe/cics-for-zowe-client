@@ -35,13 +35,17 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
             message: `Opening ${nodes.indexOf(node) + 1} of ${nodes.length}`,
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
+
+          nodesToRefresh.add(node.getParent());
 
           const resName = node.getContainedResourceName();
           try {
@@ -51,7 +55,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
               cicsPlex: node.cicsplexName,
             });
 
-            evaluateTreeNodes(clickedNode, tree, response, LocalFileMeta);
+            evaluateTreeNodes(clickedNode, response, LocalFileMeta);
 
           } catch (error) {
             // @ts-ignore
@@ -71,6 +75,11 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
             }
           }
         }
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });
