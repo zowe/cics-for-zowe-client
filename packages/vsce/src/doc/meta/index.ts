@@ -25,6 +25,8 @@ import { URIMapMeta } from "./urimap.meta";
 import { WebServiceMeta } from "./webservice.meta";
 import { JVMServerMeta } from "./JVMServer.meta";
 import { JVMEndpointMeta } from "./jvmEndpoints.meta";
+import { TSQueueMeta } from "./tsqueue.meta";
+import { SharedTSQueueMeta } from "./sharedTSqueue.meta";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export * from "./IResourceMeta";
@@ -41,6 +43,8 @@ export * from "./tcpip.meta";
 export * from "./transaction.meta";
 export * from "./urimap.meta";
 export * from "./webservice.meta";
+export * from "./tsqueue.meta";
+export * from "./sharedTSqueue.meta";
 export * from "./JVMServer.meta";
 export * from "./jvmEndpoints.meta";
 
@@ -60,6 +64,8 @@ export function getMetas(): IResourceMeta<IResource>[] {
     URIMapMeta,
     WebServiceMeta,
     JVMServerMeta,
-    JVMEndpointMeta
+    JVMEndpointMeta,
+    TSQueueMeta,
+    SharedTSQueueMeta,
   ];
 }

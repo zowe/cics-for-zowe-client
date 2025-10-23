@@ -205,6 +205,16 @@ export const CicsCmciConstants = {
   CICS_CMCI_WEB_SERVICE: "CICSWebService",
 
   /**
+   * The CICS CMCI web service
+   */
+  CICS_CMCI_TS_QUEUE: "CICSTSQueue",
+
+  /**
+   * The CICS CMCI web service
+   */
+  CICS_CMCI_SHARED_TS_QUEUE: "CICSSharedTSQueue",
+
+  /**
    * CICSBundle parameter
    */
   CICS_CMCI_BUNDLE: "CICSBundle",

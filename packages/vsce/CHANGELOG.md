@@ -11,6 +11,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 - Renamed `Local Files` tree to `Files`. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
 - Enhancement: Added CICS Remote Files to files tree. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
+- Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
 
 ## `3.13.2`
 
