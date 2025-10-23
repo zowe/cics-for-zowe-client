@@ -12,11 +12,15 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../resources";
-import { CICSResourceContainerNode, CICSTree } from "../trees";
+import { CICSResourceContainerNode } from "../trees";
 import { toArray } from "./commandUtils";
 import { IResourceMeta } from "../doc";
 
-export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, tree: CICSTree, response: ICMCIApiResponse, meta: IResourceMeta<T>) {
+export function evaluateTreeNodes<T extends IResource>(
+  node: CICSResourceContainerNode<T>,
+  response: ICMCIApiResponse,
+  meta: IResourceMeta<T>
+) {
   const parentNode = node.getParent() as CICSResourceContainerNode<T>;
 
   if (response?.response?.records[meta.resourceName.toLowerCase()]) {
@@ -29,6 +33,4 @@ export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContain
       parentNode.refreshingDescription = true;
     }
   }
-
-  tree.refresh(parentNode);
 }
