@@ -11,6 +11,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 - Added JVM Endpoint CICS CMCI constant. [#410](https://github.com/zowe/cics-for-zowe-client/pull/410)
 - Renamed the SDK to `Zowe SDK for IBM CICS Transaction Server`. [#403](https://github.com/zowe/cics-for-zowe-client/issues/403)
+- Added CICS Remote File resource constant. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
 
 ## `6.12.0`
 

@@ -9,6 +9,8 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Bugfix: Refresh CICS Resource Inspector panel after performing action. [#433](https://github.com/zowe/cics-for-zowe-client/issues/433)
 - Enhancement: Add Update Credentials option to the Manage Profile menu. [#451](https://github.com/zowe/cics-for-zowe-client/issues/451)
 - Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
+- Renamed `Local Files` tree to `Files`. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
+- Enhancement: Added CICS Remote Files to files tree. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
 
 ## `3.13.2`
 
