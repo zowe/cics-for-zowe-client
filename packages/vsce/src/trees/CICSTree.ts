@@ -20,7 +20,6 @@ import {
   QuickPickOptions,
   TreeDataProvider,
   TreeItem,
-  TreeView,
   commands,
   l10n,
   window,

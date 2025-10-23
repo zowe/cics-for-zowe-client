@@ -12,7 +12,6 @@
 const getAllProfilesMock = jest.fn();
 const getPlexInfoMock = jest.fn();
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import * as vscode from "vscode";
 import {
   getAllCICSProfiles,
