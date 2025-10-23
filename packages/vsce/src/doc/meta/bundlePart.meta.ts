@@ -33,7 +33,14 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getLabel: function (bundlePart: Resource<IBundlePart>): string {
-    return `${bundlePart.attributes.bundlepart}`;
+    let label = `${bundlePart.attributes.bundlepart}`;
+    const status = bundlePart.attributes.enablestatus.trim();
+
+    if (status.toUpperCase() !== "ENABLED") {
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
+    }
+
+    return label;
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
@@ -41,8 +48,14 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
       }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
-  getIconName: function (_bundlePart: Resource<IBundlePart>): string {
-    return `bundle-part`;
+  getIconName: function (bundlePart: Resource<IBundlePart>): string {
+    let iconName = `bundle-part`;
+
+    if (bundlePart.attributes.enablestatus.trim().toUpperCase() !== "ENABLED") {
+      iconName += `-disabled`;
+    }
+
+    return iconName;
   },
 
   getName(bundlePart: Resource<IBundlePart>) {
