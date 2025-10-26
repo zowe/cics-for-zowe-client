@@ -827,7 +827,8 @@
     "test:e2e:dev:interactive": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --ui && npm run test:e2e:teardown",
     "test:e2e:dev": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --headed && npm run test:e2e:teardown",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
-    "l10n:export": "mkdir -p dist && npx vscode-l10n-dev export \"src/**/*.ts\" --outDir dist"
+    "l10n:export": "mkdir -p dist && npx vscode-l10n-dev export \"src/**/*.ts\" --outDir dist",
+    "l10n": "./l10n"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
