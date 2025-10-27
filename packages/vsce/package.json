@@ -857,7 +857,7 @@
     "@zowe/cics-for-zowe-explorer-api": "6.13.2",
     "@zowe/cics-for-zowe-sdk": "6.13.2",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.3.0",
+    "@zowe/zowe-explorer-api": "^3.3.1",
     "@vscode/codicons": "^0.0.40"
   },
   "overrides": {
