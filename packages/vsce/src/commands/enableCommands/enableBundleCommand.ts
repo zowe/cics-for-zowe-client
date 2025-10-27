@@ -19,8 +19,6 @@ import { CICSTree } from "../../trees/CICSTree";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { pollForCompleteAction, runPutResource } from "../../utils/resourceUtils";
 import { evaluateTreeNodes } from "../../utils/treeUtils";
-import { CICSExtensionError } from "../../errors/CICSExtensionError";
-import { CICSErrorHandler } from "../../errors/CICSErrorHandler";
 
 /**
  * Performs enable on selected CICSBundle nodes.
@@ -67,9 +65,12 @@ export function getEnableBundleCommand(tree: CICSTree, treeview: TreeView<any>) 
               () => evaluateTreeNodes(node, tree)
             );
           } catch (error) {
-            if (error instanceof CICSExtensionError) {
-                new CICSErrorHandler().handleCMCIRestError(error)
-            }
+            window.showErrorMessage(
+              `Something went wrong when performing an ENABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
+                /(\\n\t|\\n|\\t)/gm,
+                " "
+              )}`
+            );
           }
         }
       }

@@ -20,4 +20,3 @@ export * from "./get";
 export * from "./install";
 export * from "./remove-from-list";
 export * from "./set";
-export * from "./put";
