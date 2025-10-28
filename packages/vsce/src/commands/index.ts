@@ -9,8 +9,6 @@
  *
  */
 
-import * as disableCommands from "./disableCommands";
-import * as enableCommands from "./enableCommands";
 import { getToggleResourceSettingCommand } from "./toggleResourceSettingCommand";
 
 import { ExtensionContext, TreeView } from "vscode";
@@ -37,6 +35,8 @@ import { viewMoreCommand } from "./viewMoreCommand";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
+import { getDisableResourceCommands } from "./disableResourceCommand";
+import { getEnableResourceCommands } from "./enableResourceCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -48,20 +48,8 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getNewCopyCommand(treeDataProv, treeview),
     getPhaseInCommand(treeDataProv, treeview),
 
-    enableCommands.getEnableBundleCommand(treeDataProv, treeview),
-    enableCommands.getEnableProgramCommand(treeDataProv, treeview),
-    enableCommands.getEnableTransactionCommand(treeDataProv, treeview),
-    enableCommands.getEnableLocalFileCommand(treeDataProv, treeview),
-    enableCommands.getEnableLibraryCommand(treeDataProv, treeview),
-    enableCommands.getEnableJVMServerCommand(treeDataProv, treeview),
-    enableCommands.getEnableJVMEndpointCommand(treeDataProv, treeview),
-    disableCommands.getDisableBundleCommand(treeDataProv, treeview),
-    disableCommands.getDisableProgramCommand(treeDataProv, treeview),
-    disableCommands.getDisableTransactionCommand(treeDataProv, treeview),
-    disableCommands.getDisableLocalFileCommand(treeDataProv, treeview),
-    disableCommands.getDisableLibraryCommand(treeDataProv, treeview),
-    disableCommands.getDisableJVMServerCommand(treeDataProv, treeview),
-    disableCommands.getDisableJVMEndpointCommand(treeDataProv, treeview),
+    ...getDisableResourceCommands(treeDataProv, treeview),
+    ...getEnableResourceCommands(treeDataProv, treeview),
 
     getCloseLocalFileCommand(treeDataProv, treeview),
     getOpenLocalFileCommand(treeDataProv, treeview),
