@@ -413,4 +413,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
   public _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
+
+  refresh(node?: TreeItem) {
+    this._onDidChangeTreeData.fire(node);
+  }
+
 }

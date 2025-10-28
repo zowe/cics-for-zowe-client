@@ -14,12 +14,11 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { TaskMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
+import { ICommandParams } from "../doc/commands/ICommandParams";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "../doc/commands/ICommandParams";
-import { ITask } from "@zowe/cics-for-zowe-explorer-api";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 /**
  * Purge a CICS Task and reload the CICS Task tree contents and the combined Task tree contents
@@ -48,7 +47,9 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
+
+        const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
@@ -56,9 +57,11 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
+          nodesToRefresh.add(node.getParent());
+
           const resName = node.getContainedResourceName();
           try {
-            await purgeTask(
+            const response = await purgeTask(
               node.getProfile(),
               {
                 name: resName,
@@ -67,14 +70,16 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               },
               purgeType
             );
+
+            evaluateTreeNodes(clickedNode, response, TaskMeta);
+
           } catch (error) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform ${purgeType?.toUpperCase()} on CICSTask "${
-                  resName
+                `Perform ${purgeType?.toUpperCase()} on CICSTask "${resName
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -87,16 +92,11 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             }
           }
         }
-        // Work out how many tasks to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<ITask>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
+
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+
       }
     );
   });

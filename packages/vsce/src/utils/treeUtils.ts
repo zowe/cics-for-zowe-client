@@ -10,16 +10,27 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { CICSResourceContainerNode, CICSTree } from "../trees";
+import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { Resource } from "../resources";
+import { CICSResourceContainerNode } from "../trees";
+import { toArray } from "./commandUtils";
+import { IResourceMeta } from "../doc";
 
-export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, tree: CICSTree) {
+export function evaluateTreeNodes<T extends IResource>(
+  node: CICSResourceContainerNode<T>,
+  response: ICMCIApiResponse,
+  meta: IResourceMeta<T>
+) {
   const parentNode = node.getParent() as CICSResourceContainerNode<T>;
-  if (parentNode) {
-    let numToFetch = parentNode.children.length;
-    if (!parentNode.getChildResource().resources.getFetchedAll()) {
-      numToFetch -= 1;
+
+  if (response?.response?.records[meta.resourceName.toLowerCase()]) {
+    const singleResource = toArray(response.response.records[meta.resourceName.toLowerCase()])[0];
+    const updatedResource = new Resource<T>(singleResource);
+    node.setContainedResource(updatedResource);
+    node.buildProperties();
+
+    if (parentNode) {
+      parentNode.refreshingDescription = true;
     }
-    parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
   }
-  tree._onDidChangeTreeData.fire(parentNode);
 }
