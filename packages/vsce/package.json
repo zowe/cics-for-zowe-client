@@ -819,7 +819,7 @@
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
     "test:e2e:setup": "npm run package && cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
-    "test:e2e:teardown": "cd __tests__/__e2e__ && docker compose down",
+    "test:e2e:teardown": "cd __tests__/__e2e__ && docker exec code-server bash /config/workspace/teardown.sh && docker compose down",
     "test:e2e:run": "npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1",
     "test:e2e": "npm run test:e2e:setup && npm run test:e2e:run && npm run test:e2e:teardown",
     "test:e2e:dev:interactive": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --ui && npm run test:e2e:teardown",
