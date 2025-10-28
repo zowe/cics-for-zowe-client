@@ -13,3 +13,4 @@ prebuilds/
 /test-results/
 /playwright-report/
 __tests__/screenshots/
+__tests__/__e2e__/.vscode/

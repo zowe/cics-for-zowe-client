@@ -5,6 +5,8 @@
   "security.workspace.trust.untrustedFiles": "open",
   "zowe.settings.displayReleaseNotes": false,
   "zowe.security.secureCredentialsEnabled": false,
+  "zowe.security.checkForCustomCredentialManagers": false,
+  "zowe.logger": "TRACE",
   "zowe.cics.persistent": {
     "persistence": true,
     "programSearchHistory": [],

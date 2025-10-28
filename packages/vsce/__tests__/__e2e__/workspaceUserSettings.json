@@ -1,0 +1,5 @@
+{
+  "chat.agent.enabled": false,
+  "zowe.settings.displayReleaseNotes": false,
+  "zowe.security.secureCredentialsEnabled": false
+}
