@@ -1,2 +1,2 @@
 
-rm -rf /config/workspace/.vscode
+rm -r /config/workspace/.vscode
