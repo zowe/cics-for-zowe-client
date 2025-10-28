@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
-## Recent Changes
+## `6.14.0`
 
 - Add CICS resource interfaces containing specific attributes. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
 

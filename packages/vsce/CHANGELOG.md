@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.14.0`
 
 - Bugfix: Show icons in CICS Resource Inspector on Windows [#460](https://github.com/zowe/cics-for-zowe-client/issues/460)
 - Enhancement: Added Enable/Disable actions to JVM Endpoints. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
