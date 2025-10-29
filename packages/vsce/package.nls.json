@@ -1,11 +1,3 @@
 {
-  "No CICS JVM Server selected": "No CICS JVM Server selected",
-  "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
-  "Phase Out": "Phase Out",
-  "Purge": "Purge",
-  "Force Purge": "Force Purge",
-  "Kill": "Kill",
-  "Disable JVM Server": "Disable JVM Server",
-  "Disabling {0} of {1}": "Disabling {0} of {1}",
-  "Something went wrong when performing a disable - {0}": "Something went wrong when performing a disable - {0}"
+  "%cics.disableJVM.title%": "Disable CICS JVM Endpoint"
 }
