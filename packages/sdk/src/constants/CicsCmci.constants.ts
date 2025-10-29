@@ -185,6 +185,11 @@ export const CicsCmciConstants = {
   CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
 
   /**
+   * The CICS CMCI remote file
+   */
+  CICS_CMCI_REMOTE_FILE: "CICSRemoteFile",
+
+  /**
    * CICSTask parameter
    */
   CICS_CMCI_TASK: "CICSTask",

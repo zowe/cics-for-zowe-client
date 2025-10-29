@@ -2,6 +2,11 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Renamed `Local Files` tree to `Files`. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
+- Enhancement: Added CICS Remote Files to files tree. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
+
 ## `3.14.0`
 
 - Bugfix: Show icons in CICS Resource Inspector on Windows [#460](https://github.com/zowe/cics-for-zowe-client/issues/460)
