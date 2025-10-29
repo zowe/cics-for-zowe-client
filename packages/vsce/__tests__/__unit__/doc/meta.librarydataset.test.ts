@@ -64,9 +64,11 @@ describe("Library Dataset Meta", () => {
     expect(name).toEqual("MY.DSNAME");
   });
   it("should have custom child type", async () => {
-    const childTypeDefaultCriteria = await LibraryDatasetMeta.childType?.getDefaultCriteria(parentLibraryMock.attributes);
+    // @ts-ignore - we know it's not undefined in this test
+    const childTypeDefaultCriteria = LibraryDatasetMeta.childType[0].getDefaultCriteria(parentLibraryMock.attributes);
     expect(childTypeDefaultCriteria).toEqual(`(LIBRARYDSN='MY.DSNAME')`);
-    const childTypeDefaultContext = LibraryDatasetMeta.childType?.getContext(new Resource<IProgram>({
+    // @ts-ignore - we know it's not undefined in this test
+    const childTypeDefaultContext = LibraryDatasetMeta.childType[0].getContext(new Resource<IProgram>({
       program: "myprog",
       eyu_cicsname: "MYREGION",
       library: "MYLIB",
@@ -103,7 +105,8 @@ describe("Library Dataset Meta", () => {
   });
 
   it("should do children criteria build", () => {
-    const criteriaString = LibraryDatasetMeta.childType?.buildCriteria(["c", "d"], libraryDSMock.attributes);
+    // @ts-ignore - we know it's not undefined in this test
+    const criteriaString = LibraryDatasetMeta.childType[0].buildCriteria(["c", "d"], libraryDSMock.attributes);
     expect(criteriaString).toEqual("(LIBRARYDSN='MY.DSNAME') AND (PROGRAM=c OR PROGRAM=d)");
   });
 });
