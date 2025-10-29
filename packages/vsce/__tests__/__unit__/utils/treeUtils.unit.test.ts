@@ -15,7 +15,6 @@ import { ProgramMeta } from "../../../src/doc";
 import { IProfileLoaded } from "@zowe/imperative";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { ResourceContainer } from "../../../src/resources";
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
@@ -43,14 +42,10 @@ const parentNode = new CICSResourceContainerNode(
   {
     parentNode: regionTree,
     profile,
-    regionName: "REG",
-    cicsplexName: ""
+    regionName: "REG"
   },
   undefined,
-  {
-    meta: ProgramMeta,
-    resources: new ResourceContainer(ProgramMeta),
-  }
+  [ProgramMeta]
 );
 const prog: IProgram = {
   eyu_cicsname: "REG",
@@ -72,17 +67,13 @@ describe("Tree Utils tests", () => {
       {
         parentNode,
         profile,
-        regionName: "REG",
-        cicsplexName: ""
+        regionName: "REG"
       },
       {
         meta: ProgramMeta,
         resource: { attributes: prog }
       },
-      {
-        meta: ProgramMeta,
-        resources: new ResourceContainer(ProgramMeta),
-      }
+      [ProgramMeta]
     );
 
     jest.resetAllMocks();
@@ -96,7 +87,7 @@ describe("Tree Utils tests", () => {
         resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" }
       }
     };
-    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "setContainedResource");
+    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "updateStoredItem");
     evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
 
     expect(updateItemSpy).not.toHaveBeenCalled();
@@ -113,11 +104,11 @@ describe("Tree Utils tests", () => {
         resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" }
       }
     };
-    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "setContainedResource");
+    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "updateStoredItem");
     evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
 
     expect(updateItemSpy).toHaveBeenCalledTimes(1);
-    expect(updateItemSpy).toHaveBeenCalledWith({ attributes: updatedProgram });
+    expect(updateItemSpy).toHaveBeenCalledWith({ meta: ProgramMeta, resource: { attributes: updatedProgram } });
   });
 
 });
