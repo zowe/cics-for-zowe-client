@@ -37,6 +37,7 @@ import { viewMoreCommand } from "./viewMoreCommand";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
+import { showBundleDirectory } from "./showBundleDirectoryCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -94,5 +95,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getCopyNameCommand(),
     getCopyUserAgentHeaderCommand(),
+    showBundleDirectory(treeDataProv, treeview),
   ];
 };
