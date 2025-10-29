@@ -25,7 +25,9 @@ import {
   TCPIPMeta,
   TransactionMeta,
   URIMapMeta,
-  WebServiceMeta
+  WebServiceMeta,
+  SharedTSQueueMeta,
+  TSQueueMeta
 } from "../doc";
 import { getIconByStatus } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
@@ -99,6 +101,9 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       }
       if (config.get<boolean>("Bundle", true)) {
         this.children.push(this.buildResourceContainerNode([BundleMeta]));
+      }
+      if (config.get<boolean>("TSQueue", true)) {
+        this.children.push(this.buildResourceContainerNode([TSQueueMeta, SharedTSQueueMeta], "TS Queues"));
       }
     }
   }

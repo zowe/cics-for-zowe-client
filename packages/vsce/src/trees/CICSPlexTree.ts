@@ -26,6 +26,8 @@ import {
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
+  TSQueueMeta,
+  SharedTSQueueMeta,
 } from "../doc";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
@@ -189,10 +191,13 @@ export class CICSPlexTree extends TreeItem {
     if (config.get<boolean>("Bundle", true)) {
       this.children.push(this.buildCombinedTree("All Bundles", [BundleMeta]));
     }
+    if (config.get<boolean>("TSQueue", true)) {
+      this.children.push(this.buildCombinedTree("All TS Queues", [TSQueueMeta, SharedTSQueueMeta]));
+    }
   }
 
-  private buildCombinedTree<T extends IResource>(label: string, metas: IResourceMeta<T>[]) {
-    return new CICSResourceContainerNode<T>(
+  private buildCombinedTree(label: string, metas: IResourceMeta<IResource>[]) {
+    return new CICSResourceContainerNode(
       label,
       {
         profile: this.getProfile(),

@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
+
 ## `3.14.0`
 
 - Bugfix: Show icons in CICS Resource Inspector on Windows [#460](https://github.com/zowe/cics-for-zowe-client/issues/460)
