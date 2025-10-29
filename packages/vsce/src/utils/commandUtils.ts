@@ -14,7 +14,7 @@ import { IResourceMeta } from "../doc";
 import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui, ZoweVsCodeExtension, ZosEncoding } from "@zowe/zowe-explorer-api";
+import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
 import { CICSLogger } from "./CICSLogger";
 import { ProfileManagement } from "./profileManagement";

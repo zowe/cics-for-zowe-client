@@ -31,7 +31,6 @@ function createUSSTreeNode(path: string, profileName: string, profile: IProfileL
         collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
         contextValue: "directory",
         getLabel: () => directoryName,
-        getChildren: async () => [] as IZoweUSSTreeNode[],
         getProfileName: () => profileName,
         getProfile: () => profile,
 
@@ -68,7 +67,7 @@ export function showBundleDirectory(treeview: TreeView<any>) {
             }
         }
         try { // Get the profile object from the name
-            let chosenProfile = zosProfiles.find(profile => profile.name === chosenProfileName);
+            const chosenProfile = zosProfiles.find(profile => profile.name === chosenProfileName);
             if (!chosenProfile) {
                 window.showErrorMessage(`Could not find profile ${chosenProfileName}`);
                 return;
