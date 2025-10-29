@@ -21,16 +21,11 @@ export class CICSLogger {
 
     CICSLogger.info(l10n.t("Initialized logger for Zowe Explorer for IBM CICS TS"));
 
-    const packageJSON = extensions.getExtension("zowe.cics-extension-for-zowe").packageJSON;
+    const extCandidate = extensions.getExtension("zowe.cics-extension-for-zowe") ?? extensions.all.find((e) => /cics|zowe/i.test(e.id));
+    const packageJSON = extCandidate?.packageJSON ?? { displayName: "Zowe Explorer for IBM CICS TS", version: "0.0.0" };
 
     CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
-    CICSLogger.info(
-      l10n.t({
-        message: "Zowe Explorer for IBM CICS TS log level: {0}",
-        args: [LogLevel[this.logOutputChannel.logLevel]],
-        comment: ["Log level"],
-      })
-    );
+    CICSLogger.info(l10n.t("Zowe Explorer for IBM CICS TS log level: {0}", LogLevel[this.logOutputChannel.logLevel]));
   }
 
   public static trace(message: string): void {
