@@ -10,7 +10,7 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciRestClient, getCache, getResource, ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciRestClient, getCache, getResource, ICMCIApiResponse, ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
@@ -207,27 +207,32 @@ export const buildRequestLoggerString = (
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  completionMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean,
-  cb: () => void,
-  retries: number = constants.POLL_FOR_ACTION_DEFAULT_RETRIES
+  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
+  criteriaMetCallback: (response: ICMCIApiResponse) => void,
+  parentResource?: IResource,
 ) {
-  for (let i = 0; i < retries; i++) {
-    const { response } = await runGetResource({
+  let response: ICMCIApiResponse;
+  for (let i = 0; i < constants.POLL_FOR_ACTION_DEFAULT_RETRIES; i++) {
+    response = await runGetResource({
       profileName: node.getProfile().name,
       resourceName: node.getContainedResource().meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
-        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)]),
+        queryParams: {
+          summonly: false,
+          nodiscard: false,
+        },
+        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)], parentResource),
       },
     });
-    if (completionMet(response)) {
+    if (isCompletionCriteriaMet(response.response)) {
       break;
     }
     await new Promise((f) => setTimeout(f, 1000));
   }
 
-  cb();
+  criteriaMetCallback(response);
 }
 
 export function buildUserAgentHeader(): { "User-Agent": string } {

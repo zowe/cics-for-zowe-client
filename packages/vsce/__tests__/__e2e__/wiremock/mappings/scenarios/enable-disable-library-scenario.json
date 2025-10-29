@@ -6,7 +6,7 @@
       "newScenarioState": "mylib1-disabled",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYLIB1')",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"DISABLE\"/> </request>"
@@ -24,58 +24,10 @@
     {
       "scenarioName": "Enable Disable Library",
       "requiredScenarioState": "mylib1-disabled",
-      "newScenarioState": "fetched-disabled-libraries-summary",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/disable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "fetched-disabled-libraries-summary",
-      "newScenarioState": "fetched-disabled-libraries-records",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0DISABLELIBTOKEN/1/250?NODISCARD"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/disable/records.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "fetched-disabled-libraries-records",
-      "newScenarioState": "fetched-disabled-libraries-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0DISABLELIBTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/disable/remove-cache.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "fetched-disabled-libraries-removed-cache",
       "newScenarioState": "myprog1-enabled",
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYLIB1')",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
@@ -85,54 +37,6 @@
       "response": {
         "status": 200,
         "bodyFileName": "CICSLibrary/enable/response.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "myprog1-enabled",
-      "newScenarioState": "fetched-enabled-libraries-summary",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/enable/summary.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "fetched-enabled-libraries-summary",
-      "newScenarioState": "fetched-enabled-libraries-records",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0ENABLEDLIBTOKEN/1/250?NODISCARD"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/enable/records.xml",
-        "headers": {
-          "Content-Type": "text/xml"
-        }
-      }
-    },
-    {
-      "scenarioName": "Enable Disable Library",
-      "requiredScenarioState": "fetched-enabled-libraries-records",
-      "newScenarioState": "fetched-enabled-libraries-removed-cache",
-      "request": {
-        "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/0ENABLEDLIBTOKEN?SUMMONLY"
-      },
-      "response": {
-        "status": 200,
-        "bodyFileName": "CICSLibrary/enable/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
