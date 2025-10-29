@@ -71,7 +71,7 @@ export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Pro
  * @returns A matching z/OS profile or undefined if no match is found
  */
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded | undefined> {
-  // Get the base profile for the CICS profile
+
   const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
   
   // Prioritize zosmf profiles and filter to only include profiles with credentials
