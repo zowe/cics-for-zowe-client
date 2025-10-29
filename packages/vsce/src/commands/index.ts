@@ -80,6 +80,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getCopyNameCommand(),
     getCopyUserAgentHeaderCommand(),
-    showBundleDirectory(treeDataProv, treeview),
+    showBundleDirectory(treeview),
   ];
 };
