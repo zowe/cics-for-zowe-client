@@ -31,7 +31,6 @@ import * as showAttributesCommands from "./showAttributesCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
-import { viewMoreCommand } from "./viewMoreCommand";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
@@ -69,8 +68,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getFilterPlexResources(treeDataProv, treeview),
     getClearPlexFilterCommand(treeDataProv),
-
-    viewMoreCommand(treeDataProv, treeview),
 
     getInquireTransactionCommand(treeDataProv, treeview),
     getInquireProgramCommand(treeDataProv, treeview),

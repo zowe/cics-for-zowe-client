@@ -16,7 +16,7 @@ import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import { getMetas, IContainedResource, IResourceMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { Resource, ResourceContainer, SessionHandler } from "../resources";
+import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -93,10 +93,7 @@ export async function inspectResourceCallBack(
 ) {
 
   const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
-  await showInspectResource(context, {
-    meta: resource.meta,
-    resource: resources[0]
-  }, resourceContext, node);
+  await showInspectResource(context, resources, resourceContext, node);
 }
 
 async function loadResourcesWithProgress(
@@ -119,10 +116,7 @@ async function loadResourcesWithProgress(
         return;
       }
 
-      return {
-        meta: resourceType,
-        resource: resources[0],
-      };
+      return resources;
     }
   );
 }
@@ -156,12 +150,12 @@ async function loadResources(
   resourceName: string,
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
-): Promise<Resource<IResource>[]> {
-  const resourceContainer = new ResourceContainer(resourceType, parentResource);
+): Promise<IContainedResource<IResource>> {
+  const resourceContainer = new ResourceContainer([resourceType], resourceContext, parentResource);
   resourceContainer.setCriteria([resourceName]);
-  const resources = await resourceContainer.loadResources(SessionHandler.getInstance().getProfile(resourceContext.profileName), resourceContext.regionName, resourceContext.cicsplexName);
+  const resources = await resourceContainer.fetchNextPage();
 
-  if (resources[0].length === 0) {
+  if (resources.length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
 

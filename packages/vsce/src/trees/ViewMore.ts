@@ -23,6 +23,7 @@ export class ViewMore extends TreeItem {
     this.command = {
       title: "View more",
       command: "cics-extension-for-zowe.viewMore",
+      arguments: [parent],
     };
   }
 }

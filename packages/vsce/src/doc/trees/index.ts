@@ -10,5 +10,4 @@
  */
 
 export * from "./ICICSTreeNode";
-export * from "./IChildResource";
 export * from "./IContainedResource";

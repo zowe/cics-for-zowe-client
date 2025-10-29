@@ -19,9 +19,9 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {
   return commands.registerCommand("cics-extension-for-zowe.filterResources", async (node: CICSResourceContainerNode<IResource>) => {
     const pattern = await getPatternFromFilter(
-      node.getChildResource().meta.humanReadableNamePlural,
-      node.getChildResource().meta.getCriteriaHistory(),
-      node.getChildResource().meta.filterCaseSensitive
+      node.resourceTypes[0].humanReadableNamePlural,
+      node.resourceTypes[0].getCriteriaHistory(),
+      node.resourceTypes[0].filterCaseSensitive
     );
 
     if (!pattern) {
@@ -29,18 +29,20 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
     }
     //pattern is coming as "A,B,C,D..." so  need to split it into an array"
     const patternArray = pattern.split(",").map((s) => s.trim());
-    await node.getChildResource().meta.appendCriteriaHistory(pattern);
-    node.setFilter(patternArray);
-    node.description = node.getChildResource().resources.getFilter();
+    for (const c of node.resourceTypes) {
+      await c.appendCriteriaHistory(pattern);
+    }
+    node.reset();
+    node.setCriteria(patternArray);
     tree._onDidChangeTreeData.fire(node);
     await treeview.reveal(node, { expand: true });
   });
 }
 
 export function getClearFilterCommand(tree: CICSTree) {
-  return commands.registerCommand("cics-extension-for-zowe.clearFilter", async (node: CICSResourceContainerNode<IResource>) => {
-    await node.clearFilter();
-    node.description = "";
+  return commands.registerCommand("cics-extension-for-zowe.clearFilter", (node: CICSResourceContainerNode<IResource>) => {
+    node.clearCriteria();
+    node.reset();
     tree._onDidChangeTreeData.fire(node);
   });
 }

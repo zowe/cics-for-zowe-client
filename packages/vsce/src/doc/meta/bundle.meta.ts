@@ -73,5 +73,5 @@ export const BundleMeta: IResourceMeta<IBundle> = {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_BUNDLE);
   },
 
-  childType: BundlePartMeta,
+  childType: [BundlePartMeta],
 };

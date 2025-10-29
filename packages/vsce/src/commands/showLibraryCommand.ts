@@ -9,14 +9,13 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, window } from "vscode";
+import { ILibrary, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, TreeView, window } from "vscode";
 import { LibraryMeta, ProgramMeta } from "../doc";
 import { CICSRegionsContainer, CICSRegionTree, CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-import { ILibrary, ILibraryDataset, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 
 const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map<string, Map<string, Set<string>>> => {
@@ -86,42 +85,20 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       await treeview.reveal(regionTree, { expand: true });
 
       const libraryTree: CICSResourceContainerNode<ILibrary> = regionTree.children.filter(
-        (resourceTree: CICSResourceContainerNode<IResource>) => resourceTree.getChildResource().meta === LibraryMeta
+        (resourceTree: CICSResourceContainerNode<IResource>) => resourceTree.resourceTypes.includes(LibraryMeta)
       )[0] as CICSResourceContainerNode<ILibrary>;
 
-      //clearing the previous filter and description
-      libraryTree.clearFilter();
-      libraryTree.description = "";
-      libraryTree.children = [];
-      libraryTree.refreshingDescription = false;
-      libraryTree.getChildResource().resources.resetCriteria();
-      libraryTree.getChildResource().resources.resources = [];
-
+      libraryTree.clearCriteria();
+      libraryTree.getFetcher().reset();
+      libraryTree.setCriteria([...libraries.keys()]);
       await treeview.reveal(libraryTree, { expand: true });
 
-      libraryTree.setFilter([...libraries.keys()]);
-      libraryTree.description = [...libraries.keys()].join(" OR ");
-      libraryTree.refreshingDescription = false;
-      const libraryNodes = await libraryTree.getChildren();
-
-      const libArray: CICSResourceContainerNode<IResource>[] = [];
-      //setting the filter and description for each library node
-      for (const child of libraryNodes) {
-
-        const libNode = child as CICSResourceContainerNode<ILibraryDataset>;
-        if (
-          libNode.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE &&
-          libraries.has(libNode.getContainedResourceName()) &&
-          libraries.get(libNode.getContainedResourceName())!.size > 0
-        ) {
-          libNode.setFilter([...libraries.get(libNode.getContainedResourceName())]);
-          libNode.description = [...libraries.get(libNode.getContainedResourceName())].join(" OR ");
-          libArray.push(libNode);
-          libNode.refreshingDescription = false;
-        }
-      }
-      for (const lib of libArray) {
-        await treeview.reveal(lib, { expand: true });
+      for (const child of libraryTree.children) {
+        const crit = [...libraries.get((child as CICSResourceContainerNode<ILibrary>).getContainedResourceName())];
+        (child as CICSResourceContainerNode<ILibrary>).clearCriteria();
+        (child as CICSResourceContainerNode<ILibrary>).getFetcher().reset();
+        (child as CICSResourceContainerNode<ILibrary>).setCriteria(crit);
+        await treeview.reveal(child, { expand: true });
       }
     }
   });

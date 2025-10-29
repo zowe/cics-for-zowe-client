@@ -86,7 +86,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
             location: ProgressLocation.Notification,
             cancellable: true,
           },
-          (_, token): Thenable<unknown> => {
+          (_, token): Promise<void> => {
             token.onCancellationRequested(() => { });
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
@@ -105,8 +105,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
                   }
                   if (treeToFilter) {
                     // @ts-ignore
-                    treeToFilter.setFilter([pattern]);
-                    treeToFilter.description = pattern;
+                    treeToFilter.setCriteria([pattern]);
                   }
                 }
               }

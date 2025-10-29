@@ -80,6 +80,6 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE);
   },
 
-  childType: customProgramMeta,
+  childType: [customProgramMeta],
   maximumPrimaryKeyLength: 44,
 };

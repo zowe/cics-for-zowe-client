@@ -104,7 +104,7 @@ export async function getResourceTree<T extends IResource>(
     await treeview.reveal(regionTree, { expand: true });
 
     const resourceTree = regionTree.children.find(
-      (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === targetResourceName
+      (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.map((type) => type.resourceName).includes(targetResourceName)
     ) as CICSResourceContainerNode<T>;
 
     return resourceTree;

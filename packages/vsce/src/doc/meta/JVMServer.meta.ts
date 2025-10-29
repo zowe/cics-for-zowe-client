@@ -72,5 +72,5 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   getCriteriaHistory() {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_JVMSERVER_RESOURCE);
   },
-  childType: JVMEndpointMeta,
+  childType: [JVMEndpointMeta],
 };
