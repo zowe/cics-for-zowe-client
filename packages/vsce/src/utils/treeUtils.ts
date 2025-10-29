@@ -9,28 +9,37 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../resources";
-import { CICSResourceContainerNode } from "../trees";
+import { CICSResourceContainerNode, CICSTree } from "../trees";
 import { toArray } from "./commandUtils";
-import { IResourceMeta } from "../doc";
+import { IContainedResource, IResourceMeta } from "../doc";
 
 export function evaluateTreeNodes<T extends IResource>(
   node: CICSResourceContainerNode<T>,
   response: ICMCIApiResponse,
   meta: IResourceMeta<T>
 ) {
-  const parentNode = node.getParent() as CICSResourceContainerNode<T>;
-
   if (response?.response?.records[meta.resourceName.toLowerCase()]) {
     const singleResource = toArray(response.response.records[meta.resourceName.toLowerCase()])[0];
     const updatedResource = new Resource<T>(singleResource);
-    node.setContainedResource(updatedResource);
-    node.buildProperties();
 
-    if (parentNode) {
-      parentNode.refreshingDescription = true;
+    if (node.getParent()) {
+      (node.getParent() as CICSResourceContainerNode<T>).updateStoredItem({ meta, resource: updatedResource });
     }
   }
 }
+
+export const findResourceNodeInTree = (cicsTree: CICSTree, resourceContext: IResourceContext, resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined => {
+  const sessionNodeForResource = cicsTree.getSessionNodeForProfile(resourceContext.profile);
+  if (sessionNodeForResource?.children.length > 0) {
+    const regionNode = sessionNodeForResource.getRegionNodeFromName(resourceContext.regionName, resourceContext.cicsplexName);
+    if (regionNode?.children.length > 0) {
+      const parentNode = regionNode.getContainerNodeForResourceType(resource.meta);
+      if (parentNode?.children.length > 0) {
+        return parentNode.getChildNodeMatchingResourceName(resource);
+      }
+    }
+  }
+};

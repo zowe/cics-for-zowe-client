@@ -9,13 +9,14 @@
  *
  */
 
-import { commands, ExtensionContext, window, ProgressLocation } from "vscode";
-import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, ExtensionContext, ProgressLocation, window } from "vscode";
+import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
+import { findResourceNodeInTree } from "../utils/treeUtils";
+import { TransformWebviewMessage } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
-import { TransformWebviewMessage } from "../webviews/common/vscode";
 
 export async function executeAction(
   command: string,
@@ -26,9 +27,9 @@ export async function executeAction(
   const resource = instance.getResource();
   const resourceContext = instance.getResourceContext();
 
-  const node =
-    instance.getNode() ??
-    new CICSResourceContainerNode<IResource>(
+  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, resource);
+  if (!node) {
+    node = new CICSResourceContainerNode<IResource>(
       "Resource Inspector Node",
       {
         parentNode: null as any,
@@ -38,6 +39,7 @@ export async function executeAction(
       },
       resource
     );
+  }
 
   if (command === "action") {
     const action = CICSResourceExtender.getAction(message.actionId);
