@@ -9,12 +9,14 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   IResourceMeta,
+  JVMServerMeta,
   LibraryMeta,
   LocalFileMeta,
   PipelineMeta,
@@ -24,16 +26,13 @@ import {
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
-  JVMServerMeta,
 } from "../doc";
-import { ResourceContainer } from "../resources";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSPlexTree extends TreeItem {
   children: (CICSRegionsContainer | CICSRegionTree | CICSResourceContainerNode<IResource>)[] = [];
@@ -158,41 +157,41 @@ export class CICSPlexTree extends TreeItem {
     const config = workspace.getConfiguration("zowe.cics.resources");
 
     if (config.get<boolean>("Program", true)) {
-      this.children.push(this.buildCombinedTree("All Programs", ProgramMeta));
+      this.children.push(this.buildCombinedTree("All Programs", [ProgramMeta]));
     }
     if (config.get<boolean>("Transaction", true)) {
-      this.children.push(this.buildCombinedTree("All Local Transactions", TransactionMeta));
+      this.children.push(this.buildCombinedTree("All Local Transactions", [TransactionMeta]));
     }
     if (config.get<boolean>("LocalFile", true)) {
-      this.children.push(this.buildCombinedTree("All Local Files", LocalFileMeta));
+      this.children.push(this.buildCombinedTree("All Local Files", [LocalFileMeta]));
     }
     if (config.get<boolean>("Task", true)) {
-      this.children.push(this.buildCombinedTree("All Tasks", TaskMeta));
+      this.children.push(this.buildCombinedTree("All Tasks", [TaskMeta]));
     }
     if (config.get<boolean>("Library", true)) {
-      this.children.push(this.buildCombinedTree("All Libraries", LibraryMeta));
+      this.children.push(this.buildCombinedTree("All Libraries", [LibraryMeta]));
     }
     if (config.get<boolean>("Pipeline", true)) {
-      this.children.push(this.buildCombinedTree("All Pipelines", PipelineMeta));
+      this.children.push(this.buildCombinedTree("All Pipelines", [PipelineMeta]));
     }
     if (config.get<boolean>("TCP/IPService", true)) {
-      this.children.push(this.buildCombinedTree("All TCP/IP Services", TCPIPMeta));
+      this.children.push(this.buildCombinedTree("All TCP/IP Services", [TCPIPMeta]));
     }
     if (config.get<boolean>("URIMap", true)) {
-      this.children.push(this.buildCombinedTree("All URI Maps", URIMapMeta));
+      this.children.push(this.buildCombinedTree("All URI Maps", [URIMapMeta]));
     }
     if (config.get<boolean>("WebService", true)) {
-      this.children.push(this.buildCombinedTree("All Web Services", WebServiceMeta));
+      this.children.push(this.buildCombinedTree("All Web Services", [WebServiceMeta]));
     }
     if (config.get<boolean>("JVMServer", true)) {
-      this.children.push(this.buildCombinedTree("All JVM Servers", JVMServerMeta));
+      this.children.push(this.buildCombinedTree("All JVM Servers", [JVMServerMeta]));
     }
     if (config.get<boolean>("Bundle", true)) {
-      this.children.push(this.buildCombinedTree("All Bundles", BundleMeta));
+      this.children.push(this.buildCombinedTree("All Bundles", [BundleMeta]));
     }
   }
 
-  private buildCombinedTree<T extends IResource>(label: string, meta: IResourceMeta<T>) {
+  private buildCombinedTree<T extends IResource>(label: string, metas: IResourceMeta<T>[]) {
     return new CICSResourceContainerNode<T>(
       label,
       {
@@ -201,10 +200,7 @@ export class CICSPlexTree extends TreeItem {
         cicsplexName: this.getPlexName(),
       },
       null,
-      {
-        meta,
-        resources: new ResourceContainer(meta),
-      }
+      metas,
     );
   }
 
@@ -224,5 +220,12 @@ export class CICSPlexTree extends TreeItem {
 
   getSessionNode() {
     return this.getParent();
+  }
+
+  public getRegionNodeFromName(regionName: string): CICSRegionTree | undefined {
+    const regionsContainer = this.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
+    if (regionsContainer?.children.length > 0) {
+      return regionsContainer.children.find((reg) => reg.getRegionName() === regionName);
+    }
   }
 }

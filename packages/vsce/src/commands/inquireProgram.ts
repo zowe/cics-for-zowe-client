@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
-import { TransactionMeta } from "../doc";
+import { ProgramMeta, TransactionMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
@@ -45,13 +45,13 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
         .getParent()
         .getParent()
         .children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.getChildResource().meta.resourceName === CicsCmciConstants.CICS_PROGRAM_RESOURCE
+          (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.includes(ProgramMeta)
         )[0] as CICSResourceContainerNode<IProgram>;
     }
 
     const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.program);
 
-    programTree.setFilter(pattern);
+    programTree.setCriteria(pattern);
     programTree.description = pattern.join(" OR ");
     tree._onDidChangeTreeData.fire(programTree);
     await treeview.reveal(programTree, { expand: true });
