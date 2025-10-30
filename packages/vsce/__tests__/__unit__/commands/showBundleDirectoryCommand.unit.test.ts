@@ -216,7 +216,5 @@ describe("Test suite for showBundleDirectory", () => {
     expect(sessionNode.getProfileName()).toBe("host1.myzosmf");
   });
 
-// Test removed as it was causing issues
-
 });
 
