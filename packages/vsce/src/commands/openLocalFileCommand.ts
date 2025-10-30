@@ -9,17 +9,11 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
-import constants from "../constants/CICS.defaults";
+import { commands, TreeView, window } from "vscode";
 import { LocalFileMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
-import { runPutResource } from "../utils/resourceUtils";
-import { ICommandParams } from "../doc/commands/ICommandParams";
-import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
+import { findSelectedNodes } from "../utils/commandUtils";
+import { actionTreeItem } from "./actionResourceCommand";
 
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {
@@ -29,78 +23,6 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
       return;
     }
 
-    await window.withProgress(
-      {
-        title: "Open",
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        for (const node of nodes) {
-          progress.report({
-            message: `Opening ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-            increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
-          });
-
-          const resName = node.getContainedResourceName();
-          try {
-            await openLocalFile(node.getProfile(), {
-              name: resName,
-              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-              cicsPlex: node.cicsplexName,
-            });
-          } catch (error) {
-            // @ts-ignore
-            if (error.mMessage) {
-              // @ts-ignore
-              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-              window.showErrorMessage(
-                `Perform OPEN on local file "${resName}" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
-              );
-            } else {
-              window.showErrorMessage(
-                `Something went wrong when performing an OPEN - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-                  /(\\n\t|\\n|\\t)/gm,
-                  " "
-                )}`
-              );
-            }
-          }
-        }
-        // Work out how many files to re-fetch
-        const parentNode = nodes[0].getParent() as CICSResourceContainerNode<ILocalFile>;
-        if (parentNode) {
-          let numToFetch = parentNode.children.length;
-          if (!parentNode.getChildResource().resources.getFetchedAll()) {
-            numToFetch -= 1;
-          }
-          parentNode.getChildResource().resources.setNumberToFetch(numToFetch);
-        }
-        tree._onDidChangeTreeData.fire(parentNode);
-      }
-    );
+    await actionTreeItem({ action: "OPEN", nodes, tree });
   });
-}
-
-export function openLocalFile(profile: IProfileLoaded, parms: ICommandParams): Promise<ICMCIApiResponse> {
-  return runPutResource(
-    {
-      profileName: profile.name,
-      resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-      cicsPlex: parms.cicsPlex,
-      regionName: parms.regionName,
-      params: { criteria: `FILE='${parms.name}'` },
-    },
-    {
-      request: {
-        action: {
-          $: {
-            name: "OPEN",
-          },
-        },
-      },
-    }
-  );
 }
