@@ -55,6 +55,7 @@ import * as showLogsCommand from "../../../src/commands/showLogsCommand";
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
+import { doesProfileSupportConnectionType, fetchBaseProfileWithoutError, findRelatedZosProfiles } from "../../../src/utils/commandUtils";
 
 jest.mock("@zowe/zowe-explorer-api", () => ({
   ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
@@ -86,11 +87,11 @@ describe("Test suite for fetchBaseProfileWithoutError", () => {
   });
 
   it("Profile with common base finds z/osmf", async () => {
-    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
+    const profile = await fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
     expect(profile?.name).toEqual("host1");
   });
   it("Profile with no common base", async () => {
-    const profile = await showLogsCommand.fetchBaseProfileWithoutError(createProfile("exception", "cics", "h1", "user"));
+    const profile = await fetchBaseProfileWithoutError(createProfile("exception", "cics", "h1", "user"));
     expect(profile).toBeUndefined();
   });
 });
@@ -107,24 +108,24 @@ describe("Test suite for findRelatedZosProfiles", () => {
   let zosProfiles: imperative.IProfileLoaded[] = [h1z, h1r, h2, h3, h4, h5z, h5r, h6NoUser];
 
   it("Profile with common base finds z/osmf", async () => {
-    const profile = await showLogsCommand.findRelatedZosProfiles(createProfile("host1.mycics", "cics", "h1", "user"), zosProfiles);
+    const profile = await findRelatedZosProfiles(createProfile("host1.mycics", "cics", "h1", "user"), zosProfiles);
     expect(profile).toEqual(h1z);
   });
   it("Profile with no common base finds same host z/osmf", async () => {
-    const profile = await showLogsCommand.findRelatedZosProfiles(createProfile("mycics", "cics", "h1", "user"), zosProfiles);
+    const profile = await findRelatedZosProfiles(createProfile("mycics", "cics", "h1", "user"), zosProfiles);
     expect(profile).toEqual(h1z);
   });
   it("Profile with only RSE and same host picks RSE", async () => {
-    const profile = await showLogsCommand.findRelatedZosProfiles(createProfile("host4.mycics", "cics", "h4", "user"), zosProfiles);
+    const profile = await findRelatedZosProfiles(createProfile("host4.mycics", "cics", "h4", "user"), zosProfiles);
     expect(profile).toEqual(h4);
   });
   it("Profile with common base and different host picks connection anyway (unlikely to be a real situation)", async () => {
-    const profile = await showLogsCommand.findRelatedZosProfiles(createProfile("host4.mycics", "cics", "h1", "user"), zosProfiles);
+    const profile = await findRelatedZosProfiles(createProfile("host4.mycics", "cics", "h1", "user"), zosProfiles);
     expect(profile).toEqual(h4);
   });
 
   it("Profile without user is not offered automatically", async () => {
-    const profile = await showLogsCommand.findRelatedZosProfiles(createProfile("host6", "cics", "h6", "user"), zosProfiles);
+    const profile = await findRelatedZosProfiles(createProfile("host6", "cics", "h6", "user"), zosProfiles);
     expect(profile).toBeNull;
   });
 });
@@ -181,14 +182,14 @@ describe("Check whether profile supports JES", () => {
   it("connection supports JES", async () => {
     jesApiMock.mockReturnValue(true);
     ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(supports);
-    expect(showLogsCommand.doesConnectionSupportJes(supports)).toEqual(true);
+    expect(doesProfileSupportConnectionType(supports, "jes")).toEqual(true);
     expect(jesApiMock).toHaveBeenCalledWith(supports);
   });
   it("connection doesn't support JES", async () => {
     jesApiMock.mockImplementation(() => {
       throw new Error("hello");
     });
-    expect(showLogsCommand.doesConnectionSupportJes(doesntSupport)).toEqual(false);
+    expect(doesProfileSupportConnectionType(doesntSupport, "jes")).toEqual(false);
     expect(jesApiMock).toHaveBeenCalledWith(doesntSupport);
   });
 });
