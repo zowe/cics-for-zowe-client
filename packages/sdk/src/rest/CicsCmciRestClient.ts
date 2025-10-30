@@ -103,14 +103,20 @@ export class CicsCmciRestClient extends AbstractRestClient {
     session: AbstractSession,
     resource: string,
     reqHeaders: any[] = [],
-    payload: any
+    payload: any,
+    requestOptions?: ICMCIRequestOptions
   ): Promise<ICMCIApiResponse> {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
     }
     const data = await RestClient.putExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
-    const apiResponse = CicsCmciRestClient.parseStringSync(data);
-    return CicsCmciRestClient.verifyResponseCodes(apiResponse);
+    const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
+    if (requestOptions?.failOnNoData === false && !apiResponse.response.records) {
+      const resourceName = resource.split(`${CicsCmciConstants.CICS_SYSTEM_MANAGEMENT}/`)[1].split("/")[0].toLowerCase();
+      apiResponse.response.records = {};
+      apiResponse.response.records[resourceName] = [];
+    }
+    return CicsCmciRestClient.verifyResponseCodes(apiResponse, requestOptions);
   }
 
   /**
@@ -207,7 +213,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     }
 
     if (requestOptions?.useCICSCmciRestError) {
-      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary);
+      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary, apiResponse.response.errors);
     }
 
     throw new ImperativeError({
