@@ -44,7 +44,7 @@ const ussApiMock = jest.fn();
 
 import * as vscode from "vscode";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
-import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { imperative } from "@zowe/zowe-explorer-api";
 
 const zoweExplorerAPI = { getUssApi: ussApiMock };
 
