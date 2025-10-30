@@ -27,17 +27,22 @@ import { ProfileManagement } from "./profileManagement";
  * @returns True if the profile supports the specified connection type, false otherwise
  */
 export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: string): boolean {
+  const type = connectionType.toLowerCase();
+  const explorerApi = ZoweVsCodeExtension.getZoweExplorerApi();
+
   try {
-    const type = connectionType.toLowerCase();
-    if (type === 'uss') {
-      ZoweVsCodeExtension.getZoweExplorerApi().getUssApi(profile);
-    } else if (type === 'jes') {
-      ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(profile);
-    } else {
-      return false;
+    switch (type) {
+      case "uss":
+        explorerApi.getUssApi(profile);
+        break;
+      case "jes":
+        explorerApi.getJesApi(profile);
+        break;
+      default:
+        return false;
     }
     return true;
-  } catch (ex) {
+  } catch {
     CICSLogger.debug(`Profile ${profile.name} does not support connection type ${connectionType}`);
     return false;
   }
@@ -50,13 +55,13 @@ export function doesProfileSupportConnectionType(profile: IProfileLoaded, connec
  * @returns The base profile or undefined if none exists
  */
 export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
-  let baseForProfile = undefined;
+  let baseProfile = undefined;
   try {
-    baseForProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
+    baseProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
   } catch (ex) {
     CICSLogger.debug(`No base profile found for ${profile.name}`);
   }
-  return baseForProfile;
+  return baseProfile;
 }
 
 /**
@@ -131,7 +136,7 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
     canPickMany: false,
   };
   const chosenProfileName = await Gui.showQuickPick(profileNames, quickPickOptions);
-  if (chosenProfileName === undefined) {
+  if (!chosenProfileName) {
     return chosenProfileName;
   }
   // if the profile they picked doesn't have credentials, prompt the user for them

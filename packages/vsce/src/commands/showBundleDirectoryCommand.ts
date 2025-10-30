@@ -37,6 +37,24 @@ function createUSSTreeNode(path: string, profileName: string, profile: IProfileL
     } as any as IZoweUSSTreeNode;
 }
 
+/**
+ * Creates a session node for USS explorer
+ *
+ * @param profileName - The name of the profile to use
+ * @param profile - The profile object
+ * @returns A session node object compatible with Zowe Explorer
+ */
+function createSessionNode(profileName: string, profile: IProfileLoaded) {
+    return {
+        label: profileName,
+        collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
+        contextValue: "uss_session",
+        profile: profile,
+        getProfile: () => profile,
+        getProfileName: () => profileName,
+    };
+}
+
 export function showBundleDirectory(treeview: TreeView<any>) {
     return commands.registerCommand("cics-extension-for-zowe.showBundleDirectory", async (selectedBundle) => {
         if (!selectedBundle) {
@@ -59,12 +77,10 @@ export function showBundleDirectory(treeview: TreeView<any>) {
             // we couldn't find a matching profile - prompt the user with all zos profiles
             chosenProfileName = await promptUserForProfile(zosProfiles);
             CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
-            if (chosenProfileName === null) {
-                window.showErrorMessage("Could not find any profiles that will access USS (for instance z/OSMF).");
-                return;
-            } else if (chosenProfileName === undefined) { 
-                return;
-            }
+        if (!chosenProfileName) {
+            window.showErrorMessage("Could not find any profiles that will access USS (for instance z/OSMF).");
+            return;
+        }
         }
         try { // Get the profile object from the name
             const chosenProfile = zosProfiles.find(profile => profile.name === chosenProfileName);
@@ -75,15 +91,8 @@ export function showBundleDirectory(treeview: TreeView<any>) {
             const ussNode = createUSSTreeNode(bundleDir, chosenProfileName, chosenProfile);
             //If the selected profile is hidden, it should be loaded first
             try {
-                const sessionNode = {
-                    label: chosenProfileName,
-                    collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
-                    contextValue: "uss_session",
-                    profile: chosenProfile,
-                    getProfile: () => chosenProfile,
-                    getProfileName: () => chosenProfileName,
-                };
-                await commands.executeCommand("zowe.uss.fullPath", sessionNode);    
+                const sessionNode = createSessionNode(chosenProfileName, chosenProfile);
+                await commands.executeCommand("zowe.uss.fullPath", sessionNode);
             } catch (error) {
                 CICSLogger.info(`Failed to create session node: ${error}.`);
             }
