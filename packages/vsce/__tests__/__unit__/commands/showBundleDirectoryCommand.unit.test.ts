@@ -9,40 +9,22 @@
  *
  */
 
-// Mock vscode before importing anything else
-jest.mock("vscode", () => {
-  return {
-    extensions: {
-      getExtension: jest.fn().mockReturnValue({
-        packageJSON: {
-          version: "1.2.3",
-        }
-      })
-    },
-    TreeItemCollapsibleState: {
-      Collapsed: 1
-    },
-    commands: {
-      registerCommand: jest.fn().mockImplementation((_, callback) => {
-        return { dispose: jest.fn(), callback };
-      }),
-      executeCommand: jest.fn()
-    },
-    window: {
-      showErrorMessage: jest.fn()
-    },
-    TreeView: jest.fn(),
-    l10n: {
-      t: jest.fn().mockImplementation((str) => str)
-    }
-  };
-});
+import type { Extension } from "vscode";
+import * as vscode from "vscode";
 
 // these need to be mocked before the imports
 const getZoweExplorerApiMock = jest.fn();
 const ussApiMock = jest.fn();
 
-import * as vscode from "vscode";
+// Mock vscode APIs
+jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
+  packageJSON: {
+    version: "1.2.3",
+  }
+} as Extension<any>);
+
+jest.spyOn(vscode.commands, "executeCommand").mockImplementation(jest.fn());
+jest.spyOn(vscode.window, "showErrorMessage").mockImplementation(jest.fn());
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { imperative } from "@zowe/zowe-explorer-api";
 
@@ -71,6 +53,12 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   },
 }));
 
+// Mock registerCommand to capture the callback
+const registerCommandMock = jest.fn().mockImplementation((_, callback) => {
+  return { dispose: jest.fn(), callback };
+});
+jest.spyOn(vscode.commands, "registerCommand").mockImplementation(registerCommandMock);
+
 // Mock commandUtils
 jest.mock("../../../src/utils/commandUtils", () => {
   const original = jest.requireActual("../../../src/utils/commandUtils");
@@ -90,7 +78,6 @@ jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => { });
 
 const executeCommandMock = vscode.commands.executeCommand as jest.Mock;
 const showErrorMessageMock = vscode.window.showErrorMessage as jest.Mock;
-const registerCommandMock = vscode.commands.registerCommand as jest.Mock;
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {
@@ -140,7 +127,9 @@ describe("Test suite for showBundleDirectory", () => {
     getZoweExplorerApiMock.mockReturnValue(zoweExplorerAPI);
     executeCommandMock.mockReset();
     showErrorMessageMock.mockReset();
+    registerCommandMock.mockClear();
     
+    // Register the command and capture the callback
     showBundleDirectory(treeview);
     commandCallback = registerCommandMock.mock.calls[0][1];
   });
