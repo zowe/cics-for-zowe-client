@@ -93,7 +93,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       cicsPlexName = choice.label;
       isPlex = true;
     } else {
-      Gui.showMessage(l10n.t("No Regions or CICSplexes found in the selected profile."));
+      console.log("No Regions or CICSplexes found in the selected profile.");
     }
   }
   if (isPlex) {
@@ -124,7 +124,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.showMessage(l10n.t(`No Active Regions found in ${cicsPlexName}`));
+      console.log("No Active Regions found in " + cicsPlexName);
     }
   }
 
@@ -136,13 +136,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   return { profile, cicsPlexName, session, regionName };
 }
 
-async function getPlexAndRegion(
-  profile: IProfileLoaded,
-  cicsPlexName: string,
-  regionName: string,
-  isPlex: boolean,
-  plexInfo: InfoLoaded[],
-) {
+async function getPlexAndRegion(profile: IProfileLoaded, cicsPlexName: string, regionName: string, isPlex: boolean, plexInfo: InfoLoaded[]) {
   if (profile.profile.cicsPlex) {
     if (profile.profile.regionName) {
       //Update if cicsPlex and regionName are present.
