@@ -9,6 +9,7 @@
  *
  */
 
+import * as vscode from "vscode";
 import { commands, ProgressLocation, window } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 
@@ -64,7 +65,7 @@ export function getRefreshCommand(tree: CICSTree) {
       //   }
       // });
       tree._onDidChangeTreeData.fire(undefined);
-      window.showInformationMessage("Refreshed");
+      window.showInformationMessage(vscode.l10n.t("Refreshed"));
     }
   });
 }

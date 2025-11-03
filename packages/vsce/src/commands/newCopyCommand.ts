@@ -10,6 +10,7 @@
  */
 
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import * as vscode from "vscode";
 import { commands, TreeView, window } from "vscode";
 import { ProgramMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
@@ -26,7 +27,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.newCopyProgram", async (clickedNode: CICSResourceContainerNode<IProgram>) => {
     const nodes = findSelectedNodes(treeview, ProgramMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS program selected");
+      await window.showErrorMessage(vscode.l10n.t("No CICS program selected"));
       return;
     }
 

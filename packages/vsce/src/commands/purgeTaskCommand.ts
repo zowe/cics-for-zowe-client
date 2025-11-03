@@ -11,7 +11,8 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import * as vscode from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { TaskMeta } from "../doc";
 import { ICommandParams } from "../doc/commands/ICommandParams";
@@ -30,30 +31,38 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.purgeTask", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, TaskMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      window.showErrorMessage("No CICS task selected");
+      window.showErrorMessage(vscode.l10n.t("No CICS task selected"));
+      return;
+    }
+    const PURGE_CHOICES = [
+      { id: "PURGE", label: vscode.l10n.t("Purge") },
+      { id: "FORCEPURGE", label: vscode.l10n.t("Force Purge") },
+    ];
+
+    const picked = await window.showInformationMessage(
+      vscode.l10n.t("Choose one of the following options for Purge"),
+      ...PURGE_CHOICES.map((c) => c.label)
+    );
+    if (!picked) {
       return;
     }
 
-    let purgeType = await window.showInformationMessage(`Choose one of the following options for Purge`, ...["Purge", "Force Purge"]);
-    if (!purgeType) {
-      return;
-    }
-    purgeType = purgeType.replace(" ", "").toUpperCase();
+    const purgeType = PURGE_CHOICES.find((c) => c.label === picked)?.id ?? "PURGE";
 
     window.withProgress(
       {
-        title: "Purge",
+        title: vscode.l10n.t("Purge"),
         location: ProgressLocation.Notification,
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         const nodesToRefresh = new Set();
 
         for (const node of nodes) {
           progress.report({
-            message: `Purging ${nodes.indexOf(node) + 1} of ${nodes.length}`,
+            message: vscode.l10n.t("Purging {0} of {1}", nodes.indexOf(node) + 1, nodes.length),
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
@@ -72,23 +81,24 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             );
 
             evaluateTreeNodes(clickedNode, response, TaskMeta);
-
           } catch (error) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-              window.showErrorMessage(
-                `Perform ${purgeType?.toUpperCase()} on CICSTask "${resName
-                }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
+              const errMsg = vscode.l10n.t(
+                "Perform {0} on CICSTask '{1}' failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})",
+                purgeType?.toUpperCase(),
+                resName,
+                eibfnAlt,
+                respAlt,
+                resp2
               );
+              window.showErrorMessage(errMsg);
             } else {
-              window.showErrorMessage(
-                `Something went wrong when performing a ${purgeType?.toUpperCase()} - ${JSON.stringify(
-                  error,
-                  Object.getOwnPropertyNames(error)
-                ).replace(/(\\n\t|\\n|\\t)/gm, " ")}`
-              );
+              const sanitizedError = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
+              const errMsg = vscode.l10n.t("Something went wrong when performing {0} - {1}", purgeType?.toUpperCase(), sanitizedError);
+              window.showErrorMessage(errMsg);
             }
           }
         }
@@ -96,7 +106,6 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         nodesToRefresh.forEach((v) => {
           tree.refresh(v);
         });
-
       }
     );
   });

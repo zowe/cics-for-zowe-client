@@ -9,6 +9,7 @@
  *
  */
 
+import * as vscode from "vscode";
 import { commands, TreeView, window } from "vscode";
 import { LocalFileMeta } from "../doc";
 import { CICSTree } from "../trees/CICSTree";
@@ -19,17 +20,25 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, LocalFileMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      window.showErrorMessage("No CICS local file selected");
+      window.showErrorMessage(vscode.l10n.t("No CICS local file selected"));
       return;
     }
 
-    const busyDecision = await window.showInformationMessage(
-      `Choose one of the following for the file busy condition`,
-      ...["Wait", "No Wait", "Force"]
+    const BUSY_CHOICES = [
+      { id: "WAIT", label: vscode.l10n.t("Wait") },
+      { id: "NOWAIT", label: vscode.l10n.t("No Wait") },
+      { id: "FORCE", label: vscode.l10n.t("Force") },
+    ];
+
+    const picked = await window.showInformationMessage(
+      vscode.l10n.t("Choose one of the following for the file busy condition"),
+      ...BUSY_CHOICES.map((c) => c.label)
     );
-    if (!busyDecision) {
+    if (!picked) {
       return;
     }
+
+    const busyDecision = BUSY_CHOICES.find((c) => c.label === picked)?.id ?? "WAIT";
 
     await actionTreeItem({
       action: "CLOSE",
@@ -38,7 +47,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
       parameter: {
         name: "BUSY",
         value: busyDecision.replace(" ", "").toUpperCase(),
-      }
+      },
     });
   });
 }

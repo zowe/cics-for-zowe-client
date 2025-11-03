@@ -9,8 +9,9 @@
  *
  */
 
-import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import * as vscode from "vscode";
+import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { inspectResourceByNode } from "./inspectResourceCommandUtils";
 
@@ -20,7 +21,7 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
 
     if (!targetNode) {
       if (treeview.selection.length < 1) {
-        await window.showErrorMessage("No CICS resource selected");
+        await window.showErrorMessage(vscode.l10n.t("No CICS resource selected"));
         return;
       }
 
@@ -30,15 +31,17 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
       const targetNodeResource = targetNode.getContainedResource().resource;
 
       if (!targetNodeMeta || !targetNodeResource) {
-        await window.showErrorMessage("No CICS resource information available to inspect");
+        await window.showErrorMessage(vscode.l10n.t("No CICS resource information available to inspect"));
         return;
       }
 
       // If there is more than 1 selected, inform we're ignoring the others
       if (treeview.selection.length > 1) {
-        window.showInformationMessage(
-          "Multiple CICS resources selected. Resource '" + targetNodeMeta.getName(targetNodeResource) + "' will be inspected."
+        const infoMsg = vscode.l10n.t(
+          "Multiple CICS resources selected. Resource '{0}' will be inspected.",
+          targetNodeMeta.getName(targetNodeResource)
         );
+        window.showInformationMessage(infoMsg);
       }
     }
     await inspectResourceByNode(context, targetNode);

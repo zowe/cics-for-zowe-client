@@ -9,28 +9,29 @@
  *
  */
 
+import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, TreeView, window } from "vscode";
+import * as vscode from "vscode";
+import { TreeView, commands, window } from "vscode";
 import { TransactionMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Inquire the associated transaction tree item from a task tree item
  */
 export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireProgram", async (node) => {
-    const msg = "CICS Program resources are not visible. Enable them from your VS Code settings.";
+    const msg = vscode.l10n.t("CICS Program resources are not visible. Enable them from your VS Code settings.");
     if (!openSettingsForHiddenResourceType(msg, "Program")) {
       return;
     }
 
     const nodes = findSelectedNodes(treeview, TransactionMeta, node) as CICSResourceContainerNode<ITransaction>[];
     if (!nodes || !nodes.length) {
-      window.showErrorMessage("No CICS Transaction selected");
+      window.showErrorMessage(vscode.l10n.t("No CICS Transaction selected"));
       return;
     }
 

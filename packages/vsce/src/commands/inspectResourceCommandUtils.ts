@@ -11,10 +11,11 @@
 
 import { IResource, IResourceProfileNameInfo, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
+import * as vscode from "vscode";
+import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IContainedResource, IResourceMeta } from "../doc";
+import { IContainedResource, IResourceMeta, getMetas } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer, SessionHandler } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -28,7 +29,6 @@ async function showInspectResource(
   resourceContext: IResourceProfileNameInfo,
   node?: CICSResourceContainerNode<IResource>
 ) {
-
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   // Focuses on the tab in the panel - previous command not working for me??
@@ -38,7 +38,6 @@ async function showInspectResource(
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-
   const resourceContext: IResourceProfileNameInfo = {
     profileName: node.getProfile().name,
     cicsplexName: node.cicsplexName,
@@ -49,7 +48,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
     node.getContainedResource().meta,
     node.getContainedResourceName(),
     resourceContext,
-    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource,
+    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource
   );
 
   if (upToDateResource) {
@@ -66,7 +65,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     if (!type) {
       // Error if resource type not found
-      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
+      const message = vscode.l10n.t("CICS resource type '{0}' not found", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
       return;
@@ -89,14 +88,18 @@ export async function inspectResourceCallBack(
   context: ExtensionContext,
   resource: IContainedResource<IResource>,
   resourceContext: IResourceProfileNameInfo,
-  node?: CICSResourceContainerNode<IResource>,
+  node?: CICSResourceContainerNode<IResource>
 ) {
-
   const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
-  await showInspectResource(context, {
-    meta: resource.meta,
-    resource: resources[0]
-  }, resourceContext, node);
+  await showInspectResource(
+    context,
+    {
+      meta: resource.meta,
+      resource: resources[0],
+    },
+    resourceContext,
+    node
+  );
 }
 
 async function loadResourcesWithProgress(
@@ -159,11 +162,15 @@ async function loadResources(
 ): Promise<Resource<IResource>[]> {
   const resourceContainer = new ResourceContainer(resourceType, parentResource);
   resourceContainer.setCriteria([resourceName]);
-  const resources = await resourceContainer.loadResources(SessionHandler.getInstance().getProfile(resourceContext.profileName), resourceContext.regionName, resourceContext.cicsplexName);
+  const resources = await resourceContainer.loadResources(
+    SessionHandler.getInstance().getProfile(resourceContext.profileName),
+    resourceContext.regionName,
+    resourceContext.cicsplexName
+  );
 
   if (resources[0].length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
-    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
+    const message = vscode.l10n.t("CICS resource '{0}' named '{1}' not found in region '{2}'", hrn, resourceName, resourceContext.regionName);
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
@@ -211,10 +218,7 @@ async function selectResource(resourceType: IResourceMeta<IResource>): Promise<s
   return getEntryFromInputBox(resourceType);
 }
 
-async function getChoiceFromQuickPick(
-  placeHolder: string,
-  items: string[]
-): Promise<QuickPickItem | undefined> {
+async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<QuickPickItem | undefined> {
   const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item }))];
 
   const quickPick = Gui.createQuickPick();
@@ -233,13 +237,11 @@ async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Pro
 
     validateInput: (value: string): string | undefined => {
       const maxLength = resourceType.maximumPrimaryKeyLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
-      const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
+      const tooLongErrorMessage = l10n.t("Resource name must be at most {0} characters", maxLength);
 
       return value.length > maxLength ? tooLongErrorMessage : undefined;
-    }
+    },
   };
 
   return (await window.showInputBox(options)) || undefined;
 }
-
-

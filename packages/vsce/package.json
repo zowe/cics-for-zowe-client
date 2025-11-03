@@ -224,7 +224,7 @@
       },
       {
         "command": "cics-extension-for-zowe.disableJVMServer",
-        "title": "%cics.diableJVMServer.title%",
+        "title": "%cics.disableJVMServer.title%",
         "category": "Zowe Explorer for IBM CICS TS"
       },
       {
