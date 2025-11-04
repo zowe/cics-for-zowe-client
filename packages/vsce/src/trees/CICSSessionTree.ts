@@ -20,20 +20,23 @@ import { CICSTree } from "./CICSTree";
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
   isUnauthorized: boolean | undefined;
-  iconPath = getIconFilePathFromName("profile-unverified");
 
   constructor(
     private profile: IProfileLoaded,
     private parent: CICSTree
   ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
-    this.children = [];
-    this.contextValue = `cicssession.${profile.name}`;
-
     this.profile = profile;
     this.createSessionFromProfile();
+    this.reset();
+  }
 
+  public reset() {
+    this.setIsExpanded(false);
     this.isUnauthorized = undefined;
+    this.contextValue = `cicssession.${this.profile.name}`;
+    this.iconPath = getIconFilePathFromName("profile-unverified");
+    this.clearChildren();
   }
 
   public createSessionFromProfile() {
