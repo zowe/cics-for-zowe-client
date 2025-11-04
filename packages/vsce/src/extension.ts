@@ -103,8 +103,9 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
     if (initialContext in contextMap) {
       contextMap[initialContext](node);
     }
-    // @ts-ignore
-    node.element.refreshIcon(true);
+    if (node.element.refreshIcon) {
+      node.element.refreshIcon(true);
+    }
     treeDataProv._onDidChangeTreeData.fire(node.element);
   });
 
