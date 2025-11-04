@@ -16,13 +16,22 @@ import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
 export class CICSLogger {
   private static logOutputChannel: LogOutputChannel;
 
-  public static initialize() {
+  public static initialize(packageJSON?: any) {
     CICSLogger.logOutputChannel = window.createOutputChannel(l10n.t("Zowe Explorer for IBM CICS TS"), { log: true });
 
     CICSLogger.info(l10n.t("Initialized logger for Zowe Explorer for IBM CICS TS"));
 
-    const extCandidate = extensions.getExtension("zowe.cics-extension-for-zowe") ?? extensions.all.find((e) => /cics|zowe/i.test(e.id));
-    const packageJSON = extCandidate?.packageJSON ?? { displayName: "Zowe Explorer for IBM CICS TS", version: "0.0.0" };
+    // Prefer packageJSON passed from activate(context).
+    if (!packageJSON) {
+      const extCandidate = extensions.getExtension("zowe.cics-extension-for-zowe");
+      if (extCandidate?.packageJSON) {
+        packageJSON = extCandidate.packageJSON;
+      } else {
+        CICSLogger.debug("extensions.getExtension('zowe.cics-extension-for-zowe') returned undefined");
+        const fallback = extensions.all.find((e) => /cics|zowe/i.test(e.id));
+        packageJSON = fallback?.packageJSON ?? { displayName: "Zowe Explorer for IBM CICS TS", version: "0.0.0" };
+      }
+    }
 
     CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
     CICSLogger.info(l10n.t("Zowe Explorer for IBM CICS TS log level: {0}", LogLevel[this.logOutputChannel.logLevel]));
