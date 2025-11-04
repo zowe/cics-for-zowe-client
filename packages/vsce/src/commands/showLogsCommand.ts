@@ -12,8 +12,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import * as vscode from "vscode";
-import { TreeView, commands, window } from "vscode";
+import { QuickPickOptions, TreeView, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
 import { toArray } from "../utils/commandUtils";
@@ -71,8 +70,8 @@ async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promise<stri
     return null;
   }
   // ask the user to pick from the profiles passed in
-  const quickPickOptions: vscode.QuickPickOptions = {
-    placeHolder: vscode.l10n.t("Select a profile to access the logs"),
+  const quickPickOptions: QuickPickOptions = {
+    placeHolder: l10n.t("Select a profile to access the logs"),
     ignoreFocusOut: true,
     canPickMany: false,
   };
@@ -135,7 +134,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node: CICSRegionTree) => {
     const selectedRegion = node ?? treeview.selection[0];
     if (!selectedRegion) {
-      window.showErrorMessage(`No region selected`);
+      window.showErrorMessage(l10n.t(`No region selected`));
       return;
     }
     CICSLogger.debug(`Showing region logs for region ${selectedRegion.getRegionName()}`);
@@ -143,7 +142,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
     const jobid = await getJobIdForRegion(selectedRegion);
     CICSLogger.debug(`Job ID for region: ${jobid}`);
     if (!jobid) {
-      window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
+      window.showErrorMessage(l10n.t("Could not find Job ID for region {0}.", selectedRegion.region.cicsname));
       return;
     }
 
@@ -162,7 +161,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       chosenProfileName = await promptUserForProfile(zosProfiles);
       CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
       if (chosenProfileName === null) {
-        window.showErrorMessage("Could not find any profiles that will access JES (for instance z/OSMF).");
+        window.showErrorMessage(l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
         return;
       } else if (chosenProfileName === undefined) {
         // the user cancelled the quick pick

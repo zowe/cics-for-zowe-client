@@ -9,42 +9,51 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, WebviewPanel, window } from "vscode";
+import { WebviewPanel, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { runGetResource } from "../utils/resourceUtils";
-import { getParametersHtml } from "../utils/webviewHTML";
+import { getAttributesHtml } from "../utils/webviewHTML";
+
+const CICS_NAME_LABEL = l10n.t("CICS Name");
+const SEARCH_PLACEHOLDER = l10n.t("Search Attribute...");
+const SOURCE_LABEL = l10n.t("Source");
+const OPTION_COMBINED = l10n.t("Combined");
+const OPTION_CONSOLE = l10n.t("Console");
+const OPTION_JCL = l10n.t("JCL");
+const OPTION_SYSIN = l10n.t("SYSIN");
+const OPTION_TABLE = l10n.t("Table");
+const VALUE_LABEL = l10n.t("Value");
+const REGION_PANEL_TITLE = (region: string) => l10n.t("CICS Region {0}", region);
 
 export function getShowRegionSITParametersCommand() {
-  return commands.registerCommand("cics-extension-for-zowe.showRegionParameters", async (node: CICSRegionTree) => {
-    const { response } = await runGetResource({
-      profileName: node.getProfile().name,
-      resourceName: CicsCmciConstants.CICS_SYSTEM_PARAMETER,
-      regionName: `${node.label}`,
-      cicsPlex: node.parentPlex ? node.parentPlex.getPlexName() : undefined,
-      params: { parameter: "PARMSRCE(COMBINED) PARMTYPE(SIT)" },
-    });
+  return commands.registerCommand("cics-extension-for-zowe.showRegionSITParameters", (node: CICSRegionTree) => {
+    const region = node?.region as any;
+    // region.sitParameters expected shape: Array<{ name: string, source?: string, value?: string }>
+    const params: Array<{ name: string; source?: string; value?: string }> = region?.sitParameters ?? [];
 
-    let webText = `<thead><tr><th class="headingTH">CICS Name <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>
-        <th class="sourceHeading">Source
-          <select id="filterSource" name="cars" id="cars">
-            <option value="combined">Combined</option>
-            <option value="console">Console</option>
-            <option value="jcl">JCL</option>
-            <option value="sysin">SYSIN</option>
-            <option value="table">Table</option>
-          </select>
-        </th>
-        <th class="valueHeading">Value</th></tr></thead>`;
-    webText += "<tbody>";
-    for (const systemParameter of response.records.cicssystemparameter) {
-      webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
-      webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
+    let webText = `<thead><tr><th class="headingTH">${CICS_NAME_LABEL} <input type="text" id="searchBox" placeholder="${SEARCH_PLACEHOLDER}" /></th>`;
+    webText += `<th class="sourceHeading">${SOURCE_LABEL}
+      <select id="filterSource" name="filterSource">
+        <option value="combined">${OPTION_COMBINED}</option>
+        <option value="console">${OPTION_CONSOLE}</option>
+        <option value="jcl">${OPTION_JCL}</option>
+        <option value="sysin">${OPTION_SYSIN}</option>
+        <option value="table">${OPTION_TABLE}</option>
+      </select>
+    </th>`;
+    webText += `<th class="valueHeading">${VALUE_LABEL}</th></tr></thead><tbody>`;
+
+    for (const p of params) {
+      const name = (p.name ?? "").toUpperCase();
+      const src = p.source ?? "";
+      const val = p.value ?? "";
+      webText += `<tr><th class="colHeading">${name}</th><td class="srcCell">${src}</td><td class="valCell">${val}</td></tr>`;
     }
+
     webText += "</tbody>";
-    const webviewHTML = getParametersHtml(node.getRegionName(), webText);
+
+    const webviewHTML = getAttributesHtml(node.getRegionName(), webText);
     const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-    const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${node.getRegionName()}`, column || 1, {
+    const panel: WebviewPanel = window.createWebviewPanel("zowe", REGION_PANEL_TITLE(node.getRegionName()), column || 1, {
       enableScripts: true,
     });
     panel.webview.html = webviewHTML;

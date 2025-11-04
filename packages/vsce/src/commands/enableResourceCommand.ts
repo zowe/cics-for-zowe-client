@@ -10,8 +10,7 @@
  */
 
 import { IBundle, IJVMEndpoint, IJVMServer, ILibrary, ILocalFile, IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
-import * as vscode from "vscode";
-import { TreeView, commands, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { BundleMeta, JVMEndpointMeta, JVMServerMeta, LibraryMeta, LocalFileMeta, ProgramMeta, TransactionMeta } from "../doc";
 import { CICSResourceContainerNode, CICSTree } from "../trees";
 import { findSelectedNodes } from "../utils/commandUtils";
@@ -21,7 +20,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableProgram = async (treeNode: CICSResourceContainerNode<IProgram>) => {
     const nodes = findSelectedNodes(treeview, ProgramMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS program selected"));
+      await window.showErrorMessage(l10n.t("No CICS program selected"));
       return;
     }
 
@@ -31,7 +30,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableTransaction = async (treeNode: CICSResourceContainerNode<ITransaction>) => {
     const nodes = findSelectedNodes(treeview, TransactionMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS transaction selected"));
+      await window.showErrorMessage(l10n.t("No CICS transaction selected"));
       return;
     }
 
@@ -41,7 +40,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableLocalFile = async (treeNode: CICSResourceContainerNode<ILocalFile>) => {
     const nodes = findSelectedNodes(treeview, LocalFileMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS Local File selected"));
+      await window.showErrorMessage(l10n.t("No CICS Local File selected"));
       return;
     }
 
@@ -51,7 +50,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableLibrary = async (treeNode: CICSResourceContainerNode<ILibrary>) => {
     const nodes = findSelectedNodes(treeview, LibraryMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS Library selected"));
+      await window.showErrorMessage(l10n.t("No CICS Library selected"));
       return;
     }
 
@@ -61,7 +60,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableBundle = async (treeNode: CICSResourceContainerNode<IBundle>) => {
     const nodes = findSelectedNodes(treeview, BundleMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS Bundles selected"));
+      await window.showErrorMessage(l10n.t("No CICS Bundles selected"));
       return;
     }
 
@@ -76,7 +75,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableJVMServer = async (treeNode: CICSResourceContainerNode<IJVMServer>) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS JVM server selected"));
+      await window.showErrorMessage(l10n.t("No CICS JVM server selected"));
       return;
     }
 
@@ -91,7 +90,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableJVMEndpoint = async (treeNode: CICSResourceContainerNode<IJVMEndpoint>) => {
     const nodes = findSelectedNodes(treeview, JVMEndpointMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(vscode.l10n.t("No CICS JVMEndpoint selected"));
+      await window.showErrorMessage(l10n.t("No CICS JVMEndpoint selected"));
       return;
     }
 

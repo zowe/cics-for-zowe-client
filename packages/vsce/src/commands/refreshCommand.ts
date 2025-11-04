@@ -9,8 +9,7 @@
  *
  */
 
-import * as vscode from "vscode";
-import { commands, ProgressLocation, window } from "vscode";
+import { ProgressLocation, commands, l10n, window } from "vscode";
 import { CICSTree } from "../trees/CICSTree";
 
 export function getRefreshCommand(tree: CICSTree) {
@@ -18,7 +17,7 @@ export function getRefreshCommand(tree: CICSTree) {
     try {
       await window.withProgress(
         {
-          title: "Refreshing",
+          title: l10n.t("Refreshing"),
           location: ProgressLocation.Notification,
           cancellable: false,
         },
@@ -65,7 +64,7 @@ export function getRefreshCommand(tree: CICSTree) {
       //   }
       // });
       tree._onDidChangeTreeData.fire(undefined);
-      window.showInformationMessage(vscode.l10n.t("Refreshed"));
+      window.showInformationMessage(l10n.t("Refreshed"));
     }
   });
 }

@@ -9,15 +9,14 @@
  *
  */
 
+import { ILibrary, ILibraryDataset, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { LibraryMeta, ProgramMeta } from "../doc";
-import { CICSRegionsContainer, CICSRegionTree, CICSResourceContainerNode } from "../trees";
+import { CICSRegionTree, CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-import { ILibrary, ILibraryDataset, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
-
 
 const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map<string, Map<string, Set<string>>> => {
   const librariesToReveal: Map<string, Map<string, Set<string>>> = new Map();
@@ -41,7 +40,7 @@ const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map
 };
 
 const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgram>, treeview: TreeView<any>): Promise<CICSRegionTree[]> => {
-  if (node.getParent().label === "Programs") {
+  if (node.getParent().label === l10n.t("Programs")) {
     const parent = node.getParent().getParent();
     if (parent.getParent() instanceof CICSRegionsContainer) {
       await treeview.reveal(parent.getParent(), { expand: true });
@@ -50,8 +49,10 @@ const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgra
       return [parent as CICSRegionTree];
     }
   } else {
-    const regionsContainer = node.getParent().getParent().children.filter(
-      (child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
+    const regionsContainer = node
+      .getParent()
+      .getParent()
+      .children.filter((child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
     await treeview.reveal(regionsContainer, { expand: true });
     return regionsContainer.children;
   }
@@ -59,29 +60,28 @@ const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgra
 
 export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibrary", async (node) => {
-
-    if (!openSettingsForHiddenResourceType("CICS Library resources are not visible. Enable them from your VS Code settings.", "Library")) {
+    const msg = l10n.t("CICS Library resources are not visible. Enable them from your VS Code settings.");
+    if (!openSettingsForHiddenResourceType(msg, "Library")) {
       return;
     }
 
     const nodes = findSelectedNodes(treeview, ProgramMeta, node) as CICSResourceContainerNode<IProgram>[];
     if (!nodes || nodes.length === 0) {
-      window.showErrorMessage("No CICS Program selected");
+      window.showErrorMessage(l10n.t("No CICS Program selected"));
       return;
     }
 
     const librariesToReveal = getLibrariesToReveal(nodes);
     if (librariesToReveal.size === 0) {
-      await window.showInformationMessage(`No libraries found in selected CICS programs`);
+      await window.showInformationMessage(l10n.t("No libraries found in selected CICS programs"));
       return;
     }
 
+    const OR_SEPARATOR = l10n.t(" OR ");
     const listOfRegions: CICSRegionTree[] = await getListOfAvailableRegions(nodes[0], treeview);
 
     for (const [region, libraries] of librariesToReveal) {
-
-      const regionTree: CICSRegionTree = listOfRegions.filter(
-        (regTree) => regTree.getRegionName() === region)[0];
+      const regionTree: CICSRegionTree = listOfRegions.filter((regTree) => regTree.getRegionName() === region)[0];
 
       await treeview.reveal(regionTree, { expand: true });
 
@@ -89,7 +89,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
         (resourceTree: CICSResourceContainerNode<IResource>) => resourceTree.getChildResource().meta === LibraryMeta
       )[0] as CICSResourceContainerNode<ILibrary>;
 
-      //clearing the previous filter and description
+      // clearing the previous filter and description
       libraryTree.clearFilter();
       libraryTree.description = "";
       libraryTree.children = [];
@@ -100,14 +100,13 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       await treeview.reveal(libraryTree, { expand: true });
 
       libraryTree.setFilter([...libraries.keys()]);
-      libraryTree.description = [...libraries.keys()].join(" OR ");
+      libraryTree.description = [...libraries.keys()].join(OR_SEPARATOR);
       libraryTree.refreshingDescription = false;
       const libraryNodes = await libraryTree.getChildren();
 
       const libArray: CICSResourceContainerNode<IResource>[] = [];
-      //setting the filter and description for each library node
+      // setting the filter and description for each library node
       for (const child of libraryNodes) {
-
         const libNode = child as CICSResourceContainerNode<ILibraryDataset>;
         if (
           libNode.getChildResource().meta.resourceName === CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE &&
@@ -115,7 +114,7 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
           libraries.get(libNode.getContainedResourceName())!.size > 0
         ) {
           libNode.setFilter([...libraries.get(libNode.getContainedResourceName())]);
-          libNode.description = [...libraries.get(libNode.getContainedResourceName())].join(" OR ");
+          libNode.description = [...libraries.get(libNode.getContainedResourceName())].join(OR_SEPARATOR);
           libArray.push(libNode);
           libNode.refreshingDescription = false;
         }

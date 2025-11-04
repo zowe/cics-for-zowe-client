@@ -11,8 +11,7 @@
 
 import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import * as vscode from "vscode";
-import { TreeView, commands, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { TransactionMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
@@ -24,22 +23,24 @@ import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
  */
 export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireProgram", async (node) => {
-    const msg = vscode.l10n.t("CICS Program resources are not visible. Enable them from your VS Code settings.");
+    const msg = l10n.t("CICS Program resources are not visible. Enable them from your VS Code settings.");
     if (!openSettingsForHiddenResourceType(msg, "Program")) {
       return;
     }
 
     const nodes = findSelectedNodes(treeview, TransactionMeta, node) as CICSResourceContainerNode<ITransaction>[];
     if (!nodes || !nodes.length) {
-      window.showErrorMessage(vscode.l10n.t("No CICS Transaction selected"));
+      window.showErrorMessage(l10n.t("No CICS Transaction selected"));
       return;
     }
 
+    //if the label is All Local Transactions, we need to get the program tree from the regions node
     let programTree: CICSResourceContainerNode<IProgram> | undefined;
     const label = nodes[0].getParent().label;
+    const ALL_LOCAL_TX_LABEL = l10n.t("All Local Transactions");
 
-    //if the label is All Local Transactions, we need to get the program tree from the regions node
-    if (label === "All Local Transactions") {
+    // If the label is "All Local Transactions", get the program tree from the regions node
+    if (label === ALL_LOCAL_TX_LABEL) {
       programTree = await getResourceTree<IProgram>(treeview, nodes, CicsCmciConstants.CICS_PROGRAM_RESOURCE);
     } else {
       programTree = nodes[0]

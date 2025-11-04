@@ -11,8 +11,7 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import * as vscode from "vscode";
-import { ProgressLocation, TreeView, commands, window } from "vscode";
+import { ProgressLocation, TreeView, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { TaskMeta } from "../doc";
 import { ICommandParams } from "../doc/commands/ICommandParams";
@@ -31,18 +30,15 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.purgeTask", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, TaskMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      window.showErrorMessage(vscode.l10n.t("No CICS task selected"));
+      window.showErrorMessage(l10n.t("No CICS task selected"));
       return;
     }
     const PURGE_CHOICES = [
-      { id: "PURGE", label: vscode.l10n.t("Purge") },
-      { id: "FORCEPURGE", label: vscode.l10n.t("Force Purge") },
+      { id: "PURGE", label: l10n.t("Purge") },
+      { id: "FORCEPURGE", label: l10n.t("Force Purge") },
     ];
 
-    const picked = await window.showInformationMessage(
-      vscode.l10n.t("Choose one of the following options for Purge"),
-      ...PURGE_CHOICES.map((c) => c.label)
-    );
+    const picked = await window.showInformationMessage(l10n.t("Choose one of the following options for Purge"), ...PURGE_CHOICES.map((c) => c.label));
     if (!picked) {
       return;
     }
@@ -51,7 +47,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
 
     window.withProgress(
       {
-        title: vscode.l10n.t("Purge"),
+        title: l10n.t("Purge"),
         location: ProgressLocation.Notification,
         cancellable: true,
       },
@@ -62,7 +58,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
 
         for (const node of nodes) {
           progress.report({
-            message: vscode.l10n.t("Purging {0} of {1}", nodes.indexOf(node) + 1, nodes.length),
+            message: l10n.t("Purging {0} of {1}", nodes.indexOf(node) + 1, nodes.length),
             increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
           });
 
@@ -86,7 +82,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             if (error.mMessage) {
               // @ts-ignore
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
-              const errMsg = vscode.l10n.t(
+              const errMsg = l10n.t(
                 "Perform {0} on CICSTask '{1}' failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})",
                 purgeType?.toUpperCase(),
                 resName,
@@ -97,7 +93,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
               window.showErrorMessage(errMsg);
             } else {
               const sanitizedError = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
-              const errMsg = vscode.l10n.t("Something went wrong when performing {0} - {1}", purgeType?.toUpperCase(), sanitizedError);
+              const errMsg = l10n.t("Something went wrong when performing {0} - {1}", purgeType?.toUpperCase(), sanitizedError);
               window.showErrorMessage(errMsg);
             }
           }

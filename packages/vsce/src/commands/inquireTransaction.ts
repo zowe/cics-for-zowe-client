@@ -11,8 +11,7 @@
 
 import { IResource, ITask, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import * as vscode from "vscode";
-import { commands, TreeView, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { TaskMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
@@ -24,22 +23,23 @@ import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
  */
 export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireTransaction", async (node) => {
-    const msg = vscode.l10n.t("CICS Transaction resources are not visible. Enable them from your VS Code settings.");
+    const msg = l10n.t("CICS Transaction resources are not visible. Enable them from your VS Code settings.");
     if (!openSettingsForHiddenResourceType(msg, "Transaction")) {
       return;
     }
 
     const nodes = findSelectedNodes(treeview, TaskMeta, node) as CICSResourceContainerNode<ITask>[];
     if (!nodes || !nodes.length) {
-      window.showErrorMessage(vscode.l10n.t("No CICS Task selected"));
+      window.showErrorMessage(l10n.t("No CICS Task selected"));
       return;
     }
 
     let transactionTree: CICSResourceContainerNode<ITransaction> | undefined;
     const label = nodes[0].getParent().label;
+    const ALL_TASKS_LABEL = l10n.t("All Tasks");
 
     //if the label is All Tasks, we need to get the transaction tree from the regions node
-    if (label === "All Tasks") {
+    if (label === ALL_TASKS_LABEL) {
       transactionTree = await getResourceTree<ITransaction>(treeview, nodes, CicsCmciConstants.CICS_LOCAL_TRANSACTION);
     } else {
       transactionTree = nodes[0]

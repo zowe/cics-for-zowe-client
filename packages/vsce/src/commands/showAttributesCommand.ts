@@ -9,10 +9,16 @@
  *
  */
 
-import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { TreeView, WebviewPanel, commands, l10n, window } from "vscode";
 import { CICSRegionTree, CICSResourceContainerNode } from "../trees";
 import { getAttributesHtml } from "../utils/webviewHTML";
+
+const ATTRIBUTE_LABEL = l10n.t("Attribute");
+const VALUE_LABEL = l10n.t("Value");
+const SEARCH_PLACEHOLDER = l10n.t("Search Attribute...");
+const REGION_PANEL_TITLE = (region: string) => l10n.t("CICS Region {0}", region);
+const RESOURCE_PANEL_TITLE = (title: string, region: string, name: string) => l10n.t("{0} {1} ({2})", title, region, name);
 
 export function getShowResourceAttributesCommand(treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   return commands.registerCommand("cics-extension-for-zowe.showResourceAttributes", (node: CICSResourceContainerNode<IResource>) => {
@@ -24,8 +30,8 @@ export function getShowResourceAttributesCommand(treeview: TreeView<CICSResource
       const attributeHeadings = Object.keys(resource);
 
       let webText = `<thead><tr>`;
-      webText += `<th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th>`;
-      webText += `<th class="valueHeading">Value</th>`;
+      webText += `<th class="headingTH">${ATTRIBUTE_LABEL} <input type="text" id="searchBox" placeholder="${SEARCH_PLACEHOLDER}"/></th>`;
+      webText += `<th class="valueHeading">${VALUE_LABEL}</th>`;
       webText += `</tr></thead><tbody>`;
       for (const heading of attributeHeadings) {
         webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${resource[heading as keyof IResource]}</td></tr>`;
@@ -34,12 +40,8 @@ export function getShowResourceAttributesCommand(treeview: TreeView<CICSResource
 
       const webviewHTML = getAttributesHtml(resourceName, webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-      const panel: WebviewPanel = window.createWebviewPanel(
-        "zowe",
-        `${res.getContainedResource().meta.resourceName} ${res.regionName}(${resourceName})`,
-        column || 1,
-        { enableScripts: true }
-      );
+      const panelTitle = RESOURCE_PANEL_TITLE(res.getContainedResource().meta.resourceName, res.regionName, resourceName);
+      const panel: WebviewPanel = window.createWebviewPanel("zowe", panelTitle, column || 1, { enableScripts: true });
       panel.webview.html = webviewHTML;
     }
   });
@@ -49,8 +51,8 @@ export function getShowRegionAttributes() {
   return commands.registerCommand("cics-extension-for-zowe.showRegionAttributes", (node: CICSRegionTree) => {
     const region = node.region;
     const attributeHeadings = Object.keys(region);
-    let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..." /></th>`;
-    webText += `<th class="valueHeading">Value</th></tr></thead><tbody>`;
+    let webText = `<thead><tr><th class="headingTH">${ATTRIBUTE_LABEL} <input type="text" id="searchBox" placeholder="${SEARCH_PLACEHOLDER}" /></th>`;
+    webText += `<th class="valueHeading">${VALUE_LABEL}</th></tr></thead><tbody>`;
     for (const heading of attributeHeadings) {
       webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${region[heading]}</td></tr>`;
     }
@@ -59,7 +61,7 @@ export function getShowRegionAttributes() {
     const webviewHTML = getAttributesHtml(node.getRegionName(), webText);
 
     const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
-    const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${node.getRegionName()}`, column || 1, {
+    const panel: WebviewPanel = window.createWebviewPanel("zowe", REGION_PANEL_TITLE(node.getRegionName()), column || 1, {
       enableScripts: true,
     });
     panel.webview.html = webviewHTML;

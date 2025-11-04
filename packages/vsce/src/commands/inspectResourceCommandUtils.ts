@@ -11,7 +11,6 @@
 
 import { IResource, IResourceProfileNameInfo, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import * as vscode from "vscode";
 import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
@@ -65,7 +64,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     if (!type) {
       // Error if resource type not found
-      const message = vscode.l10n.t("CICS resource type '{0}' not found", resourceType);
+      const message = l10n.t("CICS resource type '{0}' not found", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
       return;
@@ -110,7 +109,7 @@ async function loadResourcesWithProgress(
 ) {
   return await window.withProgress(
     {
-      title: CICSMessages.CICSLoadingResourceName.message.replace("%name%", resourceName),
+      title: l10n.t("Loading resource '{0}'", resourceName),
       location: ProgressLocation.Notification,
       cancellable: false,
     },
@@ -170,7 +169,7 @@ async function loadResources(
 
   if (resources[0].length === 0) {
     const hrn = resourceType.humanReadableNameSingular;
-    const message = vscode.l10n.t("CICS resource '{0}' named '{1}' not found in region '{2}'", hrn, resourceName, resourceContext.regionName);
+    const message = l10n.t("CICS resource '{0}' named '{1}' not found in region '{2}'", hrn, resourceName, resourceContext.regionName);
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
