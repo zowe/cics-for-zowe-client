@@ -81,7 +81,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
-              const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
+              const [, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               const errMsg = l10n.t(
                 "Perform {0} on CICSTask '{1}' failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})",
                 purgeType?.toUpperCase(),

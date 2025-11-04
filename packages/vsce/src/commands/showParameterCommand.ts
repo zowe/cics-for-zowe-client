@@ -26,7 +26,7 @@ const REGION_PANEL_TITLE = (region: string) => l10n.t("CICS Region {0}", region)
 
 export function getShowRegionSITParametersCommand() {
   return commands.registerCommand("cics-extension-for-zowe.showRegionSITParameters", (node: CICSRegionTree) => {
-    const region = node?.region as any;
+    const region = node?.region;
     // region.sitParameters expected shape: Array<{ name: string, source?: string, value?: string }>
     const params: Array<{ name: string; source?: string; value?: string }> = region?.sitParameters ?? [];
 

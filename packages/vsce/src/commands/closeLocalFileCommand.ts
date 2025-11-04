@@ -33,7 +33,9 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
       l10n.t("Choose one of the following for the file busy condition"),
       ...Object.keys(busyChoices)
     );
-    if (!picked) return;
+    if (!picked) {
+      return;
+    }
 
     const busyDecision = busyChoices[picked] ?? "WAIT";
 
