@@ -37,10 +37,9 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
     //if the label is All Local Transactions, we need to get the program tree from the regions node
     let programTree: CICSResourceContainerNode<IProgram> | undefined;
     const label = nodes[0].getParent().label;
-    const ALL_LOCAL_TX_LABEL = l10n.t("All Local Transactions");
 
     // If the label is "All Local Transactions", get the program tree from the regions node
-    if (label === ALL_LOCAL_TX_LABEL) {
+    if (label === l10n.t("All Local Transactions")) {
       programTree = await getResourceTree<IProgram>(treeview, nodes, CicsCmciConstants.CICS_PROGRAM_RESOURCE);
     } else {
       programTree = nodes[0]

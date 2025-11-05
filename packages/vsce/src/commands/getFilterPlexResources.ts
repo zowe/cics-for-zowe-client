@@ -17,41 +17,61 @@ import { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
 import { getPatternFromFilter } from "../utils/filterUtils";
 
-/* helpers to reduce complexity and centralize mappings */
-function getCmciKeyForLabel(label: string): string | undefined {
-  switch (label) {
-    case "Programs":
-      return CicsCmciConstants.CICS_PROGRAM_RESOURCE;
-    case "Local Transactions":
-    case "Tasks":
-      return CicsCmciConstants.CICS_LOCAL_TRANSACTION;
-    case "Local Files":
-      return CicsCmciConstants.CICS_CMCI_LOCAL_FILE;
-    case "Libraries":
-      return CicsCmciConstants.CICS_LIBRARY_RESOURCE;
-    case "Regions":
-      return CicsCmciConstants.CICS_CMCI_REGION;
-    default:
-      return undefined;
-  }
-}
+/* Resource metas — use <metafile>.resourceName as id and <metafile>.humanReadableNameSingular for display.
+   Add cmciKey and contextIncludes so callers can use a single source of truth. */
+type ResourceMeta = {
+  id: string;
+  resourceName: string;
+  humanReadableNameSingular: string; // localization key
+  cmciKey: string;
+  contextIncludes?: string;
+  supportsRegions?: boolean;
+};
 
-function getContextIncludesForLabel(label: string): string | undefined {
-  switch (label) {
-    case "Programs":
-      return "CICSResourceNode.Programs.";
-    case "Local Transactions":
-      return "CICSResourceNode.Transactions";
-    case "Local Files":
-      return "CICSResourceNode.Local Files";
-    case "Tasks":
-      return "CICSResourceNode.Tasks";
-    case "Libraries":
-      return "CICSResourceNode.Libraries";
-    default:
-      return undefined;
-  }
-}
+const RESOURCE_METAS: ResourceMeta[] = [
+  {
+    id: "Programs",
+    resourceName: "program",
+    humanReadableNameSingular: "Programs",
+    cmciKey: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
+    contextIncludes: "CICSResourceNode.Programs.",
+  },
+  {
+    id: "Local Transactions",
+    resourceName: "transaction",
+    humanReadableNameSingular: "Local Transactions",
+    cmciKey: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
+    contextIncludes: "CICSResourceNode.Transactions",
+  },
+  {
+    id: "Local Files",
+    resourceName: "localfile",
+    humanReadableNameSingular: "Local Files",
+    cmciKey: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
+    contextIncludes: "CICSResourceNode.Local Files",
+  },
+  {
+    id: "Tasks",
+    resourceName: "task",
+    humanReadableNameSingular: "Tasks",
+    cmciKey: CicsCmciConstants.CICS_LOCAL_TRANSACTION,
+    contextIncludes: "CICSResourceNode.Tasks",
+  },
+  {
+    id: "Libraries",
+    resourceName: "library",
+    humanReadableNameSingular: "Libraries",
+    cmciKey: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
+    contextIncludes: "CICSResourceNode.Libraries",
+  },
+  {
+    id: "Regions",
+    resourceName: "region",
+    humanReadableNameSingular: "Regions",
+    cmciKey: CicsCmciConstants.CICS_CMCI_REGION,
+    supportsRegions: true,
+  },
+];
 
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
@@ -71,73 +91,66 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
+
     const plex = chosenNode.getParent();
     await treeview.reveal(chosenNode, { expand: true });
     const plexProfile = plex.getProfile();
 
-    const RESOURCE_CHOICES_BASE = [
-      { id: "Programs", label: l10n.t("Programs") },
-      { id: "Local Transactions", label: l10n.t("Local Transactions") },
-      { id: "Local Files", label: l10n.t("Local Files") },
-      { id: "Tasks", label: l10n.t("Tasks") },
-      { id: "Libraries", label: l10n.t("Libraries") },
-    ];
-    const RESOURCE_CHOICES_WITH_REGIONS = [{ id: "Regions", label: l10n.t("Regions") }, ...RESOURCE_CHOICES_BASE];
+    // Build pick list from metas. If profile lacks plex/region info, include Regions option.
+    const metasForPick =
+      plexProfile.profile.regionName && plexProfile.profile.cicsPlex ? RESOURCE_METAS.filter((m) => !m.supportsRegions) : RESOURCE_METAS;
+    const choices = metasForPick.map((m) => ({ id: m.id, label: l10n.t(m.humanReadableNameSingular) }));
 
-    const pickList = plexProfile.profile.regionName && plexProfile.profile.cicsPlex ? RESOURCE_CHOICES_BASE : RESOURCE_CHOICES_WITH_REGIONS;
-    const pickedLabel = await window.showQuickPick(pickList.map((c) => c.label));
+    const pickedLabel = await window.showQuickPick(choices.map((c) => c.label));
     if (!pickedLabel) {
       return;
     }
 
-    const resourceToFilter = pickList.find((c) => c.label === pickedLabel)?.id;
-    if (!resourceToFilter) {
+    const chosenMeta = RESOURCE_METAS.find((m) => l10n.t(m.humanReadableNameSingular) === pickedLabel);
+    if (!chosenMeta) {
       window.showInformationMessage(l10n.t("No Selection Made"));
       return;
     }
 
-    const cmciKey = getCmciKeyForLabel(resourceToFilter);
-    if (!cmciKey) {
-      window.showInformationMessage(l10n.t("No Selection Made"));
+    const resourceHistory = PersistentStorage.getSearchHistory(chosenMeta.cmciKey);
+    const pattern = await getPatternFromFilter(chosenMeta.resourceName, resourceHistory);
+    if (!pattern) {
       return;
     }
 
-    const resourceHistory = PersistentStorage.getSearchHistory(cmciKey);
-    const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
-    if (pattern) {
-      await PersistentStorage.appendSearchHistory(cmciKey, pattern);
+    await PersistentStorage.appendSearchHistory(chosenMeta.cmciKey, pattern);
 
-      if (resourceToFilter === "Regions") {
-        chosenNode.filterRegions(pattern, tree);
-      } else {
-        await window.withProgress(
-          {
-            title: l10n.t("Loading Resources"),
-            location: ProgressLocation.Notification,
-            cancellable: true,
-          },
-          (_, token): Thenable<unknown> => {
-            token.onCancellationRequested(() => {});
-            for (const region of chosenNode.children) {
-              if (region instanceof CICSRegionTree) {
-                if (region.getIsActive()) {
-                  const contextIncludes = getContextIncludesForLabel(resourceToFilter);
-                  if (contextIncludes) {
-                    const treeToFilter = region.children?.filter((child: any) => child.contextValue.includes(contextIncludes))[0];
-                    if (treeToFilter) {
-                      // @ts-ignore
-                      treeToFilter.setFilter([pattern]);
-                      treeToFilter.description = pattern;
-                    }
+    if (chosenMeta.supportsRegions) {
+      chosenNode.filterRegions(pattern, tree);
+    } else {
+      await window.withProgress(
+        {
+          title: l10n.t("Loading Resources"),
+          location: ProgressLocation.Notification,
+          cancellable: true,
+        },
+        (_, token): Thenable<unknown> => {
+          token.onCancellationRequested(() => {});
+          for (const region of chosenNode.children) {
+            if (region instanceof CICSRegionTree) {
+              if (region.getIsActive()) {
+                const contextIncludes = chosenMeta.contextIncludes;
+                if (contextIncludes) {
+                  const treeToFilter = region.children?.filter((child: any) => child.contextValue.includes(contextIncludes))[0];
+                  if (treeToFilter) {
+                    // @ts-ignore
+                    treeToFilter.setFilter([pattern]);
+                    treeToFilter.description = pattern;
                   }
                 }
               }
             }
-            return;
           }
-        );
-      }
-      tree._onDidChangeTreeData.fire(chosenNode);
+          return;
+        }
+      );
     }
+
+    tree._onDidChangeTreeData.fire(chosenNode);
   });
 }

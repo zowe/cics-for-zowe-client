@@ -36,10 +36,9 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
 
     let transactionTree: CICSResourceContainerNode<ITransaction> | undefined;
     const label = nodes[0].getParent().label;
-    const ALL_TASKS_LABEL = l10n.t("All Tasks");
 
     //if the label is All Tasks, we need to get the transaction tree from the regions node
-    if (label === ALL_TASKS_LABEL) {
+    if (label === l10n.t("All Tasks")) {
       transactionTree = await getResourceTree<ITransaction>(treeview, nodes, CicsCmciConstants.CICS_LOCAL_TRANSACTION);
     } else {
       transactionTree = nodes[0]

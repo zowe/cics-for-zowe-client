@@ -95,7 +95,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableJVMEndpoint = async (treeNode: CICSResourceContainerNode<IJVMEndpoint>) => {
     const nodes = findSelectedNodes(treeview, JVMEndpointMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS JVMEndpoint selected"));
+      await window.showErrorMessage(l10n.t("No CICS JVM Endpoint selected"));
       return;
     }
 

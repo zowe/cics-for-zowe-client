@@ -34,7 +34,7 @@ export class CICSLogger {
     }
 
     CICSLogger.info(`${packageJSON.displayName as string} ${packageJSON.version as string}`);
-    CICSLogger.info(l10n.t("Zowe Explorer for IBM CICS TS log level: {0}", LogLevel[this.logOutputChannel.logLevel]));
+    CICSLogger.info(l10n.t("Zowe Explorer for IBM CICS TS log level: ") + LogLevel[this.logOutputChannel.logLevel]);
   }
 
   public static trace(message: string): void {
