@@ -17,7 +17,7 @@ import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 
 export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_REMOTE_FILE,
-  humanReadableNamePlural: "Files",
+  humanReadableNamePlural: "Remote Files",
   humanReadableNameSingular: "Remote File",
 
   buildCriteria(criteria: string[]) {
