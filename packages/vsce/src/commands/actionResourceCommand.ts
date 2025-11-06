@@ -18,6 +18,7 @@ import { CICSTree } from "../trees/CICSTree";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
 import { resourceActionVerbMap, setResource } from "./setResource";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 
 interface IActionTreeItemArgs {
   action: keyof typeof resourceActionVerbMap;
@@ -72,14 +73,8 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
-
         } catch (error) {
-          window.showErrorMessage(
-            `Something went wrong when performing a ${action} - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
-          );
+          new CICSErrorHandler().handleCMCIRestError(error);
         }
       }
 
