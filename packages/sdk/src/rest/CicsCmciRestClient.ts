@@ -213,7 +213,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     }
 
     if (requestOptions?.useCICSCmciRestError) {
-      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse.response.resultsummary, apiResponse.response.errors);
+      throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
     }
 
     throw new ImperativeError({

@@ -9,7 +9,6 @@
  *
  */
 
-import { ICMCIResponseErrors } from "./ICMCIResponseErrors";
 
 /**
  * Represents the "resultsummary" field of the CMCI API response, parsed from XML
@@ -28,5 +27,4 @@ export interface ICMCIResponseResultSummary {
   displayed_recordcount: string;
   successcount?: string;
   cachetoken?: string;
-  errors?: ICMCIResponseErrors
 }
