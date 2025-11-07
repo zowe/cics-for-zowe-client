@@ -432,11 +432,11 @@
         },
         {
           "command": "cics-extension-for-zowe.disableJVMEndpoint",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.enableJVMEndpoint",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "never"
         }
       ],
       "view/title": [
