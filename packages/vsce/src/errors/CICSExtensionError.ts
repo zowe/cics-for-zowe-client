@@ -26,7 +26,7 @@ export class CICSExtensionError extends Error {
     if (error instanceof CicsCmciRestError) {
       const resultSummary = error.resultSummary;
       const api_function = resultSummary.api_function;
-      const feedback = resultSummary.errors?.feedback;
+      const feedback = error.errors?.feedback;
       this.cicsExtensionError.resp1Code = parseInt(resultSummary.api_response1);
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 

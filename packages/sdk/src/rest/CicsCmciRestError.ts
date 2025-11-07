@@ -10,12 +10,13 @@
  */
 
 import { ImperativeError } from "@zowe/imperative";
-import { ICMCIResponseResultSummary } from "../doc";
-import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
+import { ICMCIApiResponse, ICMCIResponseResultSummary } from "../doc";
 import { CicsCmciConstants } from "../constants";
+import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
 
 export class CicsCmciRestError extends ImperativeError {
   resultSummary: ICMCIResponseResultSummary;
+  errors: ICMCIResponseErrors;
 
   RESPONSE_1: number;
   RESPONSE_2: number;
@@ -27,10 +28,10 @@ export class CicsCmciRestError extends ImperativeError {
   EIBFN_ALT: string;
   FEEDBACKRESP_ALT: string;
 
-  constructor(msg: string , resultSummary: ICMCIResponseResultSummary, errorFeedback?: ICMCIResponseErrors) {
+  constructor(msg: string , response: ICMCIApiResponse) {
     super({msg});
-    this.resultSummary = resultSummary;
-    this.resultSummary.errors = errorFeedback;
+    this.resultSummary = response.response.resultsummary;
+    this.errors = response.response.errors;
     this.parseResultSummary();
   }
 
@@ -39,10 +40,10 @@ export class CicsCmciRestError extends ImperativeError {
     this.RESPONSE_2 = parseInt(this.resultSummary.api_response2);
     this.RESPONSE_1_ALT = this.resultSummary.api_response1_alt;
     this.RESPONSE_2_ALT = this.resultSummary.api_response2_alt;
-    this.FEEDBACKRESP = parseInt(this.resultSummary.errors?.feedback?.resp || CicsCmciConstants.DEFAULT_RESP_CODE);
-    this.FEEDBACKRESP_2 = parseInt(this.resultSummary.errors?.feedback?.resp2 || CicsCmciConstants.DEFAULT_RESP_CODE);
-    this.FEEDBACK_ACTION = this.resultSummary.errors?.feedback?.action;
-    this.FEEDBACKRESP_ALT = this.resultSummary.errors?.feedback?.resp_alt;
-    this.EIBFN_ALT = this.resultSummary.errors?.feedback?.eibfn_alt
+    this.FEEDBACKRESP = parseInt(this.errors?.feedback?.resp || CicsCmciConstants.DEFAULT_RESP_CODE);
+    this.FEEDBACKRESP_2 = parseInt(this.errors?.feedback?.resp2 || CicsCmciConstants.DEFAULT_RESP_CODE);
+    this.FEEDBACK_ACTION = this.errors?.feedback?.action;
+    this.FEEDBACKRESP_ALT = this.errors?.feedback?.resp_alt;
+    this.EIBFN_ALT = this.errors?.feedback?.eibfn_alt
   }
 }
