@@ -10,8 +10,8 @@
  */
 
 import { MessageItem } from "vscode";
-import { IError } from "./IError";
+import { ICICSExtensionError } from "./ICICSExtensionError";
 
 export interface ICICSErrorHandler {
-  notifyErrorMessage(error: IError): Thenable<string | MessageItem>;
+  notifyErrorMessage(error: ICICSExtensionError): Thenable<string | MessageItem>;
 }
