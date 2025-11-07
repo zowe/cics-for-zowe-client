@@ -124,7 +124,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.showMessage(l10n.t("No Active Regions found in ") + (cicsPlexName ?? ""));
+      Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
     }
   }
 
