@@ -14,7 +14,7 @@ import { IResourceMeta } from "../doc";
 import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui, ZoweVsCodeExtension, ZosEncoding } from "@zowe/zowe-explorer-api";
+import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
 import { CICSLogger } from "./CICSLogger";
 import { ProfileManagement } from "./profileManagement";
@@ -23,21 +23,25 @@ import { ProfileManagement } from "./profileManagement";
  * Checks if a profile supports a specific type of connection
  *
  * @param profile - The profile to check
- * @param connectionType - The type of connection to check for ('uss' or 'jes'), case-insensitive
+ * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss or ZoweExplorerApiType.Jes)
  * @returns True if the profile supports the specified connection type, false otherwise
  */
-export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: string): boolean {
+export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: ZoweExplorerApiType): boolean {
+  const explorerApi = ZoweVsCodeExtension.getZoweExplorerApi();
+
   try {
-    const type = connectionType.toLowerCase();
-    if (type === 'uss') {
-      ZoweVsCodeExtension.getZoweExplorerApi().getUssApi(profile);
-    } else if (type === 'jes') {
-      ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(profile);
-    } else {
-      return false;
+    switch (connectionType) {
+      case ZoweExplorerApiType.Uss:
+        explorerApi.getUssApi(profile);
+        break;
+      case ZoweExplorerApiType.Jes:
+        explorerApi.getJesApi(profile);
+        break;
+      default:
+        return false;
     }
     return true;
-  } catch (ex) {
+  } catch {
     CICSLogger.debug(`Profile ${profile.name} does not support connection type ${connectionType}`);
     return false;
   }
@@ -50,13 +54,14 @@ export function doesProfileSupportConnectionType(profile: IProfileLoaded, connec
  * @returns The base profile or undefined if none exists
  */
 export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
-  let baseForProfile = undefined;
+  let baseProfile = undefined;
   try {
-    baseForProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
+    baseProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
   } catch (ex) {
+    // this isn't an error we're interested in - we were checking if a base profile existed
     CICSLogger.debug(`No base profile found for ${profile.name}`);
   }
-  return baseForProfile;
+  return baseProfile;
 }
 
 /**
@@ -71,7 +76,7 @@ export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Pro
  * @returns A matching z/OS profile or undefined if no match is found
  */
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded | undefined> {
-  // Get the base profile for the CICS profile
+
   const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
   
   // Prioritize zosmf profiles and filter to only include profiles with credentials
@@ -93,7 +98,7 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
     
     if (matchingBaseProfiles.length > 0) {
       const selectedProfile = matchingBaseProfiles[0];
-      CICSLogger.debug(`Located matching z/OS profile by base profile: ${selectedProfile.name}`);
+      CICSLogger.info(`Located matching z/OS profile by base profile: ${selectedProfile.name}`);
       return selectedProfile;
     }
   }
@@ -104,7 +109,7 @@ export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosPro
   );
   
   if (sameHostProfile) {
-    CICSLogger.debug(`Located matching z/OS profile by hostname: ${sameHostProfile.name}`);
+    CICSLogger.info(`Located matching z/OS profile by hostname: ${sameHostProfile.name}`);
     return sameHostProfile;
   }
   
@@ -131,14 +136,14 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
     canPickMany: false,
   };
   const chosenProfileName = await Gui.showQuickPick(profileNames, quickPickOptions);
-  if (chosenProfileName === undefined) {
+  if (!chosenProfileName) {
     return chosenProfileName;
   }
   // if the profile they picked doesn't have credentials, prompt the user for them
   const chosenProfileLoaded = zosProfiles.filter((profile) => profile.name === chosenProfileName)[0];
   const chosenProfile = chosenProfileLoaded.profile;
   if (!(chosenProfile.user || chosenProfile.certFile || chosenProfile.tokenValue)) {
-    CICSLogger.debug(`Prompting for credentials for ${chosenProfileName}`);
+    CICSLogger.info(`Prompting for credentials for ${chosenProfileName}`);
     await ZoweVsCodeExtension.updateCredentials(
       {
         profile: chosenProfileLoaded,
@@ -231,7 +236,6 @@ export async function getResourceTree<T extends IResource>(
     if (!regionsNode) {
       return;
     }
-    
     await treeview.reveal(regionsNode, { expand: true });
 
     const regionTree = regionsNode.children.find((ch: any) => ch.label === regionName);

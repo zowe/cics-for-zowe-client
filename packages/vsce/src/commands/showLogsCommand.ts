@@ -10,6 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { ZoweExplorerApiType } from "@zowe/zowe-explorer-api";
 import { TreeView, commands, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -58,7 +59,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
 
     const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
     // do not include the FTP profile because it doesn't support spools for running jobs.
-    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, "jes"));
+    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes));
 
     let chosenProfileName: string;
 

@@ -8,16 +8,13 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-
-import { commands, TreeView, window } from "vscode";
+import { commands, window } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { ProfileManagement } from "../utils/profileManagement";
 import { IProfileLoaded } from "@zowe/imperative";
 import * as vscode from "vscode";
-import type { IZoweUSSTreeNode }
-    from "@zowe/zowe-explorer-api";
+import { ZoweExplorerApiType, type IZoweUSSTreeNode } from "@zowe/zowe-explorer-api";
 import { doesProfileSupportConnectionType, findRelatedZosProfiles, promptUserForProfile } from "../utils/commandUtils";
-
 /**
  * Creates a minimal USS tree node compatible with IZoweUSSTreeNode interface
  * 
@@ -34,43 +31,85 @@ function createUSSTreeNode(path: string, profileName: string, profile: IProfileL
         collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
         contextValue: "directory",
         getLabel: () => directoryName,
-        getChildren: async () => [] as IZoweUSSTreeNode[],
         getProfileName: () => profileName,
         getProfile: () => profile,
 
-    } as any as IZoweUSSTreeNode;
+    } as IZoweUSSTreeNode;
 }
 
+/**
+ * Creates a session node for USS explorer
+ *
+ * @param profileName - The name of the profile to use
+ * @param profile - The profile object
+ * @returns A session node object compatible with Zowe Explorer
+ */
+function createSessionNode(profileName: string, profile: IProfileLoaded) {
+    const node: any = {
+        label: profileName,
+        collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
+        contextValue: "uss_session",
+        profile: profile,
+        getProfile: () => profile,
+        getProfileName: () => profileName,
+        getSession: () => {
+            return {
+                ISession: {}
+            };
+        },
+        setProfileToChoice: () => {
+        },
+        setSessionToChoice: () => {
+        },
+        getParent: (): any => {
+            return undefined;
+        },
+        getChildren: (): any[] => {
+            return [];
+        },
+        getSessionNode: () => {
+            return node;
+        },
+        getLabel: () => {
+            return profileName;
+        },
+        openUSS: () => {
+        },
+        refreshUSS: () => {
+        },
+        getUSSDocumentFilePath: () => {
+            return "";
+        },
+    };
+    return node;
+}
 
-export function showBundleDirectory(treeview: TreeView<any>) {
+export function showBundleDirectory() {
     return commands.registerCommand("cics-extension-for-zowe.showBundleDirectory", async (selectedBundle) => {
         if (!selectedBundle) {
-            window.showErrorMessage(`No Bundle is selected from cics tree`);
+            window.showErrorMessage(`No CICS bundle is selected`);
             return;
         }
-        const bundleDir = selectedBundle.getContainedResource().resource.attributes?.bundledir;
+        const bundleDir = selectedBundle.getContainedResource()?.resource.attributes.bundledir;
         if (!bundleDir) {
-            window.showErrorMessage(`Could not find bundle directory for ${selectedBundle.getLabel()
+            window.showErrorMessage(`Could not find bundle directory for ${selectedBundle.getContainedResourceName()
                 }.`);
             return;
         }
         const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
-        const zosProfiles = allProfiles.filter((element) => doesProfileSupportConnectionType(element, "uss"));
+        const zosProfiles = allProfiles.filter((element) => doesProfileSupportConnectionType(element, ZoweExplorerApiType.Uss));
         let chosenProfileName: string;
-
         const matchingZosProfile = await findRelatedZosProfiles(selectedBundle.profile, zosProfiles);
-
         if (matchingZosProfile) {
             chosenProfileName = matchingZosProfile.name;
-        } else { // we couldn't find a matching profile - prompt the user with all zos profiles
+        } else {
+            // we couldn't find a matching profile - prompt the user with all zos profiles
             chosenProfileName = await promptUserForProfile(zosProfiles);
-            CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
-            if (chosenProfileName === null) {
-                window.showErrorMessage("Could not find any profiles that will access USS (for instance z/OSMF).");
-                return;
-            } else if (chosenProfileName === undefined) { // the user cancelled the quick pick
+            if (!chosenProfileName) {
+                // User cancelled the profile selection - exit quietly
                 return;
             }
+            CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
         }
         try { // Get the profile object from the name
             const chosenProfile = zosProfiles.find(profile => profile.name === chosenProfileName);
@@ -79,11 +118,23 @@ export function showBundleDirectory(treeview: TreeView<any>) {
                 return;
             }
             const ussNode = createUSSTreeNode(bundleDir, chosenProfileName, chosenProfile);
+            //If the selected profile is hidden, it should be loaded first
+            try {
+                const sessionNode = createSessionNode(chosenProfileName, chosenProfile);
+                CICSLogger.info(`Executing command: zowe.uss.fullPath for ${bundleDir}`);
+                await commands.executeCommand("zowe.uss.fullPath", sessionNode);
+            } catch (error) {
+                const message = String(error || "");
+                if (message.includes(`Cannot resolve tree item for element 0/0:${chosenProfileName} from extension Zowe.vscode-extension-for-zowe`)) {
+                    CICSLogger.debug(`Tree item resolution issue (expected): ${error}`);
+                } else {
+                    CICSLogger.error(`Failed to load USS session: ${error}`);
+                }
+            }
             await commands.executeCommand("zowe.uss.filterBy", ussNode);
-
         } catch (error) {
-            CICSLogger.error(`Failed to show bundle directory in USS view: ${error}`);
             window.showErrorMessage(`Unable to open bundle directory in USS view.`);
+            CICSLogger.error(`Failed to open bundle directory in USS view: ${error}.`);
         }
     });
 }

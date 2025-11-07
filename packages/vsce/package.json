@@ -341,7 +341,7 @@
         },
         {
           "command": "cics-extension-for-zowe.showBundleDirectory",
-          "when": "config.zowe.cics.showAllCommandsInPalette"
+          "when": "never"
         },
         {
           "command": "cics-extension-for-zowe.clearFilter",
@@ -517,7 +517,7 @@
           "group": "1.CICSResourceNode.inquire"
         },
         {
-          "when": "view == cics-view && (viewItem =~ /^CICSResourceNode.CICSBundle.(ENABLED|DISABLED).*/)",
+          "when": "view == cics-view && (viewItem =~ /^CICSResourceNode.CICSBundle.*/) &&  !listMultiSelection",
           "command": "cics-extension-for-zowe.showBundleDirectory",
           "group": "1.CICSResourceNode.inquire"
         },
