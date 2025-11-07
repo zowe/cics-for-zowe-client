@@ -93,4 +93,19 @@ export class CICSSessionTree extends TreeItem {
   public setIsExpanded(isExpanded: boolean) {
     this.collapsibleState = isExpanded ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
   }
+
+  public getRegionNodeFromName(regionName: string, cicsplexName?: string): CICSRegionTree | undefined {
+
+    if (cicsplexName) {
+
+      const plexNode = this.children.find((plex) => plex instanceof CICSPlexTree && plex.plexName === cicsplexName) as CICSPlexTree;
+      if (plexNode?.children.length > 0) {
+        return plexNode.getRegionNodeFromName(regionName);
+      }
+
+    } else {
+      return this.children.find((reg) => reg instanceof CICSRegionTree && reg.getRegionName() === regionName) as CICSRegionTree;
+    }
+
+  }
 }

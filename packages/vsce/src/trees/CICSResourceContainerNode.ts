@@ -9,15 +9,14 @@
  *
  */
 
-import { Gui, imperative } from "@zowe/zowe-explorer-api";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { TreeItemCollapsibleState, TreeItemLabel } from "vscode";
-import { CICSPlexTree, CICSTree } from ".";
-import { ICICSTreeNode, IChildResource, IContainedResource } from "../doc";
+import { CICSPlexTree, TextTreeItem } from ".";
+import { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
-import { TextTreeItem } from "./TextTreeItem";
 import { ViewMore } from "./ViewMore";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
@@ -25,27 +24,29 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   regionName?: string;
   cicsplexName: string;
 
-  viewMore: boolean = false;
-  refreshingDescription: boolean = false;
-  loading: boolean = false;
+  private requireDescriptionUpdate: boolean = false;
 
   defaultDescription: string;
+
+  private items: IContainedResource<IResource>[] = [];
+  private fetcher?: ResourceContainer;
+
 
   constructor(
     label: string | TreeItemLabel,
     opts: {
       parentNode: CICSRegionTree | CICSResourceContainerNode<IResource> | CICSPlexTree;
       profile: imperative.IProfileLoaded;
-      cicsplexName: string;
-      regionName?: string; //Not provided means combined tree..?
+      cicsplexName?: string;
+      regionName?: string;
     },
     private containedResource?: IContainedResource<T>,
-    private childResource?: IChildResource<T>,
+    public resourceTypes: IResourceMeta<T>[] = [],
     description?: string
   ) {
     super(
       label,
-      childResource?.meta ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None,
+      resourceTypes.length > 0 ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None,
       // @ts-ignore
       opts.parentNode,
       opts.profile
@@ -54,6 +55,18 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     this.defaultDescription = description;
     this.regionName = opts.regionName;
     this.cicsplexName = opts.cicsplexName;
+
+    if (resourceTypes.length > 0) {
+      this.fetcher = new ResourceContainer(
+        this.resourceTypes,
+        {
+          profileName: this.getProfileName(),
+          cicsplexName: this.cicsplexName,
+          regionName: this.regionName,
+        },
+        this.containedResource?.resource
+      );
+    }
 
     this.buildProperties();
   }
@@ -65,10 +78,10 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.contextValue = `CICSResourceNode.${this.containedResource.meta.getContext(this.containedResource.resource)}`;
       this.label = this.containedResource.meta.getLabel(this.containedResource.resource);
     }
-    if (this.childResource?.meta) {
+    if (this.resourceTypes.length > 0) {
       this.contextValue += `.FILTERABLE`;
     }
-    if (this.childResource?.resources?.isFilterApplied()) {
+    if (this.fetcher?.isCriteriaApplied()) {
       this.contextValue += `.FILTERED`;
     }
 
@@ -79,102 +92,46 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     this.iconPath = this.containedResource?.meta ? IconBuilder.resource(this.containedResource) : IconBuilder.folder(folderOpen);
   }
 
-  setLoading(isLoading: boolean = true) {
-    this.loading = isLoading;
+  setContainedResource(resource: Resource<T>) {
+    this.containedResource = {
+      meta: this.containedResource.meta,
+      resource,
+    };
   }
 
-  async loadPageOfResources() {
-    if (this.loading) {
-      return;
-    }
-    this.setLoading();
+  updateStoredItem(updatedItm: IContainedResource<T>) {
+    let indexOfOutdatedResource = 0;
 
-    if (!this.viewMore) {
-      this.childResource.resources.resetContainer();
-    }
+    const filtered = this.items.filter((itm, idx) => {
 
-    const thisParent = this.getParent() as CICSPlexTree | CICSRegionTree | CICSResourceContainerNode<T>;
-    const regionToSupply =
-      thisParent instanceof CICSPlexTree || thisParent instanceof CICSRegionTree ?
-        this.regionName
-        : this.getContainedResource().resource.attributes.eyu_cicsname;
+      // Using the resource name AND region applid as unique identifier
+      const currentResName = itm.meta.getName(itm.resource);
+      const currentResReg = itm.resource.attributes.eyu_cicsname;
 
-    // Searching for resources, with or without region
-    const [resources, moreToFetch] = await this.childResource.resources.loadResources(this.getProfile(), regionToSupply, this.cicsplexName);
+      const updatedResName = updatedItm.meta.getName(updatedItm.resource);
+      const updatedResReg = updatedItm.resource.attributes.eyu_cicsname;
 
-    if (!resources.length) {
-      Gui.infoMessage("No resources found");
-    }
+      if (currentResName === updatedResName && currentResReg === updatedResReg) {
+        indexOfOutdatedResource = idx;
+        return false;
+      }
 
-    this.children = resources
-      .map(
-        (resource) =>
-          new CICSResourceContainerNode(
-            this.childResource.meta.getLabel(resource),
-            {
-              parentNode: this,
-              cicsplexName: this.cicsplexName,
-              regionName: this.regionName,
-              profile: this.getProfile(),
-            },
-            {
-              resource,
-              meta: this.childResource.meta,
-            },
-            {
-              meta: this.childResource.meta.childType,
-              resources: this.childResource.meta.childType ? new ResourceContainer(this.childResource.meta.childType, resource) : null,
-            },
-            this.regionName ? null : `(${resource.attributes.eyu_cicsname})`
-          )
-      )
-      .sort((a, b) => (a.getContainedResourceName() > b.getContainedResourceName() ? 1 : -1));
+      return true;
+    });
 
-    if (moreToFetch) {
-      this.children.push(new ViewMore(this));
-    }
-
-    this.refreshingDescription = true;
-    this.description = `${this.defaultDescription ? this.defaultDescription + " " : ""}${
-      this.childResource.resources.isFilterApplied() ? this.childResource.resources.getFilter() : ""
-    } [${resources.length} of ${this.childResource.resources.getTotalResources()}]`;
-
-    this.setLoading(false);
-    (this.getSessionNode().getParent() as CICSTree)._onDidChangeTreeData.fire(this);
+    filtered.splice(indexOfOutdatedResource, 0, updatedItm);
+    this.items = filtered;
   }
 
-  getContainedResourceName(): string {
-    return this.getContainedResource()?.meta.getName(this.getContainedResource()?.resource);
+  setCriteria(criteria: string[]) {
+    this.fetcher?.setCriteria(criteria);
+    this.contextValue.replaceAll(".FILTERED", "");
+    this.contextValue += `.FILTERED`;
   }
 
-  async getChildren(): Promise<(ICICSTreeNode | TextTreeItem)[]> {
-    // Resource type does not have children
-    if (!this.childResource?.meta) {
-      this.viewMore = false;
-      return null;
-    }
-
-    if (this.viewMore) {
-      this.viewMore = false;
-      return this.children;
-    }
-    if (this.refreshingDescription) {
-      this.refreshingDescription = false;
-      return this.children;
-    }
-
-    // No region so searching at a plex level - filter must be specified
-    // Only apply this check to top-level nodes, so resources with children can show them immediately
-    if (this.getParent() instanceof CICSPlexTree && !this.regionName && !this.childResource.resources.isFilterApplied()) {
-      this.viewMore = false;
-      return (this.children = [new TextTreeItem("Use the search button to filter resources", "applyfiltertext.")]);
-    }
-
-    await this.loadPageOfResources();
-    this.refreshIcon(true);
-    this.viewMore = false;
-    this.childResource.resources.resetNumberToFetch();
-    return this.children;
+  clearCriteria() {
+    this.fetcher?.resetCriteria();
+    this.contextValue = this.contextValue.replaceAll(".FILTERED", "");
   }
 
   getSessionNode() {
@@ -185,24 +142,109 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     return this.containedResource;
   }
 
-  setContainedResource(resource: Resource<T>) {
-    this.containedResource = {
-      meta: this.containedResource.meta,
-      resource,
-    };
+  getContainedResourceName() {
+    return this.containedResource.meta.getName(this.containedResource.resource);
   }
 
-  getChildResource(): IChildResource<T> {
-    return this.childResource;
+  async getChildren(): Promise<(CICSResourceContainerNode<IResource> | ViewMore | TextTreeItem)[]> {
+    if (!this.fetcher) {
+      return [];
+    }
+
+    if (this.requireDescriptionUpdate) {
+      this.requireDescriptionUpdate = false;
+      return this.children as (CICSResourceContainerNode<IResource> | ViewMore)[];
+    }
+
+    if (!this.regionName && !this.getFetcher()?.isCriteriaApplied()) {
+      this.children = [new TextTreeItem("Use the search button to filter resources", "applyfiltertext.")];
+      this.description = '';
+      this.updateDescription();
+      return this.children;
+    }
+
+    if (this.items.length === 0) {
+      const fetched = await this.fetcher.fetchNextPage();
+      this.items.push(...fetched);
+    }
+
+    const children: (CICSResourceContainerNode<IResource> | ViewMore)[] = this.items.map(
+      (r) =>
+        new CICSResourceContainerNode(
+          r.meta.getLabel(r.resource),
+          {
+            cicsplexName: this.cicsplexName,
+            regionName: this.regionName,
+            parentNode: this,
+            profile: this.profile,
+          },
+          {
+            meta: r.meta,
+            resource: r.resource,
+          },
+          r.meta.childType,
+          this.regionName ? null : `(${r.resource.attributes.eyu_cicsname})`
+        ),
+    );
+
+    if (this.fetcher.hasMore()) {
+      children.push(new ViewMore(this));
+    }
+
+    this.children = children;
+
+    this.buildDescription();
+    this.updateDescription();
+
+    return children;
   }
 
-  setFilter(filter: string[]) {
-    this.childResource.resources.setCriteria(filter);
-    this.contextValue += `.FILTERED`;
+  private updateDescription() {
+    this.requireDescriptionUpdate = true;
+    // @ts-ignore
+    this.getSessionNode().getParent().refresh(this);
   }
 
-  async clearFilter() {
-    await this.childResource.resources.resetCriteria();
-    this.contextValue = this.contextValue.replace(".FILTERED", "");
+  private buildDescription() {
+    this.description = ``;
+    if (this.defaultDescription) {
+      this.description += `${this.defaultDescription} `;
+    }
+    if (this.getFetcher().isCriteriaApplied()) {
+      this.description += `${this.getFetcher().getCriteria(this.resourceTypes[0])} `;
+    }
+    const progress = this.fetcher.getProgress();
+    if (progress) {
+      this.description += `[${progress}]`;
+    }
+
+    this.description = this.description.trim();
+  }
+
+  async fetchNextPage() {
+    if (!this.fetcher) {
+      return;
+    }
+    const fetched = await this.fetcher.fetchNextPage();
+    this.items.push(...fetched);
+
+    this.updateDescription();
+  }
+
+  getFetcher() {
+    return this.fetcher;
+  }
+
+  hasMore(): boolean {
+    return this.fetcher?.hasMore() ?? false;
+  }
+
+  reset() {
+    this.items = [];
+    this.fetcher?.reset();
+  }
+
+  public getChildNodeMatchingResourceName(resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined {
+    return this.children.find((child: CICSResourceContainerNode<IResource>) => child.getContainedResourceName() === resource.meta.getName(resource.resource)) as CICSResourceContainerNode<IResource>;
   }
 }

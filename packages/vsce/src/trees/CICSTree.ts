@@ -9,6 +9,7 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import {
@@ -20,11 +21,13 @@ import {
   QuickPickOptions,
   TreeDataProvider,
   TreeItem,
+  TreeView,
   commands,
   l10n,
   window,
 } from "vscode";
 import constants from "../constants/CICS.defaults";
+import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
 import { getErrorCode } from "../utils/errorUtils";
@@ -35,16 +38,27 @@ import { runGetResource } from "../utils/resourceUtils";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { SessionHandler } from "../resources";
+import { IProfileLoaded } from "@zowe/imperative";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
+
+    commands.registerCommand("cics-extension-for-zowe.viewMore", async (node: CICSResourceContainerNode<IResource>) => {
+      await node.fetchNextPage();
+      this.refresh(node);
+    });
+
     this.loadStoredProfileNames();
   }
   public getLoadedProfiles() {
     return this.loadedProfiles;
+  }
+
+  public getSessionNodeForProfile(profile: IProfileLoaded) {
+    return this.getLoadedProfiles().find((sessionNode) => sessionNode.getProfile() === profile);
   }
 
   public async refreshLoadedProfiles() {
@@ -422,4 +436,12 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     this._onDidChangeTreeData.fire(node);
   }
 
+  hookCollapseWatcher(view: TreeView<TreeItem>) {
+    view.onDidCollapseElement((e) => {
+      if (e.element instanceof CICSResourceContainerNode) {
+        e.element.reset();
+        this.refresh(e.element);
+      }
+    });
+  }
 }

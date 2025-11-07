@@ -20,10 +20,12 @@ import IconBuilder from "../utils/IconBuilder";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
+import { CICSTree } from ".";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
   private static instance: ResourceInspectorViewProvider;
+  public cicsTree: CICSTree;
 
   private context: ExtensionContext;
   private node: CICSResourceContainerNode<IResource>;
@@ -38,9 +40,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     private webviewReady: boolean = false
   ) {}
 
-  public static getInstance(context: ExtensionContext): ResourceInspectorViewProvider {
+  public static getInstance(context: ExtensionContext, cicsTree?: CICSTree): ResourceInspectorViewProvider {
     if (!this.instance) {
       this.instance = new ResourceInspectorViewProvider(context.extensionUri);
+      this.instance.cicsTree = cicsTree;
     }
     this.instance.context = context;
     return this.instance;

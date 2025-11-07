@@ -53,6 +53,18 @@ const prog2: IProgram = {
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
 };
+const locFile1: ILocalFile = {
+  browse: "",
+  dsname: "A.B.C",
+  enablestatus: "ENABLED",
+  eyu_cicsname: "MYREG",
+  file: "AS",
+  keylength: "",
+  openstatus: "OPEN",
+  read: "",
+  recordsize: "",
+  vsamtype: ""
+};
 
 const runGetCacheMock = jest.fn();
 
@@ -68,20 +80,22 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
-import { ProgramMeta } from "../../../src/doc";
-import { Resource } from "../../../src/resources";
+import { LocalFileMeta, ProgramMeta } from "../../../src/doc";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-import { IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { ILocalFile, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 const prof = { ...CICSProfileMock, host: "hostname" };
 const profileMock = { failNotFound: false, message: "", type: "cics", name: "MYPROF", profile: prof };
 
 describe("Resource Container", () => {
-  let container: ResourceContainer<IResource>;
+  let container: ResourceContainer;
 
   beforeEach(() => {
-    container = new ResourceContainer(ProgramMeta);
+    container = new ResourceContainer([ProgramMeta], {
+      profileName: profileMock.name,
+      regionName: "MYREG"
+    });
 
     jest.clearAllMocks();
 
@@ -101,6 +115,7 @@ describe("Resource Container", () => {
         resultsummary: {
           api_response1: "1024",
           cachetoken: "MYCACHETOKEN",
+          recordcount: "2",
         },
       },
     });
@@ -108,103 +123,86 @@ describe("Resource Container", () => {
 
   it("creates resource container", () => {
     expect(container).toBeDefined();
-    expect(container.getMeta()).toBe(ProgramMeta);
   });
 
   it("should default values on instantiation", () => {
-    expect(container.isFilterApplied()).toBeFalsy();
-    expect(container.getResources()).toEqual([]);
-    expect(container.getResource()).toBeUndefined();
-    expect(container.getFetchedAll()).toBeFalsy();
+    expect(container.isCriteriaApplied()).toBeFalsy();
+    expect(container.hasMore()).toBeFalsy();
   });
 
   it("should set criteria", async () => {
-    // @ts-ignore - private property
-    expect(container.criteria).toEqual(await ProgramMeta.getDefaultCriteria());
+    expect(container.getCriteria(ProgramMeta)).toEqual(ProgramMeta.getDefaultCriteria());
     container.setCriteria(["a", "b"]);
-    // @ts-ignore - private property
-    expect(container.criteria).toEqual("PROGRAM=a OR PROGRAM=b");
+    expect(container.getCriteria(ProgramMeta)).toEqual("PROGRAM=a OR PROGRAM=b");
   });
 
-  it("should set numtoFetch", async () => {
-    // @ts-ignore - private property
-    expect(container.numberToFetch).toEqual(250);
-    container.setNumberToFetch(12);
-    // @ts-ignore - private property
-    expect(container.numberToFetch).toEqual(12);
-    await container.resetNumberToFetch();
-    // @ts-ignore - private property
-    expect(container.numberToFetch).toEqual(250);
+  it("should get region name", () => {
+    expect(container.getRegionName()).toEqual("MYREG");
   });
-
-  it("should load resources with no plexname and no cache token", async () => {
-    // @ts-ignore - private property
-    expect(container.cacheToken).toBeNull();
-
-    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
-    expect(moreToFetch).toBeFalsy();
-    expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
-
-    expect(runGetResourceMock).toHaveBeenCalledWith({
-      profileName: "MYPROF",
-      resourceName: "CICSProgram",
-      cicsPlex: undefined,
-      regionName: "MYREG",
-      params: {
-        criteria: await ProgramMeta.getDefaultCriteria(),
-        queryParams: {
-          summonly: true,
-          nodiscard: true,
-          overrideWarningCount: true,
-        },
-      },
+  it("should get profile name", () => {
+    expect(container.getProfileName()).toEqual("MYPROF");
+  });
+  it("should get plex name when not set", () => {
+    expect(container.getPlexName()).toBeUndefined();
+  });
+  it("should get plex name when set", () => {
+    container = new ResourceContainer([ProgramMeta], {
+      profileName: profileMock.name,
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG"
     });
-    expect(runGetCacheMock).toHaveBeenCalledTimes(2);
+    expect(container.getPlexName()).toEqual("MYPLEX");
   });
 
-  it("should load resources with cache token", async () => {
-    // @ts-ignore - private property
-    container.cacheToken = "NEWTOKEN";
+  it("should ensure summaries", async () => {
+    container = new ResourceContainer([ProgramMeta, LocalFileMeta], {
+      profileName: profileMock.name,
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG"
+    });
 
-    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
-    expect(moreToFetch).toBeFalsy();
-    expect(resources).toEqual([new Resource<IProgram>(prog1), new Resource<IProgram>(prog2)]);
+    expect(container.isCriteriaApplied()).toBeFalsy();
 
-    expect(runGetResourceMock).toHaveBeenCalledTimes(0);
-    expect(runGetCacheMock).toHaveBeenCalledTimes(2);
-  });
-
-  it("should load resources and get NODATA", async () => {
-    runGetResourceMock.mockResolvedValue({
+    runGetCacheMock.mockResolvedValueOnce({
       response: {
         resultsummary: {
-          api_response1: "1027",
+          recordcount: "2",
+        },
+        records: {
+          cicsprogram: [prog1, prog2],
+        },
+      },
+    }).mockResolvedValueOnce({
+      response: {
+        resultsummary: {
+          recordcount: "1",
+        },
+        records: {
+          cicsprogram: [locFile1],
         },
       },
     });
 
-    const [resources, moreToFetch] = await container.loadResources(profileMock, "MYREG", undefined);
-    expect(moreToFetch).toBeFalsy();
-    expect(resources).toEqual([]);
-    // @ts-ignore - private property
-    expect(container.cacheToken).toBeNull();
-    // @ts-ignore - private property
-    expect(container.fetchedAll).toBeTruthy();
-
-    expect(runGetResourceMock).toHaveBeenCalledWith({
-      profileName: "MYPROF",
-      resourceName: "CICSProgram",
-      cicsPlex: undefined,
-      regionName: "MYREG",
-      params: {
-        criteria: await ProgramMeta.getDefaultCriteria(),
-        queryParams: {
-          summonly: true,
-          nodiscard: true,
-          overrideWarningCount: true,
+    runGetResourceMock.mockResolvedValueOnce({
+      response: {
+        resultsummary: {
+          api_response1: "1024",
+          cachetoken: "MYCACHETOKEN",
+          recordcount: "2",
+        },
+      },
+    }).mockResolvedValueOnce({
+      response: {
+        resultsummary: {
+          api_response1: "1024",
+          cachetoken: "MYCACHETOKEN2",
+          recordcount: "1",
         },
       },
     });
-    expect(runGetCacheMock).toHaveBeenCalledTimes(0);
+
+    const res = await container.fetchNextPage();
+
+    expect(res).toHaveLength(3);
   });
 });
