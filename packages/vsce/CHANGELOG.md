@@ -17,6 +17,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
 - Enhancement: Added highlights for Program and Transactions. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
+- Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `3.14.0`
 
@@ -24,7 +25,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Added Enable/Disable actions to JVM Endpoints. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
 - Bugfix: Refresh CICS Resource Inspector panel after performing action. [#433](https://github.com/zowe/cics-for-zowe-client/issues/433)
 - Enhancement: Add Update Credentials option to the Manage Profile menu. [#451](https://github.com/zowe/cics-for-zowe-client/issues/451)
-- Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 - Enhancement: Show CICS bundlepart enablestatus in label and icon. [#467](https://github.com/zowe/cics-for-zowe-client/issues/467)
 - Bugfix: Enable MFA CMCI connections using LTPA tokens. [#381](https://github.com/zowe/cics-for-zowe-client/issues/381)
 
