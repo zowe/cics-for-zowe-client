@@ -10,14 +10,14 @@
  */
 
 import { CICSExtensionError } from "./CICSExtensionError";
-import { IError } from "./IError";
+import { ICICSExtensionError } from "./ICICSExtensionError";
 import errorConstants from "../constants/CICS.errorMessages";
 import { ICICSErrorHandler } from "./ICICSErrorHandler";
 import { MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { Gui } from "@zowe/zowe-explorer-api";
 
-export function resourceNotFoundError(error?: IError) {
+export function resourceNotFoundError(error?: ICICSExtensionError) {
   if (!error) {
     error.errorMessage = errorConstants.NO_CICS_RESOURCE_SELECTED;
   }

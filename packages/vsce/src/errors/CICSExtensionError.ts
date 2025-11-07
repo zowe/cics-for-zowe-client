@@ -9,13 +9,13 @@
  *
  */
 
-import { IError } from "./IError";
+import { ICICSExtensionError } from "./ICICSExtensionError";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import constants from "../constants/CICS.defaults";
 
 export class CICSExtensionError extends Error {
-  cicsExtensionError: IError;
+  cicsExtensionError: ICICSExtensionError;
   constructor(error?: any) {
     super();
     this.cicsExtensionError = error;
