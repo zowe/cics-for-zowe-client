@@ -6,11 +6,11 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 - Added CICS Remote File resource constant. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
 - Added TS Queue and Shared TS Queue constants. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
+- Enhancement: Added PUT API [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `6.14.0`
 
 - Changes to JVM Endpoint CICS CMCI constant. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)
-- Enhancement: Added PUT API [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `6.13.0`
 
