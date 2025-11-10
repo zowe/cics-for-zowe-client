@@ -8,7 +8,15 @@ A straight forward way for extenders to contribute actions to CICS Resources wou
 
 VS Code uses the [contributes section of the package.json](https://code.visualstudio.com/api/references/contribution-points#contributes.menus) to specify when actions should be visible on a tree item.
 
-Inside `contributes.menus.view/item/context`, a block can be added to add your existing command to a CICS tree item using the `viewItem =~` pattern.
+Inside `contributes.menus.view/item/context`, a block can be added to add your existing command to a CICS tree item's context menu using the `viewItem =~` pattern. Regex can be used to match to specific combinations of CICS resources and attributes. The Zowe Explorer for IBM CICS TS extension's [`package.json`](https://github.com/zowe/cics-for-zowe-client/blob/main/packages/vsce/package.json) is a great place to see how context menus are applied to different resources.
+
+CICS resource nodes all follow the same pattern of `CICSResourceNode.<CICS resource type>.<CICS resource name>`. If a resource has a Status attribute, this is also included. Some examples include:
+- CICSResourceNode.CICSTCPIPService.MYTCPIP
+- CICSResourceNode.CICSProgram.ENABLED.MYPROG1
+- CICSResourceNode.CICSJVMServer.DISABLED.JVMSRV
+
+The other exception is CICS Local Files that also contain the Open Status. That will look something like:
+- CICSResourceNode.CICSLocalFile.DISABLED.CLOSED.MYFILE1
 
 ### Example Context Menu
 
@@ -148,7 +156,7 @@ export async function activate(ctx) {
 }
 ```
 
-2. Run a custom function when a CICS Program is enabled
+2. Run a custom function on an enabled CICS Program
 
 This examples utilises the `visibleWhen` field to only show the action when the CICS Program is enabled, as well as passing a custom function to `action` to log information about the resource and it's context.
 
