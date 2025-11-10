@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
 - Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
 
 ## `3.14.0`
