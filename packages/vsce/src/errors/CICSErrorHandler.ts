@@ -12,7 +12,6 @@
 import { CICSExtensionError } from "./CICSExtensionError";
 import { ICICSExtensionError } from "./ICICSExtensionError";
 import errorConstants from "../constants/CICS.errorMessages";
-import { ICICSErrorHandler } from "./ICICSErrorHandler";
 import { MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { Gui } from "@zowe/zowe-explorer-api";
@@ -23,15 +22,16 @@ export function resourceNotFoundError(error?: ICICSExtensionError) {
   }
 }
 
-export class CICSErrorHandler implements ICICSErrorHandler {
-  handleCMCIRestError(error: CICSExtensionError): Thenable<string | MessageItem> {
+export class CICSErrorHandler {
+
+  static handleCMCIRestError(error: CICSExtensionError): Thenable<string | MessageItem> {
     const msg = error.cicsExtensionError.errorMessage;
     return this.notifyErrorMessage({ errorMessage: msg });
   }
 
   handleExtensionError() {}
 
-  notifyErrorMessage({
+  private static notifyErrorMessage({
     errorMessage,
     additionalInfo,
     action,
@@ -51,7 +51,7 @@ export class CICSErrorHandler implements ICICSErrorHandler {
     return Gui.errorMessage(errorMessage);
   }
 
-  private trimLineBreaks(msg: string) {
+  private static trimLineBreaks(msg: string) {
     return msg.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
   }
 }

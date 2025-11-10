@@ -21,7 +21,7 @@ export class CICSExtensionError extends Error {
     this.cicsExtensionError = error;
     this.parseError(this.cicsExtensionError.baseError);
   }
-  CMCI_REST_API_FAILED = "The CMCI REST API request failed. ";
+
   parseError(error: any) {
     if (error instanceof CicsCmciRestError) {
       const resultSummary = error.resultSummary;
@@ -31,13 +31,13 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
       if (feedback) {
-        this.cicsExtensionError.errorMessage = `${this.CMCI_REST_API_FAILED}
+        this.cicsExtensionError.errorMessage = `The CMCI REST API request failed. 
         Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")} 
         resource with API_FUNCTION: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
         Please refer to the IBM documentation for resp code details`;
       } else {
         this.cicsExtensionError.errorMessage =
-          `${this.CMCI_REST_API_FAILED}` +
+          `The CMCI REST API request failed. ` +
           `Response details: API_FUNCTION: ${api_function},  ` +
           `RESP: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
           `RESP2: ${resultSummary.api_response2} (${resultSummary.api_response2_alt}). ` +
@@ -48,7 +48,7 @@ export class CICSExtensionError extends Error {
       const resource = error.mDetails.resource;
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
-      this.cicsExtensionError.errorMessage = `${this.CMCI_REST_API_FAILED} 
+      this.cicsExtensionError.errorMessage = `The CMCI REST API request failed. 
       Response details -  Status code: ${errorCode}, URL: ${resource}, Message: ${msg}`;
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
@@ -58,7 +58,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
     } else {
       const err = error as Error;
-      this.cicsExtensionError.errorMessage = `${this.CMCI_REST_API_FAILED} ` + `Error message: ${err.message}, ` + `Cause: ${err.cause}`;
+      this.cicsExtensionError.errorMessage = `The CMCI REST API request failed. Error message: ${err.message}, ` + `Cause: ${err.cause}`;
     }
   }
 }
