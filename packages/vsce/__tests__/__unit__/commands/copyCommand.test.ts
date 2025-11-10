@@ -12,11 +12,18 @@
 import type { Extension } from "vscode";
 import * as vscode from "vscode";
 
+import { setupVscodeL10nStub } from "../../__utils__/globalMocks";
+setupVscodeL10nStub();
+
+const vscodeModule = require("vscode") as typeof import("vscode");
+
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",
   },
 } as Extension<any>);
+
+(vscodeModule as any).env = (vscodeModule as any).env ?? { clipboard: { writeText: async (_: string) => {} } };
 
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
@@ -27,10 +34,6 @@ import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-
-(vscode as any).l10n = {
-  t: (key: string, ..._args: any[]) => key,
-};
 
 let mockedClipboard = ``;
 jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => {
