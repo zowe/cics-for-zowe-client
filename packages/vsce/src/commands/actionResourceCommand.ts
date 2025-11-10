@@ -75,7 +75,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
         } catch (error) {
-          new CICSErrorHandler().handleCMCIRestError(error);
+          CICSErrorHandler.handleCMCIRestError(error);
         }
       }
       nodesToRefresh.forEach((v) => {

@@ -284,7 +284,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               if (error instanceof CICSExtensionError) {
                 if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
                   error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, profile.name);
-                  new CICSErrorHandler().handleCMCIRestError(error);
+                  CICSErrorHandler.handleCMCIRestError(error);
                   sessionTree.setUnauthorized();
                   profile = await updateProfile(profile, sessionTree);
 
@@ -297,7 +297,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
                   plexInfo = await ProfileManagement.getPlexInfo(profile);
                   sessionTree.setAuthorized();
                 } else {
-                  new CICSErrorHandler().handleCMCIRestError(error);
+                  CICSErrorHandler.handleCMCIRestError(error);
                 }
               }
             }
