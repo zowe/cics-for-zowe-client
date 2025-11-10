@@ -15,27 +15,31 @@ import * as vscode from "vscode";
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",
-  }
+  },
 } as Extension<any>);
 
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
 }));
 
-
-import { copyUserAgentHeaderToClipboard, copyResourceNameToClipboard } from "../../../src/commands/copyCommand";
-import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
-import { ProgramMeta } from "../../../src/doc";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../../../src/commands/copyCommand";
+import { ProgramMeta } from "../../../src/doc";
+import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
+import { CICSProfileMock } from "../../__utils__/globalMocks";
+
+(vscode as any).l10n = {
+  t: (key: string, ..._args: any[]) => key,
+};
 
 let mockedClipboard = ``;
-jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => { mockedClipboard = v; });
+jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => {
+  mockedClipboard = v;
+});
 
 const profile = { name: "MYPROF", profile: CICSProfileMock, failNotFound: false, message: "", type: "cics" };
 
 describe("Test suite for copy commands", () => {
-
   beforeEach(() => {
     mockedClipboard = ``;
   });
