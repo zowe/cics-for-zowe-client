@@ -37,9 +37,9 @@ export class CICSExtensionError extends Error {
         Please refer to the IBM documentation for resp code details`;
       } else {
         this.cicsExtensionError.errorMessage =
-          `The CMCI REST API request failed. ` +
+          `${this.CMCI_REST_API_FAILED}` +
           `Response details: API_FUNCTION: ${api_function},  ` +
-          `RESP1: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
+          `RESP: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
           `RESP2: ${resultSummary.api_response2} (${resultSummary.api_response2_alt}). ` +
           `Please refer to the IBM documentation for resp code details`;
       }
@@ -49,7 +49,7 @@ export class CICSExtensionError extends Error {
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
       this.cicsExtensionError.errorMessage = `${this.CMCI_REST_API_FAILED} 
-      Response details: Status code: ${errorCode}, URL: ${resource}, Message: ${msg}`;
+      Response details -  Status code: ${errorCode}, URL: ${resource}, Message: ${msg}`;
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
