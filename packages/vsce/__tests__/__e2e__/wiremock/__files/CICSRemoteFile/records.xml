@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+	version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
+		recordcount="1" displayed_recordcount="1" />
+	<records>
+		<cicsremotefile _keydata="E3E6E8C4D9C5D440" addcnt="0" basdefinever="0" browsecnt="0" changeagent="CSDAPI"
+		 changeagrel="0750" changetime="2025-09-09T17:12:23.000000+00:00" changeusrid="USER" definesource="GRP1"
+		  definetime="2025-09-02T13:56:42.000000+00:00" eyu_cicsname="IYCWEPW2" eyu_cicsrel="E750" eyu_reserved="0" 
+			file="REMFILE1" getcnt="0" getupdcnt="0" installagent="CSDAPI" installtime="2025-11-10T17:46:29.000000+00:00" 
+			installusrid="CICSUSER" keylength="0" remdelcnt="0" remotename="LOCFILE1" remotesystem="REG1" updatecnt="0"/>
+	</records>
+</response>
