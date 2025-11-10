@@ -218,7 +218,7 @@ export class ResourceContainer {
       }
       allocations = this.calculateAllocations(available, this.pageSize);
     } catch (error) {
-      new CICSErrorHandler().handleCMCIRestError(error);
+      CICSErrorHandler.handleCMCIRestError(error);
     }
     return this.fetchRecordsForAllocations(allocations);
   }
