@@ -111,7 +111,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableJVMServer = async (treeNode: CICSResourceContainerNode<IJVMServer>) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS JVM Server selected"));
+      await window.showErrorMessage(l10n.t("No CICS JVM server selected"));
       return;
     }
 
