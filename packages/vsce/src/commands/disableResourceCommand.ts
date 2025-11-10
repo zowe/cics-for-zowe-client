@@ -88,7 +88,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
       action: "DISABLE",
       nodes,
       tree,
-      parameter: { name: "BUSY", value: busyDecision.replace(" ", "").toUpperCase() },
+      parameter: { name: "BUSY", value: busyDecision },
     });
   };
 
@@ -137,7 +137,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
       nodes,
       tree,
       pollCriteria: (response) => response.records?.cicsjvmserver?.enablestatus.toUpperCase() === "DISABLED",
-      parameter: { name: "PURGETYPE", value: disableType.replace(" ", "").toUpperCase() },
+      parameter: { name: "PURGETYPE", value: disableType },
     });
   };
 
