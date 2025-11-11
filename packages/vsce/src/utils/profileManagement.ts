@@ -89,10 +89,10 @@ export class ProfileManagement {
         errorMessage = `${error.errorCode} requesting Region groups.`;
       }
       if (errorMessage) {
-        throw new CICSExtensionError({ errorMessage: errorMessage });
+        throw new CICSExtensionError({ baseError: error, errorMessage: errorMessage });
       }
 
-      throw new CICSExtensionError({ errorMessage: error });
+      throw new CICSExtensionError({ baseError: error, errorMessage: error });
     }
 
     return isGroup;
@@ -246,7 +246,7 @@ export class ProfileManagement {
           });
         }
       } catch (error) {
-        throw new CICSExtensionError({ errorMessage: `Error retrieving cache - ${error.message as Error}` }); 
+        throw new CICSExtensionError({ baseError: error, errorMessage: `Error retrieving cache - ${error.message}` }); 
       }
     } else {
       try {

@@ -9,7 +9,6 @@
  *
  */
 
-
 /**
  * Represents the "resultsummary" field of the CMCI API response, parsed from XML
  * to a javascript object with the xml2js package.

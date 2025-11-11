@@ -39,16 +39,11 @@ export class CICSErrorHandler {
     errorMessage: string;
     additionalInfo?: string;
     action?: MessageItem[];
-  }): Thenable<string | MessageItem> {
-    if (additionalInfo) {
-      CICSLogger.error(`${this.trimLineBreaks(errorMessage)} ${additionalInfo}`);
-    } else {
-      CICSLogger.error(`${this.trimLineBreaks(errorMessage)}`);
-    }
-    if (action) {
-      return Gui.errorMessage(errorMessage, { items: [...action] });
-    }
-    return Gui.errorMessage(errorMessage);
+    }): Thenable<string | MessageItem> {
+    
+    CICSLogger.error(`${this.trimLineBreaks(errorMessage)} ${additionalInfo ?? ""}`.trim());
+
+    return Gui.errorMessage(errorMessage, { items: action ?? [] });
   }
 
   private static trimLineBreaks(msg: string) {
