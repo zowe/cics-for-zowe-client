@@ -158,6 +158,11 @@
         "category": "Zowe Explorer for IBM CICS TS"
       },
       {
+        "command": "cics-extension-for-zowe.showBundleDirectory",
+        "title": "Show Bundle Directory",
+        "category": "Zowe Explorer for IBM CICS TS"
+      },
+      {
         "command": "cics-extension-for-zowe.showRegionParameters",
         "title": "%cics.showSITParameters.title%",
         "category": "Zowe Explorer for IBM CICS TS"
@@ -335,6 +340,10 @@
           "when": "never"
         },
         {
+          "command": "cics-extension-for-zowe.showBundleDirectory",
+          "when": "never"
+        },
+        {
           "command": "cics-extension-for-zowe.clearFilter",
           "when": "never"
         },
@@ -505,6 +514,11 @@
         {
           "when": "view == cics-view && viewItem =~ /CICSRegion.*\\.active/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.showRegionLogs",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && (viewItem =~ /^CICSResourceNode.CICSBundle.*/) &&  !listMultiSelection",
+          "command": "cics-extension-for-zowe.showBundleDirectory",
           "group": "1.CICSResourceNode.inquire"
         },
         {
