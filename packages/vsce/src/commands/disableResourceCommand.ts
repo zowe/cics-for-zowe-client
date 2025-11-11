@@ -20,7 +20,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableProgram = async (treeNode: CICSResourceContainerNode<IProgram>) => {
     const nodes = findSelectedNodes(treeview, ProgramMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS program selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, ProgramMeta.humanReadableNameSingular));
       return;
     }
     await actionTreeItem({ action: "DISABLE", nodes, tree });
@@ -29,7 +29,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableTransaction = async (treeNode: CICSResourceContainerNode<ITransaction>) => {
     const nodes = findSelectedNodes(treeview, TransactionMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS Transaction selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, TransactionMeta.humanReadableNameSingular));
       return;
     }
 
@@ -39,7 +39,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableLibrary = async (treeNode: CICSResourceContainerNode<ILibrary>) => {
     const nodes = findSelectedNodes(treeview, LibraryMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS Library selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, LibraryMeta.humanReadableNameSingular));
       return;
     }
 
@@ -49,7 +49,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableBundle = async (treeNode: CICSResourceContainerNode<IBundle>) => {
     const nodes = findSelectedNodes(treeview, BundleMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS Bundles selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, BundleMeta.humanReadableNamePlural));
       return;
     }
 
@@ -64,25 +64,25 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableLocalFile = async (treeNode: CICSResourceContainerNode<ILocalFile>) => {
     const nodes = findSelectedNodes(treeview, LocalFileMeta, treeNode);
     if (!nodes || !nodes.length) {
-      window.showErrorMessage(l10n.t("No CICS local file selected"));
+      window.showErrorMessage(l10n.t(`No CICS {0} selected`, LocalFileMeta.humanReadableNameSingular));
       return;
     }
 
-    const BUSY_CHOICES = [
-      { id: "WAIT", label: l10n.t("Wait") },
-      { id: "NOWAIT", label: l10n.t("No Wait") },
-      { id: "FORCE", label: l10n.t("Force") },
-    ];
+    const busyChoices: Record<string, string> = {
+      [l10n.t("Wait")]: "WAIT",
+      [l10n.t("No Wait")]: "NOWAIT",
+      [l10n.t("Force")]: "FORCE",
+    };
 
     const picked = await window.showInformationMessage(
       l10n.t("Choose one of the following for the file busy condition"),
-      ...BUSY_CHOICES.map((c) => c.label)
+      ...Object.keys(busyChoices)
     );
     if (!picked) {
       return;
     }
 
-    const busyDecision = BUSY_CHOICES.find((c) => c.label === picked)?.id ?? "WAIT";
+    const busyDecision = busyChoices[picked] ?? "WAIT";
 
     await actionTreeItem({
       action: "DISABLE",
@@ -95,7 +95,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableJVMEndpoint = async (treeNode: CICSResourceContainerNode<IJVMEndpoint>) => {
     const nodes = findSelectedNodes(treeview, JVMEndpointMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS JVM endpoint selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, JVMEndpointMeta.humanReadableNameSingular));
       return;
     }
 
@@ -111,26 +111,26 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableJVMServer = async (treeNode: CICSResourceContainerNode<IJVMServer>) => {
     const nodes = findSelectedNodes(treeview, JVMServerMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t("No CICS JVM server selected"));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, JVMServerMeta.humanReadableNameSingular));
       return;
     }
 
-    const PURGE_CHOICES = [
-      { id: "PHASEOUT", label: l10n.t("Phase Out") },
-      { id: "PURGE", label: l10n.t("Purge") },
-      { id: "FORCEPURGE", label: l10n.t("Force Purge") },
-      { id: "KILL", label: l10n.t("Kill") },
-    ];
+    const purgeChoices: Record<string, string> = {
+      [l10n.t("Phase Out")]: "PHASEOUT",
+      [l10n.t("Purge")]: "PURGE",
+      [l10n.t("Force Purge")]: "FORCEPURGE",
+      [l10n.t("Kill")]: "KILL",
+    };
 
     const picked = await window.showInformationMessage(
       l10n.t("Choose how to purge tasks while disabling the JVM server"),
-      ...PURGE_CHOICES.map((c) => c.label)
+      ...Object.keys(purgeChoices)
     );
     if (!picked) {
       return;
     }
 
-    const disableType = PURGE_CHOICES.find((c) => c.label === picked)?.id ?? "PURGE";
+    const disableType = purgeChoices[picked] ?? "PHASEOUT";
 
     await actionTreeItem({
       action: "DISABLE",

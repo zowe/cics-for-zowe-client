@@ -93,10 +93,3 @@ export const workspaceConfiguration = {
   update: jest.fn(),
   isFile: jest.fn().mockReturnValue(true),
 };
-
-export function setupVscodeL10nStub() {
-  // only provides for l10n.t
-  (vscode as any).l10n = (vscode as any).l10n ?? {
-    t: (key: string, ..._args: any[]) => key,
-  };
-}
