@@ -12,9 +12,6 @@
 import type { Extension } from "vscode";
 import * as vscode from "vscode";
 
-import { setupVscodeL10nStub } from "../../__utils__/globalMocks";
-setupVscodeL10nStub();
-
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",

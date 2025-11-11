@@ -37,7 +37,7 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
       return;
     }
 
-    const busyDecision = (picked as any).id ?? "WAIT";
+    const busyDecision = busyChoices[picked] ?? "WAIT";
 
     await actionTreeItem({
       action: "CLOSE",
