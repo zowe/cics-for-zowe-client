@@ -46,12 +46,12 @@ export class CICSExtensionError extends Error {
           `Please refer to the IBM documentation for resp code details`;
       }
     } else if (error instanceof imperative.RestClientError) {
-      const errorCode = error.mDetails.errorCode || error.errorCode || `${constants.HTTP_ERROR_NOT_FOUND}`;
+      const errorCode = error.mDetails.errorCode || error.errorCode;
       const resource = error.mDetails.resource;
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
       this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-      Response details - Status code: ${errorCode}, URL: ${resource}, Message: ${msg}`;
+      Response details - ` + (errorCode ? `Status code: ${errorCode}, ` : ``) + `URL: ${resource}, Message: ${msg}`;
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
