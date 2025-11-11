@@ -11,10 +11,10 @@
 
 import { IResource, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
+import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta } from "../doc";
+import { IContainedResource, IResourceMeta, getMetas } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -28,7 +28,6 @@ async function showInspectResource(
   resourceContext: IResourceProfileNameInfo,
   node?: CICSResourceContainerNode<IResource>
 ) {
-
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   // Focuses on the tab in the panel - previous command not working for me??
@@ -38,7 +37,6 @@ async function showInspectResource(
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-
   const resourceContext: IResourceProfileNameInfo = {
     profileName: node.getProfile().name,
     cicsplexName: node.cicsplexName,
@@ -49,7 +47,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
     [node.getContainedResource().meta],
     node.getContainedResourceName(),
     resourceContext,
-    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource,
+    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource
   );
 
   if (upToDateResource) {
@@ -66,7 +64,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     if (!type || type.length === 0) {
       // Error if resource type not found
-      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
+      const message = l10n.t("CICS resource type '{0}' not found", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
       return;
@@ -96,10 +94,9 @@ export async function inspectResourceCallBack(
   context: ExtensionContext,
   resource: IContainedResource<IResource>,
   resourceContext: IResourceProfileNameInfo,
-  node?: CICSResourceContainerNode<IResource>,
+  node?: CICSResourceContainerNode<IResource>
 ) {
-
-  const resources = await loadResources([resource.meta], resource.meta.getName(resource.resource), resourceContext);
+  const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
   await showInspectResource(context, resources, resourceContext, node);
 }
 
@@ -163,8 +160,11 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
-    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
+    const hrn = resourceType.humanReadableNameSingular;
+    const message = CICSMessages.CICSResourceNotFound.message
+      .replace("%resource-type%", hrn)
+      .replace("%resource-name%", resourceName)
+      .replace("%region-name%", resourceContext.regionName);
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
@@ -187,8 +187,9 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
       return acc;
     }
     // for now we only show our externally visible types (so not LIBDSN)
-    if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
-      acc.set(item.humanReadableNameSingular, [item]);
+    if (SupportedResourceTypes.filter((res) => res == item.resourceName).length > 0) {
+      const displayName = l10n.t(item.humanReadableNameSingular);
+      acc.set(displayName, item);
     }
     return acc;
   }, new Map());
@@ -199,11 +200,11 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   return resourceTypeMap;
 }
 
-async function selectResourceType(): Promise<{ name: string, meta: IResourceMeta<IResource>[]; }> {
+async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
   // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
   const resourceTypeMap = getInspectableResourceTypes();
 
-  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
+  const choice = await getChoiceFromQuickPick("Select a resource type", Array.from(resourceTypeMap.keys()));
 
   if (choice) {
     return {
@@ -224,16 +225,13 @@ async function selectResource(resourceNameSingular: string, maxNameLength?: numb
       const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
 
       return value.length > maxLength ? tooLongErrorMessage : undefined;
-    }
+    },
   };
 
   return (await window.showInputBox(options)) || undefined;
 }
 
-async function getChoiceFromQuickPick(
-  placeHolder: string,
-  items: string[]
-): Promise<QuickPickItem | undefined> {
+async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<QuickPickItem | undefined> {
   const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item }))];
 
   const quickPick = Gui.createQuickPick();
@@ -244,4 +242,19 @@ async function getChoiceFromQuickPick(
   const choice = await Gui.resolveQuickPick(quickPick);
   quickPick.hide();
   return choice;
+}
+
+async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
+  const options: InputBoxOptions = {
+    prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
+
+    validateInput: (value: string): string | undefined => {
+      const maxLength = resourceType.maximumPrimaryKeyLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
+      const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
+
+      return value.length > maxLength ? tooLongErrorMessage : undefined;
+    },
+  };
+
+  return (await window.showInputBox(options)) || undefined;
 }
