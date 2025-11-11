@@ -13,12 +13,12 @@ export interface ICICSExtensionError {
   /*
    * Error message to display in the error notification
    */
-  errorMessage: string;
+  errorMessage?: string;
 
   /*
    * HTTP Status code of CMCI CICS REST API
    */
-  statusCode: number;
+  statusCode?: number;
 
   /*
    * Generic error from the catch statement
@@ -28,10 +28,10 @@ export interface ICICSExtensionError {
   /*
    * Resp1 Code from the ResultSummary
    */
-  resp1Code: number;
+  resp1Code?: number;
 
   /*
    * Resp1 Code from the ResultSummary
    */
-  resp2Code: number;
+  resp2Code?: number;
 }
