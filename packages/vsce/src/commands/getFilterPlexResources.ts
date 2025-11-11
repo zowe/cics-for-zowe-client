@@ -9,13 +9,13 @@
  *
  */
 
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { ProgressLocation, TreeView, commands, l10n, window } from "vscode";
 import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import { getPatternFromFilter } from "../utils/filterUtils";
 import PersistentStorage from "../utils/PersistentStorage";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { getPatternFromFilter } from "../utils/filterUtils";
 
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
@@ -32,7 +32,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSRegionsContainer) {
       chosenNode = selection[selection.length - 1];
     } else {
-      window.showErrorMessage("No 'Regions' node selected");
+      window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
     const plex = chosenNode.getParent();
@@ -40,9 +40,22 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     const plexProfile = plex.getProfile();
     let resourceToFilter: any;
     if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
-      resourceToFilter = await window.showQuickPick(["Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
+      resourceToFilter = await window.showQuickPick([
+        l10n.t("Programs"),
+        l10n.t("Local Transactions"),
+        l10n.t("Local Files"),
+        l10n.t("Tasks"),
+        l10n.t("Libraries"),
+      ]);
     } else {
-      resourceToFilter = await window.showQuickPick(["Regions", "Programs", "Local Transactions", "Local Files", "Tasks", "Libraries"]);
+      resourceToFilter = await window.showQuickPick([
+        l10n.t("Regions"),
+        l10n.t("Programs"),
+        l10n.t("Local Transactions"),
+        l10n.t("Local Files"),
+        l10n.t("Tasks"),
+        l10n.t("Libraries"),
+      ]);
     }
     let resourceHistory;
     if (resourceToFilter === "Programs") {
@@ -58,7 +71,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     } else if (resourceToFilter === "Regions") {
       resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_REGION);
     } else {
-      window.showInformationMessage("No Selection Made");
+      window.showInformationMessage(l10n.t("No Selection Made"));
       return;
     }
     const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
@@ -82,12 +95,12 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       } else {
         await window.withProgress(
           {
-            title: "Loading Resources",
+            title: l10n.t("Loading Resources"),
             location: ProgressLocation.Notification,
             cancellable: true,
           },
           (_, token): Promise<void> => {
-            token.onCancellationRequested(() => { });
+            token.onCancellationRequested(() => {});
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
                 if (region.getIsActive()) {
