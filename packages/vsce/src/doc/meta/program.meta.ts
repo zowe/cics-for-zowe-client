@@ -55,13 +55,22 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getHighlights(program: Resource<IProgram>) {
     return [
       {
-        key: "Type",
-        value: program.attributes.progtype,
+        key: "Status",
+        value: program.attributes.status,
       },
       {
-        key: "New Copy Count",
-        value: program.attributes.newcopycnt,
+        key: "Language",
+        value: program.attributes.language,
       },
+      {
+        key: "Use Count",
+        value: program.attributes.usecount,
+      },
+      {
+        key: "Library",
+        value: program.attributes.library,
+      },
+      
     ];
   },
 
