@@ -224,7 +224,7 @@ export class CICSPlexTree extends TreeItem {
 
   public getRegionNodeFromName(regionName: string): CICSRegionTree | undefined {
     const regionsContainer = this.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
-    if (regionsContainer?.children.length > 0) {
+    if (regionsContainer?.children?.length > 0) {
       return regionsContainer.children.find((reg) => reg.getRegionName() === regionName);
     }
   }

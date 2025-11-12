@@ -33,11 +33,11 @@ export function evaluateTreeNodes<T extends IResource>(
 
 export const findResourceNodeInTree = (cicsTree: CICSTree, resourceContext: IResourceContext, resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined => {
   const sessionNodeForResource = cicsTree.getSessionNodeForProfile(resourceContext.profile);
-  if (sessionNodeForResource?.children.length > 0) {
+  if (sessionNodeForResource?.children?.length > 0) {
     const regionNode = sessionNodeForResource.getRegionNodeFromName(resourceContext.regionName, resourceContext.cicsplexName);
-    if (regionNode?.children.length > 0) {
+    if (regionNode?.children?.length > 0) {
       const parentNode = regionNode.getContainerNodeForResourceType(resource.meta);
-      if (parentNode?.children.length > 0) {
+      if (parentNode?.children?.length > 0) {
         return parentNode.getChildNodeMatchingResourceName(resource);
       }
     }
