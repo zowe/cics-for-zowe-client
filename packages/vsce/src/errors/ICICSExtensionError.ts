@@ -34,4 +34,8 @@ export interface ICICSExtensionError {
    * Resp1 Code from the ResultSummary
    */
   resp2Code?: number;
+  /**
+   * Name of the resource 
+   */
+  resourceName?: string;
 }

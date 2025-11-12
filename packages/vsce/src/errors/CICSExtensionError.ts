@@ -12,7 +12,6 @@
 import { ICICSExtensionError } from "./ICICSExtensionError";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
-import constants from "../constants/CICS.defaults";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: ICICSExtensionError;
@@ -25,6 +24,7 @@ export class CICSExtensionError extends Error {
   parseError() {
     const error = this.cicsExtensionError.baseError;
     const errorMessage = this.cicsExtensionError.errorMessage;
+    const resourceName = this.cicsExtensionError.resourceName;
     if (error instanceof CicsCmciRestError) {
       const resultSummary = error.resultSummary;
       const api_function = resultSummary.api_function;
@@ -34,8 +34,8 @@ export class CICSExtensionError extends Error {
 
       if (feedback) {
         this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-        Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")} 
-        resource with API_FUNCTION: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
+        Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")}
+        resource ${resourceName} with API: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
         Please refer to the IBM documentation for resp code details`;
       } else {
         this.cicsExtensionError.errorMessage = errorMessage ||
