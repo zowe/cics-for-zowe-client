@@ -30,5 +30,17 @@
   "Loading Regions...": "Loading Regions...",
   "No Active Regions found in {0}": "No Active Regions found in {0}",
   "Select CICSplex": "Select CICSplex",
-  "Loading CICSplexes...": "Loading CICSplexes..."
+  "Loading CICSplexes...": "Loading CICSplexes...",
+  "No CICS {0} selected": "No CICS {0} selected",
+  "Wait": "Wait",
+  "No Wait": "No Wait",
+  "Force": "Force",
+  "Choose one of the following for the file busy condition": "Choose one of the following for the file busy condition",
+  "Phase Out": "Phase Out",
+  "Purge": "Purge",
+  "Force Purge": "Force Purge",
+  "Kill": "Kill",
+  "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
+  "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
+  "No CICS local file selected": "No CICS local file selected"
 }
