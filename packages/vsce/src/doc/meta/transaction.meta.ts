@@ -56,8 +56,25 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
 
   getHighlights(resource: Resource<ITransaction>) {
     return [
+      
       {
-        key: "Initial program",
+        key: "Status",
+        value: resource.attributes.status,
+      },
+      {
+        key: "Available Status",
+        value: resource.attributes.availstatus,
+      },
+      {
+        key: "Tran Class",
+        value: resource.attributes.tranclass,
+      },
+      {
+        key: "Routing",
+        value: resource.attributes.routing,
+      },
+      {
+        key: "Inquired program",
         value: resource.attributes.program,
       },
     ];
