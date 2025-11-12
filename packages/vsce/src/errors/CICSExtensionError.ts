@@ -34,8 +34,8 @@ export class CICSExtensionError extends Error {
 
       if (feedback) {
         this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-        Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")}
-        resource ${resourceName} with API: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
+        Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")} 
+        ${resourceName} with API: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
         Please refer to the IBM documentation for resp code details`;
       } else {
         this.cicsExtensionError.errorMessage = errorMessage ||
