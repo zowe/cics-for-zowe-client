@@ -49,7 +49,7 @@ export const getDisableResourceCommands = (tree: CICSTree, treeview: TreeView<CI
   const disableBundle = async (treeNode: CICSResourceContainerNode<IBundle>) => {
     const nodes = findSelectedNodes(treeview, BundleMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, BundleMeta.humanReadableNamePlural));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, BundleMeta.humanReadableNameSingular));
       return;
     }
 

@@ -60,7 +60,7 @@ export const getEnableResourceCommands = (tree: CICSTree, treeview: TreeView<CIC
   const enableBundle = async (treeNode: CICSResourceContainerNode<IBundle>) => {
     const nodes = findSelectedNodes(treeview, BundleMeta, treeNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, BundleMeta.humanReadableNamePlural));
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, BundleMeta.humanReadableNameSingular));
       return;
     }
 
