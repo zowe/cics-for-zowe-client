@@ -51,7 +51,7 @@ export class CICSExtensionError extends Error {
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
       this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-      Response details - ` + (errorCode ? `Status code: ${errorCode}, ` : ``) + `URL: ${resource}, Message: ${msg}`;
+      Failed to send request. Response details - ` + (errorCode ? `Status code: ${errorCode}, ` : ``) + `URL: ${resource}, Message: ${msg}`;
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
