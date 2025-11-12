@@ -22,7 +22,10 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 describe("getInspectableResourceTypes", () => {
   test("Not all meta types are visible", () => {
     const result = getInspectableResourceTypes();
-    expect(Array.from(result.keys()).includes("Local File")).toBe(true);
+    expect(Array.from(result.keys()).includes("Program")).toBe(true);
+    // Files are a special case where we want to combine local and remote into one option
+    expect(Array.from(result.keys()).includes("Local File")).toBe(false);
+    expect(Array.from(result.keys()).includes("File")).toBe(true);
     // We do not want to show LIBDSN in the list of inspectable resources because it doesn't currently work
     expect(Array.from(result.keys()).includes("Library Dataset")).toBe(false);
   });

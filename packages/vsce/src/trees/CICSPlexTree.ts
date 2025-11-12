@@ -26,6 +26,7 @@ import {
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
+  RemoteFileMeta,
 } from "../doc";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
@@ -163,7 +164,7 @@ export class CICSPlexTree extends TreeItem {
       this.children.push(this.buildCombinedTree("All Local Transactions", [TransactionMeta]));
     }
     if (config.get<boolean>("LocalFile", true)) {
-      this.children.push(this.buildCombinedTree("All Local Files", [LocalFileMeta]));
+      this.children.push(this.buildCombinedTree("All Files", [LocalFileMeta, RemoteFileMeta]));
     }
     if (config.get<boolean>("Task", true)) {
       this.children.push(this.buildCombinedTree("All Tasks", [TaskMeta]));
@@ -191,8 +192,8 @@ export class CICSPlexTree extends TreeItem {
     }
   }
 
-  private buildCombinedTree<T extends IResource>(label: string, metas: IResourceMeta<T>[]) {
-    return new CICSResourceContainerNode<T>(
+  private buildCombinedTree(label: string, metas: IResourceMeta<IResource>[]) {
+    return new CICSResourceContainerNode(
       label,
       {
         profile: this.getProfile(),

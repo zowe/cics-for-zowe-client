@@ -9,12 +9,12 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IContainedResource, IResourceMeta } from "../doc";
+import { getMetas, IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -46,7 +46,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   };
 
   const upToDateResource = await loadResourcesWithProgress(
-    node.getContainedResource().meta,
+    [node.getContainedResource().meta],
     node.getContainedResourceName(),
     resourceContext,
     (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource,
@@ -62,14 +62,18 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
   const cicsRegion: ICICSRegionWithSession = await getLastUsedRegion();
 
   if (cicsRegion) {
-    const type = getResourceType(resourceType);
+    let type = getResourceType(resourceType);
 
-    if (!type) {
+    if (!type || type.length === 0) {
       // Error if resource type not found
       const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
       return;
+    }
+
+    if (type[0] === LocalFileMeta || type[0] === RemoteFileMeta) {
+      type = [LocalFileMeta, RemoteFileMeta];
     }
 
     const resourceContext: IResourceProfileNameInfo = {
@@ -92,12 +96,12 @@ export async function inspectResourceCallBack(
   node?: CICSResourceContainerNode<IResource>,
 ) {
 
-  const resources = await loadResources(resource.meta, resource.meta.getName(resource.resource), resourceContext);
+  const resources = await loadResources([resource.meta], resource.meta.getName(resource.resource), resourceContext);
   await showInspectResource(context, resources, resourceContext, node);
 }
 
 async function loadResourcesWithProgress(
-  resourceType: IResourceMeta<IResource>,
+  resourceTypes: IResourceMeta<IResource>[],
   resourceName: string,
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
@@ -111,7 +115,7 @@ async function loadResourcesWithProgress(
     async (progress, token) => {
       token.onCancellationRequested(() => {});
 
-      const resources = await loadResources(resourceType, resourceName, resourceContext, parentResource);
+      const resources = await loadResources(resourceTypes, resourceName, resourceContext, parentResource);
       if (!resources) {
         return;
       }
@@ -125,9 +129,9 @@ export async function inspectResource(context: ExtensionContext) {
   const cicsRegion: ICICSRegionWithSession = await getLastUsedRegion();
 
   if (cicsRegion) {
-    const resourceType = await selectResourceType();
-    if (resourceType) {
-      const resourceName = await selectResource(resourceType);
+    const resourceTypes = await selectResourceType();
+    if (resourceTypes) {
+      const resourceName = await selectResource(resourceTypes.name, resourceTypes.meta[0].maximumPrimaryKeyLength);
 
       if (resourceName) {
         const resourceContext: IResourceProfileNameInfo = {
@@ -136,7 +140,7 @@ export async function inspectResource(context: ExtensionContext) {
           regionName: cicsRegion.regionName,
         };
 
-        const upToDateResource = await loadResourcesWithProgress(resourceType, resourceName, resourceContext);
+        const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
           await showInspectResource(context, upToDateResource, resourceContext);
         }
@@ -146,17 +150,17 @@ export async function inspectResource(context: ExtensionContext) {
 }
 
 async function loadResources(
-  resourceType: IResourceMeta<IResource>,
+  resourceTypes: IResourceMeta<IResource>[],
   resourceName: string,
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
 ): Promise<IContainedResource<IResource>> {
-  const resourceContainer = new ResourceContainer([resourceType], resourceContext, parentResource);
+  const resourceContainer = new ResourceContainer(resourceTypes, resourceContext, parentResource);
   resourceContainer.setCriteria([resourceName]);
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceType.humanReadableNameSingular;
+    const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
     const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
 
     CICSLogger.error(message);
@@ -167,42 +171,56 @@ async function loadResources(
   return resources[0];
 }
 
-function getResourceType(resourceName: string): IResourceMeta<IResource> {
-  const types: IResourceMeta<IResource>[] = getMetas().filter((value) => value.resourceName == resourceName);
-
-  // Should only have one
-  if (types?.length > 0) {
-    return types[0];
-  }
-  return undefined;
+function getResourceType(resourceName: string): IResourceMeta<IResource>[] {
+  return getMetas().filter((value) => value.resourceName == resourceName);
 }
 
-export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResource>> {
-  const resourceTypeMap = getMetas().reduce((acc, item) => {
+export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResource>[]> {
+  const resourceTypeMap: Map<string, IResourceMeta<IResource>[]> = getMetas().reduce((acc, item) => {
+    if ([ResourceTypes.CICSLocalFile, ResourceTypes.CICSRemoteFile].includes(item.resourceName as ResourceTypes)) {
+      return acc;
+    }
     // for now we only show our externally visible types (so not LIBDSN)
-    if (SupportedResourceTypes.filter((res) => res == item.resourceName).length > 0) {
+    if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
       acc.set(item.humanReadableNameSingular, item);
     }
     return acc;
   }, new Map());
+
+  resourceTypeMap.set("File", [LocalFileMeta, RemoteFileMeta]);
+
   return resourceTypeMap;
 }
 
-async function selectResourceType(): Promise<IResourceMeta<IResource> | undefined> {
+async function selectResourceType(): Promise<{ name: string, meta: IResourceMeta<IResource>[]; }> {
   // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
   const resourceTypeMap = getInspectableResourceTypes();
 
-  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()));
+  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
 
   if (choice) {
-    return resourceTypeMap.get(choice.label);
+    return {
+      name: choice.label,
+      meta: resourceTypeMap.get(choice.label),
+    };
   }
 
   return undefined;
 }
 
-async function selectResource(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
-  return getEntryFromInputBox(resourceType);
+async function selectResource(resourceNameSingular: string, maxNameLength?: number): Promise<string | undefined> {
+  const options: InputBoxOptions = {
+    prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceNameSingular),
+
+    validateInput: (value: string): string | undefined => {
+      const maxLength = maxNameLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
+      const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
+
+      return value.length > maxLength ? tooLongErrorMessage : undefined;
+    }
+  };
+
+  return (await window.showInputBox(options)) || undefined;
 }
 
 async function getChoiceFromQuickPick(
@@ -220,20 +238,3 @@ async function getChoiceFromQuickPick(
   quickPick.hide();
   return choice;
 }
-
-async function getEntryFromInputBox(resourceType: IResourceMeta<IResource>): Promise<string | undefined> {
-  const options: InputBoxOptions = {
-    prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceType.humanReadableNameSingular),
-
-    validateInput: (value: string): string | undefined => {
-      const maxLength = resourceType.maximumPrimaryKeyLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
-      const tooLongErrorMessage = CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`);
-
-      return value.length > maxLength ? tooLongErrorMessage : undefined;
-    }
-  };
-
-  return (await window.showInputBox(options)) || undefined;
-}
-
-

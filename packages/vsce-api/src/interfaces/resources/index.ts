@@ -16,6 +16,7 @@ export * from "./ILibraryDataset";
 export * from "./ILocalFile";
 export * from "./IPipeline";
 export * from "./IProgram";
+export * from "./IRemoteFile";
 export * from "./IResource";
 export * from "./ITCPIP";
 export * from "./ITask";
