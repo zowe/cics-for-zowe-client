@@ -253,6 +253,8 @@ export function buildUserAgentHeader(): { "User-Agent": string; } {
 }
 
 function getResourceNameFromCriteria(criteria: string) {
-  const index = criteria.indexOf("=");
-  return criteria.substring(index + 1);
+  if (criteria) {
+    const index = criteria?.indexOf("=");
+    return criteria.substring(index + 1);
+  }
 }
