@@ -17,4 +17,6 @@ export interface IProgram extends IResourceWithStatus {
   program: string;
   progtype: string;
   newcopycnt: string;
+  usecount: string;
+  language: string;
 }
