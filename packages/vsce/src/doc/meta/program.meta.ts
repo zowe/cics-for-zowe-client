@@ -67,6 +67,10 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
         value: program.attributes.usecount,
       },
       {
+        key: "New Copy Count",
+        value: program.attributes.newcopycnt,
+      },
+      {
         key: "Library",
         value: program.attributes.library,
       },
