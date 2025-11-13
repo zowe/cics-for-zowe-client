@@ -54,7 +54,9 @@ const prog: IProgram = {
   newcopycnt: "1",
   program: "APROG",
   progtype: "",
-  status: "ENABLED"
+  status: "ENABLED",
+  usecount:"0",
+  language:"COBOL"
 };
 
 describe("Tree Utils tests", () => {
