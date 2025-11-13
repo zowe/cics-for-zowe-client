@@ -182,7 +182,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
     }
     // for now we only show our externally visible types (so not LIBDSN)
     if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
-      acc.set(item.humanReadableNameSingular, item);
+      acc.set(item.humanReadableNameSingular, [item]);
     }
     return acc;
   }, new Map());
