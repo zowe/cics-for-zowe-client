@@ -77,6 +77,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
+              /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
                 `Perform ${purgeType?.toUpperCase()} on CICSTask "${resName

@@ -59,7 +59,8 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
 
     const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
     // do not include the FTP profile because it doesn't support spools for running jobs.
-    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes));
+    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type)
+      && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes));
 
     let chosenProfileName: string;
 
