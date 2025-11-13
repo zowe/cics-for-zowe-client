@@ -2,6 +2,7 @@
   "Profile {0} is invalid or not present": "Profile {0} is invalid or not present",
   "Error fetching CICSplex information for profile with reason {0}": "Error fetching CICSplex information for profile with reason {0}",
   "Select CICS Region": "Select CICS Region",
+  "Select a profile to access the logs": "Select a profile to access the logs",
   "Zowe Explorer for IBM CICS TS": "Zowe Explorer for IBM CICS TS",
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
@@ -24,11 +25,19 @@
   "Select the location of the config file to edit": "Select the location of the config file to edit",
   "Global: in the Zowe home directory": "Global: in the Zowe home directory",
   "Project: in the current working directory": "Project: in the current working directory",
-  "Select a profile to access the logs": "Select a profile to access the logs",
   "No CICS profiles found. Please configure a valid CICS profile": "No CICS profiles found. Please configure a valid CICS profile",
   "No Regions or CICSplexes found in the selected profile.": "No Regions or CICSplexes found in the selected profile.",
   "Loading Regions...": "Loading Regions...",
   "No Active Regions found in {0}": "No Active Regions found in {0}",
   "Select CICSplex": "Select CICSplex",
-  "Loading CICSplexes...": "Loading CICSplexes..."
+  "Loading CICSplexes...": "Loading CICSplexes...",
+  "Refreshing": "Refreshing",
+  "Refreshed": "Refreshed",
+  "No CICS {0} selected": "No CICS {0} selected",
+  "Purge": "Purge",
+  "Force Purge": "Force Purge",
+  "Choose one of the following options for Purge": "Choose one of the following options for Purge",
+  "Purging {0} of {1}": "Purging {0} of {1}",
+  "Perform {0} on CICSTask \"{1}\" failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})": "Perform {0} on CICSTask \"{1}\" failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})",
+  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
 }
