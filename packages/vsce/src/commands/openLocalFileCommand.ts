@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, TreeView, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { LocalFileMeta } from "../doc";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
@@ -19,7 +19,7 @@ export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<any>)
   return commands.registerCommand("cics-extension-for-zowe.openLocalFile", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, LocalFileMeta, clickedNode);
     if (!nodes || !nodes.length) {
-      await window.showErrorMessage("No CICS local file selected");
+      await window.showErrorMessage(l10n.t(`No CICS {0} selected`, LocalFileMeta.humanReadableNameSingular));
       return;
     }
 

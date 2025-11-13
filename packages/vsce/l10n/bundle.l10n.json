@@ -7,9 +7,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "Update Credentials": "Update Credentials",
   "Update the selected profile's credentials": "Update the selected profile's credentials",
@@ -67,5 +65,10 @@
   "No CICS local file selected": "No CICS local file selected",
   "All Resources": "All Resources",
   "{0} of {1}": "{0} of {1}",
-  "Something went wrong when performing a {0}": "Something went wrong when performing a {0}"
+  "Something went wrong when performing a {0}": "Something went wrong when performing a {0}",
+  "Refreshed": "Refreshed",
+  "Choose one of the following options for Purge": "Choose one of the following options for Purge",
+  "Purging {0} of {1}": "Purging {0} of {1}",
+  "Perform {0} on CICSTask \"{1}\" failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})": "Perform {0} on CICSTask \"{1}\" failed: EXEC CICS command ({2}) RESP({3}) RESP2({4})",
+  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
 }
