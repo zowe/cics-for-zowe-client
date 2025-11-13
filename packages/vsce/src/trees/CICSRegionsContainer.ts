@@ -11,6 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { CICSLogger } from "../utils/CICSLogger";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { ProfileManagement } from "../utils/profileManagement";
@@ -18,7 +19,6 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { CICSLogger } from "../utils/CICSLogger";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -54,7 +54,7 @@ export class CICSRegionsContainer extends TreeItem {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
-        this.iconPath = getFolderIcon(true);
+        this.refreshIcon(true);
         tree._onDidChangeTreeData.fire(undefined);
         if (!this.children.length) {
           window.showInformationMessage(`No regions found for ${this.parent.getPlexName()}`);
@@ -77,6 +77,7 @@ export class CICSRegionsContainer extends TreeItem {
     this.addRegionsUtility(regionsArray);
     // Keep container open after label change
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    this.refreshIcon(true);
     tree._onDidChangeTreeData.fire(undefined);
   }
 
@@ -87,7 +88,11 @@ export class CICSRegionsContainer extends TreeItem {
       this.addRegionsUtility(regionInfo);
       // Keep container open after label change
       this.collapsibleState = TreeItemCollapsibleState.Expanded;
+      this.refreshIcon(true);
     }
+  }
+  public refreshIcon(folderOpen: boolean = false): void {
+    this.iconPath = getFolderIcon(folderOpen);
   }
 
   /**
