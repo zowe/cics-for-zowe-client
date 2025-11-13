@@ -106,7 +106,7 @@ async function loadResourcesWithProgress(
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
 ) {
-  return await window.withProgress(
+  return window.withProgress(
     {
       title: CICSMessages.CICSLoadingResourceName.message.replace("%name%", resourceName),
       location: ProgressLocation.Notification,
@@ -161,7 +161,8 @@ async function loadResources(
 
   if (resources.length === 0) {
     const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
-    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn).replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
+    const message = CICSMessages.CICSResourceNotFound.message.replace("%resource-type%", hrn)
+      .replace("%resource-name%", resourceName).replace("%region-name%", resourceContext.regionName);
 
     CICSLogger.error(message);
     window.showErrorMessage(message);

@@ -36,6 +36,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
     return `${CicsCmciConstants.CICS_WEBSERVICE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<IWebService>): string {
     return "web-services";
   },
@@ -44,6 +45,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
     return resource.attributes.name;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getHighlights(resource: Resource<IWebService>) {
     return [];
   },

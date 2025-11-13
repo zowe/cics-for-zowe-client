@@ -197,7 +197,8 @@ export class ResourceContainer {
         );
       }
 
-      results.push(...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => { { return { meta, resource: new Resource(r) }; } }));
+      results.push(...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
+         { return { meta, resource: new Resource(r) }; } }));
       this.nextIndex.set(meta, start + count);
     }
     return results;

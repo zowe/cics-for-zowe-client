@@ -143,6 +143,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   }
 
   public getContainerNodeForResourceType(meta: IResourceMeta<IResource>): CICSResourceContainerNode<IResource> | undefined {
-    return this.children.find((con) => con instanceof CICSResourceContainerNode && con.resourceTypes.includes(meta)) as CICSResourceContainerNode<IResource>;
+    return this.children.find((con) => con instanceof CICSResourceContainerNode
+      && con.resourceTypes.includes(meta)) as CICSResourceContainerNode<IResource>;
   }
 }
