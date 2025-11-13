@@ -80,7 +80,8 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
           }
         } catch (error) {
           const sanitizedError = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
-          const errMsg = l10n.t("Something went wrong when performing {0} - {1}", action, sanitizedError);
+          const verb = resourceActionVerbMap[action] ?? action;
+          const errMsg = l10n.t("Something went wrong when performing a {0} - {1}", verb, sanitizedError);
           window.showErrorMessage(errMsg);
         }
       }
