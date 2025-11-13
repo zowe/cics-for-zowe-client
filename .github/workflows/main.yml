@@ -162,8 +162,8 @@ jobs:
     - name: Update Dependencies
       uses: zowe-actions/octorelease/script@v1
       env:
-        GIT_COMMITTER_NAME: zowe_robot
-        GIT_COMMITTER_EMAIL: zowe.robot@gmail.com
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
         NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
       with:
         config-dir: .github
@@ -172,31 +172,21 @@ jobs:
     - name: Update NOTICE file
       run: bash scripts/updateNotices.sh
 
-    - name: Push Notice Changes
+    - name: Commit Notice Changes
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
-
-        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
       run: |
         set -e
 
         echo "Set config"
         git config --global user.name $GIT_COMMITTER_NAME
         git config --global user.email $GIT_COMMITTER_EMAIL
-        git config --global credential.helper store
-        git config --get remote.origin.url
-
-        touch ~/.git-credentials
-        echo "https://$GIT_CREDENTIALS@github.com" >> ~/.git-credentials
-
         git ls-remote --heads origin $GITHUB_REF
 
         git add packages/*/NOTICE
         git diff --name-only --cached
-
         git commit -s -m "Update Notice Files [ci skip]" || true
-        git push
 
     - name: Build Source
       run: npm run build

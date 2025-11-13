@@ -20,20 +20,23 @@ import { CICSTree } from "./CICSTree";
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
   isUnauthorized: boolean | undefined;
-  iconPath = getIconFilePathFromName("profile-unverified");
 
   constructor(
     private profile: IProfileLoaded,
     private parent: CICSTree
   ) {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
-    this.children = [];
-    this.contextValue = `cicssession.${profile.name}`;
-
     this.profile = profile;
     this.createSessionFromProfile();
+    this.reset();
+  }
 
+  public reset() {
+    this.setIsExpanded(false);
     this.isUnauthorized = undefined;
+    this.contextValue = `cicssession.${this.profile.name}`;
+    this.iconPath = getIconFilePathFromName("profile-unverified");
+    this.clearChildren();
   }
 
   public createSessionFromProfile() {
@@ -89,5 +92,20 @@ export class CICSSessionTree extends TreeItem {
 
   public setIsExpanded(isExpanded: boolean) {
     this.collapsibleState = isExpanded ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
+  }
+
+  public getRegionNodeFromName(regionName: string, cicsplexName?: string): CICSRegionTree | undefined {
+
+    if (cicsplexName) {
+
+      const plexNode = this.children.find((plex) => plex instanceof CICSPlexTree && plex.plexName === cicsplexName) as CICSPlexTree;
+      if (plexNode?.children?.length > 0) {
+        return plexNode.getRegionNodeFromName(regionName);
+      }
+
+    } else {
+      return this.children.find((reg) => reg instanceof CICSRegionTree && reg.getRegionName() === regionName) as CICSRegionTree;
+    }
+
   }
 }

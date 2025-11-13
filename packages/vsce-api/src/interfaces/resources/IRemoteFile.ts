@@ -9,11 +9,10 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { ResourceContainer } from "../../resources";
-import { IResourceMeta } from "../meta";
+import { IResourceWithEnableStatus } from "./IResource";
 
-export interface IChildResource<T extends IResource> {
-  resources: ResourceContainer<T>;
-  meta: IResourceMeta<T>;
+export interface IRemoteFile extends IResourceWithEnableStatus {
+  file: string;
+  remotename: string;
+  remotesystem: string;
 }

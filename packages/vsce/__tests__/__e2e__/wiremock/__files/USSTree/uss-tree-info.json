@@ -1,0 +1,57 @@
+{
+  "items": [
+    {
+      "name": ".",
+      "mode": "drwxrwx---",
+      "size": 8192,
+      "uid": 254,
+      "user": "EXPAUTO",
+      "gid": 5,
+      "group": "TSOUSER",
+      "mtime": "2025-03-03T09:08:50"
+    },
+    {
+      "name": "..",
+      "mode": "drwxrwxrwx",
+      "size": 16384,
+      "uid": 589,
+      "user": "STEWF",
+      "gid": 5,
+      "group": "TSOUSER",
+      "mtime": "2025-09-24T21:57:59"
+    },
+    {
+      "name": "META-INF",
+      "mode": "drwxrwx---",
+      "size": 8192,
+      "uid": 254,
+      "user": "EXPAUTO",
+      "gid": 5,
+      "group": "TSOUSER",
+      "mtime": "2025-03-03T09:08:50"
+    },
+    {
+      "name": "test_app-0.0.1-SNAPSHOT.war",
+      "mode": "-rw-rw----",
+      "size": 1667,
+      "uid": 254,
+      "user": "EXPAUTO",
+      "gid": 5,
+      "group": "TSOUSER",
+      "mtime": "2025-03-03T09:08:50"
+    },
+    {
+      "name": "test_app-0.0.1-SNAPSHOT.warbundle",
+      "mode": "-rw-rw----",
+      "size": 128,
+      "uid": 254,
+      "user": "EXPAUTO",
+      "gid": 5,
+      "group": "TSOUSER",
+      "mtime": "2025-03-03T09:08:50"
+    }
+  ],
+  "returnedRows": 5,
+  "totalRows": 5,
+  "JSONversion": 1
+}

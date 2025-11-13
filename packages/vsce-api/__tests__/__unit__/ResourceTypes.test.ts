@@ -15,6 +15,7 @@ describe("ResourceType tests", () => {
   it("should return list of supported resources", () => {
     expect(SupportedResourceTypes).toEqual([
       "CICSLocalFile",
+      "CICSRemoteFile",
       "CICSLocalTransaction",
       "CICSProgram",
       "CICSTCPIPService",

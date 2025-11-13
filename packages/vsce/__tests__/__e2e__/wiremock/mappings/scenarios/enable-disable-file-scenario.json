@@ -1,0 +1,46 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Enable Disable File",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "locfile1-disabled",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLocalFile/MYPLEX1/MYREG1?CRITERIA=(file%3DLOCFILE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n  <action name=\"DISABLE\">\n    <parameter name=\"BUSY\" value=\"WAIT\"/>\n  </action>\n</request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLocalFile/disable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable File",
+      "requiredScenarioState": "locfile1-disabled",
+      "newScenarioState": "locfile1-enabled",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLocalFile/MYPLEX1/MYREG1?CRITERIA=(file%3DLOCFILE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLocalFile/enable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

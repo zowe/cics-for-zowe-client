@@ -1,0 +1,10 @@
+{
+  "zos_version": "05.29.00",
+  "zosmf_port": "32070",
+  "zosmf_version": "29",
+  "zosmf_hostname": "localhost",
+  "plugins": [],
+  "zosmf_saf_realm": "SAFRealm",
+  "zosmf_full_version": "29.0",
+  "api_version": "1"
+}

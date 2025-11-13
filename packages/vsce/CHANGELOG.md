@@ -2,6 +2,14 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
+- Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
+- Enhancement: Show Bundle command for CICS Bundle to navigate through bundle parts in the USS tree[#474](https://github.com/zowe/cics-for-zowe-client/issues/474)
+- Renamed `Local Files` tree to `Files`. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
+- Enhancement: Added CICS Remote Files to files tree. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
+
 ## `3.14.0`
 
 - Bugfix: Show icons in CICS Resource Inspector on Windows [#460](https://github.com/zowe/cics-for-zowe-client/issues/460)

@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, window, env } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, env, l10n, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { buildUserAgentHeader } from "../utils/resourceUtils";
 
@@ -30,6 +30,6 @@ export const copyResourceNameToClipboard = (node: CICSResourceContainerNode<IRes
 export const copyUserAgentHeaderToClipboard = (): string => {
   const userAgentHeader = buildUserAgentHeader();
   env.clipboard.writeText(userAgentHeader["User-Agent"]);
-  window.showInformationMessage("Copied User-Agent header to clipboard");
+  window.showInformationMessage(l10n.t("Copied User-Agent header to clipboard"));
   return userAgentHeader["User-Agent"];
 };

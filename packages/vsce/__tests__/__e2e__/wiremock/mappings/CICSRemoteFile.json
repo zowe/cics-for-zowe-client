@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSRemoteFile/MYPLEX1/MYREG1?CRITERIA=(file%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSRemoteFile/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0REMOTEFILETOKEN/1/125?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSRemoteFile/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0REMOTEFILETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSRemoteFile/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

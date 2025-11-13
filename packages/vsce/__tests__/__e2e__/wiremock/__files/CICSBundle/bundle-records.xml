@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" cachetoken="SHOWBUNDLETOKEN" />
+	<records>
+		<cicsbundle _keydata="D4C1E5C5D5D3C7F3" availstatus="NONE" basdefinever="0" basescope="" bundledir="/u/expauto/bundles/test_plugin_1.0.1/" bundleid="test_plugin" changeagent="CSDAPI" changeagrel="0740" changetime="2025-03-03T09:08:40.000000+00:00" changeusrid="CICSUSER" definesource="LAKSHMG" definetime="2025-03-03T08:25:34.000000+00:00" enabledcount="0" enablestatus="DISABLED" eyu_cicsname="MYREG1" eyu_cicsrel="E710" eyu_reserved="0" installagent="CSDAPI" installtime="2025-10-29T05:20:44.000000+00:00" installusrid="CICSUSER" majorversion="1" mgmtpart="0000000000000000" microversion="1" minorversion="0" name="MYBUNDLE1" partcount="1" targetcount="1" />
+	</records>
+</response>
