@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, l10n, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";
@@ -26,9 +26,9 @@ export function getClearPlexFilterCommand(tree: CICSTree) {
     const plex = node.getParent();
     const plexProfile = plex.getProfile();
 
-    let resourceOptions = ["All Resources"];
+    let resourceOptions = [l10n.t("All Resources")];
     if (!plexProfile.profile.regionName || !plexProfile.profile.cicsPlex) {
-      resourceOptions = ["Regions", ...resourceOptions];
+      resourceOptions = [l10n.t("Regions"), ...resourceOptions];
     }
 
     const resourceToClear = await window.showQuickPick(resourceOptions);
@@ -39,7 +39,7 @@ export function getClearPlexFilterCommand(tree: CICSTree) {
 
     node.filterRegions("*", tree);
 
-    if (resourceToClear === "Regions") {
+    if (resourceToClear === l10n.t("Regions")) {
       return;
     }
 
