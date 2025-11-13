@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" cachetoken="SHOWBUNDLETOKEN" />
+	<records>
+		<cicsbundlepart _keydata="D4C1E5C5D5D3C7F3A385A2A36D81979760F04BF04BF160E2D5C1D7E2C8D6E340404040404040404040404040" availstatus="NONE" bundle="MYBUNDLE1" bundlepart="MY_BUNDLE_PART" enablestatus="UNUSABLE" eyu_cicsname="MYREG1" eyu_cicsrel="E710" eyu_reserved="0" metadatafile="MY_BUNDLE_PART.warbundle" operation="" partclass="DEFINITION" parttype="http://www.ibm.com/xmlns/prod/cics/bundle/WARBUNDLE" seqnumber="1" />
+	</records>
+</response>

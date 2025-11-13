@@ -16,12 +16,19 @@ const mock = createVSCodeMock(jest);
 module.exports = {
   ...mock,
   extensions: {
-    getExtension: (v: string) => { }
+    getExtension: (v: string) => {},
   },
   env: {
     clipboard: {
-      writeText: (v: string) => { }
-    }
-  }
-}
-
+      writeText: (v: string) => {},
+    },
+  },
+  l10n: {
+    t: (key: string, ...args: any[]) => {
+      if (typeof key !== "string") {
+        return String(key);
+      }
+      return key.replace(/\{(\d+)\}/g, (_, idx) => (args[Number(idx)] !== undefined ? String(args[Number(idx)]) : ""));
+    },
+  },
+};

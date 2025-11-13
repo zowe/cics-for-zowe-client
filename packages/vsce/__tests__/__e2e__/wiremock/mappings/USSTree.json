@@ -1,0 +1,30 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/zosmf/info"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "USSTree/zosmf-info.json",
+        "headers": {
+          "Content-Type": "text/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/zosmf/restfiles/fs?path=%2Fu%2Fexpauto%2Fbundles%2Ftest_plugin_1.0.1"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "USSTree/uss-tree-info.json",
+        "headers": {
+          "Content-Type": "text/json"
+        }
+      }
+    }
+  ]
+}

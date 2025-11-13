@@ -11,6 +11,7 @@
 
 export enum ResourceTypes {
   CICSLocalFile = "CICSLocalFile",
+  CICSRemoteFile = "CICSRemoteFile",
   CICSLocalTransaction = "CICSLocalTransaction",
   CICSProgram = "CICSProgram",
   CICSTCPIPService = "CICSTCPIPService",

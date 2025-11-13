@@ -99,7 +99,7 @@ export class CICSSessionTree extends TreeItem {
     if (cicsplexName) {
 
       const plexNode = this.children.find((plex) => plex instanceof CICSPlexTree && plex.plexName === cicsplexName) as CICSPlexTree;
-      if (plexNode?.children.length > 0) {
+      if (plexNode?.children?.length > 0) {
         return plexNode.getRegionNodeFromName(regionName);
       }
 

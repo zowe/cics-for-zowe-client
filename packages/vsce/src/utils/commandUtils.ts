@@ -13,6 +13,149 @@ import { TreeView } from "vscode";
 import { IResourceMeta } from "../doc";
 import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IProfileLoaded } from "@zowe/imperative";
+import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import * as vscode from "vscode";
+import { CICSLogger } from "./CICSLogger";
+import { ProfileManagement } from "./profileManagement";
+
+/**
+ * Checks if a profile supports a specific type of connection
+ *
+ * @param profile - The profile to check
+ * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss or ZoweExplorerApiType.Jes)
+ * @returns True if the profile supports the specified connection type, false otherwise
+ */
+export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: ZoweExplorerApiType): boolean {
+  const explorerApi = ZoweVsCodeExtension.getZoweExplorerApi();
+
+  try {
+    switch (connectionType) {
+      case ZoweExplorerApiType.Uss:
+        explorerApi.getUssApi(profile);
+        break;
+      case ZoweExplorerApiType.Jes:
+        explorerApi.getJesApi(profile);
+        break;
+      default:
+        return false;
+    }
+    return true;
+  } catch {
+    CICSLogger.debug(`Profile ${profile.name} does not support connection type ${connectionType}`);
+    return false;
+  }
+}
+
+/**
+ * Fetches a base profile without throwing an error if none exists
+ *
+ * @param profile - The profile to fetch the base profile for
+ * @returns The base profile or undefined if none exists
+ */
+export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Promise<IProfileLoaded | undefined> {
+  let baseProfile = undefined;
+  try {
+    baseProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
+  } catch (ex) {
+    // this isn't an error we're interested in - we were checking if a base profile existed
+    CICSLogger.debug(`No base profile found for ${profile.name}`);
+  }
+  return baseProfile;
+}
+
+/**
+ * Finds a related z/OS profile that can be used with a CICS profile
+ *
+ * This function attempts to find a matching z/OS profile using the following strategy:
+ * 1. First tries to find profiles that share the same base profile
+ * 2. If no match is found, looks for profiles with the same hostname
+ *
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param zosProfiles - Array of available z/OS profiles to search through
+ * @returns A matching z/OS profile or undefined if no match is found
+ */
+export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded | undefined> {
+
+  const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
+  
+  // Prioritize zosmf profiles and filter to only include profiles with credentials
+  const prioritizedProfiles = zosProfiles
+    .sort((prof) => (prof.profile.type === "zosmf" ? -1 : 1))
+    .filter((prof) => prof.profile.user);
+  
+  // First attempt: Find profiles that share the same base profile
+  if (baseForCicsProfile) {
+    const matchingBaseProfiles = [];
+    
+    for (const profile of prioritizedProfiles) {
+      const profileBase = await fetchBaseProfileWithoutError(profile);
+      
+      if (profileBase?.name === baseForCicsProfile.name) {
+        matchingBaseProfiles.push(profile);
+      }
+    }
+    
+    if (matchingBaseProfiles.length > 0) {
+      const selectedProfile = matchingBaseProfiles[0];
+      CICSLogger.info(`Located matching z/OS profile by base profile: ${selectedProfile.name}`);
+      return selectedProfile;
+    }
+  }
+  
+  // Second attempt: Find profiles with the same hostname
+  const sameHostProfile = prioritizedProfiles.find(
+    (profile) => cicsProfile.profile.host === profile.profile.host
+  );
+  
+  if (sameHostProfile) {
+    CICSLogger.info(`Located matching z/OS profile by hostname: ${sameHostProfile.name}`);
+    return sameHostProfile;
+  }
+  
+  // No matching profile found
+  return undefined;
+}
+
+/**
+ * Prompts the user to select a profile from a list
+ *
+ * @param zosProfiles - Array of profiles to choose from
+ * @returns The name of the selected profile, null if no profiles are available, or undefined if the user cancels
+ */
+export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promise<string> {
+  const profileNames = zosProfiles.map((profile) => profile.name);
+
+  if (profileNames.length === 0) {
+    return null;
+  }
+  // ask the user to pick from the profiles passed in
+  const quickPickOptions: vscode.QuickPickOptions = {
+    placeHolder: vscode.l10n.t("Select a profile to access the logs"),
+    ignoreFocusOut: true,
+    canPickMany: false,
+  };
+  const chosenProfileName = await Gui.showQuickPick(profileNames, quickPickOptions);
+  if (!chosenProfileName) {
+    return chosenProfileName;
+  }
+  // if the profile they picked doesn't have credentials, prompt the user for them
+  const chosenProfileLoaded = zosProfiles.filter((profile) => profile.name === chosenProfileName)[0];
+  const chosenProfile = chosenProfileLoaded.profile;
+  if (!(chosenProfile.user || chosenProfile.certFile || chosenProfile.tokenValue)) {
+    CICSLogger.info(`Prompting for credentials for ${chosenProfileName}`);
+    await ZoweVsCodeExtension.updateCredentials(
+      {
+        profile: chosenProfileLoaded,
+        rePrompt: false,
+      },
+      ProfileManagement.getExplorerApis()
+    );
+  }
+  // call fetchAllProfiles again otherwise we get an expect error about requiring a session to be defined
+  const requestTheProfileAgain = (await ProfileManagement.getProfilesCache().fetchAllProfiles()).filter((prof) => prof.name === chosenProfileName)[0];
+  return requestTheProfileAgain.name;
+}
 
 /**
  * Returns an array of selected nodes in the current treeview.
@@ -93,7 +236,6 @@ export async function getResourceTree<T extends IResource>(
     if (!regionsNode) {
       return;
     }
-
     await treeview.reveal(regionsNode, { expand: true });
 
     const regionTree = regionsNode.children.find((ch: any) => ch.label === regionName);

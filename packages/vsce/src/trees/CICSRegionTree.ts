@@ -25,7 +25,8 @@ import {
   TCPIPMeta,
   TransactionMeta,
   URIMapMeta,
-  WebServiceMeta
+  WebServiceMeta,
+  RemoteFileMeta
 } from "../doc";
 import { getIconByStatus } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
@@ -74,7 +75,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         this.children.push(this.buildResourceContainerNode([TransactionMeta]));
       }
       if (config.get<boolean>("LocalFile", true)) {
-        this.children.push(this.buildResourceContainerNode([LocalFileMeta]));
+        this.children.push(this.buildResourceContainerNode([LocalFileMeta, RemoteFileMeta], "Files"));
       }
       if (config.get<boolean>("Task", true)) {
         this.children.push(this.buildResourceContainerNode([TaskMeta]));

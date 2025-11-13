@@ -37,6 +37,17 @@
         "host": "wiremock",
         "port": 8080
       }
+    },
+    "zosmf-wiremock": {
+      "type": "zosmf",
+      "properties": {
+        "host": "wiremock",
+        "port": 8080,
+        "rejectUnauthorized": false,
+        "protocol": "http",
+        "user": "dummy",
+        "password": "dummy"
+      }
     }
   },
   "defaults": {

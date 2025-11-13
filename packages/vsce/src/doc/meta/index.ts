@@ -17,6 +17,7 @@ import { LibraryDatasetMeta } from "./libraryDataset.meta";
 import { LocalFileMeta } from "./localFile.meta";
 import { PipelineMeta } from "./pipeline.meta";
 import { ProgramMeta } from "./program.meta";
+import { RemoteFileMeta } from "./remoteFile.meta";
 import { TaskMeta } from "./task.meta";
 import { TCPIPMeta } from "./tcpip.meta";
 import { TransactionMeta } from "./transaction.meta";
@@ -34,6 +35,7 @@ export * from "./libraryDataset.meta";
 export * from "./localFile.meta";
 export * from "./pipeline.meta";
 export * from "./program.meta";
+export * from "./remoteFile.meta";
 export * from "./task.meta";
 export * from "./tcpip.meta";
 export * from "./transaction.meta";
@@ -51,6 +53,7 @@ export function getMetas(): IResourceMeta<IResource>[] {
     LocalFileMeta,
     PipelineMeta,
     ProgramMeta,
+    RemoteFileMeta,
     TaskMeta,
     TCPIPMeta,
     TransactionMeta,

@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Added CICS Remote File resource constant. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
+
 ## `6.14.0`
 
 - Changes to JVM Endpoint CICS CMCI constant. [#413](https://github.com/zowe/cics-for-zowe-client/issues/413)

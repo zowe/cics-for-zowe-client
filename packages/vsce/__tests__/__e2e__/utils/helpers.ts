@@ -15,6 +15,7 @@ export const constants = {
   ZOWE_CONFIG_FILE_NAME: "zowe.config.json",
 
   PROFILE_NAME: "wiremock_localhost",
+  ZOSMF_PROFILE_NAME: "zosmf-wiremock",
   CICSPLEX_NAME: "MYPLEX1",
   REGION_NAME: "MYREG1",
   PROGRAM_1_NAME: "MYPROG1",
@@ -23,6 +24,10 @@ export const constants = {
   LIBRARY_DS_1_NAME: "MYLIBDS1",
   JVM_SERVER_1_NAME: "MYJVM1",
   JVM_ENDPOINT_1_NAME: "MYJVMENDPOINT1 (9080)",
+  BUNDLE_1_NAME: "MYBUNDLE1 (DISABLED)",
+  BUNDLE_1_USS_PATH: "/u/expauto/bundles/test_plugin_1.0.1",
+  LOCAL_FILE_1_NAME: "LOCFILE1",
+  REMOTE_FILE_1_NAME: "REMFILE1",
 };
 
 export const getTree = (page: Page, exactText: string) => {
