@@ -77,7 +77,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params.criteria) });
+      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
@@ -159,7 +159,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params.criteria) });
+      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
