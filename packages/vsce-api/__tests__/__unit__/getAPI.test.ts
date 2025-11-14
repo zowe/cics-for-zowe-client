@@ -11,7 +11,7 @@
 
 const mockGetExtension = jest.fn().mockReturnValue({
   packageJSON: {
-    version: "1.2.3"
+    version: "3.14.0"
   },
   activate: () => {
     return {
@@ -49,32 +49,38 @@ describe("getAPI tests", () => {
     expect(api?.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
   });
 
-  it("should return API with lower minimum version", async () => {
-    const api = await getCICSForZoweExplorerAPI("0.2.3");
+  it("should return undefined with min version higher than hardcoded limit and installed version", async () => {
+    const api = await getCICSForZoweExplorerAPI("3.16.0");
+    expect(api).toBeUndefined();
+  });
+
+  it("should return API when min version is met", async () => {
+    const api = await getCICSForZoweExplorerAPI("3.12.0");
     expect(api).toBeDefined();
     expect(api?.resources.supportedResources).toHaveLength(1);
     expect(api?.resources.supportedResources[0]).toEqual(ResourceTypes.CICSProgram);
   });
 
-  it("should return undefined with higher minimum version", async () => {
-    const api = await getCICSForZoweExplorerAPI("2.2.3");
-    expect(api).toBeUndefined();
-  });
-
-  it("should return undefined with no extension installed", async () => {
-
-    mockGetExtension.mockReturnValue(undefined);
+  it("should return undefined when installed version is lower than hardcoded min", async () => {
+    mockGetExtension.mockReturnValueOnce({
+      packageJSON: {
+        version: "3.2.0"
+      },
+    });
 
     const api = await getCICSForZoweExplorerAPI();
     expect(api).toBeUndefined();
   });
 
-  it("should return undefined with no extension installed and minimum value", async () => {
-
-    mockGetExtension.mockReturnValue(undefined);
-
-    const api = await getCICSForZoweExplorerAPI("1.5.6");
+  it("should return undefined with no extension installed", async () => {
+    mockGetExtension.mockReturnValueOnce(undefined);
+    const api = await getCICSForZoweExplorerAPI();
     expect(api).toBeUndefined();
   });
 
+  it("should return undefined with no extension installed and minimum value", async () => {
+    mockGetExtension.mockReturnValueOnce(undefined);
+    const api = await getCICSForZoweExplorerAPI("1.5.6");
+    expect(api).toBeUndefined();
+  });
 });
