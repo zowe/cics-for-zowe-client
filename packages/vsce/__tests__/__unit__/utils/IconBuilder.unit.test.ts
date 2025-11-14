@@ -73,6 +73,8 @@ describe("IconBuilder tests", () => {
         progtype: "COBOL",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
+        usecount:"0",
+        language:"COBOL",
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-dark.svg"));
@@ -85,10 +87,12 @@ describe("IconBuilder tests", () => {
         eyu_cicsname: "REG",
         newcopycnt: "0",
         program: "MYPROG",
-        status: "DISABLED",
+        status: "ENABLED",
         progtype: "COBOL",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
+        usecount:"0",
+        language:"COBOL",
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-dark.svg"));
