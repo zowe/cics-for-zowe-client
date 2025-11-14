@@ -11,11 +11,12 @@
 
 import { ResourceTypes } from "../resources";
 import { IResourceContext } from "./IResourceContext";
-import { IBundle, IJVMServer, ILibrary, ILocalFile, IPipeline, IProgram, ITask, ITCPIP, ITransaction, IURIMap, IWebService } from "./resources";
+import { IBundle, IJVMServer, ILibrary, ILocalFile, IPipeline, IProgram, IRemoteFile, ISharedTSQueue, ITask, ITCPIP, ITransaction, ITSQueue, IURIMap, IWebService } from "./resources";
 
 export interface ResourceTypeMap {
   [ResourceTypes.CICSProgram]: IProgram;
   [ResourceTypes.CICSLocalFile]: ILocalFile;
+  [ResourceTypes.CICSRemoteFile]: IRemoteFile;
   [ResourceTypes.CICSLocalTransaction]: ITransaction;
   [ResourceTypes.CICSTCPIPService]: ITCPIP;
   [ResourceTypes.CICSLibrary]: ILibrary;
@@ -25,6 +26,8 @@ export interface ResourceTypeMap {
   [ResourceTypes.CICSWebService]: IWebService;
   [ResourceTypes.CICSJVMServer]: IJVMServer;
   [ResourceTypes.CICSBundle]: IBundle;
+  [ResourceTypes.CICSTSQueue]: ITSQueue;
+  [ResourceTypes.CICSSharedTSQueue]: ISharedTSQueue;
 }
 
 export interface ResourceActionOptions<TType extends keyof ResourceTypeMap> {
