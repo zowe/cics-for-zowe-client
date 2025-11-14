@@ -10,7 +10,8 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciRestClient, getCache, getResource, ICMCIApiResponse, ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciRestClient, getCache, getResource, ICMCIApiResponse,
+  ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
@@ -76,7 +77,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
 
-  return await getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
+  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
     buildUserAgentHeader(),
   ]);
 }
@@ -116,7 +117,7 @@ export async function runGetCache(
 
   const newSession = buildNewSession(profile);
 
-  return await getCache(
+  return getCache(
     newSession,
     { cacheToken, startIndex, count, nodiscard: true, summonly: false },
     { failOnNoData: false, useCICSCmciRestError: true },
@@ -162,7 +163,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
 
   const newSession = buildNewSession(profile);
 
-  return await CicsCmciRestClient.putExpectParsedXml(newSession, cmciResource, [buildUserAgentHeader()], requestBody);
+  return CicsCmciRestClient.putExpectParsedXml(newSession, cmciResource, [buildUserAgentHeader()], requestBody);
 }
 
 export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {
@@ -211,11 +212,13 @@ export async function pollForCompleteAction<T extends IResource>(
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
   parentResource?: IResource,
 ) {
+  const DELAY_MS = 1000;
   let response: ICMCIApiResponse;
+  const containerResource = node.getContainedResource();
   for (let i = 0; i < constants.POLL_FOR_ACTION_DEFAULT_RETRIES; i++) {
     response = await runGetResource({
       profileName: node.getProfile().name,
-      resourceName: node.getContainedResource().meta.resourceName,
+      resourceName: containerResource.meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
@@ -223,13 +226,13 @@ export async function pollForCompleteAction<T extends IResource>(
           summonly: false,
           nodiscard: false,
         },
-        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)], parentResource),
+        criteria: containerResource.meta.buildCriteria([containerResource.meta.getName(containerResource.resource)], parentResource),
       },
     });
     if (isCompletionCriteriaMet(response.response)) {
       break;
     }
-    await new Promise((f) => setTimeout(f, 1000));
+    await new Promise((f) => setTimeout(f, DELAY_MS));
   }
 
   criteriaMetCallback(response);

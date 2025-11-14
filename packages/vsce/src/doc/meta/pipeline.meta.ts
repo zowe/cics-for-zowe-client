@@ -36,6 +36,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return `${CicsCmciConstants.CICS_PIPELINE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<IPipeline>): string {
     return "pipeline";
   },
@@ -44,6 +45,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return resource.attributes.name;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getHighlights(resource: Resource<IPipeline>) {
     return [];
   },

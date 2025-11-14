@@ -45,6 +45,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
     return `${CicsCmciConstants.CICS_URIMAP}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<IURIMap>): string {
     return "uri-map";
   },

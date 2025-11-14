@@ -326,7 +326,7 @@ export class ProfileManagement {
   }
 
   public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
-    return await ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
+    return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
