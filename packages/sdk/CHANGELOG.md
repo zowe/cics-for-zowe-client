@@ -5,6 +5,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 ## Recent Changes
 
 - Added CICS Remote File resource constant. [#416](https://github.com/zowe/cics-for-zowe-client/issues/416)
+- Enhancement: Added PUT API [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `6.14.0`
 
