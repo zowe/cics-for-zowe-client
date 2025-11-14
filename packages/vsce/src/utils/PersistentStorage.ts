@@ -40,6 +40,8 @@ class SPersistentStorage {
     this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_BUNDLE_PART, "bundlePartSearchHistory");
     this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_REGION, "regionSearchHistory");
     this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT, "jvmEndpointSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_TS_QUEUE, "tsQueueSearchHistory");
+    this.searchHistoryKeyMap.set(CicsCmciConstants.CICS_CMCI_SHARED_TS_QUEUE, "tsQueueSearchHistory");
   }
 
   private schema: string = "zowe.cics.persistent";

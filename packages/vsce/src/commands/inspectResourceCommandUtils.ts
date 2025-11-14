@@ -14,7 +14,7 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { commands, ExtensionContext, InputBoxOptions, l10n, ProgressLocation, QuickPickItem, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { getMetas, IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta } from "../doc";
+import { getMetas, IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -74,6 +74,9 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     if (type[0] === LocalFileMeta || type[0] === RemoteFileMeta) {
       type = [LocalFileMeta, RemoteFileMeta];
+    }
+    if (type[0] === TSQueueMeta || type[0] === SharedTSQueueMeta) {
+      type = [TSQueueMeta, SharedTSQueueMeta];
     }
 
     const resourceContext: IResourceProfileNameInfo = {
@@ -180,6 +183,9 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
     if ([ResourceTypes.CICSLocalFile, ResourceTypes.CICSRemoteFile].includes(item.resourceName as ResourceTypes)) {
       return acc;
     }
+    if ([ResourceTypes.CICSTSQueue, ResourceTypes.CICSSharedTSQueue].includes(item.resourceName as ResourceTypes)) {
+      return acc;
+    }
     // for now we only show our externally visible types (so not LIBDSN)
     if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
       acc.set(item.humanReadableNameSingular, [item]);
@@ -188,6 +194,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   }, new Map());
 
   resourceTypeMap.set("File", [LocalFileMeta, RemoteFileMeta]);
+  resourceTypeMap.set("TS Queue", [TSQueueMeta, SharedTSQueueMeta]);
 
   return resourceTypeMap;
 }
