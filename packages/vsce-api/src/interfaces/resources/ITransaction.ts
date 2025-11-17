@@ -14,9 +14,7 @@ import { IResourceWithStatus } from "./IResource";
 export interface ITransaction extends IResourceWithStatus {
   tranid: string;
   program: string;
-  status: string;
   availstatus: string;
   tranclass: string;
   routing: string;
-  inquiredProgram: string;
 }
