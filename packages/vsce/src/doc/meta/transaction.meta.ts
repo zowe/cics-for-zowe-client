@@ -66,7 +66,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
         value: resource.attributes.availstatus,
       },
       {
-        key: "Tran Class",
+        key: "Transaction Class",
         value: resource.attributes.tranclass,
       },
       {
@@ -74,7 +74,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
         value: resource.attributes.routing,
       },
       {
-        key: "Inquired program",
+        key: "Initial program",
         value: resource.attributes.program,
       },
     ];

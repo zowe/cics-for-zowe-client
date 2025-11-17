@@ -75,6 +75,8 @@ describe("Test suite for copy commands", () => {
             progtype: "PROGRAM",
             library: "MYLIB",
             librarydsn: "MYLIBDSN",
+            usecount:"0",
+            language:"COBOL"
           },
         },
       }
