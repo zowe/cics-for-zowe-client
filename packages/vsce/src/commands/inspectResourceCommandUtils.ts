@@ -14,7 +14,7 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, getMetas } from "../doc";
+import { IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta, getMetas } from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -160,7 +160,7 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceTypes.map((type) => l10n.t(type.humanReadableNameSingular)).join(l10n.t(" or "));
+    const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
     const message = CICSMessages.CICSResourceNotFound.message
       .replace("%resource-type%", hrn)
       .replace("%resource-name%", resourceName)
@@ -186,20 +186,21 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
     if ([ResourceTypes.CICSTSQueue, ResourceTypes.CICSSharedTSQueue].includes(item.resourceName as ResourceTypes)) {
       return acc;
     }
-    // for now we only show our externally visible types (so not LIBDSN)
+
     if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
-      acc.set(l10n.t(item.humanReadableNameSingular), item);
+      const label = item.humanReadableNameSingular;
+      acc.set(label, [item]);
     }
     return acc;
   }, new Map());
 
-  resourceTypeMap.set(l10n.t("File"), [LocalFileMeta, RemoteFileMeta]);
+  resourceTypeMap.set("File", [LocalFileMeta, RemoteFileMeta]);
+  resourceTypeMap.set("TSQueue", [TSQueueMeta, SharedTSQueueMeta]);
 
   return resourceTypeMap;
 }
 
 async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
-  // map with the nice name of the resource type "Local File" etc mapping onto the resource meta type
   const resourceTypeMap = getInspectableResourceTypes();
 
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());

@@ -34,8 +34,8 @@
   "No CICS resource selected": "No CICS resource selected",
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
-  " or ": " or ",
   "File": "File",
+  "TSQueue": "TSQueue",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "Transaction": "Transaction",
   "No CICS Task selected": "No CICS Task selected",
@@ -68,5 +68,5 @@
   "All Resources": "All Resources",
   "progress.title": "progress.title",
   "Performing {0} on {1} (${2} of ${3})": "Performing {0} on {1} (${2} of ${3})",
-  "Something went wrong when performing {0} - {1}": "Something went wrong when performing {0} - {1}"
+  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
 }

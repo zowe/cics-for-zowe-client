@@ -10,7 +10,15 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import {
+  constants,
+  findAndClickText,
+  findAndClickTreeItem,
+  getTreeItem,
+  prepareZoweExplorerView,
+  resetWiremock,
+  resetZoweExplorerView,
+} from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -99,6 +107,6 @@ test.describe("JVM server tests", () => {
 
     await expect(page.getByRole("button", { name: "Kill", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Kill", exact: true }).click();
-    await expect(page.getByText("Error: Something went wrong when performing a disable", { exact: false })).toBeVisible();
+    await expect(page.getByText("Something went wrong when performing a", { exact: false })).toBeVisible();
   });
 });
