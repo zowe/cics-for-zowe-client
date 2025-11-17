@@ -160,7 +160,7 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
+    const hrn = resourceTypes.map((type) => l10n.t(type.humanReadableNameSingular)).join(l10n.t("Or"));
     const message = CICSMessages.CICSResourceNotFound.message
       .replace("%resource-type%", hrn)
       .replace("%resource-name%", resourceName)
@@ -206,15 +206,15 @@ async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
 
   if (choice) {
+    const key = (choice as any).dataKey ?? choice.label;
     return {
       name: choice.label,
-      meta: resourceTypeMap.get(choice.label),
+      meta: resourceTypeMap.get(key),
     };
   }
 
   return undefined;
 }
-
 async function selectResource(resourceNameSingular: string, maxNameLength?: number): Promise<string | undefined> {
   const options: InputBoxOptions = {
     prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceNameSingular),
@@ -231,11 +231,11 @@ async function selectResource(resourceNameSingular: string, maxNameLength?: numb
 }
 
 async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<QuickPickItem | undefined> {
-  const qpItems: QuickPickItem[] = [...items.map((item) => ({ label: item }))];
+  const qpItems: QuickPickItem[] = items.map((item) => ({ label: l10n.t(item), dataKey: item }) as any);
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
-  quickPick.placeholder = l10n.t(placeHolder);
+  quickPick.placeholder = placeHolder;
   quickPick.ignoreFocusOut = true;
   quickPick.show();
   const choice = await Gui.resolveQuickPick(quickPick);

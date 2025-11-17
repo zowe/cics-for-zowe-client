@@ -7,9 +7,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "Update Credentials": "Update Credentials",
   "Update the selected profile's credentials": "Update the selected profile's credentials",
@@ -34,8 +32,7 @@
   "No CICS resource selected": "No CICS resource selected",
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
-  "File": "File",
-  "TSQueue": "TSQueue",
+  "Or": "Or",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "Transaction": "Transaction",
   "No CICS Task selected": "No CICS Task selected",
@@ -68,5 +65,12 @@
   "All Resources": "All Resources",
   "progress.title": "progress.title",
   "Performing {0} on {1} (${2} of ${3})": "Performing {0} on {1} (${2} of ${3})",
-  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
+  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}",
+  "File": "File",
+  "TSQueue": "TS Queue",
+  "Library Dataset": "Library Dataset",
+  "Local File": "Local File",
+  "Remote File": "Remote File",
+  "TS Queue": "TS Queue",
+  "Shared TS Queue": "Shared TS Queue"
 }
