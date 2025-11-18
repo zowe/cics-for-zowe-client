@@ -22,6 +22,10 @@ import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewPro
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
+interface IExternalizedQuickPickItem extends QuickPickItem {
+  dataKey: string;
+}
+
 async function showInspectResource(
   context: ExtensionContext,
   resource: IContainedResource<IResource>,
@@ -160,7 +164,7 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceTypes.map((type) => l10n.t(type.humanReadableNameSingular)).join(l10n.t("Or"));
+    const hrn = resourceTypes.map((type) => l10n.t(type.humanReadableNameSingular)).join(l10n.t(" or "));
     const message = CICSMessages.CICSResourceNotFound.message
       .replace("%resource-type%", hrn)
       .replace("%resource-name%", resourceName)
@@ -203,10 +207,12 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
 async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
   const resourceTypeMap = getInspectableResourceTypes();
 
-  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
+  const choice = (await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort())) as
+    | IExternalizedQuickPickItem
+    | undefined;
 
   if (choice) {
-    const key = (choice as any).dataKey ?? choice.label;
+    const key = choice.dataKey ?? choice.label;
     return {
       name: choice.label,
       meta: resourceTypeMap.get(key),
@@ -230,15 +236,18 @@ async function selectResource(resourceNameSingular: string, maxNameLength?: numb
   return (await window.showInputBox(options)) || undefined;
 }
 
-async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<QuickPickItem | undefined> {
-  const qpItems: QuickPickItem[] = items.map((item) => ({ label: l10n.t(item), dataKey: item }) as any);
+async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<IExternalizedQuickPickItem | undefined> {
+  const qpItems: IExternalizedQuickPickItem[] = items.map((item) => ({
+    label: l10n.t(item),
+    dataKey: item,
+  }));
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
   quickPick.placeholder = placeHolder;
   quickPick.ignoreFocusOut = true;
   quickPick.show();
-  const choice = await Gui.resolveQuickPick(quickPick);
+  const choice = (await Gui.resolveQuickPick(quickPick)) as IExternalizedQuickPickItem | undefined;
   quickPick.hide();
   return choice;
 }

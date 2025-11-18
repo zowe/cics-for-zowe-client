@@ -65,7 +65,7 @@
   "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
   "No CICS local file selected": "No CICS local file selected",
   "All Resources": "All Resources",
-  "progress.title": "progress.title",
+  "action": "action",
   "Performing {0} on {1} (${2} of ${3})": "Performing {0} on {1} (${2} of ${3})",
   "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
 }
