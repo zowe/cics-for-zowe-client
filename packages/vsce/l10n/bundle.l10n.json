@@ -34,7 +34,7 @@
   "No CICS resource selected": "No CICS resource selected",
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
-  "Or": "Or",
+  " or ": " or ",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "Transaction": "Transaction",
   "No CICS Task selected": "No CICS Task selected",

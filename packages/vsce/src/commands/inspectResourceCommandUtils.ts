@@ -110,7 +110,7 @@ async function loadResourcesWithProgress(
   resourceContext: IResourceProfileNameInfo,
   parentResource?: Resource<IResource>
 ) {
-  return await window.withProgress(
+  return window.withProgress(
     {
       title: CICSMessages.CICSLoadingResourceName.message.replace("%name%", resourceName),
       location: ProgressLocation.Notification,
@@ -207,9 +207,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
 async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
   const resourceTypeMap = getInspectableResourceTypes();
 
-  const choice = (await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort())) as
-    | IExternalizedQuickPickItem
-    | undefined;
+  const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
 
   if (choice) {
     const key = choice.dataKey ?? choice.label;
