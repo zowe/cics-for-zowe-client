@@ -38,11 +38,13 @@ jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
 const prog1: IProgram = {
   program: "PROG1",
   status: "ENABLED",
-  newcopycnt: "0",
   eyu_cicsname: "MYREG",
+  newcopycnt: "0",
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
+  usecount:"0",
+  language:"COBOL"
 };
 const prog2: IProgram = {
   program: "PROG2",
@@ -52,6 +54,8 @@ const prog2: IProgram = {
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
+  usecount:"0",
+  language:"COBOL"
 };
 const locFile1: ILocalFile = {
   browse: "",
