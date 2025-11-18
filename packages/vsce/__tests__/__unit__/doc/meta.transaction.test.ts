@@ -27,6 +27,10 @@ describe("Transaction Meta", () => {
       program: "MYPROG",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      availstatus: "NONE",
+      tranclass: "DFHTCL00",
+      routing: "STATIC"
+      
     });
   });
 
@@ -71,6 +75,23 @@ describe("Transaction Meta", () => {
   it("should return highlights", () => {
     const highlights = TransactionMeta.getHighlights(transactionMock);
     expect(highlights).toEqual([
+      
+      {
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
+        key: "Available Status",
+        value: "NONE",
+      },
+      {
+        key: "Transaction Class",
+        value: "DFHTCL00",
+      },
+      {
+        key: "Routing",
+        value: "STATIC",
+      },
       {
         key: "Initial program",
         value: "MYPROG",

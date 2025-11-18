@@ -30,6 +30,8 @@ describe("Program Meta", () => {
       enablestatus: "ENABLED",
       library: "MYLIB",
       librarydsn: "MYLIBDSN",
+      usecount:"0",
+      language:"COBOL"
     });
   });
 
@@ -86,13 +88,21 @@ describe("Program Meta", () => {
     const highlights = ProgramMeta.getHighlights(programMock);
     expect(highlights).toEqual([
       {
-        key: "Type",
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
+        key: "Language",
         value: "COBOL",
       },
       {
-        key: "New Copy Count",
+        key: "Use Count",
         value: "0",
       },
+      {
+        key: "Library",
+        value: "MYLIB",
+      }
     ]);
   });
 
