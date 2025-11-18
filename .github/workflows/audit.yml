@@ -8,6 +8,7 @@ on:
       - next
     paths:
       - packages/**
+      - package.json
   schedule:
     - cron: '0 10 * * *'
 
