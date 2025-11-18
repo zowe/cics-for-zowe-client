@@ -107,6 +107,6 @@ test.describe("JVM server tests", () => {
 
     await expect(page.getByRole("button", { name: "Kill", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Kill", exact: true }).click();
-    await expect(page.getByText("Something went wrong when performing a", { exact: false }).first()).toBeVisible();
+    await expect(page.getByText("Something went wrong when performing a disable", { exact: false })).toBeVisible();
   });
 });
