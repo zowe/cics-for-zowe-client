@@ -29,8 +29,7 @@ describe("Transaction Meta", () => {
       enablestatus: "ENABLED",
       availstatus: "NONE",
       tranclass: "DFHTCL00",
-      routing: "STATIC",
-      inquiredProgram:"CEL4RTO"
+      routing: "STATIC"
       
     });
   });
