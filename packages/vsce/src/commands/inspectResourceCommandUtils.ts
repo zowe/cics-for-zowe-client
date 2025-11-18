@@ -195,7 +195,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   }, new Map());
 
   resourceTypeMap.set("File", [LocalFileMeta, RemoteFileMeta]);
-  resourceTypeMap.set("TSQueue", [TSQueueMeta, SharedTSQueueMeta]);
+  resourceTypeMap.set("TS Queue", [TSQueueMeta, SharedTSQueueMeta]);
 
   return resourceTypeMap;
 }
