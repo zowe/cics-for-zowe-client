@@ -31,7 +31,7 @@ interface IActionTreeItemArgs {
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
   await window.withProgress(
     {
-      title: l10n.t("progress.title", resourceActionVerbMap[action] ?? action),
+      title: l10n.t("action", resourceActionVerbMap[action] ?? action),
       location: ProgressLocation.Notification,
       cancellable: false,
     },
