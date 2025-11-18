@@ -9,10 +9,10 @@
  *
  */
 
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const ProgramMeta: IResourceMeta<IProgram> = {
@@ -31,7 +31,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getLabel: function (program: Resource<IProgram>): string {
     let label = `${program.attributes.program}`;
     if (program.attributes.newcopycnt && parseInt(program.attributes.newcopycnt) > 0) {
-      label += ` (New copy count: ${program.attributes.newcopycnt})`;
+      label += ` (New copy tally: ${program.attributes.newcopycnt})`;
     }
     if (program.attributes.status.trim().toLowerCase() === "disabled") {
       label += " (Disabled)";
@@ -59,7 +59,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
         value: program.attributes.progtype,
       },
       {
-        key: "New Copy Count",
+        key: "New Copy Tally",
         value: program.attributes.newcopycnt,
       },
     ];

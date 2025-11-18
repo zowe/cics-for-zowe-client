@@ -96,7 +96,7 @@ test.describe("Resource Inspector tests", async () => {
     // Now check resource inspector hasn't updated
     await getResourceInspector(page).locator("#resource-title").waitFor();
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
-    const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    const newCopyCountRow = getResourceInspector(page).locator("td:has-text('New Copy Tally')").first();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
     await expect(newCopyCountRow).toBeVisible();
     await expect(newCopyCountRow.locator("..")).toContainText("0");
@@ -110,7 +110,7 @@ test.describe("Resource Inspector tests", async () => {
     // Verify that the refresh occurs
     await waitForNotification(page, `Refreshing Program ${constants.PROGRAM_2_NAME}`);
 
-    const newCopyCountRow2 = getResourceInspector(page).locator("td:has-text('New Copy Count')").first();
+    const newCopyCountRow2 = getResourceInspector(page).locator("td:has-text('New Copy Tally')").first();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/7.png" });
     await expect(newCopyCountRow2).toBeVisible();
     await expect(newCopyCountRow2.locator("..")).toContainText("1");

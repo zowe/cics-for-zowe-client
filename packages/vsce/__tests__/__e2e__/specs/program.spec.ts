@@ -10,7 +10,16 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getClipboardContent, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import {
+  constants,
+  findAndClickText,
+  findAndClickTreeItem,
+  getClipboardContent,
+  getTreeItem,
+  prepareZoweExplorerView,
+  resetWiremock,
+  resetZoweExplorerView,
+} from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -77,7 +86,7 @@ test.describe("Program tests", () => {
     await findAndClickText(page, "New Copy");
 
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/newcopy-program/3.png" });
-    await expect(getTreeItem(page, `${constants.PROGRAM_1_NAME} (New copy count: 1)`, false)).toHaveCount(1);
+    await expect(getTreeItem(page, `${constants.PROGRAM_1_NAME} (New copy tally: 1)`, false)).toHaveCount(1);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/newcopy-program/4.png" });
   });
 
@@ -92,7 +101,9 @@ test.describe("Program tests", () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Show Library");
 
-    await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(1);
+    await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(
+      1
+    );
     await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME)).toHaveCount(1);
   });
 

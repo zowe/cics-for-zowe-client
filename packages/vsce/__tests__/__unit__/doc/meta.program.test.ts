@@ -49,13 +49,13 @@ describe("Program Meta", () => {
   it("should return label with newcopycount", () => {
     programMock.attributes.newcopycnt = "2";
     const label = ProgramMeta.getLabel(programMock);
-    expect(label).toEqual(`MYPROG (New copy count: 2)`);
+    expect(label).toEqual(`MYPROG (New copy tally: 2)`);
   });
   it("should return label with disabled and newcopycount", () => {
     programMock.attributes.status = "DISABLED";
     programMock.attributes.newcopycnt = "2";
     const label = ProgramMeta.getLabel(programMock);
-    expect(label).toEqual(`MYPROG (New copy count: 2) (Disabled)`);
+    expect(label).toEqual(`MYPROG (New copy tally: 2) (Disabled)`);
   });
 
   it("should return context", () => {
@@ -90,7 +90,7 @@ describe("Program Meta", () => {
         value: "COBOL",
       },
       {
-        key: "New Copy Count",
+        key: "New Copy Tally",
         value: "0",
       },
     ]);
