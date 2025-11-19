@@ -9,10 +9,10 @@
  *
  */
 
+import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const LocalFileMeta: IResourceMeta<ILocalFile> = {
@@ -45,8 +45,9 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   },
 
   getContext: function (localFile: Resource<ILocalFile>): string {
-    return `${CicsCmciConstants.CICS_CMCI_LOCAL_FILE
-      }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
+    return `${
+      CicsCmciConstants.CICS_CMCI_LOCAL_FILE
+    }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
   },
 
   getIconName: function (localFile: Resource<ILocalFile>): string {

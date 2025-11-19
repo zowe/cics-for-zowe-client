@@ -11,6 +11,7 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import {
   Event,
@@ -40,12 +41,10 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { IProfileLoaded } from "@zowe/imperative";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
-
     commands.registerCommand("cics-extension-for-zowe.viewMore", async (node: CICSResourceContainerNode<IResource>) => {
       await node.fetchNextPage();
       this.refresh(node);
@@ -262,7 +261,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         progress.report({
           message: `Loading ${profile.name}`,

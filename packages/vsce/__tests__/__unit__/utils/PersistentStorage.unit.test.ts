@@ -23,13 +23,12 @@ jest.mock("vscode", () => ({
     getConfiguration: vscodeGetConfigurationMock,
   },
   ConfigurationTarget: {
-    Global: "GLOBAL"
-  }
+    Global: "GLOBAL",
+  },
 }));
 
 import { ILastUsedRegion } from "../../../src/doc/commands/ILastUsedRegion";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-
 
 const lastUsedRegion: ILastUsedRegion = {
   cicsPlexName: "MYPLEX",
@@ -38,7 +37,6 @@ const lastUsedRegion: ILastUsedRegion = {
 };
 
 describe("PersistentStorage test suite", () => {
-
   beforeEach(() => {
     vscodeGetMock.mockReset();
     vscodeUpdateMock.mockReset();
@@ -94,7 +92,11 @@ describe("PersistentStorage test suite", () => {
     expect(vscodeGetMock).toHaveBeenCalledTimes(1);
     expect(vscodeGetMock).toHaveBeenCalledWith("localFileSearchHistory", []);
     expect(vscodeUpdateMock).toHaveBeenCalledTimes(1);
-    expect(vscodeUpdateMock).toHaveBeenCalledWith("zowe.cics.persistent", { ...mockedVSCodeConfig, localFileSearchHistory: ["MYSRCH*", "1", "2"] }, "GLOBAL");
+    expect(vscodeUpdateMock).toHaveBeenCalledWith(
+      "zowe.cics.persistent",
+      { ...mockedVSCodeConfig, localFileSearchHistory: ["MYSRCH*", "1", "2"] },
+      "GLOBAL"
+    );
   });
 
   it("should append search history when 10 items are already there", async () => {
@@ -105,7 +107,11 @@ describe("PersistentStorage test suite", () => {
     expect(vscodeGetMock).toHaveBeenCalledTimes(1);
     expect(vscodeGetMock).toHaveBeenCalledWith("localFileSearchHistory", []);
     expect(vscodeUpdateMock).toHaveBeenCalledTimes(1);
-    expect(vscodeUpdateMock).toHaveBeenCalledWith("zowe.cics.persistent", { ...mockedVSCodeConfig, localFileSearchHistory: ["MYSRCH*", "1", "2", "3", "4", "5", "6", "7", "8", "9"] }, "GLOBAL");
+    expect(vscodeUpdateMock).toHaveBeenCalledWith(
+      "zowe.cics.persistent",
+      { ...mockedVSCodeConfig, localFileSearchHistory: ["MYSRCH*", "1", "2", "3", "4", "5", "6", "7", "8", "9"] },
+      "GLOBAL"
+    );
   });
 
   it("should get loaded cics profiles", () => {
@@ -129,7 +135,11 @@ describe("PersistentStorage test suite", () => {
     expect(vscodeGetMock).toHaveBeenCalledTimes(1);
     expect(vscodeGetMock).toHaveBeenCalledWith("loadedCICSProfile", []);
     expect(vscodeUpdateMock).toHaveBeenCalledTimes(1);
-    expect(vscodeUpdateMock).toHaveBeenCalledWith("zowe.cics.persistent", { ...mockedVSCodeConfig, loadedCICSProfile: ["NEW PROF", "prof1"] }, "GLOBAL");
+    expect(vscodeUpdateMock).toHaveBeenCalledWith(
+      "zowe.cics.persistent",
+      { ...mockedVSCodeConfig, loadedCICSProfile: ["NEW PROF", "prof1"] },
+      "GLOBAL"
+    );
   });
 
   it("should remove a loaded cics profile", async () => {

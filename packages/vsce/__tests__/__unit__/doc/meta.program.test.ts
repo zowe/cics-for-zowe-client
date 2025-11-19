@@ -30,8 +30,8 @@ describe("Program Meta", () => {
       enablestatus: "ENABLED",
       library: "MYLIB",
       librarydsn: "MYLIBDSN",
-      usecount:"0",
-      language:"COBOL"
+      usecount: "0",
+      language: "COBOL",
     });
   });
 
@@ -102,7 +102,7 @@ describe("Program Meta", () => {
       {
         key: "Library",
         value: "MYLIB",
-      }
+      },
     ]);
   });
 

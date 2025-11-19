@@ -9,21 +9,24 @@
  *
  */
 
+import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
-import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 const customProgramMeta = { ...ProgramMeta };
+const PROG_RES = CicsCmciConstants.CICS_PROGRAM_RESOURCE;
+const LIB_DS_RES = CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE;
+
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
   return `(LIBRARYDSN='${parentResource.dsname}')`;
 };
 
 customProgramMeta.getContext = function (program: Resource<IProgram>): string {
   //overriding context value of cics program because here parent of the cics program is the librarydataset
-  return `${CicsCmciConstants.CICS_PROGRAM_RESOURCE}.${program.attributes.status.trim().toUpperCase()}.PARENT.${CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE}.${program.attributes.program}`;
+  return `${PROG_RES}.${program.attributes.status.trim().toUpperCase()}.PARENT.${LIB_DS_RES}.${program.attributes.program}`;
 };
 
 customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryDataset) => {

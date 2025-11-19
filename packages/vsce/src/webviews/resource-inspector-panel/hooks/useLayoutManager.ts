@@ -28,9 +28,9 @@ export const useLayoutManager = () => {
   const getCssVariables = () => {
     const styles = getComputedStyle(document.documentElement);
     return {
-      headerTopSpacing: styles.getPropertyValue('--header-top-spacing'),
-      maskTopPosition: styles.getPropertyValue('--mask-top-position'),
-      maskLeftPosition: styles.getPropertyValue('--mask-left-position')
+      headerTopSpacing: styles.getPropertyValue("--header-top-spacing"),
+      maskTopPosition: styles.getPropertyValue("--mask-top-position"),
+      maskLeftPosition: styles.getPropertyValue("--mask-left-position"),
     };
   };
 
@@ -47,12 +47,14 @@ export const useLayoutManager = () => {
   };
 
   const updateAttributeHeaderMaskWithScroll = (headerElement: HTMLElement | null, createIfMissing: boolean = false) => {
-    if (!headerElement) return;
+    if (!headerElement) {
+      return;
+    }
     let attrHeaderMask = document.getElementById("attribute-header-mask");
     if (!attrHeaderMask && createIfMissing) {
       attrHeaderMask = createOrUpdateMaskElement("attribute-header-mask", "attribute-header-mask");
     }
-    
+
     if (attrHeaderMask) {
       const attrHeaderRect = headerElement.getBoundingClientRect();
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -84,7 +86,7 @@ export const useLayoutManager = () => {
 
     const handleScroll = () => {
       const { headerElement1, headerElement2, mainDiv } = getLayoutElements();
-  
+
       if (headerElement1 && headerElement2 && mainDiv) {
         // Get CSS variables
         const { headerTopSpacing, maskTopPosition, maskLeftPosition } = getCssVariables();
@@ -104,13 +106,13 @@ export const useLayoutManager = () => {
     };
     vscode.addScrollerListener(handleScroll);
     vscode.addResizeListener(handleResize);
-    
+
     setTimeout(() => {
       handleScroll();
       handleResize();
     }, 0);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       const headerMask = document.getElementById("header-mask");
       if (headerMask) {
         headerMask.remove();
@@ -128,4 +130,3 @@ export const useLayoutManager = () => {
 };
 
 export default useLayoutManager;
-

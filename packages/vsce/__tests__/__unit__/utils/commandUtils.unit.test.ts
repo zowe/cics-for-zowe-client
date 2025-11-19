@@ -14,14 +14,14 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     getProfilesCache: jest.fn().mockReturnValue({
       fetchBaseProfile: jest.fn(),
-      fetchAllProfiles: jest.fn()
+      fetchAllProfiles: jest.fn(),
     }),
     zoweExplorerAPI: {
       getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn()
-      })
-    }
-  }
+        getProfilesCache: jest.fn(),
+      }),
+    },
+  },
 }));
 
 // Mock ZoweVsCodeExtension
@@ -29,16 +29,16 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
   ZoweVsCodeExtension: {
     getZoweExplorerApi: jest.fn().mockReturnValue({
       getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn()
-      })
-    })
+        getProfilesCache: jest.fn(),
+      }),
+    }),
   },
   Gui: {
-    showMessage: jest.fn()
+    showMessage: jest.fn(),
   },
   MessageSeverity: {
-    ERROR: 0
-  }
+    ERROR: 0,
+  },
 }));
 
 import * as commandUtils from "../../../src/utils/commandUtils";

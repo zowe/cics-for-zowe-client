@@ -9,11 +9,11 @@
  *
  */
 
+import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
@@ -36,6 +36,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
     return `${CicsCmciConstants.CICS_WEBSERVICE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<IWebService>): string {
     return "web-services";
   },
@@ -44,6 +45,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
     return resource.attributes.name;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getHighlights(resource: Resource<IWebService>) {
     return [];
   },

@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { commands, ProgressLocation, TreeView, window } from "vscode";
+import { ProgressLocation, TreeView, commands, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { TaskMeta } from "../doc";
 import { ICommandParams } from "../doc/commands/ICommandParams";
@@ -47,7 +47,7 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         cancellable: true,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => { });
+        token.onCancellationRequested(() => {});
 
         const nodesToRefresh = new Set();
 
@@ -72,14 +72,15 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             );
 
             evaluateTreeNodes(clickedNode, response, TaskMeta);
-
           } catch (error) {
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore
+              /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
               const [_resp, resp2, respAlt, eibfnAlt] = splitCmciErrorMessage(error.mMessage);
               window.showErrorMessage(
-                `Perform ${purgeType?.toUpperCase()} on CICSTask "${resName
+                `Perform ${purgeType?.toUpperCase()} on CICSTask "${
+                  resName
                 }" failed: EXEC CICS command (${eibfnAlt}) RESP(${respAlt}) RESP2(${resp2})`
               );
             } else {
@@ -96,7 +97,6 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
         nodesToRefresh.forEach((v) => {
           tree.refresh(v);
         });
-
       }
     );
   });

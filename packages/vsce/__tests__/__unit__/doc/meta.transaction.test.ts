@@ -29,8 +29,7 @@ describe("Transaction Meta", () => {
       enablestatus: "ENABLED",
       availstatus: "NONE",
       tranclass: "DFHTCL00",
-      routing: "STATIC"
-      
+      routing: "STATIC",
     });
   });
 
@@ -75,7 +74,6 @@ describe("Transaction Meta", () => {
   it("should return highlights", () => {
     const highlights = TransactionMeta.getHighlights(transactionMock);
     expect(highlights).toEqual([
-      
       {
         key: "Status",
         value: "ENABLED",

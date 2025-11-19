@@ -9,6 +9,6 @@
  *
  */
 
+export * from "./CICSProfileDefinition";
 export * from "./CicsCmci.constants";
 export * from "./CicsCmci.messages";
-export * from "./CICSProfileDefinition";

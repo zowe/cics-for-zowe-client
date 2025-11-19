@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestError, getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
-import { Gui, imperative, MessageSeverity, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
@@ -326,7 +326,7 @@ export class ProfileManagement {
   }
 
   public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
-    return await ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
+    return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex

@@ -9,8 +9,8 @@
  *
  */
 
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 
 export class ViewMore extends TreeItem {

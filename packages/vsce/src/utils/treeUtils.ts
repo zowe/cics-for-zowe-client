@@ -11,16 +11,12 @@
 
 import { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { IContainedResource, IResourceMeta } from "../doc";
 import { Resource } from "../resources";
 import { CICSResourceContainerNode, CICSTree } from "../trees";
 import { toArray } from "./commandUtils";
-import { IContainedResource, IResourceMeta } from "../doc";
 
-export function evaluateTreeNodes<T extends IResource>(
-  node: CICSResourceContainerNode<T>,
-  response: ICMCIApiResponse,
-  meta: IResourceMeta<T>
-) {
+export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, response: ICMCIApiResponse, meta: IResourceMeta<T>) {
   if (response?.response?.records[meta.resourceName.toLowerCase()]) {
     const singleResource = toArray(response.response.records[meta.resourceName.toLowerCase()])[0];
     const updatedResource = new Resource<T>(singleResource);
@@ -31,7 +27,11 @@ export function evaluateTreeNodes<T extends IResource>(
   }
 }
 
-export const findResourceNodeInTree = (cicsTree: CICSTree, resourceContext: IResourceContext, resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined => {
+export const findResourceNodeInTree = (
+  cicsTree: CICSTree,
+  resourceContext: IResourceContext,
+  resource: IContainedResource<IResource>
+): CICSResourceContainerNode<IResource> | undefined => {
   const sessionNodeForResource = cicsTree.getSessionNodeForProfile(resourceContext.profile);
   if (sessionNodeForResource?.children?.length > 0) {
     const regionNode = sessionNodeForResource.getRegionNodeFromName(resourceContext.regionName, resourceContext.cicsplexName);

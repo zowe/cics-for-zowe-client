@@ -16,11 +16,11 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   },
 }));
 
-import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
+import { ExtensionContext, Uri, WebviewView } from "vscode";
 import { PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
-import { Uri, WebviewView, ExtensionContext } from "vscode";
-import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -49,28 +49,27 @@ const sampleExtensionContext: ExtensionContext = {
 jest.mock("@zowe/zowe-explorer-api", () => {
   return {
     HTMLTemplate: {
-      default: ""
+      default: "",
     },
     imperative: {
-      Session: jest.fn()
-    }
+      Session: jest.fn(),
+    },
   };
 });
 
 const resCxt = {
   profileName: "MYPROF",
-  regionName: "MYREG"
+  regionName: "MYREG",
 };
 
 describe("Resource Inspector View provider", () => {
-
   const myResource = {
     meta: PipelineMeta,
     resource: new Resource<IPipeline>({
       eyu_cicsname: "MYREGION",
       name: "PIP1",
       enablestatus: "ENABLED",
-    })
+    }),
   };
 
   it("should return singleton instance", () => {
@@ -109,10 +108,7 @@ describe("Resource Inspector View provider", () => {
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
       enableScripts: true,
-      localResourceRoots: [
-        sampleExtensionContext.extensionUri,
-        Uri.joinPath(sampleExtensionContext.extensionUri, 'dist')
-      ],
+      localResourceRoots: [sampleExtensionContext.extensionUri, Uri.joinPath(sampleExtensionContext.extensionUri, "dist")],
     });
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.html).toEqual(``);

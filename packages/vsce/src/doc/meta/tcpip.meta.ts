@@ -9,10 +9,10 @@
  *
  */
 
+import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {
@@ -42,6 +42,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     return `${CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<ITCPIP>): string {
     return "tcp-ip-service";
   },

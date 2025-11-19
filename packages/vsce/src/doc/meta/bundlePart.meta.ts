@@ -9,10 +9,10 @@
  *
  */
 
+import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const BundlePartMeta: IResourceMeta<IBundlePart> = {
@@ -44,8 +44,9 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
-    return `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART
-      }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
+    return `${
+      CicsCmciConstants.CICS_CMCI_BUNDLE_PART
+    }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
   getIconName: function (bundlePart: Resource<IBundlePart>): string {

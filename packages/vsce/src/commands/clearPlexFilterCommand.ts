@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSTree } from "../trees/CICSTree";

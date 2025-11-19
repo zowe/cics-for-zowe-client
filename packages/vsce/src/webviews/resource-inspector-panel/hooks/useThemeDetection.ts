@@ -20,28 +20,29 @@ export const useThemeDetection = (): boolean => {
 
   useEffect(() => {
     const isDarkThemeActive = (): boolean => {
-      return document.body.classList.contains("vscode-dark") ||
-             (document.body.classList.contains("vscode-high-contrast") &&
-              !document.body.classList.contains("vscode-high-contrast-light"));
-    };  
+      return (
+        document.body.classList.contains("vscode-dark") ||
+        (document.body.classList.contains("vscode-high-contrast") && !document.body.classList.contains("vscode-high-contrast-light"))
+      );
+    };
     setIsDarkTheme(isDarkThemeActive());
     const updateTheme = () => setIsDarkTheme(isDarkThemeActive());
     window.addEventListener("vscode-theme-changed", updateTheme);
     // Create a MutationObserver to watch for class changes on the body element
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (mutation.attributeName === 'class') {
+        if (mutation.attributeName === "class") {
           updateTheme();
         }
       }
     });
-    observer.observe(document.body, { attributes: true }); 
+    observer.observe(document.body, { attributes: true });
     return () => {
       window.removeEventListener("vscode-theme-changed", updateTheme);
       observer.disconnect();
     };
   }, []);
-  
+
   return isDarkTheme;
 };
 

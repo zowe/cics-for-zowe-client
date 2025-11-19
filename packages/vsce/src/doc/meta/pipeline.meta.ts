@@ -9,10 +9,10 @@
  *
  */
 
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const PipelineMeta: IResourceMeta<IPipeline> = {
@@ -36,6 +36,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return `${CicsCmciConstants.CICS_PIPELINE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<IPipeline>): string {
     return "pipeline";
   },
@@ -44,6 +45,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return resource.attributes.name;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getHighlights(resource: Resource<IPipeline>) {
     return [];
   },

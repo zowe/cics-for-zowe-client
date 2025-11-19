@@ -9,11 +9,11 @@
  *
  */
 
+import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 
 export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_REMOTE_FILE,

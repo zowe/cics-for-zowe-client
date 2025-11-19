@@ -9,11 +9,11 @@
  *
  */
 
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "./jvmEndpoints.meta";
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
@@ -26,10 +26,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   },
 
   getDefaultCriteria() {
-    return PersistentStorage.getDefaultResourceFilter(
-      CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
-      "jvmServer"
-    );
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServer");
   },
 
   getLabel(resource: Resource<IJVMServer>): string {
