@@ -28,9 +28,9 @@ export const useLayoutManager = () => {
   const getCssVariables = () => {
     const styles = getComputedStyle(document.documentElement);
     return {
-      headerTopSpacing: styles.getPropertyValue('--header-top-spacing'),
-      maskTopPosition: styles.getPropertyValue('--mask-top-position'),
-      maskLeftPosition: styles.getPropertyValue('--mask-left-position')
+      headerTopSpacing: styles.getPropertyValue("--header-top-spacing"),
+      maskTopPosition: styles.getPropertyValue("--mask-top-position"),
+      maskLeftPosition: styles.getPropertyValue("--mask-left-position"),
     };
   };
 
@@ -112,7 +112,7 @@ export const useLayoutManager = () => {
       handleResize();
     }, 0);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       const headerMask = document.getElementById("header-mask");
       if (headerMask) {
         headerMask.remove();
@@ -130,4 +130,3 @@ export const useLayoutManager = () => {
 };
 
 export default useLayoutManager;
-

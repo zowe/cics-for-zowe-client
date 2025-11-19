@@ -24,8 +24,8 @@ interface IActionTreeItemArgs {
   nodes: CICSResourceContainerNode<IResource>[];
   tree: CICSTree;
   getParentResource?: (node: CICSResourceContainerNode<IResource>) => IResource;
-  pollCriteria?: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean;
-  parameter?: { name: string; value: string; };
+  pollCriteria?: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean;
+  parameter?: { name: string; value: string };
 }
 
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
@@ -36,7 +36,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => { });
+      token.onCancellationRequested(() => {});
 
       const nodesToRefresh = new Set();
 
@@ -51,7 +51,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             cxt: {
               profileName: node.getProfileName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-              cicsplexName: node.cicsplexName
+              cicsplexName: node.cicsplexName,
             },
             meta: node.getContainedResource().meta,
             resourceName: node.getContainedResourceName(),
@@ -72,7 +72,6 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
-
         } catch (error) {
           window.showErrorMessage(
             `Something went wrong when performing a ${action} - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(

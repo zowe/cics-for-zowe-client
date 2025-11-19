@@ -46,12 +46,12 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc";
 import { Resource, ResourceContainer } from "../../../src/resources";
 import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { CICSProfileMock } from "../../__utils__/globalMocks";
 
 const currRes = new Resource<IProgram>({
   eyu_cicsname: "REG",
@@ -61,8 +61,8 @@ const currRes = new Resource<IProgram>({
   progtype: "COBOL",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
-  usecount:"0",
-  language:"COBOL"
+  usecount: "0",
+  language: "COBOL",
 });
 
 describe("CICSResourceContainerNode tests", () => {
@@ -73,8 +73,7 @@ describe("CICSResourceContainerNode tests", () => {
   let resourceContainer: ResourceContainer;
 
   beforeEach(() => {
-
-    const cicsTree = { _onDidChangeTreeData: { fire: () => jest.fn() }, refresh: () => { } } as unknown as CICSTree;
+    const cicsTree = { _onDidChangeTreeData: { fire: () => jest.fn() }, refresh: () => {} } as unknown as CICSTree;
     sessionTree = new CICSSessionTree({ profile: CICSProfileMock, failNotFound: false, message: "", type: "cics", name: "MYPROF" }, cicsTree);
     regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
     resourceContainer = new ResourceContainer([ProgramMeta], { profileName: "MYPROF", regionName: "REG" });
@@ -143,8 +142,8 @@ describe("CICSResourceContainerNode tests", () => {
           progtype: "COBOL",
           library: "MYLIB",
           librarydsn: "MYLIBDSN",
-          usecount:"0",
-          language:"COBOL"
+          usecount: "0",
+          language: "COBOL",
         }),
       },
       [ProgramMeta]
@@ -171,8 +170,8 @@ describe("CICSResourceContainerNode tests", () => {
           progtype: "COBOL",
           library: "MYLIB",
           librarydsn: "MYLIBDSN",
-          usecount:"0",
-          language:"COBOL"
+          usecount: "0",
+          language: "COBOL",
         }),
       },
       [ProgramMeta]
@@ -197,8 +196,7 @@ describe("CICSResourceContainerNode tests", () => {
       [ProgramMeta]
     );
 
-
-    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", usecount:"0", language:"COBOL"});
+    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", usecount: "0", language: "COBOL" });
 
     expect(containerNode.getContainedResource()).toEqual({ meta: ProgramMeta, resource: currRes });
     containerNode.setContainedResource(newRes);
@@ -207,7 +205,6 @@ describe("CICSResourceContainerNode tests", () => {
   });
 
   it("should load paginated resources", async () => {
-
     const fetcherSpy = jest.spyOn(ResourceContainer.prototype, "fetchNextPage");
     const ensureSumSpy = jest.spyOn(ResourceContainer.prototype, "ensureSummaries");
 
@@ -238,7 +235,16 @@ describe("CICSResourceContainerNode tests", () => {
     expect(ensureSumSpy).toHaveBeenCalledTimes(1);
     expect(children).toHaveLength(2);
 
-    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", newcopycnt: "700", usecount:"0", language:"COBOL" });
+    const newRes = new Resource({
+      ...prog1,
+      library: "",
+      librarydsn: "",
+      progtype: "",
+      enablestatus: "ENABLED",
+      newcopycnt: "700",
+      usecount: "0",
+      language: "COBOL",
+    });
 
     containerNode.updateStoredItem({
       meta: ProgramMeta,
@@ -247,11 +253,14 @@ describe("CICSResourceContainerNode tests", () => {
 
     await containerNode.getChildren();
     const updatedChildren = await containerNode.getChildren();
-    expect(updatedChildren.map((c) => (c as unknown as CICSResourceContainerNode<IProgram>).getContainedResource().resource.attributes.newcopycnt).includes("700")).toBeTruthy();
+    expect(
+      updatedChildren
+        .map((c) => (c as unknown as CICSResourceContainerNode<IProgram>).getContainedResource().resource.attributes.newcopycnt)
+        .includes("700")
+    ).toBeTruthy();
   });
 
   it("should have viewmore item if more to fetch", async () => {
-
     jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(5);
     containerNode = new CICSResourceContainerNode(
       "Programs",
@@ -415,7 +424,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
       },
       undefined,
-      [],
+      []
     );
 
     const fetched = await containerNode.getChildren();
@@ -433,7 +442,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
       },
       undefined,
-      [],
+      []
     );
 
     const fetchPageSpy = jest.spyOn(ResourceContainer.prototype, "fetchNextPage");
@@ -450,7 +459,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
       },
       undefined,
-      [ProgramMeta],
+      [ProgramMeta]
     );
 
     await containerNode.fetchNextPage();
@@ -467,7 +476,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
       },
       undefined,
-      [ProgramMeta],
+      [ProgramMeta]
     );
 
     const fetched = await containerNode.getChildren();
@@ -488,7 +497,7 @@ describe("CICSResourceContainerNode tests", () => {
         parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
       },
       undefined,
-      [ProgramMeta],
+      [ProgramMeta]
     );
 
     containerNode.setCriteria(["a"]);

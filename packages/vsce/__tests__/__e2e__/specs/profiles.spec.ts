@@ -10,7 +10,15 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
+import {
+  constants,
+  findAndClickText,
+  findAndClickTreeItem,
+  getTreeItem,
+  prepareZoweExplorerView,
+  resetWiremock,
+  resetZoweExplorerView,
+} from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);

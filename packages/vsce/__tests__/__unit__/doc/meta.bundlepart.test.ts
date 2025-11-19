@@ -9,7 +9,7 @@
  *
  */
 
-import { IBundlePart, IBundle } from "@zowe/cics-for-zowe-explorer-api";
+import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { BundlePartMeta } from "../../../src/doc/meta/bundlePart.meta";
 import { Resource } from "../../../src/resources";
 

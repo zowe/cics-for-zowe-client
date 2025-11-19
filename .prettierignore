@@ -6,3 +6,4 @@ lib
 node_modules
 scripts
 package-lock.json
+packages/vsce/__tests__/__unit__/utils/vscode.listener.unit.test.ts

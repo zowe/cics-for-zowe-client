@@ -9,12 +9,12 @@
  *
  */
 
+import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
-import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 const customProgramMeta = { ...ProgramMeta };
 const PROG_RES = CicsCmciConstants.CICS_PROGRAM_RESOURCE;

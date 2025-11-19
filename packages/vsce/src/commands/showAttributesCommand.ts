@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, TreeView, WebviewPanel, window } from "vscode";
 import { CICSRegionTree, CICSResourceContainerNode } from "../trees";
 import { getAttributesHtml } from "../utils/webviewHTML";
 

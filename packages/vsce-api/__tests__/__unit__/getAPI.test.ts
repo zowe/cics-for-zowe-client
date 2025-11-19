@@ -11,27 +11,27 @@
 
 const mockGetExtension = jest.fn().mockReturnValue({
   packageJSON: {
-    version: "1.2.3"
+    version: "1.2.3",
   },
   activate: () => {
     return {
-      resources: { supportedResources: [ResourceTypes.CICSProgram] }
+      resources: { supportedResources: [ResourceTypes.CICSProgram] },
     } as IExtensionAPI;
-  }
+  },
 });
 
 jest.mock("vscode", () => {
   return {
     extensions: {
-      getExtension: mockGetExtension
+      getExtension: mockGetExtension,
     },
     workspace: {
       getConfiguration: () => {
         return {
-          get: jest.fn().mockReturnValue(true)
+          get: jest.fn().mockReturnValue(true),
         };
-      }
-    }
+      },
+    },
   };
 });
 
@@ -39,9 +39,7 @@ import { getCICSForZoweExplorerAPI } from "../../src/getAPI";
 import { IExtensionAPI } from "../../src/interfaces";
 import { ResourceTypes } from "../../src/resources";
 
-
 describe("getAPI tests", () => {
-
   it("should return API with no minversion", async () => {
     const api = await getCICSForZoweExplorerAPI();
     expect(api).toBeDefined();
@@ -62,7 +60,6 @@ describe("getAPI tests", () => {
   });
 
   it("should return undefined with no extension installed", async () => {
-
     mockGetExtension.mockReturnValue(undefined);
 
     const api = await getCICSForZoweExplorerAPI();
@@ -70,11 +67,9 @@ describe("getAPI tests", () => {
   });
 
   it("should return undefined with no extension installed and minimum value", async () => {
-
     mockGetExtension.mockReturnValue(undefined);
 
     const api = await getCICSForZoweExplorerAPI("1.5.6");
     expect(api).toBeUndefined();
   });
-
 });

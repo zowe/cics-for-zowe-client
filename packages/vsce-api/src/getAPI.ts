@@ -9,25 +9,24 @@
  *
  */
 
-import { compare } from 'compare-versions';
+import { compare } from "compare-versions";
 import { extensions } from "vscode";
-import { IExtensionAPI } from './interfaces';
+import { IExtensionAPI } from "./interfaces";
 
 export async function getCICSForZoweExplorerAPI(minimumVersion?: string): Promise<IExtensionAPI | undefined> {
+  const cicsExtension = extensions.getExtension("Zowe.cics-extension-for-zowe");
 
-    const cicsExtension = extensions.getExtension("Zowe.cics-extension-for-zowe");
+  if (!cicsExtension) {
+    return undefined;
+  }
 
-    if (!cicsExtension) {
-        return undefined;
+  if (minimumVersion) {
+    const version: string = cicsExtension.packageJSON.version;
+
+    if (compare(version, minimumVersion, "<")) {
+      return undefined;
     }
+  }
 
-    if (minimumVersion) {
-        const version: string = cicsExtension.packageJSON.version;
-
-        if (compare(version, minimumVersion, "<")) {
-            return undefined;
-        }
-    }
-
-    return cicsExtension.activate();
+  return cicsExtension.activate();
 }

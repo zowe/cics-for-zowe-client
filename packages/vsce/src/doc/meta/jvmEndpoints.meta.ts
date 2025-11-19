@@ -9,11 +9,11 @@
  *
  */
 
+import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMServer, IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
 
 export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
@@ -31,7 +31,7 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   getDefaultCriteria: function (parentResource: IJVMServer) {
     return `JVMSERVER='${parentResource.name}'`;
   },
-  
+
   getLabel(resource: Resource<IJVMEndpoint>): string {
     let label = `${resource.attributes.jvmendpoint}`;
     const secport = resource.attributes.secport;
@@ -79,7 +79,7 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
       {
         key: "Secure Port",
         value: resource.attributes.secport,
-      }
+      },
     ];
   },
 
@@ -94,4 +94,3 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   filterCaseSensitive: true,
   maximumPrimaryKeyLength: 224,
 };
-

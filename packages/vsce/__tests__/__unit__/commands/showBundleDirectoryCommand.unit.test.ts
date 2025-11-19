@@ -9,6 +9,8 @@
  *
  */
 
+import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import type { Extension } from "vscode";
 import * as vscode from "vscode";
 
@@ -20,13 +22,11 @@ const ussApiMock = jest.fn();
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",
-  }
+  },
 } as Extension<any>);
 
 jest.spyOn(vscode.commands, "executeCommand").mockImplementation(jest.fn());
 jest.spyOn(vscode.window, "showErrorMessage").mockImplementation(jest.fn());
-import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
-import { imperative } from "@zowe/zowe-explorer-api";
 
 const zoweExplorerAPI = { getUssApi: ussApiMock };
 
@@ -43,7 +43,7 @@ getProfilesCacheMock.mockReturnValue({
     }
     return undefined as unknown as IProfileLoaded;
   },
-  fetchAllProfiles: fetchAllProfilesMock
+  fetchAllProfiles: fetchAllProfilesMock,
 });
 
 jest.mock("../../../src/utils/CICSLogger");
@@ -64,7 +64,7 @@ jest.mock("../../../src/utils/commandUtils", () => {
   const original = jest.requireActual("../../../src/utils/commandUtils");
   return {
     ...original,
-    promptUserForProfile: jest.fn().mockImplementation(() => "host1.myzosmf")
+    promptUserForProfile: jest.fn().mockImplementation(() => "host1.myzosmf"),
   };
 });
 
@@ -75,10 +75,10 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
   ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
   ZoweExplorerApiType: {
     Uss: "USS",
-    Jes: "JES"
-  }
+    Jes: "JES",
+  },
 }));
-jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => { });
+jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => {});
 
 const executeCommandMock = vscode.commands.executeCommand as jest.Mock;
 const showErrorMessageMock = vscode.window.showErrorMessage as jest.Mock;
@@ -103,26 +103,25 @@ function createBundleNode(bundleDir: string | undefined, profileName: string = "
     getContainedResource: () => ({
       resource: {
         attributes: {
-          bundledir: bundleDir
-        }
-      }
+          bundledir: bundleDir,
+        },
+      },
     }),
     getLabel: () => "TestBundle",
     getContainedResourceName: () => "TestBundle",
-    profile: profile
+    profile: profile,
   };
 }
 
 describe("Test suite for showBundleDirectory", () => {
-  
   let commandCallback: (node: any) => Promise<void>;
-  
+
   beforeEach(() => {
     getZoweExplorerApiMock.mockReturnValue(zoweExplorerAPI);
     executeCommandMock.mockReset();
     showErrorMessageMock.mockReset();
     registerCommandMock.mockClear();
-    
+
     // Register the command and capture the callback
     showBundleDirectory();
     commandCallback = registerCommandMock.mock.calls[0][1];
@@ -147,40 +146,43 @@ describe("Test suite for showBundleDirectory", () => {
     const h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
     const zosProfiles = [h1z];
     fetchAllProfilesMock.mockResolvedValue(zosProfiles);
-  
+
     ussApiMock.mockReturnValue(true);
-    
+
     const bundleNode = createBundleNode("/u/user/bundles/testBundle");
-    
+
     const commandUtils = require("../../../src/utils/commandUtils");
     commandUtils.findRelatedZosProfiles = jest.fn().mockResolvedValue(h1z);
-    
+
     await commandCallback(bundleNode);
-    
+
     expect(executeCommandMock).toHaveBeenCalledWith("zowe.uss.fullPath", expect.anything());
-    expect(executeCommandMock).toHaveBeenCalledWith("zowe.uss.filterBy", expect.objectContaining({
-      fullPath: "/u/user/bundles/testBundle"
-    }));
+    expect(executeCommandMock).toHaveBeenCalledWith(
+      "zowe.uss.filterBy",
+      expect.objectContaining({
+        fullPath: "/u/user/bundles/testBundle",
+      })
+    );
   });
 
   it("should handle errors when executing commands", async () => {
     const h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
     const zosProfiles = [h1z];
     fetchAllProfilesMock.mockResolvedValue(zosProfiles);
-    
+
     ussApiMock.mockReturnValue(true);
-    
+
     const bundleNode = createBundleNode("/u/user/bundles/testBundle");
-    
+
     const commandUtils = require("../../../src/utils/commandUtils");
     commandUtils.findRelatedZosProfiles = jest.fn().mockResolvedValue(h1z);
-    
+
     executeCommandMock.mockImplementation(() => {
       throw new Error("Command execution failed");
     });
-    
+
     await commandCallback(bundleNode);
-    
+
     // Verify error message was shown
     expect(showErrorMessageMock).toHaveBeenCalledWith("Unable to open bundle directory in USS view.");
   });
@@ -190,25 +192,26 @@ describe("Test suite for showBundleDirectory", () => {
     const h2 = createProfile("host2.myzosmf", "zosmf", "h2", "user");
     const allProfiles = [h1z, h2];
     fetchAllProfilesMock.mockResolvedValue(allProfiles);
-    
+
     const commandUtils = require("../../../src/utils/commandUtils");
     commandUtils.doesProfileSupportConnectionType = jest.fn().mockImplementation((profile) => {
       return profile.name === "host1.myzosmf";
     });
     commandUtils.findRelatedZosProfiles = jest.fn().mockResolvedValue(h1z);
-    
-    const bundleNode = createBundleNode("/u/user/bundles/testBundle");    
+
+    const bundleNode = createBundleNode("/u/user/bundles/testBundle");
     await commandCallback(bundleNode);
-    
+
     // Verify commands were executed with the correct profile
-    expect(executeCommandMock).toHaveBeenCalledWith("zowe.uss.fullPath", expect.objectContaining({
-      getProfileName: expect.any(Function)
-    }));
-    
+    expect(executeCommandMock).toHaveBeenCalledWith(
+      "zowe.uss.fullPath",
+      expect.objectContaining({
+        getProfileName: expect.any(Function),
+      })
+    );
+
     // Get the session node from the first call
     const sessionNode = executeCommandMock.mock.calls[0][1];
     expect(sessionNode.getProfileName()).toBe("host1.myzosmf");
   });
-
 });
-

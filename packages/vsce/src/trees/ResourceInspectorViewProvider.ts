@@ -13,6 +13,7 @@ import { IResource, IResourceAction, IResourceContext, IResourceProfileNameInfo 
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
 import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
+import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
@@ -20,7 +21,6 @@ import IconBuilder from "../utils/IconBuilder";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
-import { CICSTree } from ".";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";

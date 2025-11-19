@@ -32,14 +32,14 @@ describe("JVM Endpoint Meta", () => {
       name: "JVME1",
       status: "ENABLED",
       enablestatus: "ENABLED",
-      jvmendpoint: "JVME1", 
+      jvmendpoint: "JVME1",
       jvmserver: "JVM1",
       port: "1420",
-      secport: "N/A"
+      secport: "N/A",
     });
   });
 
-  it ("should get icon name", () => {
+  it("should get icon name", () => {
     const iconName = JVMEndpointMeta.getIconName(jvmEndpointMock);
     expect(iconName).toBe("jvm-server-endpoint");
   });
@@ -54,7 +54,7 @@ describe("JVM Endpoint Meta", () => {
     const iconName = JVMEndpointMeta.getIconName(jvmEndpointMock);
     expect(iconName).toEqual("jvm-server-endpoint-disabled");
   });
-  
+
   it("should get name", () => {
     const name = JVMEndpointMeta.getName(jvmEndpointMock);
     expect(name).toEqual("JVME1");
@@ -114,47 +114,46 @@ describe("JVM Endpoint Meta", () => {
     expect(highlights).toEqual([
       { key: "Status", value: "ENABLED" },
       { key: "Port", value: "1420" },
-      { key: "Secure Port", value: "N/A" }
+      { key: "Secure Port", value: "N/A" },
     ]);
   });
 
-describe("JVMEndpointMeta.getLabel", () => {
-  it("should show both secure port and port when both are present and not N/A", () => {
-    jvmEndpointMock.attributes.secport = "9443";
-    jvmEndpointMock.attributes.port = "9080";
-    jvmEndpointMock.attributes.enablestatus = "ENABLED";
-    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080)");
-  });
+  describe("JVMEndpointMeta.getLabel", () => {
+    it("should show both secure port and port when both are present and not N/A", () => {
+      jvmEndpointMock.attributes.secport = "9443";
+      jvmEndpointMock.attributes.port = "9080";
+      jvmEndpointMock.attributes.enablestatus = "ENABLED";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080)");
+    });
 
-  it("should show only secure port when port is N/A", () => {
-    jvmEndpointMock.attributes.secport = "9443";
-    jvmEndpointMock.attributes.port = "N/A";
-    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443)");
-  });
+    it("should show only secure port when port is N/A", () => {
+      jvmEndpointMock.attributes.secport = "9443";
+      jvmEndpointMock.attributes.port = "N/A";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443)");
+    });
 
-  it("should show only port when secure port is N/A", () => {
-    jvmEndpointMock.attributes.secport = "N/A";
-    jvmEndpointMock.attributes.port = "9080";
-    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (9080)");
-  });
+    it("should show only port when secure port is N/A", () => {
+      jvmEndpointMock.attributes.secport = "N/A";
+      jvmEndpointMock.attributes.port = "9080";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (9080)");
+    });
 
-  it("should show neither port nor secure port when both are N/A", () => {
-    jvmEndpointMock.attributes.secport = "N/A";
-    jvmEndpointMock.attributes.port = "N/A";
-    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1");
-  });
+    it("should show neither port nor secure port when both are N/A", () => {
+      jvmEndpointMock.attributes.secport = "N/A";
+      jvmEndpointMock.attributes.port = "N/A";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1");
+    });
 
-  it("should append (Disabled) when enablestatus is disabled", () => {
-    jvmEndpointMock.attributes.secport = "9443";
-    jvmEndpointMock.attributes.port = "9080";
-    jvmEndpointMock.attributes.enablestatus = "DISABLED";
-    expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080) (Disabled)");
+    it("should append (Disabled) when enablestatus is disabled", () => {
+      jvmEndpointMock.attributes.secport = "9443";
+      jvmEndpointMock.attributes.port = "9080";
+      jvmEndpointMock.attributes.enablestatus = "DISABLED";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1 (🔒9443 / 9080) (Disabled)");
+    });
+    it("should show only the name when both ports are empty strings", () => {
+      jvmEndpointMock.attributes.secport = "";
+      jvmEndpointMock.attributes.port = "";
+      expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1");
+    });
   });
-  it("should show only the name when both ports are empty strings", () => {
-  jvmEndpointMock.attributes.secport = "";
-  jvmEndpointMock.attributes.port = "";
-  expect(JVMEndpointMeta.getLabel(jvmEndpointMock)).toEqual("JVME1");
-  });
-
 });
-});    

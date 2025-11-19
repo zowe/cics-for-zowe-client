@@ -10,8 +10,15 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciRestClient, getCache, getResource, ICMCIApiResponse,
-  ICMCIResponseResultSummary, IResourceQueryParams, Utils } from "@zowe/cics-for-zowe-sdk";
+import {
+  CicsCmciRestClient,
+  getCache,
+  getResource,
+  ICMCIApiResponse,
+  ICMCIResponseResultSummary,
+  IResourceQueryParams,
+  Utils,
+} from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
@@ -77,9 +84,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
 
-  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
-    buildUserAgentHeader(),
-  ]);
+  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [buildUserAgentHeader()]);
 }
 
 export async function runGetCache(
@@ -208,9 +213,9 @@ export const buildRequestLoggerString = (
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
+  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean,
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
-  parentResource?: IResource,
+  parentResource?: IResource
 ) {
   const DELAY_MS = 1000;
   let response: ICMCIApiResponse;

@@ -9,6 +9,7 @@
  *
  */
 
+import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, TreeView, window } from "vscode";
 import { ProgramMeta, TransactionMeta } from "../doc";
@@ -16,7 +17,6 @@ import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Inquire the associated transaction tree item from a task tree item
@@ -44,8 +44,8 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
       programTree = nodes[0]
         .getParent()
         .getParent()
-        .children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.includes(ProgramMeta)
+        .children.filter((child: CICSResourceContainerNode<IResource>) =>
+          child.resourceTypes.includes(ProgramMeta)
         )[0] as CICSResourceContainerNode<IProgram>;
     }
 

@@ -15,7 +15,7 @@ import * as vscode from "vscode";
 jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
   packageJSON: {
     version: "1.2.3",
-  }
+  },
 } as Extension<any>);
 
 // these need to be mocked before the imports
@@ -61,11 +61,10 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
   ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
   ZoweExplorerApiType: {
     Uss: "USS",
-    Jes: "JES"
-  }
+    Jes: "JES",
+  },
 }));
-jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => { });
-
+jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => {});
 
 function createProfile(name: string, type: string, host: string, user?: string) {
   return {

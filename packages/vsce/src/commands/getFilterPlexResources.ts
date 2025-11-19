@@ -9,13 +9,13 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 import PersistentStorage from "../utils/PersistentStorage";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 
 /**
  * Apply filter for a Regions Container (previously this was available on a plex)
@@ -87,7 +87,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
             cancellable: true,
           },
           (_, token): Promise<void> => {
-            token.onCancellationRequested(() => { });
+            token.onCancellationRequested(() => {});
             for (const region of chosenNode.children) {
               if (region instanceof CICSRegionTree) {
                 if (region.getIsActive()) {

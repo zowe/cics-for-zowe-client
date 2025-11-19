@@ -9,8 +9,8 @@
  *
  */
 
-import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { ExtensionContext, TreeView, commands, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { inspectResourceByNode } from "./inspectResourceCommandUtils";
 

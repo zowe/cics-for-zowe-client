@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestError, getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
-import { Gui, imperative, MessageSeverity, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import constants from "../constants/CICS.defaults";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";

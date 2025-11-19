@@ -3,12 +3,12 @@ import { IResourceMeta } from "../doc";
 import { runPutResource } from "../utils/resourceUtils";
 
 export const resourceActionVerbMap = {
-  "DISABLE": "Disabling",
-  "ENABLE": "Enabling",
-  "CLOSE": "Closing",
-  "OPEN": "Opening",
-  "PHASEIN": "Phase In",
-  "NEWCOPY": "New Copy",
+  DISABLE: "Disabling",
+  ENABLE: "Enabling",
+  CLOSE: "Closing",
+  OPEN: "Opening",
+  PHASEIN: "Phase In",
+  NEWCOPY: "New Copy",
 };
 
 interface ISetResourcePayloadParameter {

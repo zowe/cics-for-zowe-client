@@ -21,14 +21,14 @@ import {
   LocalFileMeta,
   PipelineMeta,
   ProgramMeta,
+  RemoteFileMeta,
+  SharedTSQueueMeta,
   TCPIPMeta,
+  TSQueueMeta,
   TaskMeta,
   TransactionMeta,
   URIMapMeta,
   WebServiceMeta,
-  RemoteFileMeta,
-  TSQueueMeta,
-  SharedTSQueueMeta,
 } from "../doc";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
@@ -206,7 +206,7 @@ export class CICSPlexTree extends TreeItem {
         cicsplexName: this.getPlexName(),
       },
       null,
-      metas,
+      metas
     );
   }
 

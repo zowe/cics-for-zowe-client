@@ -10,13 +10,12 @@
  */
 
 import { ILibrary, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { commands, TreeView, window } from "vscode";
+import { TreeView, commands, window } from "vscode";
 import { LibraryMeta, ProgramMeta } from "../doc";
-import { CICSRegionsContainer, CICSRegionTree, CICSResourceContainerNode } from "../trees";
+import { CICSRegionTree, CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-
 
 const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map<string, Map<string, Set<string>>> => {
   const librariesToReveal: Map<string, Map<string, Set<string>>> = new Map();
@@ -49,8 +48,10 @@ const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgra
       return [parent as CICSRegionTree];
     }
   } else {
-    const regionsContainer = node.getParent().getParent().children.filter(
-      (child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
+    const regionsContainer = node
+      .getParent()
+      .getParent()
+      .children.filter((child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
     await treeview.reveal(regionsContainer, { expand: true });
     return regionsContainer.children;
   }
@@ -58,7 +59,6 @@ const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgra
 
 export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibrary", async (node) => {
-
     if (!openSettingsForHiddenResourceType("CICS Library resources are not visible. Enable them from your VS Code settings.", "Library")) {
       return;
     }
@@ -78,14 +78,12 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
     const listOfRegions: CICSRegionTree[] = await getListOfAvailableRegions(nodes[0], treeview);
 
     for (const [region, libraries] of librariesToReveal) {
-
-      const regionTree: CICSRegionTree = listOfRegions.filter(
-        (regTree) => regTree.getRegionName() === region)[0];
+      const regionTree: CICSRegionTree = listOfRegions.filter((regTree) => regTree.getRegionName() === region)[0];
 
       await treeview.reveal(regionTree, { expand: true });
 
-      const libraryTree: CICSResourceContainerNode<ILibrary> = regionTree.children.filter(
-        (resourceTree: CICSResourceContainerNode<IResource>) => resourceTree.resourceTypes.includes(LibraryMeta)
+      const libraryTree: CICSResourceContainerNode<ILibrary> = regionTree.children.filter((resourceTree: CICSResourceContainerNode<IResource>) =>
+        resourceTree.resourceTypes.includes(LibraryMeta)
       )[0] as CICSResourceContainerNode<ILibrary>;
 
       libraryTree.clearCriteria();

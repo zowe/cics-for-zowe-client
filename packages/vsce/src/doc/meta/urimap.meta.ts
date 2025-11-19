@@ -9,11 +9,11 @@
  *
  */
 
+import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 
 export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
