@@ -38,18 +38,20 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
     const choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Region", [...items]);
     quickPick.hide();
 
-    if (!choice) return;
+    if (!choice) {
+      return;
+    }
 
     if (choice.label != "Other CICS Region") {
       const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
       const session = SessionHandler.getInstance().getSession(profile);
       return { profile, cicsPlexName, session, regionName };
     } else {
-      return await setCICSRegion();
+      return setCICSRegion();
     }
   } else {
     CICSLogger.info("Setting new region");
-    return await setCICSRegion();
+    return setCICSRegion();
   }
 }
 
@@ -68,7 +70,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   let plexInfo: InfoLoaded[] = undefined;
   let choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select Profile", [...cicsProfiles]);
   quickPick.hide();
-  if (!choice) return;
+  if (!choice) {
+    return;
+  }
 
   const profileName = cicsProfiles.find((item) => item === choice);
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName.label);
@@ -88,7 +92,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
     } else if (plexNames.length > 0) {
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, "Select CICSplex", [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
-      if (!choice) return;
+      if (!choice) {
+        return;
+      }
 
       cicsPlexName = choice.label;
       isPlex = true;
@@ -108,7 +114,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       isCancelled = true;
     });
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
-    if (isCancelled || !regionInfo) return;
+    if (isCancelled || !regionInfo) {
+      return;
+    }
 
     // Check if regionInfo is null or undefined
     if (regionInfo && regionInfo.length >= 0) {
@@ -118,7 +126,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
         ...regionInfo.map((region) => ({ label: region.cicsname })),
       ]);
       regionQuickPick.hide();
-      if (!choice) return;
+      if (!choice) {
+        return;
+      }
 
       regionName = choice.label;
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
@@ -129,7 +139,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   }
 
   //Cancel if no region is selected
-  if (!regionName) return null;
+  if (!regionName) {
+    return null;
+  }
 
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);
   CICSLogger.info(`Updating region in settings: ${regionName}, profile: ${profile.name}, plex: ${cicsPlexName}`);

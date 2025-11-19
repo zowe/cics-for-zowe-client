@@ -245,6 +245,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   public getChildNodeMatchingResourceName(resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined {
-    return this.children.find((child: CICSResourceContainerNode<IResource>) => child.getContainedResourceName() === resource.meta.getName(resource.resource)) as CICSResourceContainerNode<IResource>;
+    return this.children.find((child: CICSResourceContainerNode<IResource>) =>
+      child.getContainedResourceName() === resource.meta.getName(resource.resource)) as CICSResourceContainerNode<IResource>;
   }
 }
