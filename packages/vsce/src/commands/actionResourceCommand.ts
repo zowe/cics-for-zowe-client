@@ -28,10 +28,34 @@ interface IActionTreeItemArgs {
   parameter?: { name: string; value: string };
 }
 
+// normalize action to a base, lowercase verb (e.g. "Disabling" -> "disable")
+function normalizeVerb(value: string | undefined): string {
+  if (!value) return "";
+  const v = value.toLowerCase();
+  const gerundMap: Record<string, string> = {
+    disabling: "disable",
+    enabling: "enable",
+    killing: "kill",
+    starting: "start",
+    stopping: "stop",
+    suspending: "suspend",
+    resuming: "resume",
+  };
+  if (gerundMap[v]) return gerundMap[v];
+  if (v.endsWith("ing")) {
+    const stem = v.slice(0, -3);
+    return stem.endsWith("e") ? stem : stem + "e";
+  }
+  return v;
+}
+
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
+  const rawVerb = resourceActionVerbMap[action] ?? action;
+  const verb = normalizeVerb(rawVerb);
+
   await window.withProgress(
     {
-      title: l10n.t("action", resourceActionVerbMap[action] ?? action),
+      title: l10n.t("action", verb),
       location: ProgressLocation.Notification,
       cancellable: false,
     },
@@ -42,13 +66,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
 
       for (const node of nodes) {
         progress.report({
-          message: l10n.t(
-            "Performing {0} on {1} (${2} of ${3})",
-            resourceActionVerbMap[action],
-            node.getContainedResourceName(),
-            nodes.indexOf(node) + 1,
-            nodes.length
-          ),
+          message: l10n.t("Performing {0} on {1} (${2} of ${3})", verb, node.getContainedResourceName(), nodes.indexOf(node) + 1, nodes.length),
           increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
@@ -80,7 +98,6 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
           }
         } catch (error) {
           const sanitizedError = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
-          const verb = resourceActionVerbMap[action] ?? action;
           const errMsg = l10n.t("Something went wrong when performing a {0} - {1}", verb, sanitizedError);
           window.showErrorMessage(errMsg);
         }

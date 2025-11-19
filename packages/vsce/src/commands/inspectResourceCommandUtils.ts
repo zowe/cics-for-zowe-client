@@ -22,10 +22,6 @@ import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewPro
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
-interface IExternalizedQuickPickItem extends QuickPickItem {
-  dataKey: string;
-}
-
 async function showInspectResource(
   context: ExtensionContext,
   resource: IContainedResource<IResource>,
@@ -164,7 +160,8 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    const hrn = resourceTypes.map((type) => l10n.t(type.humanReadableNameSingular)).join(l10n.t(" or "));
+    // use the humanReadableNameSingular values directly (you will externalize these in the meta files)
+    const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
     const message = CICSMessages.CICSResourceNotFound.message
       .replace("%resource-type%", hrn)
       .replace("%resource-name%", resourceName)
@@ -192,14 +189,15 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
     }
 
     if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
+      // use the human-readable string from the meta as the key (you will externalize these in the meta files)
       const label = item.humanReadableNameSingular;
       acc.set(label, [item]);
     }
     return acc;
   }, new Map());
 
-  resourceTypeMap.set("File", [LocalFileMeta, RemoteFileMeta]);
-  resourceTypeMap.set("TS Queue", [TSQueueMeta, SharedTSQueueMeta]);
+  resourceTypeMap.set(l10n.t("File"), [LocalFileMeta, RemoteFileMeta]);
+  resourceTypeMap.set(l10n.t("TS Queue"), [TSQueueMeta, SharedTSQueueMeta]);
 
   return resourceTypeMap;
 }
@@ -210,10 +208,9 @@ async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
 
   if (choice) {
-    const key = choice.dataKey ?? choice.label;
     return {
       name: choice.label,
-      meta: resourceTypeMap.get(key),
+      meta: resourceTypeMap.get(choice.label),
     };
   }
 
@@ -234,18 +231,15 @@ async function selectResource(resourceNameSingular: string, maxNameLength?: numb
   return (await window.showInputBox(options)) || undefined;
 }
 
-async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<IExternalizedQuickPickItem | undefined> {
-  const qpItems: IExternalizedQuickPickItem[] = items.map((item) => ({
-    label: l10n.t(item),
-    dataKey: item,
-  }));
+async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Promise<QuickPickItem | undefined> {
+  const qpItems: QuickPickItem[] = items.map((item) => ({ label: item }));
 
   const quickPick = Gui.createQuickPick();
   quickPick.items = qpItems;
   quickPick.placeholder = placeHolder;
   quickPick.ignoreFocusOut = true;
   quickPick.show();
-  const choice = (await Gui.resolveQuickPick(quickPick)) as IExternalizedQuickPickItem | undefined;
+  const choice = await Gui.resolveQuickPick(quickPick);
   quickPick.hide();
   return choice;
 }
