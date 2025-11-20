@@ -28,7 +28,6 @@ interface IActionTreeItemArgs {
   parameter?: { name: string; value: string };
 }
 
-// normalize action to a base, lowercase verb (e.g. "Disabling" -> "disable")
 function normalizeVerb(value: string | undefined): string {
   if (!value) return "";
   const v = value.toLowerCase();
@@ -50,12 +49,12 @@ function normalizeVerb(value: string | undefined): string {
 }
 
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
-  const rawVerb = resourceActionVerbMap[action] ?? action;
+  const rawVerb = resourceActionVerbMap[action];
   const verb = normalizeVerb(rawVerb);
 
   await window.withProgress(
     {
-      title: l10n.t("action", verb),
+      title: resourceActionVerbMap[action],
       location: ProgressLocation.Notification,
       cancellable: false,
     },
@@ -64,10 +63,13 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
 
       const nodesToRefresh = new Set();
 
-      for (const node of nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const idx = i + 1;
+
         progress.report({
-          message: l10n.t("Performing {0} on {1} (${2} of ${3})", verb, node.getContainedResourceName(), nodes.indexOf(node) + 1, nodes.length),
-          increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
+          message: l10n.t("{0}: {1} {2} of {3}", resourceActionVerbMap[action], verb, `${idx}`, `${nodes.length}`),
+          increment: (i / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
         try {

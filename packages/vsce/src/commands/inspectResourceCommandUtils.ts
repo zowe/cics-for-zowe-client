@@ -160,7 +160,6 @@ async function loadResources(
   const resources = await resourceContainer.fetchNextPage();
 
   if (resources.length === 0) {
-    // use the humanReadableNameSingular values directly (you will externalize these in the meta files)
     const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
     const message = CICSMessages.CICSResourceNotFound.message
       .replace("%resource-type%", hrn)
