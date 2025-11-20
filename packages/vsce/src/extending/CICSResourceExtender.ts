@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceAction, IResourceExtender } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, IResourceExtender, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { getBuiltInResourceActions } from "../resources/actions";
 
 class SCICSResourceExtender implements IResourceExtender {
@@ -17,26 +17,34 @@ class SCICSResourceExtender implements IResourceExtender {
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
-  registeredActions: IResourceAction[];
+  registeredActions: Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>;
 
   private constructor() {
     this.registeredActions = getBuiltInResourceActions();
   }
 
-  registerAction(action: IResourceAction) {
-    this.registeredActions.push(action);
+  registerAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>) {
+    const arr = this.registeredActions.get(action.resourceType) || [];
+    arr.push(action);
+    this.registeredActions.set(action.resourceType, arr);
   }
-  deregisterAction(id: string) {
-    this.registeredActions = this.registeredActions.filter((action) => action.id.toUpperCase() !== id.toUpperCase());
+  deregisterAction<TType extends keyof ResourceTypeMap>(id: string, type: TType) {
+    const arr = this.registeredActions.get(type) || [];
+    const filtered = arr.filter((ac) => ac.id !== id);
+    this.registeredActions.set(type, filtered);
   }
   getActions() {
-    return this.registeredActions;
+    return [...this.registeredActions.values()].flat();
   }
   getAction(id: string) {
-    return this.registeredActions.filter((action) => action.id.toUpperCase() === id.toUpperCase())[0] ?? undefined;
+    const actions = this.getActions().filter((ac: ResourceAction<keyof ResourceTypeMap>) => ac.id === id);
+    if (actions.length > 0) {
+      return actions[0];
+    }
+    return undefined;
   }
-  getActionsForResourceType(resType: string[]): IResourceAction[] {
-    return this.registeredActions.filter((action) => resType.includes(action.resourceType));
+  getActionsFor<TType extends keyof ResourceTypeMap>(type: TType): ResourceAction<TType>[] {
+    return (this.registeredActions.get(type) || []) as ResourceAction<TType>[];
   }
 }
 

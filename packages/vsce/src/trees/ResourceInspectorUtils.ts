@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, ExtensionContext, ProgressLocation, window } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
+import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { findResourceNodeInTree } from "../utils/treeUtils";
 import { TransformWebviewMessage } from "../webviews/common/vscode";
@@ -50,7 +50,7 @@ export async function executeAction(
       await commands.executeCommand(action.action, node);
       await refreshWithProgress();
     } else {
-      await action.action(resource.resource.attributes, resourceContext);
+      await action.action(resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
     }
   }
   if (command === "refresh") {
