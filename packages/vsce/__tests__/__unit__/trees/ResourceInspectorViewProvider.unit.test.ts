@@ -16,11 +16,31 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   },
 }));
 
+const getJobIdForRegionMock = jest.fn();
+jest.mock("../../../src/commands/showLogsCommand", () => ({
+  getJobIdForRegion: getJobIdForRegionMock,
+}));
+
+jest.mock("../../../src/utils/CICSLogger", () => ({
+  CICSLogger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import * as vscode from "vscode";
+
+const executeCommandMock = jest.fn();
+jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
 import { PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { Uri, WebviewView, ExtensionContext } from "vscode";
 import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
+import { CICSTree } from "../../../src/trees/CICSTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
+import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -137,5 +157,156 @@ describe("Resource Inspector View provider", () => {
     // @ts-ignore - private property not accessible
     expect(ri.resource).toEqual(myResource);
     expect(sendSpy).toHaveBeenCalledTimes(1);
+  });
+
+  describe("handleShowLogsForHyperlink", () => {
+    it("should call showRegionLogs command when region node and jobId are found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      const mockRegionNode = {
+        getRegionName: jest.fn().mockReturnValue("MYREG"),
+      } as unknown as CICSRegionTree;
+
+      const mockSessionNode = {
+        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as unknown as CICSSessionTree;
+
+      const mockCicsTree = {
+        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
+      } as unknown as CICSTree;
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = mockCicsTree;
+
+      getJobIdForRegionMock.mockResolvedValue("JOB12345");
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(getJobIdForRegionMock).toHaveBeenCalledWith(mockRegionNode);
+      expect(executeCommandMock).toHaveBeenCalledWith("cics-extension-for-zowe.showRegionLogs", mockRegionNode);
+    });
+
+    it("should not call showRegionLogs command when jobId is not found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
+
+      const mockRegionNode = {
+        getRegionName: jest.fn().mockReturnValue("MYREG"),
+      } as unknown as CICSRegionTree;
+
+      const mockSessionNode = {
+        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as unknown as CICSSessionTree;
+
+      const mockCicsTree = {
+        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
+      } as unknown as CICSTree;
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = mockCicsTree;
+
+      getJobIdForRegionMock.mockResolvedValue(null);
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(getJobIdForRegionMock).toHaveBeenCalledWith(mockRegionNode);
+      expect(executeCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should not call showRegionLogs command when region node is not found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
+
+      const mockSessionNode = {
+        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
+        getRegionNodeFromName: jest.fn().mockReturnValue(undefined),
+      } as unknown as CICSSessionTree;
+
+      const mockCicsTree = {
+        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
+      } as unknown as CICSTree;
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = mockCicsTree;
+
+      executeCommandMock.mockClear();
+      getJobIdForRegionMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(getJobIdForRegionMock).not.toHaveBeenCalled();
+      expect(executeCommandMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("findRegionNode", () => {
+    it("should find region node using resourceContext", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      const mockRegionNode = {
+        getRegionName: jest.fn().mockReturnValue("MYREG"),
+      } as unknown as CICSRegionTree;
+
+      const mockSessionNode = {
+        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as unknown as CICSSessionTree;
+
+      const mockCicsTree = {
+        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
+      } as unknown as CICSTree;
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = mockCicsTree;
+
+      // @ts-ignore - calling private method for test
+      const result = await ri.findRegionNode("MYREG", "MYPLEX");
+
+      expect(result).toBe(mockRegionNode);
+      expect(mockSessionNode.getRegionNodeFromName).toHaveBeenCalledWith("MYREG", "MYPLEX");
+    });
+
+    it("should return undefined when profile node is not found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "WRONGPROF", regionName: "MYREG" });
+
+      const mockSessionNode = {
+        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
+      } as unknown as CICSSessionTree;
+
+      const mockCicsTree = {
+        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
+      } as unknown as CICSTree;
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = mockCicsTree;
+
+      // @ts-ignore - calling private method for test
+      const result = await ri.findRegionNode("MYREG");
+
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when cicsTree is not available", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
+
+      // @ts-ignore - setting private property for test
+      ri.cicsTree = undefined;
+
+      // @ts-ignore - calling private method for test
+      const result = await ri.findRegionNode("MYREG");
+
+      expect(result).toBeUndefined();
+    });
   });
 });

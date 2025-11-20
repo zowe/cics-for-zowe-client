@@ -12,7 +12,7 @@
 import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands } from "vscode";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
@@ -21,6 +21,9 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 import { CICSTree } from ".";
+import { getJobIdForRegion } from "../commands/showLogsCommand";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -77,6 +80,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
+      } else if (message.command === "showLogsForHyperlink") {
+        await this.handleShowLogsForHyperlink();
       } else {
         executeAction(message.command, message, this, this.context);
       }
@@ -211,5 +216,53 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       },
       nonce,
     });
+  }
+
+  /**
+   * Handles the showLogsForHyperlink request from the webview
+   * Fetches job ID and calls showRegionLogs command
+   */
+  private async handleShowLogsForHyperlink() {
+    const { regionName, cicsplexName } = this.resourceContext;
+    try {
+      const regionNode = await this.findRegionNode(regionName, cicsplexName);
+      if (regionNode) {
+        const jobId = await getJobIdForRegion(regionNode);
+        if (jobId) {
+          commands.executeCommand("cics-extension-for-zowe.showRegionLogs", regionNode);
+        } else {
+          CICSLogger.debug(`Could not find Job ID for region ${regionName}`);
+        }
+      } else {
+        CICSLogger.debug(`Region node not found for ${regionName}`);
+      }
+    } catch (error) {
+      CICSLogger.error(`Error showing logs for hyperlink: ${error.message}`);
+    }
+  }
+
+  /**
+   * Finds the CICSRegionTree node for the given region using resourceContext
+   */
+  private async findRegionNode(regionName: string, cicsplexName?: string): Promise<CICSRegionTree | undefined> {
+    if (!this.cicsTree) {
+      CICSLogger.debug('No CICS tree available');
+      return undefined;
+    }
+    // Navigate tree using resourceContext: profileName -> cicsplexName -> regionName
+    const sessionNodes = await this.cicsTree.getChildren();
+    const profileNode = sessionNodes?.find(
+      (sessionNode) => sessionNode.getProfile().name === this.resourceContext.profileName
+    );
+    if (!profileNode) {
+      CICSLogger.debug(`Profile node not found for: ${this.resourceContext.profileName}`);
+      return undefined;
+    }
+    const regionNode = profileNode.getRegionNodeFromName(regionName, cicsplexName);
+    if (!regionNode) {
+      CICSLogger.debug(`Region node not found for: ${regionName}`);
+      return undefined;
+    }
+    return regionNode;
   }
 }
