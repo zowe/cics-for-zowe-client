@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
-## Recent Changes
+## `6.15.0`
 
 - Add IRemoteFile interface. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
 - Add TS Queue and Shared TS Queue to supported resources. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
