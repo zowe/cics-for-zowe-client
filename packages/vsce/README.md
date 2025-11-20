@@ -71,6 +71,8 @@ CICS profiles inherit properties from base profiles in the same way as Zowe prof
 
 The profile defines a connection which must point to a CICS region's CICS Management Client Interface (CMCI) TCP/IP host name and port number. CMCI could be hosted by a WUI in a CICSplex or by a stand-alone System Management Single Server (SMSS) region.
 
+This extension supports basic authentication and Multi-factor authentication (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
+
 #### Creating or updating a CICS profile
 
 1. In Zowe Explorer, select the **+** button in the **CICS** tree.
