@@ -11,6 +11,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Added CICS Remote Files to files tree. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
 - Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
 - Enhancement: Added highlights for Program and Transactions. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
 
 ## `3.14.0`
 
