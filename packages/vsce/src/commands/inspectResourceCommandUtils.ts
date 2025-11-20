@@ -189,7 +189,6 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
     }
 
     if (SupportedResourceTypes.includes(item.resourceName as ResourceTypes)) {
-      // use the human-readable string from the meta as the key (you will externalize these in the meta files)
       const label = item.humanReadableNameSingular;
       acc.set(label, [item]);
     }
