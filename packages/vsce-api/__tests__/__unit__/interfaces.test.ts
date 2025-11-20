@@ -35,9 +35,6 @@ describe("Interfaces", () => {
       arr.push(acc as unknown as ResourceAction<keyof ResourceTypeMap>);
       this.registeredActions.set(acc.resourceType, arr);
     },
-    deregisterAction: function (_id: string): void {
-      throw new Error("Function not implemented.");
-    },
     getActions: function (): ResourceAction<keyof ResourceTypeMap>[] {
       return [...this.registeredActions.values()].flat() as ResourceAction<keyof ResourceTypeMap>[];
     },
@@ -94,7 +91,6 @@ describe("Interfaces", () => {
   });
   it("should assert IResourceExtender", () => {
     expect(extender).toHaveProperty("registeredActions");
-    expect(extender).toHaveProperty("deregisterAction");
     expect(extender).toHaveProperty("registerAction");
     expect(extender).toHaveProperty("getAction");
     expect(extender).toHaveProperty("getActions");

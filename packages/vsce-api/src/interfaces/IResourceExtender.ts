@@ -15,7 +15,6 @@ export interface IResourceExtender {
   registeredActions: Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>;
 
   registerAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): void;
-  deregisterAction<TType extends keyof ResourceTypeMap>(id: string, type: TType): void;
   getActions(): ResourceAction<keyof ResourceTypeMap>[];
   getAction: (id: string) => ResourceAction<keyof ResourceTypeMap> | undefined;
   getActionsFor<TType extends keyof ResourceTypeMap>(type: TType): ResourceAction<TType>[];
