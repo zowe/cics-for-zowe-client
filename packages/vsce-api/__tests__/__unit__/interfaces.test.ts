@@ -15,38 +15,45 @@ import { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
-import { IResource } from "../../src/interfaces/resources";
-import { IResourceAction } from "../../src/interfaces/IResourceAction";
+import { ResourceAction, ResourceTypeMap } from "../../src/interfaces/ResourceAction";
+import { IProgram, IResource } from "../../src/interfaces/resources";
 
 describe("Interfaces", () => {
-  const action: IResourceAction = {
+
+  const action = new ResourceAction({
     id: "CICS.CICSProgram.NEWCOPY",
     name: "New Copy Program",
     resourceType: ResourceTypes.CICSProgram,
-    action: async (_resource: IResource, _resourceContext: IResourceContext) => { },
-    enabledWhen(_resource, _resourceContext) {
-      return true;
-    },
-    visibleWhen(_resource, _resourceContext) {
-      return true;
-    },
-  };
+    action: async (_resource: IProgram, _resourceContext: IResourceContext) => { },
+    visibleWhen(_resource, _resourceContext) { return true; },
+  });
 
   const extender: IResourceExtender = {
-    registeredActions: [],
-    deregisterAction(_id) { },
-    registerAction(_action) { },
-    getAction(_id) {
-      return action;
+    registeredActions: new Map(),
+    registerAction: function <TType extends keyof ResourceTypeMap>(acc: ResourceAction<TType>): void {
+      const arr = this.registeredActions.get(acc.resourceType) || [];
+      arr.push(acc as unknown as ResourceAction<keyof ResourceTypeMap>);
+      this.registeredActions.set(acc.resourceType, arr);
     },
-    getActions() {
-      return [];
+    getActions: function (): ResourceAction<keyof ResourceTypeMap>[] {
+      return [...this.registeredActions.values()].flat() as ResourceAction<keyof ResourceTypeMap>[];
     },
+    getAction: function (id: string): ResourceAction<keyof ResourceTypeMap> | undefined {
+      const actions = this.getActions().filter((ac: ResourceAction<keyof ResourceTypeMap>) => ac.id === id);
+      if (actions.length > 0) {
+        return actions[0] as ResourceAction<keyof ResourceTypeMap>;
+      }
+      return undefined;
+    },
+    getActionsFor: function <TType extends keyof ResourceTypeMap>(type: TType): ResourceAction<TType>[] {
+      return (this.registeredActions.get(type) || []) as unknown as ResourceAction<TType>[];
+    }
   };
 
   const api: IExtensionAPI = {
     resources: {
       supportedResources: SupportedResourceTypes,
+      resourceExtender: extender,
     },
   };
 
@@ -75,17 +82,15 @@ describe("Interfaces", () => {
     session,
   };
 
-  it("should assert IResourceAction", () => {
+  it("should assert ResourceAction", () => {
     expect(action).toHaveProperty("id");
     expect(action).toHaveProperty("name");
     expect(action).toHaveProperty("resourceType");
     expect(action).toHaveProperty("action");
-    expect(action).toHaveProperty("enabledWhen");
     expect(action).toHaveProperty("visibleWhen");
   });
   it("should assert IResourceExtender", () => {
     expect(extender).toHaveProperty("registeredActions");
-    expect(extender).toHaveProperty("deregisterAction");
     expect(extender).toHaveProperty("registerAction");
     expect(extender).toHaveProperty("getAction");
     expect(extender).toHaveProperty("getActions");
@@ -93,6 +98,7 @@ describe("Interfaces", () => {
   it("should assert IExtensionAPI", () => {
     expect(api).toHaveProperty("resources");
     expect(api.resources).toHaveProperty("supportedResources");
+    expect(api.resources).toHaveProperty("resourceExtender");
   });
   it("should assert IResource", () => {
     expect(res).toHaveProperty("eyu_cicsname");
