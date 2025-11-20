@@ -68,7 +68,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
         const idx = i + 1;
 
         progress.report({
-          message: l10n.t("{0}: {1} {2} of {3}", resourceActionVerbMap[action], verb, `${idx}`, `${nodes.length}`),
+          message: l10n.t("{0} {1} of {2}", verb, `${idx}`, `${nodes.length}`),
           increment: (i / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
