@@ -42,7 +42,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(NAME%3D'MYJVM1')",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(name%3DMYJVM1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request><action name=\"DISABLE\"><parameter name=\"PURGETYPE\" value=\"KILL\"/></action></request>"
