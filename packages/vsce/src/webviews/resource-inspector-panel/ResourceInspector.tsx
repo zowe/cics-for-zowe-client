@@ -20,6 +20,7 @@ import Breadcrumb from "./Breadcrumb";
 import Contextmenu from "./Contextmenu";
 import useThemeDetection from "./hooks/useThemeDetection";
 import useLayoutManager from "./hooks/useLayoutManager";
+import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 
 const ResourceInspector = () => {
   const [search, setSearch] = React.useState("");
@@ -89,7 +90,7 @@ const ResourceInspector = () => {
             <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
                 <td key={highlight.key} className="resource-info-row">
-                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{highlight.value}</span>
+                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{renderHyperlinkableValue(highlight.value, resourceInfo?.resourceContext)}</span>
                 </td>
               ))}
             </tr>
@@ -128,7 +129,7 @@ const ResourceInspector = () => {
               .map(([key, value]) => (
                 <tr key={key}>
                   <td className="resource-attr-key">{key.toUpperCase()}</td>
-                  <td className="resource-attr-value">{value}</td>
+                  <td className="resource-attr-value">{renderHyperlinkableValue(value, resourceInfo?.resourceContext)}</td>
                 </tr>
               ))}
         </tbody>
