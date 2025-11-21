@@ -11,14 +11,22 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
-import { resourceActionVerbMap, setResource } from "./setResource";
+import { setResource } from "./setResource";
 
+export const resourceActionVerbMap = {
+  DISABLE: l10n.t("Disabling"),
+  ENABLE: l10n.t("Enabling"),
+  CLOSE: l10n.t("Closing"),
+  OPEN: l10n.t("Opening"),
+  PHASEIN: l10n.t("Phase In"),
+  NEWCOPY: l10n.t("New Copy"),
+} as const;
 interface IActionTreeItemArgs {
   action: keyof typeof resourceActionVerbMap;
   nodes: CICSResourceContainerNode<IResource>[];
@@ -40,10 +48,11 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
 
       const nodesToRefresh = new Set();
 
-      for (const node of nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
         progress.report({
-          message: `${nodes.indexOf(node) + 1} of ${nodes.length}`,
-          increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
+          message: l10n.t("{0} of {1}", i + 1, nodes.length),
+          increment: (1 / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
         try {
@@ -73,9 +82,18 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
         } catch (error) {
-          window.showErrorMessage(
-            `${resourceActionVerbMap[action]} - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ")}`
-          );
+          let details: string;
+          try {
+            if (error instanceof Error) {
+              details = error.stack ? error.stack : error.message;
+            } else {
+              details = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+            }
+          } catch (e) {
+            details = String(error);
+          }
+          window.showErrorMessage(l10n.t("Something went wrong when performing a {0} - {1}", action.toLowerCase(), details));
+          console.error(`Error performing ${action}:`, error);
         }
       }
 
