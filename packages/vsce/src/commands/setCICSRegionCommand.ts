@@ -25,6 +25,11 @@ function logInfo(key: string, ...args: any[]) {
   CICSLogger.info(l10n.t(key, ...args));
 }
 
+// Type guard to avoid unnecessary type assertions
+function isQuickPickItemWithId(obj: unknown): obj is QuickPickItemWithId {
+  return !!obj && typeof (obj as any).label === "string" && ("id" in (obj as any) ? true : true);
+}
+
 export function setCICSRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setCICSRegion", async () => {
     await setCICSRegion();
@@ -53,8 +58,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
       return;
     }
 
-    const selected = choice as QuickPickItemWithId;
-    if (selected.id !== "other") {
+    if (isQuickPickItemWithId(choice) && choice.id !== "other") {
       const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
       const session = SessionHandler.getInstance().getSession(profile);
       return { profile, cicsPlexName, session, regionName };
@@ -88,14 +92,14 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
   }
 
   // choice should be a FilterDescriptor
-  const selectedProfile = choice as FilterDescriptor;
+  const selectedProfile = choice;
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(selectedProfile.label);
   const session = SessionHandler.getInstance().getSession(profile);
 
   ({ cicsPlexName, regionName, isPlex, plexInfo } = await getPlexAndRegion(profile, cicsPlexName, regionName, isPlex, plexInfo));
 
   if (plexInfo && !cicsPlexName) {
-    const result = await handlePlexInfo(plexInfo, quickPick, selectedProfile, profile);
+    const result = await handlePlexInfo(plexInfo, quickPick, selectedProfile);
     if (result === null) {
       return;
     }
@@ -151,8 +155,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
 async function handlePlexInfo(
   plexInfo: InfoLoaded[],
   quickPick: any,
-  selectedProfile: FilterDescriptor,
-  profile: IProfileLoaded
+  selectedProfile: FilterDescriptor
 ): Promise<{ cicsPlexName?: string; regionName?: string; isPlex: boolean } | null> {
   const plexNames = plexInfo.filter((p) => !p.group).map((p) => p.plexname);
   const regions = plexInfo.filter((p) => !p.group && p.plexname === null).map((p) => p.regions);
