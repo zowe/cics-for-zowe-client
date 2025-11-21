@@ -88,7 +88,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           this.loadedProfiles.push(newSessionTree);
         }
       } catch (error) {
-        if (error.message.includes("Could not find profile named")) {
+        if (error.message?.includes("Could not find profile named")) {
           await PersistentStorage.removeLoadedCICSProfile(profilename);
         }
         continue;
