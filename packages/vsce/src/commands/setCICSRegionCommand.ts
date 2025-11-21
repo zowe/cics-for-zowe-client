@@ -46,14 +46,14 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
       { id: "last", label: lastUsedRegionLabel, description: l10n.t("Last used region") },
       { id: "other", label: l10n.t("Other CICS Region") },
     ];
-    const choice = (await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items])) as unknown as QuickPickItemWithId;
+    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items]);
     quickPick.hide();
 
     if (!choice) {
       return;
     }
 
-    if (choice.id !== "other") {
+    if ((choice as QuickPickItemWithId).id !== "other") {
       const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
       const session = SessionHandler.getInstance().getSession(profile);
       return { profile, cicsPlexName, session, regionName };
