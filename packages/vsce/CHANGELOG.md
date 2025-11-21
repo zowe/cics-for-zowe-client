@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
+
 ## `3.15.0`
 
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
