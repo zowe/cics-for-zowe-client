@@ -10,16 +10,17 @@
  */
 
 import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import { l10n } from "vscode";
 import { IResourceMeta } from "../doc";
 import { runPutResource } from "../utils/resourceUtils";
 
-export const resourceActionVerbMap = {
-  "DISABLE": "Disabling",
-  "ENABLE": "Enabling",
-  "CLOSE": "Closing",
-  "OPEN": "Opening",
-  "PHASEIN": "Phase In",
-  "NEWCOPY": "New Copy",
+export const resourceActionVerbMap: Record<string, string> = {
+  DISABLE: l10n.t("Disabling"),
+  ENABLE: l10n.t("Enabling"),
+  CLOSE: l10n.t("Closing"),
+  OPEN: l10n.t("Opening"),
+  PHASEIN: l10n.t("Phase In"),
+  NEWCOPY: l10n.t("New Copy"),
 };
 
 interface ISetResourcePayloadParameter {
