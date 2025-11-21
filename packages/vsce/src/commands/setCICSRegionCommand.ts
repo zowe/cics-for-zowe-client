@@ -11,7 +11,7 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, l10n } from "vscode";
+import { commands, l10n, QuickPickItem } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -19,15 +19,11 @@ import { FilterDescriptor } from "../utils/filterUtils";
 import * as regionUtils from "../utils/lastUsedRegionUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 
-type QuickPickItemWithId = { id?: string; label: string; description?: string };
+// extend VS Code QuickPickItem with an internal id
+type QuickPickItemWithId = QuickPickItem & { id?: string };
 
 function logInfo(key: string, ...args: any[]) {
   CICSLogger.info(l10n.t(key, ...args));
-}
-
-// Type guard to avoid unnecessary type assertions
-function isQuickPickItemWithId(obj: unknown): obj is QuickPickItemWithId {
-  return !!obj && typeof (obj as any).label === "string" && ("id" in (obj as any) ? true : true);
 }
 
 export function setCICSRegionCommand() {
@@ -50,15 +46,14 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
       { id: "last", label: lastUsedRegionLabel, description: l10n.t("Last used region") },
       { id: "other", label: l10n.t("Other CICS Region") },
     ];
-
-    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items]);
+    const choice = (await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items])) as unknown as QuickPickItemWithId;
     quickPick.hide();
 
     if (!choice) {
       return;
     }
 
-    if (isQuickPickItemWithId(choice) && choice.id !== "other") {
+    if (choice.id !== "other") {
       const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(profileName);
       const session = SessionHandler.getInstance().getSession(profile);
       return { profile, cicsPlexName, session, regionName };
@@ -85,14 +80,17 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
   let regionName: string | undefined = undefined;
   let plexInfo: InfoLoaded[] | undefined = undefined;
 
-  const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Profile"), [...cicsProfiles]);
+  // cast the QuickPick result to FilterDescriptor (from the list we passed)
+  const profileChoice = (await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Profile"), [
+    ...cicsProfiles,
+  ])) as unknown as FilterDescriptor;
   quickPick.hide();
-  if (!choice) {
+  if (!profileChoice) {
     return;
   }
 
   // choice should be a FilterDescriptor
-  const selectedProfile = choice;
+  const selectedProfile = profileChoice;
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(selectedProfile.label);
   const session = SessionHandler.getInstance().getSession(profile);
 
@@ -126,9 +124,9 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
     if (regionInfo && regionInfo.length >= 0) {
       logInfo("Fetching regions for CICSplex: {0}", cicsPlexName);
       regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-      const choice2 = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
+      const choice2 = (await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
         ...regionInfo.map((region) => ({ label: region.cicsname })),
-      ]);
+      ])) as unknown as QuickPickItem;
       regionQuickPick.hide();
       if (!choice2) {
         return;
@@ -167,7 +165,9 @@ async function handlePlexInfo(
     logInfo("Region set to {0} for profile {1}", regionName, selectedProfile.label);
     return { cicsPlexName: undefined, regionName, isPlex: false };
   } else if (plexNames.length > 0) {
-    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select CICSplex"), [...plexNames.map((name) => ({ label: name }))]);
+    const choice = (await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select CICSplex"), [
+      ...plexNames.map((name) => ({ label: name })),
+    ])) as unknown as QuickPickItem;
     quickPick.hide();
     if (!choice) {
       return null;
