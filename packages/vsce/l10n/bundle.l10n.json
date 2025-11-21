@@ -65,5 +65,13 @@
   "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
   "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
   "No CICS local file selected": "No CICS local file selected",
-  "All Resources": "All Resources"
+  "All Resources": "All Resources",
+  "Disabling": "Disabling",
+  "Enabling": "Enabling",
+  "Closing": "Closing",
+  "Opening": "Opening",
+  "Phase In": "Phase In",
+  "New Copy": "New Copy",
+  "{0} of {1}": "{0} of {1}",
+  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
 }
