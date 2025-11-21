@@ -6,6 +6,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Added highlights for URI maps. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `3.15.0`
 
@@ -17,7 +18,6 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
 - Enhancement: Added highlights for Program and Transactions. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
-- Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `3.14.0`
 
