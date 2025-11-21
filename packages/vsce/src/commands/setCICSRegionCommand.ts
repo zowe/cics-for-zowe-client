@@ -141,7 +141,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
       }
 
       regionName = choice2.label;
-      CICSLogger.info(l10n.t("cics.region.set.info", regionName, selectedProfile.label, cicsPlexName ?? l10n.t("NA")));
+      CICSLogger.info(l10n.t("cics.region.set.info", regionName, selectedProfile.label, cicsPlexName));
     } else {
       regionQuickPick.hide();
       Gui.showMessage(l10n.t("cics.no.active.regions", cicsPlexName));
