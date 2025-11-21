@@ -88,6 +88,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
           this.loadedProfiles.push(newSessionTree);
         }
       } catch {
+        await PersistentStorage.removeLoadedCICSProfile(profilename);
         continue;
       }
     }
