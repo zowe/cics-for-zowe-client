@@ -34,7 +34,8 @@
   "No CICS resource selected": "No CICS resource selected",
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
-  " or ": " or ",
+  "File": "File",
+  "TS Queue": "TS Queue",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "Transaction": "Transaction",
   "No CICS Task selected": "No CICS Task selected",
@@ -64,8 +65,5 @@
   "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
   "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
   "No CICS local file selected": "No CICS local file selected",
-  "All Resources": "All Resources",
-  "action": "action",
-  "Performing {0} on {1} (${2} of ${3})": "Performing {0} on {1} (${2} of ${3})",
-  "Something went wrong when performing a {0} - {1}": "Something went wrong when performing a {0} - {1}"
+  "All Resources": "All Resources"
 }

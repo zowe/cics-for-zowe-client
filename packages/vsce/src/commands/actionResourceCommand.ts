@@ -11,7 +11,7 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, l10n, window } from "vscode";
+import { ProgressLocation, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
@@ -28,30 +28,7 @@ interface IActionTreeItemArgs {
   parameter?: { name: string; value: string };
 }
 
-function normalizeVerb(value: string | undefined): string {
-  if (!value) return "";
-  const v = value.toLowerCase();
-  const gerundMap: Record<string, string> = {
-    disabling: "disable",
-    enabling: "enable",
-    killing: "kill",
-    starting: "start",
-    stopping: "stop",
-    suspending: "suspend",
-    resuming: "resume",
-  };
-  if (gerundMap[v]) return gerundMap[v];
-  if (v.endsWith("ing")) {
-    const stem = v.slice(0, -3);
-    return stem.endsWith("e") ? stem : stem + "e";
-  }
-  return v;
-}
-
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
-  const rawVerb = resourceActionVerbMap[action];
-  const verb = normalizeVerb(rawVerb);
-
   await window.withProgress(
     {
       title: resourceActionVerbMap[action],
@@ -63,13 +40,10 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
 
       const nodesToRefresh = new Set();
 
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        const idx = i + 1;
-
+      for (const node of nodes) {
         progress.report({
-          message: l10n.t("{0} {1} of {2}", verb, `${idx}`, `${nodes.length}`),
-          increment: (i / nodes.length) * constants.PERCENTAGE_MAX,
+          message: `${nodes.indexOf(node) + 1} of ${nodes.length}`,
+          increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
         try {
@@ -99,9 +73,9 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
         } catch (error) {
-          const sanitizedError = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ");
-          const errMsg = l10n.t("Something went wrong when performing a {0} - {1}", verb, sanitizedError);
-          window.showErrorMessage(errMsg);
+          window.showErrorMessage(
+            `${resourceActionVerbMap[action]} - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\\t|\\n|\\t)/gm, " ")}`
+          );
         }
       }
 
