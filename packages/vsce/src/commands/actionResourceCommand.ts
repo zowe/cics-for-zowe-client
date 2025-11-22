@@ -17,16 +17,8 @@ import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
-import { setResource } from "./setResource";
+import { resourceActionVerbMap, setResource } from "./setResource";
 
-export const resourceActionVerbMap = {
-  DISABLE: l10n.t("Disabling"),
-  ENABLE: l10n.t("Enabling"),
-  CLOSE: l10n.t("Closing"),
-  OPEN: l10n.t("Opening"),
-  PHASEIN: l10n.t("Phase In"),
-  NEWCOPY: l10n.t("New Copy"),
-} as const;
 interface IActionTreeItemArgs {
   action: keyof typeof resourceActionVerbMap;
   nodes: CICSResourceContainerNode<IResource>[];
@@ -82,21 +74,18 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
         } catch (error) {
-          let details: string;
-          try {
-            if (error instanceof Error) {
-              details = error.stack ? error.stack : error.message;
-            } else {
-              details = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+          const prefix = l10n.t("Something went wrong when performing a {0}", action.toLowerCase());
+          const details = (() => {
+            try {
+              return JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\n\t|\n|\t)/gm, " ");
+            } catch (e) {
+              return String(error);
             }
-          } catch (e) {
-            details = String(error);
-          }
-          window.showErrorMessage(l10n.t("Something went wrong when performing a {0} - {1}", action.toLowerCase(), details));
+          })();
+          window.showErrorMessage(`${prefix} - ${details}`);
           console.error(`Error performing ${action}:`, error);
         }
       }
-
       nodesToRefresh.forEach((v) => {
         tree.refresh(v);
       });
