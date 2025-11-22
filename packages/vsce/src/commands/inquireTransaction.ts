@@ -9,28 +9,28 @@
  *
  */
 
+import { IResource, ITask, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, TreeView, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { TaskMeta, TransactionMeta } from "../doc";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
-import { ITask, ITransaction, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 /**
  * Inquire the associated transaction tree item from a task tree item
  */
 export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireTransaction", async (node) => {
-    const msg = "CICS Transaction resources are not visible. Enable them from your VS Code settings.";
-    if (!openSettingsForHiddenResourceType(msg, "Transaction")) {
+    const msg = l10n.t("CICS Transaction resources are not visible. Enable them from your VS Code settings.");
+    if (!openSettingsForHiddenResourceType(msg, l10n.t("Transaction"))) {
       return;
     }
 
     const nodes = findSelectedNodes(treeview, TaskMeta, node) as CICSResourceContainerNode<ITask>[];
     if (!nodes || !nodes.length) {
-      window.showErrorMessage("No CICS Task selected");
+      window.showErrorMessage(l10n.t("No CICS Task selected"));
       return;
     }
 
@@ -38,14 +38,14 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
     const label = nodes[0].getParent().label;
 
     //if the label is All Tasks, we need to get the transaction tree from the regions node
-    if (label === "All Tasks") {
+    if (label === l10n.t("All Tasks")) {
       transactionTree = await getResourceTree<ITransaction>(treeview, nodes, CicsCmciConstants.CICS_LOCAL_TRANSACTION);
     } else {
       transactionTree = nodes[0]
         .getParent()
         .getParent()
-        .children.filter(
-          (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.includes(TransactionMeta)
+        .children.filter((child: CICSResourceContainerNode<IResource>) =>
+          child.resourceTypes.includes(TransactionMeta)
         )[0] as CICSResourceContainerNode<ITransaction>;
     }
 
