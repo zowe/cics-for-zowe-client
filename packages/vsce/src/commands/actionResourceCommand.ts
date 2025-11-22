@@ -83,7 +83,6 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             }
           })();
           window.showErrorMessage(`${prefix} - ${details}`);
-          console.error(`Error performing ${action}:`, error);
         }
       }
       nodesToRefresh.forEach((v) => {
