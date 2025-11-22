@@ -38,6 +38,7 @@ jest.mock("../../../src/utils/CICSLogger");
 
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 const profilesCacheRefreshSpy = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
+const removeLoadedCICSProfile = jest.spyOn(PersistentStorage, "removeLoadedCICSProfile");
 profilesCacheRefreshSpy.mockReturnValue(["prof1", "prof2"]);
 
 describe("Test suite for CICSTree", () => {
@@ -70,5 +71,17 @@ describe("Test suite for CICSTree", () => {
 
   it("Should return the children", () => {
     expect(sut.getChildren()).toHaveLength(2);
+  });
+
+  it("Should remove loaded cics profile when throws profile not found error", async () => {
+    getProfilesCacheMock.mockReturnValue({
+      loadNamedProfile: jest.fn().mockImplementationOnce(() => {
+        throw new Error("Could not find profile named: prof3");
+      }),
+    });
+    await sut.loadStoredProfileNames();
+
+    expect(getProfilesCacheMock).toHaveBeenCalled();
+    expect(removeLoadedCICSProfile).toHaveBeenCalledTimes(1);
   });
 });
