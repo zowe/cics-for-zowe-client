@@ -444,3 +444,16 @@ body:not(.vscode-high-contrast-light) .label-text-color {
     padding-right: 4px;
 }
 
+.hyperlinkable-value {
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.hyperlinkable-value:hover {
+  opacity: 0.8;
+}
+
