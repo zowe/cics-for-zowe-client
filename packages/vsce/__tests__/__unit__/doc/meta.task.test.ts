@@ -28,6 +28,11 @@ describe("Task Meta", () => {
       tranid: "TRAN",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      suspendtime: "005:31:49.906870",
+      suspendtype: "USERWAIT",
+      suspendvalue: "EYU0VGEL",
+      userid: "CICSUSER",
+      program: "EYU9VKEC",
     });
   });
 
@@ -73,8 +78,32 @@ describe("Task Meta", () => {
     const highlights = TaskMeta.getHighlights(taskMock);
     expect(highlights).toEqual([
       {
+        key: "Run Status",
+        value: "RUNNING",
+      },
+      {
+        key: "Suspend Time",
+        value: "005:31:49.906870",
+      },
+      {
+        key: "Suspend Type",
+        value: "USERWAIT",
+      },
+      {
+        key: "Suspend Value",
+        value: "EYU0VGEL",
+      },
+      {
+       key: "User ID",
+       value: "CICSUSER",
+      },
+      {
         key: "Transaction ID",
         value: "TRAN",
+      },
+      {
+        key: "Current Program",
+        value: "EYU9VKEC",
       },
     ]);
   });

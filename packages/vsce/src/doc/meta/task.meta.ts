@@ -65,8 +65,32 @@ export const TaskMeta: IResourceMeta<ITask> = {
   getHighlights(resource: Resource<ITask>) {
     return [
       {
+        key: "Run Status",
+        value: resource.attributes.runstatus,
+      },
+      {
+        key: "Suspend Time",
+        value: resource.attributes.suspendtime,
+      },
+      {
+        key: "Suspend Type",
+        value: resource.attributes.suspendtype,
+      },
+      {
+        key: "Suspend Value",
+        value: resource.attributes.suspendvalue,
+      },
+      {
+        key: "User ID",
+        value: resource.attributes.userid,
+      },
+      {
         key: "Transaction ID",
         value: resource.attributes.tranid,
+      },
+      {
+        key: "Current Program",
+        value: resource.attributes.program,
       },
     ];
   },
