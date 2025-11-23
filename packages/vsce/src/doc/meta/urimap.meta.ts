@@ -56,6 +56,22 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   getHighlights(resource: Resource<IURIMap>) {
     return [
       {
+        key: "Scheme",
+        value: resource.attributes.scheme,
+      },
+      {
+        key: "Transaction",
+        value: resource.attributes.transaction,
+      },
+      {
+        key: "Pipeline",
+        value: resource.attributes.pipeline,
+      },
+      {
+        key: "Webservice",
+        value: resource.attributes.webservice,
+      },
+      {
         key: "Path",
         value: resource.attributes.path,
       },

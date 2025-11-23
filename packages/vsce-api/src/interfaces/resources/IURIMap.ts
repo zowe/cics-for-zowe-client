@@ -15,4 +15,7 @@ export interface IURIMap extends IResourceWithEnableStatus {
   name: string;
   scheme: string;
   path: string;
+  transaction: string;
+  pipeline: string;
+  webservice: string;
 }
