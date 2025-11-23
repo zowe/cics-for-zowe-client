@@ -27,6 +27,12 @@ describe("TCP IP Meta", () => {
       port: "12345",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      transid: "CWXN",
+      urm: "EYU9VWAN",
+      protocol: "HTTP",
+      attls: "NOTUSED",
+      ssltype: "NOSSL",
+
     });
   });
 
@@ -66,6 +72,26 @@ describe("TCP IP Meta", () => {
         key: "Port",
         value: "12345",
       },
+      {
+        key: "Transaction ID",
+        value: "CWXN",
+       },
+       {
+        key: "URM",
+        value: "EYU9VWAN",
+       },
+       {
+        key: "Protocol",
+        value: "HTTP",
+       },
+       {
+        key: "ATTLS",
+        value: "NOTUSED",
+       },
+       {
+        key: "SSL Type",
+        value: "NOSSL",
+       },
     ]);
   });
 
