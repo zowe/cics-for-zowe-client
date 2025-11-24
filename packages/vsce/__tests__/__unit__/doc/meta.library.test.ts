@@ -28,6 +28,7 @@ describe("Library Meta", () => {
       ranking: "10",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      numdsnames: "6"
     });
   });
 
@@ -72,9 +73,17 @@ describe("Library Meta", () => {
     const highlights = LibraryMeta.getHighlights(libraryMock);
     expect(highlights).toEqual([
       {
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
         key: "Ranking",
         value: "10",
       },
+      {
+        key: "Number of DS Names",
+        value: "6",
+      }
     ]);
   });
 
