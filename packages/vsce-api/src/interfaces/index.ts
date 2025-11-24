@@ -13,4 +13,4 @@ export * from "./IExtensionAPI";
 export * from "./resources";
 export * from "./IResourceContext";
 export * from "./IResourceExtender";
-export * from "./IResourceAction";
+export * from "./ResourceAction";

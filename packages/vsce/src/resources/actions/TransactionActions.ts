@@ -9,29 +9,31 @@
  *
  */
 
-import { IResourceAction, IResourceContext, ITransaction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, IResourceContext, ITransaction, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
 
-export function getTransactionActions(): IResourceAction[] {
-  return [
-    {
-      id: "CICS.CICSLocalTransaction.INQUIRE",
-      name: "Inquire Program",
-      resourceType: ResourceTypes.CICSLocalTransaction,
-      action: "cics-extension-for-zowe.inquireProgram",
-    },
-    {
-      id: "CICS.CICSLocalTransaction.ENABLE",
-      name: "Enable Transaction",
-      resourceType: ResourceTypes.CICSLocalTransaction,
-      visibleWhen: (transaction: ITransaction, _cx: IResourceContext) => transaction.status !== "ENABLED",
-      action: "cics-extension-for-zowe.enableTransaction",
-    },
-    {
-      id: "CICS.CICSLocalTransaction.DISABLE",
-      name: "Disable Transaction",
-      resourceType: ResourceTypes.CICSLocalTransaction,
-      visibleWhen: (transaction: ITransaction, _cx: IResourceContext) => transaction.status !== "DISABLED",
-      action: "cics-extension-for-zowe.disableTransaction",
-    },
-  ];
+const actions: ResourceActionOptions<ResourceTypes.CICSLocalTransaction>[] = [
+  {
+    id: "CICS.CICSLocalTransaction.INQUIRE",
+    name: "Inquire Program",
+    resourceType: ResourceTypes.CICSLocalTransaction,
+    action: "cics-extension-for-zowe.inquireProgram",
+  },
+  {
+    id: "CICS.CICSLocalTransaction.ENABLE",
+    name: "Enable Transaction",
+    resourceType: ResourceTypes.CICSLocalTransaction,
+    visibleWhen: (transaction: ITransaction, _cx: IResourceContext) => transaction.status !== "ENABLED",
+    action: "cics-extension-for-zowe.enableTransaction",
+  },
+  {
+    id: "CICS.CICSLocalTransaction.DISABLE",
+    name: "Disable Transaction",
+    resourceType: ResourceTypes.CICSLocalTransaction,
+    visibleWhen: (transaction: ITransaction, _cx: IResourceContext) => transaction.status !== "DISABLED",
+    action: "cics-extension-for-zowe.disableTransaction",
+  },
+];
+
+export function getTransactionActions(): ResourceAction<ResourceTypes.CICSLocalTransaction>[] {
+  return actions.map((action) => new ResourceAction<ResourceTypes.CICSLocalTransaction>(action));
 }

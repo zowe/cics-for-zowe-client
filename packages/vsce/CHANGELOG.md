@@ -4,12 +4,18 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
+
+## `3.15.0`
+
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
 - Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
 - Enhancement: Show Bundle command for CICS Bundle to navigate through bundle parts in the USS tree[#474](https://github.com/zowe/cics-for-zowe-client/issues/474)
 - Renamed `Local Files` tree to `Files`. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
 - Enhancement: Added CICS Remote Files to files tree. [#416](github.com/zowe/cics-for-zowe-client/issues/416)
 - Enhancement: Added TS Queues tree containing TS and Shared TS Queues. [#415](https://github.com/zowe/cics-for-zowe-client/issues/415)
+- Enhancement: Added highlights for Program and Transactions. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Expose resource extender API allowing contribution to CICS Resource Inspector actions. [#284](https://github.com/zowe/cics-for-zowe-client/issues/284)
 
 ## `3.14.0`
 

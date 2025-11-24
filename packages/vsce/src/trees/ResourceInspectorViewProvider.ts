@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource, IResourceAction, IResourceContext, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
 import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
@@ -164,23 +164,23 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActions() {
     // Required as Array.filter cannot be asyncronous
-    const asyncFilter = async (arr: IResourceAction[], predicate: (action: IResourceAction) => Promise<boolean>) => {
+    const asyncFilter = async (arr: ResourceAction<keyof ResourceTypeMap>[], predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>) => {
       const results = await Promise.all(arr.map(predicate));
       return arr.filter((_v, index) => results[index]);
     };
 
     // Gets actions for this resource type
-    let actionsForResource = CICSResourceExtender.getActionsForResourceType([this.resource.meta.resourceName]);
+    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resource.meta.resourceName as ResourceTypes]);
 
     // Filter out resources that shouldn't be visible
-    actionsForResource = await asyncFilter(actionsForResource, async (action: IResourceAction) => {
+    actionsForResource = await asyncFilter(actionsForResource, async (action: ResourceAction<keyof ResourceTypeMap>) => {
       if (!action.visibleWhen) {
         return true;
       }
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resource.resource.attributes, this.getResourceContext());
+        const visible = await action.visibleWhen(this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], this.getResourceContext());
         return visible;
       }
     });

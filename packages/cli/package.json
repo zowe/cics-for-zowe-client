@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-cli",
-  "version": "6.14.0",
+  "version": "6.15.0",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "Zowe CLI Plug-in for IBM CICS Transaction Server",
@@ -52,7 +52,7 @@
     "configurationModule": "lib/imperative.js"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "6.14.0"
+    "@zowe/cics-for-zowe-sdk": "6.15.0"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0"

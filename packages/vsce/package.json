@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "3.14.0",
+  "version": "3.15.0",
   "engines": {
     "vscode": "^1.79.0"
   },
@@ -833,7 +833,8 @@
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
     "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
-    "test:e2e:setup": "npm run package && cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
+    "test:e2e:setupExtenderExtension": "cd __tests__/__e2e__/resources/extender-extension && npm install && npm run package && cd ../../../../",
+    "test:e2e:setup": "npm run test:e2e:setupExtenderExtension && npm run package && cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
     "test:e2e:teardown": "cd __tests__/__e2e__ && docker exec code-server bash /config/workspace/teardown.sh && docker compose down",
     "test:e2e:run": "npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1",
     "test:e2e": "npm run test:e2e:setup && npm run test:e2e:run && npm run test:e2e:teardown",
@@ -871,8 +872,8 @@
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
-    "@zowe/cics-for-zowe-explorer-api": "6.14.0",
-    "@zowe/cics-for-zowe-sdk": "6.14.0",
+    "@zowe/cics-for-zowe-explorer-api": "6.15.0",
+    "@zowe/cics-for-zowe-sdk": "6.15.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.3.1",
     "@vscode/codicons": "^0.0.40"

@@ -11,7 +11,7 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
@@ -24,26 +24,27 @@ interface IActionTreeItemArgs {
   nodes: CICSResourceContainerNode<IResource>[];
   tree: CICSTree;
   getParentResource?: (node: CICSResourceContainerNode<IResource>) => IResource;
-  pollCriteria?: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean;
-  parameter?: { name: string; value: string; };
+  pollCriteria?: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean;
+  parameter?: { name: string; value: string };
 }
 
 export const actionTreeItem = async ({ action, nodes, tree, getParentResource, pollCriteria, parameter }: IActionTreeItemArgs) => {
   await window.withProgress(
     {
-      title: action,
+      title: resourceActionVerbMap[action],
       location: ProgressLocation.Notification,
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => { });
+      token.onCancellationRequested(() => {});
 
       const nodesToRefresh = new Set();
 
-      for (const node of nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
         progress.report({
-          message: `${resourceActionVerbMap[action]} ${nodes.indexOf(node) + 1} of ${nodes.length}`,
-          increment: (nodes.indexOf(node) / nodes.length) * constants.PERCENTAGE_MAX,
+          message: l10n.t("{0} of {1}", i + 1, nodes.length),
+          increment: (1 / nodes.length) * constants.PERCENTAGE_MAX,
         });
 
         try {
@@ -51,7 +52,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             cxt: {
               profileName: node.getProfileName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
-              cicsplexName: node.cicsplexName
+              cicsplexName: node.cicsplexName,
             },
             meta: node.getContainedResource().meta,
             resourceName: node.getContainedResourceName(),
@@ -72,17 +73,18 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
-
         } catch (error) {
-          window.showErrorMessage(
-            `Something went wrong when performing a ${action} - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
-          );
+          const prefix = l10n.t("Something went wrong when performing a {0}", action.toLowerCase());
+          const details = (() => {
+            try {
+              return JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\n\t|\n|\t)/gm, " ");
+            } catch (e) {
+              return String(error);
+            }
+          })();
+          window.showErrorMessage(`${prefix} - ${details}`);
         }
       }
-
       nodesToRefresh.forEach((v) => {
         tree.refresh(v);
       });

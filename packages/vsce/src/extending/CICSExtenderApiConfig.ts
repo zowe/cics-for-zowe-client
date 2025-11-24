@@ -10,6 +10,7 @@
  */
 
 import { IExtensionAPI, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import CICSResourceExtender from "./CICSResourceExtender";
 
 class SCICSExtenderApiConfig {
   private static _instance: SCICSExtenderApiConfig;
@@ -22,6 +23,7 @@ class SCICSExtenderApiConfig {
     this.api = {
       resources: {
         supportedResources: SupportedResourceTypes,
+        resourceExtender: CICSResourceExtender,
       },
     };
   }
