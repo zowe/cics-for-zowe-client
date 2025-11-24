@@ -319,7 +319,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               } else {
                 if (item.group) {
                   const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree, profile.profile.regionName);
-                  newPlexTree.setLabel(`${item.plexname} - ${profile.profile.regionName}`);
+                  newPlexTree.setLabel(l10n.t("{cicsplex} - {region}", { cicsplex: item.plexname, region: profile.profile.regionName }));
                   sessionTree.addPlex(newPlexTree);
                 } else {
                   //Plex

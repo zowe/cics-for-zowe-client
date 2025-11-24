@@ -31,6 +31,7 @@
   "Choose \"Create new...\" to define or select a profile to add to the CICS tree": "Choose \"Create new...\" to define or select a profile to add to the CICS tree",
   "Load profile": "Load profile",
   "Loading {0}": "Loading {0}",
+  "{cicsplex} - {region}": "{cicsplex} - {region}",
   "Select the location where the config file will be initialized": "Select the location where the config file will be initialized",
   "Select the location of the config file to edit": "Select the location of the config file to edit",
   "Global: in the Zowe home directory": "Global: in the Zowe home directory",
