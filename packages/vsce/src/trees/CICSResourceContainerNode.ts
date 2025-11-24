@@ -9,8 +9,9 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import { l10n, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { CICSPlexTree, TextTreeItem } from ".";
 import { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
@@ -18,7 +19,6 @@ import IconBuilder from "../utils/IconBuilder";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
 import { ViewMore } from "./ViewMore";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode implements ICICSTreeNode {
   regionName?: string;
@@ -30,7 +30,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
-
 
   constructor(
     label: string | TreeItemLabel,
@@ -103,7 +102,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     let indexOfOutdatedResource = 0;
 
     const filtered = this.items.filter((itm, idx) => {
-
       // Using the resource name AND region applid as unique identifier
       const currentResName = itm.meta.getName(itm.resource);
       const currentResReg = itm.resource.attributes.eyu_cicsname;
@@ -157,8 +155,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     if (!this.regionName && !this.getFetcher()?.isCriteriaApplied()) {
-      this.children = [new TextTreeItem("Use the search button to filter resources", "applyfiltertext.")];
-      this.description = '';
+      this.children = [new TextTreeItem(l10n.t("Use the search button to filter resources"), "applyfiltertext.")];
+      this.description = "";
       this.updateDescription();
       return this.children;
     }
@@ -184,7 +182,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
           },
           r.meta.childType,
           this.regionName ? null : `(${r.resource.attributes.eyu_cicsname})`
-        ),
+        )
     );
 
     if (this.fetcher.hasMore()) {
@@ -245,6 +243,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   public getChildNodeMatchingResourceName(resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined {
-    return this.children.find((child: CICSResourceContainerNode<IResource>) => child.getContainedResourceName() === resource.meta.getName(resource.resource)) as CICSResourceContainerNode<IResource>;
+    return this.children.find(
+      (child: CICSResourceContainerNode<IResource>) => child.getContainedResourceName() === resource.meta.getName(resource.resource)
+    ) as CICSResourceContainerNode<IResource>;
   }
 }

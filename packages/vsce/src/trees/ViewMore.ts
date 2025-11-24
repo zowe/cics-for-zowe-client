@@ -9,7 +9,7 @@
  *
  */
 
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { l10n, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 
@@ -17,7 +17,7 @@ export class ViewMore extends TreeItem {
   parent: CICSResourceContainerNode<IResource>;
 
   constructor(parent: CICSResourceContainerNode<IResource>) {
-    super(`View more...`, TreeItemCollapsibleState.None);
+    super(l10n.t("View more..."), TreeItemCollapsibleState.None);
     this.parent = parent;
     this.contextValue = "viewmore.";
     this.command = {

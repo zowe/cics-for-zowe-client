@@ -11,7 +11,7 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeItemCollapsibleState, workspace } from "vscode";
+import { l10n, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   ICICSTreeNode,
@@ -21,14 +21,14 @@ import {
   LocalFileMeta,
   PipelineMeta,
   ProgramMeta,
+  RemoteFileMeta,
+  SharedTSQueueMeta,
   TaskMeta,
   TCPIPMeta,
   TransactionMeta,
+  TSQueueMeta,
   URIMapMeta,
   WebServiceMeta,
-  RemoteFileMeta,
-  SharedTSQueueMeta,
-  TSQueueMeta
 } from "../doc";
 import { getIconByStatus } from "../utils/iconUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
@@ -77,7 +77,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         this.children.push(this.buildResourceContainerNode([TransactionMeta]));
       }
       if (config.get<boolean>("LocalFile", true)) {
-        this.children.push(this.buildResourceContainerNode([LocalFileMeta, RemoteFileMeta], "Files"));
+        this.children.push(this.buildResourceContainerNode([LocalFileMeta, RemoteFileMeta], l10n.t("Files")));
       }
       if (config.get<boolean>("Task", true)) {
         this.children.push(this.buildResourceContainerNode([TaskMeta]));
@@ -104,7 +104,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
         this.children.push(this.buildResourceContainerNode([BundleMeta]));
       }
       if (config.get<boolean>("TSQueue", true)) {
-        this.children.push(this.buildResourceContainerNode([TSQueueMeta, SharedTSQueueMeta], "TS Queues"));
+        this.children.push(this.buildResourceContainerNode([TSQueueMeta, SharedTSQueueMeta], l10n.t("TS Queues")));
       }
     }
   }
@@ -148,6 +148,8 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   }
 
   public getContainerNodeForResourceType(meta: IResourceMeta<IResource>): CICSResourceContainerNode<IResource> | undefined {
-    return this.children.find((con) => con instanceof CICSResourceContainerNode && con.resourceTypes.includes(meta)) as CICSResourceContainerNode<IResource>;
+    return this.children.find(
+      (con) => con instanceof CICSResourceContainerNode && con.resourceTypes.includes(meta)
+    ) as CICSResourceContainerNode<IResource>;
   }
 }
