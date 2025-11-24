@@ -12,7 +12,7 @@ jobs:
   sonar:
     # PRs from forks do not have access to workflow secrets so Sonarqube fails.
     # Therefore we are skipping this job on forks.
-    if: github.event.repository.fork != true
+    if: contains(github.event.pull_request.head.repo.url, '/repos/zowe/cics-for-zowe-client')
     runs-on: ubuntu-latest
 
     steps:
