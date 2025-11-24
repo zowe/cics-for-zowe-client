@@ -21,7 +21,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   humanReadableNameSingular: "Task",
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `TASK=${n}`).join(" OR ");
+    return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
   getDefaultCriteria: function () {
