@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
+
 ## `3.15.0`
 
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
