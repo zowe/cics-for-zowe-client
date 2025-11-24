@@ -90,7 +90,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
       },
       {
         key: "Current Program",
-        value: resource.attributes.program,
+        value: resource.attributes.currentprog,
       },
     ];
   },

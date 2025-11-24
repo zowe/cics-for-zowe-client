@@ -18,6 +18,6 @@ export interface ITask extends IResource {
   suspendtime: string;
   suspendtype: string;
   suspendvalue: string;
+  currentprog: string;
   userid: string;
-  program: string;
 }

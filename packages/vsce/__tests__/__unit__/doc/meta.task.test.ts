@@ -32,13 +32,13 @@ describe("Task Meta", () => {
       suspendtype: "USERWAIT",
       suspendvalue: "EYU0VGEL",
       userid: "CICSUSER",
-      program: "EYU9VKEC",
+      currentprog: "EYU9VKEC",
     });
   });
 
   it("should build criteria", () => {
     const crit = TaskMeta.buildCriteria(["a", "b"]);
-    expect(crit).toEqual(`TASK=a OR TASK=b`);
+    expect(crit).toEqual(`TRANID=a OR TRANID=b`);
   });
   it("should return label", () => {
     const label = TaskMeta.getLabel(taskMock);
