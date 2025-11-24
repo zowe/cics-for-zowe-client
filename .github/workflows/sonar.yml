@@ -10,6 +10,9 @@ on:
 
 jobs:
   sonar:
+    # PRs from forks do not have access to workflow secrets so Sonarqube fails.
+    # Therefore we are skipping this job on forks.
+    if: github.event.repository.fork != true
     runs-on: ubuntu-latest
 
     steps:
