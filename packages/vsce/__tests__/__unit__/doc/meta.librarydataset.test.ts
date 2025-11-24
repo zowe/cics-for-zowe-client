@@ -29,6 +29,7 @@ describe("Library Dataset Meta", () => {
       ranking: "10",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      numdsnames: "6"
     });
     libraryDSMock = new Resource({
       dsname: "MY.DSNAME",
