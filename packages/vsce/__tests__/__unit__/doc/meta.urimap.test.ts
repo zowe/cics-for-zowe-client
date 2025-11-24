@@ -93,7 +93,7 @@ describe("URIMap Meta", () => {
         "value": "ABC",
       },
       {
-         "key": "Webservice",
+         "key": "Web Service",
          "value": "DEF",
       },
       {

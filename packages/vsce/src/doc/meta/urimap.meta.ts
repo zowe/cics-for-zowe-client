@@ -68,7 +68,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
         value: resource.attributes.pipeline,
       },
       {
-        key: "Webservice",
+        key: "Web Service",
         value: resource.attributes.webservice,
       },
       {
