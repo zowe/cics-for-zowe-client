@@ -4,14 +4,18 @@
 
 The Zowe&reg; CLI Plug-in for IBM&reg; CICS&reg; Transaction Server (formerly IBM CICS Plug-in for Zowe CLI) lets you extend Zowe CLI to interact with IBM CICS programs and transactions.
 
-- [How the plug-in works](#how-the-plug-in-works)
-- [Software requirements](#software-requirements)
-- [Installing](#installing)
-- [Building from source](#building-from-source)
-- [Creating a user profile](#creating-a-user-profile)
-- [Running tests](#running-tests)
-- [Uninstalling](#uninstalling)
-- [Contributing](#contributing)
+- [Zowe CLI Plug-in for IBM CICS Transaction Server](#zowe-cli-plug-in-for-ibm-cics-transaction-server)
+  - [How the plug-in works](#how-the-plug-in-works)
+  - [Software requirements](#software-requirements)
+  - [Installing](#installing)
+  - [Building from source](#building-from-source)
+  - [Creating a user profile](#creating-a-user-profile)
+  - [Running tests](#running-tests)
+  - [Uninstalling](#uninstalling)
+  - [Contributing](#contributing)
+    - [Tutorials](#tutorials)
+    - [Imperative CLI Framework documentation](#imperative-cli-framework-documentation)
+
 
 ## How the plug-in works
 
