@@ -9,16 +9,17 @@
  *
  */
 
+import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-  humanReadableNamePlural: "TCP/IP Services",
-  humanReadableNameSingular: "TCP/IP Service",
+  humanReadableNamePlural: l10n.t("TCP/IP Services"),
+  humanReadableNameSingular: l10n.t("TCP/IP Service"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -34,7 +35,6 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     if (resource.attributes.port) {
       label += ` [Port #${resource.attributes.port}]`;
     }
-
     return label;
   },
 
@@ -53,7 +53,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   getHighlights(resource: Resource<ITCPIP>) {
     return [
       {
-        key: "Port",
+        key: l10n.t("Port"),
         value: resource.attributes.port,
       },
     ];

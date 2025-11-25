@@ -11,14 +11,15 @@
 
 import { ISharedTSQueue } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const SharedTSQueueMeta: IResourceMeta<ISharedTSQueue> = {
   resourceName: CicsCmciConstants.CICS_CMCI_SHARED_TS_QUEUE,
-  humanReadableNamePlural: "Shared TS Queues",
-  humanReadableNameSingular: "Shared TS Queue",
+  humanReadableNamePlural: l10n.t("Shared TS Queues"),
+  humanReadableNameSingular: l10n.t("Shared TS Queue"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");
@@ -43,11 +44,11 @@ export const SharedTSQueueMeta: IResourceMeta<ISharedTSQueue> = {
   getHighlights(program: Resource<ISharedTSQueue>) {
     return [
       {
-        key: "Location",
+        key: l10n.t("Location"),
         value: program.attributes.location,
       },
       {
-        key: "Pool Name",
+        key: l10n.t("Pool Name"),
         value: program.attributes.poolname,
       },
     ];
