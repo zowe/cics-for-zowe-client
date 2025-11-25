@@ -9,9 +9,9 @@
  *
  */
 
-import { commands, ExtensionContext, ProgressLocation, window } from "vscode";
-import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
+import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { findResourceNodeInTree } from "../utils/treeUtils";
 import { TransformWebviewMessage } from "../webviews/common/vscode";
@@ -66,7 +66,7 @@ export async function executeAction(
       async (progress, token) => {
         token.onCancellationRequested(() => {});
         progress.report({
-          message: ` Refreshing ` + resource.meta.humanReadableNameSingular + ` ` + resource.meta.getName(resource.resource),
+          message: l10n.t("Refreshing {0} {1}", resource.meta.humanReadableNameSingular, resource.meta.getName(resource.resource)),
         });
         try {
           await inspectResourceCallBack(
@@ -77,10 +77,10 @@ export async function executeAction(
           );
         } catch (error) {
           window.showErrorMessage(
-            `Something went wrong while performing Refresh - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-              /(\\n\t|\\n|\\t)/gm,
-              " "
-            )}`
+            l10n.t(
+              "Something went wrong while performing Refresh - {0}",
+              JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
+            )
           );
         }
       }

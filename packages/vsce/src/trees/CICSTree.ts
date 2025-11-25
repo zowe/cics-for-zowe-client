@@ -47,7 +47,6 @@ import { CICSExtensionError } from "../errors/CICSExtensionError";
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
   constructor() {
-
     commands.registerCommand("cics-extension-for-zowe.viewMore", async (node: CICSResourceContainerNode<IResource>) => {
       await node.fetchNextPage();
       this.refresh(node);
@@ -129,7 +128,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         };
 
         const quickpick = Gui.createQuickPick();
-        const addProfilePlaceholder = "Choose user action for selected profile";
+        const addProfilePlaceholder = l10n.t("Choose user action for selected profile");
         quickpick.items = [updateCreds, editProfile, hideProfile, deleteProfile];
         quickpick.placeholder = addProfilePlaceholder;
         quickpick.ignoreFocusOut = true;
@@ -156,7 +155,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             SessionHandler.getInstance().removeProfile(updatedProfile.name);
             SessionHandler.getInstance().removeSession(updatedProfile.name);
             SessionHandler.getInstance().getSession(updatedProfile);
-            Gui.showMessage(`Credentials updated for profile ${updatedProfile.name}`);
+            Gui.showMessage(l10n.t("Credentials updated for profile {0}", updatedProfile.name));
 
             node.reset();
             this.refresh(node);
@@ -172,10 +171,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       }
     } catch (error) {
       window.showErrorMessage(
-        `Something went wrong while managing the profile - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
-          /(\\n\t|\\n|\\t)/gm,
-          " "
-        )}`
+        l10n.t(
+          "Something went wrong while managing the profile - {0}",
+          JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
+        )
       );
     }
   }
@@ -186,16 +185,14 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
    */
   async addProfile() {
     try {
-      //const allCICSProfileNames = await ProfileManagement.getProfilesCache().getNamesForType('cics');
       const configInstance = await ProfileManagement.getConfigInstance();
       const profileInfo = await ProfileManagement.getProfilesCache().getProfileInfo();
       const allCICSProfiles = profileInfo.getAllProfiles("cics");
-      // const allCICSProfiles = await ProfileManagement.getProfilesCache().getProfiles('cics');
       const allCICSProfileNames: string[] = allCICSProfiles ? (allCICSProfiles.map((profile) => profile.profName) as unknown as [string]) : [];
       // No cics profiles needed beforhand for team config method
       if (configInstance.getTeamConfig().exists || allCICSProfileNames.length > 0) {
-        const createNewConfig = "Create a New Team Configuration File";
-        const editConfig = "Edit Team Configuration File";
+        const createNewConfig = l10n.t("Create a New Team Configuration File");
+        const editConfig = l10n.t("Edit Team Configuration File");
 
         const configPick = new FilterDescriptor("\uFF0B " + createNewConfig);
         const configEdit = new FilterDescriptor("\u270F " + editConfig);
@@ -262,7 +259,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
 
     window.withProgress(
       {
-        title: "Load profile",
+        title: l10n.t("Load profile"),
         location: ProgressLocation.Notification,
         cancellable: true,
       },
@@ -270,7 +267,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         token.onCancellationRequested(() => {});
 
         progress.report({
-          message: `Loading ${profile.name}`,
+          message: l10n.t("Loading {0}", profile.name),
         });
         try {
           const configInstance = await ProfileManagement.getConfigInstance();
@@ -324,7 +321,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
               } else {
                 if (item.group) {
                   const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree, profile.profile.regionName);
-                  newPlexTree.setLabel(`${item.plexname} - ${profile.profile.regionName}`);
+                  newPlexTree.setLabel(l10n.t("{cicsplex} - {region}", { cicsplex: item.plexname, region: profile.profile.regionName }));
                   sessionTree.addPlex(newPlexTree);
                 } else {
                   //Plex
