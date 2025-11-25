@@ -45,7 +45,36 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   },
 
   getHighlights(resource: Resource<IWebService>) {
-    return [];
+    return [
+      {
+        key: "Status",
+        value: resource.attributes.state,
+      },
+      {
+        key: "WS Bind",
+        value: resource.attributes.wsbind,
+      },
+      {
+        key: "Program",
+        value: resource.attributes.program,
+      },
+      {
+        key: "Pipeline",
+        value: resource.attributes.pipeline,
+      },
+      {
+        key: "URI Map",
+        value: resource.attributes.urimap,
+      },
+      {
+        key: "Container",
+        value: resource.attributes.container,
+      },
+      {
+        key: "WSDL File",
+        value: resource.attributes.wsdlfile,
+      },
+    ];
   },
 
   async appendCriteriaHistory(criteria: string) {
