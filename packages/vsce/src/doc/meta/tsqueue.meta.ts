@@ -11,14 +11,15 @@
 
 import { ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TS_QUEUE,
-  humanReadableNamePlural: "TS Queues",
-  humanReadableNameSingular: "TS Queue",
+  humanReadableNamePlural: l10n.t("TS Queues"),
+  humanReadableNameSingular: l10n.t("TS Queue"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");
@@ -43,11 +44,11 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   getHighlights(program: Resource<ITSQueue>) {
     return [
       {
-        key: "Location",
+        key: l10n.t("Location"),
         value: program.attributes.location,
       },
       {
-        key: "Number of Items",
+        key: l10n.t("Number of Items"),
         value: program.attributes.numitems,
       },
     ];

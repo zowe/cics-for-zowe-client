@@ -9,16 +9,17 @@
  *
  */
 
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
-  humanReadableNamePlural: "Programs",
-  humanReadableNameSingular: "Program",
+  humanReadableNamePlural: l10n.t("Programs"),
+  humanReadableNameSingular: l10n.t("Program"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");
@@ -55,22 +56,21 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   getHighlights(program: Resource<IProgram>) {
     return [
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: program.attributes.status,
       },
       {
-        key: "Language",
+        key: l10n.t("Language"),
         value: program.attributes.language,
       },
       {
-        key: "Use Count",
+        key: l10n.t("Use Count"),
         value: program.attributes.usecount,
       },
       {
-        key: "Library",
+        key: l10n.t("Library"),
         value: program.attributes.library,
       },
-      
     ];
   },
 

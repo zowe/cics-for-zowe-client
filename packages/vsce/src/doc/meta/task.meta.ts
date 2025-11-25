@@ -9,16 +9,17 @@
  *
  */
 
+import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TaskMeta: IResourceMeta<ITask> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TASK,
-  humanReadableNamePlural: "Tasks",
-  humanReadableNameSingular: "Task",
+  humanReadableNamePlural: l10n.t("Tasks"),
+  humanReadableNameSingular: l10n.t("Task"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TASK=${n}`).join(" OR ");
@@ -65,7 +66,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   getHighlights(resource: Resource<ITask>) {
     return [
       {
-        key: "Transaction ID",
+        key: l10n.t("Transaction ID"),
         value: resource.attributes.tranid,
       },
     ];

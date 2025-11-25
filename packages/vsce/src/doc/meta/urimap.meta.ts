@@ -9,16 +9,17 @@
  *
  */
 
+import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 
 export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
-  humanReadableNamePlural: "URI Maps",
-  humanReadableNameSingular: "URI Map",
+  humanReadableNamePlural: l10n.t("URI Maps"),
+  humanReadableNameSingular: l10n.t("URI Map"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -56,23 +57,23 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   getHighlights(resource: Resource<IURIMap>) {
     return [
       {
-        key: "Scheme",
+        key: l10n.t("Scheme"),
         value: resource.attributes.scheme,
       },
       {
-        key: "Transaction",
+        key: l10n.t("Transaction"),
         value: resource.attributes.transaction,
       },
       {
-        key: "Pipeline",
+        key: l10n.t("Pipeline"),
         value: resource.attributes.pipeline,
       },
       {
-        key: "Web Service",
+        key: l10n.t("Web Service"),
         value: resource.attributes.webservice,
       },
       {
-        key: "Path",
+        key: l10n.t("Path"),
         value: resource.attributes.path,
       },
     ];
