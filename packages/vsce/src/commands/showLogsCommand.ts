@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ZoweExplorerApiType } from "@zowe/zowe-explorer-api";
-import { TreeView, commands, window } from "vscode";
+import { TreeView, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
 import { doesProfileSupportConnectionType, findRelatedZosProfiles, promptUserForProfile, toArray } from "../utils/commandUtils";
@@ -45,7 +45,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node: CICSRegionTree) => {
     const selectedRegion = node ?? treeview.selection[0];
     if (!selectedRegion) {
-      window.showErrorMessage(`No region selected`);
+      window.showErrorMessage(l10n.t("No region selected"));
       return;
     }
     CICSLogger.debug(`Showing region logs for region ${selectedRegion.getRegionName()}`);
@@ -53,13 +53,15 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
     const jobid = await getJobIdForRegion(selectedRegion);
     CICSLogger.debug(`Job ID for region: ${jobid}`);
     if (!jobid) {
-      window.showErrorMessage(`Could not find Job ID for region ${selectedRegion.region.cicsname}.`);
+      window.showErrorMessage(l10n.t("Could not find Job ID for region {0}.", selectedRegion.region.cicsname));
       return;
     }
 
     const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
     // do not include the FTP profile because it doesn't support spools for running jobs.
-    const zosProfiles = allProfiles.filter((element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes));
+    const zosProfiles = allProfiles.filter(
+      (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes)
+    );
 
     let chosenProfileName: string;
 
@@ -72,7 +74,7 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       chosenProfileName = await promptUserForProfile(zosProfiles);
       CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
       if (chosenProfileName === null) {
-        window.showErrorMessage("Could not find any profiles that will access JES (for instance z/OSMF).");
+        window.showErrorMessage(l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
         return;
       } else if (chosenProfileName === undefined) {
         // the user cancelled the quick pick
