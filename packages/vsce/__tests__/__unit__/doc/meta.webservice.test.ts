@@ -26,6 +26,13 @@ describe("WebService Meta", () => {
       eyu_cicsname: "MYREG",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      state: "INSERVICE",
+      wsbind: "/a/b/c",
+      program: "RAJ02222",
+      pipeline: "RAJ02222",
+      urimap: "$635396",
+      container: "DFHWS-DATA",
+      wsdlfile: "abc"
     });
   });
 
@@ -54,7 +61,36 @@ describe("WebService Meta", () => {
 
   it("should return highlights", () => {
     const highlights = WebServiceMeta.getHighlights(webserviceMock);
-    expect(highlights).toEqual([]);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "INSERVICE",
+      },
+      {
+        key: "WS Bind",
+        value: "/a/b/c",
+      },
+      {
+        key: "Program",
+        value: "RAJ02222",
+      },
+      {
+        key: "Pipeline",
+        value: "RAJ02222",
+      },
+      {
+        key: "URI Map",
+        value: "$635396",
+      },
+      {
+        key: "Container",
+        value: "DFHWS-DATA",
+      },
+      {
+        key: "WSDL File",
+        value: "abc",
+      }
+    ]);
   });
 
   it("should append criteria history", async () => {
