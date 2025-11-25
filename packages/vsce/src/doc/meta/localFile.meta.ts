@@ -39,7 +39,7 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
 
     if (localFile.attributes.openstatus.trim().toLowerCase() !== "open") {
       const status = localFile.attributes.openstatus.trim();
-      label += ` :(${status.charAt(0).toUpperCase()}${status.slice(1)})`;
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
     return label;
