@@ -38,12 +38,14 @@ export class CICSExtensionError extends Error {
         ${resourceName} with API: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
         Please refer to the IBM documentation for resp code details`;
       } else {
-        this.cicsExtensionError.errorMessage = errorMessage ||
-          `The CMCI REST API request failed. ` +
-          `Response details: API_FUNCTION: ${api_function},  ` +
-          `RESP: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
-          `RESP2: ${resultSummary.api_response2} (${resultSummary.api_response2_alt}). ` +
-          `Please refer to the IBM documentation for resp code details`;
+        this.cicsExtensionError.errorMessage =
+          errorMessage ||
+          `The CMCI REST API request failed` +
+            (resourceName ? ` for resources: ${resourceName}. ` : `. `) +
+            `Response details: API_FUNCTION: ${api_function}, ` +
+            `RESP: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
+            `RESP2: ${resultSummary.api_response2} (${resultSummary.api_response2_alt}). ` +
+            `Please refer to the IBM documentation for resp code details`;
       }
     } else if (error instanceof imperative.RestClientError) {
       const errorCode = error.mDetails.errorCode || error.errorCode;

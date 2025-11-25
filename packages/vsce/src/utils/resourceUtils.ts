@@ -269,7 +269,11 @@ export function buildUserAgentHeader(): { "User-Agent": string; } {
 
 function getResourceNameFromCriteria(criteria: string) {
   if (criteria) {
-    const index = criteria?.indexOf("=");
-    return criteria.substring(index + 1);
+    const resourceNames = criteria
+      .split("OR")
+      .map((part) => part.split("=")[1]?.trim())
+      .filter(Boolean)
+      .join(", ");
+    return resourceNames;
   }
 }
