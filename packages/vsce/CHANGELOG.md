@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
+- Enhancement: Added highlights for URI maps. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 
 ## `3.15.0`
 

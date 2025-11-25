@@ -28,6 +28,9 @@ describe("URIMap Meta", () => {
       scheme: "http",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      transaction: "CJXA",
+      pipeline: "ABC",
+      webservice: "DEF",
     });
   });
 
@@ -77,6 +80,22 @@ describe("URIMap Meta", () => {
   it("should return highlights", () => {
     const highlights = URIMapMeta.getHighlights(urimapMock);
     expect(highlights).toEqual([
+      {
+        "key": "Scheme",
+         "value": "http",
+       },
+      {
+        "key": "Transaction",
+         "value": "CJXA",
+      },
+      {
+        "key": "Pipeline",
+        "value": "ABC",
+      },
+      {
+         "key": "Web Service",
+         "value": "DEF",
+      },
       {
         key: "Path",
         value: "/a/b/c",
