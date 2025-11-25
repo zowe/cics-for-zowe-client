@@ -10,51 +10,52 @@
  */
 
 import { IMessageDefinition } from "@zowe/imperative";
+import { l10n } from "vscode";
 
 export const CICSMessages: { [key: string]: IMessageDefinition } = {
   zoweExplorerNotFound: {
-    message: "Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed",
+    message: l10n.t("Zowe Explorer was not found: Please ensure Zowe Explorer v2.0.0 or higher is installed"),
   },
 
   zoweExplorerModified: {
-    message: "Zowe Explorer was modified for the CICS Extension.",
+    message: l10n.t("Zowe Explorer was modified for the CICS Extension."),
   },
 
   notInitializedCorrectly: {
-    message: "Zowe Explorer for IBM CICS Transaction Server was not initialized correctly.",
+    message: l10n.t("Zowe Explorer for IBM CICS Transaction Server was not initialized correctly."),
   },
 
   incorrectZoweExplorerVersion: {
     message:
-      `Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. ` +
-      `Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed`,
+      l10n.t(`Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API. `) +
+      l10n.t(`Please ensure Zowe Explorer v2.0.0-next.202202221200 or higher is installed`),
   },
 
   loadingResources: {
-    message: "Loading resources...",
+    message: l10n.t("Loading resources..."),
   },
 
   CICSResourceTypeNotFound: {
-    message: "CICS resource type %resource-type% not found or unsupported.",
+    message: l10n.t("CICS resource type %resource-type% not found or unsupported."),
   },
 
   CICSResourceNotFound: {
-    message: "%resource-type% %resource-name% not found in region %region-name%.",
+    message: l10n.t("%resource-type% %resource-name% not found in region %region-name%."),
   },
 
   CICSEnterResourceName: {
-    message: "Enter the name of a CICS %resource-human-readable% resource.",
+    message: l10n.t("Enter the name of a CICS %resource-human-readable% resource."),
   },
 
   CICSInvalidResourceNameLength: {
-    message: "Invalid CICS Resource name. Maximum length is %length% characters.",
+    message: l10n.t("Invalid CICS Resource name. Maximum length is %length% characters."),
   },
 
   CICSSelectResourceType: {
-    message: "Select CICS Resource Type...",
+    message: l10n.t("Select CICS Resource Type..."),
   },
 
   CICSLoadingResourceName: {
-    message: "Loading CICS resource '%name%'...",
+    message: l10n.t("Loading CICS resource '%name%'..."),
   },
 };

@@ -9,16 +9,17 @@
  *
  */
 
+import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
-  humanReadableNamePlural: "Bundle Parts",
-  humanReadableNameSingular: "Bundle Part",
+  humanReadableNamePlural: l10n.t("Bundle Parts"),
+  humanReadableNameSingular: l10n.t("Bundle Part"),
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
     let criteriaString = `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")})`;
@@ -44,8 +45,9 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
-    return `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART
-      }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
+    return `${
+      CicsCmciConstants.CICS_CMCI_BUNDLE_PART
+    }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
   getIconName: function (bundlePart: Resource<IBundlePart>): string {
@@ -65,7 +67,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   getHighlights(bundlePart: Resource<IBundlePart>) {
     return [
       {
-        key: "Bundle",
+        key: l10n.t("Bundle"),
         value: bundlePart.attributes.bundle,
       },
     ];

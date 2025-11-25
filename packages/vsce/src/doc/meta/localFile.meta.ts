@@ -9,16 +9,17 @@
  *
  */
 
+import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-  humanReadableNamePlural: "Local Files",
-  humanReadableNameSingular: "Local File",
+  humanReadableNamePlural: l10n.t("Local Files"),
+  humanReadableNameSingular: l10n.t("Local File"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");
@@ -31,22 +32,23 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   getLabel: function (localFile: Resource<ILocalFile>): string {
     let label = `${localFile.attributes.file}`;
 
-    if (localFile.attributes.enablestatus.trim().toLowerCase() === "disabled") {
-      label += " (Disabled)";
-    } else if (localFile.attributes.enablestatus.trim().toLowerCase() === "unenabled") {
-      label += " (Unenabled)";
+    if (localFile.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
+      const status = localFile.attributes.enablestatus.trim();
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
-    if (localFile.attributes.openstatus.trim().toLowerCase() === "closed") {
-      label += " (Closed)";
+    if (localFile.attributes.openstatus.trim().toLowerCase() !== "open") {
+      const status = localFile.attributes.openstatus.trim();
+      label += ` :(${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
     return label;
   },
 
   getContext: function (localFile: Resource<ILocalFile>): string {
-    return `${CicsCmciConstants.CICS_CMCI_LOCAL_FILE
-      }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
+    return `${
+      CicsCmciConstants.CICS_CMCI_LOCAL_FILE
+    }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
   },
 
   getIconName: function (localFile: Resource<ILocalFile>): string {
@@ -67,31 +69,31 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   getHighlights(resource: Resource<ILocalFile>) {
     return [
       {
-        key: "Open status",
+        key: l10n.t("Open status"),
         value: resource.attributes.openstatus,
       },
       {
-        key: "Enabled status",
+        key: l10n.t("Enabled status"),
         value: resource.attributes.enablestatus,
       },
       {
-        key: "Type",
+        key: l10n.t("Type"),
         value: resource.attributes.vsamtype,
       },
       {
-        key: "Permission",
+        key: l10n.t("Permission"),
         value: `${resource.attributes.read}, ${resource.attributes.browse}`,
       },
       {
-        key: "Key length",
+        key: l10n.t("Key length"),
         value: resource.attributes.keylength,
       },
       {
-        key: "Record size",
+        key: l10n.t("Record size"),
         value: resource.attributes.recordsize,
       },
       {
-        key: "Data set name",
+        key: l10n.t("Data set name"),
         value: resource.attributes.dsname,
       },
     ];

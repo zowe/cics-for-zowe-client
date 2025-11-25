@@ -9,17 +9,18 @@
  *
  */
 
+import { IBundle } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IBundle } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 import { BundlePartMeta } from "./bundlePart.meta";
 
 export const BundleMeta: IResourceMeta<IBundle> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE,
-  humanReadableNamePlural: "Bundles",
-  humanReadableNameSingular: "Bundle",
+  humanReadableNamePlural: l10n.t("Bundles"),
+  humanReadableNameSingular: l10n.t("Bundle"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -59,7 +60,7 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   getHighlights(bundle: Resource<IBundle>) {
     return [
       {
-        key: "Bundle Directory",
+        key: l10n.t("Bundle Directory"),
         value: bundle.attributes.bundledir,
       },
     ];

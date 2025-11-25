@@ -9,37 +9,37 @@
  *
  */
 
+import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "./jvmEndpoints.meta";
 
 export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
-  humanReadableNamePlural: "JVM Servers",
-  humanReadableNameSingular: "JVM Server",
+  humanReadableNamePlural: l10n.t("JVM Servers"),
+  humanReadableNameSingular: l10n.t("JVM Server"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
   },
 
   getDefaultCriteria() {
-    return PersistentStorage.getDefaultResourceFilter(
-      CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
-      "jvmServer"
-    );
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_JVMSERVER_RESOURCE, "jvmServer");
   },
 
   getLabel(resource: Resource<IJVMServer>): string {
     let label = `${resource.attributes.name}`;
-    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
-      label += " (Disabled)";
+
+    if (resource.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
+      const status = resource.attributes.enablestatus.trim();
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
+
     return label;
   },
-
   getContext(resource: Resource<IJVMServer>): string {
     return `${CicsCmciConstants.CICS_JVMSERVER_RESOURCE}.${resource.attributes.enablestatus.trim().toUpperCase()}.${resource.attributes.name}`;
   },
@@ -59,7 +59,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   getHighlights(resource: Resource<IJVMServer>) {
     return [
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: resource.attributes.enablestatus,
       },
     ];
