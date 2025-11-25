@@ -14,7 +14,7 @@ import { l10n } from "vscode";
 import { IResourceMeta } from "../doc";
 import { runPutResource } from "../utils/resourceUtils";
 
-export const resourceActionVerbMap: Record<string, string> = {
+export const resourceActionVerbMap = {
   DISABLE: l10n.t("Disabling"),
   ENABLE: l10n.t("Enabling"),
   CLOSE: l10n.t("Closing"),

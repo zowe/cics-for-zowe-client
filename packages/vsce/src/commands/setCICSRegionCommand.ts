@@ -31,7 +31,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
     const { profileName, regionName, cicsPlexName } = await regionUtils.getLastUsedRegion();
     const lastUsedRegionLabel =
       cicsPlexName ?
-        l10n.t("Region: {0} | CICSplex : {1} | Profile: {2}", regionName, cicsPlexName || l10n.t("NA"), profileName)
+        l10n.t("Region: {0} | CICSplex : {1} | Profile: {2}", regionName, cicsPlexName, profileName)
       : l10n.t("Region: {0} | Profile: {1}", regionName, profileName);
 
     const otherLabel = l10n.t("Other CICS Region");
