@@ -262,9 +262,7 @@ export class ProfileManagement {
           });
         }
       } catch (error) {
-        if (error instanceof CICSExtensionError) {
-          throw new CICSExtensionError({ baseError: error });
-        }
+        throw new CICSExtensionError({ baseError: error });
       }
     }
 
@@ -306,8 +304,11 @@ export class ProfileManagement {
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
-        throw new CICSExtensionError({ baseError: error });
+        if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
+          return [];
+        }
       }
+      throw new CICSExtensionError({ baseError: error });
     }
   }
 }

@@ -83,10 +83,11 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
-
-  return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [
-    buildUserAgentHeader(),
-  ]);
+  try {
+    return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [buildUserAgentHeader()]);
+  } catch (error) {
+    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+  }
 }
 
 export async function runGetCache(
@@ -116,24 +117,26 @@ export async function runGetCache(
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({baseError: error});
+      throw new CICSExtensionError({ baseError: error });
     }
   }
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
 
   const newSession = buildNewSession(profile);
-
-  return getCache(
-    newSession,
-    { cacheToken, startIndex, count, nodiscard: true, summonly: false },
-    { failOnNoData: false, useCICSCmciRestError: true },
-    [buildUserAgentHeader()]
-  );
+  try {
+    return getCache(
+      newSession,
+      { cacheToken, startIndex, count, nodiscard: true, summonly: false },
+      { failOnNoData: false, useCICSCmciRestError: true },
+      [buildUserAgentHeader()]
+    );
+  } catch (error) {
+    throw new CICSExtensionError({ baseError: error });
+  }
 }
 
 export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
-
   CICSLogger.debug(
     buildRequestLoggerString("PUT", resourceName, {
       cicsPlex,
@@ -147,15 +150,18 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   const profile = SessionHandler.getInstance().getProfile(profileName);
   const session = SessionHandler.getInstance().getSession(profile);
 
-
   try {
     // First attempt
     if (!session.ISession?.tokenValue) {
       AuthOrder.makingRequestForToken(session.ISession);
     }
-    return await putResource(session, buildResourceParms(resourceName, regionName, cicsPlex, params)
-      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
-    
+    return await putResource(
+      session,
+      buildResourceParms(resourceName, regionName, cicsPlex, params),
+      [buildUserAgentHeader()],
+      requestBody,
+      buildRequestOptions()
+    );
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
@@ -166,8 +172,17 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
 
-  return putResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params)
-      , [buildUserAgentHeader()], requestBody, buildRequestOptions());
+  try {
+    return putResource(
+      newSession,
+      buildResourceParms(resourceName, regionName, cicsPlex, params),
+      [buildUserAgentHeader()],
+      requestBody,
+      buildRequestOptions()
+    );
+  } catch (error) {
+    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+  }
 }
 
 export const buildResourceParms = (resourceName: string, regionName: string, cicsplexName: string, params: IReqParams) => {
