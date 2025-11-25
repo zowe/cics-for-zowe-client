@@ -171,8 +171,10 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       }
     } catch (error) {
       window.showErrorMessage(
-        l10n.t("Something went wrong while managing the profile - {0}"),
-        JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
+        l10n.t(
+          "Something went wrong while managing the profile - {0}",
+          JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
+        )
       );
     }
   }

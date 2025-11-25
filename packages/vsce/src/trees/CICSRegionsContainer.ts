@@ -42,7 +42,7 @@ export class CICSRegionsContainer extends TreeItem {
 
     this.children = [];
     this.activeFilter = pattern;
-    this.setLabel(this.activeFilter === "*" ? l10n.t("Regions") : l10n.t("Regions {0}", this.activeFilter));
+    this.setLabel(this.activeFilter === "*" ? l10n.t("Regions") : l10n.t("Regions ({0})", this.activeFilter));
     await window.withProgress(
       {
         title: l10n.t("Filtering regions"),

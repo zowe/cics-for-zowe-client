@@ -38,7 +38,7 @@
   "Project: in the current working directory": "Project: in the current working directory",
   "Use the search button to filter resources": "Use the search button to filter resources",
   "Regions": "Regions",
-  "Regions {0}": "Regions {0}",
+  "Regions ({0})": "Regions ({0})",
   "Filtering regions": "Filtering regions",
   "No regions found for {0}": "No regions found for {0}",
   "Regions [{0}/{1}]": "Regions [{0}/{1}]",
