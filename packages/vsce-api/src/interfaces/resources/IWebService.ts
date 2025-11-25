@@ -13,4 +13,11 @@ import { IResource } from "./IResource";
 
 export interface IWebService extends IResource {
   name: string;
+  state: string;
+  wsbind: string;
+  program: string;
+  pipeline: string;
+  urimap: string;
+  container: string;
+  wsdlfile: string;
 }
