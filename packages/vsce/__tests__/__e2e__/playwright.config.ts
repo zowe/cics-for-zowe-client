@@ -15,7 +15,7 @@ export default defineConfig({
   testDir: "./specs/",
   fullyParallel: false,
   reporter: "list",
-  timeout: 30 * 1000,
+  timeout: 10 * 1000,
   expect: {
     timeout: 5000,
   },
