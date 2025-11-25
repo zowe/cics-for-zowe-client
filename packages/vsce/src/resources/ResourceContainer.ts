@@ -16,7 +16,7 @@ import { Resource } from "./Resource";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -209,12 +209,17 @@ export class ResourceContainer {
    * @returns List of ContainedResources
    */
   async fetchNextPage(): Promise<IContainedResource<IResource>[]> {
-    await this.ensureSummaries();
-    const available = this.getAvailableResourceTypes();
-    if (available.length === 0) {
-      return [];
+    let allocations = new Map();
+    try {
+      await this.ensureSummaries();
+      const available = this.getAvailableResourceTypes();
+      if (available.length === 0) {
+        return [];
+      }
+      allocations = this.calculateAllocations(available, this.pageSize);
+    } catch (error) {
+      CICSErrorHandler.handleCMCIRestError(error);
     }
-    const allocations = this.calculateAllocations(available, this.pageSize);
     return this.fetchRecordsForAllocations(allocations);
   }
 

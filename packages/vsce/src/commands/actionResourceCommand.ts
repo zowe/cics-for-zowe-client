@@ -13,6 +13,7 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSResourceContainerNode } from "../trees";
 import { CICSTree } from "../trees/CICSTree";
 import { pollForCompleteAction } from "../utils/resourceUtils";
@@ -74,15 +75,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
         } catch (error) {
-          const prefix = l10n.t("Something went wrong when performing a {0}", action.toLowerCase());
-          const details = (() => {
-            try {
-              return JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\n\t|\n|\t)/gm, " ");
-            } catch (e) {
-              return String(error);
-            }
-          })();
-          window.showErrorMessage(`${prefix} - ${details}`);
+          CICSErrorHandler.handleCMCIRestError(error);
         }
       }
       nodesToRefresh.forEach((v) => {
