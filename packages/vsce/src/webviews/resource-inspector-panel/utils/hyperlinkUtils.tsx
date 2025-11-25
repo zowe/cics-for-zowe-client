@@ -10,47 +10,35 @@
  */
 
 import * as React from "react";
-import { IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-import * as vscode from "../../common/vscode";
+import { postVscMessage } from "../../common/vscode";
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [/^\/\/DD:.+/];
 
-
 /**
- * Check if a value matches any hyperlinkable pattern (//DD:*, USS paths, dataset names, etc.)
+ * Check if a value matches any hyperlinkable pattern (//DD:* etc.)
  * @param value - The string value to check
  * @returns true if the value matches any hyperlinkable pattern, false otherwise
  */
 export const isHyperlinkableValue = (value: string): boolean => {
-  return HYPERLINKABLE_PATTERNS.some(pattern => pattern.test(value));
+  return HYPERLINKABLE_PATTERNS.some((pattern) => pattern.test(value));
 };
 
 /**
  * Render a value as a hyperlink if it matches a hyperlinkable pattern
  * @param value - The string value to render
- * @param resourceContext - The resource context containing profile, region, and plex information
- * @param onClickHandler - Optional click handler for the hyperlink
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (
-  value: string,
-  resourceContext?: IResourceProfileNameInfo,
-  onClickHandler?: (value: string, resourceContext?: IResourceProfileNameInfo) => void
-): React.ReactNode => {
+export const renderHyperlinkableValue = (value: string): React.ReactNode => {
   if (isHyperlinkableValue(value)) {
     return (
       <a
-        href="#"
+        href="javascript:void(0)"
         className="hyperlinkable-value"
         onClick={(e) => {
           e.preventDefault();
-          if (onClickHandler) {
-            onClickHandler(value, resourceContext);
-          } else if (resourceContext) {
-            (vscode.postVscMessage as any)({
-              command: 'showLogsForHyperlink'
-            });
-          }
+          postVscMessage({
+            command: "showLogsForHyperlink",
+          });
         }}
       >
         {value}

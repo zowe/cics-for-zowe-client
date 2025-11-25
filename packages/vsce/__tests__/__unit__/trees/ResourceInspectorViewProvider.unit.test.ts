@@ -21,6 +21,18 @@ jest.mock("../../../src/commands/showLogsCommand", () => ({
   getJobIdForRegion: getJobIdForRegionMock,
 }));
 
+const runGetResourceMock = jest.fn();
+jest.mock("../../../src/utils/resourceUtils", () => ({
+  runGetResource: runGetResourceMock,
+}));
+
+const toArrayMock = jest.fn((val) => (Array.isArray(val) ? val : [val]));
+const findProfileAndShowJobSpoolMock = jest.fn();
+jest.mock("../../../src/utils/commandUtils", () => ({
+  toArray: toArrayMock,
+  findProfileAndShowJobSpool: findProfileAndShowJobSpoolMock,
+}));
+
 jest.mock("../../../src/utils/CICSLogger", () => ({
   CICSLogger: {
     debug: jest.fn(),
@@ -28,6 +40,19 @@ jest.mock("../../../src/utils/CICSLogger", () => ({
     error: jest.fn(),
   },
 }));
+
+const getProfileMock = jest.fn();
+jest.mock("../../../src/resources", () => {
+  const actual = jest.requireActual("../../../src/resources");
+  return {
+    ...actual,
+    SessionHandler: {
+      getInstance: jest.fn().mockReturnValue({
+        getProfile: getProfileMock,
+      }),
+    },
+  };
+});
 
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import * as vscode from "vscode";
@@ -38,9 +63,6 @@ import { PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { Uri, WebviewView, ExtensionContext } from "vscode";
 import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
-import { CICSTree } from "../../../src/trees/CICSTree";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
-import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -160,153 +182,114 @@ describe("Resource Inspector View provider", () => {
   });
 
   describe("handleShowLogsForHyperlink", () => {
-    it("should call showRegionLogs command when region node and jobId are found", async () => {
+    beforeEach(() => {
+      getProfileMock.mockReturnValue({
+        name: "MYPROF",
+        host: "example.com",
+        port: 1234,
+      });
+    });
+
+    it("should call findProfileAndShowJobSpool when region data is found", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
       ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
-      const mockRegionNode = {
-        getRegionName: jest.fn().mockReturnValue("MYREG"),
-      } as unknown as CICSRegionTree;
+      const mockRegionData = {
+        jobid: "JOB12345",
+        jobname: "TESTJOB",
+      };
 
-      const mockSessionNode = {
-        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
-        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
-      } as unknown as CICSSessionTree;
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {
+            cicsregion: [mockRegionData],
+          },
+        },
+      });
 
-      const mockCicsTree = {
-        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
-      } as unknown as CICSTree;
-
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = mockCicsTree;
-
-      getJobIdForRegionMock.mockResolvedValue("JOB12345");
-      executeCommandMock.mockClear();
+      findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
       await ri.handleShowLogsForHyperlink();
 
-      expect(getJobIdForRegionMock).toHaveBeenCalledWith(mockRegionNode);
-      expect(executeCommandMock).toHaveBeenCalledWith("cics-extension-for-zowe.showRegionLogs", mockRegionNode);
+      expect(runGetResourceMock).toHaveBeenCalledWith({
+        profileName: "MYPROF",
+        resourceName: "CICSRegion",
+        regionName: "MYREG",
+        cicsPlex: "MYPLEX",
+      });
+      expect(findProfileAndShowJobSpoolMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "MYPROF",
+          host: "example.com",
+          port: 1234,
+        }),
+        "JOB12345",
+        "MYREG"
+      );
     });
 
-    it("should not call showRegionLogs command when jobId is not found", async () => {
-      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
-
-      const mockRegionNode = {
-        getRegionName: jest.fn().mockReturnValue("MYREG"),
-      } as unknown as CICSRegionTree;
-
-      const mockSessionNode = {
-        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
-        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
-      } as unknown as CICSSessionTree;
-
-      const mockCicsTree = {
-        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
-      } as unknown as CICSTree;
-
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = mockCicsTree;
-
-      getJobIdForRegionMock.mockResolvedValue(null);
-      executeCommandMock.mockClear();
-
-      // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
-
-      expect(getJobIdForRegionMock).toHaveBeenCalledWith(mockRegionNode);
-      expect(executeCommandMock).not.toHaveBeenCalled();
-    });
-
-    it("should not call showRegionLogs command when region node is not found", async () => {
-      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
-
-      const mockSessionNode = {
-        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
-        getRegionNodeFromName: jest.fn().mockReturnValue(undefined),
-      } as unknown as CICSSessionTree;
-
-      const mockCicsTree = {
-        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
-      } as unknown as CICSTree;
-
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = mockCicsTree;
-
-      executeCommandMock.mockClear();
-      getJobIdForRegionMock.mockClear();
-
-      // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
-
-      expect(getJobIdForRegionMock).not.toHaveBeenCalled();
-      expect(executeCommandMock).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("findRegionNode", () => {
-    it("should find region node using resourceContext", async () => {
+    it("should show error message when region records are empty", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
       ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
-      const mockRegionNode = {
-        getRegionName: jest.fn().mockReturnValue("MYREG"),
-      } as unknown as CICSRegionTree;
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {
+            cicsregion: [],
+          },
+        },
+      });
 
-      const mockSessionNode = {
-        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
-        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
-      } as unknown as CICSSessionTree;
-
-      const mockCicsTree = {
-        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
-      } as unknown as CICSTree;
-
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = mockCicsTree;
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      const result = await ri.findRegionNode("MYREG", "MYPLEX");
+      await ri.handleShowLogsForHyperlink();
 
-      expect(result).toBe(mockRegionNode);
-      expect(mockSessionNode.getRegionNodeFromName).toHaveBeenCalledWith("MYREG", "MYPLEX");
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find region data and job id for region MYREG to show logs.");
+      expect(findProfileAndShowJobSpoolMock).not.toHaveBeenCalled();
     });
 
-    it("should return undefined when profile node is not found", async () => {
+    it("should show error message when region records are not found", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "WRONGPROF", regionName: "MYREG" });
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
-      const mockSessionNode = {
-        getProfile: jest.fn().mockReturnValue({ name: "MYPROF" }),
-      } as unknown as CICSSessionTree;
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {},
+        },
+      });
 
-      const mockCicsTree = {
-        getChildren: jest.fn().mockResolvedValue([mockSessionNode]),
-      } as unknown as CICSTree;
-
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = mockCicsTree;
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      const result = await ri.findRegionNode("MYREG");
+      await ri.handleShowLogsForHyperlink();
 
-      expect(result).toBeUndefined();
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find any record for region MYREG to show logs.");
+      expect(findProfileAndShowJobSpoolMock).not.toHaveBeenCalled();
     });
 
-    it("should return undefined when cicsTree is not available", async () => {
+    it("should show error message when runGetResource throws an error", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG" });
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
-      // @ts-ignore - setting private property for test
-      ri.cicsTree = undefined;
+      const errorMessage = "API connection failed";
+      runGetResourceMock.mockRejectedValue(new Error(errorMessage));
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      const result = await ri.findRegionNode("MYREG");
+      await ri.handleShowLogsForHyperlink();
 
-      expect(result).toBeUndefined();
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(`Failed to show logs for region MYREG: ${errorMessage}`);
+      expect(findProfileAndShowJobSpoolMock).not.toHaveBeenCalled();
     });
   });
+
 });

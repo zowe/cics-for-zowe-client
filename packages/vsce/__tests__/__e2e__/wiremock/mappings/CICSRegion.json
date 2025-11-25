@@ -3,11 +3,11 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX1/"
+        "url": "/CICSSystemManagement/CICSRegion/MYPLEX1/MYREG1"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSManagedRegion/records.xml",
+        "bodyFileName": "CICSRegion/fetch-region-records.xml",
         "headers": {
           "Content-Type": "text/xml"
         }

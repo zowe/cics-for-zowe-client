@@ -10,9 +10,10 @@
  */
 
 import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, window, l10n } from "vscode";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
@@ -21,9 +22,9 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 import { CICSTree } from ".";
-import { getJobIdForRegion } from "../commands/showLogsCommand";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
+import { runGetResource } from "../utils/resourceUtils";
+import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -220,49 +221,38 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   /**
    * Handles the showLogsForHyperlink request from the webview
-   * Fetches job ID and calls showRegionLogs command
+   * Fetches region data directly using runGetResource and calls showRegionLogs command
    */
   private async handleShowLogsForHyperlink() {
-    const { regionName, cicsplexName } = this.resourceContext;
+    const { regionName, cicsplexName, profileName } = this.resourceContext;
     try {
-      const regionNode = await this.findRegionNode(regionName, cicsplexName);
-      if (regionNode) {
-        const jobId = await getJobIdForRegion(regionNode);
-        if (jobId) {
-          commands.executeCommand("cics-extension-for-zowe.showRegionLogs", regionNode);
-        } else {
-          CICSLogger.debug(`Could not find Job ID for region ${regionName}`);
-        }
+      const { response } = await runGetResource({
+        profileName,
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+        regionName,
+        cicsPlex: cicsplexName,
+      });
+
+      if (response.records?.cicsregion) {
+        const regionRecords = toArray(response.records.cicsregion);
+        if (regionRecords.length > 0) {
+          const regionData = regionRecords[0];
+          if(regionData && regionData.jobid){
+              const jobid = regionData.jobid;  
+              const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
+              await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
+            }
+          } else {
+              CICSLogger.debug(`Empty region records array for ${regionName}`);
+              window.showErrorMessage(l10n.t("Could not find region data and job id for region {0} to show logs.", regionName));
+          }
       } else {
-        CICSLogger.debug(`Region node not found for ${regionName}`);
+          CICSLogger.debug(`No region records found for ${regionName}`);
+          window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
       }
     } catch (error) {
-      CICSLogger.error(`Error showing logs for hyperlink: ${error.message}`);
-    }
-  }
-
-  /**
-   * Finds the CICSRegionTree node for the given region using resourceContext
-   */
-  private async findRegionNode(regionName: string, cicsplexName?: string): Promise<CICSRegionTree | undefined> {
-    if (!this.cicsTree) {
-      CICSLogger.debug('No CICS tree available');
-      return undefined;
-    }
-    // Navigate tree using resourceContext: profileName -> cicsplexName -> regionName
-    const sessionNodes = await this.cicsTree.getChildren();
-    const profileNode = sessionNodes?.find(
-      (sessionNode) => sessionNode.getProfile().name === this.resourceContext.profileName
-    );
-    if (!profileNode) {
-      CICSLogger.debug(`Profile node not found for: ${this.resourceContext.profileName}`);
-      return undefined;
-    }
-    const regionNode = profileNode.getRegionNodeFromName(regionName, cicsplexName);
-    if (!regionNode) {
-      CICSLogger.debug(`Region node not found for: ${regionName}`);
-      return undefined;
-    }
-    return regionNode;
+        CICSLogger.error(`Error showing logs for hyperlink: ${error.message}`);
+        window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+      }
   }
 }

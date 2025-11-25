@@ -157,6 +157,43 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
 }
 
 /**
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param jobid - The job ID to show logs for
+ * @param regionName - The region name (used for logging and error messages)
+ * @returns Promise that resolves when the command is executed or rejects on error
+ */
+export async function findProfileAndShowJobSpool(
+  cicsProfile: IProfileLoaded,
+  jobid: string,
+  regionName: string
+): Promise<void> {
+  const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
+  // do not include the FTP profile because it doesn't support spools for running jobs.
+  const zosProfiles = allProfiles.filter(
+    (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes)
+  );
+
+  let chosenProfileName: string;
+
+  // find profiles that match by base profile or hostname, and have valid credentials
+  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
+  if (matchingZosProfile) {
+    chosenProfileName = matchingZosProfile.name;
+  } else {
+    chosenProfileName = await promptUserForProfile(zosProfiles);
+    CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
+    if (chosenProfileName === null) {
+      vscode.window.showErrorMessage(vscode.l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
+      return;
+    } else if (chosenProfileName === undefined) {
+      return;
+    }
+  }
+  CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${regionName}: ${chosenProfileName} / ${jobid}`);
+  vscode.commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
+}
+
+/**
  * Returns an array of selected nodes in the current treeview.
  * @param treeview - Tree View of the required view
  * @param instanceOf - Instance of the node to include in the selection

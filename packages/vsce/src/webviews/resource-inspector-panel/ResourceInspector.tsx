@@ -90,7 +90,7 @@ const ResourceInspector = () => {
             <tr className="resource-info-rows">
               {resourceInfo.highlights.map((highlight) => (
                 <td key={highlight.key} className="resource-info-row">
-                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{renderHyperlinkableValue(highlight.value, resourceInfo?.resourceContext)}</span>
+                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{renderHyperlinkableValue(highlight.value)}</span>
                 </td>
               ))}
             </tr>
@@ -129,7 +129,7 @@ const ResourceInspector = () => {
               .map(([key, value]) => (
                 <tr key={key}>
                   <td className="resource-attr-key">{key.toUpperCase()}</td>
-                  <td className="resource-attr-value">{renderHyperlinkableValue(value, resourceInfo?.resourceContext)}</td>
+                  <td className="resource-attr-value">{renderHyperlinkableValue(value)}</td>
                 </tr>
               ))}
         </tbody>
