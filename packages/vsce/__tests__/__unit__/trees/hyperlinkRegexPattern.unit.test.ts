@@ -9,13 +9,14 @@
  *
  */
 
-// Regex pattern to match //DD: followed by any characters
-const DD_PATTERN = /^\/\/DD:.+/;
+// Mock the vscode module to avoid acquireVsCodeApi error
+jest.mock("../../../src/webviews/common/vscode", () => ({
+  postVscMessage: jest.fn(),
+  addVscMessageListener: jest.fn(),
+  removeVscMessageListener: jest.fn(),
+}));
 
-// Function to check if a value matches the hyperlink pattern
-function isHyperlinkableValue(value: string): boolean {
-  return DD_PATTERN.test(value);
-}
+import { isHyperlinkableValue } from "../../../src/webviews/resource-inspector-panel/utils/hyperlinkUtils";
 
 describe("Hyperlink Regex Pattern Tests", () => {
   describe("//DD: pattern matching", () => {
