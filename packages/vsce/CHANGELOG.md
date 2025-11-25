@@ -7,9 +7,9 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Improved error message in notification [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 - Enhancement: Added highlights for URI maps, Web Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Enable job values to appear as hyperlinks and, on click, direct the user to the matching job in the Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
 
 ## `3.15.0`
-
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
 - Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
 - Enhancement: Show Bundle command for CICS Bundle to navigate through bundle parts in the USS tree[#474](https://github.com/zowe/cics-for-zowe-client/issues/474)

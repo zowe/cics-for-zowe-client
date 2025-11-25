@@ -28,6 +28,7 @@ export const constants = {
   BUNDLE_1_USS_PATH: "/u/expauto/bundles/test_plugin_1.0.1",
   LOCAL_FILE_1_NAME: "LOCFILE1",
   REMOTE_FILE_1_NAME: "REMFILE1",
+  JVM_SERVER_NAME:"MYJVM1",
 };
 
 export const getTree = (page: Page, exactText: string) => {

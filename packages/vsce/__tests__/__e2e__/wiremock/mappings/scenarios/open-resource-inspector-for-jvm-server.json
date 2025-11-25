@@ -1,0 +1,53 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Open Resource Inspector for JVM Server",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "fetched-jvm-servers-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/MYREG1?CRITERIA=(name%3DMYJVM1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMServer/jvmServer/jvm-server-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Resource Inspector for JVM Server",
+      "requiredScenarioState": "fetched-jvm-servers-summary",
+      "newScenarioState": "fetched-jvm-server-records",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMServer/jvmServer/jvm-server-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Resource Inspector for JVM Server",
+      "requiredScenarioState": "fetched-jvm-server-records",
+      "newScenarioState": "removed-jvm-server-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMServer/jvmServer/jvm-server-remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
