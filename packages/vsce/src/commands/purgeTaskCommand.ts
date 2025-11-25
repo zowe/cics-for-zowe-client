@@ -34,17 +34,17 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    const PURGE_CHOICES = [
-      { id: "PURGE", label: l10n.t("Purge") },
-      { id: "FORCEPURGE", label: l10n.t("Force Purge") },
-    ];
+    const PURGE_CHOICES: Record<string, string> = {
+      [l10n.t("Purge")]: "PURGE",
+      [l10n.t("Force Purge")]: "FORCEPURGE",
+    };
 
-    const picked = await window.showInformationMessage(l10n.t("Choose one of the following options for Purge"), ...PURGE_CHOICES.map((c) => c.label));
+    const picked = await window.showInformationMessage(l10n.t("Choose one of the following options for Purge"), ...Object.keys(PURGE_CHOICES));
     if (!picked) {
       return;
     }
 
-    const purgeType = PURGE_CHOICES.find((c) => c.label === picked)?.id ?? "PURGE";
+    const purgeType = PURGE_CHOICES[picked] ?? "PURGE";
 
     window.withProgress(
       {
