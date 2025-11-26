@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, extensions, window, workspace } from "vscode";
+import { commands, extensions, l10n, window, workspace } from "vscode";
 
 export async function openConfigFile(filePath: string): Promise<void> {
   const document = await workspace.openTextDocument(filePath);
@@ -23,8 +23,8 @@ export function getZoweExplorerVersion(): string | undefined {
 
 export function openSettingsForHiddenResourceType(msg: string, resourceType: string): boolean {
   const config = workspace.getConfiguration("zowe.cics.resources");
-  const openSettings = "Open Settings";
-  const cancel = "Cancel";
+  const openSettings = l10n.t("Open Settings");
+  const cancel = l10n.t("Cancel");
 
   if (!config.get<boolean>(resourceType)) {
     window.showInformationMessage(msg, openSettings, cancel).then(async (select) => {
