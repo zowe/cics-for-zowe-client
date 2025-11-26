@@ -60,8 +60,16 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   getHighlights(resource: Resource<ILibrary>) {
     return [
       {
+        key: l10n.t("Status"),
+        value: resource.attributes.enablestatus,
+      },
+      {
         key: l10n.t("Ranking"),
         value: resource.attributes.ranking,
+      },
+      {
+        key: l10n.t("Number of DS Names"),
+        value: resource.attributes.numdsnames,
       },
     ];
   },
