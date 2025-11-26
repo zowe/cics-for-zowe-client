@@ -16,7 +16,47 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   },
 }));
 
+const getJobIdForRegionMock = jest.fn();
+jest.mock("../../../src/commands/showLogsCommand", () => ({
+  getJobIdForRegion: getJobIdForRegionMock,
+}));
+
+const runGetResourceMock = jest.fn();
+jest.mock("../../../src/utils/resourceUtils", () => ({
+  runGetResource: runGetResourceMock,
+}));
+
+const toArrayMock = jest.fn((val) => (Array.isArray(val) ? val : [val]));
+jest.mock("../../../src/utils/commandUtils", () => ({
+  toArray: toArrayMock,
+}));
+
+jest.mock("../../../src/utils/CICSLogger", () => ({
+  CICSLogger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+const getProfileMock = jest.fn();
+jest.mock("../../../src/resources", () => {
+  const actual = jest.requireActual("../../../src/resources");
+  return {
+    ...actual,
+    SessionHandler: {
+      getInstance: jest.fn().mockReturnValue({
+        getProfile: getProfileMock,
+      }),
+    },
+  };
+});
+
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import * as vscode from "vscode";
+
+const executeCommandMock = jest.fn();
+jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
 import { PipelineMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import { Uri, WebviewView, ExtensionContext } from "vscode";
@@ -135,4 +175,111 @@ describe("Resource Inspector View provider", () => {
     expect(ri.resource).toEqual(myResource);
     expect(sendSpy).toHaveBeenCalledTimes(1);
   });
+
+  describe("handleShowLogsForHyperlink", () => {
+    beforeEach(() => {
+      getProfileMock.mockReturnValue({
+        name: "MYPROF",
+        host: "example.com",
+        port: 1234,
+      });
+    });
+
+    it("should call showRegionLogs command when region data is found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      const mockRegionData = {
+        jobid: "JOB12345",
+        jobname: "TESTJOB",
+      };
+
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {
+            cicsregion: [mockRegionData],
+          },
+        },
+      });
+
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(runGetResourceMock).toHaveBeenCalledWith({
+        profileName: "MYPROF",
+        resourceName: "CICSRegion",
+        regionName: "MYREG",
+        cicsPlex: "MYPLEX",
+      });
+      expect(executeCommandMock).toHaveBeenCalledWith(
+        "cics-extension-for-zowe.showRegionLogs",
+        expect.any(Object)
+      );
+    });
+
+    it("should show error message when region records are empty", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {
+            cicsregion: [],
+          },
+        },
+      });
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find region MYREG to show logs.");
+      expect(executeCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should show error message when region records are not found", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      runGetResourceMock.mockResolvedValue({
+        response: {
+          records: {},
+        },
+      });
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find region MYREG to show logs.");
+      expect(executeCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should show error message when runGetResource throws an error", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
+
+      const errorMessage = "API connection failed";
+      runGetResourceMock.mockRejectedValue(new Error(errorMessage));
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      executeCommandMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowLogsForHyperlink();
+
+      expect(runGetResourceMock).toHaveBeenCalled();
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(`Failed to show logs for region MYREG: ${errorMessage}`);
+      expect(executeCommandMock).not.toHaveBeenCalled();
+    });
+  });
+
 });

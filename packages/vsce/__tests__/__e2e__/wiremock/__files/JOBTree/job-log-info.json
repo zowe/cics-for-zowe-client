@@ -1,0 +1,17 @@
+[
+  {
+    "owner": "EXPAUTO",
+    "phase": 14,
+    "subsystem": "JES2",
+    "phase-name": "Job is actively executing",
+    "job-correlator": "J0000001WINMVS2CE1CD1241.......:",
+    "type": "JOB",
+    "url": "http://localhost:8080/zosmf/restjobs/jobs/J0000001WINMVS2CE1CD1241.......%3A",
+    "jobid": "jobid1",
+    "class": "A",
+    "files-url": "http://localhost:8080/zosmf/restjobs/jobs/J0000001WINMVS2CE1CD1241.......%3A/files",
+    "jobname": "job1",
+    "status": "ACTIVE",
+    "retcode": null
+  }
+]

@@ -23,10 +23,10 @@ export function createConfig(testType: string, title: string): Config {
     testTimeout: 600000,
     displayName: title,
     modulePathIgnorePatterns: ["__tests__/__snapshots__/"],
-    transform: { ".(ts)": "ts-jest" },
+    transform: { ".(ts|tsx)": "ts-jest" },
     transformIgnorePatterns: [ "^.+\\.cjs$", "^.+\\.js$", "^.+\\.json$" ],
     testRegex: "(test|spec)\\.ts$",
-    moduleFileExtensions: ["ts", "js", "json"],
+    moduleFileExtensions: ["ts", "tsx", "js", "json"],
     testPathIgnorePatterns: ["<rootDir>/__tests__/__results__", `.*/__${isUnit ? "system" : "unit"}__/.*`, "<rootDir>/__tests__/__e2e__"],
     testEnvironment: "node",
     collectCoverage: isUnit,
@@ -42,19 +42,19 @@ export function createConfig(testType: string, title: string): Config {
     reporters: [
       "default",
       ["jest-junit", {
-        outputFile: `__tests__/__results__/${testType}/junit.xml`,
-        ancestorSeparator: " > ",
-        classNameTemplate: `${testType}.{classname}`,
+          outputFile: `__tests__/__results__/${testType}/junit.xml`,
+          ancestorSeparator: " > ",
+          classNameTemplate: `${testType}.{classname}`,
         title: "{title}"
       }],
       ["jest-stare", {
-        resultDir: `__tests__/__results__/${testType}/jest-stare`,
-        coverageLink: "../coverage/lcov-report/index.html",
+          resultDir: `__tests__/__results__/${testType}/jest-stare`,
+          coverageLink: "../coverage/lcov-report/index.html",
         resultHtml: "index.html"
       }],
       ["jest-html-reporter", {
-        pageTitle: title,
-        outputPath: `__tests__/__results__/${testType}/results.html`,
+          pageTitle: title,
+          outputPath: `__tests__/__results__/${testType}/results.html`,
         includeFailureMsg: true
       }],
     ],

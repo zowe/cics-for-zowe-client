@@ -10,9 +10,10 @@
  */
 
 import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands, window } from "vscode";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
@@ -21,6 +22,10 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 import { CICSTree } from ".";
+import { CICSRegionTree } from "./CICSRegionTree";
+import { CICSLogger } from "../utils/CICSLogger";
+import { runGetResource } from "../utils/resourceUtils";
+import { toArray } from "../utils/commandUtils";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -77,6 +82,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
+      } else if (message.command === "showLogsForHyperlink") {
+        await this.handleShowLogsForHyperlink();
       } else {
         executeAction(message.command, message, this, this.context);
       }
@@ -211,5 +218,67 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       },
       nonce,
     });
+  }
+
+  /**
+   * Handles the showLogsForHyperlink request from the webview
+   * Fetches region data directly using runGetResource and calls showRegionLogs command
+   */
+  private async handleShowLogsForHyperlink() {
+    const { regionName, cicsplexName, profileName } = this.resourceContext;
+    try {
+      const { response } = await runGetResource({
+        profileName,
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+        regionName,
+        cicsPlex: cicsplexName,
+      });
+
+      if (response.records?.cicsregion) {
+        const regionRecords = toArray(response.records.cicsregion);
+        if (regionRecords.length > 0) {
+          const regionData = regionRecords[0];
+          
+          // Create a CICSRegionTree node from the fetched region data
+          const regionNode = this.createRegionNodeFromData(regionData, regionName, profileName);
+          
+          // Call the existing showRegionLogs command with the region node
+          commands.executeCommand("cics-extension-for-zowe.showRegionLogs", regionNode);
+        } else {
+          CICSLogger.debug(`Empty region records array for ${regionName}`);
+          window.showErrorMessage(`Could not find region ${regionName} to show logs.`);
+        }
+      } else {
+        CICSLogger.debug(`No region records found for ${regionName}`);
+        window.showErrorMessage(`Could not find region ${regionName} to show logs.`);
+      }
+    } catch (error) {
+      CICSLogger.error(`Error showing logs for hyperlink: ${error.message}`);
+      window.showErrorMessage(`Failed to show logs for region ${regionName}: ${error.message}`);
+    }
+  }
+
+
+  private createRegionNodeFromData(
+    regionData: any,
+    regionName: string,
+    profileName: string
+  ): CICSRegionTree {
+    const profile = SessionHandler.getInstance().getProfile(profileName);
+
+    const sessionNode = {
+      getProfile: () => profile,
+      profile,
+    } as any;
+
+    const regionNode = new CICSRegionTree(
+      regionName,
+      regionData,
+      sessionNode,
+      undefined,
+      undefined
+    );
+
+    return regionNode;
   }
 }
