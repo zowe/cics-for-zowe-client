@@ -15,4 +15,9 @@ export interface ITask extends IResource {
   task: string;
   runstatus: string;
   tranid: string;
+  suspendtime: string;
+  suspendtype: string;
+  suspendvalue: string;
+  currentprog: string;
+  userid: string;
 }
