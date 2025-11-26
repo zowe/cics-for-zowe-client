@@ -15,4 +15,5 @@ export interface ILibrary extends IResourceWithEnableStatus {
   name: string;
   dsname: string;
   ranking: string;
+  numdsnames: string;
 }

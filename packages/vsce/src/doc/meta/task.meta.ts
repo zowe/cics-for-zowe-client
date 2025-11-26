@@ -22,7 +22,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   humanReadableNameSingular: l10n.t("Task"),
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `TASK=${n}`).join(" OR ");
+    return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
   getDefaultCriteria: function () {
@@ -67,8 +67,32 @@ export const TaskMeta: IResourceMeta<ITask> = {
   getHighlights(resource: Resource<ITask>) {
     return [
       {
+        key: l10n.t("Run Status"),
+        value: resource.attributes.runstatus,
+      },
+      {
+        key: l10n.t("Suspend Time"),
+        value: resource.attributes.suspendtime,
+      },
+      {
+        key: l10n.t("Suspend Type"),
+        value: resource.attributes.suspendtype,
+      },
+      {
+        key: l10n.t("Suspend Value"),
+        value: resource.attributes.suspendvalue,
+      },
+      {
+        key: l10n.t("User ID"),
+        value: resource.attributes.userid,
+      },
+      {
         key: l10n.t("Transaction ID"),
         value: resource.attributes.tranid,
+      },
+      {
+        key: l10n.t("Current Program"),
+        value: resource.attributes.currentprog,
       },
     ];
   },
