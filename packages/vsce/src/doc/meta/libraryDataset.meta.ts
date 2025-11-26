@@ -9,12 +9,13 @@
  *
  */
 
+import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
 import { ProgramMeta } from "./program.meta";
-import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 const customProgramMeta = { ...ProgramMeta };
 customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
@@ -32,8 +33,8 @@ customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryD
 
 export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE,
-  humanReadableNamePlural: "Library Datasets",
-  humanReadableNameSingular: "Library Dataset",
+  humanReadableNamePlural: l10n.t("Library Datasets"),
+  humanReadableNameSingular: l10n.t("Library Dataset"),
 
   buildCriteria(criteria: string[], parentResource: ILibrary) {
     let criteriaString = `(${criteria.map((n) => `DSNAME='${n}'`).join(" OR ")})`;
@@ -66,7 +67,7 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
   getHighlights(resource: Resource<ILibraryDataset>) {
     return [
       {
-        key: "Library",
+        key: l10n.t("Library"),
         value: resource.attributes.library,
       },
     ];

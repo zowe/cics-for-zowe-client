@@ -9,17 +9,18 @@
  *
  */
 
+import { ILibrary } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ILibrary } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 import { LibraryDatasetMeta } from "./libraryDataset.meta";
 
 export const LibraryMeta: IResourceMeta<ILibrary> = {
   resourceName: CicsCmciConstants.CICS_LIBRARY_RESOURCE,
-  humanReadableNamePlural: "Libraries",
-  humanReadableNameSingular: "Library",
+  humanReadableNamePlural: l10n.t("Libraries"),
+  humanReadableNameSingular: l10n.t("Library"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -32,9 +33,11 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   getLabel: function (resource: Resource<ILibrary>): string {
     let label = `${resource.attributes.name}`;
 
-    if (resource.attributes.enablestatus.trim().toLowerCase() === "disabled") {
-      label += " (Disabled)";
+    if (resource.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
+      const status = resource.attributes.enablestatus.trim().toLowerCase();
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
+
     return label;
   },
 
@@ -57,7 +60,7 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   getHighlights(resource: Resource<ILibrary>) {
     return [
       {
-        key: "Ranking",
+        key: l10n.t("Ranking"),
         value: resource.attributes.ranking,
       },
     ];

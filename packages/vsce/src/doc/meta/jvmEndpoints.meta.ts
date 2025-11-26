@@ -9,16 +9,17 @@
  *
  */
 
+import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IJVMServer, IJVMEndpoint } from "@zowe/cics-for-zowe-explorer-api";
 
 export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
-  humanReadableNamePlural: "JVM Endpoints",
-  humanReadableNameSingular: "JVM Endpoint",
+  humanReadableNamePlural: l10n.t("JVM Endpoints"),
+  humanReadableNameSingular: l10n.t("JVM Endpoint"),
 
   buildCriteria(criteria: string[], parentResource?: IJVMServer) {
     let criteriaString = `(${criteria.map((n) => `JVMENDPOINT='${n}'`).join(" OR ")})`;
@@ -31,7 +32,7 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   getDefaultCriteria: function (parentResource: IJVMServer) {
     return `JVMSERVER='${parentResource.name}'`;
   },
-  
+
   getLabel(resource: Resource<IJVMEndpoint>): string {
     let label = `${resource.attributes.jvmendpoint}`;
     const secport = resource.attributes.secport;
@@ -69,17 +70,17 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   getHighlights(resource: Resource<IJVMEndpoint>) {
     return [
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: resource.attributes.enablestatus,
       },
       {
-        key: "Port",
+        key: l10n.t("Port"),
         value: resource.attributes.port,
       },
       {
-        key: "Secure Port",
+        key: l10n.t("Secure Port"),
         value: resource.attributes.secport,
-      }
+      },
     ];
   },
 
@@ -94,4 +95,3 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   filterCaseSensitive: true,
   maximumPrimaryKeyLength: 224,
 };
-
