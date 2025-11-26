@@ -9,16 +9,17 @@
  *
  */
 
+import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 
 export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_REMOTE_FILE,
-  humanReadableNamePlural: "Remote Files",
-  humanReadableNameSingular: "Remote File",
+  humanReadableNamePlural: l10n.t("Remote Files"),
+  humanReadableNameSingular: l10n.t("Remote File"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");
@@ -47,11 +48,11 @@ export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   getHighlights(resource: Resource<IRemoteFile>) {
     return [
       {
-        key: "Remote System",
+        key: l10n.t("Remote System"),
         value: resource.attributes.remotesystem,
       },
       {
-        key: "Remote Name",
+        key: l10n.t("Remote Name"),
         value: resource.attributes.remotename,
       },
     ];

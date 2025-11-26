@@ -9,16 +9,17 @@
  *
  */
 
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const PipelineMeta: IResourceMeta<IPipeline> = {
   resourceName: CicsCmciConstants.CICS_PIPELINE_RESOURCE,
-  humanReadableNamePlural: "Pipelines",
-  humanReadableNameSingular: "Pipeline",
+  humanReadableNamePlural: l10n.t("Pipelines"),
+  humanReadableNameSingular: l10n.t("Pipeline"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

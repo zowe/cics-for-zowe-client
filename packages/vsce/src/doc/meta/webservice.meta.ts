@@ -9,16 +9,17 @@
  *
  */
 
+import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
 import { IResourceMeta } from "./IResourceMeta";
-import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 
 export const WebServiceMeta: IResourceMeta<IWebService> = {
   resourceName: CicsCmciConstants.CICS_WEBSERVICE_RESOURCE,
-  humanReadableNamePlural: "Web Services",
-  humanReadableNameSingular: "Web Service",
+  humanReadableNamePlural: l10n.t("Web Services"),
+  humanReadableNameSingular: l10n.t("Web Service"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -47,31 +48,31 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   getHighlights(resource: Resource<IWebService>) {
     return [
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: resource.attributes.state,
       },
       {
-        key: "WS Bind",
+        key: l10n.t("WS Bind"),
         value: resource.attributes.wsbind,
       },
       {
-        key: "Program",
+        key: l10n.t("Program"),
         value: resource.attributes.program,
       },
       {
-        key: "Pipeline",
+        key: l10n.t("Pipeline"),
         value: resource.attributes.pipeline,
       },
       {
-        key: "URI Map",
+        key: l10n.t("URI Map"),
         value: resource.attributes.urimap,
       },
       {
-        key: "Container",
+        key: l10n.t("Container"),
         value: resource.attributes.container,
       },
       {
-        key: "WSDL File",
+        key: l10n.t("WSDL File"),
         value: resource.attributes.wsdlfile,
       },
     ];
