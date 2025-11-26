@@ -255,7 +255,7 @@ export class ResourceContainer {
       const safeFetched = Math.min(parseInt(summary.recordcount), next - 1);
       fetched += safeFetched;
     }
-    return l10n.t("ResourceContainer.progress", "{0} of {1}", fetched, total);
+    return l10n.t("{0} of {1}", fetched, total);
   }
 
   /**
