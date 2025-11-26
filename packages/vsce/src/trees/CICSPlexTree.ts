@@ -12,7 +12,7 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
-import { TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
+import { l10n, TreeItem, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   IResourceMeta,
@@ -21,19 +21,19 @@ import {
   LocalFileMeta,
   PipelineMeta,
   ProgramMeta,
-  TCPIPMeta,
+  RemoteFileMeta,
+  SharedTSQueueMeta,
   TaskMeta,
+  TCPIPMeta,
   TransactionMeta,
+  TSQueueMeta,
   URIMapMeta,
   WebServiceMeta,
-  RemoteFileMeta,
-  TSQueueMeta,
-  SharedTSQueueMeta,
 } from "../doc";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
 
@@ -160,40 +160,40 @@ export class CICSPlexTree extends TreeItem {
     const config = workspace.getConfiguration("zowe.cics.resources");
 
     if (config.get<boolean>("Program", true)) {
-      this.children.push(this.buildCombinedTree("All Programs", [ProgramMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", ProgramMeta.humanReadableNamePlural), [ProgramMeta]));
     }
     if (config.get<boolean>("Transaction", true)) {
-      this.children.push(this.buildCombinedTree("All Local Transactions", [TransactionMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", TransactionMeta.humanReadableNamePlural), [TransactionMeta]));
     }
     if (config.get<boolean>("LocalFile", true)) {
-      this.children.push(this.buildCombinedTree("All Files", [LocalFileMeta, RemoteFileMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All Files"), [LocalFileMeta, RemoteFileMeta]));
     }
     if (config.get<boolean>("Task", true)) {
-      this.children.push(this.buildCombinedTree("All Tasks", [TaskMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", TaskMeta.humanReadableNamePlural), [TaskMeta]));
     }
     if (config.get<boolean>("Library", true)) {
-      this.children.push(this.buildCombinedTree("All Libraries", [LibraryMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", LibraryMeta.humanReadableNamePlural), [LibraryMeta]));
     }
     if (config.get<boolean>("Pipeline", true)) {
-      this.children.push(this.buildCombinedTree("All Pipelines", [PipelineMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", PipelineMeta.humanReadableNamePlural), [PipelineMeta]));
     }
     if (config.get<boolean>("TCP/IPService", true)) {
-      this.children.push(this.buildCombinedTree("All TCP/IP Services", [TCPIPMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", TCPIPMeta.humanReadableNamePlural), [TCPIPMeta]));
     }
     if (config.get<boolean>("URIMap", true)) {
-      this.children.push(this.buildCombinedTree("All URI Maps", [URIMapMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", URIMapMeta.humanReadableNamePlural), [URIMapMeta]));
     }
     if (config.get<boolean>("WebService", true)) {
-      this.children.push(this.buildCombinedTree("All Web Services", [WebServiceMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", WebServiceMeta.humanReadableNamePlural), [WebServiceMeta]));
     }
     if (config.get<boolean>("JVMServer", true)) {
-      this.children.push(this.buildCombinedTree("All JVM Servers", [JVMServerMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", JVMServerMeta.humanReadableNamePlural), [JVMServerMeta]));
     }
     if (config.get<boolean>("Bundle", true)) {
-      this.children.push(this.buildCombinedTree("All Bundles", [BundleMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All {0}", BundleMeta.humanReadableNamePlural), [BundleMeta]));
     }
     if (config.get<boolean>("TSQueue", true)) {
-      this.children.push(this.buildCombinedTree("All TS Queues", [TSQueueMeta, SharedTSQueueMeta]));
+      this.children.push(this.buildCombinedTree(l10n.t("All TS Queues"), [TSQueueMeta, SharedTSQueueMeta]));
     }
   }
 
@@ -206,7 +206,7 @@ export class CICSPlexTree extends TreeItem {
         cicsplexName: this.getPlexName(),
       },
       null,
-      metas,
+      metas
     );
   }
 

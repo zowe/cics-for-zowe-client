@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
@@ -30,7 +30,7 @@ export class CICSRegionsContainer extends TreeItem {
     parent: CICSPlexTree,
     public iconPath = getFolderIcon(false)
   ) {
-    super("Regions", TreeItemCollapsibleState.Collapsed);
+    super(l10n.t("Regions"), TreeItemCollapsibleState.Collapsed);
     this.contextValue = `cicsregionscontainer.`;
     this.parent = parent;
     this.children = [];
@@ -42,10 +42,10 @@ export class CICSRegionsContainer extends TreeItem {
 
     this.children = [];
     this.activeFilter = pattern;
-    this.setLabel(this.activeFilter === "*" ? `Regions` : `Regions (${this.activeFilter})`);
+    this.setLabel(this.activeFilter === "*" ? l10n.t("Regions") : l10n.t("Regions ({0})", this.activeFilter));
     await window.withProgress(
       {
-        title: "Filtering regions",
+        title: l10n.t("Filtering regions"),
         location: ProgressLocation.Notification,
         cancellable: true,
       },
@@ -57,7 +57,7 @@ export class CICSRegionsContainer extends TreeItem {
         this.refreshIcon(true);
         tree._onDidChangeTreeData.fire(undefined);
         if (!this.children.length) {
-          window.showInformationMessage(`No regions found for ${this.parent.getPlexName()}`);
+          window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
         }
       }
     );
@@ -118,7 +118,9 @@ export class CICSRegionsContainer extends TreeItem {
     }
     // Don't show the applied filter if no filters applied i.e. '*'
     const newLabel =
-      this.activeFilter === "*" ? `Regions [${activeCount}/${totalCount}]` : `Regions (${this.activeFilter}) [${activeCount}/${totalCount}]`;
+      this.activeFilter === "*" ?
+        l10n.t("Regions [{0}/{1}]", activeCount, totalCount)
+      : l10n.t("Regions ({0}) [{1}/{2}]", this.activeFilter, activeCount, totalCount);
     this.setLabel(newLabel);
   }
 
