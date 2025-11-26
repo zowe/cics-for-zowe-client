@@ -33,7 +33,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
     let label = `${resource.attributes.task} - ${resource.attributes.tranid}`;
 
     if (resource.attributes.runstatus.trim().toLowerCase() !== "suspended") {
-      const status = resource.attributes.runstatus.trim();
+      const status = resource.attributes.runstatus.trim().toLowerCase();
       label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
