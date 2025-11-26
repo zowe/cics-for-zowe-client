@@ -33,12 +33,12 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
     let label = `${localFile.attributes.file}`;
 
     if (localFile.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
-      const status = localFile.attributes.enablestatus.trim();
+      const status = localFile.attributes.enablestatus.trim().toLowerCase();
       label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
     if (localFile.attributes.openstatus.trim().toLowerCase() !== "open") {
-      const status = localFile.attributes.openstatus.trim();
+      const status = localFile.attributes.openstatus.trim().toLowerCase();
       label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 

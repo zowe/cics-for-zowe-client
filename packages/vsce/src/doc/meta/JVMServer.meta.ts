@@ -34,7 +34,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
     let label = `${resource.attributes.name}`;
 
     if (resource.attributes.enablestatus.trim().toLowerCase() !== "enabled") {
-      const status = resource.attributes.enablestatus.trim();
+      const status = resource.attributes.enablestatus.trim().toLowerCase();
       label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
