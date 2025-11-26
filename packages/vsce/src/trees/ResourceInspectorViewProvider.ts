@@ -22,7 +22,6 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 import { CICSTree } from ".";
-import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
 import { runGetResource } from "../utils/resourceUtils";
