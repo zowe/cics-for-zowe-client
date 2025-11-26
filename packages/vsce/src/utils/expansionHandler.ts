@@ -9,7 +9,7 @@
  *
  */
 
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation, l10n, window } from "vscode";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
@@ -20,7 +20,7 @@ import { ProfileManagement } from "./profileManagement";
 export async function sessionExpansionHandler(session: CICSSessionTree, tree: CICSTree) {
   const profile = await ProfileManagement.getProfilesCache().getLoadedProfConfig(session.label?.toString()!);
   if (profile == null) {
-    throw new Error("sessionExpansionHandler: Profile is not defined");
+    throw new Error(l10n.t("sessionExpansionHandler: Profile is not defined"));
   }
   await tree.loadProfile(profile, session);
 }
@@ -33,7 +33,7 @@ export async function regionContainerExpansionHandler(regionContiner: CICSRegion
       // CICSGroup
       await window.withProgress(
         {
-          title: "Loading regions",
+          title: l10n.t("Loading regions"),
           location: ProgressLocation.Notification,
           cancellable: false,
         },
@@ -49,7 +49,7 @@ export async function regionContainerExpansionHandler(regionContiner: CICSRegion
   } else {
     await window.withProgress(
       {
-        title: "Loading regions",
+        title: l10n.t("Loading regions"),
         location: ProgressLocation.Notification,
         cancellable: false,
       },
@@ -59,7 +59,7 @@ export async function regionContainerExpansionHandler(regionContiner: CICSRegion
         await regionContiner.loadRegionsInPlex();
         regionContiner.iconPath = getFolderIcon(true);
         if (!regionContiner.getChildren().length) {
-          window.showInformationMessage(`No regions found for plex ${parentPlex.getPlexName()}`);
+          l10n.t("No regions found for plex {0}", "No regions found for plex {0}", parentPlex.getPlexName());
         }
         tree._onDidChangeTreeData.fire(undefined);
       }
@@ -77,7 +77,7 @@ export async function plexExpansionHandler(plex: CICSPlexTree, tree: CICSTree) {
       // Only 1 CICSRegion inside CICSPlex
       window.withProgress(
         {
-          title: "Loading region",
+          title: l10n.t("Loading region"),
           location: ProgressLocation.Notification,
           cancellable: false,
         },
