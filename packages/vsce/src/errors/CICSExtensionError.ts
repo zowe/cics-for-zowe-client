@@ -47,7 +47,6 @@ export class CICSExtensionError extends Error {
             feedback.resp2
           );
       } else {
-        const resourceSentence = resourceName ? `for resources: ${resourceName}. ` : `. `;
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
