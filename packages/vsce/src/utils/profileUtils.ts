@@ -54,12 +54,7 @@ export async function updateProfile(profile?: imperative.IProfileLoaded, session
 
     if (missingParamters.length) {
       window.showInformationMessage(
-        l10n.t(
-          "The following fields are missing from {0}: {1}. Please update them in your config file.",
-          "The following fields are missing from {0}: {1}. Please update them in your config file.",
-          profile.name,
-          missingParamters.join(", ")
-        )
+        l10n.t("The following fields are missing from {0}: {1}. Please update them in your config file.", profile.name, missingParamters.join(", "))
       );
     } else {
       return profile;
