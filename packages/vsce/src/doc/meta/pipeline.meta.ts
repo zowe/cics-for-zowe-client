@@ -46,7 +46,24 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   },
 
   getHighlights(resource: Resource<IPipeline>) {
-    return [];
+    return [
+      {
+        key: l10n.t("Status"),
+        value: resource.attributes.enablestatus,
+      },
+      {
+        key: l10n.t("Soap Level"),
+        value: resource.attributes.soaplevel,
+      },
+      {
+        key: l10n.t("WS Directory"),
+        value: resource.attributes.wsdir,
+      },
+      {
+        key: l10n.t("Config File"),
+        value: resource.attributes.configfile,
+      },
+    ];
   },
 
   async appendCriteriaHistory(criteria: string) {
