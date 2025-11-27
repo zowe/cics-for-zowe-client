@@ -48,19 +48,19 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   getHighlights(resource: Resource<IPipeline>) {
     return [
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: resource.attributes.enablestatus,
       },
       {
-        key: "Soap Level",
+        key: l10n.t("Soap Level"),
         value: resource.attributes.soaplevel,
       },
       {
-        key: "WS Directory",
+        key: l10n.t("WS Directory"),
         value: resource.attributes.wsdir,
       },
       {
-        key: "Config File",
+        key: l10n.t("Config File"),
         value: resource.attributes.configfile,
       },
     ];
