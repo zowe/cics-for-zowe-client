@@ -37,7 +37,6 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "cics.error.feedbackFailure",
             "The CMCI REST API request failed. Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}. Please refer to the IBM documentation for resp code details",
             feedback.action,
             feedback.eibfn_alt.replace("SET", ""),
@@ -52,13 +51,18 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "cics.error.genericResponse",
-            "The CMCI REST API request failed. {0}Response details: API_FUNCTION: {1}, RESP: {2} ({3}), RESP2: {4}. Please refer to the IBM documentation for resp code details",
-            resourceSentence,
+            `The CMCI REST API request failed` +
+              (resourceName ? ` for resources: {0}. ` : `. `) +
+              `Response details: API_FUNCTION: {1}, ` +
+              `RESP: {2} ({3}), ` +
+              `RESP2: {4} ({5}). ` +
+              `Please refer to the IBM documentation for resp code details`,
+            resourceName,
             api_function,
             resultSummary.api_response1,
             resultSummary.api_response1_alt,
-            resultSummary.api_response2
+            resultSummary.api_response2,
+            resultSummary.api_response2_alt
           );
       }
     } else if (error instanceof imperative.RestClientError) {
@@ -69,7 +73,6 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.errorMessage =
         errorMessage ||
         l10n.t(
-          "cics.error.requestFailed",
           "The CMCI REST API request failed. Failed to send request. Response details - {0}URL: {1}, Message: {2}",
           errorCode ? `Status code: ${errorCode}, ` : ``,
           resource,
@@ -84,7 +87,6 @@ export class CICSExtensionError extends Error {
     } else {
       const err = error as Error;
       this.cicsExtensionError.errorMessage = l10n.t(
-        "cics.error.unexpected",
         "The CMCI REST API request failed. Error message: {0}, Cause: {1}",
         err.message,
         (err as any).cause

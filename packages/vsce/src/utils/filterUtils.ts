@@ -31,11 +31,7 @@ export class FilterDescriptor implements QuickPickItem {
 export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
   let pattern: string = "";
   const createPick = new FilterDescriptor(
-    l10n.t(
-      "＋ Create New {0} Filter (use a comma to separate multiple patterns e.g. LG*,I*)",
-      "＋ Create New {0} Filter (use a comma to separate multiple patterns e.g. LG*,I*)",
-      resourceName
-    )
+    l10n.t("\uFF0B Create New {0} Filter (use a comma to separate multiple patterns e.g. LG*,I*)", resourceName)
   );
   const items = resourceHistory.map((loadedFilter) => {
     return { label: loadedFilter };
