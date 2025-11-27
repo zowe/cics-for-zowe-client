@@ -20,9 +20,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Refreshing {0} {1}": "Refreshing {0} {1}",
