@@ -19,4 +19,5 @@ export interface ITCPIP extends IResource {
   protocol: string;
   attls: string;
   ssltype: string;
+  openstatus: string;
 }

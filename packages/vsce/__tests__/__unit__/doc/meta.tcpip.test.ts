@@ -32,6 +32,7 @@ describe("TCP IP Meta", () => {
       protocol: "HTTP",
       attls: "NOTUSED",
       ssltype: "NOSSL",
+      openstatus: "OPEN"
 
     });
   });
@@ -69,29 +70,33 @@ describe("TCP IP Meta", () => {
     const highlights = TCPIPMeta.getHighlights(tcpipMock);
     expect(highlights).toEqual([
       {
+        key: "Status",
+        value: "OPEN",
+      },
+      {
         key: "Port",
         value: "12345",
       },
       {
         key: "Transaction ID",
         value: "CWXN",
-       },
-       {
-        key: "URM",
-        value: "EYU9VWAN",
-       },
-       {
-        key: "Protocol",
-        value: "HTTP",
-       },
-       {
-        key: "ATTLS",
-        value: "NOTUSED",
-       },
-       {
-        key: "SSL Type",
-        value: "NOSSL",
-       },
+      },
+      {
+      key: "URM",
+      value: "EYU9VWAN",
+      },
+      {
+      key: "Protocol",
+      value: "HTTP",
+      },
+      {
+      key: "ATTLS",
+      value: "NOTUSED",
+      },
+      {
+      key: "SSL Type",
+      value: "NOSSL",
+      },
     ]);
   });
 
