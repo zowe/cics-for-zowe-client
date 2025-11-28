@@ -85,11 +85,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
     } else {
       const err = error as Error;
-      this.cicsExtensionError.errorMessage = l10n.t(
-        "The CMCI REST API request failed. Error message: {0}, Cause: {1}",
-        err.message,
-        (err as any).cause
-      );
+      this.cicsExtensionError.errorMessage = l10n.t("The CMCI REST API request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
     }
   }
 }
