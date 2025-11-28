@@ -9,9 +9,10 @@
  *
  */
 
-import { ICICSExtensionError } from "./ICICSExtensionError";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
+import { imperative } from "@zowe/zowe-explorer-api";
+import { l10n } from "vscode";
+import { ICICSExtensionError } from "./ICICSExtensionError";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: ICICSExtensionError;
@@ -33,27 +34,49 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
       if (feedback) {
-        this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-        Failed to ${feedback.action} ${feedback.eibfn_alt.replace("SET", "")} 
-        ${resourceName} with API: ${api_function},  RESP: ${feedback.resp} (${feedback.resp_alt}) and RESP2: ${feedback.resp2}. 
-        Please refer to the IBM documentation for resp code details`;
+        this.cicsExtensionError.errorMessage =
+          errorMessage ||
+          l10n.t(
+            "The CMCI REST API request failed. Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}. Please refer to the IBM documentation for resp code details",
+            feedback.action,
+            feedback.eibfn_alt.replace("SET", ""),
+            resourceName,
+            api_function,
+            feedback.resp,
+            feedback.resp_alt,
+            feedback.resp2
+          );
       } else {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
-          `The CMCI REST API request failed` +
-            (resourceName ? ` for resources: ${resourceName}. ` : `. `) +
-            `Response details: API_FUNCTION: ${api_function}, ` +
-            `RESP: ${resultSummary.api_response1} (${resultSummary.api_response1_alt}), ` +
-            `RESP2: ${resultSummary.api_response2} (${resultSummary.api_response2_alt}). ` +
-            `Please refer to the IBM documentation for resp code details`;
+          l10n.t(
+            `The CMCI REST API request failed` +
+              (resourceName ? ` for resources: {0}. ` : `. `) +
+              `Response details: API_FUNCTION: {1}, ` +
+              `RESP: {2} ({3}), ` +
+              `RESP2: {4} ({5}). ` +
+              `Please refer to the IBM documentation for resp code details`,
+            resourceName,
+            api_function,
+            resultSummary.api_response1,
+            resultSummary.api_response1_alt,
+            resultSummary.api_response2,
+            resultSummary.api_response2_alt
+          );
       }
     } else if (error instanceof imperative.RestClientError) {
       const errorCode = error.mDetails.errorCode || error.errorCode;
       const resource = error.mDetails.resource;
       const msg = error.mDetails.msg;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
-      this.cicsExtensionError.errorMessage = errorMessage || `The CMCI REST API request failed. 
-      Failed to send request. Response details - ` + (errorCode ? `Status code: ${errorCode}, ` : ``) + `URL: ${resource}, Message: ${msg}`;
+      this.cicsExtensionError.errorMessage =
+        errorMessage ||
+        l10n.t(
+          "The CMCI REST API request failed. Failed to send request. Response details - {0}URL: {1}, Message: {2}",
+          errorCode ? `Status code: ${errorCode}, ` : ``,
+          resource,
+          msg
+        );
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
@@ -62,9 +85,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
     } else {
       const err = error as Error;
-      this.cicsExtensionError.errorMessage = `The CMCI REST API request failed. Error message: ${err.message}, ` + `Cause: ${err.cause}`;
+      this.cicsExtensionError.errorMessage = l10n.t("The CMCI REST API request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
     }
   }
 }
-
-

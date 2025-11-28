@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeView } from "vscode";
-import { IResourceMeta } from "../doc";
-import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
+import { TreeView } from "vscode";
+import { IResourceMeta } from "../doc";
+import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { ProfileManagement } from "./profileManagement";
 
@@ -76,43 +76,38 @@ export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Pro
  * @returns A matching z/OS profile or undefined if no match is found
  */
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded | undefined> {
-
   const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
-  
+
   // Prioritize zosmf profiles and filter to only include profiles with credentials
-  const prioritizedProfiles = zosProfiles
-    .sort((prof) => (prof.profile.type === "zosmf" ? -1 : 1))
-    .filter((prof) => prof.profile.user);
-  
+  const prioritizedProfiles = zosProfiles.sort((prof) => (prof.profile.type === "zosmf" ? -1 : 1)).filter((prof) => prof.profile.user);
+
   // First attempt: Find profiles that share the same base profile
   if (baseForCicsProfile) {
     const matchingBaseProfiles = [];
-    
+
     for (const profile of prioritizedProfiles) {
       const profileBase = await fetchBaseProfileWithoutError(profile);
-      
+
       if (profileBase?.name === baseForCicsProfile.name) {
         matchingBaseProfiles.push(profile);
       }
     }
-    
+
     if (matchingBaseProfiles.length > 0) {
       const selectedProfile = matchingBaseProfiles[0];
       CICSLogger.info(`Located matching z/OS profile by base profile: ${selectedProfile.name}`);
       return selectedProfile;
     }
   }
-  
+
   // Second attempt: Find profiles with the same hostname
-  const sameHostProfile = prioritizedProfiles.find(
-    (profile) => cicsProfile.profile.host === profile.profile.host
-  );
-  
+  const sameHostProfile = prioritizedProfiles.find((profile) => cicsProfile.profile.host === profile.profile.host);
+
   if (sameHostProfile) {
     CICSLogger.info(`Located matching z/OS profile by hostname: ${sameHostProfile.name}`);
     return sameHostProfile;
   }
-  
+
   // No matching profile found
   return undefined;
 }
@@ -245,12 +240,12 @@ export async function getResourceTree<T extends IResource>(
 
     await treeview.reveal(regionTree, { expand: true });
 
-    const resourceTree = regionTree.children.find(
-      (child: CICSResourceContainerNode<IResource>) => child.resourceTypes.map((type) => type.resourceName).includes(targetResourceName)
+    const resourceTree = regionTree.children.find((child: CICSResourceContainerNode<IResource>) =>
+      child.resourceTypes.map((type) => type.resourceName).includes(targetResourceName)
     ) as CICSResourceContainerNode<T>;
 
     return resourceTree;
   }
 
-  throw new Error("Region name is missing in the node description.");
+  throw new Error(vscode.l10n.t("Region name is missing in the node description."));
 }

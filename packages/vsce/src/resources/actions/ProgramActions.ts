@@ -9,38 +9,39 @@
  *
  */
 
-import { IProgram, ResourceAction, IResourceContext, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
+import { IProgram, IResourceContext, ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { l10n } from "vscode";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSProgram>[] = [
   {
     id: "CICS.CICSProgram.NEWCOPY",
-    name: "New Copy",
+    name: l10n.t("New Copy"),
     resourceType: ResourceTypes.CICSProgram,
     action: "cics-extension-for-zowe.newCopyProgram",
   },
   {
     id: "CICS.CICSProgram.PHASEIN",
-    name: "Phase In",
+    name: l10n.t("Phase In"),
     resourceType: ResourceTypes.CICSProgram,
     action: "cics-extension-for-zowe.phaseInCommand",
   },
   {
     id: "CICS.CICSProgram.DISABLE",
-    name: "Disable Program",
+    name: l10n.t("Disable Program"),
     resourceType: ResourceTypes.CICSProgram,
     visibleWhen: (program: IProgram, _cx: IResourceContext) => program.status !== "DISABLED",
     action: "cics-extension-for-zowe.disableProgram",
   },
   {
     id: "CICS.CICSProgram.ENABLE",
-    name: "Enable Program",
+    name: l10n.t("Enable Program"),
     resourceType: ResourceTypes.CICSProgram,
     visibleWhen: (program: IProgram, _cx: IResourceContext) => program.status !== "ENABLED",
     action: "cics-extension-for-zowe.enableProgram",
   },
   {
     id: "CICS.CICSProgram.SHOWLIBRARY",
-    name: "Show Library",
+    name: l10n.t("Show Library"),
     resourceType: ResourceTypes.CICSProgram,
     action: "cics-extension-for-zowe.showLibrary",
   },
