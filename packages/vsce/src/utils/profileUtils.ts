@@ -10,7 +10,7 @@
  */
 
 import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
-import { window } from "vscode";
+import { l10n, window } from "vscode";
 import { CICSSessionTree } from "../trees/CICSSessionTree";
 import { ProfileManagement } from "./profileManagement";
 
@@ -54,7 +54,7 @@ export async function updateProfile(profile?: imperative.IProfileLoaded, session
 
     if (missingParamters.length) {
       window.showInformationMessage(
-        `The following fields are missing from ${profile.name}: ${missingParamters.join(", ")}. Please update them in your config file.`
+        l10n.t("The following fields are missing from {0}: {1}. Please update them in your config file.", profile.name, missingParamters.join(", "))
       );
     } else {
       return profile;
@@ -78,7 +78,7 @@ export async function promptCredentials(profile: imperative.IProfileLoaded): Pro
     ProfileManagement.getExplorerApis()
   );
   if (!promptInfo) {
-    window.showInformationMessage("Input credentials operation Cancelled");
+    window.showInformationMessage(l10n.t("Input credentials operation Cancelled"));
   }
   return promptInfo;
 }

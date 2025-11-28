@@ -1,4 +1,17 @@
 {
+  "Open Settings": "Open Settings",
+  "Cancel": "Cancel",
+  "The following fields are missing from {0}: {1}. Please update them in your config file.": "The following fields are missing from {0}: {1}. Please update them in your config file.",
+  "Input credentials operation Cancelled": "Input credentials operation Cancelled",
+  "{0} {1} requesting Region groups.": "{0} {1} requesting Region groups.",
+  "{0} requesting Region groups.": "{0} requesting Region groups.",
+  "Cannot find region {0} in plex {1} for profile {2}": "Cannot find region {0} in plex {1} for profile {2}",
+  "Plex {0} and Region {1} not found.": "Plex {0} and Region {1} not found.",
+  "Cannot find plex {0} for profile {1}": "Cannot find plex {0} for profile {1}",
+  "CICSplex {0} not found.": "CICSplex {0} not found.",
+  "Cannot find region {0}": "Cannot find region {0}",
+  "Region {0} not found.": "Region {0} not found.",
+  "Error retrieving cache - {0}": "Error retrieving cache - {0}",
   "Profile {0} is invalid or not present": "Profile {0} is invalid or not present",
   "Error fetching CICSplex information for profile with reason {0}": "Error fetching CICSplex information for profile with reason {0}",
   "Select CICS Region": "Select CICS Region",
@@ -16,9 +29,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Refreshing {0} {1}": "Refreshing {0} {1}",
@@ -84,7 +95,6 @@
   "Data set name": "Data set name",
   "Library Datasets": "Library Datasets",
   "Library Dataset": "Library Dataset",
-  "Library": "Library",
   "Libraries": "Libraries",
   "Status": "Status",
   "Ranking": "Ranking",
@@ -125,7 +135,6 @@
   "No region selected": "No region selected",
   "Could not find Job ID for region {0}.": "Could not find Job ID for region {0}.",
   "Could not find any profiles that will access JES (for instance z/OSMF).": "Could not find any profiles that will access JES (for instance z/OSMF).",
-  "Programs": "Programs",
   "CICS Library resources are not visible. Enable them from your VS Code settings.": "CICS Library resources are not visible. Enable them from your VS Code settings.",
   "No CICS Program selected": "No CICS Program selected",
   "No libraries found in selected CICS programs": "No libraries found in selected CICS programs",
@@ -164,13 +173,10 @@
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
   "File": "File",
-  "TS Queue": "TS Queue",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
-  "Transaction": "Transaction",
   "No CICS Task selected": "No CICS Task selected",
   "All Tasks": "All Tasks",
   "CICS Program resources are not visible. Enable them from your VS Code settings.": "CICS Program resources are not visible. Enable them from your VS Code settings.",
-  "Program": "Program",
   "No CICS Transaction selected": "No CICS Transaction selected",
   "All Local Transactions": "All Local Transactions",
   "No 'Regions' node selected": "No 'Regions' node selected",

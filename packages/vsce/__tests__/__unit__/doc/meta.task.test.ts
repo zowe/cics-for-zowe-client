@@ -42,7 +42,7 @@ describe("Task Meta", () => {
   });
   it("should return label", () => {
     const label = TaskMeta.getLabel(taskMock);
-    expect(label).toEqual(`MYTASK - TRAN (RUNNING)`);
+    expect(label).toEqual(`MYTASK - TRAN (Running)`);
   });
   it("should return label with suspended", () => {
     taskMock.attributes.runstatus = "SUSPENDED";

@@ -13,4 +13,7 @@ import { IResourceWithEnableStatus } from "./IResource";
 
 export interface IPipeline extends IResourceWithEnableStatus {
   name: string;
+  soaplevel: string;
+  wsdir: string;
+  configfile: string;
 }

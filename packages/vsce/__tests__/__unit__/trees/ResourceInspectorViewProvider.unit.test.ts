@@ -70,6 +70,9 @@ describe("Resource Inspector View provider", () => {
       eyu_cicsname: "MYREGION",
       name: "PIP1",
       enablestatus: "ENABLED",
+      soaplevel: "1.1",
+      wsdir: "/a/b/c",
+      configfile: "/a/b/c/def.xml"
     })
   };
 

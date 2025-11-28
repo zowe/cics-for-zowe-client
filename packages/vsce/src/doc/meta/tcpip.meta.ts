@@ -9,16 +9,17 @@
  *
  */
 
+import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
-  humanReadableNamePlural: "TCP/IP Services",
-  humanReadableNameSingular: "TCP/IP Service",
+  humanReadableNamePlural: l10n.t("TCP/IP Services"),
+  humanReadableNameSingular: l10n.t("TCP/IP Service"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
@@ -34,7 +35,6 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     if (resource.attributes.port) {
       label += ` [Port #${resource.attributes.port}]`;
     }
-
     return label;
   },
 
@@ -52,9 +52,34 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
 
   getHighlights(resource: Resource<ITCPIP>) {
     return [
+      
       {
-        key: "Port",
+        key: l10n.t("Status"),
+        value: resource.attributes.openstatus,
+      },
+      {
+        key: l10n.t("Port"),
         value: resource.attributes.port,
+      },
+      {
+        key: l10n.t("Transaction ID"),
+        value: resource.attributes.transid,
+      },
+      {
+        key: l10n.t("URM"),
+        value: resource.attributes.urm,
+      },
+      {
+        key: l10n.t("Protocol"),
+        value: resource.attributes.protocol,
+      },
+      {
+        key: l10n.t("ATTLS"),
+        value: resource.attributes.attls,
+      },
+      {
+        key: l10n.t("SSL Type"),
+        value: resource.attributes.ssltype,
       },
     ];
   },

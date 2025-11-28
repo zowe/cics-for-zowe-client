@@ -9,16 +9,17 @@
  *
  */
 
+import { ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TransactionMeta: IResourceMeta<ITransaction> = {
   resourceName: CicsCmciConstants.CICS_CMCI_LOCAL_TRANSACTION,
-  humanReadableNamePlural: "Transactions",
-  humanReadableNameSingular: "Transaction",
+  humanReadableNamePlural: l10n.t("Transactions"),
+  humanReadableNameSingular: l10n.t("Transaction"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");
@@ -56,25 +57,24 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
 
   getHighlights(resource: Resource<ITransaction>) {
     return [
-      
       {
-        key: "Status",
+        key: l10n.t("Status"),
         value: resource.attributes.status,
       },
       {
-        key: "Available Status",
+        key: l10n.t("Available Status"),
         value: resource.attributes.availstatus,
       },
       {
-        key: "Transaction Class",
+        key: l10n.t("Transaction Class"),
         value: resource.attributes.tranclass,
       },
       {
-        key: "Routing",
+        key: l10n.t("Routing"),
         value: resource.attributes.routing,
       },
       {
-        key: "Initial program",
+        key: l10n.t("Initial program"),
         value: resource.attributes.program,
       },
     ];

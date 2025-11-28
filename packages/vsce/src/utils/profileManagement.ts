@@ -10,13 +10,14 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestError, getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
-import { Gui, imperative, MessageSeverity, Types, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { l10n } from "vscode";
 import constants from "../constants/CICS.defaults";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import { getBestCICSplexes } from "./plexUtils";
 import { runGetCache, runGetResource } from "./resourceUtils";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
@@ -84,9 +85,9 @@ export class ProfileManagement {
     } catch (error) {
       let errorMessage;
       if (error instanceof CicsCmciRestError) {
-        errorMessage = `${error.RESPONSE_1_ALT} ${error.RESPONSE_2_ALT} requesting Region groups.`;
+        errorMessage = l10n.t("{0} {1} requesting Region groups.", error.RESPONSE_1_ALT, error.RESPONSE_2_ALT);
       } else if (error instanceof imperative.ImperativeError) {
-        errorMessage = `${error.errorCode} requesting Region groups.`;
+        errorMessage = l10n.t("{0} requesting Region groups.", error.errorCode);
       }
       if (errorMessage) {
         throw new CICSExtensionError({ baseError: error, errorMessage: errorMessage });
@@ -140,15 +141,20 @@ export class ProfileManagement {
           group: await this.regionIsGroup(profile),
         });
       } else {
-        Gui.showMessage(`Cannot find region ${profile.profile.regionName} in plex ${profile.profile.cicsPlex} for profile ${profile.name}`, {
-          severity: MessageSeverity.ERROR,
-        });
+        Gui.showMessage(
+          l10n.t("Cannot find region {0} in plex {1} for profile {2}", profile.profile.regionName, profile.profile.cicsPlex, profile.name),
+          {
+            severity: MessageSeverity.ERROR,
+          }
+        );
       }
     } catch (error) {
-       if (error instanceof CICSExtensionError) {
-        if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
-          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA) {
-          error.cicsExtensionError.errorMessage = `Plex ${profile.profile.cicsPlex} and Region ${profile.profile.regionName} not found.`;
+      if (error instanceof CICSExtensionError) {
+        if (
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA
+        ) {
+          error.cicsExtensionError.errorMessage = l10n.t("Plex {0} and Region {1} not found.", profile.profile.cicsPlex, profile.profile.regionName);
         }
         throw new CICSExtensionError({ baseError: error });
       }
@@ -175,16 +181,18 @@ export class ProfileManagement {
           group: false,
         });
       } else {
-        Gui.showMessage(`Cannot find plex ${profile.profile.cicsPlex} for profile ${profile.name}`, {
+        Gui.showMessage(l10n.t("Cannot find plex {0} for profile {1}", profile.profile.cicsPlex, profile.name), {
           severity: MessageSeverity.ERROR,
         });
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
-        if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
-          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA) {
-        error.cicsExtensionError.errorMessage = `CICSplex ${profile.profile.cicsPlex} not found.`;
-      }
+        if (
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA
+        ) {
+          error.cicsExtensionError.errorMessage = l10n.t("CICSplex {0} not found.", profile.profile.cicsPlex);
+        }
         throw new CICSExtensionError({ baseError: error });
       }
     }
@@ -210,16 +218,16 @@ export class ProfileManagement {
           group: false,
         });
       } else {
-        Gui.showMessage(`Cannot find region ${profile.profile.regionName}`, {
-          severity: MessageSeverity.ERROR,
-        });
+        Gui.showMessage(l10n.t("Cannot find region {0}", profile.profile.regionName), { severity: MessageSeverity.ERROR });
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
-         if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
-          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA) {
-        error.cicsExtensionError.errorMessage = `Region ${profile.profile.regionName} not found.`;
-      }
+        if (
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM ||
+          error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA
+        ) {
+          error.cicsExtensionError.errorMessage = l10n.t("Region {0} not found.", profile.profile.regionName);
+        }
         throw new CICSExtensionError({ baseError: error });
       }
     }
@@ -246,7 +254,10 @@ export class ProfileManagement {
           });
         }
       } catch (error) {
-        throw new CICSExtensionError({ baseError: error, errorMessage: `Error retrieving cache - ${error.message}` }); 
+        throw new CICSExtensionError({
+          baseError: error,
+          errorMessage: l10n.t("Error retrieving cache - {0}", error.message),
+        });
       }
     } else {
       try {

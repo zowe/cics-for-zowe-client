@@ -9,16 +9,17 @@
  *
  */
 
+import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const TaskMeta: IResourceMeta<ITask> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TASK,
-  humanReadableNamePlural: "Tasks",
-  humanReadableNameSingular: "Task",
+  humanReadableNamePlural: l10n.t("Tasks"),
+  humanReadableNameSingular: l10n.t("Task"),
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");
@@ -32,7 +33,8 @@ export const TaskMeta: IResourceMeta<ITask> = {
     let label = `${resource.attributes.task} - ${resource.attributes.tranid}`;
 
     if (resource.attributes.runstatus.trim().toLowerCase() !== "suspended") {
-      label += ` (${resource.attributes.runstatus})`;
+      const status = resource.attributes.runstatus.trim().toLowerCase();
+      label += ` (${status.charAt(0).toUpperCase()}${status.slice(1)})`;
     }
 
     return label;
@@ -65,31 +67,31 @@ export const TaskMeta: IResourceMeta<ITask> = {
   getHighlights(resource: Resource<ITask>) {
     return [
       {
-        key: "Run Status",
+        key: l10n.t("Run Status"),
         value: resource.attributes.runstatus,
       },
       {
-        key: "Suspend Time",
+        key: l10n.t("Suspend Time"),
         value: resource.attributes.suspendtime,
       },
       {
-        key: "Suspend Type",
+        key: l10n.t("Suspend Type"),
         value: resource.attributes.suspendtype,
       },
       {
-        key: "Suspend Value",
+        key: l10n.t("Suspend Value"),
         value: resource.attributes.suspendvalue,
       },
       {
-        key: "User ID",
+        key: l10n.t("User ID"),
         value: resource.attributes.userid,
       },
       {
-        key: "Transaction ID",
+        key: l10n.t("Transaction ID"),
         value: resource.attributes.tranid,
       },
       {
-        key: "Current Program",
+        key: l10n.t("Current Program"),
         value: resource.attributes.currentprog,
       },
     ];
