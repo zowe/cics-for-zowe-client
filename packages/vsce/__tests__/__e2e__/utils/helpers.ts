@@ -29,6 +29,18 @@ export const constants = {
   LOCAL_FILE_1_NAME: "LOCFILE1",
   REMOTE_FILE_1_NAME: "REMFILE1",
   JVM_SERVER_NAME: "MYJVM1",
+  REGION_ERROR: "ERRORS",
+  ENABLE_BUNDLE: "Enable Bundle",
+  JVM_SERVER_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
+  Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
+  Please refer to the IBM documentation for resp code details`,
+  BUNDLE_ENABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
+  Failed to ENABLE  BUNDLE MYBUNDLE1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
+  Please refer to the IBM documentation for resp code details`,
+  TRANSACTION_INVALID_FILTER_ERROR_MESSAGE: `The CMCI REST API request failed. 
+  Failed to send request. Response details - Status code: 404, 
+  URL: /CICSSystemManagement/CICSLocalTransaction/MYPLEX1/ERRORS?CRITERIA=(TRANID%3DFILTER)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT, 
+  Message: Rest API failure with HTTP(S) status 404`,
 };
 
 export const getTree = (page: Page, exactText: string) => {

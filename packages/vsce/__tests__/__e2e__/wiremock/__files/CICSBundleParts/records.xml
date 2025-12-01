@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="4" displayed_recordcount="4" cachetoken="E1DF16C5DE694487" />
+	<records>
+		<cicsbundlepart _keydata="E6D9C9E3C5F2D84093899592A39696A2878960F14BF04B98A481938986898599404040404040404040404040" availstatus="NONE" bundle="MYBUNDLE1" bundlepart="mygradleapp-1.1.2" enablestatus="UNUSABLE" eyu_cicsname="ERRORS" eyu_cicsrel="E740" eyu_reserved="0" metadatafile="mygradleapp-1.1.2.warbundle" operation="" partclass="DEFINITION" parttype="http://www.ibm.com/xmlns/prod/cics/bundle/WARBUNDLE" seqnumber="1" />
+	</records>
+</response>
