@@ -19,4 +19,5 @@ export interface IProgram extends IResourceWithStatus {
   newcopycnt: string;
   usecount: string;
   language: string;
+  jvmserver: string;
 }
