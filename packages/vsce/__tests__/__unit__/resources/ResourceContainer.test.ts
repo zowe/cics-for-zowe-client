@@ -43,8 +43,9 @@ const prog1: IProgram = {
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
-  usecount:"0",
-  language:"COBOL"
+  usecount: "0",
+  language: "COBOL",
+  jvmserver: "EYUCMCIJ"
 };
 const prog2: IProgram = {
   program: "PROG2",
@@ -54,8 +55,9 @@ const prog2: IProgram = {
   progtype: "PROGRAM",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
-  usecount:"0",
-  language:"COBOL"
+  usecount: "0",
+  language: "COBOL",
+  jvmserver: "EYUCMCIJ"
 };
 const locFile1: ILocalFile = {
   browse: "",

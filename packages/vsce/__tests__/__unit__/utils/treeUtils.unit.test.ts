@@ -55,8 +55,9 @@ const prog: IProgram = {
   program: "APROG",
   progtype: "",
   status: "ENABLED",
-  usecount:"0",
-  language:"COBOL"
+  usecount: "0",
+  language: "COBOL",
+  jvmserver: "EYUCMCIJ"
 };
 
 describe("Tree Utils tests", () => {

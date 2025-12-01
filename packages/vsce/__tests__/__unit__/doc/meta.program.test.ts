@@ -30,8 +30,9 @@ describe("Program Meta", () => {
       enablestatus: "ENABLED",
       library: "MYLIB",
       librarydsn: "MYLIBDSN",
-      usecount:"0",
-      language:"COBOL"
+      usecount: "0",
+      language: "COBOL",
+      jvmserver: "EYUCMCIJ"
     });
   });
 
@@ -102,6 +103,10 @@ describe("Program Meta", () => {
       {
         key: "Library",
         value: "MYLIB",
+      },
+      {
+        key: "JVM Server",
+        value: "EYUCMCIJ",
       }
     ]);
   });
