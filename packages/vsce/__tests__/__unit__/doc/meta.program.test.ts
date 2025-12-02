@@ -19,6 +19,7 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 
 describe("Program Meta", () => {
   let programMock: Resource<IProgram>;
+  let programMockWithJVM: Resource<IProgram>;
 
   beforeEach(() => {
     programMock = new Resource({
@@ -30,10 +31,25 @@ describe("Program Meta", () => {
       enablestatus: "ENABLED",
       library: "MYLIB",
       librarydsn: "MYLIBDSN",
-      usecount:"0",
-      language:"COBOL"
+      usecount: "0",
+      language: "COBOL",
+      jvmserver: ""
     });
   });
+
+  programMockWithJVM = new Resource({
+      program: "MYPROG",
+      status: "ENABLED",
+      eyu_cicsname: "MYREG",
+      newcopycnt: "0",
+      progtype: "COBOL",
+      enablestatus: "ENABLED",
+      library: "MYLIB",
+      librarydsn: "MYLIBDSN",
+      usecount: "0",
+      language: "NOTDEFINED",
+      jvmserver: "EYUCMCIJ"
+    });
 
   it("should build criteria", () => {
     const crit = ProgramMeta.buildCriteria(["a", "b"]);
@@ -102,6 +118,28 @@ describe("Program Meta", () => {
       {
         key: "Library",
         value: "MYLIB",
+      }
+    ]);
+  });
+
+  it("should return highlights with JVM Server", () => {
+    const highlights = ProgramMeta.getHighlights(programMockWithJVM);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
+        key: "Use Count",
+        value: "0",
+      },
+      {
+        key: "Library",
+        value: "MYLIB",
+      },
+      {
+        key: "JVM Server",
+        value: "EYUCMCIJ",
       }
     ]);
   });

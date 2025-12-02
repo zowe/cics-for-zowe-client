@@ -61,8 +61,9 @@ const currRes = new Resource<IProgram>({
   progtype: "COBOL",
   library: "MYLIB",
   librarydsn: "MYLIBDSN",
-  usecount:"0",
-  language:"COBOL"
+  usecount: "0",
+  language: "COBOL",
+  jvmserver: "EYUCMCIJ"
 });
 
 describe("CICSResourceContainerNode tests", () => {
@@ -143,8 +144,9 @@ describe("CICSResourceContainerNode tests", () => {
           progtype: "COBOL",
           library: "MYLIB",
           librarydsn: "MYLIBDSN",
-          usecount:"0",
-          language:"COBOL"
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ"
         }),
       },
       [ProgramMeta]
@@ -171,8 +173,9 @@ describe("CICSResourceContainerNode tests", () => {
           progtype: "COBOL",
           library: "MYLIB",
           librarydsn: "MYLIBDSN",
-          usecount:"0",
-          language:"COBOL"
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ"
         }),
       },
       [ProgramMeta]
@@ -198,7 +201,7 @@ describe("CICSResourceContainerNode tests", () => {
     );
 
 
-    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", usecount:"0", language:"COBOL"});
+    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", usecount:"0", language:"COBOL", jvmserver:"EYUCMCIJ"});
 
     expect(containerNode.getContainedResource()).toEqual({ meta: ProgramMeta, resource: currRes });
     containerNode.setContainedResource(newRes);
@@ -238,7 +241,7 @@ describe("CICSResourceContainerNode tests", () => {
     expect(ensureSumSpy).toHaveBeenCalledTimes(1);
     expect(children).toHaveLength(2);
 
-    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", newcopycnt: "700", usecount:"0", language:"COBOL" });
+    const newRes = new Resource({ ...prog1, library: "", librarydsn: "", progtype: "", enablestatus: "ENABLED", newcopycnt: "700", usecount:"0", language:"COBOL", jvmserver:"EYUCMCIJ" });
 
     containerNode.updateStoredItem({
       meta: ProgramMeta,

@@ -73,8 +73,9 @@ describe("IconBuilder tests", () => {
         progtype: "COBOL",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
-        usecount:"0",
-        language:"COBOL",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ"
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-dark.svg"));
@@ -91,8 +92,9 @@ describe("IconBuilder tests", () => {
         progtype: "COBOL",
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
-        usecount:"0",
-        language:"COBOL",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ"
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-dark.svg"));
