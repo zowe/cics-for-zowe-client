@@ -3,7 +3,8 @@
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services, JVM Servers. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 
 ## `6.15.0`
 
