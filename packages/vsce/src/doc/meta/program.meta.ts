@@ -54,12 +54,12 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   },
 
   getHighlights(program: Resource<IProgram>) {
-     const result: { key: string; value: any }[] = [];
+     const result: { key: string; value: string }[] = [];
      result.push({
         key: l10n.t("Status"),
         value: program.attributes.status,
       },)
-     if(program.attributes.language!="NOTDEFINED"){
+     if(program.attributes.language!=="NOTDEFINED"){
       result.push({
         key: l10n.t("Language"),
         value: program.attributes.language,
@@ -73,7 +73,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
         key: l10n.t("Library"),
         value: program.attributes.library,
       },)
-    if(program.attributes.jvmserver!=""){
+    if(program.attributes.jvmserver!==""){
       result.push({
         key: l10n.t("JVM Server"),
         value: program.attributes.jvmserver,
