@@ -47,6 +47,7 @@ const ResourceInspector = () => {
     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
       setResourceInfo(event.data.data);
       setResourceActions(event.data.actions);
+      setSearch("");
     };
     vscode.addVscMessageListener(listener);
     vscode.postVscMessage({ command: "init" });
