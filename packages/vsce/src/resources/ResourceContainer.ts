@@ -9,14 +9,15 @@
  *
  */
 
-import { IContainedResource, IResourceMeta } from "../doc";
-import { runGetCache, runGetResource } from "../utils/resourceUtils";
+import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { Resource } from "./Resource";
+import { l10n } from "vscode";
+import { IContainedResource, IResourceMeta } from "../doc";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
-import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { runGetCache, runGetResource } from "../utils/resourceUtils";
+import { Resource } from "./Resource";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -29,7 +30,7 @@ export class ResourceContainer {
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
     private context: IResourceProfileNameInfo,
-    private parentResource?: Resource<IResource>,
+    private parentResource?: Resource<IResource>
   ) {
     this.resetCriteria();
   }
@@ -133,7 +134,7 @@ export class ResourceContainer {
    * @returns How many of each resource type to fetch on the next request.
    */
   private calculateAllocations(
-    available: { meta: IResourceMeta<IResource>; remaining: number; }[],
+    available: { meta: IResourceMeta<IResource>; remaining: number }[],
     pageSize: number
   ): Map<IResourceMeta<IResource>, number> {
     const totalRemaining = available.reduce((acc, v) => acc + v.remaining, 0);
@@ -197,7 +198,13 @@ export class ResourceContainer {
         );
       }
 
-      results.push(...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => { { return { meta, resource: new Resource(r) }; } }));
+      results.push(
+        ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
+          {
+            return { meta, resource: new Resource(r) };
+          }
+        })
+      );
       this.nextIndex.set(meta, start + count);
     }
     return results;
@@ -248,7 +255,7 @@ export class ResourceContainer {
       const safeFetched = Math.min(parseInt(summary.recordcount), next - 1);
       fetched += safeFetched;
     }
-    return `${fetched} of ${total}`;
+    return l10n.t("{0} of {1}", fetched, total);
   }
 
   /**

@@ -9,7 +9,7 @@
  *
  */
 
-import { InputBoxOptions, QuickPick, QuickPickItem, window } from "vscode";
+import { InputBoxOptions, QuickPick, QuickPickItem, l10n, window } from "vscode";
 
 export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>): Promise<QuickPickItem | undefined> {
   return new Promise<QuickPickItem | undefined>((c) => quickpick.onDidAccept(() => c(quickpick.activeItems[0])));
@@ -30,19 +30,22 @@ export class FilterDescriptor implements QuickPickItem {
 
 export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
   let pattern: string = "";
-  const createPick = new FilterDescriptor(`\uFF0B Create New ${resourceName} Filter (use a comma to separate multiple patterns e.g. LG*,I*)`);
+  const createPick = new FilterDescriptor(
+    l10n.t("{0} Create New {1} Filter (use a comma to separate multiple patterns e.g. LG*,I*)", "\uFF0B", resourceName)
+  );
   const items = resourceHistory.map((loadedFilter) => {
     return { label: loadedFilter };
   });
   const quickpick = window.createQuickPick();
   quickpick.items = [createPick, ...items];
-  quickpick.placeholder = "Select a Filter";
+  quickpick.placeholder = l10n.t("Select a Filter");
   quickpick.ignoreFocusOut = true;
   quickpick.show();
   const choice = await resolveQuickPickHelper(quickpick);
+
   quickpick.hide();
   if (!choice) {
-    window.showInformationMessage("No Selection Made");
+    window.showInformationMessage(l10n.t("No Selection Made"));
     return;
   }
   if (choice instanceof FilterDescriptor) {
@@ -61,7 +64,7 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
   }
   pattern = (await window.showInputBox(options2)) || "";
   if (!pattern) {
-    window.showInformationMessage("You must enter a pattern");
+    window.showInformationMessage(l10n.t("You must enter a pattern"));
     return;
   }
   // Some resources have case-sensitive filtering (bundleparts)

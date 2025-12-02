@@ -9,33 +9,34 @@
  *
  */
 
-import { ILocalFile, ResourceAction, IResourceContext, ResourceTypes, ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
+import { ILocalFile, IResourceContext, ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { l10n } from "vscode";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSLocalFile>[] = [
   {
     id: "CICS.CICSLocalFile.OPEN",
-    name: "Open Local File",
+    name: l10n.t("Open Local File"),
     resourceType: ResourceTypes.CICSLocalFile,
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "OPEN",
     action: "cics-extension-for-zowe.openLocalFile",
   },
   {
     id: "CICS.CICSLocalFile.CLOSE",
-    name: "Close Local File",
+    name: l10n.t("Close Local File"),
     resourceType: ResourceTypes.CICSLocalFile,
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.openstatus !== "CLOSED",
     action: "cics-extension-for-zowe.closeLocalFile",
   },
   {
     id: "CICS.CICSLocalFile.ENABLE",
-    name: "Enable Local File",
+    name: l10n.t("Enable Local File"),
     resourceType: ResourceTypes.CICSLocalFile,
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "ENABLED",
     action: "cics-extension-for-zowe.enableLocalFile",
   },
   {
     id: "CICS.CICSLocalFile.DISABLE",
-    name: "Disable Local File",
+    name: l10n.t("Disable Local File"),
     resourceType: ResourceTypes.CICSLocalFile,
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "DISABLED",
     action: "cics-extension-for-zowe.disableLocalFile",
