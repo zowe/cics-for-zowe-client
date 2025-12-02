@@ -195,6 +195,9 @@ export class CICSPlexTree extends TreeItem {
     if (config.get<boolean>("TSQueue", true)) {
       this.children.push(this.buildCombinedTree(l10n.t("All TS Queues"), [TSQueueMeta, SharedTSQueueMeta]));
     }
+    if (this.children.length >= 1) {
+      this.children = [this.children[0], ...this.children.slice(1).sort((r1, r2) => r1.label.toString().localeCompare(r2.label.toString()))];
+    }
   }
 
   private buildCombinedTree(label: string, metas: IResourceMeta<IResource>[]) {
