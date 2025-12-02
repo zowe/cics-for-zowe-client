@@ -9,13 +9,13 @@
  *
  */
 
-import { TreeView } from "vscode";
-import { IResourceMeta } from "../doc";
-import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
+import { TreeView } from "vscode";
+import { IResourceMeta } from "../doc";
+import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { ProfileManagement } from "./profileManagement";
 
