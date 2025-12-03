@@ -46,7 +46,7 @@
     "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck",
-    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" \"__mocks__/**/*.ts\""
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" \"__mocks__/**/*.ts\" --ignore-path ../../.prettierignore"
   },
   "imperative": {
     "configurationModule": "lib/imperative.js"

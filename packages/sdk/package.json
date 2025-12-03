@@ -43,7 +43,7 @@
     "test:e2e": "echo 'Nothing to e2e test'",
     "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck",
-    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" --ignore-path ../../.prettierignore"
   },
   "dependencies": {
     "xml2js": "0.5.0"
