@@ -251,7 +251,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
       }
     } catch (error) {
-        CICSLogger.error(`Error showing logs for hyperlink: ${error.message}`);
+        CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
         window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
       }
   }
