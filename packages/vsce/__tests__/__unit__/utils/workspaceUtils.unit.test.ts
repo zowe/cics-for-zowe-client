@@ -50,7 +50,6 @@ import { join } from "path";
 import * as workspaceUtils from "../../../src/utils/workspaceUtils";
 
 describe("Workspce Utils", () => {
-  
   it("should open config file", async () => {
     expect(openDocumentMock).toHaveBeenCalledTimes(0);
     expect(showTextDocumentMock).toHaveBeenCalledTimes(0);
@@ -73,7 +72,6 @@ describe("Workspce Utils", () => {
   });
 
   it("should return false for opening settings for resources", async () => {
-    
     executeCommandMock.mockReset();
     showInfoMsgMock.mockReset();
     showInfoMsgMock.mockReturnValue(Promise.resolve("Open Settings"));
@@ -89,7 +87,6 @@ describe("Workspce Utils", () => {
   });
 
   it("should return false for opening settings for resources and cancel settings", async () => {
-    
     executeCommandMock.mockReset();
     showInfoMsgMock.mockReset();
     showInfoMsgMock.mockReturnValue(Promise.resolve("Cancel"));

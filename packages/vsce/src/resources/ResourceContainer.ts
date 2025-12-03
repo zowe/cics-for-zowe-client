@@ -110,8 +110,8 @@ export class ResourceContainer {
   /**
    * @returns How many of each resource type are remaining to fetch
    */
-  private getAvailableResourceTypes(): { meta: IResourceMeta<IResource>; remaining: number; }[] {
-    const available: { meta: IResourceMeta<IResource>; remaining: number; }[] = [];
+  private getAvailableResourceTypes(): { meta: IResourceMeta<IResource>; remaining: number }[] {
+    const available: { meta: IResourceMeta<IResource>; remaining: number }[] = [];
 
     for (const meta of this.resourceTypes) {
       const summary = this.summaries.get(meta);

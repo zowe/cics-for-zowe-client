@@ -31,9 +31,11 @@ const LOCAL_ACCESS_TYPE = 5;
 const CMAS_MAINTANCE_POINT = 3;
 
 export function scoreCicsPlexByStatus(plex: ICicsPlexInfo): number {
-  return (plex.status === "ACTIVE" && ACTIVE_STATUS) +
-   (plex.accesstype === "LOCAL" && LOCAL_ACCESS_TYPE) +
-   (plex.mpstatus === "YES" && CMAS_MAINTANCE_POINT);
+  return (
+    (plex.status === "ACTIVE" && ACTIVE_STATUS) +
+    (plex.accesstype === "LOCAL" && LOCAL_ACCESS_TYPE) +
+    (plex.mpstatus === "YES" && CMAS_MAINTANCE_POINT)
+  );
 }
 
 // pick the highest scoring cicsplexes if there are duplicates

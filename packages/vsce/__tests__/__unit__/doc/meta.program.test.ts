@@ -33,23 +33,23 @@ describe("Program Meta", () => {
       librarydsn: "MYLIBDSN",
       usecount: "0",
       language: "COBOL",
-      jvmserver: ""
+      jvmserver: "",
     });
   });
 
   programMockWithJVM = new Resource({
-      program: "MYPROG",
-      status: "ENABLED",
-      eyu_cicsname: "MYREG",
-      newcopycnt: "0",
-      progtype: "COBOL",
-      enablestatus: "ENABLED",
-      library: "MYLIB",
-      librarydsn: "MYLIBDSN",
-      usecount: "0",
-      language: "NOTDEFINED",
-      jvmserver: "EYUCMCIJ"
-    });
+    program: "MYPROG",
+    status: "ENABLED",
+    eyu_cicsname: "MYREG",
+    newcopycnt: "0",
+    progtype: "COBOL",
+    enablestatus: "ENABLED",
+    library: "MYLIB",
+    librarydsn: "MYLIBDSN",
+    usecount: "0",
+    language: "NOTDEFINED",
+    jvmserver: "EYUCMCIJ",
+  });
 
   it("should build criteria", () => {
     const crit = ProgramMeta.buildCriteria(["a", "b"]);
@@ -118,7 +118,7 @@ describe("Program Meta", () => {
       {
         key: "Library",
         value: "MYLIB",
-      }
+      },
     ]);
   });
 
@@ -140,7 +140,7 @@ describe("Program Meta", () => {
       {
         key: "JVM Server",
         value: "EYUCMCIJ",
-      }
+      },
     ]);
   });
 

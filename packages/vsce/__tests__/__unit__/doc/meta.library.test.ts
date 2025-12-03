@@ -28,7 +28,7 @@ describe("Library Meta", () => {
       ranking: "10",
       status: "ENABLED",
       enablestatus: "ENABLED",
-      numdsnames: "6"
+      numdsnames: "6",
     });
   });
 
@@ -83,7 +83,7 @@ describe("Library Meta", () => {
       {
         key: "Number of DS Names",
         value: "6",
-      }
+      },
     ]);
   });
 

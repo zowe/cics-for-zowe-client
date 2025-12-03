@@ -18,10 +18,10 @@ jest.mock("../../../src/utils/profileManagement", () => ({
 }));
 
 describe("ViewMore Tree item", () => {
-
   it("should create viewmore tree item", () => {
-
-    const resourceNode = new CICSResourceContainerNode("Programs", { parentNode: {} as CICSRegionTree, profile: {} as IProfileLoaded }, undefined, [ProgramMeta]);
+    const resourceNode = new CICSResourceContainerNode("Programs", { parentNode: {} as CICSRegionTree, profile: {} as IProfileLoaded }, undefined, [
+      ProgramMeta,
+    ]);
     const itm = new ViewMore(resourceNode);
 
     expect(itm.command).toBeDefined();
@@ -31,9 +31,7 @@ describe("ViewMore Tree item", () => {
 });
 
 describe("Text Tree item", () => {
-
   it("should create text tree item", () => {
-
     const itm = new TextTreeItem("A TEXT TREE ITEM", "Text.Context");
 
     expect(itm.label).toEqual("A TEXT TREE ITEM");

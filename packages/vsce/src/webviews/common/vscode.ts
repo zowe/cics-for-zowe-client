@@ -22,7 +22,7 @@ export interface TransformWebviewMessage {
     resourceIconPath: { light: string; dark: string };
     resourceName: string;
     humanReadableNameSingular: string;
-    highlights: { key: string; value: string; }[];
+    highlights: { key: string; value: string }[];
     resource: IResource;
     resourceContext: IResourceProfileNameInfo;
   };
@@ -33,19 +33,12 @@ export interface TransformWebviewMessage {
   actionId?: string;
 }
 
-export function postVscMessage(
-  message: TransformWebviewMessage
-): void {
+export function postVscMessage(message: TransformWebviewMessage): void {
   vscode.postMessage({ ...message });
 }
 
-export function addVscMessageListener(
-  listener: (
-    ev:
-      | MessageEvent<TransformWebviewMessage>
-  ) => unknown
-): void {
-  window.addEventListener('message', listener);
+export function addVscMessageListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+  window.addEventListener("message", listener);
 }
 
 export function addScrollerListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
@@ -56,11 +49,6 @@ export function addResizeListener(listener: (ev: MessageEvent<TransformWebviewMe
   window.addEventListener("resize", listener);
 }
 
-export function removeVscMessageListener(
-  listener: (
-    ev:
-      | MessageEvent<TransformWebviewMessage>
-  ) => unknown
-): void {
-  window.removeEventListener('message', listener);
+export function removeVscMessageListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+  window.removeEventListener("message", listener);
 }

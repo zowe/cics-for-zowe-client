@@ -21,7 +21,7 @@ export async function getCache(
   session: AbstractSession,
   parms: ICacheParms,
   requestOptions?: ICMCIRequestOptions,
-  headers: { [key: string]: string; }[] = [],
+  headers: { [key: string]: string }[] = []
 ): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.cacheToken, "CICS Result Cache Token", "CICS Result Cache Token is required");
   Logger.getAppLogger().debug("Attempting to get cache with the following parameters:\n%s", JSON.stringify(parms));

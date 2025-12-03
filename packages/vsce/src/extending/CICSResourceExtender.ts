@@ -9,7 +9,7 @@
  *
  */
 
-import { ResourceAction, IResourceExtender, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { IResourceExtender, ResourceAction, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { getBuiltInResourceActions } from "../resources/actions";
 
 class SCICSResourceExtender implements IResourceExtender {

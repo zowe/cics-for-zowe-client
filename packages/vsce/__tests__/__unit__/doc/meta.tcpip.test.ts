@@ -32,8 +32,7 @@ describe("TCP IP Meta", () => {
       protocol: "HTTP",
       attls: "NOTUSED",
       ssltype: "NOSSL",
-      openstatus: "OPEN"
-
+      openstatus: "OPEN",
     });
   });
 
@@ -82,20 +81,20 @@ describe("TCP IP Meta", () => {
         value: "CWXN",
       },
       {
-      key: "URM",
-      value: "EYU9VWAN",
+        key: "URM",
+        value: "EYU9VWAN",
       },
       {
-      key: "Protocol",
-      value: "HTTP",
+        key: "Protocol",
+        value: "HTTP",
       },
       {
-      key: "ATTLS",
-      value: "NOTUSED",
+        key: "ATTLS",
+        value: "NOTUSED",
       },
       {
-      key: "SSL Type",
-      value: "NOSSL",
+        key: "SSL Type",
+        value: "NOSSL",
       },
     ]);
   });

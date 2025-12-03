@@ -9,23 +9,29 @@
  *
  */
 
-import { IResource, IResourceContext, IResourceProfileNameInfo,
-   ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import {
+  IResource,
+  IResourceContext,
+  IResourceProfileNameInfo,
+  ResourceAction,
+  ResourceTypeMap,
+  ResourceTypes,
+} from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, window, l10n } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n, window } from "vscode";
+import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
+import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
+import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
+import { runGetResource } from "../utils/resourceUtils";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
-import { CICSTree } from ".";
-import { CICSLogger } from "../utils/CICSLogger";
-import { runGetResource } from "../utils/resourceUtils";
-import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -171,8 +177,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActions() {
     // Required as Array.filter cannot be asyncronous
-    const asyncFilter = async (arr: ResourceAction<keyof ResourceTypeMap>[],
-       predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>) => {
+    const asyncFilter = async (
+      arr: ResourceAction<keyof ResourceTypeMap>[],
+      predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>
+    ) => {
       const results = await Promise.all(arr.map(predicate));
       return arr.filter((_v, index) => results[index]);
     };
@@ -188,8 +196,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap],
-           this.getResourceContext());
+        const visible = await action.visibleWhen(
+          this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap],
+          this.getResourceContext()
+        );
         return visible;
       }
     });
@@ -240,22 +250,22 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         const regionRecords = toArray(response.records.cicsregion);
         if (regionRecords.length > 0) {
           const regionData = regionRecords[0];
-          if(regionData && regionData.jobid){
-              const jobid = regionData.jobid;
-              const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
-              await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
-            }
-          } else {
-              CICSLogger.debug(`Empty region records array for ${regionName}`);
-              window.showErrorMessage(l10n.t("Could not find region data and job id for region {0} to show logs.", regionName));
+          if (regionData && regionData.jobid) {
+            const jobid = regionData.jobid;
+            const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
+            await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
           }
+        } else {
+          CICSLogger.debug(`Empty region records array for ${regionName}`);
+          window.showErrorMessage(l10n.t("Could not find region data and job id for region {0} to show logs.", regionName));
+        }
       } else {
-          CICSLogger.debug(`No region records found for ${regionName}`);
-          window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
+        CICSLogger.debug(`No region records found for ${regionName}`);
+        window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
       }
     } catch (error) {
-        CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
-        window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
-      }
+      CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
+      window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+    }
   }
 }

@@ -35,7 +35,7 @@ export interface ICICSExtensionError {
    */
   resp2Code?: number;
   /**
-   * Name of the resource 
+   * Name of the resource
    */
   resourceName?: string;
 }

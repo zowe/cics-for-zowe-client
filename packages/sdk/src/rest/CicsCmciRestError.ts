@@ -10,8 +10,8 @@
  */
 
 import { ImperativeError } from "@zowe/imperative";
-import { ICMCIApiResponse, ICMCIResponseResultSummary } from "../doc";
 import { CicsCmciConstants } from "../constants";
+import { ICMCIApiResponse, ICMCIResponseResultSummary } from "../doc";
 import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
 
 export class CicsCmciRestError extends ImperativeError {
@@ -28,8 +28,8 @@ export class CicsCmciRestError extends ImperativeError {
   EIBFN_ALT: string;
   FEEDBACKRESP_ALT: string;
 
-  constructor(msg: string , response: ICMCIApiResponse) {
-    super({msg});
+  constructor(msg: string, response: ICMCIApiResponse) {
+    super({ msg });
     this.resultSummary = response.response.resultsummary;
     this.errors = response.response.errors;
     this.parseResultSummary();
@@ -44,6 +44,6 @@ export class CicsCmciRestError extends ImperativeError {
     this.FEEDBACKRESP_2 = parseInt(this.errors?.feedback?.resp2 || CicsCmciConstants.DEFAULT_RESP_CODE);
     this.FEEDBACK_ACTION = this.errors?.feedback?.action;
     this.FEEDBACKRESP_ALT = this.errors?.feedback?.resp_alt;
-    this.EIBFN_ALT = this.errors?.feedback?.eibfn_alt
+    this.EIBFN_ALT = this.errors?.feedback?.eibfn_alt;
   }
 }

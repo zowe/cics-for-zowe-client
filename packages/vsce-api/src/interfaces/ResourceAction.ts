@@ -11,8 +11,22 @@
 
 import { ResourceTypes } from "../resources";
 import { IResourceContext } from "./IResourceContext";
-import { IBundle, IJVMServer, ILibrary, ILocalFile, IPipeline, IProgram, IRemoteFile,
-  ISharedTSQueue, ITask, ITCPIP, ITransaction, ITSQueue, IURIMap, IWebService } from "./resources";
+import {
+  IBundle,
+  IJVMServer,
+  ILibrary,
+  ILocalFile,
+  IPipeline,
+  IProgram,
+  IRemoteFile,
+  ISharedTSQueue,
+  ITask,
+  ITCPIP,
+  ITransaction,
+  ITSQueue,
+  IURIMap,
+  IWebService,
+} from "./resources";
 
 export interface ResourceTypeMap {
   [ResourceTypes.CICSProgram]: IProgram;
@@ -40,15 +54,13 @@ export interface ResourceActionOptions<TType extends keyof ResourceTypeMap> {
 }
 
 export class ResourceAction<TType extends keyof ResourceTypeMap> {
-
   private _id: string;
   private _name: string;
   private _resourceType: TType;
   private _action: ResourceActionOptions<TType>["action"];
   private _visibleWhen: ResourceActionOptions<TType>["visibleWhen"];
 
-  constructor(
-    { id, name, resourceType, action, visibleWhen }: ResourceActionOptions<TType>) {
+  constructor({ id, name, resourceType, action, visibleWhen }: ResourceActionOptions<TType>) {
     this._id = id;
     this._name = name;
     this._resourceType = resourceType;

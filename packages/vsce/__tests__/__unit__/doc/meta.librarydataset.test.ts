@@ -9,7 +9,7 @@
  *
  */
 
-import { ILibraryDataset, ILibrary, IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
 import { Resource } from "../../../src/resources";
 
@@ -29,7 +29,7 @@ describe("Library Dataset Meta", () => {
       ranking: "10",
       status: "ENABLED",
       enablestatus: "ENABLED",
-      numdsnames: "6"
+      numdsnames: "6",
     });
     libraryDSMock = new Resource({
       dsname: "MY.DSNAME",
@@ -69,15 +69,17 @@ describe("Library Dataset Meta", () => {
     const childTypeDefaultCriteria = LibraryDatasetMeta.childType[0].getDefaultCriteria(parentLibraryMock.attributes);
     expect(childTypeDefaultCriteria).toEqual(`(LIBRARYDSN='MY.DSNAME')`);
     // @ts-ignore - we know it's not undefined in this test
-    const childTypeDefaultContext = LibraryDatasetMeta.childType[0].getContext(new Resource<IProgram>({
-      program: "myprog",
-      eyu_cicsname: "MYREGION",
-      library: "MYLIB",
-      librarydsn: "MY.LIB.1",
-      newcopycnt: "2",
-      progtype: "COBOL",
-      status: "ENABLED",
-    }));
+    const childTypeDefaultContext = LibraryDatasetMeta.childType[0].getContext(
+      new Resource<IProgram>({
+        program: "myprog",
+        eyu_cicsname: "MYREGION",
+        library: "MYLIB",
+        librarydsn: "MY.LIB.1",
+        newcopycnt: "2",
+        progtype: "COBOL",
+        status: "ENABLED",
+      })
+    );
     expect(childTypeDefaultContext).toEqual(`CICSProgram.ENABLED.PARENT.CICSLibraryDatasetName.myprog`);
   });
 

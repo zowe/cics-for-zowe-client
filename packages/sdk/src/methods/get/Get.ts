@@ -29,7 +29,7 @@ export async function getResource(
   session: AbstractSession,
   parms: IResourceParms,
   requestOptions?: ICMCIRequestOptions,
-  headers: { [key: string]: string; }[] = [],
+  headers: { [key: string]: string }[] = []
 ): Promise<ICMCIApiResponse> {
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Resource name", "CICS resource name is required");
 

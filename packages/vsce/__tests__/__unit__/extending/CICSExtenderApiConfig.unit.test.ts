@@ -9,18 +9,18 @@
  *
  */
 
-import CICSExtenderApiConfig from "../../../src/extending/CICSExtenderApiConfig";
 import { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
+import CICSExtenderApiConfig from "../../../src/extending/CICSExtenderApiConfig";
 
 describe("CICS Extender Api Tests", () => {
   it("should return resource configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
-    expect(config).toHaveProperty('resources.supportedResources');
+    expect(config).toHaveProperty("resources.supportedResources");
   });
 
   it("should return supported resources configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
-    expect(config).toHaveProperty('resources.supportedResources');
+    expect(config).toHaveProperty("resources.supportedResources");
     expect(config.resources.supportedResources).toHaveLength(14);
   });
 });

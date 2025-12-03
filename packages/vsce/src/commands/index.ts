@@ -16,27 +16,27 @@ import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
+import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
+import { getDisableResourceCommands } from "./disableResourceCommand";
+import { getEnableResourceCommands } from "./enableResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
+import { getInspectResourceCommand } from "./inspectResourceCommand";
+import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
-import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
+import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
+import { showBundleDirectory } from "./showBundleDirectoryCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
-import { setCICSRegionCommand } from "./setCICSRegionCommand";
-import { getInspectResourceCommand } from "./inspectResourceCommand";
-import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
-import { getDisableResourceCommands } from "./disableResourceCommand";
-import { getEnableResourceCommands } from "./enableResourceCommand";
-import { showBundleDirectory } from "./showBundleDirectoryCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [

@@ -41,17 +41,21 @@ const successResponse = {
         library: "MYLIB",
         librarydsn: "MYLIBDSN",
       },
-    ]
-  }
+    ],
+  },
 };
 const getResourceMock = jest.fn().mockReturnValue(Promise.resolve(successResponse));
 
 const profile = {
-  name: "MYPROF", failNotFound: false, message: "", type: "cics", profile: {
+  name: "MYPROF",
+  failNotFound: false,
+  message: "",
+  type: "cics",
+  profile: {
     protocol: "http",
     host: "hostname",
-    port: 1234
-  }
+    port: 1234,
+  },
 };
 
 jest.mock("@zowe/cics-for-zowe-sdk", () => ({
@@ -65,27 +69,33 @@ jest.mock("../../../src/utils/profileManagement", () => ({
       return {
         loadNamedProfile: () => {
           return profile;
-        }
+        },
       };
-    }
+    },
   },
 }));
 
 const getExtSpy = jest.spyOn(vscode.extensions, "getExtension");
 
-import { buildNewSession, buildRequestLoggerString, buildRequestOptions, buildResourceParms, buildUserAgentHeader, runGetResource } from "../../../src/utils/resourceUtils";
-import { AuthOrder, RestClientError } from "@zowe/imperative";
-import { CICSLogger } from "../../../src/utils/CICSLogger";
 import { CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import * as errorUtils from "../../../src/utils/errorUtils";
+import { AuthOrder, RestClientError } from "@zowe/imperative";
 import { SessionHandler } from "../../../src/resources";
+import { CICSLogger } from "../../../src/utils/CICSLogger";
+import * as errorUtils from "../../../src/utils/errorUtils";
+import {
+  buildNewSession,
+  buildRequestLoggerString,
+  buildRequestOptions,
+  buildResourceParms,
+  buildUserAgentHeader,
+  runGetResource,
+} from "../../../src/utils/resourceUtils";
 
 const authOrderSpy = jest.spyOn(AuthOrder, "makingRequestForToken");
-const loggerSpy = jest.spyOn(CICSLogger, "debug").mockImplementation(() => { });
+const loggerSpy = jest.spyOn(CICSLogger, "debug").mockImplementation(() => {});
 const sessionHandlerSpy = jest.spyOn(SessionHandler.prototype, "getSession");
 
 describe("Resource Util Helper methods", () => {
-
   beforeEach(() => {
     authOrderSpy.mockReset();
   });
@@ -94,7 +104,7 @@ describe("Resource Util Helper methods", () => {
     getExtSpy.mockReturnValue({
       packageJSON: {
         version: "1.2.3",
-      }
+      },
     } as Extension<any>);
 
     const userAgent = buildUserAgentHeader();
@@ -102,14 +112,18 @@ describe("Resource Util Helper methods", () => {
   });
 
   it("builds resource params object with all specified", () => {
-    const parms = buildResourceParms("MYRES", "MYREG", "MYPLEX", { criteria: "MYCRIT", parameter: "MYPARAM", queryParams: { nodiscard: true, overrideWarningCount: true, summonly: true } });
+    const parms = buildResourceParms("MYRES", "MYREG", "MYPLEX", {
+      criteria: "MYCRIT",
+      parameter: "MYPARAM",
+      queryParams: { nodiscard: true, overrideWarningCount: true, summonly: true },
+    });
     expect(parms).toEqual({
       name: "MYRES",
       regionName: "MYREG",
       cicsPlex: "MYPLEX",
       criteria: "MYCRIT",
       parameter: "MYPARAM",
-      queryParams: { nodiscard: true, overrideWarningCount: true, summonly: true }
+      queryParams: { nodiscard: true, overrideWarningCount: true, summonly: true },
     });
   });
 
@@ -134,7 +148,7 @@ describe("Resource Util Helper methods", () => {
 
   it("builds request options", () => {
     const parms = buildRequestOptions();
-    expect(parms).toEqual({ failOnNoData: false, useCICSCmciRestError: true, });
+    expect(parms).toEqual({ failOnNoData: false, useCICSCmciRestError: true });
   });
 
   it("builds new session", () => {
@@ -159,18 +173,15 @@ describe("Resource Util Helper methods", () => {
     const logString = buildRequestLoggerString("POST", "MYRES", { lower: "case", UPPER: "CASE" });
     expect(logString).toEqual("POST - Resource [MYRES], LOWER [case], UPPER [CASE]");
   });
-
 });
 
 describe("Resource Util requesters", () => {
-
   beforeEach(() => {
     loggerSpy.mockReset();
     authOrderSpy.mockReset();
   });
 
   it("should get a resource", async () => {
-
     let response: ICMCIApiResponse | undefined;
     let error;
 
@@ -179,7 +190,6 @@ describe("Resource Util requesters", () => {
         profileName: "MYPROF",
         resourceName: "MYRES",
       });
-
     } catch (err) {
       error = err;
     }
@@ -198,7 +208,6 @@ describe("Resource Util requesters", () => {
   });
 
   it("should make a second request if first errors", async () => {
-
     getResourceMock.mockReset();
     const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
     const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
@@ -207,11 +216,13 @@ describe("Resource Util requesters", () => {
     fakeCICSSession.ISession.tokenValue = '""';
     sessionHandlerSpy.mockReturnValueOnce(fakeCICSSession);
 
-    getResourceMock.mockImplementationOnce(() => {
-      throw errorToThrow;
-    }).mockImplementationOnce(() => {
-      return successResponse;
-    });
+    getResourceMock
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      })
+      .mockImplementationOnce(() => {
+        return successResponse;
+      });
 
     let response: ICMCIApiResponse | undefined;
     let error;
@@ -221,7 +232,6 @@ describe("Resource Util requesters", () => {
         profileName: "MYPROF",
         resourceName: "MYRES",
       });
-
     } catch (err) {
       error = err;
     }
@@ -240,5 +250,4 @@ describe("Resource Util requesters", () => {
     expect(response?.response).toHaveProperty("resultsummary");
     expect(response?.response.resultsummary).toHaveProperty("recordcount");
   });
-
 });

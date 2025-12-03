@@ -11,7 +11,7 @@
 
 import { commands, ExtensionContext } from "vscode";
 
-import { inspectResourceByName, inspectResource } from "./inspectResourceCommandUtils";
+import { inspectResource, inspectResourceByName } from "./inspectResourceCommandUtils";
 
 export function getInspectResourceCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {

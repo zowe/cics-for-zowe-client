@@ -28,7 +28,7 @@ import { Utils } from "../../utils";
 export async function putResource(
   session: AbstractSession,
   parms: IResourceParms,
-  headers: { [key: string]: string; }[] = [],
+  headers: { [key: string]: string }[] = [],
   requestBody: any,
   requestOptions?: ICMCIRequestOptions
 ): Promise<ICMCIApiResponse> {
@@ -45,7 +45,9 @@ export async function putResource(
   const cmciResource = Utils.getResourceUri(parms.name, options);
 
   Logger.getAppLogger().debug(
-    "PUT request - Resource [" + parms.name + "]" +
+    "PUT request - Resource [" +
+      parms.name +
+      "]" +
       (parms.cicsPlex ? ", CICSplex [" + parms.cicsPlex + "]" : "") +
       (parms.regionName ? ", Region [" + parms.regionName + "]" : "") +
       (parms.criteria ? ", Criteria [" + parms.criteria + "]" : "") +

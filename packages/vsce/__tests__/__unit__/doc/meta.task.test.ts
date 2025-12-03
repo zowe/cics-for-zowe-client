@@ -94,8 +94,8 @@ describe("Task Meta", () => {
         value: "EYU0VGEL",
       },
       {
-       key: "User ID",
-       value: "CICSUSER",
+        key: "User ID",
+        value: "CICSUSER",
       },
       {
         key: "Transaction ID",
