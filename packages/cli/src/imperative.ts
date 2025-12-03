@@ -10,9 +10,9 @@
  */
 
 // Imperative version of Zowe CLI
+import { getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
 import { IImperativeConfig } from "@zowe/imperative";
 import { PluginConstants } from "./PluginConstants";
-import { getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
 
 const config: IImperativeConfig = {
   commandModuleGlobs: ["*/*.definition!(.d).*s"],
@@ -26,9 +26,7 @@ const config: IImperativeConfig = {
   //         connProfType: "cics"
   //     }
   // ],
-  profiles: [
-    getCICSProfileDefinition(),
-  ],
+  profiles: [getCICSProfileDefinition()],
 };
 
 export = config;

@@ -39,7 +39,7 @@
     "test:system": "echo 'Nothing to system test'",
     "test:unit": "jest --config unit.jest_config.ts",
     "test:e2e": "echo 'Nothing to e2e test'",
-    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
+    "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" --ignore-path ../../.prettierignore"
   },
   "dependencies": {
     "@zowe/cics-for-zowe-sdk": "^6.15.0",

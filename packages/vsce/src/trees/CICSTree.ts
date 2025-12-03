@@ -11,6 +11,7 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import {
   Event,
@@ -27,6 +28,9 @@ import {
   window,
 } from "vscode";
 import constants from "../constants/CICS.defaults";
+import errorConstants from "../constants/CICS.errorMessages";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -39,10 +43,6 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { IProfileLoaded } from "@zowe/imperative";
-import { CICSErrorHandler } from "../errors/CICSErrorHandler";
-import errorConstants from "../constants/CICS.errorMessages";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];

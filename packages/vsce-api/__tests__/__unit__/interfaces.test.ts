@@ -14,18 +14,19 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
 import { IResourceContext } from "../../src/interfaces/IResourceContext";
 import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
-import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 import { ResourceAction, ResourceTypeMap } from "../../src/interfaces/ResourceAction";
 import { IProgram, IResource } from "../../src/interfaces/resources";
+import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 
 describe("Interfaces", () => {
-
   const action = new ResourceAction({
     id: "CICS.CICSProgram.NEWCOPY",
     name: "New Copy Program",
     resourceType: ResourceTypes.CICSProgram,
-    action: async (_resource: IProgram, _resourceContext: IResourceContext) => { },
-    visibleWhen(_resource, _resourceContext) { return true; },
+    action: async (_resource: IProgram, _resourceContext: IResourceContext) => {},
+    visibleWhen(_resource, _resourceContext) {
+      return true;
+    },
   });
 
   const extender: IResourceExtender = {
@@ -47,7 +48,7 @@ describe("Interfaces", () => {
     },
     getActionsFor: function <TType extends keyof ResourceTypeMap>(type: TType): ResourceAction<TType>[] {
       return (this.registeredActions.get(type) || []) as unknown as ResourceAction<TType>[];
-    }
+    },
   };
 
   const api: IExtensionAPI = {

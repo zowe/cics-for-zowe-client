@@ -17,15 +17,15 @@ jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     getProfilesCache: jest.fn().mockReturnValue({
       fetchBaseProfile: fetchBaseProfileMock,
-      fetchAllProfiles: fetchAllProfilesMock
+      fetchAllProfiles: fetchAllProfilesMock,
     }),
     getExplorerApis: jest.fn(),
     zoweExplorerAPI: {
       getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn()
-      })
-    }
-  }
+        getProfilesCache: jest.fn(),
+      }),
+    },
+  },
 }));
 
 const getJesApiMock = jest.fn();
@@ -37,21 +37,21 @@ jest.mock("@zowe/zowe-explorer-api", () => ({
     getZoweExplorerApi: jest.fn().mockReturnValue({
       getJesApi: getJesApiMock,
       getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn()
-      })
+        getProfilesCache: jest.fn(),
+      }),
     }),
-    updateCredentials: updateCredentialsMock
+    updateCredentials: updateCredentialsMock,
   },
   Gui: {
     showMessage: jest.fn(),
-    showQuickPick: jest.fn()
+    showQuickPick: jest.fn(),
   },
   MessageSeverity: {
-    ERROR: 0
+    ERROR: 0,
   },
   ZoweExplorerApiType: {
-    Jes: "JES"
-  }
+    Jes: "JES",
+  },
 }));
 
 // Mock CICSLogger
@@ -59,31 +59,35 @@ jest.mock("../../../src/utils/CICSLogger", () => ({
   CICSLogger: {
     debug: jest.fn(),
     info: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }));
 
 // Mock vscode
 const executeCommandMock = jest.fn();
 const showErrorMessageMock = jest.fn();
-jest.mock("vscode", () => ({
-  commands: {
-    executeCommand: executeCommandMock
-  },
-  window: {
-    showErrorMessage: showErrorMessageMock
-  },
-  l10n: {
-    t: (str: string, ...args: any[]) => {
-      // Simple mock implementation that replaces {0}, {1} etc with args
-      return str.replace(/\{(\d+)\}/g, (match, index) => args[index] || match);
-    }
-  }
-}), { virtual: true });
+jest.mock(
+  "vscode",
+  () => ({
+    commands: {
+      executeCommand: executeCommandMock,
+    },
+    window: {
+      showErrorMessage: showErrorMessageMock,
+    },
+    l10n: {
+      t: (str: string, ...args: any[]) => {
+        // Simple mock implementation that replaces {0}, {1} etc with args
+        return str.replace(/\{(\d+)\}/g, (match, index) => args[index] || match);
+      },
+    },
+  }),
+  { virtual: true }
+);
 
-import * as commandUtils from "../../../src/utils/commandUtils";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
+import * as commandUtils from "../../../src/utils/commandUtils";
 
 function createProfile(name: string, type: string, host: string, user?: string): IProfileLoaded {
   return {
@@ -123,7 +127,7 @@ describe("Command Utils tests", () => {
 
     it("should call zowe.jobs.setJobSpool when matching profile is found automatically", async () => {
       fetchAllProfilesMock.mockResolvedValue([zosmfProfile]);
-      
+
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(fetchAllProfilesMock).toHaveBeenCalled();
@@ -168,7 +172,7 @@ describe("Command Utils tests", () => {
     it("should filter out zftp profiles", async () => {
       const ftpProfile = createProfile("myftp", "zftp", "example.com", "user1");
       fetchAllProfilesMock.mockResolvedValue([ftpProfile, zosmfProfile]);
-      
+
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       // Should use zosmf profile, not ftp
@@ -182,7 +186,7 @@ describe("Command Utils tests", () => {
         throw new Error("Not supported");
       });
       fetchAllProfilesMock.mockResolvedValue([unsupportedProfile, zosmfProfile]);
-      
+
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);

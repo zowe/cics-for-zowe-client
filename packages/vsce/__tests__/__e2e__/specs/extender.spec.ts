@@ -10,7 +10,16 @@
  */
 
 import { expect, Page, test } from "@playwright/test";
-import { constants, findAndClickText, findAndClickTreeItem, getResourceInspector, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView, runInCommandPalette } from "../utils/helpers";
+import {
+  constants,
+  findAndClickText,
+  findAndClickTreeItem,
+  getResourceInspector,
+  prepareZoweExplorerView,
+  resetWiremock,
+  resetZoweExplorerView,
+  runInCommandPalette,
+} from "../utils/helpers";
 
 let ssCount = 1;
 let testId: string;
@@ -37,28 +46,31 @@ test.describe("Extender tests", () => {
 
     await screenshot(page);
 
-    await page.getByLabel('Extensions').first().click();
+    await page.getByLabel("Extensions").first().click();
     await screenshot(page);
     await expect(page.getByText("Zowe Explorer", { exact: true })).toBeVisible();
     await screenshot(page);
-    await page.getByRole('toolbar', { name: 'Extensions actions' }).getByLabel('Views and More Actions...').click();
+    await page.getByRole("toolbar", { name: "Extensions actions" }).getByLabel("Views and More Actions...").click();
     await screenshot(page);
     await page.waitForTimeout(200);
     await screenshot(page);
-    await page.getByRole('menuitem', { name: 'Install from VSIX...' }).click();
+    await page.getByRole("menuitem", { name: "Install from VSIX..." }).click();
     await page.waitForTimeout(200);
     await screenshot(page);
-    await expect(page.getByRole('textbox', { name: 'Install from VSIX', }).first()).toBeVisible();
+    await expect(page.getByRole("textbox", { name: "Install from VSIX" }).first()).toBeVisible();
     await screenshot(page);
-    await page.getByRole('textbox', { name: 'Install from VSIX', }).first().fill('/config/workspace/resources/extender-extension/cics-extension-extender-0.0.1.vsix');
+    await page
+      .getByRole("textbox", { name: "Install from VSIX" })
+      .first()
+      .fill("/config/workspace/resources/extender-extension/cics-extension-extender-0.0.1.vsix");
     await screenshot(page);
-    await page.getByRole('button', { name: 'Install', exact: true }).click();
+    await page.getByRole("button", { name: "Install", exact: true }).click();
     await screenshot(page);
-    await expect(page.getByText('Completed installing extension.', { exact: true })).toBeVisible();
+    await expect(page.getByText("Completed installing extension.", { exact: true })).toBeVisible();
     await screenshot(page);
-    await expect(page.getByText('TEST EXTENSION ACTIVATED', { exact: true })).toBeVisible();
+    await expect(page.getByText("TEST EXTENSION ACTIVATED", { exact: true })).toBeVisible();
     await screenshot(page);
-    await expect(page.getByText('Registered TEST.ACTION.1', { exact: true })).toBeVisible();
+    await expect(page.getByText("Registered TEST.ACTION.1", { exact: true })).toBeVisible();
     await screenshot(page);
   });
 
@@ -74,9 +86,9 @@ test.describe("Extender tests", () => {
     await findAndClickTreeItem(page, "Programs");
     await screenshot(page);
 
-    await page.getByRole('button', { name: 'Notifications' }).click();
+    await page.getByRole("button", { name: "Notifications" }).click();
     await screenshot(page);
-    await page.getByRole('button', { name: 'Clear All Notifications' }).click();
+    await page.getByRole("button", { name: "Clear All Notifications" }).click();
     await screenshot(page);
     await runInCommandPalette(page, "View: Close All Editors");
     await screenshot(page);
@@ -100,19 +112,19 @@ test.describe("Extender tests", () => {
     await getResourceInspector(page).getByText("MY TEST ACTION").click();
     await screenshot(page);
 
-    await expect(page.locator('h2').filter({ hasText: 'Get Started with VS Code for the Web' })).toBeVisible();
+    await expect(page.locator("h2").filter({ hasText: "Get Started with VS Code for the Web" })).toBeVisible();
     await screenshot(page);
 
-    await page.getByLabel('Extensions').first().click();
+    await page.getByLabel("Extensions").first().click();
     await screenshot(page);
     await expect(page.getByText("cics-extension-extender", { exact: true })).toBeVisible();
     await screenshot(page);
-    await page.getByRole('listitem', { name: 'cics-extension-extender, 0.0.' }).getByLabel('Manage').click();
+    await page.getByRole("listitem", { name: "cics-extension-extender, 0.0." }).getByLabel("Manage").click();
     await page.waitForTimeout(200);
     await screenshot(page);
     await expect(page.getByText("Uninstall", { exact: true })).toBeVisible();
     await screenshot(page);
-    await page.getByRole('menuitem', { name: 'Uninstall' }).click();
+    await page.getByRole("menuitem", { name: "Uninstall" }).click();
     await screenshot(page);
 
     await page.getByRole("tab", { name: "Zowe Explorer" }).locator("a").click();

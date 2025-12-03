@@ -46,8 +46,8 @@ jest.mock("vscode", () => {
       getExtension: getExtensionMock,
     },
     LogLevel: {
-      info: 3
-    }
+      info: 3,
+    },
   };
 });
 
@@ -56,7 +56,6 @@ import { CICSLogger } from "../../../src/utils/CICSLogger";
 // const infoSpy = jest.spyOn(CICSLogger, "info");
 
 describe("CICS Logger", () => {
-
   it("should initialise logger", () => {
     expect(infoMock).toHaveBeenCalledTimes(0);
     CICSLogger.initialize();

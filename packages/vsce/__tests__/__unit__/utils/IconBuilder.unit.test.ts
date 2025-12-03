@@ -9,13 +9,13 @@
  *
  */
 
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import { join } from "path";
 import { ProgramMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
 import IconBuilder from "../../../src/utils/IconBuilder";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
@@ -75,7 +75,7 @@ describe("IconBuilder tests", () => {
         librarydsn: "MYLIBDSN",
         usecount: "0",
         language: "COBOL",
-        jvmserver: "EYUCMCIJ"
+        jvmserver: "EYUCMCIJ",
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-dark.svg"));
@@ -94,7 +94,7 @@ describe("IconBuilder tests", () => {
         librarydsn: "MYLIBDSN",
         usecount: "0",
         language: "COBOL",
-        jvmserver: "EYUCMCIJ"
+        jvmserver: "EYUCMCIJ",
       }),
     });
     expect(icon.light).toContain(join("packages", "vsce", "src", "resources", "imgs", "program-disabled-dark.svg"));

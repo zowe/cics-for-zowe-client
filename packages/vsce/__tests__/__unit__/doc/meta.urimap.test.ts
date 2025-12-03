@@ -81,20 +81,20 @@ describe("URIMap Meta", () => {
     const highlights = URIMapMeta.getHighlights(urimapMock);
     expect(highlights).toEqual([
       {
-        "key": "Scheme",
-         "value": "http",
-       },
-      {
-        "key": "Transaction",
-         "value": "CJXA",
+        key: "Scheme",
+        value: "http",
       },
       {
-        "key": "Pipeline",
-        "value": "ABC",
+        key: "Transaction",
+        value: "CJXA",
       },
       {
-         "key": "Web Service",
-         "value": "DEF",
+        key: "Pipeline",
+        value: "ABC",
+      },
+      {
+        key: "Web Service",
+        value: "DEF",
       },
       {
         key: "Path",

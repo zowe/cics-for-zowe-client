@@ -28,7 +28,7 @@ describe("Pipeline Meta", () => {
       enablestatus: "ENABLED",
       soaplevel: "1.1",
       wsdir: "/a/b/c",
-      configfile: "/a/b/c/def.xml"
+      configfile: "/a/b/c/def.xml",
     });
   });
 
@@ -57,23 +57,24 @@ describe("Pipeline Meta", () => {
 
   it("should return highlights", () => {
     const highlights = PipelineMeta.getHighlights(pipelineMock);
-    expect(highlights).toEqual([{
-          key: "Status",
-         value: "ENABLED",
-       },
-        {
-          key: "Soap Level",
-         value: "1.1",
-       },
-        {
-          key: "WS Directory",
-         value: "/a/b/c",
-       },
-        {
-          key: "Config File",
-         value: "/a/b/c/def.xml",
-       }
-      ]);
+    expect(highlights).toEqual([
+      {
+        key: "Status",
+        value: "ENABLED",
+      },
+      {
+        key: "Soap Level",
+        value: "1.1",
+      },
+      {
+        key: "WS Directory",
+        value: "/a/b/c",
+      },
+      {
+        key: "Config File",
+        value: "/a/b/c/def.xml",
+      },
+    ]);
   });
 
   it("should append criteria history", async () => {

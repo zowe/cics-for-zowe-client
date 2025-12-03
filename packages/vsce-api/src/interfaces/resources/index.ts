@@ -11,6 +11,8 @@
 
 export * from "./IBundle";
 export * from "./IBundlePart";
+export * from "./IJVMEndpoint";
+export * from "./IJVMServer";
 export * from "./ILibrary";
 export * from "./ILibraryDataset";
 export * from "./ILocalFile";
@@ -18,12 +20,10 @@ export * from "./IPipeline";
 export * from "./IProgram";
 export * from "./IRemoteFile";
 export * from "./IResource";
+export * from "./ISharedTSQueue";
 export * from "./ITCPIP";
+export * from "./ITSQueue";
 export * from "./ITask";
 export * from "./ITransaction";
 export * from "./IURIMap";
 export * from "./IWebService";
-export * from "./IJVMServer";
-export * from "./IJVMEndpoint";
-export * from "./ITSQueue";
-export * from "./ISharedTSQueue";

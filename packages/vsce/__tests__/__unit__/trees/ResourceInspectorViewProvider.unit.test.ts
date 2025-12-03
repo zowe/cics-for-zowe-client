@@ -54,15 +54,15 @@ jest.mock("../../../src/resources", () => {
   };
 });
 
-import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import * as vscode from "vscode";
+import { ExtensionContext, Uri, WebviewView } from "vscode";
+import { PipelineMeta } from "../../../src/doc";
+import { Resource } from "../../../src/resources";
+import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 const executeCommandMock = jest.fn();
 jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
-import { PipelineMeta } from "../../../src/doc";
-import { Resource } from "../../../src/resources";
-import { Uri, WebviewView, ExtensionContext } from "vscode";
-import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -91,21 +91,20 @@ const sampleExtensionContext: ExtensionContext = {
 jest.mock("@zowe/zowe-explorer-api", () => {
   return {
     HTMLTemplate: {
-      default: ""
+      default: "",
     },
     imperative: {
-      Session: jest.fn()
-    }
+      Session: jest.fn(),
+    },
   };
 });
 
 const resCxt = {
   profileName: "MYPROF",
-  regionName: "MYREG"
+  regionName: "MYREG",
 };
 
 describe("Resource Inspector View provider", () => {
-
   const myResource = {
     meta: PipelineMeta,
     resource: new Resource<IPipeline>({
@@ -114,8 +113,8 @@ describe("Resource Inspector View provider", () => {
       enablestatus: "ENABLED",
       soaplevel: "1.1",
       wsdir: "/a/b/c",
-      configfile: "/a/b/c/def.xml"
-    })
+      configfile: "/a/b/c/def.xml",
+    }),
   };
 
   it("should return singleton instance", () => {
@@ -154,10 +153,7 @@ describe("Resource Inspector View provider", () => {
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
       enableScripts: true,
-      localResourceRoots: [
-        sampleExtensionContext.extensionUri,
-        Uri.joinPath(sampleExtensionContext.extensionUri, 'dist')
-      ],
+      localResourceRoots: [sampleExtensionContext.extensionUri, Uri.joinPath(sampleExtensionContext.extensionUri, "dist")],
     });
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.html).toEqual(``);
@@ -291,5 +287,4 @@ describe("Resource Inspector View provider", () => {
       expect(findProfileAndShowJobSpoolMock).not.toHaveBeenCalled();
     });
   });
-
 });

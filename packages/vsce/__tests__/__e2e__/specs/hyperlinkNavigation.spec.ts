@@ -68,15 +68,15 @@ test.describe("Hyperlink navigation tests", async () => {
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("LOG");
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
-    
+
     const jvmlogLink = getResourceInspector(page).getByRole("link", { name: "//DD:JVMLOG" });
     await jvmlogLink.waitFor({ state: "visible", timeout: 500 });
     await jvmlogLink.click();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/3.png" });
-    
+
     await page.waitForTimeout(500);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/4.png" });
-    
+
     const jobsTree = page.getByRole("button", { name: "Jobs Section", exact: true });
     if (await jobsTree.isVisible()) {
       const isExpanded = (await jobsTree.getAttribute("aria-expanded")) === "true";
@@ -87,14 +87,13 @@ test.describe("Hyperlink navigation tests", async () => {
     }
     const zosmfWiremockItem = getTreeItem(page, constants.ZOSMF_PROFILE_NAME, false);
     await expect(zosmfWiremockItem).toBeVisible();
-    
+
     await zosmfWiremockItem.click();
     await page.waitForTimeout(500);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/5.png" });
-    
+
     const jobItem = getTreeItem(page, "job1(jobid1) - ACTIVE", false);
     await expect(jobItem).toBeVisible();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/6.png" });
   });
-
 });

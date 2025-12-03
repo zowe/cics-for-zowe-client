@@ -10,22 +10,15 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import {
-  getCache,
-  getResource,
-  ICMCIApiResponse,
-  ICMCIResponseResultSummary,
-  IResourceQueryParams,
-  putResource,
-} from "@zowe/cics-for-zowe-sdk";
+import { getCache, getResource, ICMCIApiResponse, ICMCIResponseResultSummary, IResourceQueryParams, putResource } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
-import constants from "../constants/CICS.defaults";
-import { getErrorCode } from "./errorUtils";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { extensions } from "vscode";
-import { CICSLogger } from "./CICSLogger";
-import { CICSResourceContainerNode } from "../trees";
+import constants from "../constants/CICS.defaults";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
+import { CICSResourceContainerNode } from "../trees";
+import { CICSLogger } from "./CICSLogger";
+import { getErrorCode } from "./errorUtils";
 
 interface IReqParams {
   criteria?: string;
@@ -214,7 +207,7 @@ export const buildNewSession = (profile: IProfileLoaded) => {
 export const buildRequestLoggerString = (
   method: "GET" | "PUT" | "POST",
   resourceName: string,
-  opts: { [key: string]: string | boolean | number; } = {}
+  opts: { [key: string]: string | boolean | number } = {}
 ): string => {
   let output = `${method.toUpperCase()} - Resource [${resourceName}]`;
   for (const [k, v] of Object.entries(opts)) {
@@ -227,15 +220,17 @@ export const buildRequestLoggerString = (
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
+  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean,
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
-  parentResource?: IResource,
+  parentResource?: IResource
 ) {
+  const DELAY_MS = 1000;
   let response: ICMCIApiResponse;
+  const containerResource = node.getContainedResource();
   for (let i = 0; i < constants.POLL_FOR_ACTION_DEFAULT_RETRIES; i++) {
     response = await runGetResource({
       profileName: node.getProfile().name,
-      resourceName: node.getContainedResource().meta.resourceName,
+      resourceName: containerResource.meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
@@ -243,19 +238,19 @@ export async function pollForCompleteAction<T extends IResource>(
           summonly: false,
           nodiscard: false,
         },
-        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)], parentResource),
+        criteria: containerResource.meta.buildCriteria([containerResource.meta.getName(containerResource.resource)], parentResource),
       },
     });
     if (isCompletionCriteriaMet(response.response)) {
       break;
     }
-    await new Promise((f) => setTimeout(f, 1000));
+    await new Promise((f) => setTimeout(f, DELAY_MS));
   }
 
   criteriaMetCallback(response);
 }
 
-export function buildUserAgentHeader(): { "User-Agent": string; } {
+export function buildUserAgentHeader(): { "User-Agent": string } {
   const zeId = `zowe.vscode-extension-for-zowe`;
   const cicsExtId = `zowe.cics-extension-for-zowe`;
 

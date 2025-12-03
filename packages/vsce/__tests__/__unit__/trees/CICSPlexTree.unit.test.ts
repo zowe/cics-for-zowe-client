@@ -14,7 +14,7 @@ const cicsCombinedTreeMock = jest.fn();
 jest.mock("@zowe/zowe-explorer-api", () => ({
   ...jest.requireActual("@zowe/zowe-explorer-api"),
   ZoweVsCodeExtension: {
-    getZoweExplorerApi: jest.fn().mockReturnValue({ getExplorerExtenderApi: jest.fn().mockReturnValue({ getProfilesCache: jest.fn() }) })
+    getZoweExplorerApi: jest.fn().mockReturnValue({ getExplorerExtenderApi: jest.fn().mockReturnValue({ getProfilesCache: jest.fn() }) }),
   },
 }));
 

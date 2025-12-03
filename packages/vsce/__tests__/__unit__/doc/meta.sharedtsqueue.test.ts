@@ -10,8 +10,8 @@
  */
 
 import { ISharedTSQueue } from "@zowe/cics-for-zowe-explorer-api";
-import { Resource } from "../../../src/resources";
 import { SharedTSQueueMeta } from "../../../src/doc";
+import { Resource } from "../../../src/resources";
 
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {},
@@ -25,7 +25,7 @@ describe("Shared TS Queue Meta", () => {
       eyu_cicsname: "MYREG",
       location: "MAIN",
       name: "MYQUEUE",
-      poolname: "MYPOOL"
+      poolname: "MYPOOL",
     });
   });
 

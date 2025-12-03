@@ -77,7 +77,7 @@ describe("Test suite for copy commands", () => {
             librarydsn: "MYLIBDSN",
             usecount: "0",
             language: "COBOL",
-            jvmserver: "EYUCMCIJ"
+            jvmserver: "EYUCMCIJ",
           },
         },
       }

@@ -9,12 +9,12 @@
  *
  */
 
+import { Gui } from "@zowe/zowe-explorer-api";
+import { MessageItem } from "vscode";
+import errorConstants from "../constants/CICS.errorMessages";
+import { CICSLogger } from "../utils/CICSLogger";
 import { CICSExtensionError } from "./CICSExtensionError";
 import { ICICSExtensionError } from "./ICICSExtensionError";
-import errorConstants from "../constants/CICS.errorMessages";
-import { MessageItem } from "vscode";
-import { CICSLogger } from "../utils/CICSLogger";
-import { Gui } from "@zowe/zowe-explorer-api";
 
 export function resourceNotFoundError(error?: ICICSExtensionError) {
   if (!error) {
@@ -23,7 +23,6 @@ export function resourceNotFoundError(error?: ICICSExtensionError) {
 }
 
 export class CICSErrorHandler {
-
   static handleCMCIRestError(error: CICSExtensionError): Thenable<string | MessageItem> {
     const msg = error.cicsExtensionError.errorMessage;
     return this.notifyErrorMessage({ errorMessage: msg });
@@ -39,8 +38,7 @@ export class CICSErrorHandler {
     errorMessage: string;
     additionalInfo?: string;
     action?: MessageItem[];
-    }): Thenable<string | MessageItem> {
-    
+  }): Thenable<string | MessageItem> {
     CICSLogger.error(`${this.trimLineBreaks(errorMessage)} ${additionalInfo ?? ""}`.trim());
 
     return Gui.errorMessage(errorMessage, { items: action ?? [] });

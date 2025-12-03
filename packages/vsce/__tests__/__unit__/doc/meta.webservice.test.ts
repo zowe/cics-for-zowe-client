@@ -32,7 +32,7 @@ describe("WebService Meta", () => {
       pipeline: "RAJ02222",
       urimap: "$635396",
       container: "DFHWS-DATA",
-      wsdlfile: "abc"
+      wsdlfile: "abc",
     });
   });
 
@@ -89,7 +89,7 @@ describe("WebService Meta", () => {
       {
         key: "WSDL File",
         value: "abc",
-      }
+      },
     ]);
   });
 

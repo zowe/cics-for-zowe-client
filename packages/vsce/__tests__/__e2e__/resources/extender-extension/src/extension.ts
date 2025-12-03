@@ -9,16 +9,14 @@
  *
  */
 
-import { getCICSForZoweExplorerAPI, ResourceAction, ResourceTypes } from '@zowe/cics-for-zowe-explorer-api';
-import { commands, ExtensionContext, window } from 'vscode';
+import { getCICSForZoweExplorerAPI, ResourceAction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, ExtensionContext, window } from "vscode";
 
 export async function activate(_context: ExtensionContext) {
-
   window.showInformationMessage("TEST EXTENSION ACTIVATED");
   const cicsAPI = await getCICSForZoweExplorerAPI();
 
   if (cicsAPI) {
-
     const action = new ResourceAction({
       id: "TEST.ACTION.1",
       name: "MY TEST ACTION",
@@ -30,11 +28,9 @@ export async function activate(_context: ExtensionContext) {
 
     cicsAPI.resources.resourceExtender.registerAction(action);
     window.showInformationMessage("Registered TEST.ACTION.1");
-
   } else {
     window.showErrorMessage("No CICS API Found");
   }
-
 }
 
-export async function deactivate() { }
+export async function deactivate() {}

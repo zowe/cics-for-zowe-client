@@ -10,7 +10,7 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { constants, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView} from "../utils/helpers";
+import { constants, findAndClickTreeItem, getTreeItem, prepareZoweExplorerView, resetWiremock, resetZoweExplorerView } from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
   await resetWiremock(request);
@@ -65,6 +65,5 @@ test.describe("Bundle tests", () => {
     // Wait for bundle contents to load with increased timeout for API call and tree rendering
     await expect(page.getByText("test_app-0.0.1-SNAPSHOT.war", { exact: true })).toBeVisible();
     await expect(page.getByText("test_app-0.0.1-SNAPSHOT.warbundle", { exact: true })).toBeVisible();
-    
-    });
+  });
 });

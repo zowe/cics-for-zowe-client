@@ -12,7 +12,6 @@
 import * as webviewHTML from "../../../src/utils/webviewHTML";
 
 describe("Webview HTML", () => {
-
   it("should return valid webview HTML", () => {
     expect(webviewHTML.getAttributesHtml("MY TITLE", "MY TEXT")).toEqual(
       `<!DOCTYPE html>

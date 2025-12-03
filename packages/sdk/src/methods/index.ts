@@ -18,6 +18,6 @@ export * from "./discard";
 export * from "./enable";
 export * from "./get";
 export * from "./install";
+export * from "./put";
 export * from "./remove-from-list";
 export * from "./set";
-export * from "./put";

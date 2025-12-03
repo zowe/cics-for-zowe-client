@@ -34,9 +34,9 @@ jest.mock("../../../src/utils/CICSLogger");
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { InfoLoaded } from "../../../src/utils/profileManagement";
 
-const getLastUsedRegionSpy = jest.spyOn(PersistentStorage, 'getLastUsedRegion');
-const setLastUsedRegionSpy = jest.spyOn(PersistentStorage, 'setLastUsedRegion');
-const getLoadedProfilesMock = jest.spyOn(PersistentStorage, 'getLoadedCICSProfiles');
+const getLastUsedRegionSpy = jest.spyOn(PersistentStorage, "getLastUsedRegion");
+const setLastUsedRegionSpy = jest.spyOn(PersistentStorage, "setLastUsedRegion");
+const getLoadedProfilesMock = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
 jest.mock("../../../src/utils/profileManagement", () => ({
   ProfileManagement: {
     getProfilesCache: jest.fn().mockReturnValue({
@@ -53,7 +53,7 @@ const cicsProfile = {
   type: "cics",
   failNotFound: false,
   name: "MYPROF",
-  profile: {}
+  profile: {},
 };
 const lastUsedRegion = {
   regionName: "MYREGION",

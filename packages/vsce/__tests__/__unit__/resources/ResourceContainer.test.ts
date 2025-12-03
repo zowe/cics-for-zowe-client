@@ -45,7 +45,7 @@ const prog1: IProgram = {
   librarydsn: "MYLIBDSN",
   usecount: "0",
   language: "COBOL",
-  jvmserver: "EYUCMCIJ"
+  jvmserver: "EYUCMCIJ",
 };
 const prog2: IProgram = {
   program: "PROG2",
@@ -57,7 +57,7 @@ const prog2: IProgram = {
   librarydsn: "MYLIBDSN",
   usecount: "0",
   language: "COBOL",
-  jvmserver: "EYUCMCIJ"
+  jvmserver: "EYUCMCIJ",
 };
 const locFile1: ILocalFile = {
   browse: "",
@@ -69,7 +69,7 @@ const locFile1: ILocalFile = {
   openstatus: "OPEN",
   read: "",
   recordsize: "",
-  vsamtype: ""
+  vsamtype: "",
 };
 
 const runGetCacheMock = jest.fn();
@@ -86,10 +86,10 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
   runGetResource: runGetResourceMock,
 }));
 
+import { ILocalFile, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { LocalFileMeta, ProgramMeta } from "../../../src/doc";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
 import { CICSProfileMock } from "../../__utils__/globalMocks";
-import { ILocalFile, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 const prof = { ...CICSProfileMock, host: "hostname" };
 const profileMock = { failNotFound: false, message: "", type: "cics", name: "MYPROF", profile: prof };
@@ -100,7 +100,7 @@ describe("Resource Container", () => {
   beforeEach(() => {
     container = new ResourceContainer([ProgramMeta], {
       profileName: profileMock.name,
-      regionName: "MYREG"
+      regionName: "MYREG",
     });
 
     jest.clearAllMocks();
@@ -155,7 +155,7 @@ describe("Resource Container", () => {
     container = new ResourceContainer([ProgramMeta], {
       profileName: profileMock.name,
       cicsplexName: "MYPLEX",
-      regionName: "MYREG"
+      regionName: "MYREG",
     });
     expect(container.getPlexName()).toEqual("MYPLEX");
   });
@@ -164,48 +164,52 @@ describe("Resource Container", () => {
     container = new ResourceContainer([ProgramMeta, LocalFileMeta], {
       profileName: profileMock.name,
       cicsplexName: "MYPLEX",
-      regionName: "MYREG"
+      regionName: "MYREG",
     });
 
     expect(container.isCriteriaApplied()).toBeFalsy();
 
-    runGetCacheMock.mockResolvedValueOnce({
-      response: {
-        resultsummary: {
-          recordcount: "2",
+    runGetCacheMock
+      .mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
         },
-        records: {
-          cicsprogram: [prog1, prog2],
+      })
+      .mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "1",
+          },
+          records: {
+            cicsprogram: [locFile1],
+          },
         },
-      },
-    }).mockResolvedValueOnce({
-      response: {
-        resultsummary: {
-          recordcount: "1",
-        },
-        records: {
-          cicsprogram: [locFile1],
-        },
-      },
-    });
+      });
 
-    runGetResourceMock.mockResolvedValueOnce({
-      response: {
-        resultsummary: {
-          api_response1: "1024",
-          cachetoken: "MYCACHETOKEN",
-          recordcount: "2",
+    runGetResourceMock
+      .mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
         },
-      },
-    }).mockResolvedValueOnce({
-      response: {
-        resultsummary: {
-          api_response1: "1024",
-          cachetoken: "MYCACHETOKEN2",
-          recordcount: "1",
+      })
+      .mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN2",
+            recordcount: "1",
+          },
         },
-      },
-    });
+      });
 
     const res = await container.fetchNextPage();
 

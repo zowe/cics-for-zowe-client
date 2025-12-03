@@ -27,7 +27,6 @@ import { ProfileManagement } from "./profileManagement";
  * @returns True if the profile supports the specified connection type, false otherwise
  */
 export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: ZoweExplorerApiType): boolean {
-  
   const explorerApi = ZoweVsCodeExtension.getZoweExplorerApi();
 
   try {
@@ -77,13 +76,10 @@ export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Pro
  * @returns A matching z/OS profile or undefined if no match is found
  */
 export async function findRelatedZosProfiles(cicsProfile: IProfileLoaded, zosProfiles: IProfileLoaded[]): Promise<IProfileLoaded | undefined> {
-    
   const baseForCicsProfile = await fetchBaseProfileWithoutError(cicsProfile);
 
   // Prioritize zosmf profiles and filter to only include profiles with credentials
-  const prioritizedProfiles = zosProfiles
-      .sort((prof) => (prof.profile.type === "zosmf" ? -1 : 1))
-      .filter((prof) => prof.profile.user);
+  const prioritizedProfiles = zosProfiles.sort((prof) => (prof.profile.type === "zosmf" ? -1 : 1)).filter((prof) => prof.profile.user);
 
   // First attempt: Find profiles that share the same base profile
   if (baseForCicsProfile) {
@@ -162,11 +158,7 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
  * @param regionName - The region name (used for logging and error messages)
  * @returns Promise that resolves when the command is executed or rejects on error
  */
-export async function findProfileAndShowJobSpool(
-  cicsProfile: IProfileLoaded,
-  jobid: string,
-  regionName: string
-): Promise<void> {
+export async function findProfileAndShowJobSpool(cicsProfile: IProfileLoaded, jobid: string, regionName: string): Promise<void> {
   const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
   // do not include the FTP profile because it doesn't support spools for running jobs.
   const zosProfiles = allProfiles.filter(
