@@ -9,7 +9,8 @@
  *
  */
 
-import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext, IResourceProfileNameInfo,
+   ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
@@ -170,7 +171,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActions() {
     // Required as Array.filter cannot be asyncronous
-    const asyncFilter = async (arr: ResourceAction<keyof ResourceTypeMap>[], predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>) => {
+    const asyncFilter = async (arr: ResourceAction<keyof ResourceTypeMap>[],
+       predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>) => {
       const results = await Promise.all(arr.map(predicate));
       return arr.filter((_v, index) => results[index]);
     };
@@ -186,7 +188,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], this.getResourceContext());
+        const visible = await action.visibleWhen(this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap],
+           this.getResourceContext());
         return visible;
       }
     });
@@ -238,7 +241,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         if (regionRecords.length > 0) {
           const regionData = regionRecords[0];
           if(regionData && regionData.jobid){
-              const jobid = regionData.jobid;  
+              const jobid = regionData.jobid;
               const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
               await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
             }

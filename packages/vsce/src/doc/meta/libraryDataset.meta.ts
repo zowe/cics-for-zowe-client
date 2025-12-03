@@ -22,9 +22,12 @@ customProgramMeta.getDefaultCriteria = (parentResource: ILibraryDataset) => {
   return `(LIBRARYDSN='${parentResource.dsname}')`;
 };
 
+const PROG_RES = CicsCmciConstants.CICS_PROGRAM_RESOURCE;
+const LIB_DS_RES = CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE;
+
 customProgramMeta.getContext = function (program: Resource<IProgram>): string {
   //overriding context value of cics program because here parent of the cics program is the librarydataset
-  return `${CicsCmciConstants.CICS_PROGRAM_RESOURCE}.${program.attributes.status.trim().toUpperCase()}.PARENT.${CicsCmciConstants.CICS_LIBRARY_DATASET_RESOURCE}.${program.attributes.program}`;
+  return `${PROG_RES}.${program.attributes.status.trim().toUpperCase()}.PARENT.${LIB_DS_RES}.${program.attributes.program}`;
 };
 
 customProgramMeta.buildCriteria = (criteria: string[], parentResource: ILibraryDataset) => {

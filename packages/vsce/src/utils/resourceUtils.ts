@@ -231,11 +231,13 @@ export async function pollForCompleteAction<T extends IResource>(
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
   parentResource?: IResource,
 ) {
+  const DELAY_MS = 1000;
   let response: ICMCIApiResponse;
+  const containerResource = node.getContainedResource();
   for (let i = 0; i < constants.POLL_FOR_ACTION_DEFAULT_RETRIES; i++) {
     response = await runGetResource({
       profileName: node.getProfile().name,
-      resourceName: node.getContainedResource().meta.resourceName,
+      resourceName: containerResource.meta.resourceName,
       cicsPlex: node.cicsplexName,
       regionName: node.regionName,
       params: {
@@ -243,13 +245,13 @@ export async function pollForCompleteAction<T extends IResource>(
           summonly: false,
           nodiscard: false,
         },
-        criteria: node.getContainedResource().meta.buildCriteria([node.getContainedResource().meta.getName(node.getContainedResource().resource)], parentResource),
+        criteria: containerResource.meta.buildCriteria([containerResource.meta.getName(containerResource.resource)], parentResource),
       },
     });
     if (isCompletionCriteriaMet(response.response)) {
       break;
     }
-    await new Promise((f) => setTimeout(f, 1000));
+    await new Promise((f) => setTimeout(f, DELAY_MS));
   }
 
   criteriaMetCallback(response);

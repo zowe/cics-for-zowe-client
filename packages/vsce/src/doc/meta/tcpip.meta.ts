@@ -42,6 +42,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     return `${CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE}.${resource.attributes.name}`;
   },
 
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (resource: Resource<ITCPIP>): string {
     return "tcp-ip-service";
   },
@@ -52,7 +53,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
 
   getHighlights(resource: Resource<ITCPIP>) {
     return [
-      
+
       {
         key: l10n.t("Status"),
         value: resource.attributes.openstatus,
