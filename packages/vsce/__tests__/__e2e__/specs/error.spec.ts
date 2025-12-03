@@ -94,4 +94,40 @@ test.describe("Error scenarios", () => {
     await expect(notification).toBeVisible();
     await expect(notification).toHaveText(constants.TRANSACTION_INVALID_FILTER_ERROR_MESSAGE);
   });
+
+  test("disabling system (DFHRPL) library throws error", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_ERROR);
+    await findAndClickTreeItem(page, "Libraries");
+
+    await expect(getTreeItem(page, constants.LIBRARY_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.LIBRARY_NAME)).toHaveText(constants.LIBRARY_NAME);
+
+    await expect(getTreeItem(page, constants.LIBRARY_NAME)).toBeVisible();
+    await getTreeItem(page, constants.LIBRARY_NAME).click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, constants.DISABLE_LIBRARY);
+
+    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toHaveText(constants.LIBRARY_DISABLE_ERROR_MESSAGE);
+  });
+
+  test("connecting cics profile throws error", async ({ page }) => {
+    await page.locator(".tree-explorer-viewlet-tree-view").first().click();
+    await expect(page.getByRole("button", { name: "Create a CICS Profile" })).toBeVisible();
+    await page.getByRole("button", { name: "Create a CICS Profile" }).click();
+
+    await page.waitForTimeout(200);
+
+    await findAndClickText(page, constants.TEST_LOGIN);
+    await expect(getTreeItem(page, constants.TEST_LOGIN)).toBeVisible();
+    await findAndClickTreeItem(page, constants.TEST_LOGIN);
+
+    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toHaveText(constants.NO_CONNECTION_ERROR_MESSAGE);
+  });
 });
