@@ -121,7 +121,6 @@ test.describe("Error scenarios", () => {
     await page.getByRole("button", { name: "Create a CICS Profile" }).click();
 
     await page.waitForTimeout(200);
-
     await findAndClickText(page, constants.TEST_LOGIN);
     await expect(getTreeItem(page, constants.TEST_LOGIN)).toBeVisible();
     await findAndClickTreeItem(page, constants.TEST_LOGIN);
@@ -129,5 +128,53 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toHaveText(constants.NO_CONNECTION_ERROR_MESSAGE);
+  });
+
+  test("disabling program throws error", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_ERROR);
+    await findAndClickTreeItem(page, "Programs");
+
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toHaveText(constants.PROGRAM_1_NAME);
+    await getTreeItem(page, constants.PROGRAM_1_NAME).click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, constants.DISABLE_PROGRAM);
+
+    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toHaveText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+  });
+
+  test("disabling multi program shows multiple error notification", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_ERROR);
+    await findAndClickTreeItem(page, "Programs");
+
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toHaveText(constants.PROGRAM_1_NAME);
+
+    await expect(getTreeItem(page, constants.PROGRAM_2_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.PROGRAM_2_NAME)).toHaveText(constants.PROGRAM_2_NAME);
+
+    await getTreeItem(page, constants.PROGRAM_1_NAME).click({ button: "left" });
+    await page.waitForTimeout(200);
+    await getTreeItem(page, constants.PROGRAM_2_NAME).click({ modifiers: ["Shift"], button: "left" });
+    await page.waitForTimeout(200);
+    await getTreeItem(page, constants.PROGRAM_2_NAME).click({ button: "right" });
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, constants.DISABLE_PROGRAM);
+
+    const notification = page.getByRole("list", { name: "Failed to DISABLE PROGRAM MYPROG1", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toHaveText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+
+    const notification2 = page.getByRole("list", { name: "Failed to DISABLE PROGRAM MYPROG2", exact: false });
+    await expect(notification2).toBeVisible();
+    await expect(notification2).toHaveText(constants.PROGRAM2_DISABLE_ERROR_MESSAGE);
   });
 });

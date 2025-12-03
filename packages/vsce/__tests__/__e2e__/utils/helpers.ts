@@ -34,6 +34,7 @@ export const constants = {
   TEST_LOGIN: "test-login",
   LIBRARY_NAME: "DFHRPL",
   DISABLE_LIBRARY: "Disable Library",
+  DISABLE_PROGRAM: "Disable Program",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
   Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
   Please refer to the IBM documentation for resp code details`,
@@ -49,6 +50,10 @@ export const constants = {
   Please refer to the IBM documentation for resp code details`,
   NO_CONNECTION_ERROR_MESSAGE: `The CMCI REST API request failed. 
   Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
+  PROGRAM_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE  PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  Please refer to the IBM documentation for resp code details`,
+  PROGRAM2_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE  PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  Please refer to the IBM documentation for resp code details`,
 };
 
 export const getTree = (page: Page, exactText: string) => {
