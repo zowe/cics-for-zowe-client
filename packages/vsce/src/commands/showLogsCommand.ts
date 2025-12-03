@@ -10,12 +10,10 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ZoweExplorerApiType } from "@zowe/zowe-explorer-api";
 import { TreeView, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
-import { doesProfileSupportConnectionType, findRelatedZosProfiles, promptUserForProfile, toArray } from "../utils/commandUtils";
-import { ProfileManagement } from "../utils/profileManagement";
+import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 
 export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise<string> {
@@ -57,32 +55,6 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       return;
     }
 
-    const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
-    // do not include the FTP profile because it doesn't support spools for running jobs.
-    const zosProfiles = allProfiles.filter(
-      (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes)
-    );
-
-    let chosenProfileName: string;
-
-    // find profiles that match by base profile or hostname, and have valid credentials
-    const matchingZosProfile = await findRelatedZosProfiles(selectedRegion.parentSession.profile, zosProfiles);
-    if (matchingZosProfile) {
-      chosenProfileName = matchingZosProfile.name;
-    } else {
-      // we couldn't find a matching profile - prompt the user with all zos profiles
-      chosenProfileName = await promptUserForProfile(zosProfiles);
-      CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
-      if (chosenProfileName === null) {
-        window.showErrorMessage(l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
-        return;
-      } else if (chosenProfileName === undefined) {
-        // the user cancelled the quick pick
-        return;
-      }
-    }
-
-    CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${selectedRegion?.getRegionName()}: ${chosenProfileName} / ${jobid}`);
-    commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
+    await findProfileAndShowJobSpool(selectedRegion.parentSession.profile, jobid, selectedRegion.getRegionName());
   });
 }

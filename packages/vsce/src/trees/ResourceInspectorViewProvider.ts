@@ -10,9 +10,10 @@
  */
 
 import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, window, l10n } from "vscode";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
@@ -21,6 +22,9 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 import { CICSTree } from ".";
+import { CICSLogger } from "../utils/CICSLogger";
+import { runGetResource } from "../utils/resourceUtils";
+import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -77,6 +81,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (message.command === "init") {
         this.webviewReady = true;
         await this.sendResourceDataToWebView();
+      } else if (message.command === "showLogsForHyperlink") {
+        await this.handleShowLogsForHyperlink();
       } else {
         executeAction(message.command, message, this, this.context);
       }
@@ -211,5 +217,42 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       },
       nonce,
     });
+  }
+
+  /**
+   * Handles the showLogsForHyperlink request from the webview
+   * Fetches region data directly using runGetResource and calls showRegionLogs command
+   */
+  private async handleShowLogsForHyperlink() {
+    const { regionName, cicsplexName, profileName } = this.resourceContext;
+    try {
+      const { response } = await runGetResource({
+        profileName,
+        resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+        regionName,
+        cicsPlex: cicsplexName,
+      });
+
+      if (response.records?.cicsregion) {
+        const regionRecords = toArray(response.records.cicsregion);
+        if (regionRecords.length > 0) {
+          const regionData = regionRecords[0];
+          if(regionData && regionData.jobid){
+              const jobid = regionData.jobid;  
+              const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
+              await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
+            }
+          } else {
+              CICSLogger.debug(`Empty region records array for ${regionName}`);
+              window.showErrorMessage(l10n.t("Could not find region data and job id for region {0} to show logs.", regionName));
+          }
+      } else {
+          CICSLogger.debug(`No region records found for ${regionName}`);
+          window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
+      }
+    } catch (error) {
+        CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
+        window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+      }
   }
 }

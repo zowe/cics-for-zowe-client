@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/zosmf/restjobs/jobs?owner=*&jobid=STC10451"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "JOBTree/job-log-info.json",
+        "headers": {
+          "Content-Type": "text/json"
+        }
+      }
+    }
+  ]
+}
