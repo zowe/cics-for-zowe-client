@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0610">
+	<resultsummary api_source="CICSPlex SM" api_function="PERFORM SET" api_response1="1038" api_response2="1361" api_response1_alt="TABLEERROR" api_response2_alt="DATAERROR" recordcount="1" />
+	<errors>
+		<feedback keydata="C4C6C8D9D7D34040" eyu_cicsname="ERRORS" action="DISABLE" eibfn="C604" eibfn_alt="SET LIBRARY" resp="16" resp_alt="INVREQ" resp2="6"  />
+	</errors>
+</response>

@@ -31,6 +31,9 @@ export const constants = {
   JVM_SERVER_NAME: "MYJVM1",
   REGION_ERROR: "ERRORS",
   ENABLE_BUNDLE: "Enable Bundle",
+  TEST_LOGIN: "test-login",
+  LIBRARY_NAME: "DFHRPL",
+  DISABLE_LIBRARY: "Disable Library",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
   Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
   Please refer to the IBM documentation for resp code details`,
@@ -41,6 +44,11 @@ export const constants = {
   Failed to send request. Response details - Status code: 404, 
   URL: /CICSSystemManagement/CICSLocalTransaction/MYPLEX1/ERRORS?CRITERIA=(TRANID%3DFILTER)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT, 
   Message: Rest API failure with HTTP(S) status 404`,
+  LIBRARY_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
+  Failed to DISABLE LIBRARY DFHRPL with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
+  Please refer to the IBM documentation for resp code details`,
+  NO_CONNECTION_ERROR_MESSAGE: `The CMCI REST API request failed. 
+  Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
 };
 
 export const getTree = (page: Page, exactText: string) => {
