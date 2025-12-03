@@ -78,6 +78,9 @@ describe("Library Dataset Meta", () => {
         newcopycnt: "2",
         progtype: "COBOL",
         status: "ENABLED",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "JVMSERVER"
       })
     );
     expect(childTypeDefaultContext).toEqual(`CICSProgram.ENABLED.PARENT.CICSLibraryDatasetName.myprog`);
