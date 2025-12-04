@@ -140,6 +140,7 @@ Mandatory fields that must be supplied when creating an action are:
 Optional fields available to adapt the behaviour of the action:
 
 - `visibleWhen` - A function that takes the resource and context as arguments, that determines if the action is applicable and should show.
+- `refreshResourceInspector` - A boolean, defaulting to true, that determines if the CICS Resource Inspector should refresh after the action is complete.
 
 There are two inputs to the `visibleWhen` and `action` methods.
 

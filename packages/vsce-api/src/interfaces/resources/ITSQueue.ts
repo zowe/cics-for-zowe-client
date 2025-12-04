@@ -15,4 +15,5 @@ export interface ITSQueue extends IResource {
   name: string;
   location: string;
   numitems: string;
+  hexname: string;
 }
