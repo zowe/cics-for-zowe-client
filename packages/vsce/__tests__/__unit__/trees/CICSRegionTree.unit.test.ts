@@ -14,7 +14,11 @@ const getIconFilePathFromNameMock = jest.fn();
 
 import * as vscode from "vscode";
 
-jest.mock("../../../src/trees/CICSResourceContainerNode");
+const CICSResourceContainerNodeMock = jest.fn();
+jest.mock("../../../src/trees/CICSResourceContainerNode", () => ({
+  CICSResourceContainerNode: CICSResourceContainerNodeMock,
+}));
+
 jest.mock("../../../src/utils/iconUtils", () => {
   return {
     getIconByStatus: getIconByStatusMock,
@@ -67,6 +71,11 @@ describe("Test suite for CICSRegionTree", () => {
   let sut: CICSRegionTree;
 
   beforeEach(() => {
+    CICSResourceContainerNodeMock.mockImplementation((label) => ({
+      label: label,
+      resourceTypes: [],
+    }));
+
     getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
     workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
     get.mockReturnValue(true);
@@ -122,5 +131,14 @@ describe("Test suite for CICSRegionTree", () => {
 
   it("Should return isActive", () => {
     expect(sut.getIsActive()).toBeTruthy();
+  });
+
+  it("Children should be sorted alphabetically", async () => {
+    const Children = [{ label: "Programs" }, { label: "Bundles" }, { label: "Files" }, { label: "JVM Servers" }];
+    const sortedChildren = Children.sort((a, b) => a.label.localeCompare(b.label));
+    expect(sortedChildren[0].label).toBe("Bundles");
+    expect(sortedChildren[1].label).toBe("Files");
+    expect(sortedChildren[2].label).toBe("JVM Servers");
+    expect(sortedChildren[3].label).toBe("Programs");
   });
 });

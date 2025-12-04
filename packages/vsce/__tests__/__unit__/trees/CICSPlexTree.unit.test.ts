@@ -136,6 +136,14 @@ describe("Test suite for CICSLocalFileTree", () => {
     it("Should return children object", () => {
       expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
     });
+    it("Children should be sorted alphabetically", async () => {
+      const Children = [{ label: "All Programs" }, { label: "All Bundles" }, { label: "All Files" }, { label: "All JVM Servers" }];
+      const sortedChildren = Children.sort((a, b) => a.label.localeCompare(b.label));
+      expect(sortedChildren[0].label).toBe("All Bundles");
+      expect(sortedChildren[1].label).toBe("All Files");
+      expect(sortedChildren[2].label).toBe("All JVM Servers");
+      expect(sortedChildren[3].label).toBe("All Programs");
+    });
   });
 
   describe("Test suite for clearChildren", () => {
