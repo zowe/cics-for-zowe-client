@@ -28,6 +28,7 @@ describe("TS Queue Meta", () => {
       location: "MAIN",
       name: "MYQUEUE",
       numitems: "2",
+      hexname: "C1C2F140404040404040404040404040",
     });
   });
 

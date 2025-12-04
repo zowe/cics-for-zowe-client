@@ -98,7 +98,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     };
   }
 
-  updateStoredItem(updatedItm: IContainedResource<T>) {
+  private filterItemsArr(containedResource: IContainedResource<IResource>) {
     let indexOfOutdatedResource = 0;
 
     const filtered = this.items.filter((itm, idx) => {
@@ -106,8 +106,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       const currentResName = itm.meta.getName(itm.resource);
       const currentResReg = itm.resource.attributes.eyu_cicsname;
 
-      const updatedResName = updatedItm.meta.getName(updatedItm.resource);
-      const updatedResReg = updatedItm.resource.attributes.eyu_cicsname;
+      const updatedResName = containedResource.meta.getName(containedResource.resource);
+      const updatedResReg = containedResource.resource.attributes.eyu_cicsname;
 
       if (currentResName === updatedResName && currentResReg === updatedResReg) {
         indexOfOutdatedResource = idx;
@@ -117,8 +117,22 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       return true;
     });
 
-    filtered.splice(indexOfOutdatedResource, 0, updatedItm);
-    this.items = filtered;
+    return {
+      filteredArr: filtered,
+      outdatedIndex: indexOfOutdatedResource,
+    };
+  }
+
+  updateStoredItem(updatedItm: IContainedResource<T>) {
+    const { filteredArr, outdatedIndex } = this.filterItemsArr(updatedItm);
+    filteredArr.splice(outdatedIndex, 0, updatedItm);
+    this.items = filteredArr;
+  }
+
+  removeStoredItem(itemToRemove: IContainedResource<T>) {
+    const { filteredArr } = this.filterItemsArr(itemToRemove);
+    this.items = filteredArr;
+    this.fetcher?.reduceSummary(itemToRemove.meta, 1);
   }
 
   setCriteria(criteria: string[]) {

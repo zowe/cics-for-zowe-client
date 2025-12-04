@@ -15,4 +15,5 @@ export interface ISharedTSQueue extends IResource {
   name: string;
   poolname: string;
   location: string;
+  hexname: string;
 }
