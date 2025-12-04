@@ -93,6 +93,19 @@
     },
     {
       "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DPROG3%20OR%20PROGRAM%3DPROG4)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/programs-not-found.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DMYPROG1)",
         "bodyPatterns": [

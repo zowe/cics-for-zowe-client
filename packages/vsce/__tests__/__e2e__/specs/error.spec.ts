@@ -130,6 +130,28 @@ test.describe("Error scenarios", () => {
     await expect(notification).toHaveText(constants.NO_CONNECTION_ERROR_MESSAGE);
   });
 
+  test("searching program not present throws error", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_ERROR);
+    await findAndClickTreeItem(page, "Programs");
+
+    const filterButton = page.getByRole("button", { name: "Filter Resources", exact: true });
+    await expect(filterButton).toBeVisible();
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    await expect(textBox).toBeEditable();
+    await textBox.fill("PROG3,PROG4");
+    await textBox.press("Enter");
+    await page.getByRole("textbox", { name: "input", exact: true }).press("Enter");
+
+    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toHaveText(constants.PROGRAM_NOT_FOUND_ERROR_MESSAGE);
+  });
+
+
   test("disabling program throws error", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
