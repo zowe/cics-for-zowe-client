@@ -51,6 +51,7 @@ export interface ResourceActionOptions<TType extends keyof ResourceTypeMap> {
   resourceType: TType;
   action: string | ((resource: ResourceTypeMap[TType], ctx: IResourceContext) => void | Promise<void>);
   visibleWhen?: (resource: ResourceTypeMap[TType], ctx: IResourceContext) => boolean | Promise<boolean>;
+  refreshResourceInspector?: boolean;
 }
 
 export class ResourceAction<TType extends keyof ResourceTypeMap> {
@@ -59,13 +60,15 @@ export class ResourceAction<TType extends keyof ResourceTypeMap> {
   private _resourceType: TType;
   private _action: ResourceActionOptions<TType>["action"];
   private _visibleWhen: ResourceActionOptions<TType>["visibleWhen"];
+  private _refreshResourceInspector: boolean;
 
-  constructor({ id, name, resourceType, action, visibleWhen }: ResourceActionOptions<TType>) {
+  constructor({ id, name, resourceType, action, visibleWhen, refreshResourceInspector }: ResourceActionOptions<TType>) {
     this._id = id;
     this._name = name;
     this._resourceType = resourceType;
     this._action = action;
     this._visibleWhen = visibleWhen;
+    this._refreshResourceInspector = refreshResourceInspector ?? true;
   }
 
   public get id() {
@@ -82,5 +85,8 @@ export class ResourceAction<TType extends keyof ResourceTypeMap> {
   }
   public get action() {
     return this._action;
+  }
+  public get refreshResourceInspector() {
+    return this._refreshResourceInspector;
   }
 }
