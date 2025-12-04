@@ -12,6 +12,7 @@
 import { ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
+import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
 import { getTransactionActions } from "./TransactionActions";
 
 export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
@@ -19,9 +20,12 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSProgram, getProgramActions());
   map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
   map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
+  map.set(ResourceTypes.CICSTSQueue, getTSQueueActions());
+  map.set(ResourceTypes.CICSSharedTSQueue, getSharedTSQueueActions());
   return map;
 }
 
 export * from "./LocalFileActions";
 export * from "./ProgramActions";
+export * from "./TSQueueActions";
 export * from "./TransactionActions";
