@@ -9,6 +9,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Bugfix: Wildcard criteria search fails for Task resource. [#525](https://github.com/zowe/cics-for-zowe-client/issues/525)
 - Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Enable job values to appear as hyperlinks and, on click, direct the user to the matching job in the Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
+- Bugfix: Updated `react` dependency for technical currency. [#532](https://github.com/zowe/cics-for-zowe-client/pull/532)
 
 ## `3.15.0`
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
