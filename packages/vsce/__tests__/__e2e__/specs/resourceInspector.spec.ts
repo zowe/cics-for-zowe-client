@@ -115,4 +115,61 @@ test.describe("Resource Inspector tests", async () => {
     await expect(useCountRow2).toBeVisible();
     await expect(useCountRow2.locator("..")).toContainText("1");
   });
+
+  test("should refresh the search field when different resource is inspected", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
+
+    await getResourceInspector(page).locator("input").first().fill("library");
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/8.png" });
+    await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/9.png" });
+    await findAndClickTreeItem(page, "Libraries");
+    await findAndClickTreeItem(page, constants.LIBRARY_1_NAME, "right");
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/10.png" });
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.LIBRARY_1_NAME));
+    await expect(getResourceInspector(page).locator("input").first()).toHaveValue("");
+  });
+
+  test("should refresh the search field when same resource with different node is inspected", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
+
+    await getResourceInspector(page).locator("input").first().fill("library");
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/11.png" });
+    await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/12.png" });
+    await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/13.png" });
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
+    await expect(getResourceInspector(page).locator("input").first()).toHaveValue("");
+  });
 });
