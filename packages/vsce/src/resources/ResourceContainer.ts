@@ -265,4 +265,10 @@ export class ResourceContainer {
     this.summaries.clear();
     this.nextIndex.clear();
   }
+
+  reduceSummary(meta: IResourceMeta<IResource>, count: number) {
+    const summ = this.summaries.get(meta);
+    summ.recordcount = `${parseInt(summ.recordcount) - count}`;
+    this.summaries.set(meta, summ);
+  }
 }

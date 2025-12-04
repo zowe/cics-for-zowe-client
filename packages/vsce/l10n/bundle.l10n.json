@@ -26,13 +26,13 @@
   "Select a profile to access the logs": "Select a profile to access the logs",
   "Could not find any profiles that will access JES (for instance z/OSMF).": "Could not find any profiles that will access JES (for instance z/OSMF).",
   "Region name is missing in the node description.": "Region name is missing in the node description.",
+  "Are you sure you want to {0} the following {1}?": "Are you sure you want to {0} the following {1}?",
+  "...{0} more": "...{0} more",
   "Zowe Explorer for IBM CICS TS": "Zowe Explorer for IBM CICS TS",
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -78,6 +78,7 @@
   "Inquire Program": "Inquire Program",
   "Enable Transaction": "Enable Transaction",
   "Disable Transaction": "Disable Transaction",
+  "Delete": "Delete",
   "New Copy": "New Copy",
   "Phase In": "Phase In",
   "Disable Program": "Disable Program",
@@ -202,6 +203,7 @@
   "Enabling": "Enabling",
   "Closing": "Closing",
   "Opening": "Opening",
+  "Deleting": "Deleting",
   "Region: {0} | CICSplex : {1} | Profile: {2}": "Region: {0} | CICSplex : {1} | Profile: {2}",
   "Region: {0} | Profile: {1}": "Region: {0} | Profile: {1}",
   "Other CICS Region": "Other CICS Region",
@@ -243,6 +245,7 @@
   "Phase Out": "Phase Out",
   "Kill": "Kill",
   "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
+  "No CICS {0} or {1} selected": "No CICS {0} or {1} selected",
   "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
   "No CICS local file selected": "No CICS local file selected",
   "All Resources": "All Resources"
