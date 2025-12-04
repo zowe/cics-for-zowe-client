@@ -66,6 +66,7 @@ jest.mock("../../../src/utils/CICSLogger", () => ({
 // Mock vscode
 const executeCommandMock = jest.fn();
 const showErrorMessageMock = jest.fn();
+const showInfoMessageMock = jest.fn();
 jest.mock(
   "vscode",
   () => ({
@@ -74,6 +75,7 @@ jest.mock(
     },
     window: {
       showErrorMessage: showErrorMessageMock,
+      showInformationMessage: showInfoMessageMock,
     },
     l10n: {
       t: (str: string, ...args: any[]) => {
@@ -85,8 +87,10 @@ jest.mock(
   { virtual: true }
 );
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
+import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
 
 function createProfile(name: string, type: string, host: string, user?: string): IProfileLoaded {
@@ -190,6 +194,62 @@ describe("Command Utils tests", () => {
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
+    });
+  });
+
+  describe("Confirmation modal", () => {
+    it("should build list of resource names when 1 node provided", () => {
+      const nodes = [{ label: "MYRES1" }] as CICSResourceContainerNode<IResource>[];
+
+      const description = commandUtils.buildConfirmationDescription(nodes);
+      expect(description).toEqual(["MYRES1"]);
+    });
+
+    it("should build list of resource names when 2 nodes provided", () => {
+      const nodes = [{ label: "MYRES1" }, { label: "MYRES2" }] as CICSResourceContainerNode<IResource>[];
+
+      const description = commandUtils.buildConfirmationDescription(nodes);
+      expect(description).toEqual(["MYRES1", "MYRES2"]);
+    });
+
+    it("should build list of resource names when 10 nodes provided", () => {
+      const nodes = [];
+      for (let i = 0; i < 10; i++) {
+        nodes.push({ label: `MYRES${i}` } as CICSResourceContainerNode<IResource>);
+      }
+
+      const description = commandUtils.buildConfirmationDescription(nodes);
+      expect(description).toEqual(["MYRES0", "MYRES1", "MYRES2", "MYRES3", "MYRES4", "MYRES5", "MYRES6", "MYRES7", "MYRES8", "MYRES9"]);
+    });
+
+    it("should build list of resource names when more than 10 nodes provided", () => {
+      const nodes = [];
+      for (let i = 0; i < 15; i++) {
+        nodes.push({ label: `MYRES${i}` } as CICSResourceContainerNode<IResource>);
+      }
+
+      const description = commandUtils.buildConfirmationDescription(nodes);
+      expect(description).toEqual(["MYRES0", "MYRES1", "MYRES2", "MYRES3", "MYRES4", "MYRES5", "MYRES6", "MYRES7", "MYRES8", "MYRES9", "...5 more"]);
+    });
+
+    it("should show info message with action and resource type", async () => {
+      showInfoMessageMock.mockReturnValue("DELETE");
+      await commandUtils.getConfirmationForAction("DELETE", "TS Queues", ["MYRES1"]);
+      expect(showInfoMessageMock).toHaveBeenCalledWith(
+        "Are you sure you want to DELETE the following TS Queues?",
+        { modal: true, detail: "MYRES1" },
+        "DELETE"
+      );
+    });
+
+    it("should show info message with different action and resource type", async () => {
+      showInfoMessageMock.mockReturnValue("Purge");
+      await commandUtils.getConfirmationForAction("Purge", "Tasks", ["Tsk1", "Tsk2"]);
+      expect(showInfoMessageMock).toHaveBeenCalledWith(
+        "Are you sure you want to Purge the following Tasks?",
+        { modal: true, detail: "Tsk1\nTsk2" },
+        "Purge"
+      );
     });
   });
 });
