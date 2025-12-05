@@ -22,7 +22,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   humanReadableNameSingular: l10n.t("Task"),
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `TASK=${n}`).join(" OR ");
+    return criteria.map((n) => `TRANID=${n}`).join(" OR ");
   },
 
   getDefaultCriteria: function () {
@@ -105,5 +105,5 @@ export const TaskMeta: IResourceMeta<ITask> = {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
   },
 
-  maximumPrimaryKeyLength: 7,
+  maximumPrimaryKeyLength: 4,
 };
