@@ -50,12 +50,12 @@ export const constants = {
   Please refer to the IBM documentation for resp code details`,
   NO_CONNECTION_ERROR_MESSAGE: `The CMCI REST API request failed. 
   Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
-  PROGRAM_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE  PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  PROGRAM_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
   Please refer to the IBM documentation for resp code details`,
-  PROGRAM2_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE  PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  PROGRAM2_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
   Please refer to the IBM documentation for resp code details`,
   PROGRAM_NOT_FOUND_ERROR_MESSAGE: `The CMCI REST API request failed for resources: PROG3, PROG4. 
-  Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 0 (). Please refer to the IBM documentation for resp code details`,
+  Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for resp code details`,
 };
 
 export const getTree = (page: Page, exactText: string) => {
