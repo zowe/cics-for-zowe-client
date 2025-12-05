@@ -26,14 +26,26 @@ test("CICSPlexTree is organised in correct order", async ({ page }) => {
     "Web Services",
   ];
 
+  //open the CICS Region tree
   await findAndClickTreeItem(page, constants.PROFILE_NAME);
   await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
   await findAndClickTreeItem(page, constants.REGION_NAME);
+  let currentTop = 1;
   for (const order of expectedOrder) {
-    await expect(getTreeItem(page, order)).toBeVisible();
+    const item = getTreeItem(page, order);
+    await expect(item).toBeVisible();
+    const style = await item.getAttribute("style");
+    let styles = style?.split(";");
+
+    if (styles) {
+      styles = styles[0].split(":");
+      styles = styles[1].split("px");
+      const topValue = Number(styles[0]);
+      expect(currentTop).toBeLessThan(topValue);
+      currentTop = topValue;
+    }
   }
 });
-
 test("CICSRegionTree is organised in correct order", async ({ page }) => {
   const expectedOrder = [
     "Regions",
@@ -53,7 +65,19 @@ test("CICSRegionTree is organised in correct order", async ({ page }) => {
 
   await findAndClickTreeItem(page, constants.PROFILE_NAME);
   await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+  let currentTop = 1;
   for (const order of expectedOrder) {
-    await expect(getTreeItem(page, order)).toBeVisible();
+    const item = getTreeItem(page, order);
+    await expect(item).toBeVisible();
+    const style = await item.getAttribute("style");
+    let styles = style?.split(";");
+
+    if (styles) {
+      styles = styles[0].split(":");
+      styles = styles[1].split("px");
+      const topValue = Number(styles[0]);
+      expect(currentTop).toBeLessThan(topValue);
+      currentTop = topValue;
+    }
   }
 });

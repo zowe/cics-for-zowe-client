@@ -133,12 +133,19 @@ describe("Test suite for CICSRegionTree", () => {
     expect(sut.getIsActive()).toBeTruthy();
   });
 
-  it("Children should be sorted alphabetically", async () => {
-    const Children = [{ label: "Programs" }, { label: "Bundles" }, { label: "Files" }, { label: "JVM Servers" }];
-    const sortedChildren = Children.sort((a, b) => a.label.localeCompare(b.label));
-    expect(sortedChildren[0].label).toBe("Bundles");
-    expect(sortedChildren[1].label).toBe("Files");
-    expect(sortedChildren[2].label).toBe("JVM Servers");
-    expect(sortedChildren[3].label).toBe("Programs");
+  it("Children should be sorted alphabetically", () => {
+    workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+    get.mockImplementation((key: string) => ["Programs", "Bundles", "Tasks", "JVMServers"].includes(key));
+
+    CICSResourceContainerNodeMock.mockImplementation((label: string) => ({ label: String(label) }));
+
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
+      _onDidChangeTreeData: { fire: () => jest.fn() },
+    } as unknown as CICSTree);
+    sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
+
+    const labels = (sut.children as any[]).filter(Boolean).map((c) => String(c.label).trim());
+    const sorted = [...labels].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    expect(labels).toEqual(sorted);
   });
 });

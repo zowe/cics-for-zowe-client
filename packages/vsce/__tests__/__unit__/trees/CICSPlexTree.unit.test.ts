@@ -136,13 +136,17 @@ describe("Test suite for CICSLocalFileTree", () => {
     it("Should return children object", () => {
       expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
     });
-    it("Children should be sorted alphabetically", async () => {
-      const Children = [{ label: "All Programs" }, { label: "All Bundles" }, { label: "All Files" }, { label: "All JVM Servers" }];
-      const sortedChildren = Children.sort((a, b) => a.label.localeCompare(b.label));
-      expect(sortedChildren[0].label).toBe("All Bundles");
-      expect(sortedChildren[1].label).toBe("All Files");
-      expect(sortedChildren[2].label).toBe("All JVM Servers");
-      expect(sortedChildren[3].label).toBe("All Programs");
+
+    it("Children should be sorted alphabetically", () => {
+      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+
+      get.mockReturnValue((key: string) => ["All Programs", "All Bundles", "All Tasks", "All JVMServers"].includes(key));
+
+      sut.getChildren();
+
+      const labels = (sut.children as any[]).filter(Boolean).map((c) => String(c.label).trim());
+      const sorted = [...labels].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      expect(labels).toEqual(sorted);
     });
   });
 
