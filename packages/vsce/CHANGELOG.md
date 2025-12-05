@@ -10,10 +10,9 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Enable job values to appear as hyperlinks and, on click, direct the user to the matching job in the Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
 - Bugfix: Updated `react` dependency for technical currency. [#532](https://github.com/zowe/cics-for-zowe-client/pull/532)
 - Bugfix: Search state is persisting even after changing the Resource while performing inspect resource. [#481](https://github.com/zowe/cics-for-zowe-client/issues/481)
-- Bugfix: Search any task by providing the full task id via command pallete or by expanding the tree. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
-- Enhancement: Increased the length of task id from 4 to 16. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
+- Bugfix:  Increases the maximum allowed length from 4 to 16 of a CICS Task's ID when inspecting via Resource Inspector. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
 
-## `3.15.0`
+## `3.15.0` 
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
 - Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
 - Enhancement: Show Bundle command for CICS Bundle to navigate through bundle parts in the USS tree[#474](https://github.com/zowe/cics-for-zowe-client/issues/474)
