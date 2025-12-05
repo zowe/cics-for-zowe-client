@@ -136,6 +136,18 @@ describe("Test suite for CICSLocalFileTree", () => {
     it("Should return children object", () => {
       expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
     });
+
+    it("Children should be sorted alphabetically", () => {
+      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+
+      get.mockReturnValue((key: string) => ["All Programs", "All Bundles", "All Tasks", "All JVMServers"].includes(key));
+
+      sut.getChildren();
+
+      const labels = (sut.children as any[]).filter(Boolean).map((c) => String(c.label).trim());
+      const sorted = [...labels].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      expect(labels).toEqual(sorted);
+    });
   });
 
   describe("Test suite for clearChildren", () => {
