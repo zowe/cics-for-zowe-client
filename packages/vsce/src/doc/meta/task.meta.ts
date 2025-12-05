@@ -105,5 +105,5 @@ export const TaskMeta: IResourceMeta<ITask> = {
     return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
   },
 
-  maximumPrimaryKeyLength: 7,
+  maximumPrimaryKeyLength: 16,
 };

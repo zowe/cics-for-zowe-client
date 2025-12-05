@@ -6,11 +6,12 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
-- Bugfix: Wildcard criteria search fails for Task resource. [#525](https://github.com/zowe/cics-for-zowe-client/issues/525)
 - Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Enable job values to appear as hyperlinks and, on click, direct the user to the matching job in the Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
 - Bugfix: Updated `react` dependency for technical currency. [#532](https://github.com/zowe/cics-for-zowe-client/pull/532)
 - Bugfix: Search state is persisting even after changing the Resource while performing inspect resource. [#481](https://github.com/zowe/cics-for-zowe-client/issues/481)
+- Bugfix: Search any task by providing the full task id via command pallete or by expanding the tree. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
+- Enhancement: Increased the length of task id from 4 to 16. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
 
 ## `3.15.0`
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
