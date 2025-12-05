@@ -12,7 +12,6 @@
 import { CicsCmciRestError, ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { RestClientError } from "@zowe/imperative";
 import { CICSExtensionError } from "../../../src/errors/CICSExtensionError";
-import { ICICSExtensionError } from "../../../src/errors/ICICSExtensionError";
 
 function trimLineBreaks(msg: string | undefined) {
   if (!msg) return "";
@@ -27,7 +26,6 @@ const resultSummaryMock: ICMCIResponseResultSummary = {
   api_function: "PERFORM SET",
 };
 let baseErrorMock: CicsCmciRestError | RestClientError | CICSExtensionError;
-let errorMock: ICICSExtensionError;
 let cmciErrorResponseMock: ICMCIApiResponse;
 
 describe("Test suite for CICSExtensionError", () => {
