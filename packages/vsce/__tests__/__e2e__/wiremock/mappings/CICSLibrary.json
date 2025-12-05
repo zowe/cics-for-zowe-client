@@ -38,6 +38,63 @@
           "Content-Type": "text/xml"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/ERRORS?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/summary-dfhrpl.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/DFHRPL/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/records-dfhrpl.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/DFHRPL?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/ERRORS?CRITERIA=(name%3DDFHRPL)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/error-on-disable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
     }
   ]
 }

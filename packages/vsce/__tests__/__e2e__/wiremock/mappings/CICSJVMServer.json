@@ -56,6 +56,37 @@
           "Content-Type": "text/xml"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/ERRORS?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMServer/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/ERRORS?CRITERIA=(name%3DMYJVM1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"DISABLE\"><parameter name=\"PURGETYPE\" value=\"KILL\"/></action></request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMServer/disable/MYJVM1/failure.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
     }
   ]
 }
