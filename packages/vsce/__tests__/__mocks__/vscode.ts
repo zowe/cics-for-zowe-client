@@ -16,11 +16,16 @@ const mock = createVSCodeMock(jest);
 module.exports = {
   ...mock,
   extensions: {
-    getExtension: (v: string) => {},
+    getExtension: jest.fn().mockReturnValue({
+      packageJSON: {
+        displayName: "Zowe Explorer for IBM CICS TS",
+        version: "1.2.3",
+      },
+    }),
   },
   env: {
     clipboard: {
-      writeText: (v: string) => {},
+      writeText: (v: string) => { },
     },
   },
   l10n: {
@@ -31,4 +36,15 @@ module.exports = {
       return key.replace(/\{(\d+)\}/g, (_, idx) => (args[Number(idx)] !== undefined ? String(args[Number(idx)]) : ""));
     },
   },
+  window: {
+    createOutputChannel: jest.fn().mockReturnValue({
+      trace: jest.fn(),
+      debug: jest.fn(),
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      dispose: jest.fn(),
+      logLevel: 2,
+    }),
+  }
 };
