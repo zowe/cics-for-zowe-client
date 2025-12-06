@@ -10,6 +10,7 @@
  */
 
 import { createVSCodeMock } from "jest-mock-vscode";
+import { vscodeRegisterCommandMock } from ".";
 
 const mock = createVSCodeMock(jest);
 
@@ -37,6 +38,7 @@ module.exports = {
     },
   },
   window: {
+    ...mock.window,
     createOutputChannel: jest.fn().mockReturnValue({
       trace: jest.fn(),
       debug: jest.fn(),
@@ -46,5 +48,9 @@ module.exports = {
       dispose: jest.fn(),
       logLevel: 2,
     }),
+  },
+  commands: {
+    ...mock.commands,
+    registerCommand: vscodeRegisterCommandMock,
   }
 };

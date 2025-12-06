@@ -1,5 +1,5 @@
 
-import { createProfile, getJesApiMock } from "../";
+import { createProfile, fetchAllProfilesMock, getJesApiMock, getUssApiMock } from "../";
 
 const zeApi: any = jest.createMockFromModule('@zowe/zowe-explorer-api');
 
@@ -20,11 +20,14 @@ zeApi.ZoweVsCodeExtension = {
                     return undefined;
                 }),
 
+                fetchAllProfiles: fetchAllProfilesMock,
+
                 refresh: jest.fn(),
             }),
             initForZowe: jest.fn(),
         }),
         getJesApi: getJesApiMock,
+        getUssApi: getUssApiMock,
     })
 };
 

@@ -5,6 +5,13 @@ import { imperative } from "@zowe/zowe-explorer-api";
 export const getJesApiMock = jest.fn();
 getJesApiMock.mockReturnValue(true);
 
+export const getUssApiMock = jest.fn();
+getUssApiMock.mockReturnValue(true);
+
+export const vscodeRegisterCommandMock = jest.fn();
+
+export const fetchAllProfilesMock = jest.fn();
+
 export const getResourceMock = jest.fn();
 
 export const createProfile = (name: string, type: string, host: string, user?: string) => {
