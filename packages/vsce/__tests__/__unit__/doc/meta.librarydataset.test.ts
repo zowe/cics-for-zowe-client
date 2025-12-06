@@ -13,10 +13,6 @@ import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explore
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("Library Dataset Meta", () => {
   let libraryDSMock: Resource<ILibraryDataset>;
   let parentLibraryMock: Resource<ILibrary>;

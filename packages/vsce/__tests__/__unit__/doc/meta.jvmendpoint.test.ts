@@ -13,10 +13,6 @@ import { IJVMEndpoint, IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMEndpointMeta } from "../../../src/doc/meta/jvmEndpoints.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("JVM Endpoint Meta", () => {
   let jvmEndpointMock: Resource<IJVMEndpoint>;
   let parentResource: Resource<IJVMServer>;

@@ -13,10 +13,6 @@ import { IBundle } from "@zowe/cics-for-zowe-explorer-api";
 import { BundleMeta } from "../../../src/doc/meta/bundle.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("Bundle Meta", () => {
   let bundleMock: Resource<IBundle>;
 

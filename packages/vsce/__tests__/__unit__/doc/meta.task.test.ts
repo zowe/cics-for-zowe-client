@@ -13,10 +13,6 @@ import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { TaskMeta } from "../../../src/doc/meta/task.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("Task Meta", () => {
   let taskMock: Resource<ITask>;
 

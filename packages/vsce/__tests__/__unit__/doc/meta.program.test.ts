@@ -13,10 +13,6 @@ import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc/meta/program.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("Program Meta", () => {
   let programMock: Resource<IProgram>;
   let programMockWithJVM: Resource<IProgram>;

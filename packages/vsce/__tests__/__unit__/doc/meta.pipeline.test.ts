@@ -13,10 +13,6 @@ import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
 import { PipelineMeta } from "../../../src/doc/meta/pipeline.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("Pipeline Meta", () => {
   let pipelineMock: Resource<IPipeline>;
 

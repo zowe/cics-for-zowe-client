@@ -13,10 +13,6 @@ import { ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
 import { TSQueueMeta } from "../../../src/doc/meta/tsqueue.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("TS Queue Meta", () => {
   let tsQueueMock: Resource<ITSQueue>;
 

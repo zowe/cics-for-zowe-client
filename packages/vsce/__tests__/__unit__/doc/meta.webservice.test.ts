@@ -13,10 +13,6 @@ import { IWebService } from "@zowe/cics-for-zowe-explorer-api";
 import { WebServiceMeta } from "../../../src/doc/meta/webservice.meta";
 import { Resource } from "../../../src/resources";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 describe("WebService Meta", () => {
   let webserviceMock: Resource<IWebService>;
 
