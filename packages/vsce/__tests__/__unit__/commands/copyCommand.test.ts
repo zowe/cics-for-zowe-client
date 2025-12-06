@@ -29,7 +29,7 @@ describe("Test suite for copy commands", () => {
   });
 
   it("should copy user agent string to clipboard", async () => {
-    const expectedHeader = "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3";
+    const expectedHeader = "zowe.cics-extension-for-zowe/3.15.0 zowe.vscode-extension-for-zowe/3.15.0";
     expect(mockedClipboard).toEqual("");
 
     const returnedValue = copyUserAgentHeaderToClipboard();

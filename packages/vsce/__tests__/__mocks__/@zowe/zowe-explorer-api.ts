@@ -23,8 +23,11 @@ zeApi.ZoweVsCodeExtension = {
                 fetchAllProfiles: fetchAllProfilesMock,
 
                 refresh: jest.fn(),
+
+                registerCustomProfilesType: jest.fn(),
             }),
             initForZowe: jest.fn(),
+            reloadProfiles: jest.fn(),
         }),
         getJesApi: getJesApiMock,
         getUssApi: getUssApiMock,

@@ -20,7 +20,7 @@ module.exports = {
     getExtension: jest.fn().mockReturnValue({
       packageJSON: {
         displayName: "Zowe Explorer for IBM CICS TS",
-        version: "1.2.3",
+        version: "3.15.0",
       },
     }),
   },
@@ -47,6 +47,11 @@ module.exports = {
       error: jest.fn(),
       dispose: jest.fn(),
       logLevel: 2,
+    }),
+    createTreeView: jest.fn().mockReturnValue({
+      onDidExpandElement: jest.fn(),
+      onDidCollapseElement: jest.fn(),
+      reveal: jest.fn(),
     }),
   },
   commands: {
