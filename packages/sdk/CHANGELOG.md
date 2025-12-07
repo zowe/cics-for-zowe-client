@@ -4,7 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## Recent Changes
 
-- Enhancement: Added PUT API [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
+- Enhancement: Added putResource API to update CICS resources via CMCI. [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
 
 ## `6.15.0`
 
