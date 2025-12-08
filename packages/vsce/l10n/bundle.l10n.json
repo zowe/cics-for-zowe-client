@@ -32,7 +32,9 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": ["Log level"]
+    "comment": [
+      "Log level"
+    ]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
