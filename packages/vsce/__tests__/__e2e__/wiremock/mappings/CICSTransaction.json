@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/E1DF0EBABA61C087/1/250?NODISCARD"
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWTRANSACTIONTOKEN/1/250?NODISCARD"
       },
       "response": {
         "status": 200,
@@ -29,7 +29,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/E1DF0EBABA61C087?SUMMONLY"
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWTRANSACTIONTOKEN?SUMMONLY"
       },
       "response": {
         "status": 200,
