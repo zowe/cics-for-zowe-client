@@ -48,6 +48,15 @@
         "user": "dummy",
         "password": "dummy"
       }
+    },
+    "test-login": {
+      "type": "cics",
+      "properties": {
+        "protocol": "http",
+        "host": "wiremock",
+        "port": 9090,
+        "rejectUnauthorized": false
+      }
     }
   },
   "defaults": {
