@@ -13,7 +13,10 @@ import { CICSSessionTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSTree } from "../../../src/trees/CICSTree";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { getResourceMock, profile } from "../../__mocks__";
+
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
 const record = [
   { cicsname: "cics", cicsstate: "ACTIVE" },
@@ -61,7 +64,8 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.loadRegionsInCICSGroup(cicsTree);
 
-      expect(regionsContainer.label).toBe("Regions (cics) [1/1]");
+      expect(regionsContainer.label).toBe("Regions");
+      expect(regionsContainer.description).toBe("(cics) 1/1");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
@@ -77,7 +81,8 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.loadRegionsInPlex();
 
-      expect(regionsContainer.label).toBe("Regions [2/2]");
+      expect(regionsContainer.label).toBe("Regions");
+      expect(regionsContainer.description).toBe("2/2");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });

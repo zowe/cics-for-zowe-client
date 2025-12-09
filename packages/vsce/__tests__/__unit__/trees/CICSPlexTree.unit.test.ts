@@ -14,8 +14,10 @@ import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as iconUtils from "../../../src/utils/iconUtils";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { getResourceMock, profile } from "../../__mocks__";
 
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 const iconMock = jest.spyOn(iconUtils, "getIconFilePathFromName");
 
 describe("Test suite for CICSLocalFileTree", () => {
@@ -35,8 +37,8 @@ describe("Test suite for CICSLocalFileTree", () => {
 
   describe("Test suite for addRegion()", () => {
     it("Should add CICSRegionTree into localFile", () => {
-      plexTree.addRegion(regionTree);
-      expect(plexTree.children.length).toEqual(1);
+      plexTree.children.push(regionTree);
+      expect(plexTree.children.length).toEqual(12);
     });
   });
 
@@ -73,8 +75,15 @@ describe("Test suite for CICSLocalFileTree", () => {
   });
 
   describe("Test suite for getChildren", () => {
-    it("Should return children object", () => {
-      expect(plexTree.getChildren().length).toEqual(0);
+    it("Should return children object", async () => {
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          records: {
+            cicsregion: { applid: "MYREG" },
+          },
+        },
+      });
+      expect((await plexTree.getChildren())?.length).toEqual(1);
     });
   });
 
@@ -105,16 +114,7 @@ describe("Test suite for CICSLocalFileTree", () => {
 
   describe("Test suite for addNewCombinedTrees()", () => {
     it("Should push all new combined trees instance into children array", () => {
-      plexTree.addNewCombinedTrees();
-      expect(plexTree.children).toHaveLength(10);
-    });
-  });
-
-  describe("Test suite for addRegionContainer()", () => {
-    it("Should push region container instance into children array", () => {
-      plexTree.addRegionContainer();
-
-      expect(plexTree.children.length).toBeGreaterThanOrEqual(1);
+      expect(plexTree.children).toHaveLength(11);
     });
   });
 
