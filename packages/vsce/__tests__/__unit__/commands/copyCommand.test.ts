@@ -14,7 +14,10 @@ import { env } from "vscode";
 import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../../../src/commands/copyCommand";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { profile } from "../../__mocks__";
+
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
 let mockedClipboard = ``;
 jest.spyOn(env.clipboard, "writeText").mockImplementation(async (v: string) => {
