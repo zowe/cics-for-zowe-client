@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ConfigurationTarget, workspace } from "vscode";
+import { ConfigurationTarget, ExtensionContext, workspace } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
 
@@ -18,6 +18,11 @@ class SPersistentStorage {
   private static _instance: SPersistentStorage;
   public static get Instance() {
     return this._instance || (this._instance = new this());
+  }
+  private context: ExtensionContext;
+
+  public setContext(cxt: ExtensionContext) {
+    this.context = cxt;
   }
 
   private constructor() {
@@ -120,6 +125,18 @@ class SPersistentStorage {
   getNumberOfResourcesToFetch(): number {
     const valFromConfig = workspace.getConfiguration().get(this.RESOURCE_PAGE_COUNT_KEY, constants.DEFAULT_RESOURCE_PAGE_SIZE);
     return parseInt(`${valFromConfig}`, 10);
+  }
+
+  public async setCriteria(nodeContextValue: string, criteria?: string) {
+    await this.context.workspaceState.update(nodeContextValue, criteria);
+  }
+
+  public getCriteria(nodeContextValue: string): string | undefined {
+    return this.context.workspaceState.get(nodeContextValue);
+  }
+
+  public getCriteriaKeysForSession(profileName: string) {
+    return this.context.workspaceState.keys().filter((k: string) => k.startsWith(`${profileName}-`));
   }
 }
 

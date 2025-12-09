@@ -11,8 +11,7 @@
 
 import { ExtensionContext, window } from "vscode";
 import { CICSTree } from "./trees/CICSTree";
-import { plexExpansionHandler, regionContainerExpansionHandler, sessionExpansionHandler } from "./utils/expansionHandler";
-import { getFolderIcon, getIconFilePathFromName } from "./utils/iconUtils";
+import { getFolderIcon } from "./utils/iconUtils";
 import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
@@ -22,6 +21,7 @@ import { CICSMessages } from "./constants/CICS.messages";
 import CICSExtenderApiConfig from "./extending/CICSExtenderApiConfig";
 import { ResourceInspectorViewProvider } from "./trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "./utils/CICSLogger";
+import PersistentStorage from "./utils/PersistentStorage";
 
 /**
  * Initializes the extension
@@ -65,6 +65,8 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
     return;
   }
 
+  PersistentStorage.setContext(context);
+
   treeDataProv = new CICSTree();
   const treeview = window.createTreeView("cics-view", {
     treeDataProvider: treeDataProv,
@@ -74,35 +76,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
 
   treeDataProv.hookCollapseWatcher(treeview);
 
-  const contextMap: { [key: string]: (node: any) => Promise<void> | void } = {
-    cicssession: async (node: any) => {
-      await sessionExpansionHandler(node.element, treeDataProv);
-    },
-
-    cicsplex: (node: any) => {
-      try {
-        plexExpansionHandler(node.element, treeDataProv);
-      } catch (error) {
-        CICSLogger.error(error);
-        node.element.getParent().iconPath = getIconFilePathFromName("profile-disconnected");
-        treeDataProv._onDidChangeTreeData.fire(node.element);
-      }
-    },
-
-    cicsregionscontainer: async (node: any) => {
-      node.element.iconPath = getFolderIcon(true);
-      await regionContainerExpansionHandler(node.element, treeDataProv);
-      treeDataProv._onDidChangeTreeData.fire(node.element);
-    },
-  };
-
   treeview.onDidExpandElement((node) => {
-    const contextValue = node.element.contextValue;
-    const initialContext = contextValue.split(".")[0];
-
-    if (initialContext in contextMap) {
-      contextMap[initialContext](node);
-    }
     if (node.element.refreshIcon) {
       node.element.refreshIcon(true);
     }
