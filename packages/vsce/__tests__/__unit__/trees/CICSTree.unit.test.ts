@@ -16,6 +16,7 @@ import { loadNamedProfileMock } from "../../__mocks__";
 
 const removeLoadedCICSProfileSpy = jest.spyOn(PersistentStorage, "removeLoadedCICSProfile");
 const getProfilesCacheMock = jest.spyOn(ProfileManagement, "getProfilesCache");
+jest.spyOn(PersistentStorage, "getCriteriaKeysForSession").mockImplementation((nm: string) => []);
 
 describe("Test suite for CICSTree", () => {
   let sut: CICSTree;
