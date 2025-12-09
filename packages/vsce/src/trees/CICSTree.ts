@@ -82,7 +82,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         if (error.message?.includes("Could not find profile named")) {
           await PersistentStorage.removeLoadedCICSProfile(profilename);
           const keysToRemove = PersistentStorage.getCriteriaKeysForSession(profilename);
-          keysToRemove.map(async (k: string) => await PersistentStorage.setCriteria(k));
+          keysToRemove.map(async (k: string) => PersistentStorage.setCriteria(k));
         }
         continue;
       }
