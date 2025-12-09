@@ -2,14 +2,13 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Latest Changes
+## Recent Changes
 
 - Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
 
 ## `3.16.0`
 
 - Bugfix: Update persistent storage when CICS profiles are added and removed. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
-- Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Use hyperlinks to navigate from Resource Inspector attributes to the Zowe Explorer Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
