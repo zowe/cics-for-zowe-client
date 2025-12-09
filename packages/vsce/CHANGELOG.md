@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
+
 ## `3.16.0`
 
 - Bugfix: Update persistent storage when CICS profiles are added and removed. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)

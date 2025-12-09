@@ -14,7 +14,11 @@ const getIconFilePathFromNameMock = jest.fn();
 
 import * as vscode from "vscode";
 
-jest.mock("../../../src/trees/CICSResourceContainerNode");
+const CICSResourceContainerNodeMock = jest.fn();
+jest.mock("../../../src/trees/CICSResourceContainerNode", () => ({
+  CICSResourceContainerNode: CICSResourceContainerNodeMock,
+}));
+
 jest.mock("../../../src/utils/iconUtils", () => {
   return {
     getIconByStatus: getIconByStatusMock,
@@ -36,6 +40,17 @@ import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import * as globalMocks from "../../__utils__/globalMocks";
+import { unsortedRegion } from "../../__utils__/globalMocks";
+
+let buildResourceSpy: jest.SpyInstance | undefined;
+
+function mockBuildResourceContainerNodeWith(labels: string[]) {
+  let idx = 0;
+  buildResourceSpy = jest
+    .spyOn(CICSRegionTree.prototype as any, "buildResourceContainerNode")
+    .mockImplementation((..._metas: unknown[]) => ({ label: labels[idx++] || "" }));
+  return buildResourceSpy;
+}
 
 const defaultFilterMock = jest.fn();
 defaultFilterMock.mockReturnValue("DEFAULT FITLER");
@@ -67,6 +82,11 @@ describe("Test suite for CICSRegionTree", () => {
   let sut: CICSRegionTree;
 
   beforeEach(() => {
+    CICSResourceContainerNodeMock.mockImplementation((label) => ({
+      label: label,
+      resourceTypes: [],
+    }));
+
     getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
     workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
     get.mockReturnValue(true);
@@ -81,6 +101,8 @@ describe("Test suite for CICSRegionTree", () => {
   });
 
   afterEach(() => {
+    buildResourceSpy?.mockRestore();
+    buildResourceSpy = undefined;
     jest.resetAllMocks();
   });
 
@@ -122,5 +144,18 @@ describe("Test suite for CICSRegionTree", () => {
 
   it("Should return isActive", () => {
     expect(sut.getIsActive()).toBeTruthy();
+  });
+
+  it("Children should be sorted when built (mocked buildResourceContainerNode)", () => {
+    mockBuildResourceContainerNodeWith(unsortedRegion);
+
+    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
+      _onDidChangeTreeData: { fire: () => jest.fn() },
+    } as unknown as CICSTree);
+    sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
+
+    const labels = (sut.children as any[]).map((c) => String(c.label).trim());
+    const expected = [...unsortedRegion].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    expect(labels).toEqual(expected);
   });
 });

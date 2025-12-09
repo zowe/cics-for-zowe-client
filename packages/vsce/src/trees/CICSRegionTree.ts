@@ -106,6 +106,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       if (config.get<boolean>("TSQueue", true)) {
         this.children.push(this.buildResourceContainerNode([TSQueueMeta, SharedTSQueueMeta], l10n.t("TS Queues")));
       }
+      this.children.sort((r1, r2) => r1.label.toString().localeCompare(r2.label.toString()));
     }
   }
 

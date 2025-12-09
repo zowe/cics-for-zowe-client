@@ -146,3 +146,80 @@ export const runInCommandPalette = async (page: Page, command: string) => {
 export const getClipboardContent = async (page: Page) => {
   return await page.evaluate("navigator.clipboard.readText()");
 };
+
+export const collectTreeItemsOrder = async (
+  page: Page,
+  expectedOrder: string[],
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
+): Promise<Array<{ label: string; index: number }>> => {
+  const { includeAll = false, waitForLabel, selector = '[role="treeitem"]' } = options ?? {};
+
+  if (waitForLabel) {
+    await expect(getTreeItem(page, waitForLabel, false).first()).toBeVisible();
+  }
+
+  const allTreeItems = await page.locator(selector).all();
+  const itemsWithIndices: Array<{ label: string; index: number }> = [];
+
+  for (const treeItem of allTreeItems) {
+    const ariaLabel = await treeItem.getAttribute("aria-label");
+    const dataIndex = await treeItem.getAttribute("data-index");
+    if (!ariaLabel || !dataIndex) continue;
+
+    const trimmedLabel = ariaLabel.trim();
+
+    for (const expectedLabel of expectedOrder) {
+      const matchesExpected = trimmedLabel.startsWith(expectedLabel);
+      const hasAllPrefix = trimmedLabel.startsWith("All ");
+      if (matchesExpected && (includeAll ? hasAllPrefix : !hasAllPrefix)) {
+        if (!itemsWithIndices.some((item) => item.label === expectedLabel)) {
+          itemsWithIndices.push({ label: expectedLabel, index: Number.parseInt(dataIndex, 10) });
+        }
+        break;
+      }
+    }
+  }
+
+  itemsWithIndices.sort((a, b) => a.index - b.index);
+  return itemsWithIndices;
+};
+
+export const assertTreeItemsOrder = async (
+  page: Page,
+  expectedOrder: string[],
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
+): Promise<void> => {
+  const items = await collectTreeItemsOrder(page, expectedOrder, options);
+  const actualOrder = items.map((it) => it.label);
+  expect(actualOrder).toEqual(expectedOrder);
+};
+
+export const expectedRegionOrder = [
+  "Bundles",
+  "Files",
+  "JVM Servers",
+  "Libraries",
+  "Pipelines",
+  "Programs",
+  "Tasks",
+  "TCP/IP Services",
+  "Transactions",
+  "TS Queues",
+  "URI Maps",
+  "Web Services",
+];
+
+export const expectedPlexOrder = [
+  "All Bundles",
+  "All Files",
+  "All JVM Servers",
+  "All Libraries",
+  "All Pipelines",
+  "All Programs",
+  "All Tasks",
+  "All TCP/IP Services",
+  "All Transactions",
+  "All TS Queues",
+  "All URI Maps",
+  "All Web Services",
+];
