@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## `3.16.0`
+## Recent Changes
 
 Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
 
