@@ -3,11 +3,11 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+        "url": "/CICSSystemManagement/CICSLocalTransaction/MYPLEX1/ERRORS?CRITERIA=(NOT%20(program%3DDFH*%20OR%20program%3DEYU*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/summary.xml",
+        "bodyFileName": "CICSTransaction/summary.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -16,11 +16,11 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JVMENDPOINTTOKEN/1/250?NODISCARD"
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWTRANSACTIONTOKEN/1/250?NODISCARD"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/records.xml",
+        "bodyFileName": "CICSTransaction/records.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -29,11 +29,11 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSResultCache/JVMENDPOINTTOKEN?SUMMONLY"
+        "url": "/CICSSystemManagement/CICSResultCache/SHOWTRANSACTIONTOKEN?SUMMONLY"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/remove-cache.xml",
+        "bodyFileName": "CICSTransaction/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -42,11 +42,11 @@
     {
       "request": {
         "method": "GET",
-        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/ERRORS?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+        "url": "/CICSSystemManagement/CICSLocalTransaction/CICSEX61/IYCWENW2?CRITERIA=(TRANID%3DFILTER)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSJVMEndpoint/summary.xml",
+        "bodyFileName": "CICSTransaction/invalid-filter.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
