@@ -16,6 +16,7 @@ import { CICSPlexTree, TextTreeItem } from ".";
 import { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
+import PersistentStorage from "../utils/PersistentStorage";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
 import { ViewMore } from "./ViewMore";
@@ -67,7 +68,19 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       );
     }
 
+    const existingCriteria: string = PersistentStorage.getCriteria(this.buildCriteriaStorageKey());
+    if (existingCriteria) {
+      this.fetcher.setCriteria(existingCriteria.split("~~"));
+    }
     this.buildProperties();
+  }
+
+  private buildCriteriaStorageKey() {
+    let key = `${this.getProfileName()}`;
+    if (this.cicsplexName) {
+      key += `-${this.cicsplexName}`;
+    }
+    return `${key}-${this.regionName}-${this.label}`;
   }
 
   buildProperties() {
@@ -138,12 +151,14 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   setCriteria(criteria: string[]) {
     this.fetcher?.setCriteria(criteria);
     this.contextValue.replaceAll(".FILTERED", "");
+    PersistentStorage.setCriteria(this.buildCriteriaStorageKey(), criteria.join("~~"));
     this.contextValue += `.FILTERED`;
   }
 
   clearCriteria() {
     this.fetcher?.resetCriteria();
     this.contextValue = this.contextValue.replaceAll(".FILTERED", "");
+    PersistentStorage.setCriteria(this.buildCriteriaStorageKey());
   }
 
   getSessionNode() {
@@ -207,6 +222,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
     this.buildDescription();
     this.updateDescription();
+    this.refreshIcon(true);
 
     return children;
   }

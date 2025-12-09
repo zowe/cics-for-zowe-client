@@ -137,6 +137,9 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   }
 
   public getChildren() {
+    for (const c of this.children) {
+      (c as CICSResourceContainerNode<IResource>).reset();
+    }
     return Promise.resolve(this.children);
   }
 
