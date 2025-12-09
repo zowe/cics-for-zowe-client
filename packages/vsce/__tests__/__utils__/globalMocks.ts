@@ -93,3 +93,34 @@ export const workspaceConfiguration = {
   update: jest.fn(),
   isFile: jest.fn().mockReturnValue(true),
 };
+
+export const unsortedRegion = [
+  "Programs",
+  "Bundles",
+  "Tasks",
+  "Files",
+  "Libraries",
+  "JVM Servers",
+  "Pipelines",
+  "TCP/IP Services",
+  "Transactions",
+  "TS Queues",
+  "URI Maps",
+  "Web Services",
+];
+
+export const unsortedPlex = [
+  "Regions",
+  "All Programs",
+  "All Bundles",
+  "All Tasks",
+  "All Files",
+  "All Libraries",
+  "All JVM Servers",
+  "All Pipelines",
+  "All TCP/IP Services",
+  "All Transactions",
+  "All TS Queues",
+  "All URI Maps",
+  "All Web Services",
+];

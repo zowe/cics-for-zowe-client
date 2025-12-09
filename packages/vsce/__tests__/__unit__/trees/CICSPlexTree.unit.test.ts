@@ -23,8 +23,10 @@ import * as vscode from "vscode";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
+import { CICSTree } from "../../../src/trees/CICSTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import * as globalMocks from "../../__utils__/globalMocks";
+import { unsortedPlex } from "../../__utils__/globalMocks";
 
 const defaultFilterMock = jest.fn();
 defaultFilterMock.mockReturnValue("DEFAULT FITLER");
@@ -39,6 +41,16 @@ jest.mock("../../../src/trees/CICSRegionsContainer", () => ({
     return cicsCombinedTreeMock;
   },
 }));
+let buildSpy: jest.SpyInstance | undefined;
+
+function mockBuildCombinedTreeWith(labels: string[]) {
+  let idx = 0;
+  buildSpy = jest
+    .spyOn(CICSPlexTree.prototype as any, "buildCombinedTree")
+    .mockImplementation((..._args: unknown[]) => ({ label: labels[idx++] || "" }));
+  return buildSpy;
+}
+
 jest.mock("../../../src/trees/CICSRegionTree");
 jest.mock("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/utils/CICSLogger");
@@ -87,6 +99,8 @@ describe("Test suite for CICSLocalFileTree", () => {
   });
 
   afterEach(() => {
+    buildSpy?.mockRestore();
+    buildSpy = undefined;
     jest.resetAllMocks();
   });
 
@@ -135,18 +149,6 @@ describe("Test suite for CICSLocalFileTree", () => {
   describe("Test suite for getChildren", () => {
     it("Should return children object", () => {
       expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
-    });
-
-    it("Children should be sorted alphabetically", () => {
-      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
-
-      get.mockReturnValue((key: string) => ["All Programs", "All Bundles", "All Tasks", "All JVMServers"].includes(key));
-
-      sut.getChildren();
-
-      const labels = (sut.children as any[]).filter(Boolean).map((c) => String(c.label).trim());
-      const sorted = [...labels].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-      expect(labels).toEqual(sorted);
     });
   });
 
@@ -199,6 +201,28 @@ describe("Test suite for CICSLocalFileTree", () => {
       sut.getGroupName();
 
       expect(sut.getGroupName()).toBe("groupName");
+    });
+  });
+
+  describe("Test to check if children are sorted", () => {
+    it("CICSPlexTree children are organised", () => {
+      mockBuildCombinedTreeWith(unsortedPlex);
+
+      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
+      get.mockImplementation((_key: string) => true);
+
+      const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
+        _onDidChangeTreeData: { fire: () => jest.fn() },
+      } as unknown as CICSTree);
+
+      const plex = new CICSPlexTree(plexName, iprofileLoadedMock as any as IProfileLoaded, parent, "groupName");
+
+      (plex as any).children = [];
+      plex.addNewCombinedTrees();
+
+      const labels = (plex.children as any[]).map((c) => String(c.label).trim()).filter(Boolean);
+      const expected = [unsortedPlex[0], ...labels.slice(1).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))];
+      expect(labels).toEqual(expected);
     });
   });
 });

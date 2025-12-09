@@ -2,17 +2,23 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## Latest Changes
 
 - Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
+
+## `3.16.0`
+
+- Bugfix: Update persistent storage when CICS profiles are added and removed. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Bugfix: Persistent storage is not updated for loaded cics profiles. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
-- Bugfix: Wildcard criteria search fails for Task resource. [#525](https://github.com/zowe/cics-for-zowe-client/issues/525)
 - Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
-- Enhancement: Enable job values to appear as hyperlinks and, on click, direct the user to the matching job in the Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
+- Enhancement: Use hyperlinks to navigate from Resource Inspector attributes to the Zowe Explorer Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
 - Bugfix: Updated `react` dependency for technical currency. [#532](https://github.com/zowe/cics-for-zowe-client/pull/532)
+- Bugfix: Clear Resource Inspector search field on load. [#481](https://github.com/zowe/cics-for-zowe-client/issues/481)
+- Bugfix: Increases the maximum allowed length from 4 to 16 of a CICS Task ID when inspecting via Resource Inspector. [#531](https://github.com/zowe/cics-for-zowe-client/issues/531)
 
 ## `3.15.0`
+
 - Bugfix: Update Regions folder icon after collapsing the Regions node. [#486](https://github.com/zowe/cics-for-zowe-client/issues/486)
 - Bugfix: Collapse CICS profile after updating credentials. [#478](https://github.com/zowe/cics-for-zowe-client/issues/478)
 - Enhancement: Show Bundle command for CICS Bundle to navigate through bundle parts in the USS tree[#474](https://github.com/zowe/cics-for-zowe-client/issues/474)
