@@ -32,6 +32,10 @@ describe("Local File Meta", () => {
       recordsize: "100",
       status: "ENABLED",
       vsamtype: "VSAM",
+      update: "UPDATABLE",
+      add: "ADDABLE",
+      delete: "DELETABLE",
+      recovstatus: "RECOVERABLE"
     });
   });
 
@@ -145,7 +149,8 @@ describe("Local File Meta", () => {
       },
       {
         key: "Permission",
-        value: `READABLE, BROWSABLE`,
+        value: `BROWSABLE,READABLE,UPDATABLE,
+                ADDABLE,DELETABLE,RECOVERABLE`,
       },
       {
         key: "Key length",

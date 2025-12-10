@@ -82,7 +82,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
       },
       {
         key: l10n.t("Permission"),
-        value: `${resource.attributes.read}, ${resource.attributes.browse}`,
+        value: `${resource.attributes.browse},${resource.attributes.read},${resource.attributes.update},
+                ${resource.attributes.add},${resource.attributes.delete},${resource.attributes.recovstatus}`,
       },
       {
         key: l10n.t("Key length"),
