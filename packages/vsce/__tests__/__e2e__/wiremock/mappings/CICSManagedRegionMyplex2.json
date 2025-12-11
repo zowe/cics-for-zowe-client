@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX2/"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "CICSManagedRegionPlex2/records.xml",
+    "headers": {
+      "Content-Type": "application/xml"
+    }
+  }
+}
