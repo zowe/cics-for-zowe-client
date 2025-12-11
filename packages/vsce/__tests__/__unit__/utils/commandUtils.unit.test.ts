@@ -9,11 +9,12 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
-import { createProfile, fetchAllProfilesMock, getJesApiMock, showErrorMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
+import { createProfile, fetchAllProfilesMock, getJesApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
 
 describe("Command Utils tests", () => {
   describe("splitCmciErrorMessage", () => {
