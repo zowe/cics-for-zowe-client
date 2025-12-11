@@ -134,9 +134,6 @@ describe("Test suite for CICSLocalFileTree", () => {
 
   describe("Test to check if children are sorted", () => {
     it("CICSPlexTree children are organised", async () => {
-      plexTree.addRegionContainer();
-      plexTree.addNewCombinedTrees();
-
       expect(plexTree.children.length).toEqual(11);
       expect(plexTree.children[0]).toBeInstanceOf(CICSRegionsContainer);
 
