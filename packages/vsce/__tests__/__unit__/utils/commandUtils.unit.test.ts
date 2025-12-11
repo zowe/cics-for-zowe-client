@@ -9,104 +9,12 @@
  *
  */
 
-const fetchAllProfilesMock = jest.fn();
-const fetchBaseProfileMock = jest.fn();
-
-// Mock ProfileManagement before importing commandUtils
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: jest.fn().mockReturnValue({
-      fetchBaseProfile: fetchBaseProfileMock,
-      fetchAllProfiles: fetchAllProfilesMock,
-    }),
-    getExplorerApis: jest.fn(),
-    zoweExplorerAPI: {
-      getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn(),
-      }),
-    },
-  },
-}));
-
-const getJesApiMock = jest.fn();
-const updateCredentialsMock = jest.fn();
-
-// Mock ZoweVsCodeExtension
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  ZoweVsCodeExtension: {
-    getZoweExplorerApi: jest.fn().mockReturnValue({
-      getJesApi: getJesApiMock,
-      getExplorerExtenderApi: jest.fn().mockReturnValue({
-        getProfilesCache: jest.fn(),
-      }),
-    }),
-    updateCredentials: updateCredentialsMock,
-  },
-  Gui: {
-    showMessage: jest.fn(),
-    showQuickPick: jest.fn(),
-  },
-  MessageSeverity: {
-    ERROR: 0,
-  },
-  ZoweExplorerApiType: {
-    Jes: "JES",
-  },
-}));
-
-// Mock CICSLogger
-jest.mock("../../../src/utils/CICSLogger", () => ({
-  CICSLogger: {
-    debug: jest.fn(),
-    info: jest.fn(),
-    error: jest.fn(),
-  },
-}));
-
-// Mock vscode
-const executeCommandMock = jest.fn();
-const showErrorMessageMock = jest.fn();
-jest.mock(
-  "vscode",
-  () => ({
-    commands: {
-      executeCommand: executeCommandMock,
-    },
-    window: {
-      showErrorMessage: showErrorMessageMock,
-    },
-    l10n: {
-      t: (str: string, ...args: any[]) => {
-        // Simple mock implementation that replaces {0}, {1} etc with args
-        return str.replace(/\{(\d+)\}/g, (match, index) => args[index] || match);
-      },
-    },
-  }),
-  { virtual: true }
-);
-
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
 import * as commandUtils from "../../../src/utils/commandUtils";
-
-function createProfile(name: string, type: string, host: string, user?: string): IProfileLoaded {
-  return {
-    name: name,
-    message: "",
-    type: type,
-    failNotFound: false,
-    profile: {
-      user: user,
-      host: host,
-    },
-  } as IProfileLoaded;
-}
+import { createProfile, fetchAllProfilesMock, getJesApiMock, showErrorMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
 
 describe("Command Utils tests", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("splitCmciErrorMessage", () => {
     const testError = "Test\nCmci Error\nresp:1\nresp2:2\nresp_alt:3\neibfn_alt:4";
     it("should return something", () => {
@@ -122,7 +30,8 @@ describe("Command Utils tests", () => {
     const regionName = "MYREGION";
 
     beforeEach(() => {
-      getJesApiMock.mockReturnValue(true);
+      vscodeExecuteCommandMock.mockReset();
+      showErrorMessageMock.mockReset();
     });
 
     it("should call zowe.jobs.setJobSpool when matching profile is found automatically", async () => {
@@ -131,7 +40,7 @@ describe("Command Utils tests", () => {
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(fetchAllProfilesMock).toHaveBeenCalled();
-      expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
       expect(showErrorMessageMock).not.toHaveBeenCalled();
     });
 
@@ -144,17 +53,17 @@ describe("Command Utils tests", () => {
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(Gui.showQuickPick).toHaveBeenCalled();
-      expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "other", jobid);
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "other", jobid);
     });
 
     it("should show error when no profiles support JES", async () => {
       fetchAllProfilesMock.mockResolvedValue([]);
-      (Gui.showQuickPick as jest.Mock).mockResolvedValue(null);
+      // (Gui.showQuickPick as jest.Mock).mockResolvedValue(null);
 
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(showErrorMessageMock).toHaveBeenCalledWith("Could not find any profiles that will access JES (for instance z/OSMF).");
-      expect(executeCommandMock).not.toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
     });
 
     it("should return early when user cancels profile selection", async () => {
@@ -165,7 +74,7 @@ describe("Command Utils tests", () => {
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       expect(Gui.showQuickPick).toHaveBeenCalled();
-      expect(executeCommandMock).not.toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
       expect(showErrorMessageMock).not.toHaveBeenCalled();
     });
 
@@ -176,7 +85,7 @@ describe("Command Utils tests", () => {
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
       // Should use zosmf profile, not ftp
-      expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
     });
 
     it("should filter out profiles that don't support JES", async () => {
@@ -189,7 +98,7 @@ describe("Command Utils tests", () => {
 
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
-      expect(executeCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.jobs.setJobSpool", "myzosmf", jobid);
     });
   });
 });

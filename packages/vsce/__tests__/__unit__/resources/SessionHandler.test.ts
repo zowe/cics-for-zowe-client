@@ -9,24 +9,9 @@
  *
  */
 
-jest.mock("@zowe/cics-for-zowe-sdk");
-
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
 import { SessionHandler } from "../../../src/resources/SessionHandler";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
-const profile: imperative.IProfileLoaded = {
-  name: "testProfile",
-  message: "",
-  type: "cics",
-  failNotFound: false,
-  profile: CICSProfileMock,
-};
+import { profile } from "../../__mocks__";
 
 describe("Test Suite for SessionHandler", () => {
   let sessionHandler: SessionHandler;

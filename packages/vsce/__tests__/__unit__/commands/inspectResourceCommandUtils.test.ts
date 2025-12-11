@@ -11,14 +11,6 @@
 
 import { getInspectableResourceTypes } from "../../../src/commands/inspectResourceCommandUtils";
 
-jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: false,
-  },
-}));
-
 describe("getInspectableResourceTypes", () => {
   test("Not all meta types are visible", () => {
     const result = getInspectableResourceTypes();

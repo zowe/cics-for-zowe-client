@@ -12,10 +12,9 @@
 import { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
 import { LocalFileMeta } from "../../../src/doc/meta/localFile.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["FILE1"]);
 
 describe("Local File Meta", () => {
   let localFileMock: Resource<ILocalFile>;

@@ -9,102 +9,76 @@
  *
  */
 
-const getFolderIconMock = jest.fn();
-const getRegionInfoInPlexMock = jest.fn();
-
-import * as vscode from "vscode";
+import { CICSSessionTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSTree } from "../../../src/trees/CICSTree";
-import * as globalMocks from "../../__utils__/globalMocks";
+import { getResourceMock, profile } from "../../__mocks__";
 
-jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/utils/iconUtils", () => {
-  return { getFolderIcon: getFolderIconMock };
-});
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getRegionInfoInPlex: getRegionInfoInPlexMock,
-  },
-}));
-jest.mock("../../../src/trees/CICSRegionTree");
-jest.mock("../../../src/utils/CICSLogger");
-
-const getResourceMock = globalMocks.getResourceMock;
-const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
-const CICSTreeMock = {
-  _onDidChangeTreeData: {
-    fire: () => jest.fn(),
-  },
-};
-const windowProgressMock = jest.spyOn(vscode.window, "withProgress");
 const record = [
   { cicsname: "cics", cicsstate: "ACTIVE" },
   { cicsname: "test2", cicsstate: "ACTIVE" },
 ];
 
 describe("Test suite for CICSRegionsContainer", () => {
-  let sut: CICSRegionsContainer;
+  let cicsTree: CICSTree;
+  let sessionTree: CICSSessionTree;
+  let plexTree: CICSPlexTree;
+  let regionsContainer: CICSRegionsContainer;
 
   beforeEach(() => {
-    getFolderIconMock.mockReturnValue(treeResourceMock.iconPath);
-    windowProgressMock.mockResolvedValueOnce(true);
-
-    sut = new CICSRegionsContainer(globalMocks.CICSPlexTree as any as CICSPlexTree);
-    expect(getFolderIconMock).toHaveBeenCalledWith(false);
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
+    cicsTree = new CICSTree();
+    sessionTree = new CICSSessionTree(profile, cicsTree);
+    plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree);
+    regionsContainer = new CICSRegionsContainer(plexTree);
   });
 
   describe("Test suite for filterRegions", () => {
     it("should filter regions based on the pattern", () => {
-      sut.filterRegions("IYC*", CICSTreeMock as any as CICSTree);
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultSummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+      regionsContainer.filterRegions("IYC*", cicsTree);
 
-      expect(sut.activeFilter).toBe("IYC*");
-      expect(windowProgressMock).toHaveBeenCalled();
+      expect(regionsContainer.activeFilter).toBe("IYC*");
+      expect(regionsContainer.label).toEqual("Regions (IYC*)");
     });
   });
 
   describe("Test suite for loadRegionsInCICSGroup", () => {
-    beforeEach(() => {
-      getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
-    });
-    afterEach(() => {
-      getResourceMock.mockClear();
-      jest.resetAllMocks();
-    });
-
     it("should load regions in CICS group", async () => {
-      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
-      sut.activeFilter = "cics";
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
 
-      await sut.loadRegionsInCICSGroup(CICSTreeMock as any as CICSTree);
+      regionsContainer.activeFilter = "cics";
 
-      /*expect(getResourceMock).toHaveBeenCalledWith(sut.getParent().getParent().getSession(), testData, {
-        failOnNoData: false,
-        useCICSCmciRestError: true,
-      });*/
-      expect(sut.label).toBe("Regions (cics) [1/1]");
-      expect(sut.collapsibleState).toBe(2);
+      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+
+      expect(regionsContainer.label).toBe("Regions (cics) [1/1]");
+      expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
 
   describe("Test suite for loadRegionsInPlex", () => {
-    beforeEach(() => {
-      getRegionInfoInPlexMock.mockResolvedValueOnce(record);
-    });
-    afterEach(() => {
-      getRegionInfoInPlexMock.mockClear();
-    });
-
     it("Should load all regions of plex", async () => {
-      await sut.loadRegionsInPlex();
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "2", displayed_recordcount: "2" },
+          records: { cicsmanagedregion: record },
+        },
+      });
 
-      expect(getRegionInfoInPlexMock).toHaveBeenCalledTimes(1);
-      expect(sut.label).toBe("Regions [2/2]");
-      expect(sut.collapsibleState).toBe(2);
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.label).toBe("Regions [2/2]");
+      expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
 });

@@ -12,10 +12,9 @@
 import { IURIMap } from "@zowe/cics-for-zowe-explorer-api";
 import { URIMapMeta } from "../../../src/doc/meta/urimap.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["URI1"]);
 
 describe("URIMap Meta", () => {
   let urimapMock: Resource<IURIMap>;

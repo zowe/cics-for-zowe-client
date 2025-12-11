@@ -9,32 +9,6 @@
  *
  */
 
-jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: () => {
-      return {
-        loadNamedProfile: jest.fn().mockReturnValue({
-          failNotFound: false,
-          message: "",
-          type: "cics",
-          name: "MYPROF",
-          profile: CICSProfileMock,
-        }),
-      };
-    },
-  },
-}));
-
-import type { Extension } from "vscode";
-import * as vscode from "vscode";
-
-jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
-  packageJSON: {
-    version: "1.2.3",
-  },
-} as Extension<any>);
-
 const prog1: IProgram = {
   program: "PROG1",
   status: "ENABLED",
@@ -72,40 +46,23 @@ const locFile1: ILocalFile = {
   vsamtype: "",
 };
 
-const runGetCacheMock = jest.fn();
-
-jest.mock("@zowe/cics-for-zowe-sdk", () => ({
-  ...jest.requireActual("@zowe/cics-for-zowe-sdk"),
-  getCache: runGetCacheMock,
-}));
-
-const runGetResourceMock = jest.fn();
-
-jest.mock("../../../src/utils/resourceUtils", () => ({
-  ...jest.requireActual("../../../src/utils/resourceUtils"),
-  runGetResource: runGetResourceMock,
-}));
-
 import { ILocalFile, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { LocalFileMeta, ProgramMeta } from "../../../src/doc";
 import { ResourceContainer } from "../../../src/resources/ResourceContainer";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
-
-const prof = { ...CICSProfileMock, host: "hostname" };
-const profileMock = { failNotFound: false, message: "", type: "cics", name: "MYPROF", profile: prof };
+import { getCacheMock, getResourceMock, profile } from "../../__mocks__";
 
 describe("Resource Container", () => {
   let container: ResourceContainer;
 
   beforeEach(() => {
     container = new ResourceContainer([ProgramMeta], {
-      profileName: profileMock.name,
+      profileName: profile.name!,
       regionName: "MYREG",
     });
 
     jest.clearAllMocks();
 
-    runGetCacheMock.mockResolvedValue({
+    getCacheMock.mockResolvedValue({
       response: {
         resultsummary: {
           recordcount: "2",
@@ -116,7 +73,7 @@ describe("Resource Container", () => {
       },
     });
 
-    runGetResourceMock.mockResolvedValue({
+    getResourceMock.mockResolvedValue({
       response: {
         resultsummary: {
           api_response1: "1024",
@@ -153,7 +110,7 @@ describe("Resource Container", () => {
   });
   it("should get plex name when set", () => {
     container = new ResourceContainer([ProgramMeta], {
-      profileName: profileMock.name,
+      profileName: profile.name!,
       cicsplexName: "MYPLEX",
       regionName: "MYREG",
     });
@@ -162,14 +119,14 @@ describe("Resource Container", () => {
 
   it("should ensure summaries", async () => {
     container = new ResourceContainer([ProgramMeta, LocalFileMeta], {
-      profileName: profileMock.name,
+      profileName: profile.name!,
       cicsplexName: "MYPLEX",
       regionName: "MYREG",
     });
 
     expect(container.isCriteriaApplied()).toBeFalsy();
 
-    runGetCacheMock
+    getCacheMock
       .mockResolvedValueOnce({
         response: {
           resultsummary: {
@@ -191,7 +148,7 @@ describe("Resource Container", () => {
         },
       });
 
-    runGetResourceMock
+    getResourceMock
       .mockResolvedValueOnce({
         response: {
           resultsummary: {

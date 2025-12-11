@@ -9,10 +9,8 @@
  *
  */
 
-const getAllProfilesMock = jest.fn();
-const getPlexInfoMock = jest.fn();
-
-import * as vscode from "vscode";
+import { Gui } from "@zowe/zowe-explorer-api";
+import { ConfigurationTarget } from "vscode";
 import {
   getAllCICSProfiles,
   getChoiceFromQuickPick,
@@ -21,190 +19,153 @@ import {
   isCICSProfileValidInSettings,
   setLastUsedRegion,
 } from "../../../src/utils/lastUsedRegionUtils";
+import { InfoLoaded, ProfileManagement } from "../../../src/utils/profileManagement";
+import { getAllProfilesMock, profile, workspaceConfigurationGetMock, workspaceConfigurationUpdateMock } from "../../__mocks__";
 
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  Gui: {
-    resolveQuickPick: jest.fn().mockResolvedValue({ label: "Item1" }),
-    showMessage: jest.fn(),
-    errorMessage: jest.fn(),
-  },
-}));
-jest.mock("../../../src/utils/CICSLogger");
-
-import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { InfoLoaded } from "../../../src/utils/profileManagement";
-
-const getLastUsedRegionSpy = jest.spyOn(PersistentStorage, "getLastUsedRegion");
-const setLastUsedRegionSpy = jest.spyOn(PersistentStorage, "setLastUsedRegion");
-const getLoadedProfilesMock = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: jest.fn().mockReturnValue({
-      getProfileInfo: jest.fn().mockReturnValue({
-        getAllProfiles: getAllProfilesMock,
-      }),
-    }),
-    getPlexInfo: getPlexInfoMock,
-  },
-}));
-
-const cicsProfile = {
-  message: "",
-  type: "cics",
-  failNotFound: false,
-  name: "MYPROF",
-  profile: {},
-};
 const lastUsedRegion = {
   regionName: "MYREGION",
   cicsPlexName: "MYPLEX",
   profileName: "MYPROFILE",
 };
 
-(vscode as any).l10n = { t: jest.fn() };
-const l10nMock = jest.spyOn(vscode.l10n, "t");
+const getPlexInfoSpy = jest.spyOn(ProfileManagement, "getPlexInfo");
+jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce({ label: "Item1" });
+
+workspaceConfigurationGetMock.mockReturnValue(lastUsedRegion);
 
 describe("Test suite for lastUsedRegionUtils", () => {
   describe("Test suite for getLastUsedRegion()", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
     it("should return the last used region", () => {
-      getLastUsedRegionSpy.mockReturnValueOnce(lastUsedRegion);
       const result = getLastUsedRegion();
 
       expect(result).toEqual(lastUsedRegion);
-      expect(getLastUsedRegionSpy).toHaveBeenCalledTimes(1);
+      expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("Test suite for setLastUsedRegion()", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      workspaceConfigurationGetMock.mockReset();
+      workspaceConfigurationUpdateMock.mockReset();
     });
-    l10nMock.mockReturnValueOnce("Region selected: TESTREGION and CICSplex: TESTPLEX");
+
     it("should set the last used region", () => {
       const regionName = "NEWREGION";
       const profileName = "NEWPROFILE";
       const cicsPlexName = "NEWPLEX";
 
       setLastUsedRegion(regionName, profileName, cicsPlexName);
-      expect(setLastUsedRegionSpy).toHaveBeenCalledWith({ regionName, cicsPlexName, profileName });
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({ lastUsedRegion: { regionName, cicsPlexName, profileName } }),
+        ConfigurationTarget.Global
+      );
     });
 
     it("should not set the region if region name is empty string", () => {
       setLastUsedRegion("", "PROFILE");
-      expect(setLastUsedRegionSpy).not.toHaveBeenCalled();
+      expect(workspaceConfigurationUpdateMock).not.toHaveBeenCalled();
     });
 
     it("should not set the region if profile name is empty string", () => {
       setLastUsedRegion("REGION", "");
-      expect(setLastUsedRegionSpy).not.toHaveBeenCalled();
+      expect(workspaceConfigurationUpdateMock).not.toHaveBeenCalled();
     });
   });
 
   describe("Test suite for getAllCICSProfiles()", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      workspaceConfigurationGetMock.mockReset();
+      workspaceConfigurationUpdateMock.mockReset();
     });
     it("should return profiles loaded in the CICS tree", async () => {
-      getLoadedProfilesMock.mockReturnValue(["Profile1"]);
+      workspaceConfigurationGetMock.mockReturnValue(["Profile1"]);
       const result = await getAllCICSProfiles();
       expect(result).toEqual(["Profile1"]);
 
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalled();
       expect(getAllProfilesMock).not.toHaveBeenCalled();
     });
 
     it("should return profiles from the profile cache if no profiles are loaded in the CICS tree", async () => {
-      getLoadedProfilesMock.mockReturnValueOnce([]);
+      workspaceConfigurationGetMock.mockReturnValueOnce([]);
       getAllProfilesMock.mockReturnValueOnce([{ profName: "Profile1" }, { profName: "Profile2" }]);
       const result = await getAllCICSProfiles();
 
       expect(result).toEqual(["Profile1", "Profile2"]);
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalled();
       expect(getAllProfilesMock).toHaveBeenCalledWith("cics");
     });
 
     it("should return empty profiles if no CICS profiles exists", async () => {
-      getLoadedProfilesMock.mockReturnValueOnce([]);
-      getAllProfilesMock.mockReturnValueOnce([]);
+      workspaceConfigurationGetMock.mockReturnValueOnce([]);
       const result = await getAllCICSProfiles();
 
       expect(result.length).toBe(0);
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalled();
       expect(getAllProfilesMock).toHaveBeenCalledWith("cics");
     });
   });
 
   describe("Test suite for isCICSProfileValidInSettings()", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      workspaceConfigurationGetMock.mockReset();
+      workspaceConfigurationUpdateMock.mockReset();
     });
 
     it("should return true if profile name and region name is present", async () => {
-      getLoadedProfilesMock.mockReturnValueOnce(["MYPROFILE"]);
-      getLastUsedRegionSpy.mockReturnValueOnce(lastUsedRegion);
+      workspaceConfigurationGetMock.mockReturnValueOnce(lastUsedRegion);
+      workspaceConfigurationGetMock.mockReturnValueOnce(["MYPROFILE"]);
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionSpy).toHaveBeenCalled();
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(2);
       expect(result).toBe(true);
     });
 
     it("should return false if profile name is not present", async () => {
-      getLoadedProfilesMock.mockReturnValueOnce(["Profile1"]);
-      getLastUsedRegionSpy.mockReturnValueOnce({ ...lastUsedRegion, profileName: "" });
+      workspaceConfigurationGetMock.mockReturnValueOnce({ ...lastUsedRegion, profileName: "" });
+      workspaceConfigurationGetMock.mockReturnValueOnce(["Profile1"]);
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionSpy).toHaveBeenCalled();
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(2);
       expect(result).toBe(false);
     });
 
     it("should return false if profile name is not in the list of profiles", async () => {
-      getLoadedProfilesMock.mockReturnValueOnce(["Profile1"]);
-      getLastUsedRegionSpy.mockReturnValueOnce(lastUsedRegion);
+      workspaceConfigurationGetMock.mockReturnValueOnce(lastUsedRegion);
+      workspaceConfigurationGetMock.mockReturnValueOnce(["Profile1"]);
       const result = await isCICSProfileValidInSettings();
 
-      expect(getLastUsedRegionSpy).toHaveBeenCalled();
-      expect(getLoadedProfilesMock).toHaveBeenCalled();
+      expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(2);
       expect(result).toBe(false);
     });
   });
 
   describe("Test suite for getPlexInfoFromProfile()", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should return plex info from profile", async () => {
       const mockPlexInfo: InfoLoaded[] = [
         { plexname: "MYPLEX1", regions: [], group: false },
         { plexname: "MYPLEX2", regions: [], group: false },
       ];
-      getPlexInfoMock.mockResolvedValueOnce(mockPlexInfo);
-      const result = await getPlexInfoFromProfile(cicsProfile);
+      getPlexInfoSpy.mockResolvedValueOnce(mockPlexInfo);
+      const result = await getPlexInfoFromProfile(profile);
 
       expect(result).toEqual(mockPlexInfo);
-      expect(getPlexInfoMock).toHaveBeenCalledWith(cicsProfile);
+      expect(getPlexInfoSpy).toHaveBeenCalledWith(profile);
     });
 
     it("should handle error while fetching plex info and return null", async () => {
       const errorMessage = "Error fetching plex info";
-      getPlexInfoMock.mockRejectedValue(new Error(errorMessage));
-      const result = await getPlexInfoFromProfile(cicsProfile);
+      getPlexInfoSpy.mockRejectedValue(new Error(errorMessage));
+      const result = await getPlexInfoFromProfile(profile);
 
       expect(result).toBeNull();
-      expect(getPlexInfoMock).toHaveBeenCalledWith(cicsProfile);
+      expect(getPlexInfoSpy).toHaveBeenCalledWith(profile);
     });
   });
 
   describe("Test suite for getChoiceFromQuickPick()", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should return selected item from quick pick", async () => {
       const items = [{ label: "Item1" }, { label: "Item2" }];
       const placeHolder = "Select an item";

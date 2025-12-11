@@ -12,10 +12,9 @@
 import { ITask } from "@zowe/cics-for-zowe-explorer-api";
 import { TaskMeta } from "../../../src/doc/meta/task.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["TRN1"]);
 
 describe("Task Meta", () => {
   let taskMock: Resource<ITask>;

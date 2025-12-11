@@ -9,37 +9,8 @@
  *
  */
 
-jest.mock("../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    apiDoesExist: jest.fn().mockReturnValue(true),
-    registerCICSProfiles: jest.fn(),
-    profilesCacheRefresh: jest.fn(),
-    getProfilesCache: jest.fn().mockReturnValue({
-      fetchBaseProfile: jest.fn(),
-      registerCustomProfilesType: jest.fn(),
-    }),
-    getExplorerApis: jest.fn().mockReturnValue({
-      getExplorerExtenderApi: jest.fn().mockReturnValue({
-        reloadProfiles: jest.fn(),
-      }),
-    }),
-  },
-}));
-jest.mock("../../src/utils/workspaceUtils", () => {
-  return {
-    getZoweExplorerVersion: jest.fn().mockReturnValue("3.0.0"),
-  };
-});
-jest.mock("../../src/utils/CICSLogger");
-
-import { ExtensionContext, TreeView, window } from "vscode";
+import { ExtensionContext } from "vscode";
 import { activate } from "../../src/extension";
-
-jest.spyOn(window, "createTreeView").mockReturnValue({
-  onDidExpandElement: jest.fn(),
-  onDidCollapseElement: jest.fn(),
-  registerWebviewViewProvider: jest.fn(),
-} as unknown as TreeView<any>);
 
 describe("extension", () => {
   it("should return API", async () => {

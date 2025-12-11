@@ -12,10 +12,9 @@
 import { ILibrary } from "@zowe/cics-for-zowe-explorer-api";
 import { LibraryMeta } from "../../../src/doc/meta/library.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["LIB1"]);
 
 describe("Library Meta", () => {
   let libraryMock: Resource<ILibrary>;

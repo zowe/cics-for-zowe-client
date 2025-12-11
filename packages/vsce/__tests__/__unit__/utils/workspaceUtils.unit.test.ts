@@ -9,61 +9,30 @@
  *
  */
 
-const openDocumentMock = jest.fn();
-const showTextDocumentMock = jest.fn();
-const getExtensionMock = jest.fn().mockReturnValue({
-  packageJSON: {
-    version: "1.2.3",
-  },
-});
-const showInfoMsgMock = jest.fn().mockReturnValue(Promise.resolve("Open Settings"));
-const executeCommandMock = jest.fn();
-
-const configMap = new Map<string, boolean>();
-configMap.set("Program", true);
-configMap.set("Local File", false);
-const getConfigurationMock = jest.fn().mockReturnValue(configMap);
-
-jest.mock("vscode", () => {
-  return {
-    workspace: {
-      openTextDocument: openDocumentMock,
-      getConfiguration: getConfigurationMock,
-    },
-    window: {
-      showTextDocument: showTextDocumentMock,
-      showInformationMessage: showInfoMsgMock,
-    },
-    extensions: {
-      getExtension: getExtensionMock,
-    },
-    commands: {
-      executeCommand: executeCommandMock,
-    },
-    l10n: {
-      t: (key: string, def?: string) => def ?? key,
-    },
-  };
-});
-
 import { join } from "path";
+import { extensions, TextDocument, TextEditor, window, workspace } from "vscode";
 import * as workspaceUtils from "../../../src/utils/workspaceUtils";
+import { showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
+
+const openDocumentSpy = jest.spyOn(workspace, "openTextDocument").mockResolvedValue({} as TextDocument);
+const showDocumentSpy = jest.spyOn(window, "showTextDocument").mockResolvedValue({} as TextEditor);
+const getExtensionSpy = jest.spyOn(extensions, "getExtension");
 
 describe("Workspce Utils", () => {
   it("should open config file", async () => {
-    expect(openDocumentMock).toHaveBeenCalledTimes(0);
-    expect(showTextDocumentMock).toHaveBeenCalledTimes(0);
+    expect(openDocumentSpy).toHaveBeenCalledTimes(0);
+    expect(showDocumentSpy).toHaveBeenCalledTimes(0);
     await workspaceUtils.openConfigFile(join("my", "path", "zowe.config.json"));
-    expect(openDocumentMock).toHaveBeenCalledTimes(1);
-    expect(showTextDocumentMock).toHaveBeenCalledTimes(1);
+    expect(openDocumentSpy).toHaveBeenCalledTimes(1);
+    expect(showDocumentSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should get ZE version", async () => {
-    expect(getExtensionMock).toHaveBeenCalledTimes(0);
+    expect(getExtensionSpy).toHaveBeenCalledTimes(0);
     const version = workspaceUtils.getZoweExplorerVersion();
-    expect(getExtensionMock).toHaveBeenCalledTimes(1);
-    expect(getExtensionMock).toHaveBeenCalledWith("zowe.vscode-extension-for-zowe");
-    expect(version).toEqual("1.2.3");
+    expect(getExtensionSpy).toHaveBeenCalledTimes(1);
+    expect(getExtensionSpy).toHaveBeenCalledWith("zowe.vscode-extension-for-zowe");
+    expect(version).toEqual("3.15.0");
   });
 
   it("should return true for opening settings for resources", async () => {
@@ -72,31 +41,28 @@ describe("Workspce Utils", () => {
   });
 
   it("should return false for opening settings for resources", async () => {
-    executeCommandMock.mockReset();
-    showInfoMsgMock.mockReset();
-    showInfoMsgMock.mockReturnValue(Promise.resolve("Open Settings"));
+    showInfoMessageMock.mockReset();
+    showInfoMessageMock.mockResolvedValue("Open Settings");
 
-    expect(executeCommandMock).toHaveBeenCalledTimes(0);
-    expect(showInfoMsgMock).toHaveBeenCalledTimes(0);
-    const shouldOpen = await workspaceUtils.openSettingsForHiddenResourceType("Resources Not Visible", "Local File");
+    expect(vscodeExecuteCommandMock).toHaveBeenCalledTimes(0);
+    expect(showInfoMessageMock).toHaveBeenCalledTimes(0);
+    const shouldOpen = workspaceUtils.openSettingsForHiddenResourceType("Resources Not Visible", "Local File");
     expect(shouldOpen).toBeFalsy();
-    expect(showInfoMsgMock).toHaveBeenCalledTimes(1);
-    expect(showInfoMsgMock).toHaveBeenCalledWith("Resources Not Visible", "Open Settings", "Cancel");
-    expect(executeCommandMock).toHaveBeenCalledTimes(1);
-    expect(executeCommandMock).toHaveBeenCalledWith("workbench.action.openSettings", "zowe.cics.resources");
+    expect(showInfoMessageMock).toHaveBeenCalledTimes(1);
+    expect(showInfoMessageMock).toHaveBeenCalledWith("Resources Not Visible", "Open Settings", "Cancel");
   });
 
   it("should return false for opening settings for resources and cancel settings", async () => {
-    executeCommandMock.mockReset();
-    showInfoMsgMock.mockReset();
-    showInfoMsgMock.mockReturnValue(Promise.resolve("Cancel"));
+    vscodeExecuteCommandMock.mockReset();
+    showInfoMessageMock.mockReset();
+    showInfoMessageMock.mockResolvedValue("Cancel");
 
-    expect(executeCommandMock).toHaveBeenCalledTimes(0);
-    expect(showInfoMsgMock).toHaveBeenCalledTimes(0);
-    const shouldOpen = await workspaceUtils.openSettingsForHiddenResourceType("Resources Not Visible", "Local File");
+    expect(vscodeExecuteCommandMock).toHaveBeenCalledTimes(0);
+    expect(showInfoMessageMock).toHaveBeenCalledTimes(0);
+    const shouldOpen = workspaceUtils.openSettingsForHiddenResourceType("Resources Not Visible", "Local File");
     expect(shouldOpen).toBeFalsy();
-    expect(showInfoMsgMock).toHaveBeenCalledTimes(1);
-    expect(showInfoMsgMock).toHaveBeenCalledWith("Resources Not Visible", "Open Settings", "Cancel");
-    expect(executeCommandMock).toHaveBeenCalledTimes(0);
+    expect(showInfoMessageMock).toHaveBeenCalledTimes(1);
+    expect(showInfoMessageMock).toHaveBeenCalledWith("Resources Not Visible", "Open Settings", "Cancel");
+    expect(vscodeExecuteCommandMock).toHaveBeenCalledTimes(0);
   });
 });

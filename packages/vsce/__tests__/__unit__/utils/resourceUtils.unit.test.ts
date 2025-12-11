@@ -9,9 +9,6 @@
  *
  */
 
-import type { Extension } from "vscode";
-import * as vscode from "vscode";
-
 const successResponse = {
   response: {
     resultsummary: {
@@ -44,38 +41,6 @@ const successResponse = {
     ],
   },
 };
-const getResourceMock = jest.fn().mockReturnValue(Promise.resolve(successResponse));
-
-const profile = {
-  name: "MYPROF",
-  failNotFound: false,
-  message: "",
-  type: "cics",
-  profile: {
-    protocol: "http",
-    host: "hostname",
-    port: 1234,
-  },
-};
-
-jest.mock("@zowe/cics-for-zowe-sdk", () => ({
-  ...jest.requireActual("@zowe/cics-for-zowe-sdk"),
-  getResource: getResourceMock,
-}));
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: () => {
-      return {
-        loadNamedProfile: () => {
-          return profile;
-        },
-      };
-    },
-  },
-}));
-
-const getExtSpy = jest.spyOn(vscode.extensions, "getExtension");
 
 import { CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, RestClientError } from "@zowe/imperative";
@@ -90,10 +55,12 @@ import {
   buildUserAgentHeader,
   runGetResource,
 } from "../../../src/utils/resourceUtils";
+import { getResourceMock, profile } from "../../__mocks__";
+
+getResourceMock.mockResolvedValue(successResponse);
 
 const authOrderSpy = jest.spyOn(AuthOrder, "makingRequestForToken");
-const loggerSpy = jest.spyOn(CICSLogger, "debug").mockImplementation(() => {});
-const sessionHandlerSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+const loggerSpy = jest.spyOn(CICSLogger, "debug");
 
 describe("Resource Util Helper methods", () => {
   beforeEach(() => {
@@ -101,14 +68,8 @@ describe("Resource Util Helper methods", () => {
   });
 
   it("should build user agent string", () => {
-    getExtSpy.mockReturnValue({
-      packageJSON: {
-        version: "1.2.3",
-      },
-    } as Extension<any>);
-
     const userAgent = buildUserAgentHeader();
-    expect(userAgent).toEqual({ "User-Agent": "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3" });
+    expect(userAgent).toEqual({ "User-Agent": "zowe.cics-extension-for-zowe/3.15.0 zowe.vscode-extension-for-zowe/3.15.0" });
   });
 
   it("builds resource params object with all specified", () => {
@@ -177,8 +138,8 @@ describe("Resource Util Helper methods", () => {
 
 describe("Resource Util requesters", () => {
   beforeEach(() => {
-    loggerSpy.mockReset();
     authOrderSpy.mockReset();
+    loggerSpy.mockReset();
   });
 
   it("should get a resource", async () => {
@@ -209,12 +170,13 @@ describe("Resource Util requesters", () => {
 
   it("should make a second request if first errors", async () => {
     getResourceMock.mockReset();
+
     const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
     const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
 
-    const fakeCICSSession = new CICSSession(profile.profile);
+    const fakeCICSSession = new CICSSession(profile.profile!);
     fakeCICSSession.ISession.tokenValue = '""';
-    sessionHandlerSpy.mockReturnValueOnce(fakeCICSSession);
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
 
     getResourceMock
       .mockImplementationOnce(() => {

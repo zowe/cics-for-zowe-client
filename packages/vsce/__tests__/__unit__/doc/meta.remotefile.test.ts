@@ -12,10 +12,9 @@
 import { IRemoteFile } from "@zowe/cics-for-zowe-explorer-api";
 import { RemoteFileMeta } from "../../../src/doc/meta/remoteFile.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["FILE1"]);
 
 describe("Remote File Meta", () => {
   let remoteFileMock: Resource<IRemoteFile>;

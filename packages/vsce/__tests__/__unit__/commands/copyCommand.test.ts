@@ -9,31 +9,17 @@
  *
  */
 
-import type { Extension } from "vscode";
-import * as vscode from "vscode";
-
-jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
-  packageJSON: {
-    version: "1.2.3",
-  },
-} as Extension<any>);
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { env } from "vscode";
 import { copyResourceNameToClipboard, copyUserAgentHeaderToClipboard } from "../../../src/commands/copyCommand";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { profile } from "../../__mocks__";
 
 let mockedClipboard = ``;
-jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (v: string) => {
+jest.spyOn(env.clipboard, "writeText").mockImplementation(async (v: string) => {
   mockedClipboard = v;
 });
-
-const profile = { name: "MYPROF", profile: CICSProfileMock, failNotFound: false, message: "", type: "cics" };
 
 describe("Test suite for copy commands", () => {
   beforeEach(() => {
@@ -41,7 +27,7 @@ describe("Test suite for copy commands", () => {
   });
 
   it("should copy user agent string to clipboard", async () => {
-    const expectedHeader = "zowe.cics-extension-for-zowe/1.2.3 zowe.vscode-extension-for-zowe/1.2.3";
+    const expectedHeader = "zowe.cics-extension-for-zowe/3.15.0 zowe.vscode-extension-for-zowe/3.15.0";
     expect(mockedClipboard).toEqual("");
 
     const returnedValue = copyUserAgentHeaderToClipboard();
@@ -51,9 +37,8 @@ describe("Test suite for copy commands", () => {
   });
 
   it("should copy resource name to clipboard", async () => {
-    const sessionTree = new CICSSessionTree(profile, {
-      _onDidChangeTreeData: { fire: () => jest.fn() },
-    } as unknown as CICSTree);
+    const tree = new CICSTree();
+    const sessionTree = new CICSSessionTree(profile, tree);
     const regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
 
     const mockedResourceNode = new CICSResourceContainerNode<IProgram>(

@@ -11,30 +11,16 @@
 
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
+import { profile } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
 jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(250);
 jest.spyOn(PersistentStorage, "getDefaultResourceFilter").mockReturnValue("Program=A*");
 
-const CICSProfileMock = {
-  host: "hostname",
-  port: "123",
-  user: "a",
-  password: "b",
-  rejectUnauthorized: false,
-  protocol: "http",
-};
-const profile: IProfileLoaded = { profile: CICSProfileMock, failNotFound: false, message: "", type: "cics", name: "MYPROF" };
-
-const cicsTree = { _onDidChangeTreeData: { fire: () => jest.fn() }, refresh: () => {} } as unknown as CICSTree;
-
+const cicsTree = new CICSTree();
 const sessionTree = new CICSSessionTree(profile, cicsTree);
 const regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
 const parentNode = new CICSResourceContainerNode(
