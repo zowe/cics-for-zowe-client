@@ -46,8 +46,7 @@ const locFile1: ILocalFile = {
   vsamtype: "",
   update: "UPDATABLE",
   add: "ADDABLE",
-  delete: "DELETABLE",
-  recovstatus: "RECOVERABLE"
+  delete: "DELETABLE"
 };
 
 import { ILocalFile, IProgram } from "@zowe/cics-for-zowe-explorer-api";

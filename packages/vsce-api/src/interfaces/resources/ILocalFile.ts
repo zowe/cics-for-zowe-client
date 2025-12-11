@@ -23,5 +23,4 @@ export interface ILocalFile extends IResourceWithEnableStatus {
   update: string;
   add: string;
   delete: string;
-  recovstatus: string;
 }

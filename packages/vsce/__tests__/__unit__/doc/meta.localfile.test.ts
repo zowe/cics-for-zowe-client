@@ -149,8 +149,8 @@ describe("Local File Meta", () => {
       },
       {
         key: "Permission",
-        value: `BROWSABLE,READABLE,UPDATABLE,
-                ADDABLE,DELETABLE,RECOVERABLE`,
+        value: `BROWSABLE, READABLE, UPDATABLE, 
+                ADDABLE, DELETABLE`,
       },
       {
         key: "Key length",
