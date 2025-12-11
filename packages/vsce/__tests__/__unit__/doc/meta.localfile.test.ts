@@ -35,7 +35,6 @@ describe("Local File Meta", () => {
       update: "UPDATABLE",
       add: "ADDABLE",
       delete: "DELETABLE",
-      recovstatus: "RECOVERABLE"
     });
   });
 

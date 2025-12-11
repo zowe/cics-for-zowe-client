@@ -4,7 +4,7 @@ All notable changes to the Zowe Explorer for IBM CICS Transaction Server API wil
 
 ## Recent Changes
 
-Enhancement: Added  missing information from local file permissions highlight eg: UPDATABLE, ADDABLE, DELETABLE, RECOVERABLE. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+Enhancement: Added  missing information from local file permissions highlight eg: UPDATABLE, ADDABLE, DELETABLE. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 
 ## `6.16.0`
 

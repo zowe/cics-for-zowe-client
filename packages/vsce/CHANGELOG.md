@@ -5,7 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
-Enhancement: Added  missing information from local file permissions highlight eg: UPDATABLE, ADDABLE, DELETABLE, RECOVERABLE. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+Enhancement: Added  missing information from local file permissions highlight eg: UPDATABLE, ADDABLE, DELETABLE. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 
 ## `3.16.0`
 
