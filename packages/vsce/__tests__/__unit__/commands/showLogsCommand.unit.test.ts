@@ -9,86 +9,19 @@
  *
  */
 
-import type { Extension } from "vscode";
-import * as vscode from "vscode";
-
-jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
-  packageJSON: {
-    version: "1.2.3",
-  },
-} as Extension<any>);
-
-// these need to be mocked before the imports
-const getZoweExplorerApiMock = jest.fn();
-const jesApiMock = jest.fn();
-
-import { getResource, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
-import { imperative, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-
-const zoweExplorerAPI = { getJesApi: jesApiMock };
-
-const getProfilesCacheMock = jest.fn();
-getProfilesCacheMock.mockReturnValue({
-  fetchBaseProfile: (name: string): imperative.IProfileLoaded => {
-    if (name === "exception") {
-      throw Error("Error");
-    }
-    const splitString = name.split(".");
-    if (splitString.length > 1) {
-      return createProfile(splitString[0], "base", "", "");
-    }
-    return undefined as unknown as IProfileLoaded;
-  },
-});
-
-jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: getProfilesCacheMock,
-  },
-}));
-
-// this import needs to come after the mocks are set up correctly
+import { imperative, ZoweExplorerApiType } from "@zowe/zowe-explorer-api";
 import * as showLogsCommand from "../../../src/commands/showLogsCommand";
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import { doesProfileSupportConnectionType, fetchBaseProfileWithoutError, findRelatedZosProfiles } from "../../../src/utils/commandUtils";
+import { createProfile, getJesApiMock, getResourceMock, profile } from "../../__mocks__";
 
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  ZoweVsCodeExtension: { getZoweExplorerApi: getZoweExplorerApiMock },
-  ZoweExplorerApiType: {
-    Uss: "USS",
-    Jes: "JES",
-  },
-}));
-jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => {});
-
-function createProfile(name: string, type: string, host: string, user?: string) {
-  return {
-    name: name,
-    message: "",
-    type: type,
-    failNotFound: false,
-    profile: {
-      user: user,
-      host: host,
-    },
-  } as imperative.IProfileLoaded;
-}
-
-const sessionTree = new CICSSessionTree({ profile: { host: "abc" }, failNotFound: false, message: "", type: "cics", name: "MYPROF" }, {
-  _onDidChangeTreeData: { fire: () => jest.fn() },
-} as unknown as CICSTree);
+const cicsTree = new CICSTree();
+const sessionTree = new CICSSessionTree(profile, cicsTree);
 const regionTree = new CICSRegionTree("IYK2ZXXX", { jobid: "TheOtherJobId" }, sessionTree, undefined, sessionTree);
 
 describe("Test suite for fetchBaseProfileWithoutError", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("Profile with common base finds z/osmf", async () => {
     const profile = await fetchBaseProfileWithoutError(createProfile("host1.mycics", "cics", "h1", "user"));
     expect(profile?.name).toEqual("host1");
@@ -142,18 +75,13 @@ describe("Test suite for getJobIdForRegion", () => {
     expect(jobId).toEqual("TheJobId");
   });
   it("Job ID isn't available on region tree", async () => {
-    // mock getResource where we'll be asking for a CICSRegion to get the jobid
-    (getResource as jest.Mock<Promise<ICMCIApiResponse>>).mockImplementation(() => {
-      return new Promise<ICMCIApiResponse>((resolve) => {
-        const responseObject: ICMCIApiResponse = {
-          response: {
-            resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
-            records: { cicsregion: { jobid: "TheOtherJobId" } },
-          },
-        };
-        resolve(responseObject);
-      });
+    getResourceMock.mockResolvedValueOnce({
+      response: {
+        resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+        records: { cicsregion: { jobid: "TheOtherJobId" } },
+      },
     });
+
     let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
     region.region.cicsname = "MYREG";
@@ -162,9 +90,10 @@ describe("Test suite for getJobIdForRegion", () => {
     expect(jobId).toEqual("TheOtherJobId");
   });
   it("Throwing exception from getResource doesn't break everything", async () => {
-    (getResource as jest.Mock<Promise<ICMCIApiResponse>>).mockImplementation(() => {
+    getResourceMock.mockImplementationOnce(() => {
       throw new Error("getResource failed. Perhaps your network connection has gone down");
     });
+
     let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
@@ -173,26 +102,20 @@ describe("Test suite for getJobIdForRegion", () => {
 });
 
 describe("Check whether profile supports JES", () => {
-  beforeEach(() => {
-    getZoweExplorerApiMock.mockReturnValue(zoweExplorerAPI);
-  });
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-  const supports = createProfile("host1.myzosmf", "zosmf", "h1", "user");
-  const doesntSupport = createProfile("host1.myzosmf", "else", "h1", "user");
-
   it("connection supports JES", async () => {
-    jesApiMock.mockReturnValue(true);
-    ZoweVsCodeExtension.getZoweExplorerApi().getJesApi(supports);
+    const supports = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+
     expect(doesProfileSupportConnectionType(supports, ZoweExplorerApiType.Jes)).toEqual(true);
-    expect(jesApiMock).toHaveBeenCalledWith(supports);
+    expect(getJesApiMock).toHaveBeenCalledWith(supports);
   });
   it("connection doesn't support JES", async () => {
-    jesApiMock.mockImplementation(() => {
+    const doesntSupport = createProfile("host1.myzosmf", "else", "h1", "user");
+
+    getJesApiMock.mockImplementationOnce(() => {
       throw new Error("hello");
     });
+
     expect(doesProfileSupportConnectionType(doesntSupport, ZoweExplorerApiType.Jes)).toEqual(false);
-    expect(jesApiMock).toHaveBeenCalledWith(doesntSupport);
+    expect(getJesApiMock).toHaveBeenCalledWith(doesntSupport);
   });
 });

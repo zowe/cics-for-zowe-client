@@ -12,10 +12,9 @@
 import { IJVMServer } from "@zowe/cics-for-zowe-explorer-api";
 import { JVMServerMeta } from "../../../src/doc/meta/JVMServer.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["JVM1"]);
 
 describe("JVMServer Meta", () => {
   let jvmserverMock: Resource<IJVMServer>;

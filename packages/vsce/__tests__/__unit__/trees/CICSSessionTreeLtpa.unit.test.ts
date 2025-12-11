@@ -9,46 +9,20 @@
  *
  */
 
-const getIconFilePathFromNameMock = jest.fn();
-
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSTree } from "../../../src/trees";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
-
-jest.mock("../../../src/utils/iconUtils", () => {
-  return { getIconFilePathFromName: getIconFilePathFromNameMock };
-});
+import { profile } from "../../__mocks__";
 
 describe("Test suite for CICSSessionTree", () => {
-  let sut: CICSSessionTree;
-  let ses: imperative.Session;
-
-  const cicsProfileMock = {
-    failNotFound: false,
-    message: "",
-    name: "A NAME",
-    profile: {
-      host: "a.b.c.d",
-      port: 12345,
-      rejectUnauthorized: false,
-      protocol: "http",
-      user: "A USER",
-      password: "A PASSWORD",
-    },
-    type: "cics",
-  };
+  let cicsTree: CICSTree;
+  let sessionTree: CICSSessionTree;
+  let session: imperative.Session;
 
   describe("cookies", () => {
     beforeEach(() => {
-      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
+      cicsTree = new CICSTree();
+      sessionTree = new CICSSessionTree(profile, cicsTree);
     });
 
     it("Should not store invalid cookie", () => {
@@ -56,11 +30,11 @@ describe("Test suite for CICSSessionTree", () => {
         Cookie: "blah=hello",
       };
 
-      ses = sut.getSession();
-      ses.storeCookie(cookie);
+      session = sessionTree.getSession();
+      session.storeCookie(cookie);
 
-      expect(ses.ISession.tokenType).toEqual("LtpaToken2");
-      expect(ses.ISession.tokenValue).toBeUndefined();
+      expect(session.ISession.tokenType).toEqual("LtpaToken2");
+      expect(session.ISession.tokenValue).toBeUndefined();
     });
 
     it("Should store valid cookie", () => {
@@ -68,13 +42,13 @@ describe("Test suite for CICSSessionTree", () => {
         Cookie: "LtpaToken2=testValue",
       };
 
-      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
-      ses = sut.getSession();
+      sessionTree = new CICSSessionTree(profile, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
+      session = sessionTree.getSession();
 
-      ses.storeCookie(cookies);
+      session.storeCookie(cookies);
 
-      expect(ses.ISession.tokenType).toEqual("LtpaToken2");
-      expect(ses.ISession.tokenValue).toEqual("testValue");
+      expect(session.ISession.tokenType).toEqual("LtpaToken2");
+      expect(session.ISession.tokenValue).toEqual("testValue");
     });
 
     it("Should store valid cookie if more the one returned", () => {
@@ -82,13 +56,13 @@ describe("Test suite for CICSSessionTree", () => {
         Cookie: "blah=hello;LtpaToken2=testValue",
       };
 
-      sut = new CICSSessionTree(cicsProfileMock, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
-      ses = sut.getSession();
+      sessionTree = new CICSSessionTree(profile, { _onDidChangeTreeData: { fire: () => jest.fn() } } as unknown as CICSTree);
+      session = sessionTree.getSession();
 
-      ses.storeCookie(cookies);
+      session.storeCookie(cookies);
 
-      expect(ses.ISession.tokenType).toEqual("LtpaToken2");
-      expect(ses.ISession.tokenValue).toEqual("testValue");
+      expect(session.ISession.tokenType).toEqual("LtpaToken2");
+      expect(session.ISession.tokenValue).toEqual("testValue");
     });
   });
 });

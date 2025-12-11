@@ -12,10 +12,9 @@
 import { ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { TransactionMeta } from "../../../src/doc/meta/transaction.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["TRN1"]);
 
 describe("Transaction Meta", () => {
   let transactionMock: Resource<ITransaction>;

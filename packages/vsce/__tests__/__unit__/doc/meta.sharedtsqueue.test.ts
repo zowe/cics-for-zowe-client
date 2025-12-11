@@ -12,10 +12,9 @@
 import { ISharedTSQueue } from "@zowe/cics-for-zowe-explorer-api";
 import { SharedTSQueueMeta } from "../../../src/doc";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["QUEUE"]);
 
 describe("Shared TS Queue Meta", () => {
   let tsQueueMock: Resource<ISharedTSQueue>;
@@ -26,6 +25,7 @@ describe("Shared TS Queue Meta", () => {
       location: "MAIN",
       name: "MYQUEUE",
       poolname: "MYPOOL",
+      hexname: "C8C54040404040404040404040404040",
     });
   });
 

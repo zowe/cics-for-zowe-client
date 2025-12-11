@@ -12,10 +12,9 @@
 import { ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
 import { TSQueueMeta } from "../../../src/doc/meta/tsqueue.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["QUEUE"]);
 
 describe("TS Queue Meta", () => {
   let tsQueueMock: Resource<ITSQueue>;
@@ -28,6 +27,7 @@ describe("TS Queue Meta", () => {
       location: "MAIN",
       name: "MYQUEUE",
       numitems: "2",
+      hexname: "C8C54040404040404040404040404040",
     });
   });
 

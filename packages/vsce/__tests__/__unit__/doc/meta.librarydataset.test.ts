@@ -12,10 +12,9 @@
 import { ILibrary, ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { LibraryDatasetMeta } from "../../../src/doc/meta/libraryDataset.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["LIB1"]);
 
 describe("Library Dataset Meta", () => {
   let libraryDSMock: Resource<ILibraryDataset>;
@@ -80,7 +79,7 @@ describe("Library Dataset Meta", () => {
         status: "ENABLED",
         usecount: "0",
         language: "COBOL",
-        jvmserver: "JVMSERVER"
+        jvmserver: "JVMSERVER",
       })
     );
     expect(childTypeDefaultContext).toEqual(`CICSProgram.ENABLED.PARENT.CICSLibraryDatasetName.myprog`);

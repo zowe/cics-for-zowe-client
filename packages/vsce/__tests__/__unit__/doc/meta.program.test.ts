@@ -12,10 +12,9 @@
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc/meta/program.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["PROG1"]);
 
 describe("Program Meta", () => {
   let programMock: Resource<IProgram>;

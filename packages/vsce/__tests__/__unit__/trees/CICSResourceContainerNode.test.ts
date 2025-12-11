@@ -12,46 +12,12 @@
 const prog1 = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsname: "MYREG" };
 const prog2 = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG" };
 
-jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: () => {
-      return {
-        loadNamedProfile: jest.fn(),
-      };
-    },
-  },
-}));
-
-const runGetCacheMock = jest.fn();
-
-jest.mock("@zowe/cics-for-zowe-sdk", () => ({
-  ...jest.requireActual("@zowe/cics-for-zowe-sdk"),
-  getCache: runGetCacheMock,
-}));
-
-const infoMessageMock = jest.fn();
-
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  ...jest.requireActual("@zowe/zowe-explorer-api"),
-  Gui: {
-    infoMessage: infoMessageMock,
-  },
-}));
-
-const runGetResourceMock = jest.fn();
-
-jest.mock("../../../src/utils/resourceUtils", () => ({
-  ...jest.requireActual("../../../src/utils/resourceUtils"),
-  runGetResource: runGetResourceMock,
-}));
-
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc";
 import { Resource, ResourceContainer } from "../../../src/resources";
 import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
+import { getCacheMock, getResourceMock, profile } from "../../__mocks__";
 
 const currRes = new Resource<IProgram>({
   eyu_cicsname: "REG",
@@ -74,15 +40,15 @@ describe("CICSResourceContainerNode tests", () => {
   let resourceContainer: ResourceContainer;
 
   beforeEach(() => {
-    const cicsTree = { _onDidChangeTreeData: { fire: () => jest.fn() }, refresh: () => {} } as unknown as CICSTree;
-    sessionTree = new CICSSessionTree({ profile: CICSProfileMock, failNotFound: false, message: "", type: "cics", name: "MYPROF" }, cicsTree);
+    const cicsTree = new CICSTree();
+    sessionTree = new CICSSessionTree(profile, cicsTree);
     regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
     resourceContainer = new ResourceContainer([ProgramMeta], { profileName: "MYPROF", regionName: "REG" });
 
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -92,7 +58,7 @@ describe("CICSResourceContainerNode tests", () => {
 
     jest.clearAllMocks();
 
-    runGetCacheMock.mockResolvedValue({
+    getCacheMock.mockResolvedValue({
       response: {
         resultsummary: {
           recordcount: "2",
@@ -103,7 +69,7 @@ describe("CICSResourceContainerNode tests", () => {
       },
     });
 
-    runGetResourceMock.mockResolvedValue({
+    getResourceMock.mockResolvedValue({
       response: {
         resultsummary: {
           api_response1: "1024",
@@ -129,7 +95,7 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -158,7 +124,7 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -188,7 +154,7 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -278,7 +244,7 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -286,7 +252,7 @@ describe("CICSResourceContainerNode tests", () => {
       [ProgramMeta]
     );
 
-    runGetResourceMock.mockResolvedValue({
+    getResourceMock.mockResolvedValue({
       response: {
         resultsummary: {
           api_response1: "1024",
@@ -296,7 +262,7 @@ describe("CICSResourceContainerNode tests", () => {
       },
     });
 
-    runGetCacheMock.mockResolvedValue({
+    getCacheMock.mockResolvedValue({
       response: {
         resultsummary: {
           recordcount: "10",
@@ -323,7 +289,7 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         regionName: "REG",
         parentNode: regionTree,
       },
@@ -343,10 +309,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: undefined,
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta]
@@ -385,10 +351,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta],
@@ -407,10 +373,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta],
@@ -431,10 +397,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       []
@@ -449,10 +415,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       []
@@ -466,10 +432,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta]
@@ -483,10 +449,10 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
         regionName: "MYREG",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta]
@@ -505,9 +471,9 @@ describe("CICSResourceContainerNode tests", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
       {
-        profile: { name: "MYPROF", profile: CICSProfileMock, message: "", type: "cics", failNotFound: false },
+        profile,
         cicsplexName: "MYPLEX",
-        parentNode: new CICSPlexTree("PLX", { ...CICSProfileMock, message: "", type: "cics", failNotFound: false }, sessionTree),
+        parentNode: new CICSPlexTree("PLX", profile, sessionTree),
       },
       undefined,
       [ProgramMeta]

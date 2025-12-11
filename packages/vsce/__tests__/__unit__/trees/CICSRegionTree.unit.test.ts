@@ -9,56 +9,11 @@
  *
  */
 
-const getIconByStatusMock = jest.fn();
-const getIconFilePathFromNameMock = jest.fn();
-
-import * as vscode from "vscode";
-
-const CICSResourceContainerNodeMock = jest.fn();
-jest.mock("../../../src/trees/CICSResourceContainerNode", () => ({
-  CICSResourceContainerNode: CICSResourceContainerNodeMock,
-}));
-
-jest.mock("../../../src/utils/iconUtils", () => {
-  return {
-    getIconByStatus: getIconByStatusMock,
-    getIconFilePathFromName: getIconFilePathFromNameMock,
-  };
-});
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  ...jest.requireActual("@zowe/zowe-explorer-api"),
-  ZoweVsCodeExtension: { getZoweExplorerApi: jest.fn() },
-}));
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: jest.fn(),
-  },
-}));
-
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import PersistentStorage from "../../../src/utils/PersistentStorage";
-import * as globalMocks from "../../__utils__/globalMocks";
-import { unsortedRegion } from "../../__utils__/globalMocks";
-
-let buildResourceSpy: jest.SpyInstance | undefined;
-
-function mockBuildResourceContainerNodeWith(labels: string[]) {
-  let idx = 0;
-  buildResourceSpy = jest
-    .spyOn(CICSRegionTree.prototype as any, "buildResourceContainerNode")
-    .mockImplementation((..._metas: unknown[]) => ({ label: labels[idx++] || "" }));
-  return buildResourceSpy;
-}
-
-const defaultFilterMock = jest.fn();
-defaultFilterMock.mockReturnValue("DEFAULT FITLER");
-const defaultResNumberMock = jest.fn();
-defaultResNumberMock.mockReturnValue(10);
-
-PersistentStorage.getDefaultResourceFilter = defaultFilterMock;
-PersistentStorage.getNumberOfResourcesToFetch = defaultResNumberMock;
+import * as iconUtils from "../../../src/utils/iconUtils";
+import { profile } from "../../__mocks__";
 
 const region = {
   cicsname: "cics",
@@ -72,90 +27,62 @@ const region_disable = {
 const region_undefined = {
   cicsname: "cics",
 };
-const treeResourceMock = globalMocks.getDummyTreeResources("cicsregion", "");
 
-const workspaceMock = globalMocks.workspaceMock;
-const workspaceConfiguration = globalMocks.workspaceConfiguration;
-const get = globalMocks.get;
+const getIconByStatusSpy = jest.spyOn(iconUtils, "getIconByStatus");
 
 describe("Test suite for CICSRegionTree", () => {
-  let sut: CICSRegionTree;
+  let cicsTree: CICSTree;
+  let sessionTree: CICSSessionTree;
+  let regionTree: CICSRegionTree;
 
   beforeEach(() => {
-    CICSResourceContainerNodeMock.mockImplementation((label) => ({
-      label: label,
-      resourceTypes: [],
-    }));
+    cicsTree = new CICSTree();
+    sessionTree = new CICSSessionTree(profile, cicsTree);
+    regionTree = new CICSRegionTree("regionName", region, sessionTree, undefined, sessionTree);
 
-    getIconByStatusMock.mockReturnValue(treeResourceMock.iconPath);
-    workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
-    get.mockReturnValue(true);
-
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
-      _onDidChangeTreeData: { fire: () => jest.fn() },
-    } as unknown as CICSTree);
-    sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
-
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
-    expect(sut.isActive).toBeTruthy();
-  });
-
-  afterEach(() => {
-    buildResourceSpy?.mockRestore();
-    buildResourceSpy = undefined;
-    jest.resetAllMocks();
+    expect(regionTree.isActive).toBeTruthy();
   });
 
   it("Should load region Tree when cicsstate is DISABLED", () => {
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
-      _onDidChangeTreeData: { fire: () => jest.fn() },
-    } as unknown as CICSTree);
-    sut = new CICSRegionTree("regionName", region_disable, parent, undefined, parent);
+    regionTree = new CICSRegionTree("regionName", region_disable, sessionTree, undefined, sessionTree);
 
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
-    expect(sut.isActive).toBeFalsy();
+    expect(getIconByStatusSpy).toHaveBeenCalledWith("REGION", regionTree);
+    expect(regionTree.isActive).toBeFalsy();
   });
 
   it("Should load region Tree when cicsstate is ACTIVE", () => {
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
-      _onDidChangeTreeData: { fire: () => jest.fn() },
-    } as unknown as CICSTree);
-    sut = new CICSRegionTree("regionName", region_undefined, parent, undefined, parent);
+    regionTree = new CICSRegionTree("regionName", region_undefined, sessionTree, undefined, sessionTree);
 
-    expect(getIconByStatusMock).toHaveBeenCalledWith("REGION", sut);
-    expect(sut.isActive).toBeFalsy();
+    expect(getIconByStatusSpy).toHaveBeenCalledWith("REGION", regionTree);
+    expect(regionTree.isActive).toBeFalsy();
   });
 
   it("Should return true if applid or cicsname is defined", () => {
-    expect(sut.getRegionName()).toBeTruthy();
+    expect(regionTree.getRegionName()).toBeTruthy();
   });
 
   it("Should return return all cics tree in children array", async () => {
-    const result = await sut.getChildren();
+    const result = await regionTree.getChildren();
     expect(result?.length).toBeGreaterThanOrEqual(6);
   });
 
   it("Should return parent", () => {
-    expect(sut.getParent()).toBeDefined();
-    expect(sut.getParent().profile).toBeDefined();
-    expect(sut.getParent().profile).toHaveProperty("profile");
-    expect(sut.getParent().profile.profile).toEqual(globalMocks.CICSProfileMock);
+    expect(regionTree.getParent()).toBeDefined();
+    expect(regionTree.getParent().profile).toBeDefined();
+    expect(regionTree.getParent().profile).toHaveProperty("profile");
   });
 
   it("Should return isActive", () => {
-    expect(sut.getIsActive()).toBeTruthy();
+    expect(regionTree.getIsActive()).toBeTruthy();
   });
 
-  it("Children should be sorted when built (mocked buildResourceContainerNode)", () => {
-    mockBuildResourceContainerNodeWith(unsortedRegion);
+  it("Children should be sorted when built", async () => {
+    const result = await regionTree.getChildren();
+    expect(result).toHaveLength(10);
 
-    const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
-      _onDidChangeTreeData: { fire: () => jest.fn() },
-    } as unknown as CICSTree);
-    sut = new CICSRegionTree("regionName", region, parent, undefined, parent);
+    const actual = result.map((c) => `${c.label}`);
+    const expected = result.map((c) => `${c.label}`).sort((a, b) => a.localeCompare(b));
 
-    const labels = (sut.children as any[]).map((c) => String(c.label).trim());
-    const expected = [...unsortedRegion].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-    expect(labels).toEqual(expected);
+    expect(actual).toEqual(expected);
   });
 });

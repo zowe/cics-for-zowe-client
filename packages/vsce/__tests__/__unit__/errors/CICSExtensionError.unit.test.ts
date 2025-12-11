@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciRestError, ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { RestClientError } from "@zowe/imperative";
+import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSExtensionError } from "../../../src/errors/CICSExtensionError";
 
 function trimLineBreaks(msg: string | undefined) {
@@ -25,7 +25,7 @@ const resultSummaryMock: ICMCIResponseResultSummary = {
   displayed_recordcount: "",
   api_function: "PERFORM SET",
 };
-let baseErrorMock: CicsCmciRestError | RestClientError | CICSExtensionError;
+let baseErrorMock: CicsCmciRestError | imperative.RestClientError | CICSExtensionError;
 let cmciErrorResponseMock: ICMCIApiResponse;
 
 describe("Test suite for CICSExtensionError", () => {
@@ -98,7 +98,7 @@ describe("Test suite for CICSExtensionError", () => {
   });
 
   it("should return error message when error is instance of RestClientError", () => {
-    baseErrorMock = new RestClientError({
+    baseErrorMock = new imperative.RestClientError({
       httpStatus: 401,
       msg: "The username or password is incorrect",
       source: "http",

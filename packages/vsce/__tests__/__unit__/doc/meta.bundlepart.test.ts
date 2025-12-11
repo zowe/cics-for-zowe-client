@@ -12,10 +12,9 @@
 import { IBundle, IBundlePart } from "@zowe/cics-for-zowe-explorer-api";
 import { BundlePartMeta } from "../../../src/doc/meta/bundlePart.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["BUND1"]);
 
 describe("Bundle Part Meta", () => {
   let bundlePartMock: Resource<IBundlePart>;

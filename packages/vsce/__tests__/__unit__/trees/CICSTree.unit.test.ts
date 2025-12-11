@@ -9,37 +9,13 @@
  *
  */
 
-const profilesCacheRefreshMock = jest.fn();
-profilesCacheRefreshMock.mockReturnValue(["prof1", "prof2"]);
-const getProfilesCacheMock = jest.fn();
-getProfilesCacheMock.mockReturnValue({
-  loadNamedProfile: (name: string, type?: string): imperative.IProfileLoaded => {
-    return {
-      failNotFound: false,
-      message: "",
-      type: "cics",
-      name: name,
-      profile: CICSProfileMock,
-    };
-  },
-});
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    profilesCacheRefresh: profilesCacheRefreshMock,
-    getProfilesCache: getProfilesCacheMock,
-  },
-}));
-
-import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSTree } from "../../../src/trees/CICSTree";
-import { CICSProfileMock } from "../../__utils__/globalMocks";
-
-jest.mock("../../../src/utils/CICSLogger");
-
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-const profilesCacheRefreshSpy = jest.spyOn(PersistentStorage, "getLoadedCICSProfiles");
-const removeLoadedCICSProfile = jest.spyOn(PersistentStorage, "removeLoadedCICSProfile");
-profilesCacheRefreshSpy.mockReturnValue(["prof1", "prof2"]);
+import { ProfileManagement } from "../../../src/utils/profileManagement";
+import { loadNamedProfileMock } from "../../__mocks__";
+
+const removeLoadedCICSProfileSpy = jest.spyOn(PersistentStorage, "removeLoadedCICSProfile");
+const getProfilesCacheMock = jest.spyOn(ProfileManagement, "getProfilesCache");
 
 describe("Test suite for CICSTree", () => {
   let sut: CICSTree;
@@ -50,19 +26,19 @@ describe("Test suite for CICSTree", () => {
 
   it("Should have children", () => {
     expect(sut.loadedProfiles).toBeDefined();
-    expect(sut.loadedProfiles).toHaveLength(2);
+    expect(sut.loadedProfiles).toHaveLength(1);
   });
 
   it("Should getLoadedProfiles", () => {
     const loadedProfs = sut.getLoadedProfiles();
     expect(loadedProfs).toBeDefined();
-    expect(loadedProfs).toHaveLength(2);
+    expect(loadedProfs).toHaveLength(1);
   });
 
   it("Should clear profiles", () => {
     const loadedProfs = sut.getLoadedProfiles();
     expect(loadedProfs).toBeDefined();
-    expect(loadedProfs).toHaveLength(2);
+    expect(loadedProfs).toHaveLength(1);
 
     sut.clearLoadedProfiles();
     expect(sut.loadedProfiles).toBeDefined();
@@ -70,18 +46,16 @@ describe("Test suite for CICSTree", () => {
   });
 
   it("Should return the children", () => {
-    expect(sut.getChildren()).toHaveLength(2);
+    expect(sut.getChildren()).toHaveLength(1);
   });
 
   it("Should remove loaded cics profile when throws profile not found error", async () => {
-    getProfilesCacheMock.mockReturnValue({
-      loadNamedProfile: jest.fn().mockImplementationOnce(() => {
-        throw new Error("Could not find profile named: prof3");
-      }),
+    loadNamedProfileMock.mockImplementationOnce(() => {
+      throw new Error("Could not find profile named: prof3");
     });
     await sut.loadStoredProfileNames();
 
     expect(getProfilesCacheMock).toHaveBeenCalled();
-    expect(removeLoadedCICSProfile).toHaveBeenCalledTimes(1);
+    expect(removeLoadedCICSProfileSpy).toHaveBeenCalledTimes(1);
   });
 });

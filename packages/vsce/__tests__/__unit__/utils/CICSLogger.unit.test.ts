@@ -9,93 +9,68 @@
  *
  */
 
-const infoMock = jest.fn();
-const traceMock = jest.fn();
-const debugMock = jest.fn();
-const warnMock = jest.fn();
-const errorMock = jest.fn();
-const fatalMock = jest.fn();
-const disposeMock = jest.fn();
-
-const outputChannelMock = jest.fn().mockReturnValue({
-  logLevel: "info",
-  dispose: disposeMock,
-  info: infoMock,
-  trace: traceMock,
-  debug: debugMock,
-  warn: warnMock,
-  error: errorMock,
-  fatal: fatalMock,
-});
-const getExtensionMock = jest.fn().mockReturnValue({
-  packageJSON: {
-    displayName: "CICS EXT",
-    version: "1.2.3",
-  },
-});
-
-jest.mock("vscode", () => {
-  return {
-    window: {
-      createOutputChannel: outputChannelMock,
-    },
-    l10n: {
-      t: jest.fn(),
-    },
-    extensions: {
-      getExtension: getExtensionMock,
-    },
-    LogLevel: {
-      info: 3,
-    },
-  };
-});
-
+import { extensions } from "vscode";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 
-// const infoSpy = jest.spyOn(CICSLogger, "info");
+const infoSpy = jest.spyOn(CICSLogger, "info");
+const traceSpy = jest.spyOn(CICSLogger, "trace");
+const debugSpy = jest.spyOn(CICSLogger, "debug");
+const warnSpy = jest.spyOn(CICSLogger, "warn");
+const errorSpy = jest.spyOn(CICSLogger, "error");
+const fatalSpy = jest.spyOn(CICSLogger, "fatal");
+const disposeSpy = jest.spyOn(CICSLogger, "dispose");
+
+const extensionSpy = jest.spyOn(extensions, "getExtension");
 
 describe("CICS Logger", () => {
   it("should initialise logger", () => {
-    expect(infoMock).toHaveBeenCalledTimes(0);
-    CICSLogger.initialize();
-    expect(infoMock).toHaveBeenCalledTimes(3);
+    expect(extensionSpy).toHaveBeenCalledTimes(0);
+    CICSLogger.debug("First call of logger");
+    expect(extensionSpy).toHaveBeenCalledTimes(1);
+    expect(extensionSpy).toHaveBeenCalledWith("zowe.cics-extension-for-zowe");
+
+    debugSpy.mockReset();
+  });
+
+  it("should log info", () => {
+    expect(infoSpy).toHaveBeenCalledTimes(0);
+    CICSLogger.info("MY MSG");
+    expect(infoSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should log trace", () => {
-    expect(traceMock).toHaveBeenCalledTimes(0);
+    expect(traceSpy).toHaveBeenCalledTimes(0);
     CICSLogger.trace("MY MSG");
-    expect(traceMock).toHaveBeenCalledTimes(1);
+    expect(traceSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should log debug", () => {
-    expect(debugMock).toHaveBeenCalledTimes(0);
+    expect(debugSpy).toHaveBeenCalledTimes(0);
     CICSLogger.debug("MY MSG");
-    expect(debugMock).toHaveBeenCalledTimes(1);
+    expect(debugSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should log warn", () => {
-    expect(warnMock).toHaveBeenCalledTimes(0);
+    expect(warnSpy).toHaveBeenCalledTimes(0);
     CICSLogger.warn("MY MSG");
-    expect(warnMock).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should log error", () => {
-    expect(errorMock).toHaveBeenCalledTimes(0);
+    expect(errorSpy).toHaveBeenCalledTimes(0);
     CICSLogger.error("MY MSG");
-    expect(errorMock).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should log fatal", () => {
-    errorMock.mockReset();
-    expect(errorMock).toHaveBeenCalledTimes(0);
+    expect(fatalSpy).toHaveBeenCalledTimes(0);
     CICSLogger.fatal("MY MSG");
-    expect(errorMock).toHaveBeenCalledTimes(1);
+    expect(fatalSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should dispose Logger", () => {
-    expect(disposeMock).toHaveBeenCalledTimes(0);
+    expect(disposeSpy).toHaveBeenCalledTimes(0);
     CICSLogger.dispose();
-    expect(disposeMock).toHaveBeenCalledTimes(1);
+    expect(disposeSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -12,10 +12,9 @@
 import { ITCPIP } from "@zowe/cics-for-zowe-explorer-api";
 import { TCPIPMeta } from "../../../src/doc/meta/tcpip.meta";
 import { Resource } from "../../../src/resources";
+import { workspaceConfigurationGetMock } from "../../__mocks__";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["TCP1"]);
 
 describe("TCP IP Meta", () => {
   let tcpipMock: Resource<ITCPIP>;

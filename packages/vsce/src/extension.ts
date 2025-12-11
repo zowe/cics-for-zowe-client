@@ -31,8 +31,6 @@ import { CICSLogger } from "./utils/CICSLogger";
 export async function activate(context: ExtensionContext): Promise<IExtensionAPI> {
   const zeVersion = getZoweExplorerVersion();
 
-  CICSLogger.initialize();
-
   let treeDataProv: CICSTree = null;
   if (!zeVersion) {
     CICSLogger.error(CICSMessages.zoweExplorerNotFound.message);

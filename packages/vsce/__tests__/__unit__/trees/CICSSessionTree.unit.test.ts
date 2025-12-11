@@ -9,89 +9,63 @@
  *
  */
 
-const profile = { user: "user", password: "pwd", host: "hostname", protocol: "https", type: "basic", rejectUnauthorized: false, port: 8080 };
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {
-    getProfilesCache: () => {
-      return {
-        loadNamedProfile: jest.fn().mockReturnValue({
-          failNotFound: false,
-          message: "",
-          type: "cics",
-          name: "MYPROF",
-          profile,
-        }),
-      };
-    },
-  },
-}));
-
-const getIconFilePathFromNameMock = jest.fn();
-
 import { CICSTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import * as globalMocks from "../../__utils__/globalMocks";
+import * as iconUtils from "../../../src/utils/iconUtils";
+import { profile } from "../../__mocks__";
 
-jest.mock("@zowe/zowe-explorer-api");
-jest.mock("../../../src/utils/iconUtils", () => {
-  return { getIconFilePathFromName: getIconFilePathFromNameMock };
-});
-const cicstreeMock = jest.fn();
-const treeResourceMock = globalMocks.getDummyTreeResources("cicsmanagedregion", "fileName*");
+const iconSpy = jest.spyOn(iconUtils, "getIconFilePathFromName");
 
 describe("Test suite for CICSSessionTree", () => {
-  let sut: CICSSessionTree;
+  let cicsTree: CICSTree;
+  let sessionTree: CICSSessionTree;
+  let plexTree: CICSPlexTree;
+  let regionTree: CICSRegionTree;
 
   describe("Validation", () => {
     beforeEach(() => {
-      getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
-
-      sut = new CICSSessionTree({ failNotFound: false, message: "", type: "cics", profile, name: "MYPROF" }, {
-        _onDidChangeTreeData: { fire: () => jest.fn() },
-      } as unknown as CICSTree);
-      sut.isUnauthorized = true;
-      expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("profile-unverified");
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
+      cicsTree = new CICSTree();
+      sessionTree = new CICSSessionTree(profile, cicsTree);
+      sessionTree.isUnauthorized = true;
+      expect(iconSpy).toHaveBeenCalledWith("profile-unverified");
     });
 
     describe("Test suite for addRegion", () => {
       it("should push CICSRegionTree object into children", () => {
-        sut.addRegion(cicstreeMock as any as CICSRegionTree);
-        expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+        regionTree = new CICSRegionTree("MYREG", {}, sessionTree, undefined, sessionTree);
+        sessionTree.addRegion(regionTree);
+        expect(sessionTree.getChildren().length).toEqual(1);
       });
     });
     describe("Test suite for addPlex", () => {
       it("should push CICSPlexTree object into children", () => {
-        sut.addPlex(cicstreeMock as any as CICSPlexTree);
-        expect(sut.getChildren().length).toBeGreaterThanOrEqual(1);
+        plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree);
+        sessionTree.addPlex(plexTree);
+        expect(sessionTree.getChildren().length).toEqual(1);
       });
     });
     describe("Test suite for getChildren", () => {
       it("should return an array of childrens", () => {
-        expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
+        expect(sessionTree.getChildren().length).toEqual(0);
       });
     });
     describe("Test suite for setUnauthorized", () => {
       it("should set isUnauthorized to true", () => {
-        sut.setUnauthorized();
-        expect(sut.isUnauthorized).toBeTruthy();
+        sessionTree.setUnauthorized();
+        expect(sessionTree.isUnauthorized).toBeTruthy();
       });
     });
     describe("Test suite for setAuthorized", () => {
       it("should set isUnauthorized to false", () => {
-        sut.setAuthorized();
-        expect(sut.isUnauthorized).toBeFalsy();
+        sessionTree.setAuthorized();
+        expect(sessionTree.isUnauthorized).toBeFalsy();
       });
     });
     describe("Test suite for getIsUnauthorized", () => {
       it("should return the object of isUnauthorized", () => {
-        expect(sut.getIsUnauthorized()).toBeTruthy();
+        expect(sessionTree.getIsUnauthorized()).toBeTruthy();
       });
     });
   });
