@@ -50,4 +50,8 @@ zeApi.ZoweExplorerApiType = {
   Jes: "JES",
 };
 
+zeApi.imperative = {
+  ...jest.requireActual("@zowe/imperative"),
+};
+
 module.exports = zeApi;

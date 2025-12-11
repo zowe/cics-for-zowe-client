@@ -25,6 +25,7 @@ describe("Shared TS Queue Meta", () => {
       location: "MAIN",
       name: "MYQUEUE",
       poolname: "MYPOOL",
+      hexname: "C8C54040404040404040404040404040",
     });
   });
 

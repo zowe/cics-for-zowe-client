@@ -9,220 +9,144 @@
  *
  */
 
-const getIconFilePathFromNameMock = jest.fn();
-const cicsCombinedTreeMock = jest.fn();
-jest.mock("@zowe/zowe-explorer-api", () => ({
-  ...jest.requireActual("@zowe/zowe-explorer-api"),
-  ZoweVsCodeExtension: {
-    getZoweExplorerApi: jest.fn().mockReturnValue({ getExplorerExtenderApi: jest.fn().mockReturnValue({ getProfilesCache: jest.fn() }) }),
-  },
-}));
-
-import { IProfileLoaded } from "@zowe/imperative";
-import * as vscode from "vscode";
+import { CICSRegionsContainer, CICSTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import { CICSTree } from "../../../src/trees/CICSTree";
-import PersistentStorage from "../../../src/utils/PersistentStorage";
-import * as globalMocks from "../../__utils__/globalMocks";
-import { unsortedPlex } from "../../__utils__/globalMocks";
+import * as iconUtils from "../../../src/utils/iconUtils";
+import { getResourceMock, profile } from "../../__mocks__";
 
-const defaultFilterMock = jest.fn();
-defaultFilterMock.mockReturnValue("DEFAULT FITLER");
-const defaultResNumberMock = jest.fn();
-defaultResNumberMock.mockReturnValue(10);
-
-PersistentStorage.getDefaultResourceFilter = defaultFilterMock;
-PersistentStorage.getNumberOfResourcesToFetch = defaultResNumberMock;
-
-jest.mock("../../../src/trees/CICSRegionsContainer", () => ({
-  get CICSRegionsContainer() {
-    return cicsCombinedTreeMock;
-  },
-}));
-let buildSpy: jest.SpyInstance | undefined;
-
-function mockBuildCombinedTreeWith(labels: string[]) {
-  let idx = 0;
-  buildSpy = jest
-    .spyOn(CICSPlexTree.prototype as any, "buildCombinedTree")
-    .mockImplementation((..._args: unknown[]) => ({ label: labels[idx++] || "" }));
-  return buildSpy;
-}
-
-jest.mock("../../../src/trees/CICSRegionTree");
-jest.mock("@zowe/cics-for-zowe-sdk");
-jest.mock("../../../src/utils/CICSLogger");
-jest.mock("../../../src/trees/CICSSessionTree");
-jest.mock("../../../src/utils/iconUtils", () => {
-  return { getIconFilePathFromName: getIconFilePathFromNameMock };
-});
-
-beforeEach(() => {
-  jest.resetAllMocks();
-});
-const getResourceMock = globalMocks.getResourceMock;
-const CICSRegionTreeMock = {};
-const treeResourceMock = globalMocks.getDummyTreeResources("testResource", "fileName*", "cicsregion");
-const record = [{ prop: "test1" }, { prop: "test2" }];
-
-const plexName: string = "plex";
-const iProfileMock = {
-  regionName: "Region",
-};
-const iprofileLoadedMock = {
-  profile: iProfileMock,
-};
-const CICSSessionTreeMock = {
-  getSession: () => globalMocks.imperativeSession,
-};
-
-const workspaceMock = globalMocks.workspaceMock;
-const workspaceConfiguration = globalMocks.workspaceConfiguration;
-const get = globalMocks.get;
+const iconMock = jest.spyOn(iconUtils, "getIconFilePathFromName");
 
 describe("Test suite for CICSLocalFileTree", () => {
-  let sut: CICSPlexTree;
+  let cicsTree: CICSTree;
+  let sessionTree: CICSSessionTree;
+  let plexTree: CICSPlexTree;
+  let regionTree: CICSRegionTree;
 
   beforeEach(() => {
-    getIconFilePathFromNameMock.mockReturnValue(treeResourceMock.iconPath);
-    sut = new CICSPlexTree(plexName, iprofileLoadedMock as any as IProfileLoaded, CICSSessionTreeMock as any as CICSSessionTree, "groupName");
-    expect(getIconFilePathFromNameMock).toHaveBeenCalledWith("cics-system-group");
-    cicsCombinedTreeMock.mockImplementation(() => {
-      return {
-        loadContents: () => {
-          return jest.fn();
-        },
-      };
-    });
-  });
-
-  afterEach(() => {
-    buildSpy?.mockRestore();
-    buildSpy = undefined;
-    jest.resetAllMocks();
+    cicsTree = new CICSTree();
+    sessionTree = new CICSSessionTree(profile, cicsTree);
+    expect(iconMock).toHaveBeenCalledWith("profile-unverified");
+    plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree);
+    expect(iconMock).toHaveBeenCalledWith("cics-plex");
+    regionTree = new CICSRegionTree("MYREG", {}, sessionTree, plexTree, plexTree);
   });
 
   describe("Test suite for addRegion()", () => {
     it("Should add CICSRegionTree into localFile", () => {
-      sut.addRegion(CICSRegionTreeMock as CICSRegionTree);
-      expect(sut.children.length).toBeGreaterThanOrEqual(1);
+      plexTree.addRegion(regionTree);
+      expect(plexTree.children.length).toEqual(1);
     });
   });
 
   describe("Test suite for loadContents()", () => {
-    beforeEach(() => {
-      getResourceMock.mockResolvedValue(globalMocks.ICMCIApiResponseMock);
-    });
-    afterEach(() => {
-      getResourceMock.mockClear();
-      jest.resetAllMocks();
-    });
-
     it("Should load Region and add it into region", async () => {
-      globalMocks.ICMCIApiResponseMock.response.records[treeResourceMock.resourceName.toLowerCase()] = record;
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultSummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsregion: { applid: "MYREG", jobid: "JOB12345" } },
+        },
+      });
 
-      await sut.loadOnlyRegion();
+      await plexTree.loadOnlyRegion();
       expect(getResourceMock).toHaveBeenCalled();
-      expect(sut.activeFilter).toBeUndefined();
-      expect(sut.children.length).toBeGreaterThanOrEqual(1);
+      expect(plexTree.activeFilter).toBeUndefined();
+      expect(plexTree.children.length).toEqual(1);
     });
   });
 
   describe("Test suite for getResourceFilter", () => {
     it("Should return resource filter", () => {
-      sut.resourceFilters = {
+      plexTree.resourceFilters = {
         region: "Region1",
       };
 
-      expect(sut.getResourceFilter("region")).toEqual("Region1");
+      expect(plexTree.getResourceFilter("region")).toEqual("Region1");
     });
   });
 
   describe("Test suite for getPlexName", () => {
     it("Should return plex name", () => {
-      expect(sut.getPlexName()).toEqual("plex");
+      expect(plexTree.getPlexName()).toEqual("MYPLEX");
     });
   });
 
   describe("Test suite for getChildren", () => {
     it("Should return children object", () => {
-      expect(sut.getChildren().length).toBeGreaterThanOrEqual(0);
+      expect(plexTree.getChildren().length).toEqual(0);
     });
   });
 
   describe("Test suite for clearChildren", () => {
     it("Should clear all elements from children object", () => {
-      sut.children.push(CICSRegionTreeMock as CICSRegionTree);
+      plexTree.children.push(regionTree);
 
-      sut.clearChildren();
-      expect(sut.children.length).toBeGreaterThanOrEqual(0);
+      plexTree.clearChildren();
+      expect(plexTree.children.length).toEqual(0);
     });
   });
 
   describe("Test suite for setLabel", () => {
     it("Should set label name", () => {
-      sut.setLabel("label");
+      plexTree.setLabel("label");
 
-      expect(sut.label).toBe("label");
+      expect(plexTree.label).toBe("label");
     });
   });
 
   describe("Test suite for getActiveFilter()", () => {
     it("Should return the active filter", () => {
-      sut.activeFilter = "Active";
+      plexTree.activeFilter = "Active";
 
-      expect(sut.getActiveFilter()).toBe("Active");
+      expect(plexTree.getActiveFilter()).toBe("Active");
     });
   });
 
   describe("Test suite for addNewCombinedTrees()", () => {
     it("Should push all new combined trees instance into children array", () => {
-      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
-      get.mockReturnValue(true);
-
-      sut.addNewCombinedTrees();
-
-      expect(sut.children.length).toBeGreaterThanOrEqual(9);
+      plexTree.addNewCombinedTrees();
+      expect(plexTree.children).toHaveLength(10);
     });
   });
 
   describe("Test suite for addRegionContainer()", () => {
     it("Should push region container instance into children array", () => {
-      sut.addRegionContainer();
+      plexTree.addRegionContainer();
 
-      expect(sut.children.length).toBeGreaterThanOrEqual(1);
+      expect(plexTree.children.length).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe("Test suite for getGroupName()", () => {
-    it("Should return group name", () => {
-      sut.getGroupName();
+    it("Should return group name when not set", () => {
+      plexTree.getGroupName();
 
-      expect(sut.getGroupName()).toBe("groupName");
+      expect(plexTree.getGroupName()).toBeUndefined();
+    });
+    it("Should return group name when not set", () => {
+      plexTree.getGroupName();
+      plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree, "MYGRP");
+
+      expect(plexTree.getGroupName()).toEqual("MYGRP");
     });
   });
 
   describe("Test to check if children are sorted", () => {
-    it("CICSPlexTree children are organised", () => {
-      mockBuildCombinedTreeWith(unsortedPlex);
+    it("CICSPlexTree children are organised", async () => {
+      plexTree.addRegionContainer();
+      plexTree.addNewCombinedTrees();
 
-      workspaceMock.mockReturnValue(workspaceConfiguration as any as vscode.WorkspaceConfiguration);
-      get.mockImplementation((_key: string) => true);
+      expect(plexTree.children.length).toEqual(11);
+      expect(plexTree.children[0]).toBeInstanceOf(CICSRegionsContainer);
 
-      const parent = new CICSSessionTree({ profile: globalMocks.CICSProfileMock, failNotFound: false, message: "", type: "cics" }, {
-        _onDidChangeTreeData: { fire: () => jest.fn() },
-      } as unknown as CICSTree);
+      const actual = plexTree.children.slice(1).map((c) => `${c.label}`);
+      const expected = plexTree.children
+        .slice(1)
+        .map((c) => `${c.label}`)
+        .sort((a, b) => a.localeCompare(b));
 
-      const plex = new CICSPlexTree(plexName, iprofileLoadedMock as any as IProfileLoaded, parent, "groupName");
-
-      (plex as any).children = [];
-      plex.addNewCombinedTrees();
-
-      const labels = (plex.children as any[]).map((c) => String(c.label).trim()).filter(Boolean);
-      const expected = [unsortedPlex[0], ...labels.slice(1).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))];
-      expect(labels).toEqual(expected);
+      expect(actual).toEqual(expected);
     });
   });
 });

@@ -25,9 +25,11 @@ const extensionSpy = jest.spyOn(extensions, "getExtension");
 describe("CICS Logger", () => {
   it("should initialise logger", () => {
     expect(extensionSpy).toHaveBeenCalledTimes(0);
-    CICSLogger.initialize();
+    CICSLogger.debug("First call of logger");
     expect(extensionSpy).toHaveBeenCalledTimes(1);
     expect(extensionSpy).toHaveBeenCalledWith("zowe.cics-extension-for-zowe");
+
+    debugSpy.mockReset();
   });
 
   it("should log info", () => {
