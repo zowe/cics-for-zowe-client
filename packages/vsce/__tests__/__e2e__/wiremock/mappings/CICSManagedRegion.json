@@ -12,6 +12,19 @@
           "Content-Type": "text/xml"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX2/"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/records2.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
     }
   ]
 }
