@@ -120,7 +120,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
     }
 
     // Check if regionInfo is null or undefined
-    if (regionInfo && regionInfo.length >= 0) {
+    if (regionInfo && regionInfo.length > 0) {
       CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
       regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
       choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
