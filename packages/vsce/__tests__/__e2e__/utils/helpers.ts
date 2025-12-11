@@ -17,6 +17,7 @@ export const constants = {
   PROFILE_NAME: "wiremock_localhost",
   ZOSMF_PROFILE_NAME: "zosmf-wiremock",
   CICSPLEX_NAME: "MYPLEX1",
+  CICSPLEX_NAME_2: "MYPLEX2",
   REGION_NAME: "MYREG1",
   PROGRAM_1_NAME: "MYPROG1",
   PROGRAM_2_NAME: "MYPROG2",
@@ -56,6 +57,7 @@ export const constants = {
   Please refer to the IBM documentation for resp code details`,
   PROGRAM_NOT_FOUND_ERROR_MESSAGE: `The CMCI REST API request failed for resources: PROG3, PROG4. 
   Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for resp code details`,
+  NO_ACTIVE_REGION_FOUND_MESSAGE: "No Active Regions found in DUMMY907",
 };
 
 export const getTree = (page: Page, exactText: string) => {
