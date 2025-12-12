@@ -20,7 +20,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSManagedRegion/records2.xml",
+        "bodyFileName": "CICSManagedRegion/myplex2-records.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
