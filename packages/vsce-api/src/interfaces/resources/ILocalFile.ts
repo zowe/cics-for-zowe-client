@@ -20,4 +20,7 @@ export interface ILocalFile extends IResourceWithEnableStatus {
   recordsize: string;
   dsname: string;
   openstatus: string;
+  update: string;
+  add: string;
+  delete: string;
 }
