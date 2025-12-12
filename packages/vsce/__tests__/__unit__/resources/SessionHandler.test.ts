@@ -34,7 +34,7 @@ describe("Test Suite for SessionHandler", () => {
   it("Should create a session and add it to map", () => {
     const session = sessionHandler.getSession(profile);
     expect(session).toBeInstanceOf(CICSSession);
-    expect(session?.cicsplexName).toBeUndefined();
+    expect(session?.cicsplexName).toEqual("MYPLEX");
   });
 
   it("Should retrieve an existing session", () => {

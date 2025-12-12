@@ -19,6 +19,7 @@ import { profile } from "../../__mocks__";
 
 jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(250);
 jest.spyOn(PersistentStorage, "getDefaultResourceFilter").mockReturnValue("Program=A*");
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
 const cicsTree = new CICSTree();
 const sessionTree = new CICSSessionTree(profile, cicsTree);

@@ -19,6 +19,9 @@ import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTre
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { getCacheMock, getResourceMock, profile } from "../../__mocks__";
 
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
+jest.spyOn(PersistentStorage, "setCriteria").mockImplementation((cxt: string, crit?: string) => Promise.resolve());
+
 const currRes = new Resource<IProgram>({
   eyu_cicsname: "REG",
   newcopycnt: "0",

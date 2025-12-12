@@ -10,13 +10,11 @@
  */
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
 import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import {
   Event,
   EventEmitter,
-  ProgressLocation,
   ProviderResult,
   QuickPickItem,
   QuickPickOptions,
@@ -27,20 +25,12 @@ import {
   l10n,
   window,
 } from "vscode";
-import constants from "../constants/CICS.defaults";
-import errorConstants from "../constants/CICS.errorMessages";
-import { CICSErrorHandler } from "../errors/CICSErrorHandler";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
 import { FilterDescriptor } from "../utils/filterUtils";
-import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { updateProfile } from "../utils/profileUtils";
-import { runGetResource } from "../utils/resourceUtils";
+import { ProfileManagement } from "../utils/profileManagement";
 import { openConfigFile } from "../utils/workspaceUtils";
-import { CICSPlexTree } from "./CICSPlexTree";
-import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
 
@@ -91,6 +81,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       } catch (error) {
         if (error.message?.includes("Could not find profile named")) {
           await PersistentStorage.removeLoadedCICSProfile(profilename);
+          const keysToRemove = PersistentStorage.getCriteriaKeysForSession(profilename);
+          keysToRemove.map(async (k: string) => PersistentStorage.setCriteria(k));
         }
         continue;
       }
@@ -158,7 +150,8 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             Gui.showMessage(l10n.t("Credentials updated for profile {0}", updatedProfile.name));
 
             node.reset();
-            this.refresh(node);
+            node.requiresIconUpdate = true;
+            this.refresh();
 
             return;
           }
@@ -243,102 +236,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     } catch (error) {
       window.showErrorMessage(JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " "));
     }
-  }
-
-  /**
-   *
-   * @param profile
-   * @param position number that's passed in when updating or expanding profile - needed
-   * to replace position of current CICSSessionTree.
-   * @param sessionTree current CICSSessionTree only passed in if expanding a profile
-   */
-  async loadProfile(profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree) {
-    CICSLogger.debug(`Loading CICS profile [${profile.name}]`);
-
-    await PersistentStorage.appendLoadedCICSProfile(profile.name);
-
-    window.withProgress(
-      {
-        title: l10n.t("Load profile"),
-        location: ProgressLocation.Notification,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-
-        progress.report({
-          message: l10n.t("Loading {0}", profile.name),
-        });
-        try {
-          const configInstance = await ProfileManagement.getConfigInstance();
-          if (configInstance.getTeamConfig().exists) {
-            // Initialise session tree
-            let plexInfo: InfoLoaded[];
-            try {
-              plexInfo = await ProfileManagement.getPlexInfo(profile);
-              sessionTree.setAuthorized();
-            } catch (error) {
-              if (error instanceof CICSExtensionError) {
-                if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
-                  error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, profile.name);
-                  CICSErrorHandler.handleCMCIRestError(error);
-                  sessionTree.setUnauthorized();
-                  profile = await updateProfile(profile, sessionTree);
-
-                  if (!profile) {
-                    throw error;
-                  }
-
-                  sessionTree.setProfile(profile);
-                  sessionTree.createSessionFromProfile();
-                  plexInfo = await ProfileManagement.getPlexInfo(profile);
-                  sessionTree.setAuthorized();
-                } else {
-                  CICSErrorHandler.handleCMCIRestError(error);
-                }
-              }
-            }
-            // For each InfoLoaded object - happens if there are multiple plexes
-            sessionTree.clearChildren();
-            for (const item of plexInfo) {
-              // No plex
-              if (item.plexname === null) {
-                const regionsObtained = await runGetResource({
-                  profileName: sessionTree.getProfile().name,
-                  resourceName: CicsCmciConstants.CICS_CMCI_REGION,
-                  regionName: item.regions[0].applid,
-                });
-
-                // 200 OK received
-                const newRegionTree = new CICSRegionTree(
-                  item.regions[0].applid,
-                  regionsObtained.response.records.cicsregion,
-                  sessionTree,
-                  undefined,
-                  sessionTree
-                );
-                sessionTree.addRegion(newRegionTree);
-              } else {
-                if (item.group) {
-                  const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree, profile.profile.regionName);
-                  newPlexTree.setLabel(l10n.t("{cicsplex} - {region}", { cicsplex: item.plexname, region: profile.profile.regionName }));
-                  sessionTree.addPlex(newPlexTree);
-                } else {
-                  //Plex
-                  const newPlexTree = new CICSPlexTree(item.plexname, profile, sessionTree);
-                  sessionTree.addPlex(newPlexTree);
-                }
-              }
-            }
-            this._onDidChangeTreeData.fire(undefined);
-          }
-        } catch (error) {
-          sessionTree.setUnauthorized();
-          sessionTree.setIsExpanded(false);
-          this._onDidChangeTreeData.fire(undefined);
-        }
-      }
-    );
   }
 
   /**
