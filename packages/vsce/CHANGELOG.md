@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
+- Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
 
 ## `3.16.1`
 
