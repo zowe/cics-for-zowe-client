@@ -4,8 +4,8 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-Enhancement: Display a clear "No regions found in plex" message when a plex contains no managed regions. [#444] (https://github.com/zowe/cics-for-zowe-client/issues/444)
-Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
+- Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
+- Enhancement: Organised resource tree children alphabetically. [#439] (https://github.com/zowe/cics-for-zowe-client/issues/439)
 
 ## `3.16.0`
 
