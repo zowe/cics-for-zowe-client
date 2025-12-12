@@ -54,4 +54,15 @@ zeApi.imperative = {
   ...jest.requireActual("@zowe/imperative"),
 };
 
+zeApi.Gui = {
+  ...zeApi.Gui,
+  createQuickPick: () => ({
+    items: [] as string[],
+    placeholder: "",
+    ignoreFocusOut: true,
+    show: jest.fn(),
+    hide: jest.fn(),
+  }),
+};
+
 module.exports = zeApi;

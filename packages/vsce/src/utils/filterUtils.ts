@@ -9,11 +9,8 @@
  *
  */
 
-import { InputBoxOptions, QuickPick, QuickPickItem, l10n, window } from "vscode";
-
-export async function resolveQuickPickHelper(quickpick: QuickPick<QuickPickItem>): Promise<QuickPickItem | undefined> {
-  return new Promise<QuickPickItem | undefined>((c) => quickpick.onDidAccept(() => c(quickpick.activeItems[0])));
-}
+import { Gui } from "@zowe/zowe-explorer-api";
+import { QuickPickItem, l10n, window } from "vscode";
 
 export class FilterDescriptor implements QuickPickItem {
   constructor(private text: string) {}
@@ -28,51 +25,51 @@ export class FilterDescriptor implements QuickPickItem {
   }
 }
 
-export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
-  let pattern: string = "";
+export const buildQuickPick = (resName: string, history: string[]) => {
   const createPick = new FilterDescriptor(
-    l10n.t("{0} Create New {1} Filter (use a comma to separate multiple patterns e.g. LG*,I*)", "\uFF0B", resourceName)
+    l10n.t("{0} Create New {1} Filter (use a comma to separate multiple patterns e.g. LG*,I*)", "\uFF0B", resName)
   );
-  const items = resourceHistory.map((loadedFilter) => {
+  const items = history.map((loadedFilter) => {
     return { label: loadedFilter };
   });
-  const quickpick = window.createQuickPick();
+
+  const quickpick = Gui.createQuickPick();
   quickpick.items = [createPick, ...items];
   quickpick.placeholder = l10n.t("Select a Filter");
   quickpick.ignoreFocusOut = true;
-  quickpick.show();
-  const choice = await resolveQuickPickHelper(quickpick);
 
+  return quickpick;
+};
+
+export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
+  const quickpick = buildQuickPick(resourceName, resourceHistory);
+  quickpick.show();
+  const choice = await Gui.resolveQuickPick(quickpick);
   quickpick.hide();
+
   if (!choice) {
     window.showInformationMessage(l10n.t("No Selection Made"));
     return;
   }
-  if (choice instanceof FilterDescriptor) {
-    if (quickpick.value) {
-      pattern = quickpick.value;
-    }
+
+  let pattern: string = "";
+  if (choice instanceof FilterDescriptor && quickpick.value) {
+    pattern = quickpick.value;
+  } else if (choice instanceof FilterDescriptor) {
+    pattern = await Gui.showInputBox({ prompt: "", value: pattern });
   } else {
     pattern = choice.label;
   }
-  const options2: InputBoxOptions = {
-    prompt: "",
-    value: pattern,
-  };
-  if (!options2.validateInput) {
-    options2.validateInput = (_value) => null;
-  }
-  pattern = (await window.showInputBox(options2)) || "";
+
   if (!pattern) {
     window.showInformationMessage(l10n.t("You must enter a pattern"));
     return;
   }
-  // Some resources have case-sensitive filtering (bundleparts)
+
   if (!filterCaseSensitive) {
-    // Replace with upper case
     pattern = pattern.toUpperCase();
   }
-  // Remove whitespace
+
   return pattern.replace(/\s/g, "");
 }
 
