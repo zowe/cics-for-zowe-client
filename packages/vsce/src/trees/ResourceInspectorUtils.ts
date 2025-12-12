@@ -48,7 +48,9 @@ export async function executeAction(
     }
     if (typeof action.action === "string") {
       await commands.executeCommand(action.action, node);
-      await refreshWithProgress();
+      if (action.refreshResourceInspector) {
+        await refreshWithProgress();
+      }
     } else {
       await action.action(resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
     }

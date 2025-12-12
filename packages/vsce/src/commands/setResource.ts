@@ -21,6 +21,7 @@ export const resourceActionVerbMap = {
   OPEN: l10n.t("Opening"),
   PHASEIN: l10n.t("Phase In"),
   NEWCOPY: l10n.t("New Copy"),
+  DELETE: l10n.t("Deleting"),
 };
 
 interface ISetResourcePayloadParameter {
