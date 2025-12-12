@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
+## Recent Changes
+
+Enhancement: Added attributes to the CICS local file interface. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+
 ## `6.16.0`
 
 - Enhancement: Added attributes to the following interfaces: URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services, JVM server. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
