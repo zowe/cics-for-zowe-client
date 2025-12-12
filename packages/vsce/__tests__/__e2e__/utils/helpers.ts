@@ -17,6 +17,7 @@ export const constants = {
   PROFILE_NAME: "wiremock_localhost",
   ZOSMF_PROFILE_NAME: "zosmf-wiremock",
   CICSPLEX_NAME: "MYPLEX1",
+  CICSPLEX_NAME_2: "MYPLEX2",
   REGION_NAME: "MYREG1",
   PROGRAM_1_NAME: "MYPROG1",
   PROGRAM_2_NAME: "MYPROG2",
