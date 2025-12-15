@@ -4,9 +4,14 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Enhancement: Added Delete TS Queue functionality. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)
+- Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
+
+## `3.16.1`
+
 - Enhancement: Organised resource tree children alphabetically. [#439](https://github.com/zowe/cics-for-zowe-client/issues/439)
 - Enhancement: Added remaining permissions attributes to CICS local file highlights. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
-- Enhancement: Added Delete TS Queue functionality. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)
+- BugFix: Updated `react` dependency for tehcnical currency. [#547](https://github.com/zowe/cics-for-zowe-client/pull/547)
 
 ## `3.16.0`
 
