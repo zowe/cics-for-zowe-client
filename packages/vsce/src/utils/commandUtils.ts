@@ -12,13 +12,13 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import * as vscode from "vscode";
-import { TreeView } from "vscode";
+import { QuickPickOptions, TreeView, commands, l10n, window } from "vscode";
 import { IResourceMeta } from "../doc";
 import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { ProfileManagement } from "./profileManagement";
 
+const MAX_MODAL_LIST_ITEMS = 10;
 /**
  * Checks if a profile supports a specific type of connection
  *
@@ -125,8 +125,8 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
     return null;
   }
   // ask the user to pick from the profiles passed in
-  const quickPickOptions: vscode.QuickPickOptions = {
-    placeHolder: vscode.l10n.t("Select a profile to access the logs"),
+  const quickPickOptions: QuickPickOptions = {
+    placeHolder: l10n.t("Select a profile to access the logs"),
     ignoreFocusOut: true,
     canPickMany: false,
   };
@@ -175,14 +175,14 @@ export async function findProfileAndShowJobSpool(cicsProfile: IProfileLoaded, jo
     chosenProfileName = await promptUserForProfile(zosProfiles);
     CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
     if (chosenProfileName === null) {
-      vscode.window.showErrorMessage(vscode.l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
+      window.showErrorMessage(l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
       return;
     } else if (chosenProfileName === undefined) {
       return;
     }
   }
   CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${regionName}: ${chosenProfileName} / ${jobid}`);
-  vscode.commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
+  commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
 }
 
 /**
@@ -280,5 +280,19 @@ export async function getResourceTree<T extends IResource>(
     return resourceTree;
   }
 
-  throw new Error(vscode.l10n.t("Region name is missing in the node description."));
+  throw new Error(l10n.t("Region name is missing in the node description."));
 }
+
+export async function getConfirmationForAction(action: string, resourceType: string, resourceNames: string[]) {
+  return window.showInformationMessage(
+    l10n.t("Are you sure you want to {0} the following {1}?", action, resourceType),
+    { modal: true, detail: resourceNames.join("\n") },
+    action
+  );
+}
+
+export const buildConfirmationDescription = (nodes: CICSResourceContainerNode<IResource>[]) => {
+  return nodes.length <= MAX_MODAL_LIST_ITEMS ?
+      nodes.map((n) => `${n.label}`)
+    : [...nodes.slice(0, MAX_MODAL_LIST_ITEMS).map((n) => `${n.label}`), l10n.t("...{0} more", nodes.length - MAX_MODAL_LIST_ITEMS)];
+};

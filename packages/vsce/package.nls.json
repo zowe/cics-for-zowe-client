@@ -37,5 +37,6 @@
   "cics.inquireProgram.title": "Inquire Program",
   "cics.showLibrary.title": "Show Library",
   "cics.purgeTask.title": "Purge Task",
-  "cics.toggleVisibleCICSResource.title": "Toggle visible CICS Resources"
+  "cics.toggleVisibleCICSResource.title": "Toggle visible CICS Resources",
+  "cics.deleteTSQueue.title": "Delete TS Queue"
 }

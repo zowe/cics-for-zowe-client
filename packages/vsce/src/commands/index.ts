@@ -17,6 +17,7 @@ import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
 import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
+import { getDeleteTSQueueCommand } from "./deleteTSQueueCommand";
 import { getDisableResourceCommands } from "./disableResourceCommand";
 import { getEnableResourceCommands } from "./enableResourceCommand";
 import * as filterResourceCommands from "./filterResourceCommands";
@@ -81,5 +82,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getCopyNameCommand(),
     getCopyUserAgentHeaderCommand(),
     showBundleDirectory(),
+
+    getDeleteTSQueueCommand(treeDataProv, treeview),
   ];
 };

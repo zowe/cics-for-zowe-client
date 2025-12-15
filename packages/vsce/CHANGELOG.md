@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Enhancement: Added Delete TS Queue functionality. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)
 - Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
 
 ## `3.16.1`
@@ -14,7 +15,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## `3.16.0`
 
-- Bugfix: Update persistent storage when CICS profiles are added and removed. [#482] (https://github.com/zowe/cics-for-zowe-client/issues/482)
+- Bugfix: Update persistent storage when CICS profiles are added and removed. [#482](https://github.com/zowe/cics-for-zowe-client/issues/482)
 - Enhancement: Added highlights for URI maps, Web Services, Tasks, Libraries, Pipelines, TCP/IP Services. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Adjusted highlights for Program resources to show Language and JVM server if applicable. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
 - Enhancement: Use hyperlinks to navigate from Resource Inspector attributes to the Zowe Explorer Jobs tree. [#519](https://github.com/zowe/cics-for-zowe-client/issues/519)
