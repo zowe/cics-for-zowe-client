@@ -59,7 +59,7 @@ export async function regionContainerExpansionHandler(regionContiner: CICSRegion
         await regionContiner.loadRegionsInPlex();
         regionContiner.iconPath = getFolderIcon(true);
         if (!regionContiner.getChildren().length) {
-          window.showInformationMessage(l10n.t("No regions found for plex {0}", "No regions found for plex {0}", parentPlex.getPlexName()));
+          window.showInformationMessage(l10n.t("No regions found for plex {0}", parentPlex.getPlexName()));
         }
         tree._onDidChangeTreeData.fire(undefined);
       }
