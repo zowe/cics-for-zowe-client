@@ -117,9 +117,10 @@ export const getResourceInspector = (page: Page) => {
 };
 
 export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
-  await expect(getTreeItem(page, label)).toBeVisible();
-  await expect(getTreeItem(page, label)).toHaveText(label);
-  await getTreeItem(page, label).click({ button });
+  const itm = getTreeItem(page, label);
+  await expect(itm).toBeVisible();
+  await expect(itm).toHaveText(label);
+  await itm.click({ button, force: true });
 };
 
 export const waitForNotification = async (page: Page, string: string) => {
