@@ -74,7 +74,15 @@ To build the project locally, follow these steps:
    npm run test:e2e
    ```
 
-6. Create distributable packages (optional):
+6. If any e2e tests fail, see more details by using the playwright show-report tool. From the e2e-test job in GitHub Actions, find the "Archive E2E screenshots, Wiremock log, and Playwright test report" step. This step's logs contain a link to the artifact download URL. Download and unzip the artifact zip.
+
+   Next run playwright's show-report. This opens a web browser that allows you to navigate through the e2e test results and examine any failures:
+
+   ```bash
+   npx playwright show-report <path_to_unzipped_artifact_zip>/packages/vsce/playwright-report/
+   ```
+
+7. Create distributable packages (optional):
    ```bash
    npm run package
    ```
