@@ -15,6 +15,8 @@ import errorConstants from "../constants/CICS.errorMessages";
 import { CICSLogger } from "../utils/CICSLogger";
 import { CICSExtensionError } from "./CICSExtensionError";
 import { ICICSExtensionError } from "./ICICSExtensionError";
+import { openDocumentation } from "../utils/urlUtils";
+import { URLConstants } from "./urlConstants";
 
 export function resourceNotFoundError(error?: ICICSExtensionError) {
   if (!error) {
@@ -23,9 +25,22 @@ export function resourceNotFoundError(error?: ICICSExtensionError) {
 }
 
 export class CICSErrorHandler {
-  static handleCMCIRestError(error: CICSExtensionError): Thenable<string | MessageItem> {
+  static handleCMCIRestError(error: CICSExtensionError, action?: MessageItem[]): Thenable<string | MessageItem> {
     const msg = error.cicsExtensionError.errorMessage;
-    return this.notifyErrorMessage({ errorMessage: msg });
+    const resourceType = error.cicsExtensionError.resourceType;
+    if (resourceType && !action) {
+      CICSErrorHandler.openDoc(resourceType, msg);
+      return;
+    }
+    return this.notifyErrorMessage({ errorMessage: msg, action: action });
+  }
+
+  private static openDoc(resourceType: string, msg: string) {
+    this.notifyErrorMessage({ errorMessage: msg, action: [URLConstants.OPEN_DOCUMENTATION] }).then(async (selection) => {
+      if (selection === URLConstants.OPEN_DOCUMENTATION) {
+        await openDocumentation(resourceType.trim().toLowerCase());
+      }
+    });
   }
 
   handleExtensionError() {}
