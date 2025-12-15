@@ -130,6 +130,7 @@ jobs:
           name: e2eLogs
           path: |
             packages/vsce/__tests__/screenshots
+            packages/vsce/playwright-report
             wiremock.log
 
   release:

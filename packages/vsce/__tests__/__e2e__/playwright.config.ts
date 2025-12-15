@@ -14,12 +14,12 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./specs/",
   fullyParallel: false,
-  reporter: "list",
-  timeout: 30 * 1000,
+  reporter: [["html", { open: "never" }], ["list"]],
+  timeout: 20 * 1000,
   expect: {
     timeout: 5000,
   },
-  retries: 2,
+  retries: 3,
 
   projects: [
     {
