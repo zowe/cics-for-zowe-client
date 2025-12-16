@@ -123,13 +123,14 @@ jobs:
         if: success() || failure()
         run: docker logs wiremock >& wiremock.log
 
-      - name: Archive E2E screenshots and Wiremock log
+      - name: Archive E2E screenshots, Wiremock log, and Playwright test report
         if: success() || failure()
         uses: actions/upload-artifact@v4
         with:
           name: e2eLogs
           path: |
             packages/vsce/__tests__/screenshots
+            packages/vsce/playwright-report
             wiremock.log
 
   release:
