@@ -120,7 +120,8 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
   const itm = getTreeItem(page, label);
   await expect(itm).toBeVisible();
   await expect(itm).toHaveText(label);
-  await itm.click({ button, force: true });
+  await page.keyboard.press("Escape");
+  await clickTreeNode(page, label, button);
 };
 
 export const waitForNotification = async (page: Page, string: string) => {
@@ -225,3 +226,7 @@ export const expectedPlexOrder = [
   "All URI Maps",
   "All Web Services",
 ];
+
+export const clickTreeNode = async (page: Page, text: string, button: "left" | "right" | "middle" = "left") => {
+  page.locator('.monaco-highlighted-label', { hasText: text }).first().click({ button, force: true });
+};

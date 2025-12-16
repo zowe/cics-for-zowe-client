@@ -11,6 +11,7 @@
 
 import { expect, test } from "@playwright/test";
 import {
+  clickTreeNode,
   constants,
   findAndClickText,
   findAndClickTreeItem,
@@ -39,9 +40,7 @@ test.describe("Error scenarios", () => {
     await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toHaveText(constants.JVM_SERVER_1_NAME);
 
-    //Disable action from context menu
-    await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toBeVisible();
-    await getTreeItem(page, constants.JVM_SERVER_1_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.JVM_SERVER_1_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, "Disable JVM Server");
@@ -63,8 +62,7 @@ test.describe("Error scenarios", () => {
     await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toHaveText(constants.BUNDLE_1_NAME);
 
-    await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toBeVisible();
-    await getTreeItem(page, constants.BUNDLE_1_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.BUNDLE_1_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.ENABLE_BUNDLE);
@@ -106,8 +104,7 @@ test.describe("Error scenarios", () => {
     await expect(getTreeItem(page, constants.LIBRARY_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.LIBRARY_NAME)).toHaveText(constants.LIBRARY_NAME);
 
-    await expect(getTreeItem(page, constants.LIBRARY_NAME)).toBeVisible();
-    await getTreeItem(page, constants.LIBRARY_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.LIBRARY_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.DISABLE_LIBRARY);
@@ -173,7 +170,7 @@ test.describe("Error scenarios", () => {
 
     await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toHaveText(constants.PROGRAM_1_NAME);
-    await getTreeItem(page, constants.PROGRAM_1_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.PROGRAM_1_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.DISABLE_PROGRAM);
@@ -195,11 +192,11 @@ test.describe("Error scenarios", () => {
     await expect(getTreeItem(page, constants.PROGRAM_2_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.PROGRAM_2_NAME)).toHaveText(constants.PROGRAM_2_NAME);
 
-    await getTreeItem(page, constants.PROGRAM_1_NAME).click({ button: "left" });
+    await clickTreeNode(page, constants.PROGRAM_1_NAME);
     await page.waitForTimeout(200);
     await getTreeItem(page, constants.PROGRAM_2_NAME).click({ modifiers: ["Shift"], button: "left" });
     await page.waitForTimeout(200);
-    await getTreeItem(page, constants.PROGRAM_2_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.PROGRAM_2_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.DISABLE_PROGRAM);
