@@ -18,20 +18,31 @@ export class CICSSession extends Session {
   private verified: boolean | undefined;
 
   constructor(profile: IProfile) {
-    super({
-      type: SessConstants.AUTH_TYPE_TOKEN,
-      tokenType: SessConstants.TOKEN_TYPE_LTPA,
-      storeCookie: true,
-
+    const common = {
       protocol: profile.protocol,
       hostname: profile.host,
       port: Number(profile.port),
-
-      user: profile.user || "",
-      password: profile.password || "",
-
       rejectUnauthorized: profile.rejectUnauthorized,
-    });
+    };
+
+    if (profile.certFile && profile.certKeyFile) {
+      super({
+        ...common,
+        type: SessConstants.AUTH_TYPE_CERT_PEM,
+        storeCookie: false,
+        cert: profile.certFile,
+        certKey: profile.certKeyFile,
+      });
+    } else {
+      super({
+        ...common,
+        type: SessConstants.AUTH_TYPE_TOKEN,
+        tokenType: SessConstants.TOKEN_TYPE_LTPA,
+        storeCookie: true,
+        user: profile.user || "",
+        password: profile.password || "",
+      });
+    }
 
     this.cicsplexName = profile.cicsPlex;
     this.regionName = profile.regionName;
