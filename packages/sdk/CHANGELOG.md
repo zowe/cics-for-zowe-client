@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add SSL certificate authentication for CICS VS Code. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
+
 ## `6.16.0`
 
 - Enhancement: Added putResource API to update CICS resources via CMCI. [#453](https://github.com/zowe/cics-for-zowe-client/issues/453)
