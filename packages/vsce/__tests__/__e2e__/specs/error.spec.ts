@@ -80,6 +80,9 @@ test.describe("Error scenarios", () => {
     await findAndClickTreeItem(page, constants.REGION_ERROR);
     await findAndClickTreeItem(page, "Transactions");
 
+    await expect(getTreeItem(page, "TRAN", true)).toBeVisible();
+    await expect(getTreeItem(page, "RUSH", true)).toBeVisible();
+
     const filterButton = page.getByRole("button", { name: "Filter Resources", exact: true });
     await expect(filterButton).toBeVisible();
     await filterButton.click();
@@ -88,7 +91,6 @@ test.describe("Error scenarios", () => {
     await expect(textBox).toBeEditable();
     await textBox.fill("FILTER");
     await textBox.press("Enter");
-    await page.getByRole("textbox", { name: "input", exact: true }).press("Enter");
 
     const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
     await expect(notification).toBeVisible();
@@ -128,6 +130,15 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toHaveText(constants.NO_CONNECTION_ERROR_MESSAGE);
+
+    // Remove test profile from tree
+    await findAndClickTreeItem(page, constants.TEST_LOGIN, "right");
+
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Manage Profile");
+    await findAndClickText(page, "Hide Profile");
+
+    await expect(getTreeItem(page, constants.TEST_LOGIN)).toHaveCount(0);
   });
 
   test("searching program not present throws error", async ({ page }) => {
@@ -135,6 +146,9 @@ test.describe("Error scenarios", () => {
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
     await findAndClickTreeItem(page, constants.REGION_ERROR);
     await findAndClickTreeItem(page, "Programs");
+
+    await expect(getTreeItem(page, "MYPROG1", true)).toBeVisible();
+    await expect(getTreeItem(page, "MYPROG2", true)).toBeVisible();
 
     const filterButton = page.getByRole("button", { name: "Filter Resources", exact: true });
     await expect(filterButton).toBeVisible();
@@ -144,7 +158,6 @@ test.describe("Error scenarios", () => {
     await expect(textBox).toBeEditable();
     await textBox.fill("PROG3,PROG4");
     await textBox.press("Enter");
-    await page.getByRole("textbox", { name: "input", exact: true }).press("Enter");
 
     const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
     await expect(notification).toBeVisible();
