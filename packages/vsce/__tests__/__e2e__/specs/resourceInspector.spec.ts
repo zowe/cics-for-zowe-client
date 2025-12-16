@@ -37,7 +37,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
@@ -52,7 +52,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
@@ -71,7 +71,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
@@ -82,11 +82,10 @@ test.describe("Resource Inspector tests", async () => {
   test("should refresh resource when clicking refresh icon", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await waitForNotification(page, `Loading regions`);
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right", false);
     await page.waitForTimeout(200);
 
     // Open resource inspector
@@ -122,7 +121,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
@@ -150,7 +149,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Programs");
 
-    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 

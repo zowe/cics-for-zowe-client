@@ -116,11 +116,13 @@ export const getResourceInspector = (page: Page) => {
   return page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame");
 };
 
-export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
+export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left", esc: boolean = true) => {
   const itm = getTreeItem(page, label);
   await expect(itm).toBeVisible();
   await expect(itm).toHaveText(label);
-  await page.keyboard.press("Escape");
+  if (esc) {
+    await page.keyboard.press("Escape");
+  }
   await clickTreeNode(page, label, button);
 };
 
@@ -153,8 +155,8 @@ export const getClipboardContent = async (page: Page) => {
 export const collectTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
-): Promise<Array<{ label: string; index: number }>> => {
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
+): Promise<Array<{ label: string; index: number; }>> => {
   const { includeAll = false, waitForLabel, selector = '[role="treeitem"]' } = options ?? {};
 
   if (waitForLabel) {
@@ -162,7 +164,7 @@ export const collectTreeItemsOrder = async (
   }
 
   const allTreeItems = await page.locator(selector).all();
-  const itemsWithIndices: Array<{ label: string; index: number }> = [];
+  const itemsWithIndices: Array<{ label: string; index: number; }> = [];
 
   for (const treeItem of allTreeItems) {
     const ariaLabel = await treeItem.getAttribute("aria-label");
@@ -190,7 +192,7 @@ export const collectTreeItemsOrder = async (
 export const assertTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
 ): Promise<void> => {
   const items = await collectTreeItemsOrder(page, expectedOrder, options);
   const actualOrder = items.map((it) => it.label);
