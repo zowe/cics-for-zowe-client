@@ -71,7 +71,9 @@ CICS profiles inherit properties from base profiles in the same way as Zowe prof
 
 The profile defines a connection which must point to a CICS region's CICS Management Client Interface (CMCI) TCP/IP host name and port number. CMCI could be hosted by a WUI in a CICSplex or by a stand-alone System Management Single Server (SMSS) region.
 
-This extension supports basic authentication and Multi-factor authentication (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
+This extension supports two was of authentication:
+1. Basic authentication and Multi-factor authentication (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
+2. SSL Certificate based authentication [CERTAUTH] (https://cicswiki.hursley.ibm.com:9443/wiki/CMCI_CERTAUTH)
 
 #### Creating or updating a CICS profile
 
@@ -108,6 +110,32 @@ The following example shows a CICS profile stored in a configuration file. The h
 **Tip**: Create a profile without the `user` and `password` properties and expand the profile after loading it into the CICS view. The CICS extension will then prompt you for the `user` and `password` fields to be stored in the secure array.
 
 To show more than one CICS profile in the tree, select the **+** button and choose from the list of profiles. Only profiles not already included in the CICS tree will be shown.
+
+#### Creating or updating a CICS profile with Certificate Authentication
+
+The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to have a `certFile` and `certKeyFile` fields which will point to Certificate PEM file and Certificate Key PEM file respectively:
+
+```jsonc
+{
+  "$schema": "./zowe.schema.json",
+  "profiles": {
+    // this string will be the name of your CICS connection in the tree
+    "cics-ssl-connection-name": {
+      "type": "cics",
+      "properties": {
+        // replace the host, port, and protocol with your CMCI connection details
+        "host": "cics.example.com",
+        "port": 1490,
+        "protocol": "https",
+        // reject self-signed server certificates if using https?
+        "rejectUnauthorized": false,
+        "certFile": "/path/to/cert.pem",
+        "certKeyFile": "/path/to/key.pem"
+      },
+    },
+  },
+}
+```
 
 #### Additional details for making the connection
 
