@@ -135,7 +135,9 @@ export class CICSSessionTree extends TreeItem {
       this.setIsExpanded(false);
     } finally {
       this.refreshIcon();
-      this.getParent().refresh(this);
+      if (this.requiresIconUpdate) {
+        this.getParent().refresh(this);
+      }
     }
 
     return this.children;
@@ -143,14 +145,16 @@ export class CICSSessionTree extends TreeItem {
 
   public setUnauthorized() {
     this.isUnauthorized = true;
+    const currIcon = this.iconPath;
     this.iconPath = getIconFilePathFromName("profile-disconnected");
-    this.requiresIconUpdate = true;
+    this.requiresIconUpdate = JSON.stringify(currIcon) !== JSON.stringify(this.iconPath);
   }
 
   public setAuthorized() {
     this.isUnauthorized = false;
+    const currIcon = this.iconPath;
     this.iconPath = getIconFilePathFromName("profile");
-    this.requiresIconUpdate = true;
+    this.requiresIconUpdate = JSON.stringify(currIcon) !== JSON.stringify(this.iconPath);
   }
 
   public getIsUnauthorized() {

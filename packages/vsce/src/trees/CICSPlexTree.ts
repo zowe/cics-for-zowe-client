@@ -46,6 +46,7 @@ export class CICSPlexTree extends TreeItem {
   activeFilter: string | undefined;
   groupName: string | undefined;
   regionsContainer: CICSRegionsContainer | undefined;
+  refreshNode: boolean = false;
 
   constructor(plexName: string, profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree, group?: string) {
     super(plexName, TreeItemCollapsibleState.Collapsed);
@@ -100,17 +101,17 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public async getChildren() {
+    if (this.refreshNode) {
+      this.refreshNode = false;
+      return this.children;
+    }
+
     if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName()) {
       await this.loadOnlyRegion();
       return this.children;
     }
 
-    await this.regionsContainer.getChildren();
-    if (this.regionsContainer.children.length === 0) {
-      this.children = [this.regionsContainer];
-    }
     this.regionsContainer.collapsibleState = TreeItemCollapsibleState.Expanded;
-
     return this.children;
   }
 

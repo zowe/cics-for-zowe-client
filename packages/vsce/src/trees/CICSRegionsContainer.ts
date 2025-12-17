@@ -25,6 +25,7 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   resourceFilters: any;
   activeFilter: string;
+  refreshNode: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
@@ -134,6 +135,10 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async getChildren() {
+    if (this.refreshNode) {
+      this.refreshNode = false;
+      return this.children;
+    }
     const parentPlex = this.getParent();
     if (parentPlex.getProfile().profile.regionName && parentPlex.getProfile().profile.cicsPlex) {
       if (parentPlex.getGroupName()) {
@@ -144,7 +149,14 @@ export class CICSRegionsContainer extends TreeItem {
     } else {
       this.clearChildren();
       await this.loadRegionsInPlex();
-      this.iconPath = getFolderIcon(true);
+
+      if (this.children.length === 0) {
+        this.getParent().children = this.getParent().children.filter((c) => c instanceof CICSRegionsContainer);
+      }
+
+      this.getParent().refreshNode = true;
+      this.refreshNode = true;
+      this.getParent().getSessionNode().getParent().refresh(this.getParent());
     }
 
     return this.children;
