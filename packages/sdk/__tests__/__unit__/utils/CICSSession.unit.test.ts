@@ -84,51 +84,51 @@ describe("CICSSession tests", () => {
   });
 
   it("constructs a token / LTPA session when no certs are present", () => {
-    const profile = {
+    const baseauthprofile = {
       ...baseProfile,
       user: "cicsuser",
       password: "secret",
     };
 
-    const session = new CICSSession(profile);
+    const session = new CICSSession(baseauthprofile);
     const anySession = asAny(session);
 
     // Common connection properties
-    expect(anySession.mISession.hostname).toBe(profile.host);
-    expect(anySession.mISession.port).toBe(Number(profile.port));
-    expect(anySession.mISession.protocol).toBe(profile.protocol);
+    expect(anySession.mISession.hostname).toBe(baseauthprofile.host);
+    expect(anySession.mISession.port).toBe(Number(baseauthprofile.port));
+    expect(anySession.mISession.protocol).toBe(baseauthprofile.protocol);
     expect(anySession.mISession.rejectUnauthorized).toBe(true);
 
     // Auth configuration
     expect(anySession.mISession.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
     expect(anySession.mISession.tokenType).toBe(SessConstants.TOKEN_TYPE_LTPA);
     expect(anySession.mISession.storeCookie).toBe(true);
-    expect(anySession.mISession.user).toBe(profile.user);
-    expect(anySession.mISession.password).toBe(profile.password);
+    expect(anySession.mISession.user).toBe(baseauthprofile.user);
+    expect(anySession.mISession.password).toBe(baseauthprofile.password);
 
     // Cert fields should not be set
     expect(anySession.mISession.cert).toBeUndefined();
     expect(anySession.mISession.certKey).toBeUndefined();
 
     // CICS-specific metadata
-    expect(session.cicsplexName).toBe(profile.cicsPlex);
-    expect(session.regionName).toBe(profile.regionName);
+    expect(session.cicsplexName).toBe(baseauthprofile.cicsPlex);
+    expect(session.regionName).toBe(baseauthprofile.regionName);
   });
 
   it("constructs a CERT_PEM session when certFile and certKeyFile are present", () => {
-    const profile = {
+    const certprofile = {
       ...baseProfile,
       certFile: "../../__resources__/properties/client.pem",
       certKeyFile: "../../__resources__/properties/client.key",
     };
 
-    const session = new CICSSession(profile);
+    const session = new CICSSession(certprofile);
     const anySession = asAny(session);
 
     // Common connection properties
-    expect(anySession.mISession.hostname).toBe(profile.host);
-    expect(anySession.mISession.port).toBe(Number(profile.port));
-    expect(anySession.mISession.protocol).toBe(profile.protocol);
+    expect(anySession.mISession.hostname).toBe(certprofile.host);
+    expect(anySession.mISession.port).toBe(Number(certprofile.port));
+    expect(anySession.mISession.protocol).toBe(certprofile.protocol);
     expect(anySession.mISession.rejectUnauthorized).toBe(true);
 
     // Auth configuration for client-cert
@@ -141,20 +141,20 @@ describe("CICSSession tests", () => {
     expect(anySession.mISession.password).toBeUndefined();
 
     // Cert fields mapped from profile
-    expect(anySession.mISession.cert).toBe(profile.certFile);
-    expect(anySession.mISession.certKey).toBe(profile.certKeyFile);
+    expect(anySession.mISession.cert).toBe(certprofile.certFile);
+    expect(anySession.mISession.certKey).toBe(certprofile.certKeyFile);
 
     // CICS-specific metadata
-    expect(session.cicsplexName).toBe(profile.cicsPlex);
-    expect(session.regionName).toBe(profile.regionName);
+    expect(session.cicsplexName).toBe(certprofile.cicsPlex);
+    expect(session.regionName).toBe(certprofile.regionName);
   });
 
   it("defaults user and password to empty strings when not supplied and no certs", () => {
-    const profile = {
+    const defaultprofile = {
       ...baseProfile,
     };
 
-    const session = new CICSSession(profile);
+    const session = new CICSSession(defaultprofile);
     const anySession = asAny(session);
 
     expect(anySession.mISession.user).toBe("");
