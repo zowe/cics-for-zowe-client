@@ -134,7 +134,7 @@ export class CICSRegionsContainer extends TreeItem {
     return regex;
   }
 
-  public async getChildren() {
+  public async getChildren(): Promise<CICSRegionTree[]> {
     if (this.refreshNode) {
       this.refreshNode = false;
       return this.children;
