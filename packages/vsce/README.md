@@ -113,7 +113,7 @@ To show more than one CICS profile in the tree, select the **+** button and choo
 
 #### Creating or updating a CICS profile with Certificate Authentication
 
-The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to have a `certFile` and `certKeyFile` fields which will point to Certificate PEM file and Certificate Key PEM file respectively:
+The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to add `certFile` and `certKeyFile` fields which point to your certificate PEM and Key file:
 
 ```jsonc
 {
