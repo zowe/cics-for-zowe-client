@@ -4,7 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## Recent Changes
 
-- Enhancement: Add SSL certificate authentication for CICS VS Code. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
+- Enhancement: Enabled SSL certificate authentication with the CICSSession. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
 
 ## `6.16.0`
 
