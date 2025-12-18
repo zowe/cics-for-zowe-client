@@ -79,7 +79,7 @@ export class CICSSessionTree extends TreeItem {
 
     const configInstance = await ProfileManagement.getConfigInstance();
     if (!configInstance.getTeamConfig().exists) {
-      return;
+      return [];
     }
 
     let plexInfo: InfoLoaded[] = [];
