@@ -9,10 +9,18 @@
  *
  */
 
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { IProfileLoaded } from "@zowe/imperative";
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { l10n, TreeItem, TreeItemCollapsibleState } from "vscode";
+import constants from "../constants/CICS.defaults";
+import errorConstants from "../constants/CICS.errorMessages";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources/SessionHandler";
 import { getIconFilePathFromName } from "../utils/iconUtils";
+import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { updateProfile } from "../utils/profileUtils";
+import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
@@ -20,6 +28,7 @@ import { CICSTree } from "./CICSTree";
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
   isUnauthorized: boolean | undefined;
+  requiresIconUpdate: boolean = false;
 
   constructor(
     private profile: IProfileLoaded,
@@ -35,8 +44,18 @@ export class CICSSessionTree extends TreeItem {
     this.setIsExpanded(false);
     this.isUnauthorized = undefined;
     this.contextValue = `cicssession.${this.profile.name}`;
-    this.iconPath = getIconFilePathFromName("profile-unverified");
+    this.refreshIcon();
     this.clearChildren();
+  }
+
+  public refreshIcon() {
+    let iconName = "profile-unverified";
+    if (this.isUnauthorized === true) {
+      iconName = "profile-disconnected";
+    } else if (this.isUnauthorized === false) {
+      iconName = "profile";
+    }
+    this.iconPath = getIconFilePathFromName(iconName);
   }
 
   public createSessionFromProfile() {
@@ -44,34 +63,98 @@ export class CICSSessionTree extends TreeItem {
     SessionHandler.getInstance().getSession(this.profile);
   }
 
-  public addRegion(region: CICSRegionTree) {
-    this.children.push(region);
-  }
-
   public clearChildren() {
     this.children = [];
-  }
-
-  public addPlex(plex: CICSPlexTree) {
-    this.children.push(plex);
   }
 
   public getSession() {
     return SessionHandler.getInstance().getSession(this.profile);
   }
 
-  public getChildren() {
+  public async getChildren(): Promise<(CICSRegionTree | CICSPlexTree)[]> {
+    if (this.requiresIconUpdate) {
+      this.requiresIconUpdate = false;
+      return this.children;
+    }
+
+    const configInstance = await ProfileManagement.getConfigInstance();
+    if (!configInstance.getTeamConfig().exists) {
+      return [];
+    }
+
+    let plexInfo: InfoLoaded[] = [];
+
+    try {
+      plexInfo = await ProfileManagement.getPlexInfo(this.profile);
+      this.setAuthorized();
+    } catch (error) {
+      if (error instanceof CICSExtensionError) {
+        if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
+          error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, this.profile.name);
+
+          CICSErrorHandler.handleCMCIRestError(error);
+          this.setUnauthorized();
+          this.profile = await updateProfile(this.profile, this);
+
+          if (!this.profile) {
+            throw error;
+          }
+
+          this.createSessionFromProfile();
+          plexInfo = await ProfileManagement.getPlexInfo(this.profile);
+          this.setAuthorized();
+        } else {
+          CICSErrorHandler.handleCMCIRestError(error);
+        }
+      }
+    }
+
+    this.clearChildren();
+
+    try {
+      for (const item of plexInfo) {
+        if (item.plexname === null) {
+          const regionsObtained = await runGetResource({
+            profileName: this.getProfile().name,
+            resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+            regionName: item.regions[0].applid,
+          });
+
+          const newRegionTree = new CICSRegionTree(item.regions[0].applid, regionsObtained.response.records.cicsregion, this, undefined, this);
+          this.children.push(newRegionTree);
+        } else {
+          const newPlexTree = new CICSPlexTree(item.plexname, this.profile, this, item.group ? this.profile.profile.regionName : undefined);
+          if (item.group) {
+            newPlexTree.setLabel(l10n.t("{cicsplex} - {region}", { cicsplex: item.plexname, region: this.profile.profile.regionName }));
+          }
+          this.children.push(newPlexTree);
+        }
+      }
+    } catch (error) {
+      this.setUnauthorized();
+      this.setIsExpanded(false);
+    } finally {
+      this.refreshIcon();
+      if (this.requiresIconUpdate) {
+        this.getParent().refresh(this);
+      }
+    }
+
     return this.children;
   }
 
   public setUnauthorized() {
     this.isUnauthorized = true;
+    const currIcon = this.iconPath;
     this.iconPath = getIconFilePathFromName("profile-disconnected");
+    this.requiresIconUpdate = JSON.stringify(currIcon) !== JSON.stringify(this.iconPath);
   }
 
   public setAuthorized() {
     this.isUnauthorized = false;
+    const currIcon = this.iconPath;
     this.iconPath = getIconFilePathFromName("profile");
+    this.requiresIconUpdate = JSON.stringify(currIcon) !== JSON.stringify(this.iconPath);
   }
 
   public getIsUnauthorized() {

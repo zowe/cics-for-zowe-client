@@ -20,6 +20,9 @@ export const createProfile = (name: string, type: string, host: string, user?: s
     profile: {
       user: user,
       host: host,
+      port: 12345,
+      cicsPlex: "MYPLEX",
+      regionName: "MYREG",
     },
   } as imperative.IProfileLoaded;
 };

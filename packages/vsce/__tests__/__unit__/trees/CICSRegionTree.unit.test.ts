@@ -13,7 +13,10 @@ import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as iconUtils from "../../../src/utils/iconUtils";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { profile } from "../../__mocks__";
+
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
 const region = {
   cicsname: "cics",

@@ -45,6 +45,8 @@ export class CICSPlexTree extends TreeItem {
   resourceFilters: any;
   activeFilter: string | undefined;
   groupName: string | undefined;
+  regionsContainer: CICSRegionsContainer | undefined;
+  refreshNode: boolean = false;
 
   constructor(plexName: string, profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree, group?: string) {
     super(plexName, TreeItemCollapsibleState.Collapsed);
@@ -56,10 +58,8 @@ export class CICSPlexTree extends TreeItem {
     this.activeFilter = undefined;
     this.groupName = group;
     this.iconPath = group ? getIconFilePathFromName("cics-system-group") : getIconFilePathFromName("cics-plex");
-  }
-
-  public addRegion(region: CICSRegionTree) {
-    this.children.push(region);
+    this.addNewCombinedTrees();
+    this.addRegionContainer();
   }
 
   /**
@@ -81,47 +81,8 @@ export class CICSPlexTree extends TreeItem {
       this
     );
     this.clearChildren();
-    this.addRegion(newRegionTree);
+    this.children.push(newRegionTree);
   }
-
-  // // Store all filters on children resources
-  // public findResourceFilters() {
-  //   const regionsContainer = this.children.filter(child => child instanceof CICSRegionsContainer)[0];
-  //   if (regionsContainer){
-  //     for (const region of regionsContainer.getChildren()!) {
-  //       if (region instanceof CICSRegionTree) {
-  //         if (region.children) {
-  //           for (const resourceTree of region.children) {
-  //             const filter = resourceTree.getFilter();
-  //             if (filter) {
-  //               this.resourceFilters[region.getRegionName()] = {[resourceTree.label!.toString().split(' ')[0]]: filter};
-  //             } else {
-  //               this.resourceFilters[region.getRegionName()] = {[resourceTree.label!.toString().split(' ')[0]]: undefined};
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // public async reapplyFilter() {
-  //   const regionsContainer = this.children.filter(child => child instanceof CICSRegionsContainer)[0];
-  //   for (const region of regionsContainer.getChildren()!) {
-  //     if (region instanceof CICSRegionTree) {
-  //       const resourceFilters = this.getResourceFilter(region.getRegionName());
-  //       if (resourceFilters) {
-  //         for (const resourceTree of region.children!) {
-  //           if (resourceFilters[resourceTree.label!.toString().split(' ')[0]]) {
-  //             resourceTree.setFilter(resourceFilters[resourceTree.label!.toString()]);
-  //             await resourceTree.loadContents();
-  //             resourceTree.collapsibleState = TreeItemCollapsibleState.Expanded;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 
   public getResourceFilter(regionName: string) {
     return this.resourceFilters[regionName];
@@ -139,7 +100,18 @@ export class CICSPlexTree extends TreeItem {
     return this.parent;
   }
 
-  public getChildren() {
+  public async getChildren() {
+    if (this.refreshNode) {
+      this.refreshNode = false;
+      return this.children;
+    }
+
+    if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName()) {
+      await this.loadOnlyRegion();
+      return this.children;
+    }
+
+    this.regionsContainer.collapsibleState = TreeItemCollapsibleState.Expanded;
     return this.children;
   }
 
@@ -195,7 +167,7 @@ export class CICSPlexTree extends TreeItem {
     if (config.get<boolean>("TSQueue", true)) {
       this.children.push(this.buildCombinedTree(l10n.t("All TS Queues"), [TSQueueMeta, SharedTSQueueMeta]));
     }
-    this.children = [this.children[0], ...this.children.slice(1).sort((r1, r2) => r1.label.toString().localeCompare(r2.label.toString()))];
+    this.children.sort((r1, r2) => `${r1.label}`.localeCompare(`${r2.label}`));
   }
 
   private buildCombinedTree(label: string, metas: IResourceMeta<IResource>[]) {
@@ -211,10 +183,10 @@ export class CICSPlexTree extends TreeItem {
     );
   }
 
-  public addRegionContainer(): CICSRegionsContainer {
+  public addRegionContainer() {
     const regionContainer = new CICSRegionsContainer(this);
-    this.children.push(regionContainer);
-    return regionContainer;
+    this.children.unshift(regionContainer);
+    this.regionsContainer = regionContainer;
   }
 
   public getGroupName() {

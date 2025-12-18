@@ -12,10 +12,9 @@
 import { IProfileLoaded } from "@zowe/imperative";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, TextTreeItem, ViewMore } from "../../../src/trees";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
 
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
 describe("ViewMore Tree item", () => {
   it("should create viewmore tree item", () => {

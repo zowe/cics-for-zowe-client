@@ -25,6 +25,7 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   resourceFilters: any;
   activeFilter: string;
+  refreshNode: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
@@ -109,19 +110,15 @@ export class CICSRegionsContainer extends TreeItem {
       // If region filter exists then match it
       if (!regionFilterRegex || region.cicsname.match(regionFilterRegex)) {
         const newRegionTree = new CICSRegionTree(region.cicsname, region, parentPlex.getParent(), parentPlex, this);
-        this.addRegion(newRegionTree);
+        this.children.push(newRegionTree);
         totalCount += 1;
         if (region.cicsstate === "ACTIVE") {
           activeCount += 1;
         }
       }
     }
-    // Don't show the applied filter if no filters applied i.e. '*'
-    const newLabel =
-      this.activeFilter === "*" ?
-        l10n.t("Regions [{0}/{1}]", activeCount, totalCount)
-      : l10n.t("Regions ({0}) [{1}/{2}]", this.activeFilter, activeCount, totalCount);
-    this.setLabel(newLabel);
+
+    this.description = `${this.activeFilter !== "*" ? l10n.t("({0}) ", this.activeFilter) : ""}${l10n.t("{0}/{1}", activeCount, totalCount)}`;
   }
 
   private patternIntoRegex(pattern: string) {
@@ -137,11 +134,31 @@ export class CICSRegionsContainer extends TreeItem {
     return regex;
   }
 
-  public addRegion(region: CICSRegionTree) {
-    this.children.push(region);
-  }
+  public async getChildren(): Promise<CICSRegionTree[]> {
+    if (this.refreshNode) {
+      this.refreshNode = false;
+      return this.children;
+    }
+    const parentPlex = this.getParent();
+    if (parentPlex.getProfile().profile.regionName && parentPlex.getProfile().profile.cicsPlex) {
+      if (parentPlex.getGroupName()) {
+        this.clearChildren();
+        await this.loadRegionsInCICSGroup(this.getParent().getSessionNode().getParent());
+        this.iconPath = getFolderIcon(true);
+      }
+    } else {
+      this.clearChildren();
+      await this.loadRegionsInPlex();
 
-  public getChildren() {
+      if (this.children.length === 0) {
+        this.getParent().children = this.getParent().children.filter((c) => c instanceof CICSRegionsContainer);
+      }
+
+      this.getParent().refreshNode = true;
+      this.refreshNode = true;
+      this.getParent().getSessionNode().getParent().refresh(this.getParent());
+    }
+
     return this.children;
   }
 
