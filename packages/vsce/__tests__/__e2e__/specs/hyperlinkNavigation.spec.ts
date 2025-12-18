@@ -35,7 +35,6 @@ test.describe("Hyperlink navigation tests", async () => {
   test("should inspect a jvm server resource", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await waitForNotification(page, `Loading regions`);
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "JVM Servers");
 
@@ -52,7 +51,6 @@ test.describe("Hyperlink navigation tests", async () => {
   test("should click on hyperlink and navigate to job in JOBS section", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await waitForNotification(page, `Loading regions`);
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "JVM Servers");
 

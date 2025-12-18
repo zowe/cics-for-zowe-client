@@ -14,8 +14,12 @@ import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as iconUtils from "../../../src/utils/iconUtils";
+import PersistentStorage from "../../../src/utils/PersistentStorage";
+import { ProfileManagement } from "../../../src/utils/profileManagement";
 import { profile } from "../../__mocks__";
 
+const getProfileInfoSpy = jest.spyOn(ProfileManagement, "getPlexInfo");
+jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 const iconSpy = jest.spyOn(iconUtils, "getIconFilePathFromName");
 
 describe("Test suite for CICSSessionTree", () => {
@@ -31,24 +35,13 @@ describe("Test suite for CICSSessionTree", () => {
       sessionTree.isUnauthorized = true;
       expect(iconSpy).toHaveBeenCalledWith("profile-unverified");
     });
-
-    describe("Test suite for addRegion", () => {
-      it("should push CICSRegionTree object into children", () => {
-        regionTree = new CICSRegionTree("MYREG", {}, sessionTree, undefined, sessionTree);
-        sessionTree.addRegion(regionTree);
-        expect(sessionTree.getChildren().length).toEqual(1);
-      });
-    });
-    describe("Test suite for addPlex", () => {
-      it("should push CICSPlexTree object into children", () => {
-        plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree);
-        sessionTree.addPlex(plexTree);
-        expect(sessionTree.getChildren().length).toEqual(1);
-      });
-    });
     describe("Test suite for getChildren", () => {
-      it("should return an array of childrens", () => {
-        expect(sessionTree.getChildren().length).toEqual(0);
+      it("should return an array of childrens", async () => {
+        getProfileInfoSpy.mockResolvedValueOnce([
+          { plexname: "MYPLEX1", regions: [], group: false },
+          { plexname: "MYPLEX2", regions: [], group: false },
+        ]);
+        expect((await sessionTree.getChildren()).length).toEqual(2);
       });
     });
     describe("Test suite for setUnauthorized", () => {

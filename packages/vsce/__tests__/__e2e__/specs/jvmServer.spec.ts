@@ -11,6 +11,7 @@
 
 import { expect, test } from "@playwright/test";
 import {
+  clickTreeNode,
   constants,
   findAndClickText,
   findAndClickTreeItem,
@@ -98,9 +99,7 @@ test.describe("JVM server tests", () => {
     await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toHaveText(constants.JVM_SERVER_1_NAME);
 
-    // Perform Disable
-    await expect(getTreeItem(page, constants.JVM_SERVER_1_NAME)).toBeVisible();
-    await getTreeItem(page, constants.JVM_SERVER_1_NAME).click({ button: "right" });
+    await clickTreeNode(page, constants.JVM_SERVER_1_NAME, "right");
 
     await page.waitForTimeout(200);
     await findAndClickText(page, "Disable JVM Server");
