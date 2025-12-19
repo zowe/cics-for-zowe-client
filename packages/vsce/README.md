@@ -86,57 +86,57 @@ This extension supports multiple was of authentication:
 
 4. Select the **+** button in the **CICS** tree and click the newly created profile to load it into view.
 
-The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
+      4.1. The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
+      
+      ```jsonc
+      {
+        "$schema": "./zowe.schema.json",
+        "profiles": {
+          // this string will be the name of your CICS connection in the tree
+          "cics-connection-name": {
+            "type": "cics",
+            "properties": {
+              // replace the host, port, and protocol with your CMCI connection details
+              "host": "cics.example.com",
+              "port": 1490,
+              "protocol": "https",
+              // reject self-signed server certificates if using https?
+              "rejectUnauthorized": true,
+            },
+          },
+        },
+      }
+      ```
 
-```jsonc
-{
-  "$schema": "./zowe.schema.json",
-  "profiles": {
-    // this string will be the name of your CICS connection in the tree
-    "cics-connection-name": {
-      "type": "cics",
-      "properties": {
-        // replace the host, port, and protocol with your CMCI connection details
-        "host": "cics.example.com",
-        "port": 1490,
-        "protocol": "https",
-        // reject self-signed server certificates if using https?
-        "rejectUnauthorized": true,
-      },
-    },
-  },
-}
-```
+      4.2. The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to add `certFile` and `certKeyFile` fields which point to your certificate PEM and Key file::
+      
+      ```jsonc
+        {
+          "$schema": "./zowe.schema.json",
+          "profiles": {
+            // this string will be the name of your CICS connection in the tree
+            "cics-ssl-connection-name": {
+              "type": "cics",
+              "properties": {
+                // replace the host, port, and protocol with your CMCI connection details
+                "host": "cics.example.com",
+                "port": 1490,
+                "protocol": "https",
+                // reject self-signed server certificates if using https?
+                "rejectUnauthorized": false,
+                "certFile": "/path/to/cert.pem",
+                "certKeyFile": "/path/to/key.pem"
+              },
+            },
+          },
+        }
+      ```
 
 **Tip**: Create a profile without the `user` and `password` properties and expand the profile after loading it into the CICS view. The CICS extension will then prompt you for the `user` and `password` fields to be stored in the secure array.
 
 To show more than one CICS profile in the tree, select the **+** button and choose from the list of profiles. Only profiles not already included in the CICS tree will be shown.
 
-#### Creating or updating a CICS profile with Certificate Authentication
 
-The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to add `certFile` and `certKeyFile` fields which point to your certificate PEM and Key file:
-
-```jsonc
-{
-  "$schema": "./zowe.schema.json",
-  "profiles": {
-    // this string will be the name of your CICS connection in the tree
-    "cics-ssl-connection-name": {
-      "type": "cics",
-      "properties": {
-        // replace the host, port, and protocol with your CMCI connection details
-        "host": "cics.example.com",
-        "port": 1490,
-        "protocol": "https",
-        // reject self-signed server certificates if using https?
-        "rejectUnauthorized": false,
-        "certFile": "/path/to/cert.pem",
-        "certKeyFile": "/path/to/key.pem"
-      },
-    },
-  },
-}
-```
 
 #### Additional details for making the connection
 
