@@ -8,7 +8,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
 - BugFix: Prompt once for resource filters. [#543](https://github.com/zowe/cics-for-zowe-client/issues/533)
 - BugFix: Prevent CICS tree collapsing all nodes when refreshing. [#427](https://github.com/zowe/cics-for-zowe-client/issues/427)
-- Enhancement: Enabled SSL certificate authentication in SDK, which is a common reference point for VSCE and CLI to create a CICS Session [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
+- Enhancement: Added support for SSL certificate authentication. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
 
 ## `3.16.1`
 
