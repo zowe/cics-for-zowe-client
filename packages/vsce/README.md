@@ -136,8 +136,6 @@ This extension supports multiple was of authentication:
 
 To show more than one CICS profile in the tree, select the **+** button and choose from the list of profiles. Only profiles not already included in the CICS tree will be shown.
 
-
-
 #### Additional details for making the connection
 
 If you are connecting to a CICSplex, you can optionally specify the `cicsPlex` or `regionName` properties to scope the set of CICSplexes or CICS regions shown in the **CICS** tree. Instead of a region name, you can also enter a CICS System Group.
