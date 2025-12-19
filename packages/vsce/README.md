@@ -71,7 +71,10 @@ CICS profiles inherit properties from base profiles in the same way as Zowe prof
 
 The profile defines a connection which must point to a CICS region's CICS Management Client Interface (CMCI) TCP/IP host name and port number. CMCI could be hosted by a WUI in a CICSplex or by a stand-alone System Management Single Server (SMSS) region.
 
-This extension supports basic authentication and Multi-factor authentication (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
+This extension supports the following forms of authentication, configured in a Zowe profile in your team configuration file:
+- Basic (user ID and password).
+- Multi-factor (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
+- SSL certificates.
 
 #### Creating or updating a CICS profile
 
@@ -83,27 +86,51 @@ This extension supports basic authentication and Multi-factor authentication (MF
 
 4. Select the **+** button in the **CICS** tree and click the newly created profile to load it into view.
 
-The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
+      4.1. The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection:
+      
+      ```jsonc
+      {
+        "$schema": "./zowe.schema.json",
+        "profiles": {
+          // this string will be the name of your CICS connection in the tree
+          "cics-connection-name": {
+            "type": "cics",
+            "properties": {
+              // replace the host, port, and protocol with your CMCI connection details
+              "host": "cics.example.com",
+              "port": 1490,
+              "protocol": "https",
+              // reject self-signed server certificates if using https?
+              "rejectUnauthorized": true,
+            },
+          },
+        },
+      }
+      ```
 
-```jsonc
-{
-  "$schema": "./zowe.schema.json",
-  "profiles": {
-    // this string will be the name of your CICS connection in the tree
-    "cics-connection-name": {
-      "type": "cics",
-      "properties": {
-        // replace the host, port, and protocol with your CMCI connection details
-        "host": "cics.example.com",
-        "port": 1490,
-        "protocol": "https",
-        // reject self-signed server certificates if using https?
-        "rejectUnauthorized": true,
-      },
-    },
-  },
-}
-```
+      4.2. The following example shows a CICS profile stored in a configuration file. The host, port, and protocol in a CICS profile must point to a valid CMCI connection, additionally, we need to add `certFile` and `certKeyFile` fields which point to your certificate PEM and Key file::
+      
+      ```jsonc
+        {
+          "$schema": "./zowe.schema.json",
+          "profiles": {
+            // this string will be the name of your CICS connection in the tree
+            "cics-ssl-connection-name": {
+              "type": "cics",
+              "properties": {
+                // replace the host, port, and protocol with your CMCI connection details
+                "host": "cics.example.com",
+                "port": 1490,
+                "protocol": "https",
+                // reject self-signed server certificates if using https?
+                "rejectUnauthorized": false,
+                "certFile": "/path/to/cert.pem",
+                "certKeyFile": "/path/to/key.pem"
+              },
+            },
+          },
+        }
+      ```
 
 **Tip**: Create a profile without the `user` and `password` properties and expand the profile after loading it into the CICS view. The CICS extension will then prompt you for the `user` and `password` fields to be stored in the secure array.
 
