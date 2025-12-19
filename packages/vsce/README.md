@@ -74,7 +74,7 @@ The profile defines a connection which must point to a CICS region's CICS Manage
 This extension supports multiple was of authentication:
 1. Basic authentication.
 2. Multi-factor authentication (MFA) [by using the CMCI JVM server](https://www.ibm.com/docs/en/cics-ts/6.x?topic=cmci-security-features-how-authenticates-clients).
-3. SSL Certificate based authentication [CERTAUTH](https://cicswiki.hursley.ibm.com:9443/wiki/CMCI_CERTAUTH)
+3. SSL Certificate based authentication.
 
 #### Creating or updating a CICS profile
 
