@@ -36,8 +36,8 @@ const resources = [
 
 describe("Test suite to validate IBM Documentation URL", () => {
   for (const resource of resources) {
-    it(`should successfully validate IBM Documentation hompage`, async () => {
-      const baseUrl = generateDocumentationURL(undefined).toString(true);
+    it(`should successfully validate the documentation link for ${resource}`, async () => {
+      const baseUrl = generateDocumentationURL(resource).toString(true);
 
       const response = await fetch(baseUrl, {
         method: "GET",
@@ -52,19 +52,15 @@ describe("Test suite to validate IBM Documentation URL", () => {
       expect(content.length).toBeGreaterThan(0);
 
       const jsonData = convertHtmlToJson(content);
-      expect(jsonData.title).toContain("IBM Documentation");
+      const resourceUpperCase = resource.replace("-", " / ").toUpperCase();
+      expect(jsonData.title).toContain(`SET ${resourceUpperCase}`);
     });
   }
 
   it(`should successfully validate IBM Documentation hompage`, async () => {
     const baseUrl = generateDocumentationURL(undefined).toString(true);
 
-    const response = await fetch(baseUrl, {
-      method: "GET",
-      headers: {
-        Accept: "text/html",
-      },
-    });
+    const response = await fetchUrlResponse(baseUrl);
 
     expect(response.status).toBe(200);
     expect(response.url).toBe(baseUrl);
@@ -75,3 +71,13 @@ describe("Test suite to validate IBM Documentation URL", () => {
     expect(jsonData.title).toContain("IBM Documentation");
   });
 });
+
+async function fetchUrlResponse(baseUrl: string) {
+  return await fetch(baseUrl, {
+    method: "GET",
+    headers: {
+      Accept: "text/html",
+    },
+  });
+}
+
