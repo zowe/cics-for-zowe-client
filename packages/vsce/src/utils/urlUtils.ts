@@ -12,26 +12,14 @@
 import { env, Uri } from "vscode";
 import { URLConstants } from "../errors/urlConstants";
 
-export async function openDocumentation(resourceType: string | undefined) {
+export async function openDocumentation(resourceType?: string): Promise<void> {
   const url = generateDocumentationURL(resourceType);
   await env.openExternal(url);
 }
 
-function generateDocumentationURL(resourceType: string | undefined): Uri {
+export function generateDocumentationURL(resourceType?: string): Uri {
   // eslint-disable-next-line max-len
   const cicsDocHost = `${URLConstants.HOTSNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
-  //   const topicQuery = `${cicsDocHost}?${URLConstants.TOPIC}=`;
-  let url = Uri.parse(cicsDocHost);
-
-  if (resourceType) {
-    url = url.with({ query: `topic=${getResourceTypeTopic(resourceType)}` });
-  }
-  return url;
-}
-
-function getResourceTypeTopic(resourceType: string): string {
-  if (!resourceType) {
-    return undefined;
-  }
-  return URLConstants.COMMANDS_SET + resourceType.toLowerCase();
+  const baseUri = Uri.parse(cicsDocHost);
+  return resourceType ? baseUri.with({ query: `topic=${URLConstants.COMMANDS_SET}${resourceType.toLowerCase()}` }) : baseUri;
 }

@@ -868,10 +868,11 @@
     "@types/vscode": "~1.53.0",
     "@vscode/vsce": "^2.32.0",
     "chai": "^4.4.1",
+    "cheerio": "^1.1.2",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^7.1.2",
     "mocha": "^11.1.0",
     "mustache": "^4.2.0",
-    "@vscode/l10n-dev": "^0.0.35",
     "raw-loader": "^4.0.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -881,8 +882,7 @@
     "vscode-extension-tester": "^8.14.1",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
-    "webpack-node-externals": "^3.0.0",
-    "copy-webpack-plugin": "^11.0.0"
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
