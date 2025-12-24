@@ -868,7 +868,7 @@
     "@types/vscode": "~1.53.0",
     "@vscode/vsce": "^2.32.0",
     "chai": "^4.4.1",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.0.0-rc.12",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^7.1.2",
     "mocha": "^11.1.0",
