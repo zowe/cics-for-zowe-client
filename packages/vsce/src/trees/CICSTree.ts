@@ -41,7 +41,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
       await node.fetchNextPage();
       this.refresh(node);
     });
-
     this.loadStoredProfileNames();
   }
   public getLoadedProfiles() {
@@ -87,6 +86,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         continue;
       }
     }
+    this.loadedProfiles = this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     this._onDidChangeTreeData.fire(undefined);
   }
 
@@ -266,6 +266,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad, this);
     this.loadedProfiles.push(newSessionTree);
+    this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     await PersistentStorage.appendLoadedCICSProfile(label);
     this._onDidChangeTreeData.fire(undefined);
   }
@@ -335,6 +336,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
 
   refresh(node?: TreeItem) {
+    this.loadedProfiles = this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     this._onDidChangeTreeData.fire(node);
   }
 
