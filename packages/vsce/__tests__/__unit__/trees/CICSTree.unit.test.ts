@@ -27,19 +27,19 @@ describe("Test suite for CICSTree", () => {
 
   it("Should have children", () => {
     expect(sut.loadedProfiles).toBeDefined();
-    expect(sut.loadedProfiles).toHaveLength(1);
+    expect(sut.loadedProfiles).toHaveLength(3);
   });
 
   it("Should getLoadedProfiles", () => {
     const loadedProfs = sut.getLoadedProfiles();
     expect(loadedProfs).toBeDefined();
-    expect(loadedProfs).toHaveLength(1);
+    expect(loadedProfs).toHaveLength(3);
   });
 
   it("Should clear profiles", () => {
     const loadedProfs = sut.getLoadedProfiles();
     expect(loadedProfs).toBeDefined();
-    expect(loadedProfs).toHaveLength(1);
+    expect(loadedProfs).toHaveLength(3);
 
     sut.clearLoadedProfiles();
     expect(sut.loadedProfiles).toBeDefined();
@@ -47,7 +47,7 @@ describe("Test suite for CICSTree", () => {
   });
 
   it("Should return the children", () => {
-    expect(sut.getChildren()).toHaveLength(1);
+    expect(sut.getChildren()).toHaveLength(3);
   });
 
   it("Should remove loaded cics profile when throws profile not found error", async () => {
@@ -58,5 +58,20 @@ describe("Test suite for CICSTree", () => {
 
     expect(getProfilesCacheMock).toHaveBeenCalled();
     expect(removeLoadedCICSProfileSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("Should load stored cics profiles", async () => {
+    const expectedOrder = ["ANOTHERPROF", "MYPROF", "MYPROF2"];
+    sut.loadedProfiles.forEach((profile, index) => {
+      expect(profile.label).toBe(expectedOrder[index]);
+    });
+  });
+
+  it("Should get sorted tree items when refreshed", async () => {
+    await sut.refresh();
+    const expectedOrder = ["ANOTHERPROF", "MYPROF", "MYPROF2"];
+    sut.loadedProfiles.forEach((profile, index) => {
+      expect(profile.label).toBe(expectedOrder[index]);
+    });
   });
 });
