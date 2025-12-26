@@ -38,4 +38,8 @@ export interface ICICSExtensionError {
    * Name of the resource
    */
   resourceName?: string;
+  /**
+   * Type of the resource
+   */
+  resourceType?: string;
 }
