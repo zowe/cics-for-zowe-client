@@ -18,6 +18,7 @@ import {
   prepareZoweExplorerView,
   resetWiremock,
   resetZoweExplorerView,
+  expectedProfileOrder,
 } from "../utils/helpers";
 
 test.beforeEach(async ({ page, request }) => {
@@ -94,4 +95,14 @@ test.describe("Profile tests", () => {
 
     await expect(page.getByText(`Credentials updated for profile ${constants.PROFILE_NAME}`, { exact: true })).toBeVisible();
   });
+
+  test("Should show the profile in correct order", async ({ page }) => {
+    //check if ace profile exists
+    await expect(getTreeItem(page, constants.PROFILE_NAME_ACE)).toBeVisible();
+
+    const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
+    const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
+    expect(profileNames).toEqual(expectedProfileOrder);
+  });
 });
+

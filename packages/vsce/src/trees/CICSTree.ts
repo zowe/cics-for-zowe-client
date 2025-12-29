@@ -266,7 +266,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     const profileToLoad = await ProfileManagement.getProfilesCache().getLoadedProfConfig(label);
     const newSessionTree = new CICSSessionTree(profileToLoad, this);
     this.loadedProfiles.push(newSessionTree);
-    this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     await PersistentStorage.appendLoadedCICSProfile(label);
     this._onDidChangeTreeData.fire(undefined);
   }
