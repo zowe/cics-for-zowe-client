@@ -32,6 +32,7 @@ import { getOpenLocalFileCommand } from "./openLocalFileCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
+import { getRevealNodeInTreeCommand } from "./revealNodeInTree";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
 import * as showAttributesCommands from "./showAttributesCommand";
 import { showBundleDirectory } from "./showBundleDirectoryCommand";
@@ -84,5 +85,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     showBundleDirectory(),
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
+
+    getRevealNodeInTreeCommand(treeDataProv, treeview),
   ];
 };

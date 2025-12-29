@@ -423,7 +423,11 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
     return ret;
   }
 
-  getTreeItem(element: CICSSessionTree): TreeItem | Thenable<TreeItem> {
+  getTreeItem(element: any): TreeItem | Thenable<TreeItem> {
+    // Handle all tree node types, not just CICSSessionTree
+    if (element instanceof TreeItem) {
+      return element;
+    }
     return element;
   }
   getChildren(element?: CICSSessionTree): ProviderResult<any[]> {
