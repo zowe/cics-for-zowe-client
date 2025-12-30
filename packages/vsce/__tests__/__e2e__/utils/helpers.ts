@@ -37,24 +37,19 @@ export const constants = {
   LIBRARY_NAME: "DFHRPL",
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
-  JVM_SERVER_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
-  Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
+  JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
   Please refer to the IBM documentation for resp code details`,
-  BUNDLE_ENABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
-  Failed to ENABLE  BUNDLE MYBUNDLE1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
+  BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
   Please refer to the IBM documentation for resp code details`,
-  TRANSACTION_INVALID_FILTER_ERROR_MESSAGE: `The CMCI REST API request failed. 
-  Failed to send request. Response details - Status code: 404, 
+  TRANSACTION_INVALID_FILTER_ERROR_MESSAGE: `Failed to send request. Response details - Status code: 404, 
   URL: /CICSSystemManagement/CICSLocalTransaction/MYPLEX1/ERRORS?CRITERIA=(TRANID%3DFILTER)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT, 
   Message: Rest API failure with HTTP(S) status 404`,
-  LIBRARY_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. 
-  Failed to DISABLE LIBRARY DFHRPL with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
+  LIBRARY_DISABLE_ERROR_MESSAGE: `Failed to DISABLE LIBRARY DFHRPL with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
   Please refer to the IBM documentation for resp code details`,
-  NO_CONNECTION_ERROR_MESSAGE: `The CMCI REST API request failed. 
-  Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
-  PROGRAM_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  NO_CONNECTION_ERROR_MESSAGE: `Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
+  PROGRAM_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
   Please refer to the IBM documentation for resp code details`,
-  PROGRAM2_DISABLE_ERROR_MESSAGE: `The CMCI REST API request failed. Failed to DISABLE PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
+  PROGRAM2_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
   Please refer to the IBM documentation for resp code details`,
   PROGRAM_NOT_FOUND_ERROR_MESSAGE: `The CMCI REST API request failed for resources: PROG3, PROG4. 
   Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for resp code details`,

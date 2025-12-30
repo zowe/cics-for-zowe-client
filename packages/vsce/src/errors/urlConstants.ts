@@ -18,7 +18,6 @@ export const URLConstants = {
   ENLANGUAGE: "en",
   CICSTS_PAGE: "cics-ts",
   VERSION: "6.x",
-
   TOPIC: "topic",
 
   COMMANDS_SET: "commands-set-",
