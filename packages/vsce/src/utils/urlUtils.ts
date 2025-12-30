@@ -21,5 +21,22 @@ export function generateDocumentationURL(resourceType?: string): Uri {
   // eslint-disable-next-line max-len
   const cicsDocHost = `${URLConstants.HOTSNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
   const baseUri = Uri.parse(cicsDocHost);
-  return resourceType ? baseUri.with({ query: `topic=${URLConstants.COMMANDS_SET}${resourceType.toLowerCase()}` }) : baseUri;
+
+  if (!resourceType) {
+    return baseUri;
+  }
+
+  switch (resourceType) {
+    case "program":
+      return baseUri.with({ query: `topic=${URLConstants.SC_SET_PROGRAM}` });
+
+    case "bundle":
+      return baseUri.with({ query: `topic=${URLConstants.SC_SET_BUNDLE}` });
+
+    case "tsqueue":
+      resourceType = URLConstants.TSQUEUE_TSQNAME;
+      break;
+  }
+
+  return baseUri.with({ query: `topic=${URLConstants.COMMANDS_SET}${resourceType.toLowerCase()}` });
 }
