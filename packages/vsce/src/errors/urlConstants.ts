@@ -21,4 +21,7 @@ export const URLConstants = {
   TOPIC: "topic",
 
   COMMANDS_SET: "commands-set-",
+  SC_SET_PROGRAM: "sc-set-program",
+  SC_SET_BUNDLE: "sc-set-bundle",
+  TSQUEUE_TSQNAME: "tsqueue-tsqname",
 };
