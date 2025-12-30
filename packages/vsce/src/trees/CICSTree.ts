@@ -86,7 +86,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
         continue;
       }
     }
-    this.loadedProfiles = this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
+    this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     this._onDidChangeTreeData.fire(undefined);
   }
 
@@ -336,7 +336,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
 
   refresh(node?: TreeItem) {
-    this.loadedProfiles = this.loadedProfiles.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
     this._onDidChangeTreeData.fire(node);
   }
 
