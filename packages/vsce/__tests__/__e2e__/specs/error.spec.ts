@@ -51,6 +51,11 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "Failed to DISABLE JVMSERVER", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toContainText(constants.JVM_SERVER_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("enabling bundle throws error", async ({ page }) => {
@@ -70,6 +75,11 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "Failed to ENABLE BUNDLE", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toContainText(constants.BUNDLE_ENABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("invalid filter in transaction throws error", async ({ page }) => {
@@ -112,6 +122,11 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "Failed to DISABLE LIBRARY", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toContainText(constants.LIBRARY_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("connecting cics profile throws error", async ({ page }) => {
@@ -177,6 +192,11 @@ test.describe("Error scenarios", () => {
     const notification = page.getByRole("list", { name: "Failed to DISABLE PROGRAM", exact: false });
     await expect(notification).toBeVisible();
     await expect(notification).toContainText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("disabling multi program shows multiple error notification", async ({ page }) => {
