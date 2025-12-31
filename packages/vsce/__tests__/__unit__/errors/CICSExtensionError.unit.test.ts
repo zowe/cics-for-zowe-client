@@ -55,8 +55,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The CMCI REST API request failed. " +
-        "Failed to Disable Program MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. " +
+      "Failed to Disable Program MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. " +
         "Please refer to the IBM documentation for resp code details"
     );
   });
@@ -108,8 +107,7 @@ describe("Test suite for CICSExtensionError", () => {
     sut = new CICSExtensionError({ baseError: baseErrorMock });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The CMCI REST API request failed. " +
-        "Failed to send request. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
+      "Failed to send request. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
     );
   });
 

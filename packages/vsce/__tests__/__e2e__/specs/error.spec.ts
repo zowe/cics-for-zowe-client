@@ -48,9 +48,14 @@ test.describe("Error scenarios", () => {
     await expect(page.getByRole("button", { name: "Kill", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Kill", exact: true }).click();
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to DISABLE JVMSERVER", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.JVM_SERVER_DISABLE_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.JVM_SERVER_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("enabling bundle throws error", async ({ page }) => {
@@ -67,9 +72,14 @@ test.describe("Error scenarios", () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.ENABLE_BUNDLE);
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to ENABLE BUNDLE", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.BUNDLE_ENABLE_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.BUNDLE_ENABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("invalid filter in transaction throws error", async ({ page }) => {
@@ -90,9 +100,9 @@ test.describe("Error scenarios", () => {
     await textBox.fill("FILTER");
     await textBox.press("Enter");
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to send request", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.TRANSACTION_INVALID_FILTER_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.TRANSACTION_INVALID_FILTER_ERROR_MESSAGE);
   });
 
   test("disabling system (DFHRPL) library throws error", async ({ page }) => {
@@ -109,9 +119,14 @@ test.describe("Error scenarios", () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.DISABLE_LIBRARY);
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to DISABLE LIBRARY", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.LIBRARY_DISABLE_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.LIBRARY_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("connecting cics profile throws error", async ({ page }) => {
@@ -124,9 +139,9 @@ test.describe("Error scenarios", () => {
     await expect(getTreeItem(page, constants.TEST_LOGIN)).toBeVisible();
     await findAndClickTreeItem(page, constants.TEST_LOGIN);
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to send request", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.NO_CONNECTION_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.NO_CONNECTION_ERROR_MESSAGE);
 
     // Remove test profile from tree
     await findAndClickTreeItem(page, constants.TEST_LOGIN, "right");
@@ -161,7 +176,6 @@ test.describe("Error scenarios", () => {
     await expect(notification).toHaveText(constants.PROGRAM_NOT_FOUND_ERROR_MESSAGE);
   });
 
-
   test("disabling program throws error", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -175,9 +189,14 @@ test.describe("Error scenarios", () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, constants.DISABLE_PROGRAM);
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "Failed to DISABLE PROGRAM", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("disabling multi program shows multiple error notification", async ({ page }) => {
@@ -203,10 +222,10 @@ test.describe("Error scenarios", () => {
 
     const notification = page.getByRole("list", { name: "Failed to DISABLE PROGRAM MYPROG1", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.PROGRAM_DISABLE_ERROR_MESSAGE);
 
     const notification2 = page.getByRole("list", { name: "Failed to DISABLE PROGRAM MYPROG2", exact: false });
     await expect(notification2).toBeVisible();
-    await expect(notification2).toHaveText(constants.PROGRAM2_DISABLE_ERROR_MESSAGE);
+    await expect(notification2).toContainText(constants.PROGRAM2_DISABLE_ERROR_MESSAGE);
   });
 });

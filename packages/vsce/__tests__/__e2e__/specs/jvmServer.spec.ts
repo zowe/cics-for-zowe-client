@@ -106,6 +106,6 @@ test.describe("JVM server tests", () => {
 
     await expect(page.getByRole("button", { name: "Kill", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Kill", exact: true }).click();
-    await expect(page.getByText("Error: The CMCI REST API request failed")).toBeVisible();
+    await expect(page.getByText("Error: Failed to DISABLE JVMSERVER")).toBeVisible();
   });
 });
