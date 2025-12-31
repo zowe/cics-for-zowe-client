@@ -50,7 +50,7 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
     expect(vscode.Uri.parse).toHaveBeenCalledWith(BASE_URL);
 
     const calledUri = (vscode.env.openExternal as jest.Mock).mock.calls[0][0];
-    expect(calledUri._url).toBe(`${BASE_URL}?topic=commands-set-program`);
+    expect(calledUri._url).toBe(`${BASE_URL}?topic=sc-set-program`);
   });
 
   it("should open default documentation if resourcetype is undefined", async () => {
