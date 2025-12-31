@@ -28,6 +28,8 @@ export const createProfile = (name: string, type: string, host: string, user?: s
 };
 
 export const profile = createProfile("MYPROF", "cics", "example.com", "myuser");
+export const anotherProfile = createProfile("ANOTHERPROF", "cics", "another.com", "anotheruser");
+export const profile2 = createProfile("MYPROF2", "cics", "example2.com", "myuser2");
 
 export const getJesApiMock = jest.fn();
 getJesApiMock.mockReturnValue(true);
@@ -41,11 +43,16 @@ export const showErrorMessageMock = jest.fn();
 export const showInfoMessageMock = jest.fn();
 
 export const fetchAllProfilesMock = jest.fn();
-export const loadNamedProfileMock = jest.fn();
+export const loadNamedProfileMock = jest.fn().mockImplementation((name?: string) => {
+  const n = name ?? "";
+  if (n.includes(anotherProfile.name ?? "")) return anotherProfile;
+  if (n.includes(profile2.name ?? "")) return profile2;
+  return profile;
+});
 export const getAllProfilesMock = jest.fn().mockReturnValue([]);
 
 export const getResourceMock = jest.fn();
 export const getCacheMock = jest.fn();
 
-export const workspaceConfigurationGetMock = jest.fn().mockReturnValue([profile.name]);
+export const workspaceConfigurationGetMock = jest.fn().mockReturnValue([profile.name, profile2.name, anotherProfile.name]);
 export const workspaceConfigurationUpdateMock = jest.fn();

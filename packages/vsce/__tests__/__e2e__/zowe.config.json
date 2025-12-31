@@ -38,6 +38,14 @@
         "port": 8080
       }
     },
+    "ace-wiremock": {
+      "type": "cics",
+      "properties": {
+        "protocol": "http",
+        "host": "wiremock",
+        "port": 9080
+      }
+    },
     "zosmf-wiremock": {
       "type": "zosmf",
       "properties": {
