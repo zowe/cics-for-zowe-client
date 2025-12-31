@@ -13,6 +13,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - BugFix: Prompt once for resource filters. [#543](https://github.com/zowe/cics-for-zowe-client/issues/533)
 - BugFix: Prevent CICS tree collapsing all nodes when refreshing. [#427](https://github.com/zowe/cics-for-zowe-client/issues/427)
 - Enhancement: Added support for SSL certificate authentication. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
+- Enhancement: Open resource documentation from error notification. [#537](https://github.com/zowe/cics-for-zowe-client/issues/537)
 
 ## `3.16.1`
 
