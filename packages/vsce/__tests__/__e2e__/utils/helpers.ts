@@ -156,8 +156,8 @@ export const getClipboardContent = async (page: Page) => {
 export const collectTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
-): Promise<Array<{ label: string; index: number }>> => {
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
+): Promise<Array<{ label: string; index: number; }>> => {
   const { includeAll = false, waitForLabel, selector = '[role="treeitem"]' } = options ?? {};
 
   if (waitForLabel) {
@@ -165,7 +165,7 @@ export const collectTreeItemsOrder = async (
   }
 
   const allTreeItems = await page.locator(selector).all();
-  const itemsWithIndices: Array<{ label: string; index: number }> = [];
+  const itemsWithIndices: Array<{ label: string; index: number; }> = [];
 
   for (const treeItem of allTreeItems) {
     const ariaLabel = await treeItem.getAttribute("aria-label");
@@ -193,7 +193,7 @@ export const collectTreeItemsOrder = async (
 export const assertTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
 ): Promise<void> => {
   const items = await collectTreeItemsOrder(page, expectedOrder, options);
   const actualOrder = items.map((it) => it.label);
@@ -231,7 +231,7 @@ export const expectedPlexOrder = [
 ];
 
 export const clickTreeNode = async (page: Page, text: string, button: "left" | "right" | "middle" = "left") => {
-  page.locator(".monaco-highlighted-label", { hasText: text }).first().click({ button, force: true });
+  page.locator('.monaco-highlighted-label', { hasText: text }).first().click({ button, force: true });
 };
 
 export const expectedProfileOrder = ["ace-wiremock", "wiremock_localhost"];
