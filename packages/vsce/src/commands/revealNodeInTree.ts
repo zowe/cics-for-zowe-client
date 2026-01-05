@@ -63,10 +63,21 @@ async function promptForProfile(tree: CICSTree, params: IRevealNodeParams): Prom
 /**
  * Expands the session node to load its children
  */
-async function expandSessionNode(sessionNode: CICSSessionTree, treeview: TreeView<any>): Promise<void> {
+async function expandSessionNode(sessionNode: CICSSessionTree, tree: CICSTree, treeview: TreeView<any>): Promise<void> {
   if (!sessionNode.children || sessionNode.children.length === 0) {
-    await treeview.reveal(sessionNode, { expand: true, select: false });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      await treeview.reveal(sessionNode, { expand: true, select: false, focus: false });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      if (!sessionNode.children || sessionNode.children.length === 0) {
+        await sessionNode.getChildren();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    } catch (error) {
+      CICSLogger.error(`Error expanding session node: ${error}`);
+      await sessionNode.getChildren();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
   }
 }
 /**
@@ -107,29 +118,30 @@ async function promptForPlex(
   CICSLogger.info(`Selected plex: ${params.plexName}`);
   return plexNode;
 }
-
 async function getAvailableRegions(
   sessionNode: CICSSessionTree,
   plexNode: CICSPlexTree | undefined,
   treeview: TreeView<any>
 ): Promise<CICSRegionTree[]> {
-  let availableRegions: CICSRegionTree[] = [];
   if (plexNode) {
-    await treeview.reveal(plexNode, { expand: true, select: false });
-    const regionsContainer = plexNode.children.find(
-      (child) => child instanceof CICSRegionsContainer
-    ) as CICSRegionsContainer;
-    if (regionsContainer) {
-      await treeview.reveal(regionsContainer, { expand: true, select: false });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      availableRegions = regionsContainer.children || [];
+    try {
+      await treeview.reveal(plexNode, { expand: true, select: false, focus: false });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      const regionsContainer = plexNode.children?.find(
+        (child) => child instanceof CICSRegionsContainer
+      ) as CICSRegionsContainer;
+      
+      if (regionsContainer) {
+        await treeview.reveal(regionsContainer, { expand: true, select: false, focus: false });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return regionsContainer.children || [];
+      }
+    } catch (error) {
+      CICSLogger.error(`Error expanding plex: ${error}`);
     }
-  } else {
-    availableRegions = sessionNode.children.filter(
-      (child) => child instanceof CICSRegionTree
-    ) as CICSRegionTree[];
   }
-  return availableRegions;
+  return sessionNode.children?.filter((child) => child instanceof CICSRegionTree) as CICSRegionTree[] || [];
 }
 /**
  * Prompts user to select a region
@@ -141,11 +153,15 @@ async function promptForRegion(
   treeview: TreeView<any>
 ): Promise<CICSRegionTree | undefined> {
   if (params.regionName) {
-    // Find region by name
+    const availableRegions = await getAvailableRegions(sessionNode, plexNode, treeview);
     if (plexNode) {
-      return plexNode.getRegionNodeFromName(params.regionName);
+      const region = plexNode.getRegionNodeFromName(params.regionName);
+      if (region) return region;
+      return availableRegions.find((r) => r.getRegionName() === params.regionName);
     } else {
-      return sessionNode.getRegionNodeFromName(params.regionName);
+      const region = sessionNode.getRegionNodeFromName(params.regionName);
+      if (region) return region;
+      return availableRegions.find((r) => r.getRegionName() === params.regionName);
     }
   }
   const availableRegions = await getAvailableRegions(sessionNode, plexNode, treeview);
@@ -170,26 +186,34 @@ async function promptForRegion(
   CICSLogger.info(`Selected region: ${params.regionName}`);
   return regionNode;
 }
-
-async function expandAndValidateRegion(
-  regionNode: CICSRegionTree,
-  treeview: TreeView<any>
-): Promise<boolean> {
+async function expandAndValidateRegion(regionNode: CICSRegionTree): Promise<boolean> {
   if (!regionNode.getIsActive()) {
     window.showErrorMessage(l10n.t("Region '{0}' is not active", regionNode.getRegionName()));
     return false;
   }
-  await treeview.reveal(regionNode, { expand: true, select: false });
+  await regionNode.getChildren();
+  await new Promise((resolve) => setTimeout(resolve, 500));
   return true;
 }
-
 async function promptForResourceType(
   regionNode: CICSRegionTree,
   params: IRevealNodeParams
 ): Promise<IResourceMeta<IResource> | undefined> {
   const allMetas = getMetas();
   if (params.resourceType) {
-    return allMetas.find((meta) => meta.resourceName === params.resourceType);
+    let meta = allMetas.find((meta) => meta.resourceName === params.resourceType);
+    if (meta) return meta;
+    
+    meta = allMetas.find((meta) => meta.resourceName.toLowerCase() === params.resourceType.toLowerCase());
+    if (meta) return meta;
+    
+    meta = allMetas.find((meta) =>
+      meta.humanReadableNameSingular.toLowerCase() === params.resourceType.toLowerCase() ||
+      meta.humanReadableNamePlural.toLowerCase() === params.resourceType.toLowerCase()
+    );
+    if (meta) return meta;
+    
+    return undefined;
   }
   const availableContainers = (regionNode.children || []).filter(
     (child) => child instanceof CICSResourceContainerNode
@@ -246,7 +270,6 @@ async function promptForResourceName(
   CICSLogger.info(`Searching for resource: ${resourceName}`);
   return resourceName;
 }
-
 async function revealResourceInTree(
   regionNode: CICSRegionTree,
   resourceMeta: IResourceMeta<IResource>,
@@ -265,12 +288,23 @@ async function revealResourceInTree(
     );
     return;
   }
+  
+  try {
+    await treeview.reveal(regionNode, { expand: true, select: false, focus: false });
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  } catch (error) {
+  }
+  
+  resourceContainerNode.reset();
   resourceContainerNode.setCriteria([resourceName]);
   resourceContainerNode.description = resourceName;
   tree.refresh(resourceContainerNode);
-    
-  await treeview.reveal(resourceContainerNode, { expand: true, select: false });
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  
+  try {
+    await treeview.reveal(resourceContainerNode, { expand: true, select: false, focus: false });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  } catch (error) {
+  }
   
   const children = await resourceContainerNode.getChildren();
   if (children && children.length > 0) {
@@ -280,10 +314,14 @@ async function revealResourceInTree(
         child.getContainedResource() &&
         resourceMeta.getName(child.getContainedResource().resource) === resourceName
     ) as CICSResourceContainerNode<IResource>;
+    
     if (resourceNode) {
-      await treeview.reveal(resourceNode, { expand: false, select: true, focus: true });
-      CICSLogger.info(`Successfully revealed resource: ${resourceName}`);
-      window.showInformationMessage(l10n.t("Resource '{0}' revealed in the tree", resourceName));
+      try {
+        await treeview.reveal(resourceNode, { expand: false, select: true, focus: true });
+        window.showInformationMessage(l10n.t("Resource '{0}' revealed in the tree", resourceName));
+      } catch (error) {
+        window.showInformationMessage(l10n.t("Resource '{0}' found and filter applied", resourceName));
+      }
     } else {
       window.showWarningMessage(
         l10n.t("Resource '{0}' not found in region '{1}'", resourceName, regionNode.getRegionName())
@@ -313,14 +351,60 @@ export function getRevealNodeInTreeCommand(tree: CICSTree, treeview: TreeView<an
       if (!params) {
         params = {};
       }
+      
+      if (!params.profileName && !params.regionName && !params.resourceType && !params.resourceName) {
+        const commaInput = await window.showInputBox({
+          prompt: l10n.t("Enter values as: profile,plex,region,resourceType,resourceName (plex can be empty for direct region)"),
+          placeHolder: l10n.t("e.g., myProfile,myPlex,myRegion,Program,MYPROG01 or myProfile,,myRegion,CICSProgram,MYPROG01"),
+          ignoreFocusOut: true,
+          validateInput: (value) => {
+            if (!value || value.trim().length === 0) {
+              return l10n.t("Input cannot be empty");
+            }
+            const parts = value.split(',').map(p => p.trim());
+            if (parts.length < 4 || parts.length > 5) {
+              return l10n.t("Please provide 4-5 comma-separated values: profile,plex,region,resourceType,resourceName");
+            }
+            return null;
+          },
+        });
+        
+        if (!commaInput) {
+          return;
+        }
+        
+        const parts = commaInput.split(',').map(p => p.trim());
+        
+        if (parts.length === 4) {
+          params.profileName = parts[0];
+          params.plexName = undefined;
+          params.regionName = parts[1];
+          params.resourceType = parts[2];
+          params.resourceName = parts[3];
+        } else if (parts.length === 5) {
+          params.profileName = parts[0];
+          params.plexName = parts[1] || undefined; // Empty string becomes undefined
+          params.regionName = parts[2];
+          params.resourceType = parts[3];
+          params.resourceName = parts[4];
+        }
+        
+        CICSLogger.info(`Parsed input - Profile: ${params.profileName}, Plex: ${params.plexName || 'none'}, Region: ${params.regionName}, Type: ${params.resourceType}, Name: ${params.resourceName}`);
+      }
+      
       const sessionNode = await promptForProfile(tree, params);
-      if (!sessionNode) return;
-      await expandSessionNode(sessionNode, treeview);
+      if (!sessionNode) {
+        return;
+      }
+      
+      await expandSessionNode(sessionNode, tree, treeview);
+      
       const plexNode = await promptForPlex(sessionNode, params);
       if (params.plexName && !plexNode) {
         window.showErrorMessage(l10n.t("Plex '{0}' not found", params.plexName));
         return;
       }
+      
       const regionNode = await promptForRegion(sessionNode, plexNode, params, treeview);
       if (!regionNode) {
         if (params.regionName) {
@@ -328,8 +412,10 @@ export function getRevealNodeInTreeCommand(tree: CICSTree, treeview: TreeView<an
         }
         return;
       }
-      const isRegionValid = await expandAndValidateRegion(regionNode, treeview);
+      
+      const isRegionValid = await expandAndValidateRegion(regionNode);
       if (!isRegionValid) return;
+      
       const resourceMeta = await promptForResourceType(regionNode, params);
       if (!resourceMeta) {
         if (params.resourceType) {
@@ -337,8 +423,10 @@ export function getRevealNodeInTreeCommand(tree: CICSTree, treeview: TreeView<an
         }
         return;
       }
+      
       const resourceName = await promptForResourceName(resourceMeta, params);
       if (!resourceName) return;
+      
       await revealResourceInTree(regionNode, resourceMeta, resourceName, tree, treeview);
     } catch (error) {
       CICSLogger.error(`Error revealing node in tree: ${error}`);
