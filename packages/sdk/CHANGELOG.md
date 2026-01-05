@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## Recent Changes
+## `6.17.0`
 
 - Enhancement: Added support for SSL certificate authentication. [#550](https://github.com/zowe/cics-for-zowe-client/issues/550)
 

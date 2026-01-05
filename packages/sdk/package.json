@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-sdk",
-  "version": "6.16.1",
+  "version": "6.17.0",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "Zowe SDK for IBM CICS Transaction Server",

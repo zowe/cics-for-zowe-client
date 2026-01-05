@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.17.0`
 
 - Enhancement: Added Delete TS Queue functionality. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)
 - Bugfix: Display a clear message when a plex contains no managed regions. [#444](https://github.com/zowe/cics-for-zowe-client/issues/444)
