@@ -304,6 +304,11 @@
         "command": "cics-extension-for-zowe.deleteTSQueue",
         "title": "%cics.deleteTSQueue.title%",
         "category": "Zowe Explorer for IBM CICS TS"
+      },
+      {
+        "command": "cics-extension-for-zowe.inspectRegion",
+        "title": "Inspect CICS Region",
+        "category": "Zowe Explorer for IBM CICS TS"
       }
     ],
     "menus": {
@@ -454,6 +459,10 @@
         },
         {
           "command": "cics-extension-for-zowe.deleteTSQueue",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.inspectRegion",
           "when": "never"
         }
       ],
@@ -658,6 +667,11 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.(CICSTSQueue|CICSSharedTSQueue).*/",
           "command": "cics-extension-for-zowe.deleteTSQueue",
+          "group": "2.CICSResourceNode.action"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.inspectRegion",
           "group": "2.CICSResourceNode.action"
         }
       ]
