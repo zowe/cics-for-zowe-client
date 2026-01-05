@@ -904,7 +904,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** fastq; version 1.19.1 -- https://github.com/mcollina/fastq#readme
+** fastq; version 1.20.1 -- https://github.com/mcollina/fastq#readme
 Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
 
 Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
@@ -2175,7 +2175,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ------
 
-** fs-extra; version 11.3.2 -- https://github.com/jprichardson/node-fs-extra
+** fs-extra; version 11.3.3 -- https://github.com/jprichardson/node-fs-extra
 Copyright (c) 2011-2024 JP Richardson
 Copyright (c) 2011-2024 JP Richardson (https://github.com/jprichardson)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)

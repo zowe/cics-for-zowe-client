@@ -1758,7 +1758,7 @@ Copyright 2019 Coveo Solutions Inc.
 ** @sigstore/verify; version 1.2.1 -- https://github.com/sigstore/sigstore-js/tree/main/packages/verify#readme
 Copyright 2023 The Sigstore Authors
 ** @xtuc/long; version 4.2.2 -- https://github.com/dcodeIO/long.js#readme
-** baseline-browser-mapping; version 2.9.7 -- https://github.com/web-platform-dx/baseline-browser-mapping#readme
+** baseline-browser-mapping; version 2.9.11 -- https://github.com/web-platform-dx/baseline-browser-mapping#readme
 ** detect-libc; version 2.1.2 -- https://github.com/lovell/detect-libc#readme
 Copyright 2017 Lovell Fuller and others.
 ** spdx-correct; version 3.2.0 -- https://github.com/jslicense/spdx-correct.js#readme
@@ -2219,29 +2219,6 @@ Copyright 2017 Google LLC
 Copyright 2018 Google LLC
 Copyright 2021 Google LLC
 Copyright (c) 2017 Google LLC.
-** @lit/reactive-element; version 2.1.1 -- https://lit.dev/
-Copyright 2017 Google LLC
-Copyright 2019 Google LLC
-Copyright 2021 Google LLC
-Copyright (c) 2017 Google LLC.
-** lit; version 3.3.1 -- https://lit.dev/
-Copyright 2017 Google LLC
-Copyright 2021 Google LLC
-Copyright 2024 Google LLC
-Copyright (c) 2017 Google LLC.
-** lit-element; version 4.2.1 -- https://lit.dev/
-Copyright 2017 Google LLC
-Copyright 2021 Google LLC
-Copyright (c) 2017 Google LLC.
-** lit-html; version 3.3.1 -- https://lit.dev/
-Copyright 2017 Google LLC
-Copyright 2018 Google LLC
-Copyright 2019 Google LLC
-Copyright 2020 Google LLC
-Copyright 2021 Google LLC
-Copyright 2022 Google LLC
-Copyright 2024 Google LLC
-Copyright (c) 2017 Google LLC.
 
 BSD 3-Clause License
 
@@ -2425,7 +2402,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** qs; version 6.14.0 -- https://github.com/ljharb/qs
+** qs; version 6.14.1 -- https://github.com/ljharb/qs
 Copyright (c) 2014, Nathan LaFreniere and other contributors (https://github.com/ljharb/qs/graphs/contributors)
 
 BSD 3-Clause License
@@ -2706,9 +2683,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------
 
 ** @azu/format-text; version 1.0.2 -- https://github.com/azu/format-text#readme
-** @lit-labs/ssr-dom-shim; version 1.4.0 -- https://github.com/lit/lit/tree/main/packages/labs/ssr-dom-shim
+** @lit-labs/ssr-dom-shim; version 1.5.0 -- https://github.com/lit/lit/tree/main/packages/labs/ssr-dom-shim
 Copyright 2019 Google LLC
 Copyright 2023 Google LLC
+Copyright 2024 Google LLC
 ** wontache; version 0.1.0 -- https://jgonggrijp.gitlab.io/wontache/
 
 Copyright (c) <year> <owner> . All rights reserved.
@@ -2823,7 +2801,7 @@ Creative Commons may be contacted at http://creativecommons.org/.
 ------
 
 ** @vscode/codicons; version 0.0.40 -- https://github.com/microsoft/vscode-codicons#readme
-** caniuse-lite; version 1.0.30001760 -- https://github.com/browserslist/caniuse-lite#readme
+** caniuse-lite; version 1.0.30001762 -- https://github.com/browserslist/caniuse-lite#readme
 
 ﻿Attribution 4.0 International
 
@@ -3303,7 +3281,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 ------
 
-** fastq; version 1.19.1 -- https://github.com/mcollina/fastq#readme
+** fastq; version 1.20.1 -- https://github.com/mcollina/fastq#readme
 Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
 
 Copyright (c) 2015-2020, Matteo Collina <matteo.collina@gmail.com>
@@ -4909,8 +4887,6 @@ SOFTWARE.
 
 ------
 
-** @sindresorhus/is; version 7.1.1 -- https://github.com/sindresorhus/is#readme
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** @sindresorhus/merge-streams; version 4.0.0 -- https://github.com/sindresorhus/merge-streams#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** ansi-escapes; version 7.2.0 -- https://github.com/sindresorhus/ansi-escapes#readme
@@ -4941,7 +4917,7 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** globby; version 13.2.2 -- https://github.com/sindresorhus/globby#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** got; version 14.6.5 -- https://github.com/sindresorhus/got#readme
+** got; version 14.6.6 -- https://github.com/sindresorhus/got#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** import-local; version 3.2.0 -- https://github.com/sindresorhus/import-local#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -4973,7 +4949,7 @@ Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** mimic-response; version 3.1.0 -- https://github.com/sindresorhus/mimic-response#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-** normalize-url; version 8.1.0 -- https://github.com/sindresorhus/normalize-url#readme
+** normalize-url; version 8.1.1 -- https://github.com/sindresorhus/normalize-url#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 ** npm-run-path; version 6.0.0 -- https://github.com/sindresorhus/npm-run-path#readme
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -5329,6 +5305,33 @@ SOFTWARE.
 
 ------
 
+** cacheable-request; version 13.0.17 -- https://github.com/jaredwray/cacheable#readme
+(c) Jared Wray
+(c) Luke Childs 2017-2021 and Jared Wray
+
+MIT License & © Jared Wray 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+
+------
+
 ** rc-config-loader; version 4.1.3 -- https://github.com/azu/rc-config-loader
 (c) 2017 azu
 Copyright (c) 2017 azu
@@ -5466,61 +5469,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-------
-
-** undici; version 7.16.0 -- https://undici.nodejs.org
-Copyright (c) 2020 Ethan Arrowood
-Copyright (c) 2016 Luigi Pinca and contributors
-Copyright (c) 2013 Arnout Kazemier and contributors
-Copyright (c) Matteo Collina and Undici contributors
-Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-
-MIT License
-
-Copyright (c) Matteo Collina and Undici contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-MIT License
-
-Copyright (c) 2020 Ethan Arrowood
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 ------
@@ -6055,7 +6003,7 @@ SOFTWARE.
 
 ------
 
-** fs-extra; version 11.3.2 -- https://github.com/jprichardson/node-fs-extra
+** fs-extra; version 11.3.3 -- https://github.com/jprichardson/node-fs-extra
 Copyright (c) 2011-2024 JP Richardson
 Copyright (c) 2011-2024 JP Richardson (https://github.com/jprichardson)
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
@@ -6959,33 +6907,6 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-------
-
-** node-sarif-builder; version 3.3.1 -- 
-Copyright (c) 2022 - Nicolas Vuillamy
-
-MIT License
-
-Copyright (c) 2022 - Nicolas Vuillamy
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 ------
 
@@ -8448,6 +8369,9 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** css-loader; version 7.1.2 -- https://github.com/webpack-contrib/css-loader
 Copyright JS Foundation and other contributors
+** enhanced-resolve; version 5.18.4 -- http://github.com/webpack/enhanced-resolve
+Copyright JS Foundation and other contributors
+Copyright (c) 2012-2019 JS Foundation and other contributors
 ** loader-utils; version 2.0.4 -- https://github.com/webpack/loader-utils#readme
 Copyright JS Foundation and other contributors
 ** raw-loader; version 4.0.2 -- https://github.com/webpack-contrib/raw-loader
@@ -8460,9 +8384,9 @@ Copyright JS Foundation and other contributors
 Copyright JS Foundation and other contributors
 ** terser-webpack-plugin; version 5.3.16 -- https://github.com/webpack/terser-webpack-plugin
 Copyright JS Foundation and other contributors
-** watchpack; version 2.4.4 -- https://github.com/webpack/watchpack
+** watchpack; version 2.5.0 -- https://github.com/webpack/watchpack
 Copyright JS Foundation and other contributors
-** webpack; version 5.103.0 -- https://github.com/webpack/webpack
+** webpack; version 5.104.1 -- https://github.com/webpack/webpack
 Copyright JS Foundation and other contributors
 ** webpack-cli; version 6.0.1 -- https://github.com/webpack/webpack-cli/tree/master/packages/webpack-cli
 Copyright JS Foundation and other contributors
@@ -8668,7 +8592,7 @@ SOFTWARE.
 
 ------
 
-** update-browserslist-db; version 1.2.2 -- https://github.com/browserslist/update-db#readme
+** update-browserslist-db; version 1.2.3 -- https://github.com/browserslist/update-db#readme
 Copyright 2022 Andrey Sitnik <andrey@sitnik.ru> and other contributors
 
 The MIT License (MIT)
@@ -9713,6 +9637,9 @@ Copyright (c) 2013 Jake Luer <jake@qualiancy.com> (http://qualiancy.com)
 ** buffer-alloc; version 1.2.0 -- https://github.com/LinusU/buffer-alloc#readme
 ** buffer-alloc-unsafe; version 1.1.0 -- https://github.com/LinusU/buffer-alloc-unsafe#readme
 ** buffer-fill; version 1.0.0 -- https://github.com/linusu/buffer-fill#readme
+** buildcheck; version 0.0.7 -- https://github.com/mscdex/buildcheck#readme
+Copyright Brian White
+Copyright 2017 - Refael Ackermann
 ** cpu-features; version 0.0.10 -- https://github.com/mscdex/cpu-features#readme
 Copyright 2018 IBM.
 Copyright 2022 IBM.
@@ -10601,7 +10528,7 @@ SOFTWARE.
 
 ------
 
-** es-module-lexer; version 1.7.0 -- https://github.com/guybedford/es-module-lexer#readme
+** es-module-lexer; version 2.0.0 -- https://github.com/guybedford/es-module-lexer#readme
 Copyright (c) 2018-2022 Guy Bedford
 Copyright (c) 2012-2020 by various contributors
 
