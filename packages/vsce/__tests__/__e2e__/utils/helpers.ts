@@ -15,7 +15,7 @@ export const constants = {
   ZOWE_CONFIG_FILE_NAME: "zowe.config.json",
 
   PROFILE_NAME: "wiremock_localhost",
-  PROFILE_NAME_ACE: "ace-wiremock",
+  ACE_PROFILE_NAME: "ace-wiremock",
   ZOSMF_PROFILE_NAME: "zosmf-wiremock",
   CICSPLEX_NAME: "MYPLEX1",
   CICSPLEX_NAME_2: "MYPLEX2",
