@@ -53,19 +53,21 @@ export const RegionMeta: IResourceMeta<IRegion> = {
     return region.attributes.cicsname;
   },
 
-  getHighlights(region: Resource<IRegion>) {
-    const result: { key: string; value: string }[] = [];
-    if (region.attributes.cicsstate) {
-      result.push({ key: l10n.t("Status"), value: region.attributes.cicsstate });
-    }
-    const attrs: any = region.attributes as any;
-    if (attrs.cmasname) {
-      result.push({ key: l10n.t("CMAS"), value: attrs.cmasname });
-    }
-    if (attrs.desc) {
-      result.push({ key: l10n.t("Description"), value: attrs.desc });
-    }
-    return result;
+  getHighlights(resource: Resource<IRegion>) {
+    return [
+      {
+        key: l10n.t("CICS Status"),
+        value: resource.attributes.cicsstatus,
+      },
+      {
+        key: l10n.t("StartUp Type"),
+        value: resource.attributes.startup,
+      },
+      {
+        key: l10n.t("Application ID"),
+        value: resource.attributes.applid,
+      },
+    ];
   },
 
   async appendCriteriaHistory(criteria: string) {
