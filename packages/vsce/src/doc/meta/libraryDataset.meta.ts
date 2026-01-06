@@ -71,6 +71,7 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
     return [
       {
         key: l10n.t("Library"),
+        attribute: "library",
         value: resource.attributes.library,
       },
     ];

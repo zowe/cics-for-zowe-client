@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
 import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
@@ -24,8 +24,7 @@ import { getLastUsedRegion } from "./setCICSRegionCommand";
 
 export async function showInspectResource(
   context: ExtensionContext,
-  resource: IContainedResource<IResource>[],
-  resourceContext: IResourceProfileNameInfo,
+  resources: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }[],
   node?: CICSResourceContainerNode<IResource>
 ) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
@@ -33,7 +32,7 @@ export async function showInspectResource(
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceContext(resourceContext).setResources(resource);
+  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResources(resources);
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
@@ -51,7 +50,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   );
 
   if (upToDateResource) {
-    await showInspectResource(context, [upToDateResource], resourceContext, node);
+    await showInspectResource(context, [{ containedResource: upToDateResource, cxt: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } }], node);
   }
 }
 
@@ -85,20 +84,20 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
     if (upToDateResource) {
-      await showInspectResource(context, [upToDateResource], resourceContext);
+      await showInspectResource(context, [{ containedResource: upToDateResource, cxt: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } }]);
     }
   }
 }
 
-export async function inspectResourceCallBack(
-  context: ExtensionContext,
-  resource: IContainedResource<IResource>,
-  resourceContext: IResourceProfileNameInfo,
-  node?: CICSResourceContainerNode<IResource>
-) {
-  const resources = await loadResources([resource.meta], resource.meta.getName(resource.resource), resourceContext);
-  await showInspectResource(context, [resources], resourceContext, node);
-}
+// export async function inspectResourceCallBack(
+//   context: ExtensionContext,
+//   resource: IContainedResource<IResource>,
+//   resourceContext: IResourceProfileNameInfo,
+//   node?: CICSResourceContainerNode<IResource>
+// ) {
+//   const containedResource = await loadResources([resource.meta], resource.meta.getName(resource.resource), resourceContext);
+//   await showInspectResource(context, [{ containedResource, cxt: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } }], node);
+// }
 
 async function loadResourcesWithProgress(
   resourceTypes: IResourceMeta<IResource>[],
@@ -142,7 +141,7 @@ export async function inspectResource(context: ExtensionContext) {
 
         const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
-          await showInspectResource(context, [upToDateResource], resourceContext);
+          await showInspectResource(context, [{ containedResource: upToDateResource, cxt: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } }]);
         }
       }
     }

@@ -45,9 +45,8 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   },
 
   getContext: function (bundlePart: Resource<IBundlePart>): string {
-    return `${
-      CicsCmciConstants.CICS_CMCI_BUNDLE_PART
-    }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
+    return `${CicsCmciConstants.CICS_CMCI_BUNDLE_PART
+      }.${bundlePart.attributes.enablestatus.trim().toUpperCase()}.${bundlePart.attributes.bundlepart}`;
   },
 
   getIconName: function (bundlePart: Resource<IBundlePart>): string {
@@ -68,6 +67,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
     return [
       {
         key: l10n.t("Bundle"),
+        attribute: "bundle",
         value: bundlePart.attributes.bundle,
       },
     ];

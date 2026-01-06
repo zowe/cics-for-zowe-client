@@ -45,10 +45,12 @@ export const SharedTSQueueMeta: IResourceMeta<ISharedTSQueue> = {
     return [
       {
         key: l10n.t("Location"),
+        attribute: "location",
         value: program.attributes.location,
       },
       {
         key: l10n.t("Pool Name"),
+        attribute: "poolname",
         value: program.attributes.poolname,
       },
     ];

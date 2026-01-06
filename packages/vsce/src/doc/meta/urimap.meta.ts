@@ -58,22 +58,27 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
     return [
       {
         key: l10n.t("Scheme"),
+        attribute: "scheme",
         value: resource.attributes.scheme,
       },
       {
         key: l10n.t("Transaction"),
+        attribute: "transaction",
         value: resource.attributes.transaction,
       },
       {
         key: l10n.t("Pipeline"),
+        attribute: "pipeline",
         value: resource.attributes.pipeline,
       },
       {
         key: l10n.t("Web Service"),
+        attribute: "webservice",
         value: resource.attributes.webservice,
       },
       {
         key: l10n.t("Path"),
+        attribute: "path",
         value: resource.attributes.path,
       },
     ];

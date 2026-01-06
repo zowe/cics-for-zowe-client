@@ -71,14 +71,17 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "enablestatus",
         value: resource.attributes.enablestatus,
       },
       {
         key: l10n.t("Port"),
+        attribute: "port",
         value: resource.attributes.port,
       },
       {
         key: l10n.t("Secure Port"),
+        attribute: "secport",
         value: resource.attributes.secport,
       },
     ];

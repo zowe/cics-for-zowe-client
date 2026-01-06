@@ -55,30 +55,37 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "openstatus",
         value: resource.attributes.openstatus,
       },
       {
         key: l10n.t("Port"),
+        attribute: "port",
         value: resource.attributes.port,
       },
       {
         key: l10n.t("Transaction ID"),
+        attribute: "transid",
         value: resource.attributes.transid,
       },
       {
         key: l10n.t("URM"),
+        attribute: "urm",
         value: resource.attributes.urm,
       },
       {
         key: l10n.t("Protocol"),
+        attribute: "protocol",
         value: resource.attributes.protocol,
       },
       {
         key: l10n.t("ATTLS"),
+        attribute: "attls",
         value: resource.attributes.attls,
       },
       {
         key: l10n.t("SSL Type"),
+        attribute: "ssltype",
         value: resource.attributes.ssltype,
       },
     ];

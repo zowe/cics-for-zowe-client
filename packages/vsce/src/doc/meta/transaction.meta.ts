@@ -59,22 +59,27 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "status",
         value: resource.attributes.status,
       },
       {
         key: l10n.t("Available Status"),
+        attribute: "availstatus",
         value: resource.attributes.availstatus,
       },
       {
         key: l10n.t("Transaction Class"),
+        attribute: "tranclass",
         value: resource.attributes.tranclass,
       },
       {
         key: l10n.t("Routing"),
+        attribute: "routing",
         value: resource.attributes.routing,
       },
       {
         key: l10n.t("Initial program"),
+        attribute: "program",
         value: resource.attributes.program,
       },
     ];

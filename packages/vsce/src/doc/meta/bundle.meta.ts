@@ -61,6 +61,7 @@ export const BundleMeta: IResourceMeta<IBundle> = {
     return [
       {
         key: l10n.t("Bundle Directory"),
+        attribute: "bundledir",
         value: bundle.attributes.bundledir,
       },
     ];

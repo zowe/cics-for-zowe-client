@@ -68,30 +68,37 @@ export const TaskMeta: IResourceMeta<ITask> = {
     return [
       {
         key: l10n.t("Run Status"),
+        attribute: "runstatus",
         value: resource.attributes.runstatus,
       },
       {
         key: l10n.t("Suspend Time"),
+        attribute: "suspendtime",
         value: resource.attributes.suspendtime,
       },
       {
         key: l10n.t("Suspend Type"),
+        attribute: "suspendtype",
         value: resource.attributes.suspendtype,
       },
       {
         key: l10n.t("Suspend Value"),
+        attribute: "suspendvalue",
         value: resource.attributes.suspendvalue,
       },
       {
         key: l10n.t("User ID"),
+        attribute: "userid",
         value: resource.attributes.userid,
       },
       {
         key: l10n.t("Transaction ID"),
+        attribute: "tranid",
         value: resource.attributes.tranid,
       },
       {
         key: l10n.t("Current Program"),
+        attribute: "currentprog",
         value: resource.attributes.currentprog,
       },
     ];

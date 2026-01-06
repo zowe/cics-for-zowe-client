@@ -50,18 +50,22 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "enablestatus",
         value: resource.attributes.enablestatus,
       },
       {
         key: l10n.t("Soap Level"),
+        attribute: "soaplevel",
         value: resource.attributes.soaplevel,
       },
       {
         key: l10n.t("WS Directory"),
+        attribute: "wsdir",
         value: resource.attributes.wsdir,
       },
       {
         key: l10n.t("Config File"),
+        attribute: "configfile",
         value: resource.attributes.configfile,
       },
     ];

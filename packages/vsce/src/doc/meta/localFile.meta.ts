@@ -46,9 +46,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   },
 
   getContext: function (localFile: Resource<ILocalFile>): string {
-    return `${
-      CicsCmciConstants.CICS_CMCI_LOCAL_FILE
-    }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
+    return `${CicsCmciConstants.CICS_CMCI_LOCAL_FILE
+      }.${localFile.attributes.enablestatus.toUpperCase()}.${localFile.attributes.openstatus.toUpperCase()}.${localFile.attributes.file}`;
   },
 
   getIconName: function (localFile: Resource<ILocalFile>): string {
@@ -70,31 +69,38 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
     return [
       {
         key: l10n.t("Open status"),
+        attribute: "openstatus",
         value: resource.attributes.openstatus,
       },
       {
         key: l10n.t("Enabled status"),
+        attribute: "enablestatus",
         value: resource.attributes.enablestatus,
       },
       {
         key: l10n.t("Type"),
+        attribute: "vsamtype",
         value: resource.attributes.vsamtype,
       },
       {
         key: l10n.t("Permission"),
+        attribute: "read",
         value: `${resource.attributes.browse}, ${resource.attributes.read}, ${resource.attributes.update}, 
                 ${resource.attributes.add}, ${resource.attributes.delete}`,
       },
       {
         key: l10n.t("Key length"),
+        attribute: "keylength",
         value: resource.attributes.keylength,
       },
       {
         key: l10n.t("Record size"),
+        attribute: "recordsize",
         value: resource.attributes.recordsize,
       },
       {
         key: l10n.t("Data set name"),
+        attribute: "dsname",
         value: resource.attributes.dsname,
       },
     ];

@@ -60,6 +60,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "enablestatus",
         value: resource.attributes.enablestatus,
       },
     ];

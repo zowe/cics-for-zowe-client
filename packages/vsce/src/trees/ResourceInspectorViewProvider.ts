@@ -24,7 +24,7 @@ import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n,
 import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
-import { SessionHandler } from "../resources";
+import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
@@ -32,6 +32,7 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
+import { IResourceInspectorAction, IResourceInspectorProps, IResourceInspectorResource } from "../webviews/common/vscode";
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -42,7 +43,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   private node: CICSResourceContainerNode<IResource>;
 
   private webviewView?: WebviewView;
-  private resources: IContainedResource<IResource>[];
+  private resources: IResourceInspectorResource[];
 
   private resourceContext: IResourceProfileNameInfo;
   private webviewReady: boolean = false;
@@ -104,8 +105,16 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResources(resources: IContainedResource<IResource>[]) {
-    this.resources = resources;
+  public async setResources(resources: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }[]) {
+    this.resources = resources.map((r) => {
+      return {
+        resource: r.containedResource.resource.attributes,
+        meta: r.containedResource.meta,
+        context: r.cxt,
+        highlights: r.containedResource.meta.getHighlights(r.containedResource.resource),
+        name: r.containedResource.meta.getName(r.containedResource.resource),
+      };
+    });
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
@@ -115,7 +124,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   /**
    * Returns the current resource being displayed.
    */
-  public getResource(): IContainedResource<IResource>[] {
+  public getResources(): IResourceInspectorResource[] {
     return this.resources;
   }
 
@@ -156,30 +165,25 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
-    await this.webviewView.webview.postMessage({
-      resources: this.resources.map((r: IContainedResource<IResource>) => {
-        return {
-          name: r.meta.getName(r.resource),
-          iconPath: this.createIconPaths(IconBuilder.resource(r)),
-          humanReadableNameSingular: r.meta.humanReadableNameSingular,
-          humanReadableNamePlural: r.meta.humanReadableNamePlural,
-          highlights: r.meta.getHighlights(r.resource),
-          resource: r.resource.attributes,
-        };
-      }),
+    const containedResource: IContainedResource<IResource> = {
+      resource: new Resource(this.resources[0].resource),
+      meta: this.resources[0].meta,
+    };
 
-      context: this.resourceContext,
-      refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
-      actions: (await this.getActions()).map((action) => {
-        return {
-          id: action.id,
-          name: action.name,
-        };
-      }),
-    });
+    const riProps: IResourceInspectorProps = {
+      command: "resource",
+      resources: this.resources,
+      resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
+      actions: await this.getActionsForResource(),
+      humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
+      humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
+    };
+
+    await this.webviewView.webview.postMessage(riProps);
   }
 
-  private async getActions() {
+  private async getActionsForResource(): Promise<IResourceInspectorAction[]> {
+
     // Required as Array.filter cannot be asyncronous
     const asyncFilter = async (
       arr: ResourceAction<keyof ResourceTypeMap>[],
@@ -200,12 +204,12 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resources[0].resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], this.getResourceContext());
+        const visible = await action.visibleWhen(this.resources[0].resource as ResourceTypeMap[keyof ResourceTypeMap], this.resources[0].context);
         return visible;
       }
     });
 
-    return actionsForResource;
+    return actionsForResource.map((ac) => { return { id: ac.id, name: ac.name }; });
   }
 
   /**

@@ -45,10 +45,12 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
     return [
       {
         key: l10n.t("Location"),
+        attribute: "location",
         value: program.attributes.location,
       },
       {
         key: l10n.t("Number of Items"),
+        attribute: "numitems",
         value: program.attributes.numitems,
       },
     ];

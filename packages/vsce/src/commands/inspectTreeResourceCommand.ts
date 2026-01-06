@@ -21,12 +21,17 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
     if (treeview.selection.length > 1) {
       return await showInspectResource(
         context,
-        [...new Set([node, ...treeview.selection])].map((n: CICSResourceContainerNode<IResource>) => n.getContainedResource()),
-        {
-          profileName: node.getProfileName(),
-          cicsplexName: node.cicsplexName,
-          regionName: node.regionName,
-        },
+        [...new Set([node, ...treeview.selection])].map((n: CICSResourceContainerNode<IResource>) => {
+          return {
+            containedResource: n.getContainedResource(),
+            cxt: {
+              session: n.getSession(),
+              profile: n.getProfile(),
+              cicsplexName: n.cicsplexName,
+              regionName: n.regionName,
+            }
+          };
+        }),
       );
     }
 

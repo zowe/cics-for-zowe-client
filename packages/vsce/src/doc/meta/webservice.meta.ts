@@ -50,30 +50,37 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "state",
         value: resource.attributes.state,
       },
       {
         key: l10n.t("WS Bind"),
+        attribute: "wsbind",
         value: resource.attributes.wsbind,
       },
       {
         key: l10n.t("Program"),
+        attribute: "program",
         value: resource.attributes.program,
       },
       {
         key: l10n.t("Pipeline"),
+        attribute: "pipeline",
         value: resource.attributes.pipeline,
       },
       {
         key: l10n.t("URI Map"),
+        attribute: "urimap",
         value: resource.attributes.urimap,
       },
       {
         key: l10n.t("Container"),
+        attribute: "container",
         value: resource.attributes.container,
       },
       {
         key: l10n.t("WSDL File"),
+        attribute: "wsdlfile",
         value: resource.attributes.wsdlfile,
       },
     ];

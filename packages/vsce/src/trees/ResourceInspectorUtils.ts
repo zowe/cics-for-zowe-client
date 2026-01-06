@@ -11,23 +11,25 @@
 
 import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
-import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
+// import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { findResourceNodeInTree } from "../utils/treeUtils";
-import { TransformWebviewMessage } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
+import { IResourceInspectorProps } from "../webviews/common/vscode";
+import { Resource } from "../resources";
 
 export async function executeAction(
   command: string,
-  message: TransformWebviewMessage,
+  message: IResourceInspectorProps,
   instance: ResourceInspectorViewProvider,
   context: ExtensionContext
 ) {
-  const resource = instance.getResource();
+  const resources = instance.getResources();
   const resourceContext = instance.getResourceContext();
 
-  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, resource[0]);
+  const containedResource = { meta: resources[0].meta, resource: new Resource(resources[0].resource) };
+  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, containedResource);
   if (!node) {
     node = new CICSResourceContainerNode<IResource>(
       "Resource Inspector Node",
@@ -37,7 +39,7 @@ export async function executeAction(
         cicsplexName: resourceContext.cicsplexName,
         regionName: resourceContext.regionName,
       },
-      resource[0]
+      containedResource,
     );
   }
 
@@ -52,7 +54,7 @@ export async function executeAction(
         await refreshWithProgress();
       }
     } else {
-      await action.action(resource[0].resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
+      await action.action(resources[0].resource as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
     }
   }
   if (command === "refresh") {
@@ -68,15 +70,15 @@ export async function executeAction(
       async (progress, token) => {
         token.onCancellationRequested(() => { });
         progress.report({
-          message: l10n.t("Refreshing {0} {1}", resource[0].meta.humanReadableNameSingular, resource[0].meta.getName(resource[0].resource)),
+          message: l10n.t("Refreshing {0} {1}", resources[0].meta.humanReadableNameSingular, resources[0].meta.getName(new Resource(resources[0].resource))),
         });
         try {
-          await inspectResourceCallBack(
-            context,
-            resource[0],
-            { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
-            instance.getNode()
-          );
+          // await inspectResourceCallBack(
+          //   context,
+          //   resources[0],
+          //   { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
+          //   instance.getNode()
+          // );
         } catch (error) {
           window.showErrorMessage(
             l10n.t(

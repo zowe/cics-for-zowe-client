@@ -49,10 +49,12 @@ export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
     return [
       {
         key: l10n.t("Remote System"),
+        attribute: "remotesystem",
         value: resource.attributes.remotesystem,
       },
       {
         key: l10n.t("Remote Name"),
+        attribute: "remotename",
         value: resource.attributes.remotename,
       },
     ];

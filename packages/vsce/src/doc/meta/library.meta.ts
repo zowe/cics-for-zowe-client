@@ -61,14 +61,17 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
     return [
       {
         key: l10n.t("Status"),
+        attribute: "enablestatus",
         value: resource.attributes.enablestatus,
       },
       {
         key: l10n.t("Ranking"),
+        attribute: "ranking",
         value: resource.attributes.ranking,
       },
       {
         key: l10n.t("Number of DS Names"),
+        attribute: "numdsnames",
         value: resource.attributes.numdsnames,
       },
     ];
