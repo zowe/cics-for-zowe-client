@@ -13,15 +13,10 @@ import { l10n } from "vscode";
 
 export const URLConstants = {
   OPEN_DOCUMENTATION: { title: l10n.t("Open Documentation") },
-  HOTSNAME: "https://www.ibm.com",
+  HOSTNAME: "https://www.ibm.com",
   DOCPAGE: "docs",
   ENLANGUAGE: "en",
   CICSTS_PAGE: "cics-ts",
   VERSION: "6.x",
   TOPIC: "topic",
-
-  COMMANDS_SET: "commands-set-",
-  SC_SET_PROGRAM: "sc-set-program",
-  SC_SET_BUNDLE: "sc-set-bundle",
-  TSQUEUE_TSQNAME: "tsqueue-tsqname",
 };

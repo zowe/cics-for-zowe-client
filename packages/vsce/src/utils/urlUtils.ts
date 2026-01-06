@@ -19,7 +19,7 @@ export async function openDocumentation(resourceType?: string): Promise<void> {
 
 export function generateDocumentationURL(resourceType?: string): Uri {
   // eslint-disable-next-line max-len
-  const cicsDocHost = `${URLConstants.HOTSNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
+  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
   const baseUri = Uri.parse(cicsDocHost);
 
   if (!resourceType) {
@@ -28,15 +28,15 @@ export function generateDocumentationURL(resourceType?: string): Uri {
 
   switch (resourceType) {
     case "program":
-      return baseUri.with({ query: `topic=${URLConstants.SC_SET_PROGRAM}` });
+      return baseUri.with({ query: `topic=sc-set-program` });
 
     case "bundle":
-      return baseUri.with({ query: `topic=${URLConstants.SC_SET_BUNDLE}` });
+      return baseUri.with({ query: `topic=sc-set-bundle` });
 
     case "tsqueue":
-      resourceType = URLConstants.TSQUEUE_TSQNAME;
-      break;
-  }
+      return baseUri.with({ query: `topic=commands-set-tsqueue-tsqname` });
 
-  return baseUri.with({ query: `topic=${URLConstants.COMMANDS_SET}${resourceType.toLowerCase()}` });
+    default:
+      return baseUri.with({ query: `topic=commands-set-${resourceType.toLowerCase()}` });
+  }
 }
