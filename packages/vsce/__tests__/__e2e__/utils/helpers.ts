@@ -234,4 +234,4 @@ export const clickTreeNode = async (page: Page, text: string, button: "left" | "
   page.locator('.monaco-highlighted-label', { hasText: text }).first().click({ button, force: true });
 };
 
-export const expectedProfileOrder = ["ace-wiremock", "wiremock_localhost"];
+export const expectedProfileOrder = [constants.ACE_PROFILE_NAME, constants.PROFILE_NAME];
