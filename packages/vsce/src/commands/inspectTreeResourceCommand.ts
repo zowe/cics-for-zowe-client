@@ -12,11 +12,23 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ExtensionContext, TreeView, commands, l10n, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
-import { inspectResourceByNode } from "./inspectResourceCommandUtils";
+import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
     let targetNode: CICSResourceContainerNode<IResource> = node;
+
+    if (treeview.selection.length > 1) {
+      return await showInspectResource(
+        context,
+        [...new Set([node, ...treeview.selection])].map((n: CICSResourceContainerNode<IResource>) => n.getContainedResource()),
+        {
+          profileName: node.getProfileName(),
+          cicsplexName: node.cicsplexName,
+          regionName: node.regionName,
+        },
+      );
+    }
 
     if (!targetNode) {
       if (treeview.selection.length < 1) {

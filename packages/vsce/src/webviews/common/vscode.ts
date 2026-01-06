@@ -14,18 +14,20 @@ import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explore
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 
+export interface Resource {
+  name: string;
+  iconPath: { light: string; dark: string; };
+  humanReadableNameSingular: string;
+  humanReadableNamePlural: string;
+  highlights: { key: string; attribute: string; value: string; }[];
+  resource: IResource;
+}
+
 export interface TransformWebviewMessage {
   command: string;
-  data?: {
-    name: string;
-    refreshIconPath: { light: string; dark: string };
-    resourceIconPath: { light: string; dark: string };
-    resourceName: string;
-    humanReadableNameSingular: string;
-    highlights: { key: string; value: string }[];
-    resource: IResource;
-    resourceContext: IResourceProfileNameInfo;
-  };
+  resources?: Resource[];
+  context?: IResourceProfileNameInfo;
+  refreshIconPath?: { light: string; dark: string; };
   actions?: {
     id: string;
     name: string;

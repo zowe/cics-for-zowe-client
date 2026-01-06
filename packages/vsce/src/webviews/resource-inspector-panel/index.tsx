@@ -11,7 +11,8 @@
 
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
-import ResourceInspector from './ResourceInspector';
+import '../css/style.css';
+import ResourceInspector from './ResourceInspector2';
 
 const container = document.getElementById('webviewRoot');
 const root = createRoot(container);

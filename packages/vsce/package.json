@@ -21,6 +21,12 @@
     "onView:cics-view",
     "onCommand:cics-extension-for-zowe.toggleResourceSetting"
   ],
+  "postcss": {
+    "plugins": {
+      "@tailwindcss/postcss": {},
+      "autoprefixer": {}
+    }
+  },
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
   ],
@@ -486,7 +492,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/",
           "command": "cics-extension-for-zowe.inspectTreeResource",
           "group": "1.CICSResourceNode.inquire"
         },
@@ -859,6 +865,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.10",
     "@types/mustache": "^4.2.6",
@@ -866,31 +873,37 @@
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@types/vscode": "~1.53.0",
+    "@vscode/l10n-dev": "^0.0.35",
     "@vscode/vsce": "^2.32.0",
     "chai": "^4.4.1",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^7.1.2",
     "mocha": "^11.1.0",
     "mustache": "^4.2.0",
-    "@vscode/l10n-dev": "^0.0.35",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
+    "postcss-preset-env": "^10.4.0",
     "raw-loader": "^4.0.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "sass-loader": "^16.0.5",
     "style-loader": "^4.0.0",
+    "tailwindcss": "^4.1.17",
     "ts-loader": "^9.5.2",
     "vscode-extension-tester": "^8.14.1",
+    "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2",
     "webpack-manifest-plugin": "^5.0.1",
-    "webpack-node-externals": "^3.0.0",
-    "copy-webpack-plugin": "^11.0.0"
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
     "@zowe/cics-for-zowe-explorer-api": "6.17.0",
     "@zowe/cics-for-zowe-sdk": "6.17.0",
+    "@vscode/codicons": "^0.0.40",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.3.1",
-    "@vscode/codicons": "^0.0.40"
+    "@zowe/zowe-explorer-api": "^3.3.1"
   },
   "overrides": {
     "brace-expansion@1": "^1.1.12",

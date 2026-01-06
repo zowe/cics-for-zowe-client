@@ -85,6 +85,7 @@ const extensionConfig = {
 
 function webviews(mode) {
   const config = {
+    mode,
     name: "cics-webviews",
     target: "web",
     devtool: "source-map",
@@ -119,15 +120,9 @@ function webviews(mode) {
           ],
         },
         {
-          test: /\.(css)$/,
-          use: [
-            {
-              loader: "style-loader",
-            },
-            {
-              loader: "css-loader",
-            },
-          ],
+          test: /\.s?css$/,
+          use: ['style-loader', 'css-loader', 'postcss-loader'],
+          exclude: /\.module\.s?(c|a)ss$/,
         },
       ],
     },

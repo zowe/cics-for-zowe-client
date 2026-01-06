@@ -22,9 +22,9 @@ import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewPro
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
-async function showInspectResource(
+export async function showInspectResource(
   context: ExtensionContext,
-  resource: IContainedResource<IResource>,
+  resource: IContainedResource<IResource>[],
   resourceContext: IResourceProfileNameInfo,
   node?: CICSResourceContainerNode<IResource>
 ) {
@@ -33,7 +33,7 @@ async function showInspectResource(
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceContext(resourceContext).setResource(resource);
+  await ResourceInspectorViewProvider.getInstance(context).setNode(node).setResourceContext(resourceContext).setResources(resource);
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
@@ -51,7 +51,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   );
 
   if (upToDateResource) {
-    await showInspectResource(context, upToDateResource, resourceContext, node);
+    await showInspectResource(context, [upToDateResource], resourceContext, node);
   }
 }
 
@@ -85,7 +85,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
     if (upToDateResource) {
-      await showInspectResource(context, upToDateResource, resourceContext);
+      await showInspectResource(context, [upToDateResource], resourceContext);
     }
   }
 }
@@ -97,7 +97,7 @@ export async function inspectResourceCallBack(
   node?: CICSResourceContainerNode<IResource>
 ) {
   const resources = await loadResources([resource.meta], resource.meta.getName(resource.resource), resourceContext);
-  await showInspectResource(context, resources, resourceContext, node);
+  await showInspectResource(context, [resources], resourceContext, node);
 }
 
 async function loadResourcesWithProgress(
@@ -113,7 +113,7 @@ async function loadResourcesWithProgress(
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => {});
+      token.onCancellationRequested(() => { });
 
       const resources = await loadResources(resourceTypes, resourceName, resourceContext, parentResource);
       if (!resources) {
@@ -142,7 +142,7 @@ export async function inspectResource(context: ExtensionContext) {
 
         const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
-          await showInspectResource(context, upToDateResource, resourceContext);
+          await showInspectResource(context, [upToDateResource], resourceContext);
         }
       }
     }
@@ -200,7 +200,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   return resourceTypeMap;
 }
 
-async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
+async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[]; }> {
   const resourceTypeMap = getInspectableResourceTypes();
 
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());

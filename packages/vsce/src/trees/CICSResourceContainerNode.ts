@@ -73,6 +73,14 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.fetcher.setCriteria(existingCriteria.split("~~"));
     }
     this.buildProperties();
+
+    if (this.containedResource) {
+      this.command = {
+        title: "Inspect Resource",
+        command: "cics-extension-for-zowe.inspectTreeResource",
+        arguments: [this]
+      };
+    }
   }
 
   private buildCriteriaStorageKey() {

@@ -9,9 +9,12 @@
  *
  */
 
-import { IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import * as React from "react";
+import { Uri } from "vscode";
+import { postVscMessage } from "../common/vscode";
 import "../css/style.css";
+import Contextmenu from "./Contextmenu";
 
 interface IconPath {
   light: string;
@@ -20,79 +23,85 @@ interface IconPath {
 
 interface IBreadcrumbProps {
   resourceContext: IResourceProfileNameInfo;
-  resourceName: string;
-  resourceType: string;
-  resourceIconPath: IconPath;
-  isDarkTheme: boolean;
+  resources: {
+    name: string;
+    resourceIconPath: { light: string; dark: string; };
+    humanReadableNameSingular: string;
+    humanReadableNamePlural: string;
+    highlights: { key: string; value: string; }[];
+    resource: IResource;
+  }[];
+  resourceActions: { id: string; name: string; iconPath?: { light: Uri; dark: Uri; }; }[],
 }
-
-// Render icon using the provided icon path
-const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
-  const iconSrc = isDarkTheme ? resourceIconPath.dark : resourceIconPath.light;
-  return <img src={iconSrc} alt={alt} width={16} height={16} />;
-};
-
-/**
- * Creates breadcrumb items array from profile handler and resource information
- */
-const createBreadcrumbItems = (
-  resourceContext: IResourceProfileNameInfo,
-  resourceName: string,
-  humanReadableNameSingular: string
-): string[] => {
-  const items = [resourceContext.regionName, `${resourceName} (${humanReadableNameSingular})`];
-  if (resourceContext.cicsplexName) {
-    items.unshift(resourceContext.cicsplexName);
-  }
-  return items;
-};
 
 const Breadcrumb = ({
   resourceContext,
-  resourceName,
-  resourceType,
-  resourceIconPath,
-  isDarkTheme,
+  resources,
+  resourceActions,
 }: IBreadcrumbProps) => {
 
-  // Memoize items array to prevent unnecessary recalculations
-  const items = React.useMemo(() =>
-    createBreadcrumbItems(resourceContext, resourceName, resourceType),
-    [resourceContext, resourceName, resourceType]);
-
-  const renderBreadcrumbItem = (item: string, idx: number) => {
-    const isResourceItem = idx === items.length - 1;
-    const showChevron = idx > 0 && resourceIconPath;
-    const chevron = <span className="codicon codicon-chevron-right" />;
-
-    if (!isResourceItem) {
-      return (
-        <React.Fragment key={item}>
-          {showChevron && <li>{chevron}</li>}
-          <li>{item}</li>
-        </React.Fragment>
-      );
-    }
-    const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
-
-    return (
-      <React.Fragment key={item}>
-        {showChevron && <li>{chevron}</li>}
-        <li className="resource-item">
-          {icon && <span className="resource-icon">{icon}</span>}
-          <span className="label-text-color">{resourceName}</span>
-          {resourceType && <span>({resourceType})</span>}
-        </li>
-      </React.Fragment>
-    );
+  const handleRefresh = () => {
+    postVscMessage({ command: "refresh" });
   };
 
-  return (
-    <div id="breadcrumb-div" className="breadcrumb-div">
-      <ul className="breadcrumb">
-        {items.map(renderBreadcrumbItem)}
-      </ul>
+  const Chevron = () => (
+    <span className="codicon codicon-chevron-right text-[var(--vscode-breadcrumb-foreground)]" />
+  );
+  const ResourceIcon = () => (
+    <div className="w-4">
+      <img
+        src={resources ? resources[0].resourceIconPath.dark : null}
+      />
     </div>
+  );
+  const ResourceBreadcrumbComp = () => (
+    <div className="flex gap-1 items-center">
+      <ResourceIcon />
+
+      {resources?.length === 1 && (
+        <span>{resources[0].name}</span>
+      )}
+      <span>{resources ? resources?.length > 1 ? resources[0].humanReadableNamePlural : `(${resources[0].humanReadableNameSingular})` : ""}</span>
+    </div>
+  );
+  const ContextBreadcrumbComp = ({ txt }: { txt: string; }) => (
+    <>
+      <span className="text-[var(--vscode-breadcrumb-foreground)]">{txt}</span>
+      <Chevron />
+    </>
+  );
+  const RefreshButton = () => (
+    <button className="w-4 flex justify-center items-center cursor-pointer" id="refresh-icon" onClick={handleRefresh}>
+      <span className="codicon codicon-refresh" />
+    </button>
+  );
+
+  return (
+    <>
+      <div id="portal-root" className="max-w-6xl relative w-full" />
+      <div className="flex flex-col gap-0 w-full sticky top-0">
+        <div className="w-full sticky top-0 h-2 bg-[var(--vscode-panel-background)]"></div>
+        <div className="w-full px-4 sticky top-2 bg-[var(--vscode-editor-background)] h-8 flex items-center">
+          <div className="flex justify-between items-center w-full">
+
+
+            <div className="flex justify-start gap-2">
+              {resourceContext?.cicsplexName && (
+                <ContextBreadcrumbComp txt={resourceContext.cicsplexName} />
+              )}
+              <ContextBreadcrumbComp txt={resourceContext?.regionName} />
+              <ResourceBreadcrumbComp />
+            </div>
+
+            <div className="flex gap-1">
+              <RefreshButton />
+              <Contextmenu resourceActions={resourceActions} />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -42,14 +42,14 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   private node: CICSResourceContainerNode<IResource>;
 
   private webviewView?: WebviewView;
-  private resource: IContainedResource<IResource>;
+  private resources: IContainedResource<IResource>[];
 
   private resourceContext: IResourceProfileNameInfo;
+  private webviewReady: boolean = false;
 
   private constructor(
-    private readonly extensionUri: Uri,
-    private webviewReady: boolean = false
-  ) {}
+    private readonly extensionUri: Uri
+  ) { }
 
   public static getInstance(context: ExtensionContext, cicsTree?: CICSTree): ResourceInspectorViewProvider {
     if (!this.instance) {
@@ -96,7 +96,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     });
     this.webviewView.onDidDispose(() => {
       this.webviewReady = false;
-      this.resource = undefined;
+      this.resources = undefined;
     });
   }
 
@@ -104,8 +104,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResource(resource: IContainedResource<IResource>) {
-    this.resource = resource;
+  public async setResources(resources: IContainedResource<IResource>[]) {
+    this.resources = resources;
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
@@ -115,8 +115,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   /**
    * Returns the current resource being displayed.
    */
-  public getResource(): IContainedResource<IResource> {
-    return this.resource;
+  public getResource(): IContainedResource<IResource>[] {
+    return this.resources;
   }
 
   /**
@@ -144,7 +144,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * @param iconPath The icon path object with light and dark variants
    * @returns An object with webview-accessible URIs for both light and dark themes
    */
-  private createIconPaths(iconPath: { light: string; dark: string }) {
+  private createIconPaths(iconPath: { light: string; dark: string; }) {
     return {
       // Use Uri.file to handle Windows as well as Mac paths correctly
       light: this.webviewView.webview.asWebviewUri(Uri.file(iconPath.light)).toString(),
@@ -157,15 +157,19 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    */
   private async sendResourceDataToWebView() {
     await this.webviewView.webview.postMessage({
-      data: {
-        name: this.resource.meta.getName(this.resource.resource),
-        refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
-        resourceIconPath: this.createIconPaths(IconBuilder.resource(this.resource)),
-        humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
-        highlights: this.resource.meta.getHighlights(this.resource.resource),
-        resource: this.resource.resource.attributes,
-        resourceContext: this.resourceContext,
-      },
+      resources: this.resources.map((r: IContainedResource<IResource>) => {
+        return {
+          name: r.meta.getName(r.resource),
+          iconPath: this.createIconPaths(IconBuilder.resource(r)),
+          humanReadableNameSingular: r.meta.humanReadableNameSingular,
+          humanReadableNamePlural: r.meta.humanReadableNamePlural,
+          highlights: r.meta.getHighlights(r.resource),
+          resource: r.resource.attributes,
+        };
+      }),
+
+      context: this.resourceContext,
+      refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
       actions: (await this.getActions()).map((action) => {
         return {
           id: action.id,
@@ -186,7 +190,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     };
 
     // Gets actions for this resource type
-    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resource.meta.resourceName as ResourceTypes]);
+    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resources[0].meta.resourceName as ResourceTypes]);
 
     // Filter out resources that shouldn't be visible
     actionsForResource = await asyncFilter(actionsForResource, async (action: ResourceAction<keyof ResourceTypeMap>) => {
@@ -196,10 +200,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(
-          this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap],
-          this.getResourceContext()
-        );
+        const visible = await action.visibleWhen(this.resources[0].resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], this.getResourceContext());
         return visible;
       }
     });

@@ -15,6 +15,10 @@ import { inspectResource, inspectResourceByName } from "./inspectResourceCommand
 
 export function getInspectResourceCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectResource", async (resourceName?: string, resourceType?: string) => {
+
+    await inspectResourceByName(context, "CUSTOMER", "CICSLocalFile");
+    return;
+
     if (resourceName && resourceType) {
       await inspectResourceByName(context, resourceName, resourceType);
     } else {

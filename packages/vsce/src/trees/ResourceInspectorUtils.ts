@@ -27,7 +27,7 @@ export async function executeAction(
   const resource = instance.getResource();
   const resourceContext = instance.getResourceContext();
 
-  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, resource);
+  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, resource[0]);
   if (!node) {
     node = new CICSResourceContainerNode<IResource>(
       "Resource Inspector Node",
@@ -37,7 +37,7 @@ export async function executeAction(
         cicsplexName: resourceContext.cicsplexName,
         regionName: resourceContext.regionName,
       },
-      resource
+      resource[0]
     );
   }
 
@@ -52,7 +52,7 @@ export async function executeAction(
         await refreshWithProgress();
       }
     } else {
-      await action.action(resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
+      await action.action(resource[0].resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
     }
   }
   if (command === "refresh") {
@@ -66,14 +66,14 @@ export async function executeAction(
         cancellable: false,
       },
       async (progress, token) => {
-        token.onCancellationRequested(() => {});
+        token.onCancellationRequested(() => { });
         progress.report({
-          message: l10n.t("Refreshing {0} {1}", resource.meta.humanReadableNameSingular, resource.meta.getName(resource.resource)),
+          message: l10n.t("Refreshing {0} {1}", resource[0].meta.humanReadableNameSingular, resource[0].meta.getName(resource[0].resource)),
         });
         try {
           await inspectResourceCallBack(
             context,
-            resource,
+            resource[0],
             { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
             instance.getNode()
           );

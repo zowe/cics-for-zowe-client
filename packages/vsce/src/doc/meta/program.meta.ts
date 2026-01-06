@@ -54,28 +54,33 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   },
 
   getHighlights(program: Resource<IProgram>) {
-    const result: { key: string; value: string }[] = [];
+    const result: { key: string; attribute: string; value: string; }[] = [];
     result.push({
       key: l10n.t("Status"),
+      attribute: "status",
       value: program.attributes.status,
     });
     if (program.attributes.language !== "NOTDEFINED") {
       result.push({
         key: l10n.t("Language"),
+        attribute: "language",
         value: program.attributes.language,
       });
     }
     result.push({
       key: l10n.t("Use Count"),
+      attribute: "usecount",
       value: program.attributes.usecount,
     });
     result.push({
       key: l10n.t("Library"),
+      attribute: "library",
       value: program.attributes.library,
     });
     if (program.attributes.jvmserver !== "") {
       result.push({
         key: l10n.t("JVM Server"),
+        attribute: "jvmserver",
         value: program.attributes.jvmserver,
       });
     }
