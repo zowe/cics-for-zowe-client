@@ -32,7 +32,7 @@ zeApi.ZoweVsCodeExtension = {
         fetchAllProfiles: fetchAllProfilesMock,
         refresh: jest.fn(),
         registerCustomProfilesType: jest.fn(),
-        loadNamedProfile: loadNamedProfileMock.mockReturnValue(profile),
+        loadNamedProfile: loadNamedProfileMock,
         getProfileInfo: jest.fn().mockReturnValue({
           getAllProfiles: getAllProfilesMock,
           getTeamConfig: jest.fn().mockReturnValue({

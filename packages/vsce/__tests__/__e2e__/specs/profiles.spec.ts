@@ -12,6 +12,7 @@
 import { expect, test } from "@playwright/test";
 import {
   constants,
+  expectedProfileOrder,
   findAndClickText,
   findAndClickTreeItem,
   getTreeItem,
@@ -51,6 +52,10 @@ test.describe("Profile tests", () => {
 
     await findAndClickText(page, constants.PROFILE_NAME);
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
+
+    const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
+    const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
+    expect(profileNames).toEqual(expectedProfileOrder);
   });
 
   test("should open team config file for edit profile", async ({ page }) => {
@@ -93,5 +98,13 @@ test.describe("Profile tests", () => {
     await page.keyboard.press("Enter");
 
     await expect(page.getByText(`Credentials updated for profile ${constants.PROFILE_NAME}`, { exact: true })).toBeVisible();
+  });
+
+  test("Should show the profile in correct order", async ({ page }) => {
+    await expect(getTreeItem(page, constants.ACE_PROFILE_NAME)).toBeVisible();
+
+    const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
+    const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
+    expect(profileNames).toEqual(expectedProfileOrder);
   });
 });

@@ -15,6 +15,7 @@ export const constants = {
   ZOWE_CONFIG_FILE_NAME: "zowe.config.json",
 
   PROFILE_NAME: "wiremock_localhost",
+  ACE_PROFILE_NAME: "ace-wiremock",
   ZOSMF_PROFILE_NAME: "zosmf-wiremock",
   CICSPLEX_NAME: "MYPLEX1",
   CICSPLEX_NAME_2: "MYPLEX2",
@@ -232,3 +233,5 @@ export const expectedPlexOrder = [
 export const clickTreeNode = async (page: Page, text: string, button: "left" | "right" | "middle" = "left") => {
   page.locator('.monaco-highlighted-label', { hasText: text }).first().click({ button, force: true });
 };
+
+export const expectedProfileOrder = [constants.ACE_PROFILE_NAME, constants.PROFILE_NAME];

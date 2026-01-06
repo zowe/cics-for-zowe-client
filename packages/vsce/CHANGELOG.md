@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Organised profile tree alphabetically. [552](https://github.com/zowe/cics-for-zowe-client/issues/552)
+
 ## `3.17.0`
 
 - Enhancement: Added Delete TS Queue functionality. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)

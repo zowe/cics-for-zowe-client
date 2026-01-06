@@ -12,9 +12,7 @@
     "programSearchHistory": [],
     "transactionSearchHistory": [],
     "localFileSearchHistory": [],
-    "loadedCICSProfile": [
-      "wiremock_localhost"
-    ],
+    "loadedCICSProfile": ["wiremock_localhost", "ace-wiremock"],
     "lastUsedRegion": {
       "regionName": null,
       "cicsPlexName": null,
