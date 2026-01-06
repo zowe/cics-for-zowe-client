@@ -52,6 +52,10 @@ test.describe("Profile tests", () => {
 
     await findAndClickText(page, constants.PROFILE_NAME);
     await expect(getTreeItem(page, constants.PROFILE_NAME)).toBeVisible();
+
+    const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
+    const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
+    expect(profileNames).toEqual(expectedProfileOrder);
   });
 
   test("should open team config file for edit profile", async ({ page }) => {
@@ -97,27 +101,6 @@ test.describe("Profile tests", () => {
   });
 
   test("Should show the profile in correct order", async ({ page }) => {
-    await expect(getTreeItem(page, constants.ACE_PROFILE_NAME)).toBeVisible();
-
-    const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
-    const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
-    expect(profileNames).toEqual(expectedProfileOrder);
-  });
-
-  test("Should add the profile in correct order", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.ACE_PROFILE_NAME, "right");
-    await page.waitForTimeout(200);
-    await findAndClickText(page, "Manage Profile");
-    await findAndClickText(page, "Hide Profile");
-    await expect(getTreeItem(page, constants.ACE_PROFILE_NAME)).toHaveCount(0);
-
-    await page.locator(".tree-explorer-viewlet-tree-view").first().click();
-    await expect(page.getByRole("button", { name: "Create a CICS Profile" })).toBeVisible();
-    await page.getByRole("button", { name: "Create a CICS Profile" }).click();
-
-    await page.waitForTimeout(200);
-
-    await findAndClickText(page, constants.ACE_PROFILE_NAME);
     await expect(getTreeItem(page, constants.ACE_PROFILE_NAME)).toBeVisible();
 
     const allLabels = await page.locator(".tree-explorer-viewlet-tree-view .monaco-highlighted-label").allTextContents();
