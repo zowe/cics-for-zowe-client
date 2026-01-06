@@ -12,7 +12,7 @@
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
 import '../css/style.css';
-import ResourceInspector from './ResourceInspector2';
+import ResourceInspector from './ResourceInspector';
 
 const container = document.getElementById('webviewRoot');
 const root = createRoot(container);

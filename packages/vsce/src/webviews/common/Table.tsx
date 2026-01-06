@@ -1,58 +1,78 @@
-import * as React from "react";
+import React = require("react");
 
-interface TableProps {
-  headers: string[];
+interface ITableProps {
+  headers: (string | React.JSX.Element)[];
   rows: string[][];
-  highlightDifference?: boolean;
+  highlightDifferences?: boolean;
+  refresh?: () => void;
+  stickyLevel?: number;
 }
 
-const Table = ({ headers, rows, highlightDifference = false }: TableProps) => {
+const RefreshButton = ({ refresh }: { refresh: () => void; }) => {
+  return <span
+    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold"
+    onClick={refresh}
+  />;
+};
+const MenuButton = () => {
+  return <span
+    className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold"
+    onClick={(e) => console.log("CLICKED MENU")}
+  />;
+};
 
-  const [search, setSearch] = React.useState("");
+const Table = ({ headers, rows, highlightDifferences = false, refresh = undefined, stickyLevel = 0 }: ITableProps) => {
+
+  const [showHiddenRows, setShowHiddenRows] = React.useState(false);
+
+  const valuesDiffer = (vals: string[]) => {
+    // Array -> Set -> Array = removes duplicates
+    return [...new Set(vals.map((v) => v.trim().toUpperCase()))].length > 1;
+  };
 
   return (
-    <table className="w-full mt-4">
-      <thead className="px-4 h-8 sticky z-0 top-10 bg-[var(--vscode-editor-background)]">
-        <tr>
-
-          {headers.slice(0, -1).map((hd, idx) => (
-            <th key={`hd-${idx}`} className="h-8 text-start pl-4 text-[var(--vscode-breadcrumb-foreground)] font-medium">{hd}</th>
-          ))}
-          <th key={`hd`} className="h-8 z-1 pl-4 text-[var(--vscode-breadcrumb-foreground)] font-medium flex justify-between items-center">
-            {headers.slice(-1)}
-            {/* <input
-              type="text"
-              placeholder="Keyword search..."
-              value={search}
-              className="w-48 focus:outline-none"
-              onChange={(e) => setSearch(e.target.value)}
-            /> */}
-          </th>
-
+    <table className="border-collapse border-spacing-4 w-full">
+      <thead>
+        <tr className={`text-left bg-(--vscode-panel-border) h-8 sticky top-${stickyLevel * 8}`}>
+          {headers.map((hder, idx: number) => {
+            return (
+              <th key={`comp-th-${idx}`} className='text-left min-w-36 px-2 font-normal'>
+                <div className="flex justify-between items-center">
+                  <span>{hder}</span>
+                  {refresh && idx === headers.length - 1 && (
+                    <RefreshButton refresh={refresh} />
+                  )}
+                </div>
+              </th>
+            );
+          })}
         </tr>
       </thead>
-
-      <tbody>
-
-        {rows
-          .filter((row) => row.join("").toUpperCase().includes(search.trim().toUpperCase()))
-          .map((row, idx) => (
-            <tr key={`row-${idx}`} className={`h-8 ${highlightDifference && [...new Set([...row.slice(1)])].length > 1 ? 'font-bold italic' : ''} even:bg-[var(--vscode-editor-background)]`}>
-              {row.map((field, idx) => (
-                <td
-                  className={`px-6`}
-                  key={`td-${idx}`}
-                >
-                  {field}
-                </td>
-              ))}
-            </tr>
-          ))}
-
+      <tbody className="text-left">
+        {rows?.filter((rw) => !highlightDifferences ? true : valuesDiffer(rw.slice(1))).map((row, idx: number) => (
+          <tr key={`comp-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
+            {row.map((txt) => (
+              <td className="pl-4">{txt}</td>
+            ))}
+          </tr>
+        ))}
+        {highlightDifferences && (
+          <tr className="h-2 border-b-2 border-(--vscode-tab-activeBackground)">
+            <td></td>
+            <td></td>
+            <td className="flex justify-end items-center"><button className="flex items-center cursor-pointer gap-1 hover:italic" onClick={() => setShowHiddenRows(!showHiddenRows)}> <span>{showHiddenRows ? "Hide" : "Show"} shared attributes</span><span className="codicon codicon-chevron-down" /></button></td>
+          </tr>
+        )}
+        {highlightDifferences && showHiddenRows && rows?.filter((rw) => !valuesDiffer(rw.slice(1))).map((row, idx: number) => (
+          <tr key={`comp-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
+            {row.map((txt) => (
+              <td className="pl-4">{txt}</td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );
-
 };
 
 export default Table;

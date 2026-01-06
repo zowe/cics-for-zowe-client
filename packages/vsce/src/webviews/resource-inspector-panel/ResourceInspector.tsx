@@ -1,173 +1,217 @@
-// /**
-//  * This program and the accompanying materials are made available under the terms of the
-//  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
-//  * https://www.eclipse.org/legal/epl-v20.html
-//  *
-//  * SPDX-License-Identifier: EPL-2.0
-//  *
-//  * Copyright Contributors to the Zowe Project.
-//  *
-//  */
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 
-// import * as React from "react";
-// import * as vscode from "../common/vscode";
+import * as React from "react";
 
-// import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-// import Table from "../common/Table2";
-// import Breadcrumb from "./Breadcrumb";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import Table from "../common/Table";
+import { addVscMessageListener, IResourceInspectorIconPath, IResourceInspectorProps, IResourceInspectorResource, postVscMessage, removeVscMessageListener } from "../common/vscode";
+import ResourceCompare from "./ResourceCompare";
 
-// const ResourceInspector = () => {
-//   const [search, setSearch] = React.useState("");
+const ResourceInspector = () => {
 
-//   const highlightAttributes = ["openstatus", "enablestatus", "vsamtype", "browse", "read", "update", "keylength", "recordsize", "dsname"];
-//   const [showExpanded, setShowExpanded] = React.useState(false);
-//   const [resourceHeaders, setResourceHeaders] = React.useState<string[]>([]);
-//   const [resourceRows, setResourceRows] = React.useState<string[][]>([]);
+  const [resources, setResources] = React.useState<IResourceInspectorResource[]>([]);
+  const [resourceHeaders, setResourceHeaders] = React.useState<(string | React.JSX.Element)[]>([]);
+  const [resourceRows, setResourceRows] = React.useState<string[][]>([]);
 
-//   React.useEffect(() => {
-//     if (!resourceInfo) {
-//       return;
-//     }
-//     if (showExpanded) {
-//       setResourceRows(resourceInfo.resources.map((res) => [res.name, ...Object.keys(resourceInfo.resources[0].resource).map((attr: keyof IResource) => res.resource[attr])]));
-//       setResourceHeaders(["Resource", ...Object.keys(resourceInfo.resources[0].resource).map((attr) => attr.toUpperCase())]);
-//     } else {
-//       const filteredRows = resourceInfo.resources.map((res) => {
-//         let newObj: { [key: string]: string; } = {};
-//         for (const [k, v] of Object.entries(res.resource)) {
-//           if (highlightAttributes.includes(k)) {
-//             newObj[k] = v;
-//           }
-//         }
-//         return newObj;
-//       });
+  const [isComparing, setIsComparing] = React.useState(false);
 
-//       setResourceRows(filteredRows.map((res) => [res.name, ...Object.keys(filteredRows[0]).map((attr) => res[attr])]));
-//       setResourceHeaders(["Resource", ...highlightAttributes]);
-//     }
-//   }, [showExpanded]);
+  const [resourceHumanName, setHumanName] = React.useState<{ plural: string; singular: string; }>();
+  const [resourceIconPath, setResourceIconPath] = React.useState<IResourceInspectorIconPath>();
 
-//   const [resourceInfo, setResourceInfo] = React.useState<{
-//     resources: {
-//       name: string;
-//       resourceIconPath: { light: string; dark: string; };
-//       humanReadableNameSingular: string;
-//       humanReadableNamePlural: string;
-//       highlights: { key: string; value: string; }[];
-//       resource: IResource;
-//     }[];
-//     resourceContext: IResourceProfileNameInfo;
-//   }>();
+  React.useEffect(() => {
 
-//   const toggleExtended = () => {
-//     setShowExpanded(!showExpanded);
-//   };
+    const listener = (event: MessageEvent<IResourceInspectorProps>): void => {
+      setResources(event.data.resources);
+      setHumanName({
+        plural: event.data.humanReadableNamePlural,
+        singular: event.data.humanReadableNameSingular,
+      });
+      setResourceIconPath(event.data.resourceIconPath);
+    };
 
-//   const [resourceActions, setResourceActions] = React.useState<{
-//     id: string;
-//     name: string;
-//   }[]>([]);
+    addVscMessageListener(listener);
+    postVscMessage({ command: "init" });
 
-//   React.useEffect(() => {
-//     const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
-//       setResourceInfo(event.data.data);
-//       setResourceActions(event.data.actions);
-//       setSearch("");
-//     };
-//     vscode.addVscMessageListener(listener);
-//     vscode.postVscMessage({ command: "init" });
-//     return () => {
-//       vscode.removeVscMessageListener(listener);
-//     };
-//   }, []);
+    return () => {
+      removeVscMessageListener(listener);
+    };
+  }, []);
 
-//   const getTableRows = () => {
-//     if (!resourceInfo || resourceInfo.resources.length === 0) {
-//       return [];
-//     }
 
-//     const keys = Object.keys(resourceInfo.resources[0].resource)
-//       .filter((key) => !key.startsWith("_"));
+  React.useEffect(() => {
+    if (!resources || resources.length === 0) {
+      return;
+    }
 
-//     return keys.map((attrKey) => [
-//       attrKey.toUpperCase(),
-//       ...resourceInfo.resources.map((res) =>
-//         `${res.resource[attrKey as keyof IResource]}`
-//       ),
-//     ]);
-//   };
+    if (resources.length > 2) {
+      const _headers = ["Resource", ...Object.keys(resources[0].resource).filter((r) => !r.startsWith("_")).map((r) => r.toUpperCase())];
+      const _rows = resources.map((res) => {
+        const newRes: { [key: string]: string; } = {};
+        for (const [k, v] of Object.entries(res.resource)) {
+          if (!k.startsWith("_")) {
+            newRes[k] = v;
+          }
+        }
+        return [res.name, ...Object.values(newRes)];
+      });
 
-//   return (
-//     <div
-//       className="flex flex-col items-start gap-4 py-0 px-4 min-w-lg max-w-6xl"
-//       data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
+      setResourceHeaders(_headers);
+      setResourceRows(_rows);
+      setIsComparing(false);
+    } else {
+      const _headers: (string | React.JSX.Element)[] = ["Attribute"];
+      if (resources.length > 1) {
+        _headers.push(...resources.map((res) => <RegionResourceBreadcrumb regionName={res.context.regionName} resourceName={res.name} />));
+      } else {
+        _headers.push("Value");
+      }
 
-//       <Breadcrumb
-//         resourceContext={resourceInfo?.resourceContext}
-//         resources={resourceInfo?.resources}
-//         resourceActions={resourceActions}
-//       />
+      const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));
+      const _rows = attributes.map((attr: keyof IResource) => [attr, ...resources.map((res) => res.resource[attr])]);
 
-//       {/* {resourceInfo?.resources.length === 1 && (
-//         <div className="flex flex-col align-top justify-start gap-0.5 px-6">
-//           {resourceInfo.resources[0].highlights.map((highlight) => (
-//             <div className="w-full flex gap-1" key={highlight.key}>
-//               <span className="text-[var(--vscode-breadcrumb-foreground)]">{highlight.key}:</span>
-//               <span>{highlight.value}</span>
-//             </div>
-//           ))}
-//         </div>
-//       )}
+      setResourceHeaders(_headers);
+      setResourceRows(_rows);
+      setIsComparing(true);
+    }
+  }, [resources]);
 
-//       {resourceInfo?.resources.length === 2 && (
-//         <div className="flex justify-evenly gap-8 px-6 w-10/12 lg:w-8/12">
-//           {resourceInfo.resources.map((res, idx) => (
-//             <div className="flex flex-col basis-full align-top justify-start gap-0.5 px-6 py-4 bg-[var(--vscode-editor-background)] rounded-sm shadow-sm">
-//               <p className="font-semibold mb-0.5">{res.name}</p>
-//               {res.highlights.map((highlight) => (
-//                 <div className="flex gap-1 px-2" key={highlight.key}>
-//                   <span className="font-normal text-[var(--vscode-editor-foreground)]">{highlight.key}:</span>
-//                   <span className="font-bold text-[var(--vscode-editor-foreground)]">{highlight.value}{highlight.value !== resourceInfo.resources[idx === 0 ? 1 : 0].highlights.find((h) => h.key === highlight.key).value ? " **" : ""}</span>
-//                 </div>
-//               ))}
-//             </div>
-//           ))}
-//         </div>
-//       )} */}
 
-//       {/* <Table
-//         headers={["ATTRIBUTE"].concat(
-//           resourceInfo?.resources?.map((r) => r.name) ?? []
-//         )}
-//         rows={getTableRows()}
-//         highlightDifference={true}
-//       /> */}
+  return (
+    <div
+      className="flex flex-col items-start gap-0 py-0 px-4 min-w-lg w-full max-w-7xl"
+      data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'>
 
-//       {!resourceInfo || resourceInfo?.resources.length === 0 ?
-//         (<p>Loading resources...</p>)
-//         :
-//         resourceInfo?.resources.length > 2 ? (
-//           <Table
-//             headers={resourceHeaders}
-//             rows={resourceRows}
-//             showExpanded={showExpanded}
-//             toggleExtended={toggleExtended}
-//           />
-//         )
-//           :
-//           (
-//             <Table
-//               headers={["Attribute", ...resourceInfo.resources.map((res) => res.name)]}
-//               rows={Object.keys(resourceInfo.resources[0].resource).map((attr: keyof IResource) => [attr.toUpperCase(), ...resourceInfo.resources.map((res) => res.resource[attr])])}
-//               highlightDifferences={true}
-//               showExpanded={showExpanded}
-//               toggleExtended={toggleExtended}
-//             />
-//           )}
+      {resources?.length === 1 && (
+        <>
+          <div className="sticky top-0 w-full bg-(--vscode-panel-border) px-2 h-8 flex items-center justify-between">
+            <BreadcrumbSection
+              cicsplexName={resources[0].context.cicsplexName}
+              regionName={resources[0].context.regionName}
+              resourceName={resources[0].name}
+              resourceIconPath={resourceIconPath}
+            />
 
-//     </div>
-//   );
-// };
+            <div className="flex gap-2 items-center">
+              <RefreshButton />
+              <MenuButton />
+            </div>
+          </div>
 
-// export default ResourceInspector;
+          <HighlightsSection resource={resources[0]} />
+
+          <div className="w-full">
+            <Table
+              headers={resourceHeaders}
+              rows={resourceRows}
+              highlightDifferences={false}
+              stickyLevel={1}
+            />
+          </div>
+        </>
+      )}
+
+      {resources?.length === 2 && <ResourceCompare resources={resources} />}
+      {resources?.length > 2 && (
+        <>
+          <div className="sticky top-0 w-full bg-(--vscode-panel-border) px-2 h-8 flex items-center justify-between">
+
+            <BreadcrumbSection
+              cicsplexName={resources[0].context.cicsplexName}
+              regionName={resources[0].context.regionName}
+              resourceType={resourceHumanName.plural}
+              resourceIconPath={resourceIconPath}
+            />
+
+            <div className="flex gap-2 items-center">
+              <RefreshButton />
+              <MenuButton />
+            </div>
+          </div>
+
+          <div className="w-full">
+            <Table
+              headers={resourceHeaders}
+              rows={resourceRows}
+              highlightDifferences={isComparing}
+              stickyLevel={1}
+            />
+          </div>
+        </>
+      )}
+
+    </div>
+  );
+};
+
+const Chevron = () => <span className="text-(--vscode-disabledForeground)">{">"}</span>;
+const SecondaryText = ({ txt }: { txt: string; }) => <> <span className="text-(--vscode-disabledForeground)">{txt}</span> <Chevron /></>;
+
+const RegionResourceBreadcrumb = (props: { regionName: string; resourceName: string; }) => {
+  return (
+    <div className="flex gap-1">
+      <SecondaryText txt={props.regionName} />
+      <span className="font-bold">{props.resourceName}</span>
+    </div>
+  );
+};
+
+const BreadcrumbSection = (props: { cicsplexName?: string; regionName?: string; resourceName?: string; resourceType?: string; resourceIconPath?: IResourceInspectorIconPath; }) => {
+
+
+  return (
+    <div className="flex items-center w-full gap-2">
+
+      {props.cicsplexName && <SecondaryText txt={props.cicsplexName} />}
+      {props.regionName && <SecondaryText txt={props.regionName} />}
+      {props.resourceName && (
+        <span className="font-bold">{props.resourceName}</span>
+      )}
+      {props.resourceType && (
+        <span className="font-bold">{props.resourceType}</span>
+      )}
+      {props.resourceIconPath && (
+        <img
+          src={document.body.classList.contains("vscode-dark") ? props.resourceIconPath.dark : props.resourceIconPath.light}
+          alt="RES"
+          width="16px"
+          height="16px"
+        />
+      )}
+    </div>
+  );
+};
+
+const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource; }) => {
+  return (
+    <div className="flex flex-col gap-0.5 px-4 mt-2 mb-4">
+      {resource.highlights.map((h) => (
+        <div className="text-sm"><span className="text-(--vscode-disabledForeground)">{h.key}: </span>{h.value}</div>
+      ))}
+    </div>
+  );
+};
+
+const RefreshButton = () => {
+  return <span
+    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold"
+    onClick={(e) => console.log("CLICKED REFRESH")}
+  />;
+};
+const MenuButton = () => {
+  return <span
+    className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold"
+    onClick={(e) => console.log("CLICKED MENU")}
+  />;
+};
+
+export default ResourceInspector;
