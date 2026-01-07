@@ -307,7 +307,7 @@
       },
       {
         "command": "cics-extension-for-zowe.inspectRegion",
-        "title": "Inspect CICS Region",
+        "title": "%cics.inspectRegion.title%",
         "category": "Zowe Explorer for IBM CICS TS"
       }
     ],
