@@ -21,6 +21,7 @@ export interface IResourceInspectorResource {
   highlights: { key: string; attribute: string; value: string; }[];
   resource: IResource;
   meta: IResourceMeta<IResource>;
+  actions: IResourceInspectorAction[];
 }
 
 export interface IResourceInspectorIconPath { light: string; dark: string; }
@@ -30,10 +31,11 @@ export interface IResourceInspectorProps {
   command: string;
   resources?: IResourceInspectorResource[];
   resourceIconPath?: IResourceInspectorIconPath;
-  actions?: IResourceInspectorAction[];
   actionId?: string;
   humanReadableNamePlural?: string;
   humanReadableNameSingular?: string;
+  resourceName?: string;
+  resourceContext?: IResourceContext;
 }
 
 export function postVscMessage(message: IResourceInspectorProps): void {

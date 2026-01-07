@@ -13,7 +13,7 @@
 import * as React from "react";
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { BreadcrumbSection, MenuButton, RefreshButton, RegionResourceBreadcrumb } from "../common/Breadcrumb";
+import { BreadcrumbSection, MenuButton, RefreshButton } from "../common/Breadcrumb";
 import Table from "../common/Table";
 import { addVscMessageListener, IResourceInspectorIconPath, IResourceInspectorProps, IResourceInspectorResource, postVscMessage, removeVscMessageListener } from "../common/vscode";
 import ResourceCompare from "./ResourceCompare";
@@ -50,7 +50,7 @@ const ResourceInspector = () => {
 
 
   React.useEffect(() => {
-    if (!resources || resources.length === 0) {
+    if (!resources || resources.length === 0 || resources.length === 2) {
       return;
     }
 
@@ -70,13 +70,8 @@ const ResourceInspector = () => {
       setResourceRows(_rows);
       setIsComparing(false);
     } else {
-      const _headers: (string | React.JSX.Element)[] = ["Attribute"];
-      if (resources.length > 1) {
-        _headers.push(...resources.map((res) => <RegionResourceBreadcrumb regionName={res.context.regionName} resourceName={res.name} />));
-      } else {
-        _headers.push("Value");
-      }
-
+      // resources length is 1
+      const _headers: (string | React.JSX.Element)[] = ["Attribute", "Value"];
       const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));
       const _rows = attributes.map((attr: keyof IResource) => [attr, ...resources.map((res) => res.resource[attr])]);
 
@@ -104,7 +99,7 @@ const ResourceInspector = () => {
 
             <div className="flex gap-2 items-center">
               <RefreshButton onClick={() => console.log("REFRESHING FROM RI")} />
-              <MenuButton onClick={() => console.log("MENU FROM RI")} />
+              <MenuButton data={resources[0].actions.map((ac) => { return { label: ac.name, value: ac.id, resources: resources, resourceName: resources[0].name, resourceContext: resources[0].context }; })} />
             </div>
           </div>
 
@@ -136,7 +131,7 @@ const ResourceInspector = () => {
 
             <div className="flex gap-2 items-center">
               <RefreshButton onClick={() => console.log("REFRESHING FROM RI TABLE VIEW")} />
-              <MenuButton onClick={() => console.log("MENU FROM RI TABLE VIEW")} />
+              <MenuButton data={[]} />
             </div>
           </div>
 

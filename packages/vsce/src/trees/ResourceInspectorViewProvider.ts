@@ -106,15 +106,20 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
   public async setResources(resources: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }[]) {
-    this.resources = resources.map((r) => {
-      return {
-        resource: r.containedResource.resource.attributes,
-        meta: r.containedResource.meta,
-        context: r.cxt,
-        highlights: r.containedResource.meta.getHighlights(r.containedResource.resource),
-        name: r.containedResource.meta.getName(r.containedResource.resource),
-      };
-    });
+
+    const riResources: IResourceInspectorResource[] = [];
+    for (const res of resources) {
+      const actions = await this.getActionsForResource(res);
+      riResources.push({
+        resource: res.containedResource.resource.attributes,
+        meta: res.containedResource.meta,
+        context: res.cxt,
+        highlights: res.containedResource.meta.getHighlights(res.containedResource.resource),
+        name: res.containedResource.meta.getName(res.containedResource.resource),
+        actions,
+      });
+    }
+    this.resources = riResources;
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
@@ -174,7 +179,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       command: "resource",
       resources: this.resources,
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
-      actions: await this.getActionsForResource(),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
     };
@@ -182,9 +186,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     await this.webviewView.webview.postMessage(riProps);
   }
 
-  private async getActionsForResource(): Promise<IResourceInspectorAction[]> {
-
-    // Required as Array.filter cannot be asyncronous
+  private async getActionsForResource(r: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }): Promise<IResourceInspectorAction[]> {
     const asyncFilter = async (
       arr: ResourceAction<keyof ResourceTypeMap>[],
       predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>
@@ -194,7 +196,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     };
 
     // Gets actions for this resource type
-    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resources[0].meta.resourceName as ResourceTypes]);
+    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[r.containedResource.meta.resourceName as ResourceTypes]);
 
     // Filter out resources that shouldn't be visible
     actionsForResource = await asyncFilter(actionsForResource, async (action: ResourceAction<keyof ResourceTypeMap>) => {
@@ -204,7 +206,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(this.resources[0].resource as ResourceTypeMap[keyof ResourceTypeMap], this.resources[0].context);
+        const visible = await action.visibleWhen(r.containedResource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], r.cxt);
         return visible;
       }
     });

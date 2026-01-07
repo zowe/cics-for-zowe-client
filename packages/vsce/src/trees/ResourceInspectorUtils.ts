@@ -18,6 +18,7 @@ import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 import { IResourceInspectorProps } from "../webviews/common/vscode";
 import { Resource } from "../resources";
+import { getMetas } from "../doc";
 
 export async function executeAction(
   command: string,
@@ -25,23 +26,23 @@ export async function executeAction(
   instance: ResourceInspectorViewProvider,
   context: ExtensionContext
 ) {
-  const resources = instance.getResources();
-  const resourceContext = instance.getResourceContext();
+  // const resources = instance.getResources();
+  // const resourceContext = instance.getResourceContext();
 
-  const containedResource = { meta: resources[0].meta, resource: new Resource(resources[0].resource) };
-  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, containedResource);
-  if (!node) {
-    node = new CICSResourceContainerNode<IResource>(
-      "Resource Inspector Node",
-      {
-        parentNode: null as any,
-        profile: resourceContext.profile,
-        cicsplexName: resourceContext.cicsplexName,
-        regionName: resourceContext.regionName,
-      },
-      containedResource,
-    );
-  }
+  const containedResource = { meta: getMetas().find((m) => m.resourceName === message.resources[0].meta.resourceName), resource: new Resource(message.resources[0].resource) };
+  // let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, containedResource);
+  // if (!node) {
+  let node = new CICSResourceContainerNode<IResource>(
+    "Resource Inspector Node",
+    {
+      parentNode: null as any,
+      profile: message.resourceContext.profile,
+      cicsplexName: message.resourceContext.cicsplexName,
+      regionName: message.resourceContext.regionName,
+    },
+    containedResource,
+  );
+  // }
 
   if (command === "action") {
     const action = CICSResourceExtender.getAction(message.actionId);
@@ -51,43 +52,45 @@ export async function executeAction(
     if (typeof action.action === "string") {
       await commands.executeCommand(action.action, node);
       if (action.refreshResourceInspector) {
-        await refreshWithProgress();
+        // await refreshWithProgress();
+        // Refetch resources - could be 1, 2, or more! Set them in the provider and send to view?
       }
     } else {
-      await action.action(resources[0].resource as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
+      await action.action(message.resources[0].resource as ResourceTypeMap[keyof ResourceTypeMap], message.resourceContext);
     }
   }
   if (command === "refresh") {
-    await refreshWithProgress();
+    // await refreshWithProgress();
+    // Refetch resources - could be 1, 2, or more! Set them in the provider and send to view?
   }
 
-  async function refreshWithProgress() {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => { });
-        progress.report({
-          message: l10n.t("Refreshing {0} {1}", resources[0].meta.humanReadableNameSingular, resources[0].meta.getName(new Resource(resources[0].resource))),
-        });
-        try {
-          // await inspectResourceCallBack(
-          //   context,
-          //   resources[0],
-          //   { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
-          //   instance.getNode()
-          // );
-        } catch (error) {
-          window.showErrorMessage(
-            l10n.t(
-              "Something went wrong while performing Refresh - {0}",
-              JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
-            )
-          );
-        }
-      }
-    );
-  }
+  // async function refreshWithProgress() {
+  //   await window.withProgress(
+  //     {
+  //       location: ProgressLocation.Notification,
+  //       cancellable: false,
+  //     },
+  //     async (progress, token) => {
+  //       token.onCancellationRequested(() => { });
+  //       progress.report({
+  //         message: l10n.t("Refreshing {0} {1}", resources[0].meta.humanReadableNameSingular, resources[0].meta.getName(new Resource(resources[0].resource))),
+  //       });
+  //       try {
+  //         // await inspectResourceCallBack(
+  //         //   context,
+  //         //   resources[0],
+  //         //   { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
+  //         //   instance.getNode()
+  //         // );
+  //       } catch (error) {
+  //         window.showErrorMessage(
+  //           l10n.t(
+  //             "Something went wrong while performing Refresh - {0}",
+  //             JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
+  //           )
+  //         );
+  //       }
+  //     }
+  //   );
+  // }
 }

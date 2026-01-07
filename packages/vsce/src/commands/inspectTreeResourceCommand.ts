@@ -61,3 +61,27 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
     await inspectResourceByNode(context, targetNode);
   });
 }
+
+export function getCompareResourcesCommand(context: ExtensionContext, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async (node: CICSResourceContainerNode<IResource>) => {
+
+    if (treeview.selection.length <= 1) {
+      return;
+    }
+
+    return await showInspectResource(
+      context,
+      [...new Set([node, ...treeview.selection])].map((n: CICSResourceContainerNode<IResource>) => {
+        return {
+          containedResource: n.getContainedResource(),
+          cxt: {
+            session: n.getSession(),
+            profile: n.getProfile(),
+            cicsplexName: n.cicsplexName,
+            regionName: n.regionName,
+          }
+        };
+      }),
+    );
+  });
+}

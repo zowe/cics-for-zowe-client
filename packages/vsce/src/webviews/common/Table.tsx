@@ -1,5 +1,8 @@
 import React = require("react");
+
+import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { MenuButton, RefreshButton } from "./Breadcrumb";
+import { IResourceInspectorResource } from "./vscode";
 
 interface ITableProps {
   headers: (string | React.JSX.Element)[];
@@ -7,9 +10,10 @@ interface ITableProps {
   highlightDifferences?: boolean;
   refresh?: () => void;
   stickyLevel?: number;
+  menuData?: { label: string; value: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[]; }[];
 }
 
-const Table = ({ headers, rows, highlightDifferences = false, refresh = undefined, stickyLevel = 0 }: ITableProps) => {
+const Table = ({ headers, rows, highlightDifferences = false, refresh = undefined, stickyLevel = 0, menuData = undefined }: ITableProps) => {
 
   const [showHiddenRows, setShowHiddenRows] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState("");
@@ -32,12 +36,14 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
           })}
           <th>
             <div className="flex gap-4 items-center justify-end px-1">
-              {refresh && (
-                <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center">
+                {refresh && (
                   <RefreshButton onClick={refresh} />
-                  <MenuButton onClick={() => console.log("MENU FROM IN TABLE")} />
-                </div>
-              )}
+                )}
+                {menuData && (
+                  <MenuButton data={menuData} />
+                )}
+              </div>
               <input
                 className="w-64 bg-(--vscode-panel-background) px-2 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
                 placeholder="Keyword search..."
