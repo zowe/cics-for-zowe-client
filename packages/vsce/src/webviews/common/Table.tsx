@@ -1,4 +1,5 @@
 import React = require("react");
+import { MenuButton, RefreshButton } from "./Breadcrumb";
 
 interface ITableProps {
   headers: (string | React.JSX.Element)[];
@@ -8,22 +9,10 @@ interface ITableProps {
   stickyLevel?: number;
 }
 
-const RefreshButton = ({ refresh }: { refresh: () => void; }) => {
-  return <span
-    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold"
-    onClick={refresh}
-  />;
-};
-const MenuButton = () => {
-  return <span
-    className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold"
-    onClick={(e) => console.log("CLICKED MENU")}
-  />;
-};
-
 const Table = ({ headers, rows, highlightDifferences = false, refresh = undefined, stickyLevel = 0 }: ITableProps) => {
 
   const [showHiddenRows, setShowHiddenRows] = React.useState(false);
+  const [filterValue, setFilterValue] = React.useState("");
 
   const valuesDiffer = (vals: string[]) => {
     // Array -> Set -> Array = removes duplicates
@@ -31,43 +20,66 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
   };
 
   return (
-    <table className="border-collapse border-spacing-4 w-full">
+    <table className="border-collapse border-spacing-4 w-full table-fixed">
       <thead>
         <tr className={`text-left bg-(--vscode-panel-border) h-8 sticky top-${stickyLevel * 8}`}>
           {headers.map((hder, idx: number) => {
             return (
-              <th key={`comp-th-${idx}`} className='text-left min-w-36 px-2 font-normal'>
-                <div className="flex justify-between items-center">
-                  <span>{hder}</span>
-                  {refresh && idx === headers.length - 1 && (
-                    <RefreshButton refresh={refresh} />
-                  )}
-                </div>
+              <th key={`th-${idx}`} className={`text-left px-2 font-normal first:w-42`}>
+                <span>{hder}</span>
               </th>
             );
           })}
+          <th>
+            <div className="flex gap-4 items-center justify-end px-1">
+              {refresh && (
+                <div className="flex gap-2 items-center">
+                  <RefreshButton onClick={refresh} />
+                  <MenuButton onClick={() => console.log("MENU FROM IN TABLE")} />
+                </div>
+              )}
+              <input
+                className="w-64 bg-(--vscode-panel-background) px-2 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
+                placeholder="Keyword search..."
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              />
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody className="text-left">
-        {rows?.filter((rw) => !highlightDifferences ? true : valuesDiffer(rw.slice(1))).map((row, idx: number) => (
-          <tr key={`comp-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
-            {row.map((txt) => (
-              <td className="pl-4">{txt}</td>
+        {rows?.filter((rw) => rw.join("").toUpperCase().includes(filterValue.toUpperCase().trim()) && (!highlightDifferences ? true : valuesDiffer(rw.slice(1)))).map((row, idx: number) => (
+          <tr key={`1-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
+            {row.map((txt, idx) => (
+              <td key={`1-td-${idx}`} className="pl-4">{txt}</td>
             ))}
+            <td></td>
           </tr>
         ))}
         {highlightDifferences && (
-          <tr className="h-2 border-b-2 border-(--vscode-tab-activeBackground)">
+          <tr className="border-b-2 border-(--vscode-tab-activeBackground) sticky top-8 bg-(--vscode-panel-background) h-8">
             <td></td>
             <td></td>
-            <td className="flex justify-end items-center"><button className="flex items-center cursor-pointer gap-1 hover:italic" onClick={() => setShowHiddenRows(!showHiddenRows)}> <span>{showHiddenRows ? "Hide" : "Show"} shared attributes</span><span className="codicon codicon-chevron-down" /></button></td>
+            <td></td>
+            <td
+              className="flex justify-end items-center h-8">
+              <button
+                className="flex items-center cursor-pointer gap-1 text-(--vscode-disabledForeground)"
+                onClick={() => setShowHiddenRows(!showHiddenRows)}
+              >
+                <span>{showHiddenRows ? "Hide" : "Show"} shared attributes</span>
+                <span className={`codicon codicon-chevron-${showHiddenRows ? "up" : "down"}`} />
+              </button>
+            </td>
           </tr>
         )}
-        {highlightDifferences && showHiddenRows && rows?.filter((rw) => !valuesDiffer(rw.slice(1))).map((row, idx: number) => (
-          <tr key={`comp-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
-            {row.map((txt) => (
-              <td className="pl-4">{txt}</td>
+        {highlightDifferences && showHiddenRows && rows?.filter((rw) => rw.join("").toUpperCase().includes(filterValue.toUpperCase().trim()) && !valuesDiffer(rw.slice(1))).map((row, idx: number) => (
+          <tr key={`2-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
+            {row.map((txt, idx) => (
+              <td key={`2-td-${idx}`} className="pl-4">{txt}</td>
             ))}
+            <td></td>
           </tr>
         ))}
       </tbody>

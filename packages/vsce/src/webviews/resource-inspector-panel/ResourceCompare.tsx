@@ -13,6 +13,7 @@
 import * as React from "react";
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { RegionResourceBreadcrumb } from "../common/Breadcrumb";
 import Table from "../common/Table";
 import { IResourceInspectorResource } from "../common/vscode";
 
@@ -47,23 +48,11 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
         headers={resourceHeaders}
         rows={resourceRows}
         highlightDifferences={true}
-        refresh={() => console.log("REFRESHINGG")}
+        refresh={() => console.log("REFRESHINGG FROM RESOURCE COMPARE")}
         stickyLevel={0}
       />
     </div>
     // </>
-  );
-};
-
-const Chevron = () => <span className="text-(--vscode-disabledForeground)">{">"}</span>;
-const SecondaryText = ({ txt }: { txt: string; }) => <> <span className="text-(--vscode-disabledForeground)">{txt}</span> <Chevron /></>;
-
-const RegionResourceBreadcrumb = (props: { regionName: string; resourceName: string; }) => {
-  return (
-    <div className="flex gap-1">
-      <SecondaryText txt={props.regionName} />
-      <span>{props.resourceName}</span>
-    </div>
   );
 };
 

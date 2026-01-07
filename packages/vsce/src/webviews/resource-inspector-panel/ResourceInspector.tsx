@@ -13,6 +13,7 @@
 import * as React from "react";
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { BreadcrumbSection, MenuButton, RefreshButton, RegionResourceBreadcrumb } from "../common/Breadcrumb";
 import Table from "../common/Table";
 import { addVscMessageListener, IResourceInspectorIconPath, IResourceInspectorProps, IResourceInspectorResource, postVscMessage, removeVscMessageListener } from "../common/vscode";
 import ResourceCompare from "./ResourceCompare";
@@ -102,8 +103,8 @@ const ResourceInspector = () => {
             />
 
             <div className="flex gap-2 items-center">
-              <RefreshButton />
-              <MenuButton />
+              <RefreshButton onClick={() => console.log("REFRESHING FROM RI")} />
+              <MenuButton onClick={() => console.log("MENU FROM RI")} />
             </div>
           </div>
 
@@ -121,6 +122,7 @@ const ResourceInspector = () => {
       )}
 
       {resources?.length === 2 && <ResourceCompare resources={resources} />}
+
       {resources?.length > 2 && (
         <>
           <div className="sticky top-0 w-full bg-(--vscode-panel-border) px-2 h-8 flex items-center justify-between">
@@ -133,8 +135,8 @@ const ResourceInspector = () => {
             />
 
             <div className="flex gap-2 items-center">
-              <RefreshButton />
-              <MenuButton />
+              <RefreshButton onClick={() => console.log("REFRESHING FROM RI TABLE VIEW")} />
+              <MenuButton onClick={() => console.log("MENU FROM RI TABLE VIEW")} />
             </div>
           </div>
 
@@ -153,43 +155,6 @@ const ResourceInspector = () => {
   );
 };
 
-const Chevron = () => <span className="text-(--vscode-disabledForeground)">{">"}</span>;
-const SecondaryText = ({ txt }: { txt: string; }) => <> <span className="text-(--vscode-disabledForeground)">{txt}</span> <Chevron /></>;
-
-const RegionResourceBreadcrumb = (props: { regionName: string; resourceName: string; }) => {
-  return (
-    <div className="flex gap-1">
-      <SecondaryText txt={props.regionName} />
-      <span className="font-bold">{props.resourceName}</span>
-    </div>
-  );
-};
-
-const BreadcrumbSection = (props: { cicsplexName?: string; regionName?: string; resourceName?: string; resourceType?: string; resourceIconPath?: IResourceInspectorIconPath; }) => {
-
-
-  return (
-    <div className="flex items-center w-full gap-2">
-
-      {props.cicsplexName && <SecondaryText txt={props.cicsplexName} />}
-      {props.regionName && <SecondaryText txt={props.regionName} />}
-      {props.resourceName && (
-        <span className="font-bold">{props.resourceName}</span>
-      )}
-      {props.resourceType && (
-        <span className="font-bold">{props.resourceType}</span>
-      )}
-      {props.resourceIconPath && (
-        <img
-          src={document.body.classList.contains("vscode-dark") ? props.resourceIconPath.dark : props.resourceIconPath.light}
-          alt="RES"
-          width="16px"
-          height="16px"
-        />
-      )}
-    </div>
-  );
-};
 
 const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource; }) => {
   return (
@@ -199,19 +164,6 @@ const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource;
       ))}
     </div>
   );
-};
-
-const RefreshButton = () => {
-  return <span
-    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold"
-    onClick={(e) => console.log("CLICKED REFRESH")}
-  />;
-};
-const MenuButton = () => {
-  return <span
-    className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold"
-    onClick={(e) => console.log("CLICKED MENU")}
-  />;
 };
 
 export default ResourceInspector;

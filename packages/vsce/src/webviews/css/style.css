@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+:root {
+  scrollbar-gutter: stable both-edges;
+}
+
+input:focus {
+  outline: none;
+}
