@@ -85,6 +85,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     showBundleDirectory(),
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
-    getInspectRegionCommand(context, treeview),
+    getInspectRegionCommand(context),
   ];
 };

@@ -15,6 +15,7 @@ import { l10n, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   ICICSTreeNode,
+  IContainedResource,
   IResourceMeta,
   JVMServerMeta,
   LibraryMeta,
@@ -22,6 +23,7 @@ import {
   PipelineMeta,
   ProgramMeta,
   RemoteFileMeta,
+  RegionMeta,
   SharedTSQueueMeta,
   TaskMeta,
   TCPIPMeta,
@@ -42,6 +44,8 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   parentPlex: CICSPlexTree | undefined;
   directParent: any;
   isActive: true | false;
+  cicsplexName?: string;
+  regionName?: string;
 
   constructor(regionName: string, region: any, parentSession: CICSSessionTree, parentPlex: CICSPlexTree | undefined, directParent: any) {
     super(regionName, TreeItemCollapsibleState.Collapsed, directParent, parentSession.getProfile());
@@ -53,12 +57,15 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       this.parentPlex = parentPlex;
     }
 
+    this.cicsplexName = parentPlex?.plexName;
+
     if (region.cicsstate) {
       this.isActive = region.cicsstate === "ACTIVE" ? true : false;
     } else {
       this.isActive = region.cicsstatus === "ACTIVE" ? true : false;
     }
     this.refreshIcon();
+    this.regionName = this.getRegionName();
     if (!this.isActive) {
       this.children = null;
       this.collapsibleState = TreeItemCollapsibleState.None;
@@ -108,6 +115,18 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
       }
       this.children.sort((r1, r2) => r1.label.toString().localeCompare(r2.label.toString()));
     }
+  }
+
+  public getContainedResource(): IContainedResource<IResource> {
+    const ResourceClass = require("../resources/Resource").Resource as { new (r: any): any };
+    return {
+      meta: RegionMeta,
+      resource: new ResourceClass(this.region),
+    } as IContainedResource<IResource>;
+  }
+
+  public getContainedResourceName() {
+    return this.getRegionName();
   }
 
   refreshIcon(): void {
