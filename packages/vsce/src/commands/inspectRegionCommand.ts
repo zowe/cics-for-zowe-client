@@ -1,6 +1,5 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import type { TreeView } from "vscode";
-import { commands, ExtensionContext, l10n, window } from "vscode";
+import { commands, ExtensionContext, l10n, window, TreeView } from "vscode";
 import { CICSRegionTree, CICSResourceContainerNode } from "../trees";
 import { inspectResource, inspectResourceByName, inspectResourceByNode } from "./inspectResourceCommandUtils";
 
