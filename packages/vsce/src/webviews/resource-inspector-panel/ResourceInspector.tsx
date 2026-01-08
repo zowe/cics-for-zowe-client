@@ -155,7 +155,7 @@ const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource;
   return (
     <div className="flex flex-col gap-0.5 px-4 mt-2 mb-4">
       {resource.highlights.map((h) => (
-        <div className="text-sm"><span className="text-(--vscode-disabledForeground)">{h.key}: </span>{h.value}</div>
+        <div key={h.attribute} className="text-sm"><span className="text-(--vscode-disabledForeground)">{h.key}: </span>{h.value}</div>
       ))}
     </div>
   );
