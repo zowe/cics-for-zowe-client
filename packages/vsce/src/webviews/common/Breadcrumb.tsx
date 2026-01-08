@@ -11,6 +11,7 @@
 
 import { IResourceContext } from '@zowe/cics-for-zowe-explorer-api';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { Chevron } from './Chevron';
 import { IResourceInspectorIconPath, IResourceInspectorResource, postVscMessage } from './vscode';
 
@@ -57,14 +58,20 @@ export const RefreshButton = ({ onClick }: { onClick: () => void; }) => {
   />;
 };
 
-const DropdownContext = React.createContext({
+const DropdownContext = React.createContext<{
+  open: boolean;
+  setOpen: (o: boolean) => void;
+  buttonRef: React.RefObject<HTMLButtonElement> | null;
+}>({
   open: false,
   setOpen: (o: boolean) => { },
+  buttonRef: null,
 });
 
 const DropDown = ({ children, ...props }: any) => {
   const [open, setOpen] = React.useState(false);
   const dropdownRef = React.useRef(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
 
@@ -85,7 +92,7 @@ const DropDown = ({ children, ...props }: any) => {
   }, [open]);
 
   return (
-    <DropdownContext.Provider value={{ open, setOpen }}>
+    <DropdownContext.Provider value={{ open, setOpen, buttonRef }}>
       <div ref={dropdownRef} className="relative">{children}</div>
     </DropdownContext.Provider>
   );
@@ -93,14 +100,14 @@ const DropDown = ({ children, ...props }: any) => {
 
 const DropDownButton = () => {
 
-  const { open, setOpen } = React.useContext(DropdownContext);
+  const { open, setOpen, buttonRef } = React.useContext(DropdownContext);
 
   const toggleOpen = () => {
     setOpen(!open);
   };
 
   return (
-    <button onClick={toggleOpen} className='flex items-center justify-center'>
+    <button ref={buttonRef} onClick={toggleOpen} className='flex items-center justify-center'>
       <span className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold" />
     </button>
   );
@@ -108,12 +115,43 @@ const DropDownButton = () => {
 
 const DropDownContent = ({ children }: any) => {
 
-  const { open } = React.useContext(DropdownContext);
+  const { open, buttonRef } = React.useContext(DropdownContext);
+  const [position, setPosition] = React.useState({ top: 0, left: 0 });
 
-  return (
-    <div className={`absolute right-0 z-20 ${open ? "" : "hidden"} flex flex-col bg-(--vscode-panel-border)/95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)`}>
+  React.useEffect(() => {
+    const updatePosition = () => {
+      if (open && buttonRef?.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.bottom + 2,
+          left: rect.right - 192 // 192px = width of menu to offset to the left
+        });
+      }
+    };
+
+    if (open) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+      return () => {
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition, true);
+      };
+    }
+  }, [open, buttonRef]);
+
+  if (!open) {
+    return null;
+  }
+
+  return ReactDOM.createPortal(
+    <div
+      className="fixed z-50 flex flex-col bg-(--vscode-panel-border)/95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
+      style={{ top: `${position.top}px`, left: `${position.left}px` }}
+    >
       {children}
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -141,7 +179,7 @@ export const MenuButton = ({ data }: { data: { label: string; value: string; res
       <DropDownContent>
         <DropDownList>
           {data.map((d) => (
-            <DropDownListItem actionId={d.value} resourceName={d.resourceName} resourceContext={d.resourceContext} resources={d.resources}>{d.label}</DropDownListItem>
+            <DropDownListItem key={d.value} actionId={d.value} resourceName={d.resourceName} resourceContext={d.resourceContext} resources={d.resources}>{d.label}</DropDownListItem>
           ))}
         </DropDownList>
       </DropDownContent>
