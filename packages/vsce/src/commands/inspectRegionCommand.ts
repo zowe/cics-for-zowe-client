@@ -1,7 +1,7 @@
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, ExtensionContext, l10n, window } from "vscode";
 import { CICSRegionTree, CICSResourceContainerNode } from "../trees";
-import { inspectResourceByName, inspectResourceByNode, inspectResource } from "./inspectResourceCommandUtils";
+import { inspectResourceByName, inspectResourceByNode } from "./inspectResourceCommandUtils";
 
 export function getInspectRegionCommand(context: ExtensionContext) {
   return commands.registerCommand(
