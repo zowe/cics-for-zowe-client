@@ -44,12 +44,15 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
                   <MenuButton data={menuData} />
                 )}
               </div>
-              <input
-                className="w-64 bg-(--vscode-panel-background) px-2 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
-                placeholder="Keyword search..."
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              />
+              <div className="relative flex items-center">
+                <input
+                  className="w-64 bg-(--vscode-panel-background) px-2 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
+                  placeholder="Keyword search..."
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                />
+                <span className={`absolute right-1 cursor-pointer codicon codicon-close`} onClick={() => setFilterValue("")} />
+              </div>
             </div>
           </th>
         </tr>
