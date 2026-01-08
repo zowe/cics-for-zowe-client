@@ -1,0 +1,53 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Open Inspect Region for Region",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "fetched-inspect-region-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX1/MYREG1?CRITERIA=(CICSNAME%3DMYREG1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/MYREG1/inspect-region-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Inspect Region for Region",
+      "requiredScenarioState": "fetched-inspect-region-summary",
+      "newScenarioState": "fetched-inspect-region-records",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00INSREGIONTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/MYREG1/inspect-region-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Inspect Region for Region",
+      "requiredScenarioState": "fetched-inspect-region-records",
+      "newScenarioState": "removed-inspect-region-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00INSREGIONTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/MYREG1/inspect-region-remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
