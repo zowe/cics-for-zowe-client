@@ -24,7 +24,7 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
   };
 
   return (
-    <table className="border-collapse border-spacing-4 w-full table-fixed">
+    <table className={`border-collapse border-spacing-4 w-full ${highlightDifferences ? "table-fixed" : ""}`}>
       <thead>
         <tr className={`text-left bg-(--vscode-panel-border) h-8 sticky top-${stickyLevel * 8}`}>
           {headers.map((hder, idx: number) => {

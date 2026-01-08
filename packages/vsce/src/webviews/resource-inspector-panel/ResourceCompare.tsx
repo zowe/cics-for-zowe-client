@@ -22,8 +22,6 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
   const [resourceHeaders, setResourceHeaders] = React.useState<(string | React.JSX.Element)[]>([]);
   const [resourceRows, setResourceRows] = React.useState<string[][]>([]);
 
-  const [globalMenuItems, setGlobalMenuItems] = React.useState<{ label: string; value: string; }[]>([]);
-
   React.useEffect(() => {
     if (!resources || resources.length !== 2) {
       return;

@@ -501,7 +501,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/",
           "command": "cics-extension-for-zowe.inspectTreeResource",
           "group": "1.CICSResourceNode.inquire"
         },
