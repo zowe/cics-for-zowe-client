@@ -127,33 +127,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   }
 
   /**
-   * Returns the current resource being displayed.
-   */
-  public getResources(): IResourceInspectorResource[] {
-    return this.resources;
-  }
-
-  /**
-   * Sets the current node being used.
-   */
-  public setNode(node?: CICSResourceContainerNode<IResource>) {
-    this.node = node;
-    return this;
-  }
-
-  /**
-   * Returns the current node being used.
-   */
-  public getNode(): CICSResourceContainerNode<IResource> {
-    return this.node;
-  }
-
-  public setResourceContext(context: IResourceProfileNameInfo): ResourceInspectorViewProvider {
-    this.resourceContext = context;
-    return this;
-  }
-
-  /**
    * Creates webview-accessible URIs for icon paths
    * @param iconPath The icon path object with light and dark variants
    * @returns An object with webview-accessible URIs for both light and dark themes

@@ -15,7 +15,7 @@ import * as React from "react";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { BreadcrumbSection, MenuButton, RefreshButton } from "../common/Breadcrumb";
 import Table from "../common/Table";
-import { IResourceInspectorIconPath, IResourceInspectorResource } from "../common/vscode";
+import { IResourceInspectorIconPath, IResourceInspectorResource, postVscMessage } from "../common/vscode";
 
 const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceInspectorResource[]; resourceIconPath: IResourceInspectorIconPath; }) => {
 
@@ -36,6 +36,13 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
 
   }, [resources]);
 
+  const refreshResource = () => {
+    postVscMessage({
+      command: "refresh",
+      resources,
+    });
+  };
+
 
   return (
     <>
@@ -48,7 +55,7 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
         />
 
         <div className="flex gap-2 items-center">
-          <RefreshButton onClick={() => console.log("REFRESHING FROM RI")} />
+          <RefreshButton onClick={refreshResource} />
           <MenuButton data={resources[0].actions.map((ac) => { return { label: ac.name, value: ac.id, resources: resources, resourceName: resources[0].name, resourceContext: resources[0].context }; })} />
         </div>
       </div>

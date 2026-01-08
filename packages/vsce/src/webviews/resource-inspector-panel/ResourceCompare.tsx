@@ -15,7 +15,7 @@ import * as React from "react";
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { RegionResourceBreadcrumb } from "../common/Breadcrumb";
 import Table from "../common/Table";
-import { IResourceInspectorResource } from "../common/vscode";
+import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
 
 const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[]; }) => {
 
@@ -41,6 +41,12 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
 
   }, [resources]);
 
+  const handleRefresh = () => {
+    postVscMessage({
+      command: "refresh",
+      resources,
+    });
+  };
 
   return (
     <div className="w-full">
@@ -48,7 +54,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
         headers={resourceHeaders}
         rows={resourceRows}
         highlightDifferences={true}
-        refresh={() => console.log("REFRESHINGG FROM RESOURCE COMPARE")}
+        refresh={handleRefresh}
         stickyLevel={0}
       />
     </div>
