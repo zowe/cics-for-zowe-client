@@ -15,13 +15,37 @@ import * as ReactDOM from 'react-dom';
 import { Chevron } from './Chevron';
 import { IResourceInspectorIconPath, IResourceInspectorResource, postVscMessage } from './vscode';
 
-export const SecondaryText = ({ txt }: { txt: string; }) => <div className='flex items-center gap-0.5'><span className="text-(--vscode-disabledForeground)">{txt}</span><Chevron /></div>;
+export const SecondaryText = ({ txt, className = "" }: { txt: string; className?: string; }) => <div className={`flex items-center gap-0.5 ${className}`}><span className="text-(--vscode-disabledForeground)">{txt}</span><Chevron /></div>;
 
-export const RegionResourceBreadcrumb = (props: { regionName: string; resourceName: string; menuData: { label: string; value: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[]; }[]; }) => {
+export const RegionResourceBreadcrumb = (props: {
+  profileName: string;
+  cicsplexName?: string;
+  regionName: string;
+  resourceName: string;
+  menuData: { label: string; value: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[]; }[];
+}) => {
+
+  const [showTooltip, setShowTooltip] = React.useState(false);
+
   return (
     <div className="flex gap-1">
-      <SecondaryText txt={props.regionName} />
-      <span className="font-bold">{props.resourceName}</span>
+
+      <div className="flex items-center gap-1 relative cursor-text" onMouseOver={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+        <div className={`bg-(--vscode-panel-border)/95 shadow-lg rounded-md px-2 py-1 absolute left-0 top-5 ${showTooltip ? "" : "hidden"} flex items-center gap-1`}>
+          <span>{props.profileName}</span>
+          <Chevron />
+          {props.cicsplexName && (
+            <>
+              <span>{props.cicsplexName}</span>
+              <Chevron />
+            </>
+          )}
+          <span>{props.regionName}</span>
+        </div>
+        <SecondaryText txt={props.regionName} className={"hidden md:flex"} />
+        <span className="font-bold">{props.resourceName}</span>
+      </div>
+
       <MenuButton data={props.menuData} />
     </div>
   );

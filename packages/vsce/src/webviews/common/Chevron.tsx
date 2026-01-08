@@ -11,4 +11,4 @@
 
 import * as React from 'react';
 
-export const Chevron = () => <span className="codicon codicon-chevron-right text-(--vscode-disabledForeground) h-4" />;
+export const Chevron = () => <span className="codicon codicon-chevron-right text-(--vscode-disabledForeground) h-4 cursor-text" />;

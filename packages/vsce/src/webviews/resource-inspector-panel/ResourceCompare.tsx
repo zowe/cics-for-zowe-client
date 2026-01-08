@@ -32,7 +32,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
     const _headers = [
       "Attribute",
       ...resources.map(
-        (res) => <RegionResourceBreadcrumb regionName={res.resource.eyu_cicsname} resourceName={res.name} menuData={res.actions.map((ac) => { return { label: ac.name, value: ac.id, resourceName: res.name, resourceContext: res.context, resources: [res] }; })} />
+        (res) => <RegionResourceBreadcrumb profileName={res.context.profile.name} cicsplexName={res.context.cicsplexName} regionName={res.resource.eyu_cicsname} resourceName={res.name} menuData={res.actions.map((ac) => { return { label: ac.name, value: ac.id, resourceName: res.name, resourceContext: res.context, resources: [res] }; })} />
       ),
     ];
     const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));

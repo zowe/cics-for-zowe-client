@@ -29,13 +29,13 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
         <tr className={`text-left bg-(--vscode-panel-border) h-8 sticky top-${stickyLevel * 8}`}>
           {headers.map((hder, idx: number) => {
             return (
-              <th key={`th-${idx}`} className={`text-left px-2 font-normal first:w-42`}>
+              <th key={`th-${idx}`} className={`text-left px-2 font-normal first:w-32 lg:first:w-42`}>
                 <span>{hder}</span>
               </th>
             );
           })}
           <th>
-            <div className="flex gap-4 items-center justify-end px-1">
+            <div className="flex gap-1 md:gap-2 xl:gap-4 items-center justify-end px-1">
               <div className="flex gap-2 items-center">
                 {refresh && (
                   <RefreshButton onClick={refresh} />
@@ -46,7 +46,7 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
               </div>
               <div className="relative flex items-center">
                 <input
-                  className="w-64 bg-(--vscode-panel-background) px-2 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
+                  className="w-48 lg:w-64 bg-(--vscode-panel-background) pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal"
                   placeholder="Keyword search..."
                   value={filterValue}
                   onChange={(e) => setFilterValue(e.target.value)}
@@ -61,7 +61,7 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
         {rows?.filter((rw) => rw.join("").toUpperCase().includes(filterValue.toUpperCase().trim()) && (!highlightDifferences ? true : valuesDiffer(rw.slice(1)))).map((row, idx: number) => (
           <tr key={`1-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
             {row.map((txt, idx) => (
-              <td key={`1-td-${idx}`} className="pl-4">{txt}</td>
+              <td key={`1-td-${idx}`} title={txt} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
             ))}
             <td></td>
           </tr>
@@ -86,7 +86,7 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
         {highlightDifferences && showHiddenRows && rows?.filter((rw) => rw.join("").toUpperCase().includes(filterValue.toUpperCase().trim()) && !valuesDiffer(rw.slice(1))).map((row, idx: number) => (
           <tr key={`2-tr-${idx}`} className={`even:bg-(--vscode-tab-activeBackground) h-8`}>
             {row.map((txt, idx) => (
-              <td key={`2-td-${idx}`} className="pl-4">{txt}</td>
+              <td key={`2-td-${idx}`} title={txt} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
             ))}
             <td></td>
           </tr>
