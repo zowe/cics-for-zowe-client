@@ -35,6 +35,7 @@ module.exports = {
     clipboard: {
       writeText: (v: string) => {},
     },
+    openExternal: jest.fn().mockResolvedValue(true),
   },
   l10n: {
     t: (key: string, ...args: any[]) => {
