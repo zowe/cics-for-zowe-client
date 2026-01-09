@@ -13,8 +13,10 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { MessageItem } from "vscode";
 import errorConstants from "../constants/CICS.errorMessages";
 import { CICSLogger } from "../utils/CICSLogger";
+import { openDocumentation } from "../utils/urlUtils";
 import { CICSExtensionError } from "./CICSExtensionError";
 import { ICICSExtensionError } from "./ICICSExtensionError";
+import { URLConstants } from "./urlConstants";
 
 export function resourceNotFoundError(error?: ICICSExtensionError) {
   if (!error) {
@@ -23,9 +25,20 @@ export function resourceNotFoundError(error?: ICICSExtensionError) {
 }
 
 export class CICSErrorHandler {
-  static handleCMCIRestError(error: CICSExtensionError): Thenable<string | MessageItem> {
-    const msg = error.cicsExtensionError.errorMessage;
-    return this.notifyErrorMessage({ errorMessage: msg });
+  static handleCMCIRestError(error: CICSExtensionError, action?: MessageItem[]): Thenable<string | MessageItem> {
+    const { errorMessage: msg, resourceType } = error.cicsExtensionError;
+    const actions = resourceType && !action ? [URLConstants.OPEN_DOCUMENTATION] : action;
+    const result = this.notifyErrorMessage({ errorMessage: msg, action: actions });
+
+    if (resourceType && !action) {
+      result.then(async (selection) => {
+        if (selection === URLConstants.OPEN_DOCUMENTATION) {
+          await openDocumentation(resourceType.trim().toLowerCase());
+        }
+      });
+    }
+
+    return result;
   }
 
   handleExtensionError() {}
@@ -39,12 +52,14 @@ export class CICSErrorHandler {
     additionalInfo?: string;
     action?: MessageItem[];
   }): Thenable<string | MessageItem> {
-    CICSLogger.error(`${this.trimLineBreaks(errorMessage)} ${additionalInfo ?? ""}`.trim());
+    const logMessage = additionalInfo ? `${this.trimLineBreaks(errorMessage)} ${additionalInfo}` : this.trimLineBreaks(errorMessage);
 
-    return Gui.errorMessage(errorMessage, { items: action ?? [] });
+    CICSLogger.error(logMessage);
+
+    return Gui.errorMessage(errorMessage, { items: action || [] });
   }
 
-  private static trimLineBreaks(msg: string) {
+  private static trimLineBreaks(msg: string): string {
     return msg.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
   }
 }

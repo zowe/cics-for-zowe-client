@@ -34,13 +34,13 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
       if (feedback) {
+        this.cicsExtensionError.resourceType = feedback.eibfn_alt.replace("SET", "").trim();
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "The CMCI REST API request failed. Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}." +
-              " Please refer to the IBM documentation for resp code details",
+            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}." + " Please refer to the IBM documentation for resp code details",
             feedback.action,
-            feedback.eibfn_alt.replace("SET", ""),
+            this.cicsExtensionError.resourceType,
             resourceName,
             api_function,
             feedback.resp,
@@ -72,12 +72,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.statusCode = parseInt(errorCode);
       this.cicsExtensionError.errorMessage =
         errorMessage ||
-        l10n.t(
-          "The CMCI REST API request failed. Failed to send request. Response details - {0}URL: {1}, Message: {2}",
-          errorCode ? `Status code: ${errorCode}, ` : ``,
-          resource,
-          msg
-        );
+        l10n.t("Failed to send request. Response details - {0}URL: {1}, Message: {2}", errorCode ? `Status code: ${errorCode}, ` : ``, resource, msg);
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
