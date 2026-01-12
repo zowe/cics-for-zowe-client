@@ -24,7 +24,7 @@ import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
-import { getInspectRegionCommand } from "./inspectRegionCommand";
+import { getInspectRegionCommand } from "./inspectRegionResourceCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import { getManageSessionCommand } from "./manageSessionCommand";
@@ -39,6 +39,7 @@ import { showBundleDirectory } from "./showBundleDirectoryCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
+import { getInspectTreeRegionCommand } from "./inspectTreeRegionCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -86,5 +87,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
     getInspectRegionCommand(context),
+    getInspectTreeRegionCommand(context, treeview),
   ];
 };
