@@ -21,6 +21,7 @@ import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
+import { CICSPlexTree } from "../trees";
 
 async function showInspectResource(
   context: ExtensionContext,
@@ -246,4 +247,29 @@ async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Pro
   const choice = await Gui.resolveQuickPick(quickPick);
   quickPick.hide();
   return choice;
+}
+
+export async function inspectRegionByName(
+  context: ExtensionContext,
+  resourceName: string,
+  resourceType: string,
+  overrideContext?: IResourceProfileNameInfo
+) {
+  if (overrideContext) {
+    let type = getResourceType(resourceType);
+
+    if (!type || type.length === 0) {
+      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
+      CICSLogger.error(message);
+      window.showErrorMessage(message);
+      return;
+    }
+
+    const resourceContext: IResourceProfileNameInfo = overrideContext;
+    const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
+    if (upToDateResource) {
+      await showInspectResource(context, upToDateResource, resourceContext);
+    }
+    return;
+  }
 }

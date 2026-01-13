@@ -56,16 +56,12 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   getHighlights(resource: Resource<IRegion>) {
     return [
       {
-        key: l10n.t("CICS Status"),
-        value: resource.attributes.cicsstatus,
+        key: l10n.t("Name"),
+        value: resource.attributes.cicsname,
       },
       {
-        key: l10n.t("StartUp Type"),
-        value: resource.attributes.startup,
-      },
-      {
-        key: l10n.t("Application ID"),
-        value: resource.attributes.applid,
+        key: l10n.t("CICS State"),
+        value: resource.attributes.cicsstate,
       },
     ];
   },

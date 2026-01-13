@@ -4,12 +4,6 @@ import { inspectResourceByNode } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeRegionCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: CICSRegionTree) => {
-    // if (!node) {
-    //   await window.showErrorMessage(l10n.t("No CICS region selected"));
-    //   return;
-    // }
-
-    // await inspectResourceByNode(context, node as any);
     let targetNode: CICSRegionTree = node;
 
     if (!targetNode) {
