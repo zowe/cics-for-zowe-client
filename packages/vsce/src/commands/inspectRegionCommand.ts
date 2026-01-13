@@ -5,9 +5,11 @@ import { inspectRegionByName } from "./inspectResourceCommandUtils";
 import { setCICSRegion } from "./setCICSRegionCommand";
 
 export function getInspectRegionCommand(context: ExtensionContext) {
-  return commands.registerCommand("cics-extension-for-zowe.inspectRegion", async (resourceName?: string, resourceType?: string) => {
+  return commands.registerCommand("cics-extension-for-zowe.inspectRegion", async () => {
     const newRegion = await setCICSRegion();
-    if (!newRegion) return;
+    if (!newRegion) {
+      return;
+    }
 
     await setLastUsedRegion(newRegion.regionName, newRegion.profile.name, newRegion.cicsPlexName);
 
