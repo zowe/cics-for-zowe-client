@@ -26,6 +26,7 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
+  public cacheDiscarded: boolean = false;
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -196,8 +197,8 @@ export class ResourceContainer {
             summonly: true,
           }
         );
+        this.cacheDiscarded = true;
       }
-
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
           {
@@ -270,5 +271,12 @@ export class ResourceContainer {
     const summ = this.summaries.get(meta);
     summ.recordcount = `${parseInt(summ.recordcount) - count}`;
     this.summaries.set(meta, summ);
+  }
+
+  /**
+   * @returns The summaries Map containing resource metadata and their corresponding CMCI response summaries
+   */
+  getSummaries(): Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> {
+    return this.summaries;
   }
 }
