@@ -21,7 +21,6 @@ import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
-import { CICSPlexTree } from "../trees";
 
 async function showInspectResource(
   context: ExtensionContext,
@@ -256,7 +255,7 @@ export async function inspectRegionByName(
   overrideContext?: IResourceProfileNameInfo
 ) {
   if (overrideContext) {
-    let type = getResourceType(resourceType);
+    const type = getResourceType(resourceType);
 
     if (!type || type.length === 0) {
       const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
