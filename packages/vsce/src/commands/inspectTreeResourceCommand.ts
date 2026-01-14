@@ -46,7 +46,7 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
 }
 
 export function getCompareResourcesCommand(context: ExtensionContext, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async (node: CICSResourceContainerNode<IResource>) => {
+  return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async () => {
     if (treeview.selection.length !== 2) {
       return;
     }
