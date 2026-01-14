@@ -20,7 +20,6 @@ jest.mock("../../../src/commands/inspectResourceCommandUtils", () => ({
 }));
 
 import { getInspectRegionCommand } from "../../../src/commands/inspectRegionCommand";
-import { CICSResourceContainerNode } from "../../../src/trees";
 
 let mockedClipboard = ``;
 
