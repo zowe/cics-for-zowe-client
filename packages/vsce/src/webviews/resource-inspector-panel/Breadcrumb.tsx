@@ -9,91 +9,74 @@
  *
  */
 
-import { IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-import * as React from "react";
-import "../css/style.css";
+import { IResourceContext } from '@zowe/cics-for-zowe-explorer-api';
+import { useState } from 'react';
+import { Chevron } from '../common/Chevron';
+import { IResourceInspectorIconPath, IResourceInspectorResource } from '../common/vscode';
+import { ContextMenu } from './Contextmenu';
 
-interface IconPath {
-  light: string;
-  dark: string;
-}
+export const SecondaryText = ({ txt, className = "" }: { txt: string; className?: string; }) => <div className={`flex items-center gap-0.5 ${className}`}><span className="text-(--vscode-disabledForeground)">{txt}</span><Chevron /></div>;
 
-interface IBreadcrumbProps {
-  resourceContext: IResourceProfileNameInfo;
+export const RegionResourceBreadcrumb = (props: {
+  profileName: string;
+  cicsplexName?: string;
+  regionName: string;
   resourceName: string;
-  resourceType: string;
-  resourceIconPath: IconPath;
-  isDarkTheme: boolean;
-}
+  menuData: { label: string; value: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[]; }[];
+}) => {
 
-// Render icon using the provided icon path
-const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: string = "resource") => {
-  const iconSrc = isDarkTheme ? resourceIconPath.dark : resourceIconPath.light;
-  return <img src={iconSrc} alt={alt} width={16} height={16} />;
-};
-
-/**
- * Creates breadcrumb items array from profile handler and resource information
- */
-const createBreadcrumbItems = (
-  resourceContext: IResourceProfileNameInfo,
-  resourceName: string,
-  humanReadableNameSingular: string
-): string[] => {
-  const items = [resourceContext.regionName, `${resourceName} (${humanReadableNameSingular})`];
-  if (resourceContext.cicsplexName) {
-    items.unshift(resourceContext.cicsplexName);
-  }
-  return items;
-};
-
-const Breadcrumb = ({
-  resourceContext,
-  resourceName,
-  resourceType,
-  resourceIconPath,
-  isDarkTheme,
-}: IBreadcrumbProps) => {
-
-  // Memoize items array to prevent unnecessary recalculations
-  const items = React.useMemo(() =>
-    createBreadcrumbItems(resourceContext, resourceName, resourceType),
-    [resourceContext, resourceName, resourceType]);
-
-  const renderBreadcrumbItem = (item: string, idx: number) => {
-    const isResourceItem = idx === items.length - 1;
-    const showChevron = idx > 0 && resourceIconPath;
-    const chevron = <span className="codicon codicon-chevron-right" />;
-
-    if (!isResourceItem) {
-      return (
-        <React.Fragment key={item}>
-          {showChevron && <li>{chevron}</li>}
-          <li>{item}</li>
-        </React.Fragment>
-      );
-    }
-    const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
-
-    return (
-      <React.Fragment key={item}>
-        {showChevron && <li>{chevron}</li>}
-        <li className="resource-item">
-          {icon && <span className="resource-icon">{icon}</span>}
-          <span className="label-text-color">{resourceName}</span>
-          {resourceType && <span>({resourceType})</span>}
-        </li>
-      </React.Fragment>
-    );
-  };
+  const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div id="breadcrumb-div" className="breadcrumb-div">
-      <ul className="breadcrumb">
-        {items.map(renderBreadcrumbItem)}
-      </ul>
+    <div className="flex gap-1 items-center">
+
+      <div className="flex items-center gap-1 relative cursor-text" onMouseOver={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+        <div className={`bg-(--vscode-panel-border)/95 shadow-lg rounded-md px-2 py-1 absolute left-0 top-5 ${showTooltip ? "" : "hidden"} flex items-center gap-1`}>
+          <span>{props.profileName}</span>
+          <Chevron />
+          {props.cicsplexName && (
+            <>
+              <span>{props.cicsplexName}</span>
+              <Chevron />
+            </>
+          )}
+          <span>{props.regionName}</span>
+        </div>
+        <SecondaryText txt={props.regionName} className={"hidden md:flex"} />
+        <span className="font-normal">{props.resourceName}</span>
+      </div>
+
+      <ContextMenu data={props.menuData} />
     </div>
   );
 };
 
-export default Breadcrumb;
+export const BreadcrumbSection = (props: { cicsplexName?: string; regionName?: string; resourceName?: string; resourceType?: string; resourceIconPath?: IResourceInspectorIconPath; }) => {
+  return (
+    <div className="flex items-center w-full gap-1">
+
+      {props.cicsplexName && <SecondaryText txt={props.cicsplexName} />}
+      {props.regionName && <SecondaryText txt={props.regionName} />}
+      <div className="flex gap-1">
+        {props.resourceIconPath && (
+          <img
+            src={document.body.classList.contains("vscode-dark") ? props.resourceIconPath.dark : props.resourceIconPath.light}
+            alt="RES"
+            width="16px"
+            height="16px"
+          />
+        )}
+        {props.resourceName ? (
+          <>
+            <span className="font-normal">{props.resourceName}</span>
+            {props.resourceType && (
+              <span className="text-(--vscode-disabledForeground) font-normal">({props.resourceType})</span>
+            )}
+          </>
+        ) : props.resourceType && (
+          <span className="font-normal">{props.resourceType}</span>
+        )}
+      </div>
+    </div>
+  );
+};

@@ -9,10 +9,4 @@
  *
  */
 
-import { createRoot } from 'react-dom/client';
-import "../css/style.css";
-import ResourceInspector from './ResourceInspector';
-
-const container = document.getElementById('webviewRoot');
-const root = createRoot(container);
-root.render(<ResourceInspector />);
+export const Chevron = () => <span className="codicon codicon-chevron-right text-(--vscode-disabledForeground) h-4 cursor-text" />;
