@@ -35,11 +35,17 @@ const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: strin
 /**
  * Creates breadcrumb items array from profile handler and resource information
  */
-const createBreadcrumbItems = (
-  resourceContext: IResourceProfileNameInfo,
-  resourceName: string,
-  humanReadableNameSingular: string
-): string[] => {
+const createBreadcrumbItems = (resourceContext: IResourceProfileNameInfo, resourceName: string, humanReadableNameSingular: string): string[] => {
+  const isRegionType = humanReadableNameSingular && humanReadableNameSingular.toLowerCase() === "region";
+  if (isRegionType) {
+    const items: string[] = [];
+    if (resourceContext.cicsplexName) {
+      items.push(resourceContext.cicsplexName);
+    }
+    items.push(resourceContext.regionName);
+    return items;
+  }
+
   const items = [resourceContext.regionName, `${resourceName} (${humanReadableNameSingular})`];
   if (resourceContext.cicsplexName) {
     items.unshift(resourceContext.cicsplexName);
@@ -47,18 +53,12 @@ const createBreadcrumbItems = (
   return items;
 };
 
-const Breadcrumb = ({
-  resourceContext,
-  resourceName,
-  resourceType,
-  resourceIconPath,
-  isDarkTheme,
-}: IBreadcrumbProps) => {
-
+const Breadcrumb = ({ resourceContext, resourceName, resourceType, resourceIconPath, isDarkTheme }: IBreadcrumbProps) => {
   // Memoize items array to prevent unnecessary recalculations
-  const items = React.useMemo(() =>
-    createBreadcrumbItems(resourceContext, resourceName, resourceType),
-    [resourceContext, resourceName, resourceType]);
+  const items = React.useMemo(
+    () => createBreadcrumbItems(resourceContext, resourceName, resourceType),
+    [resourceContext, resourceName, resourceType]
+  );
 
   const renderBreadcrumbItem = (item: string, idx: number) => {
     const isResourceItem = idx === items.length - 1;
@@ -74,14 +74,17 @@ const Breadcrumb = ({
       );
     }
     const icon = resourceIconPath ? renderIcon(resourceIconPath, isDarkTheme, resourceType) : null;
+    const isRegion = resourceType && resourceType.toLowerCase() === "region";
+    const resourceLabel = <span className="label-text-color">{resourceName}</span>;
+    const resourceTypeSuffix = !isRegion && resourceType ? <span>({resourceType})</span> : null;
 
     return (
       <React.Fragment key={item}>
         {showChevron && <li>{chevron}</li>}
         <li className="resource-item">
           {icon && <span className="resource-icon">{icon}</span>}
-          <span className="label-text-color">{resourceName}</span>
-          {resourceType && <span>({resourceType})</span>}
+          {resourceLabel}
+          {resourceTypeSuffix}
         </li>
       </React.Fragment>
     );
@@ -89,9 +92,7 @@ const Breadcrumb = ({
 
   return (
     <div id="breadcrumb-div" className="breadcrumb-div">
-      <ul className="breadcrumb">
-        {items.map(renderBreadcrumbItem)}
-      </ul>
+      <ul className="breadcrumb">{items.map(renderBreadcrumbItem)}</ul>
     </div>
   );
 };
