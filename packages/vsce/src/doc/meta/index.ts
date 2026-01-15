@@ -9,8 +9,8 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { IResourceMeta } from "./IResourceMeta";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResourceMeta } from "./IResourceMeta";
 import { JVMServerMeta } from "./JVMServer.meta";
 import { BundleMeta } from "./bundle.meta";
 import { BundlePartMeta } from "./bundlePart.meta";

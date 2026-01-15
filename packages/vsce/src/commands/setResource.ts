@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import { l10n } from "vscode";
-import { IResourceMeta } from "../doc";
+import type { IResourceMeta } from "../doc";
 import { runPutResource } from "../utils/resourceUtils";
 
 export const resourceActionVerbMap = {

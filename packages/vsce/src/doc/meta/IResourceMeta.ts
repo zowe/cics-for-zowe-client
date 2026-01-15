@@ -9,8 +9,8 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { Resource } from "../../resources/Resource";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { Resource } from "../../resources/Resource";
 
 export interface IResourceMeta<T extends IResource> {
   resourceName: string;

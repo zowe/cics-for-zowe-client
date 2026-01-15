@@ -9,15 +9,15 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceTypes, SupportedResourceTypes, type IResource, type IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
+import { ProgressLocation, commands, l10n, window, type ExtensionContext, type InputBoxOptions, type QuickPickItem } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta, getMetas } from "../doc";
-import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { Resource, ResourceContainer } from "../resources";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import { LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta, getMetas, type IContainedResource, type IResourceMeta } from "../doc";
+import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
+import { ResourceContainer, type Resource } from "../resources";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";

@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceWithEnableStatus } from "./IResource";
+import type { IResourceWithEnableStatus } from "./IResource";
 
 export interface IBundlePart extends IResourceWithEnableStatus {
   bundle: string;

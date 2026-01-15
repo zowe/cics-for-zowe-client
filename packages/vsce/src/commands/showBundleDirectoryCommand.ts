@@ -8,7 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-import { IProfileLoaded } from "@zowe/imperative";
+import type { IProfileLoaded } from "@zowe/imperative";
 import { ZoweExplorerApiType, type IZoweUSSTreeNode } from "@zowe/zowe-explorer-api";
 import * as vscode from "vscode";
 import { commands, l10n, window } from "vscode";

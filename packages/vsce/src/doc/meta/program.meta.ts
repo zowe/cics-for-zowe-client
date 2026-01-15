@@ -9,12 +9,12 @@
  *
  */
 
-import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import type { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
-import { Resource } from "../../resources/Resource";
+import type { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IResourceMeta } from "./IResourceMeta";
+import type { IResourceMeta } from "./IResourceMeta";
 
 export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,

@@ -10,7 +10,7 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { QuickPickItem, l10n, window } from "vscode";
+import { l10n, window, type QuickPickItem } from "vscode";
 
 export class FilterDescriptor implements QuickPickItem {
   constructor(private text: string) {}

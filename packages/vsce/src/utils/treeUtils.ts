@@ -9,11 +9,11 @@
  *
  */
 
-import { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IContainedResource, IResourceMeta } from "../doc";
+import type { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import type { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import type { IContainedResource, IResourceMeta } from "../doc";
 import { Resource } from "../resources";
-import { CICSResourceContainerNode, CICSTree } from "../trees";
+import type { CICSResourceContainerNode, CICSTree } from "../trees";
 import { toArray } from "./commandUtils";
 
 export function evaluateTreeNodes<T extends IResource>(node: CICSResourceContainerNode<T>, response: ICMCIApiResponse, meta: IResourceMeta<T>) {

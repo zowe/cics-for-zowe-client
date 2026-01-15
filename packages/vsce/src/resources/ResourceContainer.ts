@@ -9,10 +9,10 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-import { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
+import type { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import type { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
-import { IContainedResource, IResourceMeta } from "../doc";
+import type { IContainedResource, IResourceMeta } from "../doc";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";

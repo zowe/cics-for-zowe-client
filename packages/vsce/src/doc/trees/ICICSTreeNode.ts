@@ -9,11 +9,11 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { TreeItem, TreeItemLabel } from "vscode";
-import { CICSSessionTree } from "../../trees";
-import { TextTreeItem } from "../../trees/TextTreeItem";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import type { imperative } from "@zowe/zowe-explorer-api";
+import type { TreeItem, TreeItemLabel } from "vscode";
+import type { CICSSessionTree } from "../../trees";
+import type { TextTreeItem } from "../../trees/TextTreeItem";
 
 export interface ICICSTreeNode extends TreeItem {
   children?: (ICICSTreeNode | TextTreeItem)[];
