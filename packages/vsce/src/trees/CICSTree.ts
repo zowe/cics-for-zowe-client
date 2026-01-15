@@ -343,19 +343,6 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   hookCollapseWatcher(view: TreeView<TreeItem>) {
     view.onDidCollapseElement((e) => {
       if (e.element instanceof CICSResourceContainerNode) {
-        if(!e.element.getFetcher().cacheDiscarded){
-          runGetCache(
-              {
-                profileName: e.element.getFetcher().getProfileName(),
-                cacheToken: e.element.getFetcher().getSummaries().values().next().value?.cachetoken,
-              },
-              {
-                nodiscard: false,
-                summonly: true,
-              }
-            );
-        }
-        e.element.getFetcher().cacheDiscarded=false;
         e.element.reset();
         this.refresh(e.element);
       }
