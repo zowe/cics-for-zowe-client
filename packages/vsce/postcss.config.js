@@ -9,10 +9,10 @@
  *
  */
 
-import { createRoot } from 'react-dom/client';
-import "../css/style.css";
-import ResourceInspector from './ResourceInspector';
-
-const container = document.getElementById('webviewRoot');
-const root = createRoot(container);
-root.render(<ResourceInspector />);
+const tailwindcss = require('tailwindcss');
+module.exports = {
+  plugins: [
+    'postcss-preset-env',
+    tailwindcss
+  ],
+};

@@ -9,10 +9,13 @@
  *
  */
 
-import { createRoot } from 'react-dom/client';
-import "../css/style.css";
-import ResourceInspector from './ResourceInspector';
-
-const container = document.getElementById('webviewRoot');
-const root = createRoot(container);
-root.render(<ResourceInspector />);
+module.exports = {
+  content: ['./dist/*.html'],
+  theme: {
+    extend: {},
+  },
+  variants: {
+    extend: {},
+  },
+  plugins: [],
+};

@@ -9,10 +9,10 @@
  *
  */
 
-import { createRoot } from 'react-dom/client';
-import "../css/style.css";
-import ResourceInspector from './ResourceInspector';
-
-const container = document.getElementById('webviewRoot');
-const root = createRoot(container);
-root.render(<ResourceInspector />);
+export const RefreshButton = ({ onClick }: { onClick: () => void; }) => {
+  return <span
+    id="refresh-icon"
+    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold"
+    onClick={onClick}
+  />;
+};
