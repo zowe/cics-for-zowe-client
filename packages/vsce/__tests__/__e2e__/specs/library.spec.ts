@@ -30,16 +30,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Library tests", () => {
-  test("should expand libraries tree to reveal libraries", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "Libraries");
-
-    await expect(getTreeItem(page, constants.LIBRARY_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.LIBRARY_1_NAME)).toHaveText(constants.LIBRARY_1_NAME);
-  });
-
   test("should enable and disable a library", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);

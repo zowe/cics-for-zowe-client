@@ -31,16 +31,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Program tests", () => {
-  test("should expand programs tree to reveal programs", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "Programs");
-
-    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.PROGRAM_1_NAME)).toHaveText(constants.PROGRAM_1_NAME);
-  });
-
   test("should enable and disable a program", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
