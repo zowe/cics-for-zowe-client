@@ -91,18 +91,27 @@ export class CICSSessionTree extends TreeItem {
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
           error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, this.profile.name);
-
-          CICSErrorHandler.handleCMCIRestError(error);
+          const update_credentials = { title: l10n.t("Update Credentials") };
+          const result = await CICSErrorHandler.handleCMCIRestError(error, [update_credentials]);
           this.setUnauthorized();
-          this.profile = await updateProfile(this.profile, this);
+          if (result === update_credentials) {
+            const profile = this.profile.profile;
+            this.profile = await updateProfile(this.profile, this);
+            if (!this.profile) {
+              throw error;
+            }
 
-          if (!this.profile) {
-            throw error;
+            this.createSessionFromProfile();
+            try {
+              if (this.profile.profile === profile) {
+                console.log("not equal");
+              }
+              plexInfo = await ProfileManagement.getPlexInfo(this.profile);
+              this.setAuthorized();
+            } catch (err) {
+              CICSErrorHandler.handleCMCIRestError(error);
+            }
           }
-
-          this.createSessionFromProfile();
-          plexInfo = await ProfileManagement.getPlexInfo(this.profile);
-          this.setAuthorized();
         } else {
           CICSErrorHandler.handleCMCIRestError(error);
         }

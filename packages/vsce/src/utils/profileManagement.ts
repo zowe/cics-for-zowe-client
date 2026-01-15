@@ -237,8 +237,13 @@ export class ProfileManagement {
 
   public static async noneProvided(profile: imperative.IProfileLoaded): Promise<InfoLoaded[]> {
     const infoLoaded: InfoLoaded[] = [];
+    let isPlex: string | null;
 
-    const isPlex = await this.isPlex(profile);
+    try {
+      isPlex = await this.isPlex(profile);
+    } catch (error) {
+      throw new CICSExtensionError({ baseError: error });
+    }
     if (isPlex) {
       try {
         const { response } = await runGetCache({ profileName: profile.name, cacheToken: isPlex }, { nodiscard: false, summonly: false });
