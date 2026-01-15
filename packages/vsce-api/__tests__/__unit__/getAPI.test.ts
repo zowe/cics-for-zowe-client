@@ -36,7 +36,7 @@ jest.mock("vscode", () => {
 });
 
 import { getCICSForZoweExplorerAPI } from "../../src/getAPI";
-import { IExtensionAPI } from "../../src/interfaces";
+import type { IExtensionAPI } from "../../src/interfaces";
 import { ResourceTypes } from "../../src/resources";
 
 describe("getAPI tests", () => {

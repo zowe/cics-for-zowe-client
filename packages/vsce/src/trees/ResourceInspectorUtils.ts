@@ -9,14 +9,14 @@
  *
  */
 
-import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
-import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
+import type { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { ProgressLocation, commands, l10n, window, type ExtensionContext } from "vscode";
 import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { findResourceNodeInTree } from "../utils/treeUtils";
-import { TransformWebviewMessage } from "../webviews/common/vscode";
+import type { TransformWebviewMessage } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
-import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
+import type { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 
 export async function executeAction(
   command: string,

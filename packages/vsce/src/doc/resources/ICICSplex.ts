@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export interface ICICSplex extends IResource {
   accesstype: string;

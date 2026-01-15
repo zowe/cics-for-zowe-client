@@ -9,7 +9,7 @@
  *
  */
 
-import { IProgram, IResourceContext, ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, ResourceTypes, type IProgram, type IResourceContext, type ResourceActionOptions } from "@zowe/cics-for-zowe-explorer-api";
 import { l10n } from "vscode";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSProgram>[] = [

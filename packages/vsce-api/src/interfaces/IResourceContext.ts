@@ -9,8 +9,8 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import type { imperative } from "@zowe/zowe-explorer-api";
 
 export interface IResourceRegionInfo {
   regionName: string;

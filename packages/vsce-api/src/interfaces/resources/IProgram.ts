@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceWithStatus } from "./IResource";
+import type { IResourceWithStatus } from "./IResource";
 
 export interface IProgram extends IResourceWithStatus {
   library: string;

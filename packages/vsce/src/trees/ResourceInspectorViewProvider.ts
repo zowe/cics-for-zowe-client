@@ -10,26 +10,26 @@
  */
 
 import {
-  IResource,
-  IResourceContext,
-  IResourceProfileNameInfo,
-  ResourceAction,
-  ResourceTypeMap,
   ResourceTypes,
+  type IResource,
+  type IResourceContext,
+  type IResourceProfileNameInfo,
+  type ResourceAction,
+  type ResourceTypeMap,
 } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n, window } from "vscode";
-import { CICSTree } from ".";
-import { IContainedResource } from "../doc";
+import { Uri, l10n, window, type ExtensionContext, type Webview, type WebviewView, type WebviewViewProvider } from "vscode";
+import type { CICSTree } from ".";
+import type { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import type { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { executeAction } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 

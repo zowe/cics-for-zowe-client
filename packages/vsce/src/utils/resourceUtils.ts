@@ -9,14 +9,21 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { getCache, getResource, ICMCIApiResponse, ICMCIResponseResultSummary, IResourceQueryParams, putResource } from "@zowe/cics-for-zowe-sdk";
-import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import {
+  getCache,
+  getResource,
+  putResource,
+  type ICMCIApiResponse,
+  type ICMCIResponseResultSummary,
+  type IResourceQueryParams,
+} from "@zowe/cics-for-zowe-sdk";
+import { AuthOrder, type IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
-import { CICSResourceContainerNode } from "../trees";
+import type { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { getErrorCode } from "./errorUtils";
 
