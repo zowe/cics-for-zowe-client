@@ -18,6 +18,7 @@ import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetCache, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -260,11 +261,40 @@ export class ResourceContainer {
   }
 
   /**
-   * Resets the fetcher
+   * Resets the fetcher and discards all cache tokens
    */
-  reset() {
+  async reset() {
+    // Discard all cache tokens if not already discarded
+    if (!this.cacheDiscarded && this.summaries.size > 0) {
+      const discardPromises = Array.from(this.summaries.values())
+        .filter((summary) => summary?.cachetoken)
+        .map((summary) =>
+          runGetCache(
+            {
+              profileName: this.context.profileName,
+              cacheToken: summary.cachetoken,
+            },
+            {
+              nodiscard: false,
+              summonly: true,
+            }
+          ).catch((error) => {
+            CICSErrorHandler.handleCMCIRestError(
+              new CICSExtensionError({
+                baseError: error,
+                resourceName: this.context.profileName,
+                errorMessage: `Failed to discard cache token: ${error.message}`
+              })
+            );
+          })
+        );
+
+      await Promise.all(discardPromises);
+    }
+
     this.summaries.clear();
     this.nextIndex.clear();
+    this.cacheDiscarded = false;
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {
@@ -273,10 +303,4 @@ export class ResourceContainer {
     this.summaries.set(meta, summ);
   }
 
-  /**
-   * @returns The summaries Map containing resource metadata and their corresponding CMCI response summaries
-   */
-  getSummaries(): Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> {
-    return this.summaries;
-  }
 }
