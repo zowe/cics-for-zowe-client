@@ -32,22 +32,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Hyperlink navigation tests", async () => {
-  test("should inspect a jvm server resource", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "JVM Servers");
-
-    await findAndClickTreeItem(page, constants.JVM_SERVER_NAME, "right");
-    await page.waitForTimeout(200);
-    await findAndClickText(page, "Inspect Resource");
-    await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
-
-    await getResourceInspector(page).locator("#resource-title").waitFor();
-    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/1.png" });
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
-  });
-
   test("should click on hyperlink and navigate to job in JOBS section", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -60,6 +44,7 @@ test.describe("Hyperlink navigation tests", async () => {
     await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
 
     await getResourceInspector(page).locator("#resource-title").waitFor();
+    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("LOG");

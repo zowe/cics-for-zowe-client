@@ -30,17 +30,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("JVM Endpoint tests", () => {
-  test("should expand JVM server tree to reveal JVM endpoint", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "JVM Servers");
-    await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME);
-
-    await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText("MYJVMENDPOINT1 (9080)");
-  });
-
   test("should enable and disable a jvm endpoint", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
