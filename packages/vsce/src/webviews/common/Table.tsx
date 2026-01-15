@@ -10,7 +10,7 @@
  */
 
 import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { createContext, JSX, useContext, useState } from "react";
+import { createContext, JSX, useContext, useEffect, useState } from "react";
 import { ContextMenu } from "../resource-inspector-panel/Contextmenu";
 import { RefreshButton } from "./RefreshButton";
 import { IResourceInspectorResource } from "./vscode";
@@ -34,6 +34,10 @@ const Table = ({ headers, rows, highlightDifferences = false, refresh = undefine
 
   const [showHiddenRows, setShowHiddenRows] = useState(false);
   const [filterValue, setFilterValue] = useState("");
+
+  useEffect(() => {
+    setFilterValue("");
+  }, [rows]);
 
   const valuesDiffer = (vals: (string | JSX.Element)[]) => {
     // Array -> Set -> Array = removes duplicates

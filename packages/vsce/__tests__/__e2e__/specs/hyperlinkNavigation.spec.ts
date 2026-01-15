@@ -43,9 +43,8 @@ test.describe("Hyperlink navigation tests", async () => {
     await findAndClickText(page, "Inspect Resource");
     await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).locator('span').filter({ hasText: constants.JVM_SERVER_NAME }).waitFor();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/1.png" });
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
   });
 
   test("should click on hyperlink and navigate to job in JOBS section", async ({ page }) => {
@@ -59,7 +58,7 @@ test.describe("Hyperlink navigation tests", async () => {
     await findAndClickText(page, "Inspect Resource");
     await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
 
-    await getResourceInspector(page).locator('span').filter({ hasText: 'MYJVM1' }).waitFor();
+    await getResourceInspector(page).locator('span').filter({ hasText: constants.JVM_SERVER_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("LOG");
