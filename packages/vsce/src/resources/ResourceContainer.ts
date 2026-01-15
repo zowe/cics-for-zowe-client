@@ -27,7 +27,6 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
-  public cacheDiscarded: boolean = false;
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -198,7 +197,9 @@ export class ResourceContainer {
             summonly: true,
           }
         );
-        this.cacheDiscarded = true;
+        // Set cachetoken to null after invalidation
+        summary.cachetoken = null;
+        this.summaries.set(meta, summary);
       }
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
@@ -265,36 +266,37 @@ export class ResourceContainer {
    */
   async reset() {
     // Discard all cache tokens if not already discarded
-    if (!this.cacheDiscarded && this.summaries.size > 0) {
-      const discardPromises = Array.from(this.summaries.values())
-        .filter((summary) => summary?.cachetoken)
-        .map((summary) =>
-          runGetCache(
-            {
-              profileName: this.context.profileName,
-              cacheToken: summary.cachetoken,
-            },
-            {
-              nodiscard: false,
-              summonly: true,
-            }
-          ).catch((error) => {
-            CICSErrorHandler.handleCMCIRestError(
-              new CICSExtensionError({
-                baseError: error,
-                resourceName: this.context.profileName,
-                errorMessage: `Failed to discard cache token: ${error.message}`
-              })
-            );
-          })
-        );
+    const summariesWithTokens = this.summaries.size > 0
+      ? Array.from(this.summaries.values()).filter((summary) => summary?.cachetoken)
+      : [];
+    
+    if (summariesWithTokens.length > 0) {
+      const discardPromises = summariesWithTokens.map((summary) =>
+        runGetCache(
+          {
+            profileName: this.context.profileName,
+            cacheToken: summary.cachetoken,
+          },
+          {
+            nodiscard: false,
+            summonly: true,
+          }
+        ).catch((error) => {
+          CICSErrorHandler.handleCMCIRestError(
+            new CICSExtensionError({
+              baseError: error,
+              resourceName: this.context.profileName,
+              errorMessage: `Failed to discard cache token: ${error.message}`
+            })
+          );
+        })
+      );
 
       await Promise.all(discardPromises);
     }
 
     this.summaries.clear();
     this.nextIndex.clear();
-    this.cacheDiscarded = false;
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {
