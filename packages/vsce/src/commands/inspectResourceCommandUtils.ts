@@ -43,11 +43,17 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
     regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
   };
 
+  let parentResource: Resource<IResource>;
+  const parent = node.getParent && node.getParent();
+  if (parent && typeof (parent as any).getContainedResource === "function") {
+    parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
+  }
+
   const upToDateResource = await loadResourcesWithProgress(
     [node.getContainedResource().meta],
     node.getContainedResourceName(),
     resourceContext,
-    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource
+    parentResource
   );
 
   if (upToDateResource) {
@@ -240,4 +246,29 @@ async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Pro
   const choice = await Gui.resolveQuickPick(quickPick);
   quickPick.hide();
   return choice;
+}
+
+export async function inspectRegionByName(
+  context: ExtensionContext,
+  resourceName: string,
+  resourceType: string,
+  overrideContext?: IResourceProfileNameInfo
+) {
+  if (overrideContext) {
+    const type = getResourceType(resourceType);
+
+    if (!type || type.length === 0) {
+      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
+      CICSLogger.error(message);
+      window.showErrorMessage(message);
+      return;
+    }
+
+    const resourceContext: IResourceProfileNameInfo = overrideContext;
+    const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
+    if (upToDateResource) {
+      await showInspectResource(context, upToDateResource, resourceContext);
+    }
+    return;
+  }
 }

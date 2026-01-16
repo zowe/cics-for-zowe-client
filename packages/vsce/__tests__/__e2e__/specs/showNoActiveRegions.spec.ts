@@ -15,6 +15,7 @@ test.describe("Show no active regions found if 0 regions present in plex ", () =
     await runInCommandPalette(page, "Zowe Explorer for IBM CICS TS: Inspect CICS Resource");
     await page.getByRole("option", { name: "wiremock_localhost" }).click();
     await page.getByRole("option", { name: constants.CICSPLEX_NAME_2 }).click();
+    await page.waitForTimeout(200);
     await page.getByRole("alert").getByText("No Active Regions found in MYPLEX2").waitFor();
   });
 });
