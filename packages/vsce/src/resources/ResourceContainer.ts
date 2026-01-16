@@ -199,7 +199,6 @@ export class ResourceContainer {
         );
         // Set cachetoken to null after invalidation
         summary.cachetoken = null;
-        this.summaries.set(meta, summary);
       }
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
