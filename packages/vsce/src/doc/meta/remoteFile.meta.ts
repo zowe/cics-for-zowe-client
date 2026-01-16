@@ -20,6 +20,8 @@ export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   resourceName: CicsCmciConstants.CICS_CMCI_REMOTE_FILE,
   humanReadableNamePlural: l10n.t("Remote Files"),
   humanReadableNameSingular: l10n.t("Remote File"),
+  eibfnName: "FILE",
+  helpTopicNameForSet: "commands-set-file#dfha8fi__title__12",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");

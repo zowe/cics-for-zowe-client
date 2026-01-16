@@ -20,6 +20,8 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   resourceName: CicsCmciConstants.CICS_URIMAP,
   humanReadableNamePlural: l10n.t("URI Maps"),
   humanReadableNameSingular: l10n.t("URI Map"),
+  eibfnName: "URIMAP",
+  helpTopicNameForSet: "commands-set-urimap#dfha8_seturimap__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

@@ -13,6 +13,7 @@ import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
 import { ICICSExtensionError } from "./ICICSExtensionError";
+import { getEIBFNameFromMetas } from "../utils/errorUtils";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: ICICSExtensionError;
@@ -34,7 +35,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
       if (feedback) {
-        this.cicsExtensionError.resourceType = feedback.eibfn_alt.replace("SET", "").trim();
+        this.cicsExtensionError.resourceType = getEIBFNameFromMetas(feedback.eibfn_alt);
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
@@ -48,6 +49,8 @@ export class CICSExtensionError extends Error {
             feedback.resp2
           );
       } else {
+        //setting resourceType to GET for generating doc url
+        this.cicsExtensionError.resourceType = api_function;
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(

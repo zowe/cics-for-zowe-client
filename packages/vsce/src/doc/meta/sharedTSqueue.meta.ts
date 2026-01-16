@@ -20,6 +20,8 @@ export const SharedTSQueueMeta: IResourceMeta<ISharedTSQueue> = {
   resourceName: CicsCmciConstants.CICS_CMCI_SHARED_TS_QUEUE,
   humanReadableNamePlural: l10n.t("Shared TS Queues"),
   humanReadableNameSingular: l10n.t("Shared TS Queue"),
+  eibfnName: "TSQUEUE",
+  helpTopicNameForSet: "commands-set-tsqueue-tsqname#dfha8gg__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");

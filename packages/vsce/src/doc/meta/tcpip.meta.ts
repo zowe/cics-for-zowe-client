@@ -20,6 +20,8 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   resourceName: CicsCmciConstants.CICS_TCPIPSERVICE_RESOURCE,
   humanReadableNamePlural: l10n.t("TCP/IP Services"),
   humanReadableNameSingular: l10n.t("TCP/IP Service"),
+  eibfnName: "TCPIPSERVICE",
+  helpTopicNameForSet: "commands-set-tcpipservice#dfha8fx__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
