@@ -6,6 +6,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - Enhancement: Organised profile tree alphabetically. [552](https://github.com/zowe/cics-for-zowe-client/issues/552)
 - Enhancement: Open resource documentation from error notification. [#537](https://github.com/zowe/cics-for-zowe-client/issues/537)
+- Enhancement: Discard CMCI result sets when they are not required. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
 
 ## `3.17.0`
 
