@@ -63,9 +63,9 @@ describe("Resource Container", () => {
       regionName: "MYREG",
     });
     jest.mock("../../../src/utils/resourceUtils", () => ({
-  runGetResource: jest.fn(),
-  runGetCache: jest.fn(),
-      }));
+      runGetResource: jest.fn(),
+      runGetCache: jest.fn(),
+    }));
     jest.clearAllMocks();
 
     getCacheMock.mockResolvedValue({
