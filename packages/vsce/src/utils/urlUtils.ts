@@ -11,6 +11,7 @@
 
 import { env, Uri } from "vscode";
 import { URLConstants } from "../errors/urlConstants";
+import { getHelpTopicNameFromMetas } from "./errorUtils";
 
 export async function openDocumentation(resourceType?: string): Promise<void> {
   const url = generateDocumentationURL(resourceType);
@@ -26,17 +27,13 @@ export function generateDocumentationURL(resourceType?: string): Uri {
     return baseUri;
   }
 
-  switch (resourceType) {
-    case "program":
-      return baseUri.with({ query: `topic=sc-set-program` });
+  const helpTopicName = getHelpTopicNameFromMetas(resourceType);
 
-    case "bundle":
-      return baseUri.with({ query: `topic=sc-set-bundle` });
-
-    case "tsqueue":
-      return baseUri.with({ query: `topic=commands-set-tsqueue-tsqname` });
-
-    default:
-      return baseUri.with({ query: `topic=commands-set-${resourceType.toLowerCase()}` });
+  if (helpTopicName) {
+    return baseUri.with({ query: `topic=${helpTopicName}` });
   }
+
+  // Fallback to default pattern
+  return baseUri;
 }
+

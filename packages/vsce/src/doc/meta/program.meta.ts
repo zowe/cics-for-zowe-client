@@ -20,6 +20,8 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   resourceName: CicsCmciConstants.CICS_PROGRAM_RESOURCE,
   humanReadableNamePlural: l10n.t("Programs"),
   humanReadableNameSingular: l10n.t("Program"),
+  eibfnName: "PROGRAM",
+  helpTopicNameForSet: "sc-set-program#dfha8fq__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");

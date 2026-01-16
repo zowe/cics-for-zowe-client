@@ -20,6 +20,8 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   resourceName: CicsCmciConstants.CICS_PIPELINE_RESOURCE,
   humanReadableNamePlural: l10n.t("Pipelines"),
   humanReadableNameSingular: l10n.t("Pipeline"),
+  eibfnName: "PIPELINE",
+  helpTopicNameForSet: "commands-set-pipeline#dfha8bv__title__5",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
