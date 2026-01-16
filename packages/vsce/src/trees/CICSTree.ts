@@ -33,7 +33,6 @@ import { ProfileManagement } from "../utils/profileManagement";
 import { openConfigFile } from "../utils/workspaceUtils";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { CICSSessionTree } from "./CICSSessionTree";
-import { runGetCache } from "../utils/resourceUtils";
 
 export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   loadedProfiles: CICSSessionTree[] = [];
