@@ -21,7 +21,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   humanReadableNamePlural: l10n.t("Transactions"),
   humanReadableNameSingular: l10n.t("Transaction"),
   eibfnName: "TRANSACTION",
-  helpTopicNameForSet: "commands-set-transaction#dfha8gf__title__6",
+  helpTopicNameForSet: "commands-set-transaction",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");

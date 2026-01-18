@@ -21,7 +21,7 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   humanReadableNamePlural: l10n.t("TS Queues"),
   humanReadableNameSingular: l10n.t("TS Queue"),
   eibfnName: "TSQUEUE",
-  helpTopicNameForSet: "commands-set-tsqueue-tsqname#dfha8gg__title__6",
+  helpTopicNameForSet: "commands-set-tsqueue-tsqname",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");

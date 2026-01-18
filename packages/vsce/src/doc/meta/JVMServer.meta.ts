@@ -22,7 +22,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNamePlural: l10n.t("JVM Servers"),
   humanReadableNameSingular: l10n.t("JVM Server"),
   eibfnName: "JVMSERVER",
-  helpTopicNameForSet: "commands-set-jvmserver#dfha8_setenclave__title__6",
+  helpTopicNameForSet: "commands-set-jvmserver",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

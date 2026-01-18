@@ -9,22 +9,12 @@
  *
  */
 
+import { getMetas } from "../../src/doc";
 import { generateDocumentationURL } from "../../src/utils/urlUtils";
 
-const resources = [
-  "bundle",
-  "file",
-  "jvmserver",
-  "library",
-  "pipeline",
-  "program",
-  "task",
-  "tcpipservice",
-  "transaction",
-  "tsqueue",
-  "urimap",
-  "webservice",
-];
+const resources = getMetas()
+  .filter((meta) => meta.eibfnName && meta.eibfnName.trim() !== "")
+  .map((meta) => meta.eibfnName?.toUpperCase());
 
 describe("Test suite to validate IBM Documentation URL", () => {
   for (const resource of resources) {
@@ -37,8 +27,7 @@ describe("Test suite to validate IBM Documentation URL", () => {
       const content = await response.text();
       expect(content.length).toBeGreaterThan(0);
 
-      const resourceUpperCase = resource.replace("-", " / ").toUpperCase();
-      expect(content).toContain(`SET ${resourceUpperCase}`);
+      expect(content).toContain(`SET ${resource}`);
     });
   }
 
@@ -64,4 +53,3 @@ async function fetchUrlResponse(baseUrl: string) {
     },
   });
 }
-

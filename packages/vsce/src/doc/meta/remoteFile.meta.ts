@@ -21,7 +21,7 @@ export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   humanReadableNamePlural: l10n.t("Remote Files"),
   humanReadableNameSingular: l10n.t("Remote File"),
   eibfnName: "FILE",
-  helpTopicNameForSet: "commands-set-file#dfha8fi__title__12",
+  helpTopicNameForSet: "commands-set-file",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");

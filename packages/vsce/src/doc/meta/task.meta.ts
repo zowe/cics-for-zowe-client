@@ -21,7 +21,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   humanReadableNamePlural: l10n.t("Tasks"),
   humanReadableNameSingular: l10n.t("Task"),
   eibfnName: "TASK",
-  helpTopicNameForSet: "commands-set-task#dfha803__title__6",
+  helpTopicNameForSet: "commands-set-task",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TASK=${n}`).join(" OR ");

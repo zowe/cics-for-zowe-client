@@ -21,7 +21,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNamePlural: l10n.t("Bundle Parts"),
   humanReadableNameSingular: l10n.t("Bundle Part"),
   eibfnName: "BUNDLE",
-  helpTopicNameForSet: "sc-set-bundle#dfha8_setbundle__title__6",
+  helpTopicNameForSet: "sc-set-bundle",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
     let criteriaString = `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")})`;

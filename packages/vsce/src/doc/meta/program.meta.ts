@@ -21,7 +21,7 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   humanReadableNamePlural: l10n.t("Programs"),
   humanReadableNameSingular: l10n.t("Program"),
   eibfnName: "PROGRAM",
-  helpTopicNameForSet: "sc-set-program#dfha8fq__title__6",
+  helpTopicNameForSet: "sc-set-program",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");

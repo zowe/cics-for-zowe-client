@@ -33,7 +33,7 @@ function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: strin
     return undefined;
   }
 
-  const meta = getMetas().find((m) => m.eibfnName && m.eibfnName.toLowerCase().includes(resourceType.trim().toLowerCase()));
+  const meta = getMetas().find((m) => m.eibfnName && resourceType.trim().toLowerCase().includes(m.eibfnName.toLowerCase()));
 
   if (!meta) {
     return undefined;
