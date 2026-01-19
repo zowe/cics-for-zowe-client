@@ -12,8 +12,8 @@
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
-import { ICICSExtensionError } from "./ICICSExtensionError";
 import { getEIBFNameFromMetas } from "../utils/errorUtils";
+import { ICICSExtensionError } from "./ICICSExtensionError";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: ICICSExtensionError;
@@ -54,7 +54,7 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            `The CMCI REST API request failed` +
+            `The request failed` +
               (resourceName ? ` for resources: {0}. ` : `. `) +
               `Response details: API_FUNCTION: {1}, ` +
               `RESP: {2} ({3}), ` +
@@ -84,7 +84,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
     } else {
       const err = error as Error;
-      this.cicsExtensionError.errorMessage = l10n.t("The CMCI REST API request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
+      this.cicsExtensionError.errorMessage = l10n.t("The request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
     }
   }
 }

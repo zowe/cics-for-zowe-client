@@ -17,7 +17,7 @@ export function getErrorCode(error: any) {
 }
 
 export function getHelpTopicNameFromMetas(resourceType?: string): string | undefined {
-  if (resourceType === "GET") {
+  if (resourceType === "get") {
     return URLConstants.GET_COMMAND_URI;
   }
 

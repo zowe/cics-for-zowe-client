@@ -19,5 +19,5 @@ export const URLConstants = {
   CICSTS_PAGE: "cics-ts",
   VERSION: "6.x",
   TOPIC: "topic",
-  GET_COMMAND_URI: "commands-get#eyup2ap__title__5",
+  GET_COMMAND_URI: "commands-get",
 };
