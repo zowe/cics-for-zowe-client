@@ -22,16 +22,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Bundle tests", () => {
-  test("should expand bundle tree to reveal bundles", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "Bundles");
-
-    await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toHaveText(constants.BUNDLE_1_NAME);
-  });
-
   test("should trigger show bundle directory command and select USS profile", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -39,6 +29,7 @@ test.describe("Bundle tests", () => {
     await findAndClickTreeItem(page, "Bundles");
 
     await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.BUNDLE_1_NAME)).toHaveText(constants.BUNDLE_1_NAME);
     await findAndClickTreeItem(page, constants.BUNDLE_1_NAME, "right");
 
     // Verify "Show Bundle Directory" context menu option appears

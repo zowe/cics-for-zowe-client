@@ -30,18 +30,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("LocalFile tests", () => {
-  test("should expand files tree to reveal files", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, constants.REGION_NAME);
-    await findAndClickTreeItem(page, "Files");
-
-    await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toHaveText(constants.LOCAL_FILE_1_NAME);
-    await expect(getTreeItem(page, constants.REMOTE_FILE_1_NAME)).toBeVisible();
-    await expect(getTreeItem(page, constants.REMOTE_FILE_1_NAME)).toHaveText(constants.REMOTE_FILE_1_NAME);
-  });
-
   test("should enable and disable a local file", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -50,6 +38,8 @@ test.describe("LocalFile tests", () => {
 
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toHaveText(constants.LOCAL_FILE_1_NAME);
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.REMOTE_FILE_1_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.REMOTE_FILE_1_NAME)).toHaveText(constants.REMOTE_FILE_1_NAME);
 
     await findAndClickTreeItem(page, constants.LOCAL_FILE_1_NAME, "right");
 
