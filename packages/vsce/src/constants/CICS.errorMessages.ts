@@ -12,4 +12,5 @@
 export default {
   NO_CICS_RESOURCE_SELECTED: "No CICS resource was selected.",
   INVALID_USER_OR_SESSION_EXPIRED: "Invalid credentials or your token has expired. Please login again for profile {0}.",
+  LOGIN_FAILED_ACCOUNT_LOCKOUT_WARNING: "Login failed. Multiple failed attempts may lock your account. Please verify your credentials.",
 };
