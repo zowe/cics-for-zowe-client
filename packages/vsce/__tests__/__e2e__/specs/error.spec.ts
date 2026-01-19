@@ -171,9 +171,14 @@ test.describe("Error scenarios", () => {
     await textBox.fill("PROG3,PROG4");
     await textBox.press("Enter");
 
-    const notification = page.getByRole("list", { name: "The CMCI REST API request failed", exact: false });
+    const notification = page.getByRole("list", { name: "The request failed", exact: false });
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText(constants.PROGRAM_NOT_FOUND_ERROR_MESSAGE);
+    await expect(notification).toContainText(constants.PROGRAM_NOT_FOUND_ERROR_MESSAGE);
+
+    await notification.getByRole("button", { name: "Open Documentation", exact: true }).click();
+    const dialog = await page.getByText("www.ibm.com/docs/en/cics-ts/6.x?", { exact: false });
+    await expect(dialog).toBeVisible();
+    await page.getByRole("button", { name: "Cancel", exact: true }).click();
   });
 
   test("disabling program throws error", async ({ page }) => {
