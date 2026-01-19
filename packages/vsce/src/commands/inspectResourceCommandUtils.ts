@@ -272,3 +272,35 @@ export async function inspectRegionByName(
     return;
   }
 }
+export async function inspectRegionByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
+  const resourceContext: IResourceProfileNameInfo = {
+    profileName: node.getProfile().name,
+    cicsplexName: node.cicsplexName,
+    regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+  };
+
+  let parentResource: Resource<IResource> | undefined;
+  const parent = node.getParent && node.getParent();
+  if (parent) {
+    const grandParent = (parent as CICSResourceContainerNode<IResource>).getParent && (parent as CICSResourceContainerNode<IResource>).getParent();
+    if (grandParent && typeof (grandParent as any).getContainedResource === "function") {
+      parentResource = (grandParent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
+    } else if (typeof (parent as any).getContainedResource === "function") {
+      parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
+    }
+  }
+
+  const meta = node.getContainedResource().meta;
+  const primaryName = node.getContainedResourceName();
+  const criteria = meta.buildCriteria([primaryName], parentResource?.attributes);
+
+  const upToDateResource = await loadResourcesWithProgress(
+    [node.getContainedResource().meta],
+    node.getContainedResourceName(),
+    resourceContext,
+    parentResource
+  );
+
+  const resourceToShow = upToDateResource ?? node.getContainedResource();
+  await showInspectResource(context, resourceToShow, resourceContext, node);
+}

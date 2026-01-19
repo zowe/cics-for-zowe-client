@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, l10n, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees";
-import { inspectResourceByNode } from "./inspectResourceCommandUtils";
+import { inspectResourceByNode, inspectRegionByNode } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeRegionCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: CICSRegionTree) => {
@@ -29,6 +29,6 @@ export function getInspectTreeRegionCommand(context: ExtensionContext, treeview:
         );
       }
     }
-    await inspectResourceByNode(context, targetNode as any);
+    await inspectRegionByNode(context, targetNode as any);
   });
 }
