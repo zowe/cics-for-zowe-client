@@ -18,7 +18,7 @@ import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetCache, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -270,6 +270,8 @@ export class ResourceContainer {
       : [];
     
     if (summariesWithTokens.length > 0) {
+      CICSLogger.info(`Discarding ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
+      
       const discardPromises = summariesWithTokens.map((summary) =>
         runGetCache(
           {
@@ -281,13 +283,7 @@ export class ResourceContainer {
             summonly: true,
           }
         ).catch((error) => {
-          CICSErrorHandler.handleCMCIRestError(
-            new CICSExtensionError({
-              baseError: error,
-              resourceName: this.context.profileName,
-              errorMessage: `Failed to discard cache token: ${error.message}`
-            })
-          );
+          CICSLogger.debug(`Cache token discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
         })
       );
 
