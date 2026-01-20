@@ -17,7 +17,8 @@ export interface IResourceMeta<T extends IResource> {
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
   eibfnName?: string;
-  helpTopicNameForSet?: string;
+  queryParamForSet?: string;
+  anchorFragmentForSet?: string;
 
   buildCriteria(criteria: string[], parentResource?: IResource): string;
   getDefaultCriteria(parentResource?: IResource): string;

@@ -19,5 +19,7 @@ export const URLConstants = {
   CICSTS_PAGE: "cics-ts",
   VERSION: "6.x",
   TOPIC: "topic",
+  GET_RESOURCE: "get",
   GET_COMMAND_URI: "commands-get",
+  GET_COMMAND_URI_FRAGMENT: "dfha8_viewenclave__title__1",
 };

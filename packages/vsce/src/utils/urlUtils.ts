@@ -27,10 +27,10 @@ export function generateDocumentationURL(resourceType?: string): Uri {
     return baseUri;
   }
 
-  const helpTopicName = getHelpTopicNameFromMetas(resourceType);
+  const { queryParam, fragment } = getHelpTopicNameFromMetas(resourceType);
 
-  if (helpTopicName) {
-    return baseUri.with({ query: `topic=${helpTopicName}` });
+  if (queryParam && fragment) {
+    return baseUri.with({ query: `topic=${queryParam}`, fragment: fragment });
   }
 
   // Fallback to default pattern

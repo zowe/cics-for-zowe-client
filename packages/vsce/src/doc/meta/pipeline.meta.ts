@@ -21,7 +21,8 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   humanReadableNamePlural: l10n.t("Pipelines"),
   humanReadableNameSingular: l10n.t("Pipeline"),
   eibfnName: "PIPELINE",
-  helpTopicNameForSet: "commands-set-pipeline",
+  queryParamForSet: "commands-set-pipeline",
+  anchorFragmentForSet: "dfha8bv__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

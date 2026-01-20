@@ -21,9 +21,8 @@ describe("Test suite to validate IBM Documentation URL", () => {
     it(`should successfully validate the documentation link for ${resource}`, async () => {
       const baseUrl = generateDocumentationURL(resource).toString(true);
       const response = await fetchUrlResponse(baseUrl);
-
       expect(response.status).toBe(200);
-      expect(response.url).toBe(baseUrl);
+      expect(baseUrl).toContain(response.url);
       const content = await response.text();
       expect(content.length).toBeGreaterThan(0);
 

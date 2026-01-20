@@ -16,19 +16,19 @@ export function getErrorCode(error: any) {
   return error.mDetails?.errorCode || error.response?.status;
 }
 
-export function getHelpTopicNameFromMetas(resourceType?: string): string | undefined {
-  if (resourceType === "get") {
-    return URLConstants.GET_COMMAND_URI;
+export function getHelpTopicNameFromMetas(resourceType?: string): { queryParam: string; fragment: string } | undefined {
+  if (resourceType === URLConstants.GET_RESOURCE) {
+    return { queryParam: URLConstants.GET_COMMAND_URI, fragment: URLConstants.GET_COMMAND_URI_FRAGMENT };
   }
-
-  return getResourceTypeAndHelpTopic(resourceType)?.helpTopicName;
+  const { queryParam, fragment } = getResourceTypeAndHelpTopic(resourceType);
+  return { queryParam, fragment };
 }
 
 export function getEIBFNameFromMetas(eibfnAlt?: string): string | undefined {
   return getResourceTypeAndHelpTopic(eibfnAlt)?.eibfnName;
 }
 
-function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: string; helpTopicName?: string } | undefined {
+function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: string; queryParam?: string; fragment?: string } | undefined {
   if (!resourceType) {
     return undefined;
   }
@@ -41,6 +41,7 @@ function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: strin
 
   return {
     eibfnName: meta.eibfnName,
-    helpTopicName: meta.helpTopicNameForSet,
+    queryParam: meta.queryParamForSet,
+    fragment: meta.anchorFragmentForSet,
   };
 }
