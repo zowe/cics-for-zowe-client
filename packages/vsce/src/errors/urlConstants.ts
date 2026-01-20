@@ -21,5 +21,5 @@ export const URLConstants = {
   TOPIC: "topic",
   GET_RESOURCE: "get",
   GET_COMMAND_URI: "commands-get",
-  GET_COMMAND_URI_FRAGMENT: "dfha8_viewenclave__title__1",
+  GET_COMMAND_URI_FRAGMENT: "eyup2ap__title__5",
 };

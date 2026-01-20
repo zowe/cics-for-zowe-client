@@ -23,7 +23,7 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   humanReadableNameSingular: l10n.t("Bundle"),
   eibfnName: "BUNDLE",
   queryParamForSet: "sc-set-bundle",
-  anchorFragmentForSet: "dfha8_setbundle__title__5",
+  anchorFragmentForSet: "dfha8_setbundle__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
