@@ -290,16 +290,15 @@ export async function inspectRegionByNode(context: ExtensionContext, node: CICSR
     }
   }
 
-  const meta = node.getContainedResource().meta;
-  const primaryName = node.getContainedResourceName();
-  const criteria = meta.buildCriteria([primaryName], parentResource?.attributes);
-
-  const upToDateResource = await loadResourcesWithProgress(
-    [node.getContainedResource().meta],
-    node.getContainedResourceName(),
-    resourceContext,
-    parentResource
-  );
+  let upToDateResource = null;
+  if (resourceContext.cicsplexName) {
+    upToDateResource = await loadResourcesWithProgress(
+      [node.getContainedResource().meta],
+      node.getContainedResourceName(),
+      resourceContext,
+      parentResource
+    );
+  }
 
   const resourceToShow = upToDateResource ?? node.getContainedResource();
   await showInspectResource(context, resourceToShow, resourceContext, node);

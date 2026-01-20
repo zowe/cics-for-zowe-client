@@ -16,6 +16,16 @@ import PersistentStorage from "../../utils/PersistentStorage";
 import { IRegion } from "../resources/IRegion";
 import { IResourceMeta } from "./IResourceMeta";
 
+function getFirstAttributeValue(resource: Resource<IRegion>, ...keys: string[]): string {
+  for (const key of keys) {
+    const value = (resource.attributes as any)[key];
+    if (value !== undefined && value !== null && String(value).trim().length > 0) {
+      return String(value).trim();
+    }
+  }
+  return "";
+}
+
 export const RegionMeta: IResourceMeta<IRegion> = {
   resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
   humanReadableNamePlural: l10n.t("Regions"),
@@ -30,9 +40,10 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getLabel: function (region: Resource<IRegion>): string {
-    let label = `${region.attributes.cicsname}`;
-    if (region.attributes.cicsstatus && region.attributes.cicsstatus.trim().length > 0) {
-      const state = region.attributes.cicsstatus.trim();
+    const name = getFirstAttributeValue(region, "cicsname", "eyu_cicsname", "EYU_CICSNAME", "jobname", "JOBNAME");
+    let label = `${name}`;
+    const state = getFirstAttributeValue(region, "cicsstatus", "cicsstate", "status");
+    if (state && state.length > 0) {
       if (state.toUpperCase() !== "ACTIVE") {
         label += ` (${state.charAt(0).toUpperCase()}${state.slice(1).toLowerCase()})`;
       }
@@ -41,7 +52,8 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getContext: function (region: Resource<IRegion>): string {
-    return `${CicsCmciConstants.CICS_CMCI_MANAGED_REGION}.${region.attributes.cicsname}`;
+    const name = getFirstAttributeValue(region, "cicsname", "eyu_cicsname", "EYU_CICSNAME", "jobname", "JOBNAME");
+    return `${CicsCmciConstants.CICS_CMCI_MANAGED_REGION}.${name}`;
   },
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -50,18 +62,20 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getName(region: Resource<IRegion>): string {
-    return region.attributes.cicsname;
+    return getFirstAttributeValue(region, "cicsname", "eyu_cicsname", "EYU_CICSNAME", "jobname", "JOBNAME");
   },
 
   getHighlights(resource: Resource<IRegion>) {
+    const name = getFirstAttributeValue(resource, "cicsname", "eyu_cicsname", "EYU_CICSNAME", "jobname", "JOBNAME");
+    const state = getFirstAttributeValue(resource, "cicsstate", "cicsstatus", "status");
     return [
       {
         key: l10n.t("Name"),
-        value: resource.attributes.cicsname,
+        value: name,
       },
       {
         key: l10n.t("CICS State"),
-        value: resource.attributes.cicsstate,
+        value: state,
       },
     ];
   },

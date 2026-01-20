@@ -17,5 +17,6 @@ test.describe("Show no active regions found if 0 regions present in plex ", () =
     await page.getByRole("option", { name: constants.CICSPLEX_NAME_2 }).click();
     await page.waitForTimeout(200);
     await page.getByRole("alert").getByText("No Active Regions found in MYPLEX2").waitFor();
+    await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/showNoActiveRegions/1.png" });
   });
 });
