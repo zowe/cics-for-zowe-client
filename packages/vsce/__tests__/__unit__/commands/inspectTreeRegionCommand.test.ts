@@ -17,7 +17,7 @@ jest.mock("../../../src/commands/setCICSRegionCommand", () => ({
 
 jest.mock("../../../src/commands/inspectResourceCommandUtils", () => ({
   inspectRegionByName: jest.fn(),
-  inspectResourceByNode: jest.fn(),
+  inspectRegionByNode: jest.fn(),
 }));
 
 import { getInspectTreeRegionCommand } from "../../../src/commands/inspectTreeRegionCommand";
@@ -49,7 +49,7 @@ describe("Test suite for Inspect Region command", () => {
     (setModule.setCICSRegion as jest.Mock).mockResolvedValue({ profile: fakeProfile, cicsPlexName: "PLEX1", regionName: "REG1" });
 
     const context = {} as any;
-    (inspectModule.inspectResourceByNode as jest.Mock).mockResolvedValue(undefined);
+    (inspectModule.inspectRegionByNode as jest.Mock).mockResolvedValue(undefined);
 
     const command = (getInspectTreeRegionCommand as any)(context, { selection: [] } as any);
 
@@ -62,6 +62,6 @@ describe("Test suite for Inspect Region command", () => {
     await (command as any)(fakeNode);
 
     expect(setModule.setCICSRegion).not.toHaveBeenCalled();
-    expect(inspectModule.inspectResourceByNode).toHaveBeenCalledWith(context, fakeNode);
+    expect(inspectModule.inspectRegionByNode).toHaveBeenCalledWith(context, fakeNode);
   });
 });
