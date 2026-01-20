@@ -18,18 +18,20 @@ jest.mock("../../../src/doc", () => ({
   getMetas: getMetasMock,
 }));
 
+const mockMetas = [
+  {
+    eibfnName: "LIBRARY",
+    queryParamForSet: "commands-set-library",
+    anchorFragmentForSet: "setlibrary1__conditions__title__1",
+  },
+  {
+    eibfnName: "PROGRAM",
+    queryParamForSet: "sc-set-program",
+    anchorFragmentForSet: "dfha8fq__title__6",
+  },
+];
+  
 describe("Test suite for errorUtils", () => {
-  const mockMetas = [
-    {
-      eibfnName: "LIBRARY",
-      helpTopicNameForSet: "commands-set-library",
-    },
-    {
-      eibfnName: "PROGRAM",
-      helpTopicNameForSet: "sc-set-program",
-    },
-  ];
-
   describe("Tests for getErrorCode()", () => {
     it("should return error code from mDetails.errorCode", () => {
       const error = {
@@ -62,15 +64,15 @@ describe("Test suite for errorUtils", () => {
     });
 
     it("should return GET_COMMAND_URI for 'get' resource type", () => {
-      expect(getHelpTopicNameFromMetas("get")).toBe(URLConstants.GET_COMMAND_URI);
+      expect(getHelpTopicNameFromMetas("get")).toEqual({ queryParam: URLConstants.GET_COMMAND_URI, fragment: URLConstants.GET_COMMAND_URI_FRAGMENT });
     });
 
-    it("should return helpTopicName for LIBRARY resource type", () => {
-      expect(getHelpTopicNameFromMetas("library")).toBe("commands-set-library");
+    it("should return queryParam and fragment for LIBRARY resource type", () => {
+      expect(getHelpTopicNameFromMetas("library")).toEqual({ queryParam: "commands-set-library", fragment: "setlibrary1__conditions__title__1" });
     });
 
-    it("should return helpTopicName for PROGRAM resource type", () => {
-      expect(getHelpTopicNameFromMetas("program")).toBe("sc-set-program");
+    it("should return queryParam and fragment for PROGRAM resource type", () => {
+      expect(getHelpTopicNameFromMetas("program")).toEqual({ queryParam: "sc-set-program", fragment: "dfha8fq__title__6" });
     });
 
     it("should return undefined for unknown resource type", () => {

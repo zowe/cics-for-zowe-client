@@ -20,8 +20,11 @@ export function getHelpTopicNameFromMetas(resourceType?: string): { queryParam: 
   if (resourceType === URLConstants.GET_RESOURCE) {
     return { queryParam: URLConstants.GET_COMMAND_URI, fragment: URLConstants.GET_COMMAND_URI_FRAGMENT };
   }
-  const { queryParam, fragment } = getResourceTypeAndHelpTopic(resourceType);
-  return { queryParam, fragment };
+  const result = getResourceTypeAndHelpTopic(resourceType);
+  if (!result || !result.queryParam || !result.fragment) {
+    return undefined;
+  }
+  return { queryParam: result.queryParam, fragment: result.fragment };
 }
 
 export function getEIBFNameFromMetas(eibfnAlt?: string): string | undefined {
