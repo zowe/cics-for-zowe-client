@@ -286,12 +286,11 @@ export class ResourceContainer {
           CICSLogger.debug(`Cache token discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
         })
       );
-
+      CICSLogger.info(`Discarded ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
+      this.summaries.clear();
+      this.nextIndex.clear();
       await Promise.all(discardPromises);
     }
-
-    this.summaries.clear();
-    this.nextIndex.clear();
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {
