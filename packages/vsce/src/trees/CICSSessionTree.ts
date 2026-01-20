@@ -142,7 +142,7 @@ export class CICSSessionTree extends TreeItem {
       this.profile = await updateProfile(this.profile, this);
 
       if (!this.profile) {
-        throw error;
+        return [];
       }
 
       this.createSessionFromProfile();
@@ -162,7 +162,7 @@ export class CICSSessionTree extends TreeItem {
       }
     }
 
-    throw error;
+    return [];
   }
 
   public setUnauthorized() {
