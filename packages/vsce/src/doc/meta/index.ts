@@ -28,6 +28,7 @@ import { TransactionMeta } from "./transaction.meta";
 import { TSQueueMeta } from "./tsqueue.meta";
 import { URIMapMeta } from "./urimap.meta";
 import { WebServiceMeta } from "./webservice.meta";
+import { ManagedRegionMeta } from "./managedRegion.meta";
 import { RegionMeta } from "./region.meta";
 
 export * from "./IResourceMeta";
@@ -48,6 +49,7 @@ export * from "./transaction.meta";
 export * from "./tsqueue.meta";
 export * from "./urimap.meta";
 export * from "./webservice.meta";
+export * from "./managedRegion.meta";
 export * from "./region.meta";
 
 export function getMetas(): IResourceMeta<IResource>[] {
@@ -70,5 +72,6 @@ export function getMetas(): IResourceMeta<IResource>[] {
     TSQueueMeta,
     SharedTSQueueMeta,
     RegionMeta,
+    ManagedRegionMeta,
   ];
 }

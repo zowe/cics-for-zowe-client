@@ -24,6 +24,7 @@ import {
   ProgramMeta,
   RemoteFileMeta,
   RegionMeta,
+  ManagedRegionMeta,
   SharedTSQueueMeta,
   TaskMeta,
   TCPIPMeta,
@@ -124,6 +125,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     const ResourceClass = require("../resources/Resource").Resource as { new (r: any): any };
     return {
       meta: RegionMeta,
+      ManagedRegionMeta,
       resource: new ResourceClass(this.region),
     } as IContainedResource<IResource>;
   }

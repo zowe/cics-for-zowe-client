@@ -16,8 +16,8 @@ import PersistentStorage from "../../utils/PersistentStorage";
 import { IRegion } from "../resources/IRegion";
 import { IResourceMeta } from "./IResourceMeta";
 
-export const RegionMeta: IResourceMeta<IRegion> = {
-  resourceName: CicsCmciConstants.CICS_CMCI_REGION,
+export const ManagedRegionMeta: IResourceMeta<IRegion> = {
+  resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
   humanReadableNamePlural: l10n.t("Regions"),
   humanReadableNameSingular: l10n.t("Region"),
 
@@ -26,7 +26,7 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getDefaultCriteria() {
-    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_REGION, "region");
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, "region");
   },
 
   getLabel: function (region: Resource<IRegion>): string {
@@ -41,7 +41,7 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getContext: function (region: Resource<IRegion>): string {
-    return `${CicsCmciConstants.CICS_CMCI_REGION}.${region.attributes.cicsname}`;
+    return `${CicsCmciConstants.CICS_CMCI_MANAGED_REGION}.${region.attributes.cicsname}`;
   },
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -71,10 +71,10 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   async appendCriteriaHistory(criteria: string) {
-    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_REGION, criteria);
+    await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, criteria);
   },
 
   getCriteriaHistory() {
-    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_REGION);
+    return PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION);
   },
 };

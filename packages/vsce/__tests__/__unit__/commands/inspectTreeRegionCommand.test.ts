@@ -21,7 +21,7 @@ jest.mock("../../../src/commands/inspectResourceCommandUtils", () => ({
 }));
 
 import { getInspectTreeRegionCommand } from "../../../src/commands/inspectTreeRegionCommand";
-import { RegionMeta } from "../../../src/doc";
+import { ManagedRegionMeta } from "../../../src/doc";
 
 let mockedClipboard = ``;
 
@@ -54,7 +54,7 @@ describe("Test suite for Inspect Region command", () => {
     const command = (getInspectTreeRegionCommand as any)(context, { selection: [] } as any);
 
     const fakeNode = {
-      getContainedResource: (): any => ({ meta: RegionMeta, resource: { attributes: { cicsname: "REG1" } } }),
+      getContainedResource: (): any => ({ meta: ManagedRegionMeta, resource: { attributes: { cicsname: "REG1" } } }),
       getParent: (): any => undefined,
       getContainedResourceName: (): string => "REG1",
     } as any;

@@ -272,34 +272,26 @@ export async function inspectRegionByName(
     return;
   }
 }
+
 export async function inspectRegionByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-  const resourceContext: IResourceProfileNameInfo = {
+  let resourceContext: IResourceProfileNameInfo = {
     profileName: node.getProfile().name,
     cicsplexName: node.cicsplexName,
     regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
   };
 
-  let parentResource: Resource<IResource> | undefined;
+  let parentResource: Resource<IResource>;
   const parent = node.getParent && node.getParent();
-  if (parent) {
-    const grandParent = (parent as CICSResourceContainerNode<IResource>).getParent && (parent as CICSResourceContainerNode<IResource>).getParent();
-    if (grandParent && typeof (grandParent as any).getContainedResource === "function") {
-      parentResource = (grandParent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
-    } else if (typeof (parent as any).getContainedResource === "function") {
-      parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
-    }
+  if (parent && typeof (parent as any).getContainedResource === "function") {
+    parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
   }
+  // Prefer using the managed-region meta for region inspections when plex is available
+  const regionMeta = getMetas().find((m) => m.resourceName === "CICSManagedRegion");
+  const metaToUse = regionMeta ?? node.getContainedResource().meta;
 
-  let upToDateResource = null;
-  if (resourceContext.cicsplexName) {
-    upToDateResource = await loadResourcesWithProgress(
-      [node.getContainedResource().meta],
-      node.getContainedResourceName(),
-      resourceContext,
-      parentResource
-    );
+  const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName(), resourceContext, parentResource);
+
+  if (upToDateResource) {
+    await showInspectResource(context, upToDateResource, resourceContext, node);
   }
-
-  const resourceToShow = upToDateResource ?? node.getContainedResource();
-  await showInspectResource(context, resourceToShow, resourceContext, node);
 }
