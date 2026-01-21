@@ -32,7 +32,7 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
     for (const c of node.resourceTypes) {
       await c.appendCriteriaHistory(pattern);
     }
-    node.reset();
+    await node.reset();
     node.setCriteria(patternArray);
     tree._onDidChangeTreeData.fire(node);
     await treeview.reveal(node, { expand: true });
@@ -40,9 +40,9 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
 }
 
 export function getClearFilterCommand(tree: CICSTree) {
-  return commands.registerCommand("cics-extension-for-zowe.clearFilter", (node: CICSResourceContainerNode<IResource>) => {
+  return commands.registerCommand("cics-extension-for-zowe.clearFilter", async (node: CICSResourceContainerNode<IResource>) => {
     node.clearCriteria();
-    node.reset();
+    await node.reset();
     tree._onDidChangeTreeData.fire(node);
   });
 }

@@ -465,7 +465,7 @@ describe("CICSResourceContainerNode tests", () => {
     expect(fetched).toHaveLength(2);
 
     const resetSpy = jest.spyOn(ResourceContainer.prototype, "reset");
-    containerNode.reset();
+    await containerNode.reset();
 
     expect(resetSpy).toHaveBeenCalled();
   });

@@ -62,11 +62,6 @@ describe("Resource Container", () => {
       profileName: profile.name!,
       regionName: "MYREG",
     });
-    jest.mock("../../../src/utils/resourceUtils", () => ({
-      runGetResource: jest.fn(),
-      runGetCache: jest.fn(),
-    }));
-    jest.clearAllMocks();
 
     getCacheMock.mockResolvedValue({
       response: {
@@ -180,40 +175,28 @@ describe("Resource Container", () => {
   });
 
   it("should reset container and discard cache tokens", async () => {
-    // First, fetch a page to populate summaries and cache tokens
     await container.fetchNextPage();
-
-    // Verify that summaries were populated
     expect(getResourceMock).toHaveBeenCalled();
     expect(getCacheMock).toHaveBeenCalled();
-
-    // Store the initial call count
     const initialGetCacheCallCount = getCacheMock.mock.calls.length;
-
-    // Reset the container
     await container.reset();
 
-    // Verify cache token was discarded - getCacheMock should be called with session object
+    // Verify cache token was discarded - getCacheMock should be called
     // and parameters including nodiscard: false and summonly: true
     const resetCalls = getCacheMock.mock.calls.slice(initialGetCacheCallCount);
     expect(resetCalls.length).toBeGreaterThan(0);
     
     // Check that at least one call has nodiscard: false and summonly: true
     const discardCall = resetCalls.find(call => {
-      const params = call[1]; // Second parameter contains the query params
-      return params && params.nodiscard === false && params.summonly === true;
+    const params = call[1];
+    return params && params.nodiscard === false && params.summonly === true;
     });
     expect(discardCall).toBeDefined();
-
-    // After reset, hasMore should return false (summaries cleared)
     expect(container.hasMore()).toBeFalsy();
-
-    // After reset, fetching next page should start fresh
     getCacheMock.mockClear();
     getResourceMock.mockClear();
 
     await container.fetchNextPage();
-
     // Should call getResource again to get new summaries
     expect(getResourceMock).toHaveBeenCalled();
   });

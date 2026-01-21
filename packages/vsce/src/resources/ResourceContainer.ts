@@ -270,7 +270,7 @@ export class ResourceContainer {
       : [];
     
     if (summariesWithTokens.length > 0) {
-      CICSLogger.info(`Discarding ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
+      CICSLogger.debug(`Discarding ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
       
       const discardPromises = summariesWithTokens.map((summary) =>
         runGetCache(
@@ -289,7 +289,7 @@ export class ResourceContainer {
       this.summaries.clear();
       this.nextIndex.clear();
       await Promise.all(discardPromises);
-      CICSLogger.info(`Discarded ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
+      CICSLogger.debug(`Discarded ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
     }
   }
 

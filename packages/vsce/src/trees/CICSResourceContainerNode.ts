@@ -267,9 +267,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     return this.fetcher?.hasMore() ?? false;
   }
 
-  reset() {
+  async reset() {
     this.items = [];
-    this.fetcher?.reset();
+    await this.fetcher?.reset();
   }
 
   public getChildNodeMatchingResourceName(resource: IContainedResource<IResource>): CICSResourceContainerNode<IResource> | undefined {
