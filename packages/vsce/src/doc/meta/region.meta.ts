@@ -22,7 +22,7 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   humanReadableNameSingular: l10n.t("Region"),
 
   buildCriteria(criteria: string[]) {
-    return criteria.map((n) => `CICSNAME=${n}`).join(" OR ");
+    return criteria.map((n) => `APPLID=${n}`).join(" OR ");
   },
 
   getDefaultCriteria() {

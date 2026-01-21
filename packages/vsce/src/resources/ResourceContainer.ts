@@ -89,52 +89,24 @@ export class ResourceContainer {
       return;
     }
     for (const meta of this.resourceTypes) {
-      try {
-        const { response } = await runGetResource({
-          cicsPlex: this.context.cicsplexName,
-          profileName: this.context.profileName,
-          regionName: this.context.regionName,
+      const { response } = await runGetResource({
+        cicsPlex: this.context.cicsplexName,
+        profileName: this.context.profileName,
+        regionName: this.context.regionName,
 
-          resourceName: meta.resourceName,
-          params: {
-            criteria: this.typeCriteria.get(meta),
-            queryParams: {
-              nodiscard: true,
-              summonly: true,
-              overrideWarningCount: true, // OK as summary only
-            },
+        resourceName: meta.resourceName,
+        params: {
+          criteria: this.typeCriteria.get(meta),
+          queryParams: {
+            nodiscard: true,
+            summonly: true,
+            overrideWarningCount: true, // OK as summary only
           },
-        });
+        },
+      });
 
-        this.summaries.set(meta, response.resultsummary);
-        this.nextIndex.set(meta, 1);
-      } catch (err) {
-        // If the CMCI server rejected an attribute in the CRITERIA
-        if (err instanceof CICSExtensionError) {
-          try {
-            const { response: directResponse } = await runGetResource({
-              cicsPlex: this.context.cicsplexName,
-              profileName: this.context.profileName,
-              regionName: this.context.regionName,
-              resourceName: meta.resourceName,
-            });
-
-            const records = directResponse.records?.[meta.resourceName.toLowerCase()];
-            const recArray = toArray(records);
-            const contained = recArray.map((record: IResource) => ({ meta, resource: new Resource(record) }));
-            if (contained && contained.length > 0) {
-              this.directResults.set(meta, contained as IContainedResource<IResource>[]);
-              // synthesize a small summary so other code has counts
-              this.summaries.set(meta, { recordcount: `${contained.length}`, cachetoken: "" } as any);
-              this.nextIndex.set(meta, 1);
-              continue;
-            }
-          } catch (directErr) {
-            throw err;
-          }
-        }
-        throw err;
-      }
+      this.summaries.set(meta, response.resultsummary);
+      this.nextIndex.set(meta, 1);
     }
   }
 

@@ -271,16 +271,8 @@ export async function inspectRegionByName(
     }
     // If a plex is provided, prefer the managed-region meta,
     // otherwise prefer the plain CICSRegion meta.
-    if (overrideContext.cicsplexName) {
-      const managed = getMetas().find((m) => m.resourceName === "CICSManagedRegion");
-      if (managed) {
-        type = [managed];
-      }
-    } else {
-      const regionMeta = getMetas().find((m) => m.resourceName === "CICSRegion");
-      if (regionMeta) {
-        type = [regionMeta];
-      }
+    if (!overrideContext.cicsplexName) {
+      type = [getMetas().find((m) => m.resourceName === "CICSRegion")];
     }
 
     const resourceContext: IResourceProfileNameInfo = overrideContext;
@@ -311,7 +303,6 @@ export async function inspectRegionByNode(context: ExtensionContext, node: CICSR
   } else {
     metaToUse = getMetas().find((m) => m.resourceName === "CICSRegion");
   }
-  metaToUse = metaToUse ?? node.getContainedResource().meta;
 
   const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName(), resourceContext, parentResource);
 
