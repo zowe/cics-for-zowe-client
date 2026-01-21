@@ -50,22 +50,26 @@ export const RegionMeta: IResourceMeta<IRegion> = {
   },
 
   getName(region: Resource<IRegion>): string {
-    return region.attributes.cicsname;
+    return region.attributes.eyu_cicsname;
   },
 
   getHighlights(resource: Resource<IRegion>) {
     return [
       {
-        key: l10n.t("CICS Status"),
-        value: resource.attributes.cicsstatus,
-      },
-      {
-        key: l10n.t("StartUp Type"),
-        value: resource.attributes.startup,
+        key: l10n.t("CICS Name"),
+        value: resource.attributes.eyu_cicsname,
       },
       {
         key: l10n.t("Application ID"),
         value: resource.attributes.applid,
+      },
+      {
+        key: l10n.t("Startup"),
+        value: resource.attributes.startup,
+      },
+      {
+        key: l10n.t("CICS Status"),
+        value: resource.attributes.cicsstatus,
       },
     ];
   },

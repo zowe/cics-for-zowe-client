@@ -26,7 +26,7 @@ export const ManagedRegionMeta: IResourceMeta<IRegion> = {
   },
 
   getDefaultCriteria() {
-    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, "region");
+    return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, "managedregion");
   },
 
   getLabel: function (region: Resource<IRegion>): string {
@@ -56,16 +56,20 @@ export const ManagedRegionMeta: IResourceMeta<IRegion> = {
   getHighlights(resource: Resource<IRegion>) {
     return [
       {
-        key: l10n.t("CICS Status"),
-        value: resource.attributes.cicsstatus,
+        key: l10n.t("CICS Name"),
+        value: resource.attributes.cicsname,
       },
       {
-        key: l10n.t("StartUp Type"),
-        value: resource.attributes.startup,
+        key: l10n.t("CICS State"),
+        value: resource.attributes.cicsstate,
       },
       {
-        key: l10n.t("Application ID"),
-        value: resource.attributes.applid,
+        key: l10n.t("Security Bypass"),
+        value: resource.attributes.secbypass,
+      },
+      {
+        key: l10n.t("Workload Manager Status"),
+        value: resource.attributes.wlmstatus,
       },
     ];
   },

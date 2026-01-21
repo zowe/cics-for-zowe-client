@@ -4,8 +4,8 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added new "Inspect Region " command to quickly view CICS region information.
-- Enhancement: Organised profile tree alphabetically. [552](https://github.com/zowe/cics-for-zowe-client/issues/552)
+- Enhancement: Added new "Inspect Region " command to quickly view CICS region information. [#568](https://github.com/zowe/cics-for-zowe-client/issues/568)
+- Enhancement: Organised profile tree alphabetically. [#552](https://github.com/zowe/cics-for-zowe-client/issues/552)
 - Enhancement: Open resource documentation from error notification. [#537](https://github.com/zowe/cics-for-zowe-client/issues/537)
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 - Enhancement: Discard CMCI result sets when the resource node is collapsed. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)

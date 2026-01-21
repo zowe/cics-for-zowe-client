@@ -1,4 +1,4 @@
-import { RegionMeta } from "../../../src/doc";
+import { ManagedRegionMeta } from "../../../src/doc/meta/managedRegion.meta";
 import { IRegion } from "../../../src/doc/resources/IRegion";
 import { Resource } from "../../../src/resources";
 import { workspaceConfigurationGetMock } from "../../__mocks__";
@@ -12,7 +12,7 @@ describe("Region Meta", () => {
     regionMock = new Resource<IRegion>({
       eyu_cicsname: "MYREGION",
       cicsname: "MYREGION",
-      cicsstatus: "ACTIVE",
+      cicsstatus: "ENABLED",
       applid: "MYAPPLID",
       startup: "AUTOSTART",
       cicsstate: "ACTIVE",
@@ -22,62 +22,62 @@ describe("Region Meta", () => {
   });
 
   it("should return label", () => {
-    const label = RegionMeta.getLabel(regionMock);
+    const label = ManagedRegionMeta.getLabel(regionMock);
     expect(label).toEqual(`MYREGION`);
   });
 
   it("should build criteria", () => {
-    const criteria = RegionMeta.buildCriteria(["REGION1", "REGION2"]);
+    const criteria = ManagedRegionMeta.buildCriteria(["REGION1", "REGION2"]);
     expect(criteria).toEqual("CICSNAME=REGION1 OR CICSNAME=REGION2");
   });
 
   it("should return context", () => {
-    const context = RegionMeta.getContext(regionMock);
-    expect(context).toEqual(`CICSRegion.MYREGION`);
+    const context = ManagedRegionMeta.getContext(regionMock);
+    expect(context).toEqual(`CICSManagedRegion.MYREGION`);
   });
 
   it("should return icon name", () => {
-    const iconName = RegionMeta.getIconName(regionMock);
+    const iconName = ManagedRegionMeta.getIconName(regionMock);
     expect(iconName).toEqual(`region`);
   });
   it("should get name", () => {
-    const name = RegionMeta.getName(regionMock);
+    const name = ManagedRegionMeta.getName(regionMock);
     expect(name).toEqual("MYREGION");
   });
 
   it("should return highlights", () => {
-    const highlights = RegionMeta.getHighlights(regionMock);
+    const highlights = ManagedRegionMeta.getHighlights(regionMock);
     expect(highlights).toEqual([
       {
         key: "CICS Name",
         value: "MYREGION",
       },
       {
-        key: "Application ID",
-        value: "MYAPPLID",
-      },
-      {
-        key: "Startup",
-        value: "AUTOSTART",
-      },
-      {
-        key: "CICS Status",
+        key: "CICS State",
         value: "ACTIVE",
+      },
+      {
+        key: "Security Bypass",
+        value: "NO",
+      },
+      {
+        key: "Workload Manager Status",
+        value: "NORMAL",
       },
     ]);
   });
 
   it("should append criteria history", async () => {
     const criteria = "MYREGION";
-    await RegionMeta.appendCriteriaHistory(criteria);
-    let history = RegionMeta.getCriteriaHistory();
+    await ManagedRegionMeta.appendCriteriaHistory(criteria);
+    let history = ManagedRegionMeta.getCriteriaHistory();
     expect(history).toEqual(["MYREGION"]);
   });
 
   it("should get criteria history", async () => {
     const criteria = "MYREGION";
-    await RegionMeta.appendCriteriaHistory(criteria);
-    let history = RegionMeta.getCriteriaHistory();
+    await ManagedRegionMeta.appendCriteriaHistory(criteria);
+    let history = ManagedRegionMeta.getCriteriaHistory();
     expect(history).toEqual(["MYREGION"]);
   });
 });

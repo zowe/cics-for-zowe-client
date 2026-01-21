@@ -41,6 +41,8 @@ describe("Test suite for Inspect Region command", () => {
 
   test("Should give you error if selected node is not a region node", async () => {
     const mockedNode = {} as CICSResourceContainerNode<any>;
+    const command = (getInspectRegionCommand as any)({} as any);
+    await expect((command as any)(mockedNode)).resolves.toBeUndefined();
   });
 
   test("should call inspectRegionByName with mocked region values", async () => {

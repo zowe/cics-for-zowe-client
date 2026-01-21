@@ -43,6 +43,10 @@ export const CICSMessages: { [key: string]: IMessageDefinition } = {
     message: l10n.t("%resource-type% %resource-name% not found in region %region-name%."),
   },
 
+  CICSRegionNotFound: {
+    message: l10n.t("CICS Region %region-name% not found."),
+  },
+
   CICSEnterResourceName: {
     message: l10n.t("Enter the name of a CICS %resource-human-readable% resource."),
   },

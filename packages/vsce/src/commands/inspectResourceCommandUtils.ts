@@ -167,10 +167,16 @@ async function loadResources(
 
   if (resources.length === 0) {
     const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
-    const message = CICSMessages.CICSResourceNotFound.message
-      .replace("%resource-type%", hrn)
-      .replace("%resource-name%", resourceName)
-      .replace("%region-name%", resourceContext.regionName);
+    let message: string;
+
+    if (resourceTypes.some((t) => t.resourceName === "CICSRegion" || t.resourceName === "CICSManagedRegion")) {
+      message = CICSMessages.CICSRegionNotFound.message.replace("%region-name%", resourceName);
+    } else {
+      message = CICSMessages.CICSResourceNotFound.message
+        .replace("%resource-type%", hrn)
+        .replace("%resource-name%", resourceName)
+        .replace("%region-name%", resourceContext.regionName);
+    }
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
@@ -255,13 +261,26 @@ export async function inspectRegionByName(
   overrideContext?: IResourceProfileNameInfo
 ) {
   if (overrideContext) {
-    const type = getResourceType(resourceType);
+    let type = getResourceType(resourceType);
 
     if (!type || type.length === 0) {
       const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
       CICSLogger.error(message);
       window.showErrorMessage(message);
       return;
+    }
+    // If a plex is provided, prefer the managed-region meta,
+    // otherwise prefer the plain CICSRegion meta.
+    if (overrideContext.cicsplexName) {
+      const managed = getMetas().find((m) => m.resourceName === "CICSManagedRegion");
+      if (managed) {
+        type = [managed];
+      }
+    } else {
+      const regionMeta = getMetas().find((m) => m.resourceName === "CICSRegion");
+      if (regionMeta) {
+        type = [regionMeta];
+      }
     }
 
     const resourceContext: IResourceProfileNameInfo = overrideContext;
@@ -274,7 +293,7 @@ export async function inspectRegionByName(
 }
 
 export async function inspectRegionByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
-  let resourceContext: IResourceProfileNameInfo = {
+  const resourceContext: IResourceProfileNameInfo = {
     profileName: node.getProfile().name,
     cicsplexName: node.cicsplexName,
     regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
@@ -285,9 +304,14 @@ export async function inspectRegionByNode(context: ExtensionContext, node: CICSR
   if (parent && typeof (parent as any).getContainedResource === "function") {
     parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
   }
-  // Prefer using the managed-region meta for region inspections when plex is available
-  const regionMeta = getMetas().find((m) => m.resourceName === "CICSManagedRegion");
-  const metaToUse = regionMeta ?? node.getContainedResource().meta;
+  // Choose meta based on whether a plex is present: managed-region when plex exists, otherwise the plain region meta
+  let metaToUse: IResourceMeta<IResource> | undefined;
+  if (resourceContext.cicsplexName) {
+    metaToUse = getMetas().find((m) => m.resourceName === "CICSManagedRegion");
+  } else {
+    metaToUse = getMetas().find((m) => m.resourceName === "CICSRegion");
+  }
+  metaToUse = metaToUse ?? node.getContainedResource().meta;
 
   const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName(), resourceContext, parentResource);
 
