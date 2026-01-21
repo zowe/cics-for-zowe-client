@@ -220,8 +220,6 @@
   "No Regions or CICSplexes found in the selected profile.": "No Regions or CICSplexes found in the selected profile.",
   "Loading Regions...": "Loading Regions...",
   "No Active Regions found in {0}": "No Active Regions found in {0}",
-  "Region name": "Region name",
-  "No active regions found for {0}.": "No active regions found for {0}.",
   "Loading CICSplexes...": "Loading CICSplexes...",
   "No CICS {0} selected": "No CICS {0} selected",
   "Purge": "Purge",

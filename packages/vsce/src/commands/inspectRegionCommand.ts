@@ -6,7 +6,7 @@ import { setCICSRegion } from "./setCICSRegionCommand";
 
 export function getInspectRegionCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectRegion", async () => {
-    const newRegion = await setCICSRegion(true);
+    const newRegion = await setCICSRegion();
     if (!newRegion) {
       return;
     }

@@ -11,14 +11,13 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, l10n, window, InputBoxOptions } from "vscode";
+import { commands, l10n } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { FilterDescriptor } from "../utils/filterUtils";
 import * as regionUtils from "../utils/lastUsedRegionUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
-import { CICSMessages } from "../constants/CICS.messages";
 
 export function setCICSRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setCICSRegion", async () => {
@@ -57,7 +56,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
   }
 }
 
-export async function setCICSRegion(allowManualRegionEntry?: boolean): Promise<ICICSRegionWithSession | undefined> {
+export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   const quickPick = Gui.createQuickPick();
   const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {
@@ -101,7 +100,7 @@ export async function setCICSRegion(allowManualRegionEntry?: boolean): Promise<I
       cicsPlexName = choice.label;
       isPlex = true;
     } else {
-      Gui.infoMessage(l10n.t("No Regions or CICSplexes found in the selected profile."));
+      Gui.showMessage(l10n.t("No Regions or CICSplexes found in the selected profile."));
     }
   }
   if (isPlex) {
@@ -124,46 +123,19 @@ export async function setCICSRegion(allowManualRegionEntry?: boolean): Promise<I
     if (regionInfo?.length > 0) {
       CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
       regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
-
-      // If there are no active regions after filtering, show an error and exit
-      if (regionInfo.length === 0) {
-        regionQuickPick.hide();
-        Gui.errorMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
-        return null;
+      choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
+        ...regionInfo.map((region) => ({ label: region.cicsname })),
+      ]);
+      regionQuickPick.hide();
+      if (!choice) {
+        return;
       }
 
-      const regionItems = regionInfo.map((region) => ({ label: region.cicsname }));
-
-      if (allowManualRegionEntry) {
-        const inputOptions: InputBoxOptions = {
-          prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", l10n.t("Region")),
-          placeHolder: l10n.t("Region name"),
-          ignoreFocusOut: true,
-        };
-        const typed = await window.showInputBox(inputOptions);
-        if (typed && typed.trim().length > 0) {
-          regionName = typed.trim();
-        } else {
-          choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [...regionItems]);
-          regionQuickPick.hide();
-          if (!choice) {
-            return;
-          }
-          regionName = choice.label;
-        }
-      } else {
-        choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [...regionItems]);
-        regionQuickPick.hide();
-        if (!choice) {
-          return;
-        }
-        regionName = choice.label;
-      }
-
+      regionName = choice.label;
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.errorMessage(l10n.t("No active regions found for {0}.", cicsPlexName));
+      Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
     }
   }
 

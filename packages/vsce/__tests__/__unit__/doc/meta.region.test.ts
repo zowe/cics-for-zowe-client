@@ -13,7 +13,7 @@ describe("Region Meta", () => {
       eyu_cicsname: "MYREGION",
       cicsname: "MYREGION",
       cicsstatus: "ACTIVE",
-      applid: "MYAPPLID",
+      applid: "MYREGION",
       startup: "AUTOSTART",
       cicsstate: "ACTIVE",
       secbypass: "NO",
@@ -28,7 +28,7 @@ describe("Region Meta", () => {
 
   it("should build criteria", () => {
     const criteria = RegionMeta.buildCriteria(["REGION1", "REGION2"]);
-    expect(criteria).toEqual("CICSNAME=REGION1 OR CICSNAME=REGION2");
+    expect(criteria).toEqual("APPLID=REGION1 OR APPLID=REGION2");
   });
 
   it("should return context", () => {
@@ -54,7 +54,7 @@ describe("Region Meta", () => {
       },
       {
         key: "Application ID",
-        value: "MYAPPLID",
+        value: "MYREGION",
       },
       {
         key: "Startup",

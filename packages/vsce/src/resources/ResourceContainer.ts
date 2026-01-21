@@ -17,7 +17,6 @@ import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetCache, runGetResource } from "../utils/resourceUtils";
-import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { Resource } from "./Resource";
 import { CICSLogger } from "../utils/CICSLogger";
 
@@ -28,7 +27,6 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
-  private directResults: Map<IResourceMeta<IResource>, IContainedResource<IResource>[]> = new Map();
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -203,7 +201,11 @@ export class ResourceContainer {
         summary.cachetoken = null;
       }
       results.push(
-        ...toArray(response.records[meta.resourceName.toLowerCase()]).map((record: IResource) => ({ meta, resource: new Resource(record) }))
+        ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
+          {
+            return { meta, resource: new Resource(r) };
+          }
+        })
       );
       this.nextIndex.set(meta, start + count);
     }
@@ -219,15 +221,6 @@ export class ResourceContainer {
     let allocations = new Map();
     try {
       await this.ensureSummaries();
-      // If any direct results were populated due to attribute errors, return them immediately
-      if (this.directResults.size > 0) {
-        const results: IContainedResource<IResource>[] = [];
-        for (const recs of this.directResults.values()) {
-          results.push(...recs);
-        }
-        return results;
-      }
-
       const available = this.getAvailableResourceTypes();
       if (available.length === 0) {
         return [];
