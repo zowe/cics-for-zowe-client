@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
+## Recent Changes
+
+- Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
+
 ## `6.17.0`
 
 - Enhancement: Add hexname to TS Queue resource interfaces. [#533](https://github.com/zowe/cics-for-zowe-client/issues/533)
