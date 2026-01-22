@@ -36,19 +36,14 @@ const renderIcon = (resourceIconPath: IconPath, isDarkTheme: boolean, alt: strin
  * Creates breadcrumb items array from profile handler and resource information
  */
 const createBreadcrumbItems = (resourceContext: IResourceProfileNameInfo, resourceName: string, humanReadableNameSingular: string): string[] => {
-  const isRegionType = humanReadableNameSingular && humanReadableNameSingular.toLowerCase() === "region";
-  if (isRegionType) {
-    const items: string[] = [];
-    if (resourceContext.cicsplexName) {
-      items.push(resourceContext.cicsplexName);
-    }
-    items.push(resourceContext.regionName);
-    return items;
-  }
-
-  const items = [resourceContext.regionName, `${resourceName} (${humanReadableNameSingular})`];
+  const isRegionType = humanReadableNameSingular.toLowerCase() === "region";
+  const items: string[] = [];
   if (resourceContext.cicsplexName) {
-    items.unshift(resourceContext.cicsplexName);
+    items.push(resourceContext.cicsplexName);
+  }
+  items.push(resourceContext.regionName);
+  if (!isRegionType) {
+    items.push(`${resourceName} (${humanReadableNameSingular})`);
   }
   return items;
 };
