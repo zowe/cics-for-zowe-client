@@ -12,7 +12,7 @@
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
-import { ICICSExtensionError } from "./ICICSExtensionError";
+import type { ICICSExtensionError } from "./ICICSExtensionError";
 
 export class CICSExtensionError extends Error {
   cicsExtensionError: ICICSExtensionError;

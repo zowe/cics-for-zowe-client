@@ -10,12 +10,12 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { MessageItem } from "vscode";
+import type { MessageItem } from "vscode";
 import errorConstants from "../constants/CICS.errorMessages";
 import { CICSLogger } from "../utils/CICSLogger";
 import { openDocumentation } from "../utils/urlUtils";
-import { CICSExtensionError } from "./CICSExtensionError";
-import { ICICSExtensionError } from "./ICICSExtensionError";
+import type { CICSExtensionError } from "./CICSExtensionError";
+import type { ICICSExtensionError } from "./ICICSExtensionError";
 import { URLConstants } from "./urlConstants";
 
 export function resourceNotFoundError(error?: ICICSExtensionError) {

@@ -10,8 +10,8 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, l10n, window } from "vscode";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { commands, l10n, window, type TreeView } from "vscode";
+import type { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";

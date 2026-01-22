@@ -9,9 +9,9 @@
  *
  */
 
-import { ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { ZoweVsCodeExtension, type imperative } from "@zowe/zowe-explorer-api";
 import { l10n, window } from "vscode";
-import { CICSSessionTree } from "../trees/CICSSessionTree";
+import type { CICSSessionTree } from "../trees/CICSSessionTree";
 import { ProfileManagement } from "./profileManagement";
 
 export function missingSessionParameters(profileProfile: any): (string | undefined)[] {

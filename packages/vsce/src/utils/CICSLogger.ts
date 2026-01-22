@@ -11,7 +11,7 @@
 
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
-import { extensions, l10n, LogLevel, LogOutputChannel, window } from "vscode";
+import { LogLevel, extensions, l10n, window, type LogOutputChannel } from "vscode";
 
 export class CICSLogger {
   private static amInitialized = false;

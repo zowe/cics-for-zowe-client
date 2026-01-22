@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceWithEnableStatus } from "./IResource";
+import type { IResourceWithEnableStatus } from "./IResource";
 
 export interface IRemoteFile extends IResourceWithEnableStatus {
   file: string;

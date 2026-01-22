@@ -9,7 +9,7 @@
  *
  */
 
-import { IExtensionAPI, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { SupportedResourceTypes, type IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
 import CICSResourceExtender from "./CICSResourceExtender";
 
 class SCICSExtenderApiConfig {

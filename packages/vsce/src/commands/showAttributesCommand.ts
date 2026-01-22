@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { TreeView, WebviewPanel, commands, l10n, window } from "vscode";
-import { CICSRegionTree, CICSResourceContainerNode } from "../trees";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, l10n, window, type TreeView, type WebviewPanel } from "vscode";
+import { CICSResourceContainerNode, type CICSRegionTree } from "../trees";
 import { getAttributesHtml } from "../utils/webviewHTML";
 
 export function getShowResourceAttributesCommand(treeview: TreeView<CICSResourceContainerNode<IResource>>) {

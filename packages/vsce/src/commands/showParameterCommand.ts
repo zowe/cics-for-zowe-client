@@ -10,8 +10,8 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { WebviewPanel, commands, l10n, window } from "vscode";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { commands, l10n, window, type WebviewPanel } from "vscode";
+import type { CICSRegionTree } from "../trees/CICSRegionTree";
 import { runGetResource } from "../utils/resourceUtils";
 import { getParametersHtml } from "../utils/webviewHTML";
 

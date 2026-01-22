@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceWithEnableStatus } from "./IResource";
+import type { IResourceWithEnableStatus } from "./IResource";
 
 export interface ILocalFile extends IResourceWithEnableStatus {
   file: string;

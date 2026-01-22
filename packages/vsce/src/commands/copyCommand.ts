@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, env, l10n, window } from "vscode";
-import { CICSResourceContainerNode } from "../trees";
+import type { CICSResourceContainerNode } from "../trees";
 import { buildUserAgentHeader } from "../utils/resourceUtils";
 
 export function getCopyNameCommand() {

@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { Resource } from "../../resources";
-import { IResourceMeta } from "../meta";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { Resource } from "../../resources";
+import type { IResourceMeta } from "../meta";
 
 export interface IContainedResource<T extends IResource> {
   resource: Resource<T>;

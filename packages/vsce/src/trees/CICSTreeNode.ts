@@ -9,12 +9,12 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
-import { ICICSTreeNode } from "../doc";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import type { imperative } from "@zowe/zowe-explorer-api";
+import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import type { ICICSTreeNode } from "../doc";
 import { SessionHandler } from "../resources";
-import { TextTreeItem } from "./TextTreeItem";
+import type { TextTreeItem } from "./TextTreeItem";
 
 export class CICSTreeNode extends TreeItem {
   public children: (ICICSTreeNode | TextTreeItem)[] = [];
