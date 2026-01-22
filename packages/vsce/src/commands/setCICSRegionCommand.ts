@@ -11,7 +11,7 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { commands, l10n } from "vscode";
+import { commands, l10n, window } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -115,7 +115,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
       isCancelled = true;
     });
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
-    if (isCancelled || !regionInfo) {
+    if (isCancelled) {
       return;
     }
 
@@ -135,7 +135,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
+      window.showErrorMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
     }
   }
 

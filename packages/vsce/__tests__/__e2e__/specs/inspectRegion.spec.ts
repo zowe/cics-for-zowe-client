@@ -61,10 +61,10 @@ test.describe("Inspect Region tests", async () => {
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/inspectRegion/3.png" });
   });
   test("Should open inspect Region from command palette", async ({ page }) => {
-    await runInCommandPalette(page, "Zowe Explorer for IBM CICS TS: Inspect Region");
+    await runInCommandPalette(page, "Zowe Explorer for IBM CICS TS: Inspect CICS Region");
     await page.getByRole("option", { name: "wiremock_localhost" }).click();
     await page.getByRole("option", { name: constants.CICSPLEX_NAME }).click();
-    await page.getByRole("textbox", { name: "Region name" }).fill("MYREG1");
+    await page.getByRole("option", { name: constants.REGION_NAME }).click();
     await page.keyboard.press("Enter");
 
     await getResourceInspector(page).locator("#resource-title").waitFor();

@@ -26,6 +26,11 @@ describe("Region Meta", () => {
     expect(label).toEqual(`MYREGION`);
   });
 
+  it("Should default criteria", () => {
+    const defaultCriteria = ManagedRegionMeta.getDefaultCriteria();
+    expect(defaultCriteria).toEqual("");
+  });
+
   it("should build criteria", () => {
     const criteria = ManagedRegionMeta.buildCriteria(["REGION1", "REGION2"]);
     expect(criteria).toEqual("CICSNAME=REGION1 OR CICSNAME=REGION2");
@@ -34,6 +39,11 @@ describe("Region Meta", () => {
   it("should return context", () => {
     const context = ManagedRegionMeta.getContext(regionMock);
     expect(context).toEqual(`CICSManagedRegion.MYREGION`);
+  });
+
+  it("should get label", () => {
+    const label = ManagedRegionMeta.getLabel(regionMock);
+    expect(label).toEqual(`MYREGION`);
   });
 
   it("should return icon name", () => {

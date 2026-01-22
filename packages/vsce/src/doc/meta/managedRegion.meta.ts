@@ -30,13 +30,7 @@ export const ManagedRegionMeta: IResourceMeta<IRegion> = {
   },
 
   getLabel: function (region: Resource<IRegion>): string {
-    let label = `${region.attributes.cicsname}`;
-    if (region.attributes.cicsstate && region.attributes.cicsstate.trim().length > 0) {
-      const state = region.attributes.cicsstate.trim();
-      if (state.toUpperCase() !== "ACTIVE") {
-        label += ` (${state.charAt(0).toUpperCase()}${state.slice(1).toLowerCase()})`;
-      }
-    }
+    const label = `${region.attributes.cicsname}`;
     return label;
   },
 
