@@ -149,7 +149,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             SessionHandler.getInstance().getSession(updatedProfile);
             Gui.showMessage(l10n.t("Credentials updated for profile {0}", updatedProfile.name));
 
-            node.reset();
+            await node.reset();
             node.requiresIconUpdate = true;
             this.refresh();
 
@@ -340,9 +340,9 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   hookCollapseWatcher(view: TreeView<TreeItem>) {
-    view.onDidCollapseElement((e) => {
+    view.onDidCollapseElement(async (e) => {
       if (e.element instanceof CICSResourceContainerNode) {
-        e.element.reset();
+        await e.element.reset();
         this.refresh(e.element);
       }
     });

@@ -63,8 +63,6 @@ describe("Resource Container", () => {
       regionName: "MYREG",
     });
 
-    jest.clearAllMocks();
-
     getCacheMock.mockResolvedValue({
       response: {
         resultsummary: {
@@ -174,5 +172,32 @@ describe("Resource Container", () => {
     const res = await container.fetchNextPage();
 
     expect(res).toHaveLength(3);
+  });
+
+  it("should reset container and discard cache tokens", async () => {
+    await container.fetchNextPage();
+    expect(getResourceMock).toHaveBeenCalled();
+    expect(getCacheMock).toHaveBeenCalled();
+    const initialGetCacheCallCount = getCacheMock.mock.calls.length;
+    await container.reset();
+
+    // Verify cache token was discarded - getCacheMock should be called
+    // and parameters including nodiscard: false and summonly: true
+    const resetCalls = getCacheMock.mock.calls.slice(initialGetCacheCallCount);
+    expect(resetCalls.length).toBeGreaterThan(0);
+    
+    // Check that at least one call has nodiscard: false and summonly: true
+    const discardCall = resetCalls.find(call => {
+    const params = call[1];
+    return params && params.nodiscard === false && params.summonly === true;
+    });
+    expect(discardCall).toBeDefined();
+    expect(container.hasMore()).toBeFalsy();
+    getCacheMock.mockClear();
+    getResourceMock.mockClear();
+
+    await container.fetchNextPage();
+    // Should call getResource again to get new summaries
+    expect(getResourceMock).toHaveBeenCalled();
   });
 });

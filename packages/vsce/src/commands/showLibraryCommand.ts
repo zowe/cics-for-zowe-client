@@ -90,14 +90,14 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       )[0] as CICSResourceContainerNode<ILibrary>;
 
       libraryTree.clearCriteria();
-      libraryTree.getFetcher().reset();
+      await libraryTree.getFetcher().reset();
       libraryTree.setCriteria([...libraries.keys()]);
       await treeview.reveal(libraryTree, { expand: true });
 
       for (const child of libraryTree.children) {
         const crit = [...libraries.get((child as CICSResourceContainerNode<ILibrary>).getContainedResourceName())];
         (child as CICSResourceContainerNode<ILibrary>).clearCriteria();
-        (child as CICSResourceContainerNode<ILibrary>).getFetcher().reset();
+        await (child as CICSResourceContainerNode<ILibrary>).getFetcher().reset();
         (child as CICSResourceContainerNode<ILibrary>).setCriteria(crit);
         await treeview.reveal(child, { expand: true });
       }

@@ -18,6 +18,7 @@ import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetCache, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
+import { CICSLogger } from "../utils/CICSLogger";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -196,8 +197,9 @@ export class ResourceContainer {
             summonly: true,
           }
         );
+        // Set cachetoken to null after invalidation
+        summary.cachetoken = null;
       }
-
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
           {
@@ -259,9 +261,34 @@ export class ResourceContainer {
   }
 
   /**
-   * Resets the fetcher
+   * Resets the fetcher and discards all cache tokens
    */
-  reset() {
+  async reset() {
+    // Discard all cache tokens if not already discarded
+    const summariesWithTokens = this.summaries.size > 0
+      ? Array.from(this.summaries.values()).filter((summary) => summary?.cachetoken)
+      : [];
+    
+    if (summariesWithTokens.length > 0) {
+      CICSLogger.debug(`Discarding ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
+      
+      const discardPromises = summariesWithTokens.map((summary) =>
+        runGetCache(
+          {
+            profileName: this.context.profileName,
+            cacheToken: summary.cachetoken,
+          },
+          {
+            nodiscard: false,
+            summonly: true,
+          }
+        ).catch((error) => {
+          CICSLogger.debug(`Cache token discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
+        })
+      );
+      await Promise.all(discardPromises);
+      CICSLogger.debug(`Discarded ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
+    }
     this.summaries.clear();
     this.nextIndex.clear();
   }
@@ -271,4 +298,5 @@ export class ResourceContainer {
     summ.recordcount = `${parseInt(summ.recordcount) - count}`;
     this.summaries.set(meta, summ);
   }
+
 }
