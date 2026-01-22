@@ -35,7 +35,7 @@ test("should show notification if no regions found", async ({ page }) => {
   await page.getByRole("option", { name: "Other CICS Region" }).click();
   await page.getByRole("option", { name: "wiremock_localhost" }).click();
   await page.getByRole("option", { name: constants.CICSPLEX_NAME_2 }).click();
-  await page.getByRole("alert").getByText("No active regions found for MYPLEX2.").waitFor();
+  await page.getByRole("alert").getByText("No Active Regions found in MYPLEX2").waitFor();
 });
 
 test("should verify trees are organised in correct order", async ({ page }) => {
