@@ -53,17 +53,11 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
     regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
   };
 
-  let parentResource: Resource<IResource>;
-  const parent = node.getParent && node.getParent();
-  if (parent && typeof (parent as any).getContainedResource === "function") {
-    parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
-  }
-
   const upToDateResource = await loadResourcesWithProgress(
     [node.getContainedResource().meta],
     node.getContainedResourceName(),
     resourceContext,
-    parentResource
+    (node.getParent() as CICSResourceContainerNode<IResource>)?.getContainedResource()?.resource
   );
 
   if (upToDateResource) {
