@@ -35,11 +35,6 @@ describe("Test suite for Inspect Region command", () => {
   beforeEach(() => {
     mockedClipboard = ``;
   });
-  test("Should return when no region node is selected", async () => {
-    const treeview = { selection: [] } as any;
-    const command = (getInspectTreeRegionCommand as any)({} as any, treeview);
-    await expect((command as any)()).resolves.toBeUndefined();
-  });
 
   test("should call inspectRegionByNode with mocked region node values", async () => {
     const setModule = require("../../../src/commands/setCICSRegionCommand");

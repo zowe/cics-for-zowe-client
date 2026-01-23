@@ -265,10 +265,9 @@ async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Pro
 }
 
 export async function inspectRegionByName(context: ExtensionContext, regionType: IResourceMeta<IResource>, regionContext: IResourceProfileNameInfo) {
-  const resourceContext: IResourceProfileNameInfo = regionContext;
-  const upToDateResource = await loadResourcesWithProgress([regionType], regionContext.regionName, resourceContext);
+  const upToDateResource = await loadResourcesWithProgress([regionType], regionContext.regionName, regionContext);
   if (upToDateResource) {
-    await showInspectResource(context, upToDateResource, resourceContext);
+    await showInspectResource(context, upToDateResource, regionContext);
   }
 }
 
@@ -280,10 +279,6 @@ export async function inspectRegionByNode(context: ExtensionContext, node: CICSR
   };
 
   let parentResource: Resource<IResource>;
-  const parent = node.getParent && node.getParent();
-  if (parent && typeof (parent as any).getContainedResource === "function") {
-    parentResource = (parent as CICSResourceContainerNode<IResource>).getContainedResource()?.resource;
-  }
   // Choose meta based on whether a plex is present: managed-region when plex exists, otherwise the plain region meta
   const metaToUse = resourceContext.cicsplexName ? ManagedRegionMeta : RegionMeta;
   const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName(), resourceContext, parentResource);

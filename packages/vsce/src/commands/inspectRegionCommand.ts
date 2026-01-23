@@ -1,6 +1,5 @@
 import { commands, ExtensionContext } from "vscode";
-import { ManagedRegionMeta } from "../doc/meta/managedRegion.meta";
-import { RegionMeta } from "../doc/meta/region.meta";
+import { ManagedRegionMeta, RegionMeta } from "../doc/meta";
 import { inspectRegionByName } from "./inspectResourceCommandUtils";
 import { setCICSRegion } from "./setCICSRegionCommand";
 

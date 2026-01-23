@@ -21,6 +21,7 @@ jest.mock("../../../src/commands/inspectResourceCommandUtils", () => ({
 
 import { getInspectRegionCommand } from "../../../src/commands/inspectRegionCommand";
 import { CICSResourceContainerNode } from "../../../src/trees";
+import { ManagedRegionMeta } from "../../../src/doc/meta/managedRegion.meta";
 
 let mockedClipboard = ``;
 
@@ -58,7 +59,7 @@ describe("Test suite for Inspect Region command", () => {
     await (command as any)();
 
     expect(setModule.setCICSRegion).toHaveBeenCalled();
-    expect(inspectModule.inspectRegionByName).toHaveBeenCalledWith(context, "REG1", expect.any(String), {
+    expect(inspectModule.inspectRegionByName).toHaveBeenCalledWith(context, ManagedRegionMeta, {
       profileName: "PROFILE1",
       cicsplexName: "PLEX1",
       regionName: "REG1",

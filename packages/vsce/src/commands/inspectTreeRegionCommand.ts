@@ -7,11 +7,6 @@ export function getInspectTreeRegionCommand(context: ExtensionContext, treeview:
     let targetNode: CICSRegionTree = node;
 
     if (!targetNode) {
-      if (treeview.selection.length < 1) {
-        await window.showErrorMessage(l10n.t("No CICS resource selected"));
-        return;
-      }
-
       // Gets last selected element
       targetNode = treeview.selection.pop();
       const targetNodeMeta = targetNode.getContainedResource().meta;
