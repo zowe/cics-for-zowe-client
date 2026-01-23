@@ -1,6 +1,6 @@
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { commands, ExtensionContext } from "vscode";
-import { setLastUsedRegion } from "../utils/lastUsedRegionUtils";
+import { ManagedRegionMeta } from "../doc/meta/managedRegion.meta";
+import { RegionMeta } from "../doc/meta/region.meta";
 import { inspectRegionByName } from "./inspectResourceCommandUtils";
 import { setCICSRegion } from "./setCICSRegionCommand";
 
@@ -11,13 +11,13 @@ export function getInspectRegionCommand(context: ExtensionContext) {
       return;
     }
 
-    await setLastUsedRegion(newRegion.regionName, newRegion.profile.name, newRegion.cicsPlexName);
-
-    const overrideContext = {
+    const regionContext = {
       profileName: newRegion.profile.name,
       cicsplexName: newRegion.cicsPlexName,
       regionName: newRegion.regionName,
     };
-    await inspectRegionByName(context, newRegion.regionName, CicsCmciConstants.CICS_CMCI_MANAGED_REGION, overrideContext);
+
+    const regionType = newRegion.cicsPlexName ? ManagedRegionMeta : RegionMeta;
+    await inspectRegionByName(context, regionType, regionContext);
   });
 }

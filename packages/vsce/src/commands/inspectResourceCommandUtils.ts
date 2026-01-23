@@ -264,33 +264,11 @@ async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Pro
   return choice;
 }
 
-export async function inspectRegionByName(
-  context: ExtensionContext,
-  resourceName: string,
-  resourceType: string,
-  overrideContext?: IResourceProfileNameInfo
-) {
-  if (overrideContext) {
-    let type = getResourceType(resourceType);
-
-    if (!type || type.length === 0) {
-      const message = CICSMessages.CICSResourceTypeNotFound.message.replace("%resource-type%", resourceType);
-      CICSLogger.error(message);
-      window.showErrorMessage(message);
-      return;
-    }
-    // If a plex is provided, prefer the managed-region meta,
-    // otherwise prefer the plain CICSRegion meta.
-    if (!overrideContext.cicsplexName) {
-      type = [getMetas().find((m) => m.resourceName === "CICSRegion")];
-    }
-
-    const resourceContext: IResourceProfileNameInfo = overrideContext;
-    const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
-    if (upToDateResource) {
-      await showInspectResource(context, upToDateResource, resourceContext);
-    }
-    return;
+export async function inspectRegionByName(context: ExtensionContext, regionType: IResourceMeta<IResource>, regionContext: IResourceProfileNameInfo) {
+  const resourceContext: IResourceProfileNameInfo = regionContext;
+  const upToDateResource = await loadResourcesWithProgress([regionType], regionContext.regionName, resourceContext);
+  if (upToDateResource) {
+    await showInspectResource(context, upToDateResource, resourceContext);
   }
 }
 
