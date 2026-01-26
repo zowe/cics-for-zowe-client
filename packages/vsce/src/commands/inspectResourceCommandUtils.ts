@@ -31,6 +31,7 @@ import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
+import { CICSRegionTree } from "../trees";
 
 async function showInspectResource(
   context: ExtensionContext,
@@ -265,19 +266,18 @@ export async function inspectRegionByName(context: ExtensionContext, regionType:
   }
 }
 
-export async function inspectRegionByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
+export async function inspectRegionByNode(context: ExtensionContext, node: CICSRegionTree) {
   const resourceContext: IResourceProfileNameInfo = {
     profileName: node.getProfile().name,
     cicsplexName: node.cicsplexName,
-    regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+    regionName: node.regionName ?? node.getContainedResourceName() ?? "",
   };
 
-  let parentResource: Resource<IResource>;
   // Choose meta based on whether a plex is present: managed-region when plex exists, otherwise the plain region meta
   const metaToUse = resourceContext.cicsplexName ? ManagedRegionMeta : RegionMeta;
-  const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName(), resourceContext, parentResource);
+  const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName() ?? "", resourceContext);
 
   if (upToDateResource) {
-    await showInspectResource(context, upToDateResource, resourceContext, node);
+    await showInspectResource(context, upToDateResource, resourceContext);
   }
 }

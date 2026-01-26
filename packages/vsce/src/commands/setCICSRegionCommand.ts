@@ -10,7 +10,7 @@
  */
 
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n, window } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
@@ -135,7 +135,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      window.showErrorMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
+       Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName), { severity: MessageSeverity.ERROR });
     }
   }
 

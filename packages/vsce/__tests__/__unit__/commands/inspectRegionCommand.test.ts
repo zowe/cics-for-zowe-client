@@ -1,15 +1,14 @@
-import type { Extension } from "vscode";
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 import * as vscode from "vscode";
-
-jest.spyOn(vscode.extensions, "getExtension").mockReturnValue({
-  packageJSON: {
-    version: "1.2.3",
-  },
-} as Extension<any>);
-
-jest.mock("../../../src/utils/profileManagement", () => ({
-  ProfileManagement: {},
-}));
 
 jest.mock("../../../src/commands/setCICSRegionCommand", () => ({
   setCICSRegion: jest.fn(),
@@ -20,21 +19,11 @@ jest.mock("../../../src/commands/inspectResourceCommandUtils", () => ({
 }));
 
 import { getInspectRegionCommand } from "../../../src/commands/inspectRegionCommand";
-import { CICSResourceContainerNode } from "../../../src/trees";
 import { ManagedRegionMeta } from "../../../src/doc/meta/managedRegion.meta";
-
-let mockedClipboard = ``;
-
-jest.spyOn(vscode.env.clipboard, "writeText").mockImplementation(async (text: string) => {
-  mockedClipboard = text;
-  return Promise.resolve();
-});
+import { CICSResourceContainerNode } from "../../../src/trees";
 
 jest.spyOn(vscode.commands, "registerCommand").mockImplementation((_: any, cb: any) => cb as unknown as vscode.Disposable);
 describe("Test suite for Inspect Region command", () => {
-  beforeEach(() => {
-    mockedClipboard = ``;
-  });
   test("Should return when no region is selected", async () => {
     const command = (getInspectRegionCommand as any)({} as any);
     await expect((command as any)()).resolves.toBeUndefined();

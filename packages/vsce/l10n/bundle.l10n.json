@@ -231,8 +231,6 @@
   "No CICS resource selected": "No CICS resource selected",
   "No CICS resource information available to inspect": "No CICS resource information available to inspect",
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
-  "No CICS region information available to inspect": "No CICS region information available to inspect",
-  "Multiple CICS regions selected. Region '{0}' will be inspected.": "Multiple CICS regions selected. Region '{0}' will be inspected.",
   "File": "File",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "No CICS Task selected": "No CICS Task selected",

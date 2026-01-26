@@ -677,7 +677,7 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection",
           "command": "cics-extension-for-zowe.inspectTreeRegion",
-          "group": "2.CICSResourceNode.action"
+          "group": "1.CICSResourceNode.inquire"
         }
       ]
     },

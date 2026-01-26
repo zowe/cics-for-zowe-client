@@ -1,29 +1,18 @@
-import { commands, ExtensionContext, l10n, TreeView, window } from "vscode";
-import { CICSRegionTree } from "../trees";
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+import { commands, ExtensionContext, TreeView } from "vscode";
 import { inspectRegionByNode } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeRegionCommand(context: ExtensionContext, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: CICSRegionTree) => {
-    let targetNode: CICSRegionTree = node;
-
-    if (!targetNode) {
-      // Gets last selected element
-      targetNode = treeview.selection.pop();
-      const targetNodeMeta = targetNode.getContainedResource().meta;
-      const targetNodeResource = targetNode.getContainedResource().resource;
-
-      if (!targetNodeMeta || !targetNodeResource) {
-        await window.showErrorMessage(l10n.t("No CICS region information available to inspect"));
-        return;
-      }
-
-      // If there is more than 1 selected, inform we're ignoring the others
-      if (treeview.selection.length > 1) {
-        window.showInformationMessage(
-          l10n.t("Multiple CICS regions selected. Region '{0}' will be inspected.", targetNodeMeta.getName(targetNodeResource))
-        );
-      }
-    }
-    await inspectRegionByNode(context, targetNode as any);
+  return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: any) => {
+    await inspectRegionByNode(context, node);
   });
 }

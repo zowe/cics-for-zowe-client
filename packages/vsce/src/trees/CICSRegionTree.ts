@@ -117,14 +117,6 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     }
   }
 
-  public getContainedResource(): IContainedResource<IResource> {
-    const ResourceClass = require("../resources/Resource").Resource as { new (r: any): any };
-    return {
-      meta: RegionMeta,
-      resource: new ResourceClass(this.region),
-    } as IContainedResource<IResource>;
-  }
-
   public getContainedResourceName() {
     return this.getRegionName();
   }
