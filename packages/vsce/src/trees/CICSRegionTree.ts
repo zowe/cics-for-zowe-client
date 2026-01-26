@@ -15,7 +15,6 @@ import { l10n, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
   ICICSTreeNode,
-  IContainedResource,
   IResourceMeta,
   JVMServerMeta,
   LibraryMeta,
@@ -23,7 +22,6 @@ import {
   PipelineMeta,
   ProgramMeta,
   RemoteFileMeta,
-  RegionMeta,
   SharedTSQueueMeta,
   TaskMeta,
   TCPIPMeta,

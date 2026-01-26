@@ -11,7 +11,7 @@
 
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { commands, l10n, window } from "vscode";
+import { commands, l10n } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
