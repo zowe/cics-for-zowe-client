@@ -17,4 +17,6 @@ export interface IRegion extends IResource {
   cicsstate: string;
   cicsstatus: string;
   cicsname: string;
+  secbypass: string;
+  wlmstatus: string;
 }

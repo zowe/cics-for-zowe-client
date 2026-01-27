@@ -38,6 +38,8 @@ import { showBundleDirectory } from "./showBundleDirectoryCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
+import { getInspectTreeRegionCommand } from "./inspectTreeRegionCommand";
+import { getInspectRegionCommand } from "./inspectRegionCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -84,5 +86,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     showBundleDirectory(),
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
+    getInspectTreeRegionCommand(context, treeview),
+    getInspectRegionCommand(context),
   ];
 };

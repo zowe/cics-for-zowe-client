@@ -14,13 +14,24 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IContainedResource, IResourceMeta, LocalFileMeta, RemoteFileMeta, SharedTSQueueMeta, TSQueueMeta, getMetas } from "../doc";
+import {
+  IContainedResource,
+  IResourceMeta,
+  LocalFileMeta,
+  ManagedRegionMeta,
+  RegionMeta,
+  RemoteFileMeta,
+  SharedTSQueueMeta,
+  TSQueueMeta,
+  getMetas,
+} from "../doc";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
+import { CICSRegionTree } from "../trees";
 
 async function showInspectResource(
   context: ExtensionContext,
@@ -161,10 +172,16 @@ async function loadResources(
 
   if (resources.length === 0) {
     const hrn = resourceTypes.map((type) => type.humanReadableNameSingular).join(" or ");
-    const message = CICSMessages.CICSResourceNotFound.message
-      .replace("%resource-type%", hrn)
-      .replace("%resource-name%", resourceName)
-      .replace("%region-name%", resourceContext.regionName);
+    let message: string;
+
+    if (resourceTypes.some((t) => [RegionMeta, ManagedRegionMeta].includes(t))) {
+      message = CICSMessages.CICSRegionNotFound.message.replace("%region-name%", resourceName);
+    } else {
+      message = CICSMessages.CICSResourceNotFound.message
+        .replace("%resource-type%", hrn)
+        .replace("%resource-name%", resourceName)
+        .replace("%region-name%", resourceContext.regionName);
+    }
 
     CICSLogger.error(message);
     window.showErrorMessage(message);
@@ -240,4 +257,27 @@ async function getChoiceFromQuickPick(placeHolder: string, items: string[]): Pro
   const choice = await Gui.resolveQuickPick(quickPick);
   quickPick.hide();
   return choice;
+}
+
+export async function inspectRegionByName(context: ExtensionContext, regionType: IResourceMeta<IResource>, regionContext: IResourceProfileNameInfo) {
+  const upToDateResource = await loadResourcesWithProgress([regionType], regionContext.regionName, regionContext);
+  if (upToDateResource) {
+    await showInspectResource(context, upToDateResource, regionContext);
+  }
+}
+
+export async function inspectRegionByNode(context: ExtensionContext, node: CICSRegionTree) {
+  const resourceContext: IResourceProfileNameInfo = {
+    profileName: node.getProfile().name,
+    cicsplexName: node.cicsplexName,
+    regionName: node.regionName ?? node.getContainedResourceName() ?? "",
+  };
+
+  // Choose meta based on whether a plex is present: managed-region when plex exists, otherwise the plain region meta
+  const metaToUse = resourceContext.cicsplexName ? ManagedRegionMeta : RegionMeta;
+  const upToDateResource = await loadResourcesWithProgress([metaToUse], node.getContainedResourceName() ?? "", resourceContext);
+
+  if (upToDateResource) {
+    await showInspectResource(context, upToDateResource, resourceContext);
+  }
 }

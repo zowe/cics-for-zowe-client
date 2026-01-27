@@ -10,7 +10,7 @@
  */
 
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
 import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
@@ -56,7 +56,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
   }
 }
 
-async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
+export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
   const quickPick = Gui.createQuickPick();
   const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {
@@ -115,7 +115,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       isCancelled = true;
     });
     let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
-    if (isCancelled || !regionInfo) {
+    if (isCancelled) {
       return;
     }
 
@@ -135,7 +135,7 @@ async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-      Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName));
+       Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName), { severity: MessageSeverity.ERROR });
     }
   }
 
