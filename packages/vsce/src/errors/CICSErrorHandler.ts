@@ -10,35 +10,24 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { MessageItem } from "vscode";
-import errorConstants from "../constants/CICS.errorMessages";
+import { l10n, MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
-import { openDocumentation } from "../utils/urlUtils";
+import { generateDocumentationURL } from "../utils/urlUtils";
 import { CICSExtensionError } from "./CICSExtensionError";
-import { ICICSExtensionError } from "./ICICSExtensionError";
-import { URLConstants } from "./urlConstants";
-
-export function resourceNotFoundError(error?: ICICSExtensionError) {
-  if (!error) {
-    error.errorMessage = errorConstants.NO_CICS_RESOURCE_SELECTED;
-  }
-}
 
 export class CICSErrorHandler {
   static handleCMCIRestError(error: CICSExtensionError, action?: MessageItem[]): Thenable<string | MessageItem> {
     const { errorMessage: msg, resourceType } = error.cicsExtensionError;
-    const actions = resourceType && !action ? [URLConstants.OPEN_DOCUMENTATION] : action;
-    const result = this.notifyErrorMessage({ errorMessage: msg, action: actions });
 
-    if (resourceType && !action) {
-      result.then(async (selection) => {
-        if (selection === URLConstants.OPEN_DOCUMENTATION) {
-          await openDocumentation(resourceType.trim().toLowerCase());
-        }
-      });
+    let message = msg;
+    if (resourceType && !action && msg) {
+      const docUrl = generateDocumentationURL(resourceType.trim().toLowerCase())?.toString();
+      if (docUrl) {
+        message = l10n.t("{0} Please refer to the [IBM documentation]({1}) for additional details", msg, docUrl);
+      }
     }
 
-    return result;
+    return this.notifyErrorMessage({ errorMessage: message, action });
   }
 
   handleExtensionError() {}

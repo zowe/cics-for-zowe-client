@@ -9,10 +9,7 @@
  *
  */
 
-import { l10n } from "vscode";
-
 export const URLConstants = {
-  OPEN_DOCUMENTATION: { title: l10n.t("Open Documentation") },
   HOSTNAME: "https://www.ibm.com",
   DOCPAGE: "docs",
   ENLANGUAGE: "en",

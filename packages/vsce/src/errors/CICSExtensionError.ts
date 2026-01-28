@@ -39,7 +39,7 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}." + " Please refer to the IBM documentation for resp code details",
+            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}.",
             feedback.action,
             this.cicsExtensionError.resourceType,
             resourceName,
@@ -58,8 +58,7 @@ export class CICSExtensionError extends Error {
               (resourceName ? ` for resources: {0}. ` : `. `) +
               `Response details: API_FUNCTION: {1}, ` +
               `RESP: {2} ({3}), ` +
-              `RESP2: {4} ({5}). ` +
-              `Please refer to the IBM documentation for resp code details`,
+              `RESP2: {4} ({5}).`,
             resourceName,
             api_function,
             resultSummary.api_response1,

@@ -59,12 +59,4 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
       expect.objectContaining({ authority: "www.ibm.com", path: "/docs/en/cics-ts/6.x", scheme: "https", query: "topic=commands-set-transaction" })
     );
   });
-
-  it("should open default documentation if resourcetype is undefined", async () => {
-    await openDocumentation();
-    expect(openExternalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ authority: "www.ibm.com", path: "/docs/en/cics-ts/6.x", scheme: "https" })
-    );
-    expect(uriParseSpy).toHaveBeenCalledWith(BASE_URL);
-  });
 });

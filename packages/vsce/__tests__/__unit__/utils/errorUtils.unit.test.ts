@@ -64,15 +64,15 @@ describe("Test suite for errorUtils", () => {
     });
 
     it("should return GET_COMMAND_URI for 'get' resource type", () => {
-      expect(getHelpTopicNameFromMetas("get")).toEqual({ queryParam: URLConstants.GET_COMMAND_URI, fragment: URLConstants.GET_COMMAND_URI_FRAGMENT });
+      expect(getHelpTopicNameFromMetas("get")).toEqual({ queryParam: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT });
     });
 
     it("should return queryParam and fragment for LIBRARY resource type", () => {
-      expect(getHelpTopicNameFromMetas("library")).toEqual({ queryParam: "commands-set-library", fragment: "setlibrary1__conditions__title__1" });
+      expect(getHelpTopicNameFromMetas("library")).toEqual({ queryParam: "commands-set-library", anchor: "setlibrary1__conditions__title__1" });
     });
 
     it("should return queryParam and fragment for PROGRAM resource type", () => {
-      expect(getHelpTopicNameFromMetas("program")).toEqual({ queryParam: "sc-set-program", fragment: "dfha8fq__title__6" });
+      expect(getHelpTopicNameFromMetas("program")).toEqual({ queryParam: "sc-set-program", anchor: "dfha8fq__title__6" });
     });
 
     it("should return undefined for unknown resource type", () => {

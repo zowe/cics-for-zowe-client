@@ -30,8 +30,8 @@ describe("Test suite to validate IBM Documentation URL", () => {
     });
   }
 
-  it(`should successfully validate IBM Documentation hompage`, async () => {
-    const baseUrl = generateDocumentationURL(undefined).toString(true);
+  it(`should successfully validate IBM Documentation URL for Get Resource`, async () => {
+    const baseUrl = generateDocumentationURL("get").toString(true);
 
     const response = await fetchUrlResponse(baseUrl);
 
@@ -40,7 +40,7 @@ describe("Test suite to validate IBM Documentation URL", () => {
     const content = await response.text();
     expect(content.length).toBeGreaterThan(0);
 
-    expect(content).toContain("IBM Documentation");
+    expect(content).toContain("GET command");
   });
 });
 

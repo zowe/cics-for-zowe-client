@@ -13,27 +13,22 @@ import { env, Uri } from "vscode";
 import { URLConstants } from "../errors/urlConstants";
 import { getHelpTopicNameFromMetas } from "./errorUtils";
 
-export async function openDocumentation(resourceType?: string): Promise<void> {
+export async function openDocumentation(resourceType: string): Promise<void> {
   const url = generateDocumentationURL(resourceType);
   await env.openExternal(url);
 }
 
-export function generateDocumentationURL(resourceType?: string): Uri {
+export function generateDocumentationURL(resourceType: string): Uri | undefined {
   // eslint-disable-next-line max-len
   const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
   const baseUri = Uri.parse(cicsDocHost);
 
-  if (!resourceType) {
-    return baseUri;
-  }
+  const result = getHelpTopicNameFromMetas(resourceType);
 
-  const { queryParam, fragment } = getHelpTopicNameFromMetas(resourceType);
-
-  if (queryParam && fragment) {
-    return baseUri.with({ query: `topic=${queryParam}`, fragment: fragment });
+  if (result?.queryParam) {
+    return baseUri.with({ query: `topic=${result.queryParam}` });
   }
 
   // Fallback to default pattern
   return baseUri;
 }
-

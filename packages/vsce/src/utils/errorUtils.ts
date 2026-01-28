@@ -16,22 +16,22 @@ export function getErrorCode(error: any) {
   return error.mDetails?.errorCode || error.response?.status;
 }
 
-export function getHelpTopicNameFromMetas(resourceType?: string): { queryParam: string; fragment: string } | undefined {
+export function getHelpTopicNameFromMetas(resourceType: string): { queryParam: string; anchor: string } | undefined {
   if (resourceType === URLConstants.GET_RESOURCE) {
-    return { queryParam: URLConstants.GET_COMMAND_URI, fragment: URLConstants.GET_COMMAND_URI_FRAGMENT };
+    return { queryParam: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT };
   }
   const result = getResourceTypeAndHelpTopic(resourceType);
-  if (!result || !result.queryParam || !result.fragment) {
+  if (!result || !result.queryParam) {
     return undefined;
   }
-  return { queryParam: result.queryParam, fragment: result.fragment };
+  return { queryParam: result.queryParam, anchor: result.anchor };
 }
 
-export function getEIBFNameFromMetas(eibfnAlt?: string): string | undefined {
+export function getEIBFNameFromMetas(eibfnAlt: string): string | undefined {
   return getResourceTypeAndHelpTopic(eibfnAlt)?.eibfnName;
 }
 
-function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: string; queryParam?: string; fragment?: string } | undefined {
+function getResourceTypeAndHelpTopic(resourceType: string): { eibfnName: string; queryParam: string; anchor: string } | undefined {
   if (!resourceType) {
     return undefined;
   }
@@ -45,6 +45,6 @@ function getResourceTypeAndHelpTopic(resourceType?: string): { eibfnName?: strin
   return {
     eibfnName: meta.eibfnName,
     queryParam: meta.queryParamForSet,
-    fragment: meta.anchorFragmentForSet,
+    anchor: meta.anchorFragmentForSet,
   };
 }
