@@ -45,13 +45,14 @@ test.describe("Resource Inspector tests", async () => {
     await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/3.png" });
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+    await expect(getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`)).toBeVisible();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
+    await expect(getResourceInspector(page).getByText('Status: ENABLED')).toBeVisible();
   });
 
   test("should refresh resource when clicking refresh icon", async ({ page }) => {
