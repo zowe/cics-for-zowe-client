@@ -530,7 +530,7 @@
           "group": "2.CICSResourceNode.action"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection && config.zowe.cics.showAttributes",
           "command": "cics-extension-for-zowe.showRegionAttributes",
           "group": "1.CICSResourceNode.inquire"
         },
