@@ -90,19 +90,7 @@ export class CICSSessionTree extends TreeItem {
     } catch (error) {
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
-          error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, this.profile.name);
-
-          CICSErrorHandler.handleCMCIRestError(error);
-          this.setUnauthorized();
-          this.profile = await updateProfile(this.profile, this);
-
-          if (!this.profile) {
-            throw error;
-          }
-
-          this.createSessionFromProfile();
-          plexInfo = await ProfileManagement.getPlexInfo(this.profile);
-          this.setAuthorized();
+          plexInfo = await this.handleUnauthorizedAndRetry(error);
         } else {
           CICSErrorHandler.handleCMCIRestError(error);
         }
@@ -141,6 +129,40 @@ export class CICSSessionTree extends TreeItem {
     }
 
     return this.children;
+  }
+
+  private async handleUnauthorizedAndRetry(error: CICSExtensionError): Promise<InfoLoaded[]> {
+    error.cicsExtensionError.errorMessage = l10n.t(errorConstants.INVALID_USER_OR_SESSION_EXPIRED, this.profile.name);
+    const updateCredentials = { title: l10n.t("Update Credentials") };
+    const userAction = await CICSErrorHandler.handleCMCIRestError(error, [updateCredentials]);
+    this.setUnauthorized();
+
+    // Retry logic: if user clicked "Update Credentials"
+    if (userAction === updateCredentials) {
+      this.profile = await updateProfile(this.profile, this);
+
+      if (!this.profile) {
+        return [];
+      }
+
+      this.createSessionFromProfile();
+
+      try {
+        const plexInfo = await ProfileManagement.getPlexInfo(this.profile);
+        this.setAuthorized();
+        return plexInfo;
+      } catch (retryError) {
+        if (retryError instanceof CICSExtensionError) {
+          if (retryError.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
+            retryError.cicsExtensionError.errorMessage = l10n.t(errorConstants.LOGIN_FAILED_ACCOUNT_LOCKOUT_WARNING);
+          }
+          CICSErrorHandler.handleCMCIRestError(retryError);
+        }
+        return [];
+      }
+    }
+
+    return [];
   }
 
   public setUnauthorized() {
