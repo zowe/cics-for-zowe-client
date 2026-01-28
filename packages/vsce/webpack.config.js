@@ -119,15 +119,9 @@ function webviews(mode) {
           ],
         },
         {
-          test: /\.(css)$/,
-          use: [
-            {
-              loader: "style-loader",
-            },
-            {
-              loader: "css-loader",
-            },
-          ],
+          test: /\.s?css$/,
+          use: ["style-loader", "css-loader", "postcss-loader"],
+          exclude: /\.module\.s?(c|a)ss$/,
         },
       ],
     },

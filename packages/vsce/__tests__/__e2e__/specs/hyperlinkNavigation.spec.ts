@@ -43,14 +43,12 @@ test.describe("Hyperlink navigation tests", async () => {
     await findAndClickText(page, "Inspect Resource");
     await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
+    await getResourceInspector(page).locator('span').filter({ hasText: constants.JVM_SERVER_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("LOG");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("LOG");
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
 
     const jvmlogLink = getResourceInspector(page).getByRole("link", { name: "//DD:JVMLOG" });
     await jvmlogLink.waitFor({ state: "visible", timeout: 500 });
