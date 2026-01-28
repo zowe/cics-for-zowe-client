@@ -20,6 +20,9 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE_PART,
   humanReadableNamePlural: l10n.t("Bundle Parts"),
   humanReadableNameSingular: l10n.t("Bundle Part"),
+  eibfnName: "BUNDLE",
+  queryParamForSet: "sc-set-bundle",
+  anchorFragmentForSet: "dfha8_setbundle__title__6",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {
     let criteriaString = `(${criteria.map((n) => `BUNDLEPART='${n}'`).join(" OR ")})`;

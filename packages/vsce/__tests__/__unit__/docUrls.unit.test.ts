@@ -9,41 +9,29 @@
  *
  */
 
+import { getMetas } from "../../src/doc";
 import { generateDocumentationURL } from "../../src/utils/urlUtils";
 
-const resources = [
-  "bundle",
-  "file",
-  "jvmserver",
-  "library",
-  "pipeline",
-  "program",
-  "task",
-  "tcpipservice",
-  "transaction",
-  "tsqueue",
-  "urimap",
-  "webservice",
-];
+const resources = getMetas()
+  .filter((meta) => meta.eibfnName && meta.eibfnName.trim() !== "")
+  .map((meta) => meta.eibfnName?.toUpperCase());
 
 describe("Test suite to validate IBM Documentation URL", () => {
   for (const resource of resources) {
     it(`should successfully validate the documentation link for ${resource}`, async () => {
       const baseUrl = generateDocumentationURL(resource).toString(true);
       const response = await fetchUrlResponse(baseUrl);
-
       expect(response.status).toBe(200);
-      expect(response.url).toBe(baseUrl);
+      expect(baseUrl).toContain(response.url);
       const content = await response.text();
       expect(content.length).toBeGreaterThan(0);
 
-      const resourceUpperCase = resource.replace("-", " / ").toUpperCase();
-      expect(content).toContain(`SET ${resourceUpperCase}`);
+      expect(content).toContain(`SET ${resource}`);
     });
   }
 
-  it(`should successfully validate IBM Documentation hompage`, async () => {
-    const baseUrl = generateDocumentationURL(undefined).toString(true);
+  it(`should successfully validate IBM Documentation URL for Get Resource`, async () => {
+    const baseUrl = generateDocumentationURL("get").toString(true);
 
     const response = await fetchUrlResponse(baseUrl);
 
@@ -52,7 +40,7 @@ describe("Test suite to validate IBM Documentation URL", () => {
     const content = await response.text();
     expect(content.length).toBeGreaterThan(0);
 
-    expect(content).toContain("IBM Documentation");
+    expect(content).toContain("GET command");
   });
 });
 
@@ -64,4 +52,3 @@ async function fetchUrlResponse(baseUrl: string) {
     },
   });
 }
-

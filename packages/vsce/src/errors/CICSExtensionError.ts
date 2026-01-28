@@ -12,6 +12,7 @@
 import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
+import { getEIBFNameFromMetas } from "../utils/errorUtils";
 import { ICICSExtensionError } from "./ICICSExtensionError";
 
 export class CICSExtensionError extends Error {
@@ -34,11 +35,11 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
       if (feedback) {
-        this.cicsExtensionError.resourceType = feedback.eibfn_alt.replace("SET", "").trim();
+        this.cicsExtensionError.resourceType = getEIBFNameFromMetas(feedback.eibfn_alt);
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}." + " Please refer to the IBM documentation for resp code details",
+            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}.",
             feedback.action,
             this.cicsExtensionError.resourceType,
             resourceName,
@@ -48,15 +49,16 @@ export class CICSExtensionError extends Error {
             feedback.resp2
           );
       } else {
+        //setting resourceType to GET for generating doc url
+        this.cicsExtensionError.resourceType = api_function;
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            `The CMCI REST API request failed` +
+            `The request failed` +
               (resourceName ? ` for resources: {0}. ` : `. `) +
               `Response details: API_FUNCTION: {1}, ` +
               `RESP: {2} ({3}), ` +
-              `RESP2: {4} ({5}). ` +
-              `Please refer to the IBM documentation for resp code details`,
+              `RESP2: {4} ({5}).`,
             resourceName,
             api_function,
             resultSummary.api_response1,
@@ -81,7 +83,7 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
     } else {
       const err = error as Error;
-      this.cicsExtensionError.errorMessage = l10n.t("The CMCI REST API request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
+      this.cicsExtensionError.errorMessage = l10n.t("The request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
     }
   }
 }

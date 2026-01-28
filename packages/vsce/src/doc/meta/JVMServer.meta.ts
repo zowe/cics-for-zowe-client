@@ -21,6 +21,9 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   resourceName: CicsCmciConstants.CICS_JVMSERVER_RESOURCE,
   humanReadableNamePlural: l10n.t("JVM Servers"),
   humanReadableNameSingular: l10n.t("JVM Server"),
+  eibfnName: "JVMSERVER",
+  queryParamForSet: "commands-set-jvmserver",
+  anchorFragmentForSet: "dfha8_setenclave__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

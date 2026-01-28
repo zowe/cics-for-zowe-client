@@ -9,14 +9,14 @@
  *
  */
 
-import { l10n } from "vscode";
-
 export const URLConstants = {
-  OPEN_DOCUMENTATION: { title: l10n.t("Open Documentation") },
   HOSTNAME: "https://www.ibm.com",
   DOCPAGE: "docs",
   ENLANGUAGE: "en",
   CICSTS_PAGE: "cics-ts",
   VERSION: "6.x",
   TOPIC: "topic",
+  GET_RESOURCE: "get",
+  GET_COMMAND_URI: "commands-get",
+  GET_COMMAND_URI_FRAGMENT: "eyup2ap__title__5",
 };

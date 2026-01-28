@@ -20,6 +20,9 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   resourceName: CicsCmciConstants.CICS_CMCI_TS_QUEUE,
   humanReadableNamePlural: l10n.t("TS Queues"),
   humanReadableNameSingular: l10n.t("TS Queue"),
+  eibfnName: "TSQUEUE",
+  queryParamForSet: "commands-set-tsqueue-tsqname",
+  anchorFragmentForSet: "dfha8gg__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");

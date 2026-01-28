@@ -55,8 +55,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to Disable Program MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. " +
-        "Please refer to the IBM documentation for resp code details"
+      "Failed to Disable PROGRAM MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6."
     );
   });
 
@@ -90,9 +89,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The CMCI REST API request failed for resources: MyProg. " +
-        "Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR). " +
-        "Please refer to the IBM documentation for resp code details"
+      "The request failed for resources: MyProg. " + "Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
     );
   });
 
@@ -123,7 +120,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The CMCI REST API request failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
+      "The request failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
     );
   });
 });

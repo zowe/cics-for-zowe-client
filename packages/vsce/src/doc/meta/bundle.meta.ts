@@ -21,6 +21,9 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   resourceName: CicsCmciConstants.CICS_CMCI_BUNDLE,
   humanReadableNamePlural: l10n.t("Bundles"),
   humanReadableNameSingular: l10n.t("Bundle"),
+  eibfnName: "BUNDLE",
+  queryParamForSet: "sc-set-bundle",
+  anchorFragmentForSet: "dfha8_setbundle__title__6",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

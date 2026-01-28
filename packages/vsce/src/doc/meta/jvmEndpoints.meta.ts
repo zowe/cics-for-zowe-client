@@ -20,6 +20,9 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   resourceName: CicsCmciConstants.CICS_CMCI_JVM_ENDPOINT,
   humanReadableNamePlural: l10n.t("JVM Endpoints"),
   humanReadableNameSingular: l10n.t("JVM Endpoint"),
+  eibfnName: "JVMENDPOINT",
+  queryParamForSet: "commands-set-jvmendpoint",
+  anchorFragmentForSet: "setjvmendpoint__title__6",
 
   buildCriteria(criteria: string[], parentResource?: IJVMServer) {
     let criteriaString = `(${criteria.map((n) => `JVMENDPOINT='${n}'`).join(" OR ")})`;
