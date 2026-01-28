@@ -25,7 +25,7 @@ import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
-import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
+import { getCompareResourcesCommand, getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getOpenLocalFileCommand } from "./openLocalFileCommand";
@@ -77,6 +77,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInquireProgramCommand(treeDataProv, treeview),
 
     getInspectTreeResourceCommand(context, treeview),
+    getCompareResourcesCommand(context, treeview),
     getToggleResourceSettingCommand(),
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),
@@ -86,7 +87,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     showBundleDirectory(),
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
-    getInspectTreeRegionCommand(context, treeview),
+    getInspectTreeRegionCommand(context),
     getInspectRegionCommand(context),
   ];
 };

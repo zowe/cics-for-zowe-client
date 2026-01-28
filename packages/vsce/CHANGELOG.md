@@ -9,6 +9,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Open resource documentation from error notification. [#537](https://github.com/zowe/cics-for-zowe-client/issues/537)
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 - Enhancement: Discard CMCI result sets when the resource node is collapsed. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
+- Enhancement: Added Compare command to view two CICS resources side by side. [#560](https://github.com/zowe/cics-for-zowe-client/issues/560)
 
 ## `3.17.0`
 
