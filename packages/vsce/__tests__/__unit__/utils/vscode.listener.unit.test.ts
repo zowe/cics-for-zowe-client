@@ -32,11 +32,11 @@ describe('VS Code Webview utility methods', () => {
   it("should POST message to webview", () => {
     expect(postSpy).toHaveBeenCalledTimes(0);
     webviewUtils.postVscMessage({
-      command: "init",
+      type: "init",
     });
     expect(postSpy).toHaveBeenCalledTimes(1);
     expect(postSpy).toHaveBeenLastCalledWith({
-      command: "init"
+      type: "init"
     });
   });
 

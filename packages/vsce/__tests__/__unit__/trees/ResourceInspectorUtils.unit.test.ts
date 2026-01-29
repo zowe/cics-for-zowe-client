@@ -34,8 +34,8 @@ import * as inspectResourceCommandUtils from "../../../src/commands/inspectResou
 import { IContainedResource, ProgramMeta } from "../../../src/doc";
 import CICSResourceExtender from "../../../src/extending/CICSResourceExtender";
 import { Resource, ResourceContainer } from "../../../src/resources";
-import { IResourceInspectorProps, IResourceInspectorResource } from "../../../src/webviews/common/vscode";
-import { executeAction } from "../../../src/trees/ResourceInspectorUtils";
+import { IResourceInspectorResource } from "../../../src/webviews/common/vscode";
+import { handleActionCommand, handleRefreshCommand } from "../../../src/trees/ResourceInspectorUtils";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import { profile } from "../../__mocks__";
 
@@ -96,13 +96,10 @@ describe("ResourceInspectorUtils", () => {
         };
         (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
 
-        const message: IResourceInspectorProps = {
-          command: "action",
-          actionId: "testAction",
-          resources: [createMockResource("PROG1")],
-        };
+        const actionId = "testAction";
+        const resources = [createMockResource("PROG1")];
 
-        await executeAction("action", message, mockInstance, mockContext);
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(CICSResourceExtender.getAction).toHaveBeenCalledWith("testAction");
         expect(vscode.commands.executeCommand).toHaveBeenCalledWith("test.command", expect.any(Object));
@@ -117,18 +114,15 @@ describe("ResourceInspectorUtils", () => {
         (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
 
         const resource = createMockResource("PROG1");
-        const message: IResourceInspectorProps = {
-          command: "action",
-          actionId: "testAction",
-          resources: [resource],
-        };
+        const actionId = "testAction";
+        const resources = [resource];
 
         const updatedResource = createMockContainedResource("PROG1");
         mockResourceContainer.fetchNextPage.mockResolvedValue([updatedResource]);
         (mockInstance.getResources as jest.Mock).mockReturnValue([resource]);
 
         setupWithProgressMock();
-        await executeAction("action", message, mockInstance, mockContext);
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(vscode.commands.executeCommand).toHaveBeenCalledWith("test.command", expect.any(Object));
         expect(vscode.window.withProgress).toHaveBeenCalled();
@@ -143,13 +137,10 @@ describe("ResourceInspectorUtils", () => {
         (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
 
         const resource = createMockResource("PROG1");
-        const message: IResourceInspectorProps = {
-          command: "action",
-          actionId: "testAction",
-          resources: [resource],
-        };
+        const actionId = "testAction";
+        const resources = [resource];
 
-        await executeAction("action", message, mockInstance, mockContext);
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(mockActionFunction).toHaveBeenCalledWith(resource.resource, resource.context);
         expect(vscode.commands.executeCommand).not.toHaveBeenCalled();
@@ -162,13 +153,10 @@ describe("ResourceInspectorUtils", () => {
         };
         (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
 
-        const message: IResourceInspectorProps = {
-          command: "action",
-          actionId: "testAction",
-          resources: [createMockResource("PROG1"), createMockResource("PROG2")],
-        };
+        const actionId = "testAction";
+        const resources = [createMockResource("PROG1"), createMockResource("PROG2")];
 
-        await executeAction("action", message, mockInstance, mockContext);
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(vscode.commands.executeCommand).toHaveBeenCalledTimes(2);
       });
@@ -176,13 +164,10 @@ describe("ResourceInspectorUtils", () => {
       it("should return early if action not found", async () => {
         (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(null);
 
-        const message: IResourceInspectorProps = {
-          command: "action",
-          actionId: "nonexistent",
-          resources: [createMockResource("PROG1")],
-        };
+        const actionId = "nonexistent";
+        const resources = [createMockResource("PROG1")];
 
-        await executeAction("action", message, mockInstance, mockContext);
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(vscode.commands.executeCommand).not.toHaveBeenCalled();
         expect(vscode.window.withProgress).not.toHaveBeenCalled();
@@ -197,13 +182,10 @@ describe("ResourceInspectorUtils", () => {
         (mockInstance.getResources as jest.Mock).mockReturnValue([existingResource]);
         mockResourceContainer.fetchNextPage.mockResolvedValue([updatedResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [existingResource],
-        };
+        const resources = [existingResource];
 
         setupWithProgressMock();
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(vscode.window.withProgress).toHaveBeenCalledWith(
           {
@@ -235,13 +217,10 @@ describe("ResourceInspectorUtils", () => {
           .mockResolvedValueOnce([updatedResource1])
           .mockResolvedValueOnce([updatedResource2]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [resource1, resource2],
-        };
+        const resources = [resource1, resource2];
 
         setupWithProgressMock();
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(mockResourceContainer.fetchNextPage).toHaveBeenCalledTimes(2);
         expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalled();
@@ -254,13 +233,10 @@ describe("ResourceInspectorUtils", () => {
         (mockInstance.getResources as jest.Mock).mockReturnValue([existingResource]);
         mockResourceContainer.fetchNextPage.mockResolvedValue([differentResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [existingResource],
-        };
+        const resources = [existingResource];
 
         setupWithProgressMock();
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(
           mockContext,
@@ -279,12 +255,9 @@ describe("ResourceInspectorUtils", () => {
         const error = new Error("Fetch failed");
         mockResourceContainer.fetchNextPage.mockRejectedValue(error);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [createMockResource("PROG1")],
-        };
+        const resources = [createMockResource("PROG1")];
 
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
           expect.stringContaining("Something went wrong while performing Refresh")
@@ -305,12 +278,9 @@ describe("ResourceInspectorUtils", () => {
         (mockInstance.getResources as jest.Mock).mockReturnValue([resource]);
         mockResourceContainer.fetchNextPage.mockResolvedValue([updatedResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [resource],
-        };
+        const resources = [resource];
 
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(progressReport).toHaveBeenCalledWith({ message: "Refreshing..." });
       });
@@ -328,13 +298,10 @@ describe("ResourceInspectorUtils", () => {
         (mockInstance.getResources as jest.Mock).mockReturnValue([existingResource]);
         mockResourceContainer.fetchNextPage.mockResolvedValue([matchingResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [existingResource],
-        };
+        const resources = [existingResource];
 
         setupWithProgressMock();
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(
           mockContext,
@@ -353,29 +320,23 @@ describe("ResourceInspectorUtils", () => {
         (mockInstance.getResources as jest.Mock).mockReturnValue([existingResource]);
         mockResourceContainer.fetchNextPage.mockResolvedValue([differentResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [existingResource],
-        };
+        const resources = [existingResource];
 
         setupWithProgressMock();
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
         const callArgs = (inspectResourceCommandUtils.showInspectResource as jest.Mock).mock.calls[0];
-        const resources = callArgs[1];
-        expect(resources[0].containedResource.resource.resource.program).toBe("PROG1");
+        const displayedResources = callArgs[1];
+        expect(displayedResources[0].containedResource.resource.resource.program).toBe("PROG1");
       });
     });
 
     describe("edge cases", () => {
       it("should handle empty resources array", async () => {
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [],
-        };
+        const resources: IResourceInspectorResource[] = [];
 
         (mockInstance.getResources as jest.Mock).mockReturnValue([]);
 
-        await executeAction("refresh", message, mockInstance, mockContext);
+        await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(mockResourceContainer.fetchNextPage).not.toHaveBeenCalled();
         expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(mockContext, []);
@@ -387,12 +348,9 @@ describe("ResourceInspectorUtils", () => {
 
         mockResourceContainer.fetchNextPage.mockResolvedValue([updatedResource]);
 
-        const message: IResourceInspectorProps = {
-          command: "refresh",
-          resources: [resource],
-        };
+        const resources = [resource];
 
-        await executeAction("refresh", message, null as any, mockContext);
+        await handleRefreshCommand(resources, null as any, mockContext);
 
         expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(
           mockContext,
@@ -404,13 +362,13 @@ describe("ResourceInspectorUtils", () => {
         );
       });
 
-      it("should handle unknown command gracefully", async () => {
-        const message: IResourceInspectorProps = {
-          command: "unknown",
-          resources: [createMockResource("PROG1")],
-        };
+      it("should handle action with no matching action gracefully", async () => {
+        (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(null);
 
-        await executeAction("unknown", message, mockInstance, mockContext);
+        const actionId = "unknown";
+        const resources = [createMockResource("PROG1")];
+
+        await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
         expect(vscode.commands.executeCommand).not.toHaveBeenCalled();
         expect(vscode.window.withProgress).not.toHaveBeenCalled();
