@@ -12,6 +12,7 @@ import { commands, ExtensionContext } from "vscode";
 import { ManagedRegionMeta, RegionMeta } from "../doc/meta";
 import { inspectRegionByName } from "./inspectResourceCommandUtils";
 import { setCICSRegion } from "./setCICSRegionCommand";
+import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 
 export function getInspectRegionCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.inspectRegion", async () => {
@@ -20,8 +21,9 @@ export function getInspectRegionCommand(context: ExtensionContext) {
       return;
     }
 
-    const regionContext = {
-      profileName: newRegion.profile.name,
+    const regionContext: IResourceContext = {
+      session: newRegion.session,
+      profile: newRegion.profile,
       cicsplexName: newRegion.cicsPlexName,
       regionName: newRegion.regionName,
     };

@@ -12,7 +12,7 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ExtensionContext, TreeView, commands, l10n, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
-import { inspectResourceByNode } from "./inspectResourceCommandUtils";
+import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
@@ -42,5 +42,28 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
       }
     }
     await inspectResourceByNode(context, targetNode);
+  });
+}
+
+export function getCompareResourcesCommand(context: ExtensionContext, treeview: TreeView<any>) {
+  return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async () => {
+    if (treeview.selection.length !== 2) {
+      return;
+    }
+
+    return showInspectResource(
+      context,
+      [...new Set(treeview.selection)].map((n: CICSResourceContainerNode<IResource>) => {
+        return {
+          containedResource: n.getContainedResource(),
+          cxt: {
+            session: n.getSession(),
+            profile: n.getProfile(),
+            cicsplexName: n.cicsplexName,
+            regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
+          },
+        };
+      })
+    );
   });
 }
