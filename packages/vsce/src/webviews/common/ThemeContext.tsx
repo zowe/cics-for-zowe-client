@@ -28,7 +28,8 @@ interface ThemeProviderProps {
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const checkTheme = () => {
     return document.body.classList.contains("vscode-dark") ||
-      document.body.classList.contains("vscode-high-contrast");
+      (document.body.classList.contains("vscode-high-contrast") &&
+        !document.body.classList.contains("vscode-high-contrast-light"));
   };
 
   const [isDark, setIsDark] = useState(checkTheme());

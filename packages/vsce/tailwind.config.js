@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-  content: ['./dist/*.html'],
+  content: ['./dist/**/*.html'],
   theme: {
     extend: {},
   },

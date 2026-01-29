@@ -10,7 +10,7 @@
  */
 
 import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { createContext, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import { useTheme } from "../common/ThemeContext";
 import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
@@ -25,7 +25,11 @@ const DropdownContext = createContext<{
   buttonRef: null,
 });
 
-const DropDown = ({ children, ...props }: any) => {
+interface DropDownProps {
+  children: ReactNode;
+}
+
+const DropDown = ({ children }: DropDownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -85,7 +89,11 @@ const DropDownButton = ({ tabIndex }: { tabIndex?: number; }) => {
   );
 };
 
-const DropDownContent = ({ children }: any) => {
+interface DropDownContentProps {
+  children: ReactNode;
+}
+
+const DropDownContent = ({ children }: DropDownContentProps) => {
 
   const { open, buttonRef } = useContext(DropdownContext);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -105,11 +113,12 @@ const DropDownContent = ({ children }: any) => {
       updatePosition();
       window.addEventListener('resize', updatePosition);
       window.addEventListener('scroll', updatePosition, true);
-      return () => {
-        window.removeEventListener('resize', updatePosition);
-        window.removeEventListener('scroll', updatePosition, true);
-      };
     }
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
   }, [open, buttonRef]);
 
   if (!open) {
@@ -118,7 +127,7 @@ const DropDownContent = ({ children }: any) => {
 
   return createPortal(
     <div
-      className="fixed z-[70] flex flex-col bg-(--vscode-panel-background) opacity-95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
+      className="fixed z-70 flex flex-col bg-(--vscode-panel-background) opacity-95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
     >
       {children}
@@ -127,7 +136,11 @@ const DropDownContent = ({ children }: any) => {
   );
 };
 
-const DropDownList = ({ children }: any) => {
+interface DropDownListProps {
+  children: ReactNode;
+}
+
+const DropDownList = ({ children }: DropDownListProps) => {
   const { setOpen } = useContext(DropdownContext);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -173,7 +186,15 @@ const DropDownList = ({ children }: any) => {
   );
 };
 
-const DropDownListItem = ({ children, actionId, resourceName, resourceContext, resources }: { children: any; actionId: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[]; }) => {
+interface DropDownListItemProps {
+  children: ReactNode;
+  actionId: string;
+  resourceName: string;
+  resourceContext: IResourceContext;
+  resources: IResourceInspectorResource[];
+}
+
+const DropDownListItem = ({ children, actionId, resourceName, resourceContext, resources }: DropDownListItemProps) => {
   const { setOpen } = useContext(DropdownContext);
 
   const handleClick = () => {

@@ -31,5 +31,3 @@ export type ExtensionToWebviewMessage = {
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
 };
-
-// Made with Bob
