@@ -28,7 +28,7 @@ export const isHyperlinkableValue = (value: string): boolean => {
  * @param value - The string value to render
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, cxt: IResourceContext) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext) => {
   if (isHyperlinkableValue(value)) {
     return (
       <a
@@ -38,7 +38,7 @@ export const renderHyperlinkableValue = (value: string, cxt: IResourceContext) =
           e.preventDefault();
           postVscMessage({
             type: "showLogsForHyperlink",
-            resourceContext: cxt,
+            resourceContext: ctx,
           });
         }}
       >

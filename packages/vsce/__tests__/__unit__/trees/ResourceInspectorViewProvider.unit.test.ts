@@ -101,11 +101,6 @@ jest.mock("@zowe/zowe-explorer-api", () => {
   };
 });
 
-const resCxt = {
-  profileName: "MYPROF",
-  regionName: "MYREG",
-};
-
 describe("Resource Inspector View provider", () => {
   const myResource = {
     meta: PipelineMeta,
@@ -130,7 +125,7 @@ describe("Resource Inspector View provider", () => {
     await ri.setResources([
       {
         containedResource: myResource,
-        cxt: {
+        ctx: {
           profile: {} as IProfileLoaded,
           regionName: "MYREG",
           session: {} as CICSSession,
@@ -186,7 +181,7 @@ describe("Resource Inspector View provider", () => {
     await ri.setResources([
       {
         containedResource: myResource,
-        cxt: {
+        ctx: {
           profile: {} as IProfileLoaded,
           regionName: "MYREG",
           session: {} as CICSSession,

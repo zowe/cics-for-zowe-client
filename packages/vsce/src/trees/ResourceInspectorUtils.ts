@@ -21,7 +21,7 @@ import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 
 type IResourceWithContext = {
   containedResource: IContainedResource<IResource>;
-  cxt: IResourceContext;
+  ctx: IResourceContext;
 };
 
 export const handleActionCommand = async (
@@ -118,7 +118,7 @@ const fetchUpdatedResources = async (resources: IResourceInspectorResource[]): P
     updatedResources.push(
       ...fetchedResources.map((containedResource) => ({
         containedResource,
-        cxt: resource.context,
+        ctx: resource.context,
       }))
     );
   }
@@ -154,9 +154,9 @@ const resourcesMatch = (
   return (
     updatedName === existing.name &&
     updated.containedResource.meta.resourceName === existing.meta.resourceName &&
-    updated.cxt.profile.name === existing.context.profile.name &&
-    updated.cxt.cicsplexName === existing.context.cicsplexName &&
-    updated.cxt.regionName === existing.context.regionName
+    updated.ctx.profile.name === existing.context.profile.name &&
+    updated.ctx.cicsplexName === existing.context.cicsplexName &&
+    updated.ctx.regionName === existing.context.regionName
   );
 };
 
@@ -168,7 +168,7 @@ const createFallbackResource = (existingResource: IResourceInspectorResource): I
       meta,
       resource: new Resource(existingResource.resource),
     },
-    cxt: existingResource.context,
+    ctx: existingResource.context,
   };
 };
 

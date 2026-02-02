@@ -50,7 +50,7 @@ export const actionTreeItem = async ({ action, nodes, tree, getParentResource, p
 
         try {
           const response = await setResource({
-            cxt: {
+            ctx: {
               profileName: node.getProfileName(),
               regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
               cicsplexName: node.cicsplexName,

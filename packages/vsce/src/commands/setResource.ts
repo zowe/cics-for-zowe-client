@@ -30,7 +30,7 @@ interface ISetResourcePayloadParameter {
 }
 
 interface ISetResourceArgs {
-  cxt: IResourceProfileNameInfo;
+  ctx: IResourceProfileNameInfo;
   meta: IResourceMeta<IResource>;
   resourceName: string;
   action: keyof typeof resourceActionVerbMap;
@@ -71,13 +71,13 @@ export const buildPayload = (actionName: string, parameter?: ISetResourcePayload
   return payload;
 };
 
-export const setResource = async ({ cxt, meta, resourceName, parameter, parentResource, action }: ISetResourceArgs) => {
+export const setResource = async ({ ctx, meta, resourceName, parameter, parentResource, action }: ISetResourceArgs) => {
   return runPutResource(
     {
-      profileName: cxt.profileName,
+      profileName: ctx.profileName,
       resourceName: meta.resourceName,
-      cicsPlex: cxt.cicsplexName,
-      regionName: cxt.regionName,
+      cicsPlex: ctx.cicsplexName,
+      regionName: ctx.regionName,
       params: { criteria: meta.buildCriteria([resourceName], parentResource) },
     },
     buildPayload(action, parameter)

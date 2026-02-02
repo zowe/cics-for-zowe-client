@@ -245,7 +245,7 @@ describe("ResourceInspectorUtils", () => {
               containedResource: expect.objectContaining({
                 meta: ProgramMeta,
               }),
-              cxt: existingResource.context,
+              ctx: existingResource.context,
             }),
           ])
         );

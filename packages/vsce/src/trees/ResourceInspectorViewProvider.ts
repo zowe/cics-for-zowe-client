@@ -91,14 +91,14 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResources(resources: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }[]) {
+  public async setResources(resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext; }[]) {
     const riResources: IResourceInspectorResource[] = [];
     for (const res of resources) {
       const actions = await this.getActionsForResource(res);
       riResources.push({
         resource: res.containedResource.resource.attributes,
         meta: res.containedResource.meta,
-        context: res.cxt,
+        context: res.ctx,
         highlights: res.containedResource.meta.getHighlights(res.containedResource.resource),
         name: res.containedResource.meta.getName(res.containedResource.resource),
         actions,
@@ -150,7 +150,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private async getActionsForResource(r: {
     containedResource: IContainedResource<IResource>;
-    cxt: IResourceContext;
+    ctx: IResourceContext;
   }): Promise<IResourceInspectorAction[]> {
     const asyncFilter = async (
       arr: ResourceAction<keyof ResourceTypeMap>[],
@@ -171,7 +171,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(r.containedResource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], r.cxt);
+        const visible = await action.visibleWhen(r.containedResource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], r.ctx);
         return visible;
       }
     });
@@ -210,8 +210,8 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Handles the showLogsForHyperlink request from the webview
    * Fetches region data directly using runGetResource and calls showRegionLogs command
    */
-  private async handleShowLogsForHyperlink(cxt: IResourceContext) {
-    const { regionName, cicsplexName, profile } = cxt;
+  private async handleShowLogsForHyperlink(ctx: IResourceContext) {
+    const { regionName, cicsplexName, profile } = ctx;
     try {
       const { response } = await runGetResource({
         profileName: profile.name,

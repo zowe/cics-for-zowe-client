@@ -56,7 +56,7 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       [...new Set(treeview.selection)].map((n: CICSResourceContainerNode<IResource>) => {
         return {
           containedResource: n.getContainedResource(),
-          cxt: {
+          ctx: {
             session: n.getSession(),
             profile: n.getProfile(),
             cicsplexName: n.cicsplexName,

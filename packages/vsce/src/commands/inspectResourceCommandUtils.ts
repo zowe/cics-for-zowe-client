@@ -35,7 +35,7 @@ import { CICSRegionTree } from "../trees";
 
 export async function showInspectResource(
   context: ExtensionContext,
-  resources: { containedResource: IContainedResource<IResource>; cxt: IResourceContext; }[]
+  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext; }[]
 ) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
@@ -61,7 +61,7 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
 
   if (upToDateResource) {
     await showInspectResource(context, [
-      { containedResource: upToDateResource, cxt: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
+      { containedResource: upToDateResource, ctx: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
     ]);
   }
 }
@@ -97,7 +97,7 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
     const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
     if (upToDateResource) {
       await showInspectResource(context, [
-        { containedResource: upToDateResource, cxt: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
+        { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
       ]);
     }
   }
@@ -146,7 +146,7 @@ export async function inspectResource(context: ExtensionContext) {
         const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
           await showInspectResource(context, [
-            { containedResource: upToDateResource, cxt: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
+            { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
           ]);
         }
       }
@@ -261,7 +261,7 @@ export async function inspectRegionByName(context: ExtensionContext, regionType:
   });
   if (upToDateResource) {
     await showInspectResource(context, [
-      { containedResource: upToDateResource, cxt: regionContext },
+      { containedResource: upToDateResource, ctx: regionContext },
     ]);
   }
 }
@@ -279,7 +279,7 @@ export async function inspectRegionByNode(context: ExtensionContext, node: CICSR
 
   if (upToDateResource) {
     await showInspectResource(context, [
-      { containedResource: upToDateResource, cxt: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
+      { containedResource: upToDateResource, ctx: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
     ]);
   }
 }
