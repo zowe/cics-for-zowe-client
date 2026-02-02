@@ -80,7 +80,7 @@ const DropDownButton = ({ tabIndex }: { tabIndex?: number; }) => {
       onClick={toggleOpen}
       onKeyDown={handleKeyDown}
       tabIndex={tabIndex}
-      className={`flex items-center justify-center bg-(--vscode-panel-background) p-0.5 rounded-sm ${isDark ? "hover:brightness-150" : "hover:brightness-90"}`}
+      className={`flex items-center justify-center bg-(--vscode-editor-background) p-0.5 rounded-sm ${isDark ? "hover:brightness-150" : "hover:brightness-90"}`}
       aria-label="Actions menu"
       aria-expanded={open}
     >
@@ -127,7 +127,7 @@ const DropDownContent = ({ children }: DropDownContentProps) => {
 
   return createPortal(
     <div
-      className="fixed z-70 flex flex-col bg-(--vscode-panel-background) opacity-95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
+      className="fixed z-70 flex flex-col bg-(--vscode-editor-background) opacity-95 min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
       style={{ top: `${position.top}px`, left: `${position.left}px` }}
     >
       {children}

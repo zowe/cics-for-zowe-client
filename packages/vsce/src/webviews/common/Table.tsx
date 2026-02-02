@@ -44,7 +44,7 @@ const Table = ({ headers, rows, stickyLevel = 0, className = "", headerActions, 
   return (
     <table className={`${className} border-collapse border-spacing-4 w-full text-xs`}>
       <thead>
-        <tr className={`text-left bg-(--vscode-panel-background) ${isDark ? "brightness-125" : "brightness-97"} h-8 sticky top-${stickyLevel * 8}`} style={{ zIndex: 60 }}>
+        <tr className={`text-left bg-(--vscode-editor-background) ${isDark ? "brightness-125" : "brightness-95"} h-8 sticky top-${stickyLevel * 8}`} style={{ zIndex: 60 }}>
           {headers.map((hder, idx: number) => {
             return (
               <th key={`th-${idx}`} className={`text-left px-2 font-normal first:w-32 lg:first:w-42`}>
@@ -80,7 +80,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
   return (
     <div className="relative flex items-center">
       <input
-        className={`w-36 md:w-42 lg:w-64 bg-(--vscode-panel-background) ${isDark ? "brightness-80" : "brightness-125"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
+        className={`w-36 md:w-42 lg:w-64 bg-(--vscode-editor-background) ${isDark ? "brightness-80" : "brightness-125"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
         placeholder="Keyword search..."
         value={filterValue}
         onChange={(e) => setFilterValue(e.target.value)}
@@ -96,7 +96,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
 const TableRow = ({ row, idx }: { row: (string | JSX.Element)[]; idx: number; }) => {
   const { isDark } = useTheme();
   return (
-    <tr className={`bg-(--vscode-panel-background) ${isDark ? "even:brightness-125" : "even:brightness-97"} h-8`}>
+    <tr className={`bg-(--vscode-editor-background) ${isDark ? "even:brightness-125" : "even:brightness-95"} h-8`}>
       {row.map((txt, idx) => (
         <td key={`td-${idx}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
       ))}

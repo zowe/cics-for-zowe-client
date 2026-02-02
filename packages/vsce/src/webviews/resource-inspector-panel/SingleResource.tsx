@@ -55,7 +55,7 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
 
   return (
     <>
-      <div className={`sticky top-0 w-full bg-(--vscode-panel-background) ${isDark ? "brightness-125" : "brightness-97"} z-50 px-2 h-8 flex items-center justify-between`}>
+      <div className={`sticky top-0 w-full bg-(--vscode-editor-background) ${isDark ? "brightness-125" : "brightness-95"} z-50 px-2 h-8 flex items-center justify-between`}>
         <Breadcrumb
           cicsplexName={resources[0].context.cicsplexName}
           regionName={resources[0].context.regionName}

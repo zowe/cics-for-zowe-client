@@ -42,7 +42,7 @@ const ResourceInspector = () => {
 
   return (
     <div
-      className="flex flex-col items-start gap-0 py-0 px-4 min-w-lg w-full max-w-7xl"
+      className="flex flex-col items-start gap-0 py-0 px-4 min-w-lg w-full max-w-7xl bg-(--vscode-editor-background)"
       data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'
     >
       {resources?.length === 1 && <SingleResource resources={resources} resourceIconPath={resourceIconPath} />}
