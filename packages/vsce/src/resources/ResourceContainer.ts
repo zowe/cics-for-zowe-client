@@ -27,6 +27,7 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
+  public static previousCache:String;
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -184,6 +185,7 @@ export class ResourceContainer {
         startIndex: start,
         count,
       });
+      ResourceContainer.previousCache=summary.cachetoken;
 
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
@@ -197,8 +199,10 @@ export class ResourceContainer {
             summonly: true,
           }
         );
+        CICSLogger.debug(`Discarded ${summary.cachetoken} cache token(s) for profile ${this.context.profileName}.`);
         // Set cachetoken to null after invalidation
         summary.cachetoken = null;
+        ResourceContainer.previousCache=null;
       }
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
