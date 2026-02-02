@@ -25,7 +25,7 @@ describe("extension", () => {
     expect(Object.keys(returnedAPI.resources)).toHaveLength(2);
 
     expect(returnedAPI.resources.supportedResources).toBeInstanceOf(Array);
-    expect(returnedAPI.resources.supportedResources).toHaveLength(14);
+    expect(returnedAPI.resources.supportedResources).toHaveLength(16);
     expect(returnedAPI.resources.supportedResources).toContain("CICSProgram");
     expect(returnedAPI.resources.supportedResources).toContain("CICSLocalFile");
     expect(returnedAPI.resources.supportedResources).toContain("CICSTask");

@@ -33,7 +33,6 @@ import { getPhaseInCommand } from "./phaseInCommand";
 import { getPurgeTaskCommand } from "./purgeTaskCommand";
 import { getRefreshCommand } from "./refreshCommand";
 import { setCICSRegionCommand } from "./setCICSRegionCommand";
-import * as showAttributesCommands from "./showAttributesCommand";
 import { showBundleDirectory } from "./showBundleDirectoryCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
@@ -62,8 +61,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInspectResourceCommand(context),
 
     showLogsCommands.getShowRegionLogs(treeview),
-    showAttributesCommands.getShowResourceAttributesCommand(treeview),
-    showAttributesCommands.getShowRegionAttributes(),
 
     getShowRegionSITParametersCommand(),
 

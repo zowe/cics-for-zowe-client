@@ -21,6 +21,6 @@ describe("CICS Extender Api Tests", () => {
   it("should return supported resources configuration", () => {
     const config: IExtensionAPI = CICSExtenderApiConfig.getAPI();
     expect(config).toHaveProperty("resources.supportedResources");
-    expect(config.resources.supportedResources).toHaveLength(14);
+    expect(config.resources.supportedResources).toHaveLength(16);
   });
 });

@@ -28,6 +28,8 @@ describe("ResourceType tests", () => {
       "CICSBundle",
       "CICSTSQueue",
       "CICSSharedTSQueue",
+      "CICSManagedRegion",
+      "CICSRegion",
     ]);
   });
 

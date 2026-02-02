@@ -24,6 +24,8 @@ export enum ResourceTypes {
   CICSBundle = "CICSBundle",
   CICSTSQueue = "CICSTSQueue",
   CICSSharedTSQueue = "CICSSharedTSQueue",
+  CICSManagedRegion = "CICSManagedRegion",
+  CICSRegion = "CICSRegion",
 }
 
 export const SupportedResourceTypes: ResourceTypes[] = Object.values(ResourceTypes);

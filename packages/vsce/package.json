@@ -143,16 +143,6 @@
         }
       },
       {
-        "command": "cics-extension-for-zowe.showResourceAttributes",
-        "title": "%cics.showResourceAttributes.title%",
-        "category": "Zowe Explorer for IBM CICS TS"
-      },
-      {
-        "command": "cics-extension-for-zowe.showRegionAttributes",
-        "title": "%cics.showRegionAttributes.title%",
-        "category": "Zowe Explorer for IBM CICS TS"
-      },
-      {
         "command": "cics-extension-for-zowe.showRegionLogs",
         "title": "%cics.showRegionLogs.title%",
         "category": "Zowe Explorer for IBM CICS TS"
@@ -343,10 +333,6 @@
           "when": "never"
         },
         {
-          "command": "cics-extension-for-zowe.showRegionAttributes",
-          "when": "never"
-        },
-        {
           "command": "cics-extension-for-zowe.showRegionParameters",
           "when": "never"
         },
@@ -420,10 +406,6 @@
         },
         {
           "command": "cics-extension-for-zowe.filterResources",
-          "when": "never"
-        },
-        {
-          "command": "cics-extension-for-zowe.showResourceAttributes",
           "when": "never"
         },
         {
@@ -530,11 +512,6 @@
           "group": "2.CICSResourceNode.action"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSRegion./ && !listMultiSelection && config.zowe.cics.showAttributes",
-          "command": "cics-extension-for-zowe.showRegionAttributes",
-          "group": "1.CICSResourceNode.inquire"
-        },
-        {
           "when": "view == cics-view && viewItem =~ /CICSRegion.*\\.active/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.showRegionLogs",
           "group": "1.CICSResourceNode.inquire"
@@ -568,11 +545,6 @@
           "when": "view == cics-view && viewItem =~ /^cicsregionscontainer.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.clearPlexFilter",
           "group": "inline"
-        },
-        {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS*/ && config.zowe.cics.showAttributes",
-          "command": "cics-extension-for-zowe.showResourceAttributes",
-          "group": "1.CICSResourceNode.inquire"
         },
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSProgram.DISABLED.*/",
