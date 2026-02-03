@@ -44,7 +44,7 @@ const Table = ({ headers, rows, stickyLevel = 0, className = "", headerActions, 
   return (
     <table className={`${className} border-collapse border-spacing-4 w-full text-xs`}>
       <thead>
-        <tr className={`text-left bg-(--vscode-editor-background) ${isDark ? "brightness-125" : "brightness-95"} h-8 sticky top-${stickyLevel * 8}`} style={{ zIndex: 60 }}>
+        <tr className={`text-left bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} h-8 sticky top-${(stickyLevel * 8) + 2}`} style={{ zIndex: 60 }}>
           {headers.map((hder, idx: number) => {
             return (
               <th key={`th-${idx}`} className={`text-left px-2 font-normal first:w-32 lg:first:w-42`}>

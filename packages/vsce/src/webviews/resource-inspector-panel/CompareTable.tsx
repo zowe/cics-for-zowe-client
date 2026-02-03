@@ -44,7 +44,7 @@ const CompareTable = ({ headers, rows, onRefresh, className = "", refreshTabInde
     return (
       <>
         {filteredHiddenRows.length > 0 && (
-          <tr className="sticky z-50 top-8 bg-(--vscode-editor-background) h-8 shadow-[0_0.5px_0_0_var(--vscode-disabledForeground)]">
+          <tr className="sticky z-50 top-10 bg-(--vscode-editor-background) h-8 shadow-[0_0.5px_0_0_var(--vscode-disabledForeground)]">
             <td colSpan={headers.length + 1}>
               <div className="flex justify-end items-center h-8 w-full px-4">
                 <button
@@ -60,7 +60,7 @@ const CompareTable = ({ headers, rows, onRefresh, className = "", refreshTabInde
         )}
 
         {showHiddenRows && filteredHiddenRows.map((row, idx: number) => (
-          <tr key={`tr-hidden-${idx}`} className={`bg-(--vscode-editor-background) ${isDark ? "even:brightness-125" : "even:brightness-95"} h-8`}>
+          <tr key={`tr-hidden-${idx}`} className={`zebra-${isDark ? "dark" : "light"} h-8`}>
             {row.map((txt, idx) => (
               <td key={`td-${idx}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
             ))}

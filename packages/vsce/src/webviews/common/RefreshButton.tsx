@@ -9,11 +9,19 @@
  *
  */
 
+import { useTheme } from "./ThemeContext";
+
 export const RefreshButton = ({ onClick, tabIndex }: { onClick: () => void; tabIndex?: number; }) => {
-  return <button
-    id="refresh-icon"
-    className="codicon codicon-refresh rotate-45 cursor-pointer font-bold bg-transparent border-0 p-0"
-    onClick={onClick}
-    tabIndex={tabIndex}
-  />;
+  const { isDark } = useTheme();
+
+  return (
+    <button
+      id="refresh-icon"
+      onClick={onClick}
+      tabIndex={tabIndex}
+      className={`p-0.5 flex items-center justify-center rounded-sm ${isDark ? "hover-lighter" : "hover-darker"}`}
+    >
+      <span className="codicon codicon-refresh rotate-45 cursor-pointer font-bold" />
+    </button>
+  );
 };

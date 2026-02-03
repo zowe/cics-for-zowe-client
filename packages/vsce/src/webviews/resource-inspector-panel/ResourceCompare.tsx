@@ -68,7 +68,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
         headers={resourceHeaders}
         rows={resourceRows}
         onRefresh={handleRefresh}
-        className="table-fixed"
+        className="table-fixed min-w-xl"
         refreshTabIndex={3}
         searchTabIndex={4}
       />

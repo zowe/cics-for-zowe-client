@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-:root {
-  scrollbar-gutter: stable both-edges;
+#webviewRoot {
+  background-color: var(--vscode-editor-background);
 }
 
 input:focus {
@@ -9,14 +9,20 @@ input:focus {
 }
 
 @layer utilities {
+  .hover-lighter {
+    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),white_3%)] hover:bg-[color-mix(in_srgb,var(--vscode-editor-background),white_10%)]; 
+  }
+  .hover-darker {
+    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)] hover:bg-[color-mix(in_srgb,var(--vscode-editor-background),black_9%)]; 
+  }
   .bg-lighter {
-    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),white_5%)];
+    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),white_3%)];
   }
   .bg-darker {
     @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)];
   }
   .zebra-dark {
-    @apply odd:bg-(--vscode-editor-background) even:bg-[color-mix(in_srgb,var(--vscode-editor-background),white_5%)];
+    @apply odd:bg-(--vscode-editor-background) even:bg-[color-mix(in_srgb,var(--vscode-editor-background),white_3%)];
   }
   .zebra-light {
     @apply odd:bg-(--vscode-editor-background) even:bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)];
