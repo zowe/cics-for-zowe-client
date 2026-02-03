@@ -37,15 +37,23 @@ export class CICSSessionTree extends TreeItem {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.profile = profile;
     this.createSessionFromProfile();
-    this.reset();
+    this.resetSync();
   }
 
-  public reset() {
+  private resetSync() {
     this.setIsExpanded(false);
     this.isUnauthorized = undefined;
     this.contextValue = `cicssession.${this.profile.name}`;
     this.refreshIcon();
-    this.clearChildren();
+    this.children = [];
+  }
+
+  public async reset() {
+    this.setIsExpanded(false);
+    this.isUnauthorized = undefined;
+    this.contextValue = `cicssession.${this.profile.name}`;
+    this.refreshIcon();
+    await this.clearChildren();
   }
 
   public refreshIcon() {
@@ -63,8 +71,9 @@ export class CICSSessionTree extends TreeItem {
     SessionHandler.getInstance().getSession(this.profile);
   }
 
-  public clearChildren() {
-    this.children = [];
+  public async clearChildren() {
+   await this.resetAllResourceContainers();
+   this.children = [];
   }
 
   public getSession() {
@@ -97,7 +106,7 @@ export class CICSSessionTree extends TreeItem {
       }
     }
 
-    this.clearChildren();
+    await this.clearChildren();
 
     try {
       for (const item of plexInfo) {
@@ -207,6 +216,15 @@ export class CICSSessionTree extends TreeItem {
       }
     } else {
       return this.children.find((reg) => reg instanceof CICSRegionTree && reg.getRegionName() === regionName) as CICSRegionTree;
+    }
+  }
+
+  public async resetAllResourceContainers() {
+    // Iterate through all children (Plex or Region trees)
+    for (const child of this.children) {
+      if (child instanceof CICSRegionTree || child instanceof CICSPlexTree) {
+        await child.getChildren();
+      }
     }
   }
 }

@@ -27,7 +27,7 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
-  public static previousCache:String;
+  //public static previousCache:String;
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -185,7 +185,7 @@ export class ResourceContainer {
         startIndex: start,
         count,
       });
-      ResourceContainer.previousCache=summary.cachetoken;
+      //ResourceContainer.previousCache=summary.cachetoken;
 
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
@@ -202,7 +202,6 @@ export class ResourceContainer {
         CICSLogger.debug(`Discarded ${summary.cachetoken} cache token(s) for profile ${this.context.profileName}.`);
         // Set cachetoken to null after invalidation
         summary.cachetoken = null;
-        ResourceContainer.previousCache=null;
       }
       results.push(
         ...toArray(response.records[meta.resourceName.toLowerCase()]).map((r: IResource) => {
@@ -287,11 +286,11 @@ export class ResourceContainer {
             summonly: true,
           }
         ).catch((error) => {
-          CICSLogger.debug(`Cache token discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
+          CICSLogger.debug(`Cache token ${summary.cachetoken} discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
         })
       );
       await Promise.all(discardPromises);
-      CICSLogger.debug(`Discarded ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
+      CICSLogger.debug(`Discarded  ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
     }
     this.summaries.clear();
     this.nextIndex.clear();

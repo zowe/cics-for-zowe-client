@@ -25,7 +25,6 @@ export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
   private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
-  public static previousCache: string;
 
   public static apiDoesExist() {
     if (ProfileManagement.zoweExplorerAPI) {
@@ -115,39 +114,39 @@ export class ProfileManagement {
           },
         },
       });
-      if(this.previousCache!=undefined || null!=this.previousCache){
-      runGetCache(
-          {
-            profileName: profile.name,
-            cacheToken: this.previousCache,
-          },
-          {
-            nodiscard: false,
-            summonly: true,
-          }
-        )
-        CICSLogger.debug(`Discarded ${this.previousCache} cache token(s) for profile ${profile.name}.`);
-        this.previousCache=null;
-      }
+      // if(this.previousCache!=undefined || null!=this.previousCache){
+      // runGetCache(
+      //     {
+      //       profileName: profile.name,
+      //       cacheToken: this.previousCache,
+      //     },
+      //     {
+      //       nodiscard: false,
+      //       summonly: true,
+      //     }
+      //   )
+      //   CICSLogger.debug(`Discarded ${this.previousCache} cache token(s) for profile ${profile.name}.`);
+      //   this.previousCache=null;
+      // }
 
-      this.previousCache=response.resultsummary.cachetoken;
+      //this.previousCache=response.resultsummary.cachetoken;
       return response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? response.resultsummary.cachetoken : null;
     } catch (error) {
       // Discard previousCache from ResourceContainer in catch block
-      if(ResourceContainer.previousCache){
-        runGetCache(
-          {
-            profileName: profile.name,
-            cacheToken: ResourceContainer.previousCache as string,
-          },
-          {
-            nodiscard: false,
-            summonly: true,
-          }
-        )
-        CICSLogger.debug(`Discarded ${ResourceContainer.previousCache} cache token(s) for profile ${profile.name}.`);
-        ResourceContainer.previousCache = null;
-      }
+      // if(ResourceContainer.previousCache){
+      //   runGetCache(
+      //     {
+      //       profileName: profile.name,
+      //       cacheToken: ResourceContainer.previousCache as string,
+      //     },
+      //     {
+      //       nodiscard: false,
+      //       summonly: true,
+      //     }
+      //   )
+      //   CICSLogger.debug(`Discarded ${ResourceContainer.previousCache} cache token(s) for profile ${profile.name}.`);
+      //   ResourceContainer.previousCache = null;
+      // }
       
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_NOT_FOUND) {
