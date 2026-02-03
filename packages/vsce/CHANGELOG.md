@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Enhancement: Updated highlight information for CICS Resources: JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset.
 - BugFix: Fixed Resource Inspector action menu so that it does not display beyond the panel edges. [#572](https://github.com/zowe/cics-for-zowe-client/issues/572)
 - Enhancement: Added new "Inspect Region " command to quickly view CICS region information. [#568](https://github.com/zowe/cics-for-zowe-client/issues/568)
 - Enhancement: Organised profile tree alphabetically. [#552](https://github.com/zowe/cics-for-zowe-client/issues/552)

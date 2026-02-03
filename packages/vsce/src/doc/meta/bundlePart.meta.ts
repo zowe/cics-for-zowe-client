@@ -73,6 +73,14 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
         key: l10n.t("Bundle"),
         value: bundlePart.attributes.bundle,
       },
+      {
+        key: l10n.t("Available Status"),
+        value: bundlePart.attributes.availstatus,
+      },
+      {
+        key: l10n.t("Type"),
+        value: bundlePart.attributes.parttype,
+      },
     ];
   },
 

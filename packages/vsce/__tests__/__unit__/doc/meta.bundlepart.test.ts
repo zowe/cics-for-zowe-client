@@ -36,6 +36,8 @@ describe("Bundle Part Meta", () => {
       eyu_cicsname: "REG1",
       partclass: "CLS",
       status: "ENABLED",
+      availstatus: "AVAILABLE",
+      parttype: "OSGI",
     });
   });
 
@@ -90,6 +92,14 @@ describe("Bundle Part Meta", () => {
       {
         key: "Bundle",
         value: "BUND1",
+      },
+      {
+        key: "Available Status",
+        value: "AVAILABLE",
+      },
+      {
+        key: "Type",
+        value: "OSGI",
       },
     ]);
   });

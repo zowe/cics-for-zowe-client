@@ -65,6 +65,34 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
         key: l10n.t("Status"),
         value: resource.attributes.enablestatus,
       },
+      {
+        key: l10n.t("Profile"),
+        value: resource.attributes.profile,
+      },
+      {
+        key: l10n.t("Java Home"),
+        value: resource.attributes.javahome,
+      },
+      {
+        key: l10n.t("Thread Limit"),
+        value: resource.attributes.threadlimit,
+      },
+      {
+        key: l10n.t("Log"),
+        value: resource.attributes.log,
+      },
+      {
+        key: l10n.t("Define Time"),
+        value: resource.attributes.definetime,
+      },
+      {
+        key: l10n.t("Change Time"),
+        value: resource.attributes.changetime,
+      },
+      {
+        key: l10n.t("Change User ID"),
+        value: resource.attributes.changeusrid,
+      },
     ];
   },
 

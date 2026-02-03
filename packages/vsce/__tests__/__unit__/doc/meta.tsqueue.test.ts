@@ -26,8 +26,12 @@ describe("TS Queue Meta", () => {
       enablestatus: "ENABLED",
       location: "MAIN",
       name: "MYQUEUE",
-      numitems: "2",
+      numitems: "5",
       hexname: "C8C54040404040404040404040404040",
+      quelength: "1024",
+      expiryint: "00:30:00",
+      transid: "TRN1",
+      tsmodel: "DFHMODEL",
     });
   });
 
@@ -56,12 +60,32 @@ describe("TS Queue Meta", () => {
     const highlights = TSQueueMeta.getHighlights(tsQueueMock);
     expect(highlights).toEqual([
       {
+        key: "Number of items",
+        value: "5",
+      },
+      {
+        key: "Length",
+        value: "1024",
+      },
+      {
         key: "Location",
         value: "MAIN",
       },
       {
-        key: "Number of Items",
-        value: "2",
+        key: "Expiry Interval",
+        value: "00:30:00",
+      },
+      {
+        key: "Transaction",
+        value: "TRN1",
+      },
+      {
+        key: "TS Model",
+        value: "DFHMODEL",
+      },
+      {
+        key: "Queue Name",
+        value: "MYQUEUE",
       },
     ]);
   });
