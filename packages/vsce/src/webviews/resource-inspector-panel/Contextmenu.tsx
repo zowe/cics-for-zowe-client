@@ -16,7 +16,6 @@ const Contextmenu = ({
   const [x, setX] = React.useState(0);
   const [y, setY] = React.useState(0);
   const [show, setShow] = React.useState(false);
-  const [menuWidth, setMenuWidth] = React.useState(0);
 
   const menuRef = React.useRef<HTMLDivElement | null>(null);
   const threeDotsRef = React.useRef<HTMLDivElement | null>(null);
@@ -83,20 +82,6 @@ const Contextmenu = ({
     };
   }, [show]);
 
-  React.useEffect(() => {
-    if (show && menuRef.current) {
-      setMenuWidth(menuRef.current.offsetWidth);
-    }
-  }, [show, resourceActions]);
-
-  React.useLayoutEffect(() => {
-    if (show && menuRef.current) {
-      const width = menuRef.current.offsetWidth;
-      console.log("Measured menu width:", width, "x:", x);
-      setMenuWidth(width);
-    }
-  }, [show, resourceActions]);
-
   // Refresh handler
   const handleRefresh = () => {
     vscode.postVscMessage({ command: "refresh" });
@@ -130,9 +115,9 @@ const Contextmenu = ({
           ref={menuRef}
           style={
             {
-              position: "fixed",
+              position: "absolute",
               top: y,
-              left: x - (menuWidth + 100),
+              right: "-20px",
               fontWeight: "900",
               minWidth: 0, // Allow shrinking to content width
               paddingLeft: "2px", // Set 2px left padding
