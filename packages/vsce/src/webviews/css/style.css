@@ -7,3 +7,18 @@
 input:focus {
   outline: none;
 }
+
+@layer utilities {
+  .bg-lighter {
+    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),white_5%)];
+  }
+  .bg-darker {
+    @apply bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)];
+  }
+  .zebra-dark {
+    @apply odd:bg-(--vscode-editor-background) even:bg-[color-mix(in_srgb,var(--vscode-editor-background),white_5%)];
+  }
+  .zebra-light {
+    @apply odd:bg-(--vscode-editor-background) even:bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)];
+  }
+}

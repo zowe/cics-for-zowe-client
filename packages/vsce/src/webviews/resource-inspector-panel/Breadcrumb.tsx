@@ -47,7 +47,7 @@ export const Breadcrumb = (props: {
         onMouseLeave={() => setShowTooltip(false)}
       >
         {showFullPath && showTooltip && (
-          <div className="bg-(--vscode-editor-background) rounded-md shadow-lg text-(--vscode-foreground) text-xs border border-(--vscode-disabledForeground) px-2 py-1 absolute left-0 top-5 flex items-center gap-1 z-50">
+          <div className="bg-(--vscode-editor-background) rounded-md shadow-lg text-(--vscode-foreground) text-xs border border-[color-mix(in_srgb,var(--vscode-disabledForeground),black_50%)] px-2 py-1 absolute left-0 top-5 flex items-center gap-1 z-50">
             {profileName && (
               <>
                 <span>{profileName}</span>

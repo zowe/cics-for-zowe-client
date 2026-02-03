@@ -80,7 +80,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
   return (
     <div className="relative flex items-center">
       <input
-        className={`w-36 md:w-42 lg:w-64 bg-(--vscode-editor-background) ${isDark ? "brightness-80" : "brightness-125"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
+        className={`w-36 md:w-42 lg:w-64 ${isDark ? "bg-lighter" : "bg-lighter"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
         placeholder="Keyword search..."
         value={filterValue}
         onChange={(e) => setFilterValue(e.target.value)}
@@ -96,7 +96,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
 const TableRow = ({ row, idx }: { row: (string | JSX.Element)[]; idx: number; }) => {
   const { isDark } = useTheme();
   return (
-    <tr className={`bg-(--vscode-editor-background) ${isDark ? "even:brightness-125" : "even:brightness-95"} h-8`}>
+    <tr className={`h-8 zebra-${isDark ? "dark" : "light"}`}>
       {row.map((txt, idx) => (
         <td key={`td-${idx}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
       ))}

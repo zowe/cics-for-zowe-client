@@ -13,6 +13,7 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { ExtensionContext, TreeView, commands, l10n, window } from "vscode";
 import { CICSResourceContainerNode } from "../trees";
 import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
+import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
@@ -47,13 +48,19 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
 
 export function getCompareResourcesCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async () => {
-    if (treeview.selection.length !== 2) {
+    const treeNodes: CICSResourceContainerNode<IResource>[] = [...new Set(treeview.selection)];
+
+    if (treeNodes.length !== 2) {
       return;
+    }
+
+    if (treeNodes[0].getContainedResource().meta !== treeNodes[1].getContainedResource().meta) {
+      return Gui.showMessage(l10n.t("Resources are not the same resource type."), { severity: MessageSeverity.ERROR });
     }
 
     return showInspectResource(
       context,
-      [...new Set(treeview.selection)].map((n: CICSResourceContainerNode<IResource>) => {
+      treeNodes.map((n: CICSResourceContainerNode<IResource>) => {
         return {
           containedResource: n.getContainedResource(),
           ctx: {

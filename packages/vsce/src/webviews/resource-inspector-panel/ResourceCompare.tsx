@@ -63,7 +63,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-16">
       <CompareTable
         headers={resourceHeaders}
         rows={resourceRows}
