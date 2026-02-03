@@ -73,6 +73,18 @@ export const LibraryDatasetMeta: IResourceMeta<ILibraryDataset> = {
         key: l10n.t("Library"),
         value: resource.attributes.library,
       },
+      {
+        key: l10n.t("Dataset Name"),
+        value: resource.attributes.dsname,
+      },
+      {
+        key: l10n.t("Number of Datasets"),
+        value: resource.attributes.dsnum,
+      },
+      {
+        key: l10n.t("Search Position"),
+        value: resource.attributes.searchpos,
+      },
     ];
   },
 

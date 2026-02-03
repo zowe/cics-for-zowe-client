@@ -28,6 +28,7 @@ describe("Bundle Meta", () => {
       eyu_cicsname: "MYREG",
       partcount: "2",
       status: "ENABLED",
+      availstatus: "AVAILABLE",
     });
   });
 
@@ -79,8 +80,16 @@ describe("Bundle Meta", () => {
     const highlights = BundleMeta.getHighlights(bundleMock);
     expect(highlights).toEqual([
       {
+        key: "Enable status",
+        value: "ENABLED",
+      },
+      {
+        key: "Available Status",
+        value: "AVAILABLE",
+      },
+      {
         key: "Bundle Directory",
-        value: bundleMock.attributes.bundledir,
+        value: "/my/user/path",
       },
     ]);
   });

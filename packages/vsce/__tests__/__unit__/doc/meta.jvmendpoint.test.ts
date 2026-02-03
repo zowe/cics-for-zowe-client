@@ -25,6 +25,13 @@ describe("JVM Endpoint Meta", () => {
       eyu_cicsname: "MYREG",
       name: "JVM1",
       enablestatus: "ENABLED",
+      profile: "DFHJVMPR",
+      javahome: "/usr/lpp/java/J8.0_64",
+      threadlimit: "15",
+      log: "STDOUT",
+      definetime: "2026-01-19T02:20:55.000000+00:00",
+      changetime: "2026-01-20T10:30:00.000000+00:00",
+      changeusrid: "ADMIN01",
     });
     jvmEndpointMock = new Resource({
       eyu_cicsname: "MYREG",
@@ -114,6 +121,7 @@ describe("JVM Endpoint Meta", () => {
       { key: "Status", value: "ENABLED" },
       { key: "Port", value: "1420" },
       { key: "Secure Port", value: "N/A" },
+      { key: "JVM Endpoint", value: "JVME1" },
     ]);
   });
 

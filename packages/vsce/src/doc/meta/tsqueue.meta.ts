@@ -47,12 +47,32 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   getHighlights(program: Resource<ITSQueue>) {
     return [
       {
+        key: l10n.t("Number of items"),
+        value: program.attributes.numitems,
+      },
+      {
+        key: l10n.t("Length"),
+        value: program.attributes.quelength,
+      },
+      {
         key: l10n.t("Location"),
         value: program.attributes.location,
       },
       {
-        key: l10n.t("Number of Items"),
-        value: program.attributes.numitems,
+        key: l10n.t("Expiry Interval"),
+        value: program.attributes.expiryint,
+      },
+      {
+        key: l10n.t("Transaction"),
+        value: program.attributes.transid,
+      },
+      {
+        key: l10n.t("TS Model"),
+        value: program.attributes.tsmodel,
+      },
+      {
+        key: l10n.t("Queue Name"),
+        value: program.attributes.name,
       },
     ];
   },

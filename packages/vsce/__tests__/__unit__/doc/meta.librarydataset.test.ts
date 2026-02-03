@@ -36,6 +36,8 @@ describe("Library Dataset Meta", () => {
       library: "LIB1",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      dsnum: "1",
+      searchpos: "1",
     });
   });
 
@@ -91,6 +93,18 @@ describe("Library Dataset Meta", () => {
       {
         key: "Library",
         value: "LIB1",
+      },
+      {
+        key: "Dataset Name",
+        value: "MY.DSNAME",
+      },
+      {
+        key: "Number of Datasets",
+        value: "1",
+      },
+      {
+        key: "Search Position",
+        value: "1",
       },
     ]);
   });
