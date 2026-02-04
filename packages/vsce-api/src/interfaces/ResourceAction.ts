@@ -27,7 +27,7 @@ import {
   IURIMap,
   IWebService,
   IManagedRegion,
-  IRegions,
+  IRegion,
 } from "./resources";
 
 export interface ResourceTypeMap {
@@ -46,7 +46,7 @@ export interface ResourceTypeMap {
   [ResourceTypes.CICSTSQueue]: ITSQueue;
   [ResourceTypes.CICSSharedTSQueue]: ISharedTSQueue;
   [ResourceTypes.CICSManagedRegion]: IManagedRegion;
-  [ResourceTypes.CICSRegion]: IRegions;
+  [ResourceTypes.CICSRegion]: IRegion;
 }
 
 export interface ResourceActionOptions<TType extends keyof ResourceTypeMap> {

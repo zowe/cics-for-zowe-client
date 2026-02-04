@@ -1,6 +1,6 @@
 import { IResourceContext, ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { l10n } from "vscode";
-import { IRegion } from "../../doc";
+import { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSRegion>[] = [
   {

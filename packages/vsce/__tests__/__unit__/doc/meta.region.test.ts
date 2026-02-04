@@ -9,7 +9,7 @@
  *
  */
 import { RegionMeta } from "../../../src/doc";
-import { IRegion } from "../../../src/doc/resources/IRegion";
+import { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { Resource } from "../../../src/resources";
 import { workspaceConfigurationGetMock } from "../../__mocks__";
 

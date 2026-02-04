@@ -8,7 +8,10 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-export interface IRegions {
+
+import { IResource } from "./IResource";
+
+export interface IRegion extends IResource {
   applid: string;
   startup: string;
   cicsname: string;
