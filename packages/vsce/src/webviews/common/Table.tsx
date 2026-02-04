@@ -80,7 +80,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
   return (
     <div className="relative flex items-center">
       <input
-        className={`w-36 md:w-42 lg:w-64 ${isDark ? "bg-lighter" : "bg-lighter"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
+        className={`w-36 md:w-42 lg:w-64 ${isDark ? "bg-darker" : "bg-lighter"} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
         placeholder="Keyword search..."
         value={filterValue}
         onChange={(e) => setFilterValue(e.target.value)}
