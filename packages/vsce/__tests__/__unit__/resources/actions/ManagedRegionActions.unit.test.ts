@@ -16,10 +16,6 @@ describe("Managed Region Actions from Resource Inspector", () => {
   const mockRegion = {
     cicsname: "TEST1",
     cicsstate: "ACTIVE",
-    eyu_cicsname: "TEST1",
-    applid: "APPLID1",
-    startup: "AUTO",
-    cicsstatus: "ACTIVE",
     secbypass: "NO",
     wlmstatus: "YES",
   };

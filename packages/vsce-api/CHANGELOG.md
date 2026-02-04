@@ -4,7 +4,7 @@ All notable changes to the Zowe Explorer for IBM CICS Transaction Server API wil
 
 ## Recent Changes
 
-- Enhancement: Added Inspect Region actions to Resource Inspector. [#571] (https://github.com/zowe/cics-for-zowe-client/pull/571)
+- Enhancement: Added IRegion, IManagedRegion interface. [#571] (https://github.com/zowe/cics-for-zowe-client/pull/571)
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 
 ## `6.17.0`

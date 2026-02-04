@@ -7,15 +7,17 @@ const actions: ResourceActionOptions<ResourceTypes.CICSRegion>[] = [
     id: "CICS.CICSRegion.SHOWSITPARAMETERS",
     name: l10n.t("Show SIT Parameters"),
     resourceType: ResourceTypes.CICSRegion,
-    visibleWhen: (region: IRegion, _cx: IResourceContext) => region.cicsstate !== "INACTIVE",
+    visibleWhen: (region: IRegion, _cx: IResourceContext) => region.cicsstatus !== "INACTIVE",
     action: "cics-extension-for-zowe.showRegionParameters",
+    refreshResourceInspector: false,
   },
   {
     id: "CICS.CICSRegion.SHOWREGIONLOGS",
     name: l10n.t("Show Region Logs"),
     resourceType: ResourceTypes.CICSRegion,
-    visibleWhen: (region: IRegion, _cx: IResourceContext) => region.cicsstate !== "INACTIVE",
+    visibleWhen: (region: IRegion, _cx: IResourceContext) => region.cicsstatus !== "INACTIVE",
     action: "cics-extension-for-zowe.showRegionLogs",
+    refreshResourceInspector: false,
   },
 ];
 

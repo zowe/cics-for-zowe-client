@@ -25,9 +25,6 @@ describe("Region Meta", () => {
       cicsstatus: "ACTIVE",
       applid: "MYREGION",
       startup: "AUTOSTART",
-      cicsstate: "ACTIVE",
-      secbypass: "NO",
-      wlmstatus: "NORMAL",
     });
   });
 

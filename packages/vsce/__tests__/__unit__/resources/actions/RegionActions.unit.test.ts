@@ -15,13 +15,9 @@ import { getRegionActions } from "../../../../src/resources/actions/RegionAction
 describe("Region Actions from Resource Inspector", () => {
   const mockRegion = {
     cicsname: "TEST1",
-    cicsstate: "ACTIVE",
-    eyu_cicsname: "TEST1",
-    applid: "APPLID1",
-    startup: "AUTO",
     cicsstatus: "ACTIVE",
-    secbypass: "NO",
-    wlmstatus: "YES",
+    applid: "TEST1",
+    startup: "AUTOSTART",
   };
 
   const mockResourceContext: IResourceContext = {
@@ -44,7 +40,7 @@ describe("Region Actions from Resource Inspector", () => {
       expect(isVisible).toBe(true);
     });
     it("should not be visible when region is INACTIVE", () => {
-      const inactiveRegion = { ...mockRegion, cicsstate: "INACTIVE" };
+      const inactiveRegion = { ...mockRegion, cicsstatus: "INACTIVE" };
       const actions = getRegionActions();
       const sitParamsAction = actions.find((a) => a.id === "CICS.CICSRegion.SHOWSITPARAMETERS")!;
 
@@ -62,7 +58,7 @@ describe("Region Actions from Resource Inspector", () => {
     });
 
     it("should not be visible when region is INACTIVE", () => {
-      const inactiveRegion = { ...mockRegion, cicsstate: "INACTIVE" };
+      const inactiveRegion = { ...mockRegion, cicsstatus: "INACTIVE" };
       const actions = getRegionActions();
       const logsAction = actions.find((a) => a.id === "CICS.CICSRegion.SHOWREGIONLOGS")!;
 

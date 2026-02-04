@@ -8,9 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-export interface IRegions {
-  applid: string;
-  startup: string;
+export interface IManagedRegion {
   cicsname: string;
-  cicsstatus: string;
+  cicsstate: string;
+  secbypass: string;
+  wlmstatus: string;
 }

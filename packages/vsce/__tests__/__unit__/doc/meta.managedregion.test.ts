@@ -10,22 +10,19 @@
  */
 
 import { ManagedRegionMeta } from "../../../src/doc/meta/managedRegion.meta";
-import { IRegion } from "../../../src/doc/resources/IRegion";
+import { IManagedRegion } from "../../../src/doc/resources/IManagedRegion";
 import { Resource } from "../../../src/resources";
 import { workspaceConfigurationGetMock } from "../../__mocks__";
 
 workspaceConfigurationGetMock.mockReturnValueOnce([]).mockReturnValue(["MYREGION"]);
 
 describe("Region Meta", () => {
-  let regionMock: Resource<IRegion>;
+  let managedregionMock: Resource<IManagedRegion>;
 
   beforeEach(() => {
-    regionMock = new Resource<IRegion>({
+    managedregionMock = new Resource<IManagedRegion>({
       eyu_cicsname: "MYREGION",
       cicsname: "MYREGION",
-      cicsstatus: "ENABLED",
-      applid: "MYAPPLID",
-      startup: "AUTOSTART",
       cicsstate: "ACTIVE",
       secbypass: "NO",
       wlmstatus: "NORMAL",
@@ -33,7 +30,7 @@ describe("Region Meta", () => {
   });
 
   it("should return label", () => {
-    const label = ManagedRegionMeta.getLabel(regionMock);
+    const label = ManagedRegionMeta.getLabel(managedregionMock);
     expect(label).toEqual(`MYREGION`);
   });
 
@@ -48,26 +45,26 @@ describe("Region Meta", () => {
   });
 
   it("should return context", () => {
-    const context = ManagedRegionMeta.getContext(regionMock);
+    const context = ManagedRegionMeta.getContext(managedregionMock);
     expect(context).toEqual(`CICSManagedRegion.MYREGION`);
   });
 
   it("should get label", () => {
-    const label = ManagedRegionMeta.getLabel(regionMock);
+    const label = ManagedRegionMeta.getLabel(managedregionMock);
     expect(label).toEqual(`MYREGION`);
   });
 
   it("should return icon name", () => {
-    const iconName = ManagedRegionMeta.getIconName(regionMock);
+    const iconName = ManagedRegionMeta.getIconName(managedregionMock);
     expect(iconName).toEqual(`region`);
   });
   it("should get name", () => {
-    const name = ManagedRegionMeta.getName(regionMock);
+    const name = ManagedRegionMeta.getName(managedregionMock);
     expect(name).toEqual("MYREGION");
   });
 
   it("should return highlights", () => {
-    const highlights = ManagedRegionMeta.getHighlights(regionMock);
+    const highlights = ManagedRegionMeta.getHighlights(managedregionMock);
     expect(highlights).toEqual([
       {
         key: "CICS Name",
@@ -82,7 +79,7 @@ describe("Region Meta", () => {
         value: "NO",
       },
       {
-        key: "Workload Manager Status",
+        key: "WLM Status",
         value: "NORMAL",
       },
     ]);

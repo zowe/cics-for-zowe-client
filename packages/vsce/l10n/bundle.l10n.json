@@ -28,9 +28,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -138,7 +136,6 @@
   "CICS Name": "CICS Name",
   "Application ID": "Application ID",
   "Startup": "Startup",
-  "CICS Status": "CICS Status",
   "Programs": "Programs",
   "Language": "Language",
   "Use Count": "Use Count",
@@ -150,7 +147,7 @@
   "Config File": "Config File",
   "CICS State": "CICS State",
   "Security Bypass": "Security Bypass",
-  "Workload Manager Status": "Workload Manager Status",
+  "WLM Status": "WLM Status",
   "Local Files": "Local Files",
   "Local File": "Local File",
   "Open status": "Open status",

@@ -14,9 +14,6 @@ import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 export interface IRegion extends IResource {
   applid: string;
   startup: string;
-  cicsstate: string;
-  cicsstatus: string;
   cicsname: string;
-  secbypass: string;
-  wlmstatus: string;
+  cicsstatus: string;
 }

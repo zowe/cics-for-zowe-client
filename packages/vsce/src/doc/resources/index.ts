@@ -11,3 +11,4 @@
 
 export * from "./ICICSplex";
 export * from "./IRegion";
+export * from "./IManagedRegion";

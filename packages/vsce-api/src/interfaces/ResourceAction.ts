@@ -16,16 +16,19 @@ import {
   IJVMServer,
   ILibrary,
   ILocalFile,
+  IManagedRegion,
   IPipeline,
   IProgram,
+  IRegions,
   IRemoteFile,
   ISharedTSQueue,
-  ITask,
   ITCPIP,
-  ITransaction,
   ITSQueue,
+  ITask,
+  ITransaction,
   IURIMap,
   IWebService,
+  IManagedRegion,
   IRegions,
 } from "./resources";
 
@@ -44,7 +47,7 @@ export interface ResourceTypeMap {
   [ResourceTypes.CICSBundle]: IBundle;
   [ResourceTypes.CICSTSQueue]: ITSQueue;
   [ResourceTypes.CICSSharedTSQueue]: ISharedTSQueue;
-  [ResourceTypes.CICSManagedRegion]: IRegions;
+  [ResourceTypes.CICSManagedRegion]: IManagedRegion;
   [ResourceTypes.CICSRegion]: IRegions;
 }
 
