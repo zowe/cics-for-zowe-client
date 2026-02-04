@@ -8,9 +8,12 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-export interface IManagedRegion {
-  cicsname: string;
+
+import { IResource } from "./IResource";
+
+export interface IManagedRegion extends IResource {
   cicsstate: string;
+  cicsname: string;
   secbypass: string;
   wlmstatus: string;
 }

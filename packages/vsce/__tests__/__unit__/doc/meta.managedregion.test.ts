@@ -10,7 +10,7 @@
  */
 
 import { ManagedRegionMeta } from "../../../src/doc/meta/managedRegion.meta";
-import { IManagedRegion } from "../../../src/doc/resources/IManagedRegion";
+import { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { Resource } from "../../../src/resources";
 import { workspaceConfigurationGetMock } from "../../__mocks__";
 

@@ -10,4 +10,3 @@
  */
 
 export * from "./ICICSplex";
-export * from "./IManagedRegion";

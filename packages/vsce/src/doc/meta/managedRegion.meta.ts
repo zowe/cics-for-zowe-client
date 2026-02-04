@@ -13,7 +13,7 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IManagedRegion } from "../resources/IManagedRegion";
+import { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
 export const ManagedRegionMeta: IResourceMeta<IManagedRegion> = {
