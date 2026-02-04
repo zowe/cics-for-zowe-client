@@ -2,7 +2,7 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
-## Recent Changes
+## `6.18.0`
 
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 

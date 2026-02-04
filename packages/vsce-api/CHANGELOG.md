@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
-## Recent Changes
+## `6.18.0`
 
 - Enhancement: Added IRegion, IManagedRegion interface. [#571](https://github.com/zowe/cics-for-zowe-client/pull/571)
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
