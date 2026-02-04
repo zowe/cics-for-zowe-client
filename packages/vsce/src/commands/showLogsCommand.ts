@@ -12,24 +12,42 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { TreeView, commands, l10n, window } from "vscode";
+import { SessionHandler } from "../resources/SessionHandler";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 
-export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise<string> {
+export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSResourceContainerNode<IResource>): Promise<string> {
   // when we have a CICSRGN table we have jobid, but not when we have a
   // MAS table. we get either CICSRGN or MAS depending on where we are in the
   // tree. request CICSRGN if jobid isn't available.
-  let jobid: string = selectedRegion.region.jobid;
+  let jobid: string | undefined;
+  let profileName: string;
+  let regionName: string;
+  let cicsPlex: string | undefined;
+
+  if (selectedRegion instanceof CICSRegionTree) {
+    // Handle CICSRegionTree
+    jobid = selectedRegion.region.jobid;
+    profileName = selectedRegion.getProfile().name;
+    regionName = selectedRegion.region.cicsname;
+    cicsPlex = selectedRegion.parentPlex?.plexName;
+  } else {
+    // Handle CICSResourceContainerNode
+    profileName = selectedRegion.getProfile().name;
+    regionName = selectedRegion.regionName;
+    cicsPlex = selectedRegion.cicsplexName;
+  }
+
   if (!jobid) {
     try {
       const { response } = await runGetResource({
-        profileName: selectedRegion.getProfile().name,
+        profileName,
         resourceName: CicsCmciConstants.CICS_CMCI_REGION,
-        regionName: selectedRegion.region.cicsname,
-        cicsPlex: selectedRegion.parentPlex?.plexName,
+        regionName,
+        cicsPlex,
       });
       if (response.records?.cicsregion) {
         jobid = toArray(response.records.cicsregion)[0].jobid;
@@ -44,46 +62,17 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree): Promise
 export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node: CICSRegionTree | CICSResourceContainerNode<IResource>) => {
     // Handle both CICSRegionTree (from tree view) and CICSResourceContainerNode (from Resource Inspector)
-    let profileName: string;
-    let regionName: string;
-    let cicsPlex: string | undefined;
-    let jobid: string | undefined;
+    const selectedRegion = node instanceof CICSRegionTree ? (node ?? treeview.selection[0]) : node;
 
-    if (node instanceof CICSRegionTree) {
-      // Called from tree view
-      const selectedRegion = node ?? treeview.selection[0];
-      if (!selectedRegion) {
-        window.showErrorMessage(l10n.t("No region selected"));
-        return;
-      }
-      CICSLogger.debug(`Showing region logs for region ${selectedRegion.getRegionName()}`);
-
-      jobid = await getJobIdForRegion(selectedRegion);
-      profileName = selectedRegion.parentSession.profile.name;
-      regionName = selectedRegion.getRegionName();
-    } else {
-      // Called from Resource Inspector (CICSResourceContainerNode)
-      profileName = node.getProfile().name;
-      regionName = node.regionName;
-      cicsPlex = node.cicsplexName;
-
-      CICSLogger.debug(`Showing region logs for region ${regionName}`);
-
-      // Fetch jobid from CICS region resource
-      try {
-        const { response } = await runGetResource({
-          profileName,
-          resourceName: CicsCmciConstants.CICS_CMCI_REGION,
-          regionName,
-          cicsPlex,
-        });
-        if (response.records?.cicsregion) {
-          jobid = toArray(response.records.cicsregion)[0].jobid;
-        }
-      } catch (ex) {
-        CICSLogger.error(`Error fetching job ID for region ${regionName}: ${ex}`);
-      }
+    if (!selectedRegion) {
+      window.showErrorMessage(l10n.t("No region selected"));
+      return;
     }
+
+    const regionName = selectedRegion instanceof CICSRegionTree ? selectedRegion.getRegionName() : selectedRegion.regionName;
+    CICSLogger.debug(`Showing region logs for region ${regionName}`);
+
+    const jobid = await getJobIdForRegion(selectedRegion);
 
     CICSLogger.debug(`Job ID for region: ${jobid}`);
     if (!jobid) {
@@ -91,7 +80,8 @@ export function getShowRegionLogs(treeview: TreeView<any>) {
       return;
     }
 
-    const profile = await import("../resources/SessionHandler").then((m) => m.SessionHandler.getInstance().getProfile(profileName));
+    const profileName = selectedRegion.getProfile().name;
+    const profile = await SessionHandler.getInstance().getProfile(profileName);
     await findProfileAndShowJobSpool(profile, jobid, regionName);
   });
 }
