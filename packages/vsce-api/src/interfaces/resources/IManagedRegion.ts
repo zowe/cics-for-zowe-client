@@ -9,13 +9,10 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource } from "./IResource";
 
-export interface IRegion extends IResource {
-  applid: string;
-  startup: string;
+export interface IManagedRegion extends IResource {
   cicsstate: string;
-  cicsstatus: string;
   cicsname: string;
   secbypass: string;
   wlmstatus: string;

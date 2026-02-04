@@ -9,8 +9,6 @@
   "cics.filterPlexResourcesInRegionsTree.title": "Filter Plex Resources in Regions tree",
   "cics.clearResourceFilter.title": "Clear Resource Filter",
   "cics.clearPlexFilter.title": "Clear Plex Filter",
-  "cics.showResourceAttributes.title": "Show Attributes",
-  "cics.showRegionAttributes.title": "Show Attributes",
   "cics.showRegionLogs.title": "Show Region Logs",
   "cics.showSITParameters.title": "Show SIT Parameters",
   "cics.enableProgram.title": "Enable Program",

@@ -20,12 +20,14 @@ import {
   IProgram,
   IRemoteFile,
   ISharedTSQueue,
-  ITask,
   ITCPIP,
-  ITransaction,
   ITSQueue,
+  ITask,
+  ITransaction,
   IURIMap,
   IWebService,
+  IManagedRegion,
+  IRegion,
 } from "./resources";
 
 export interface ResourceTypeMap {
@@ -43,6 +45,8 @@ export interface ResourceTypeMap {
   [ResourceTypes.CICSBundle]: IBundle;
   [ResourceTypes.CICSTSQueue]: ITSQueue;
   [ResourceTypes.CICSSharedTSQueue]: ISharedTSQueue;
+  [ResourceTypes.CICSManagedRegion]: IManagedRegion;
+  [ResourceTypes.CICSRegion]: IRegion;
 }
 
 export interface ResourceActionOptions<TType extends keyof ResourceTypeMap> {

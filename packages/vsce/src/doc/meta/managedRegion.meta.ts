@@ -13,10 +13,10 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import { IRegion } from "../resources/IRegion";
+import { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { IResourceMeta } from "./IResourceMeta";
 
-export const ManagedRegionMeta: IResourceMeta<IRegion> = {
+export const ManagedRegionMeta: IResourceMeta<IManagedRegion> = {
   resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
   humanReadableNamePlural: l10n.t("Regions"),
   humanReadableNameSingular: l10n.t("Region"),
@@ -29,25 +29,25 @@ export const ManagedRegionMeta: IResourceMeta<IRegion> = {
     return PersistentStorage.getDefaultResourceFilter(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, "managedregion");
   },
 
-  getLabel: function (region: Resource<IRegion>): string {
+  getLabel: function (region: Resource<IManagedRegion>): string {
     const label = `${region.attributes.cicsname}`;
     return label;
   },
 
-  getContext: function (region: Resource<IRegion>): string {
+  getContext: function (region: Resource<IManagedRegion>): string {
     return `${CicsCmciConstants.CICS_CMCI_MANAGED_REGION}.${region.attributes.cicsname}`;
   },
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  getIconName: function (_region: Resource<IRegion>): string {
+  getIconName: function (_region: Resource<IManagedRegion>): string {
     return "region";
   },
 
-  getName(region: Resource<IRegion>): string {
+  getName(region: Resource<IManagedRegion>): string {
     return region.attributes.cicsname;
   },
 
-  getHighlights(resource: Resource<IRegion>) {
+  getHighlights(resource: Resource<IManagedRegion>) {
     return [
       {
         key: l10n.t("CICS Name"),
@@ -62,7 +62,7 @@ export const ManagedRegionMeta: IResourceMeta<IRegion> = {
         value: resource.attributes.secbypass,
       },
       {
-        key: l10n.t("Workload Manager Status"),
+        key: l10n.t("WLM Status"),
         value: resource.attributes.wlmstatus,
       },
     ];

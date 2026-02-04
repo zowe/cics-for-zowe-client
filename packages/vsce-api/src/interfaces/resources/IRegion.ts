@@ -9,4 +9,11 @@
  *
  */
 
-export * from "./ICICSplex";
+import { IResource } from "./IResource";
+
+export interface IRegion extends IResource {
+  applid: string;
+  startup: string;
+  cicsname: string;
+  cicsstatus: string;
+}
