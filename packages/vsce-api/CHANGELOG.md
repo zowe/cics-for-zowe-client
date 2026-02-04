@@ -4,6 +4,7 @@ All notable changes to the Zowe Explorer for IBM CICS Transaction Server API wil
 
 ## Recent Changes
 
+- Enhancement: Added attributes to resource interfaces: JVM Server, TS Queue, Bundle, Bundle Part, Library Dataset.
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 
 ## `6.17.0`
