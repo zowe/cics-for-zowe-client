@@ -11,7 +11,6 @@
 I certify that I have:
 - [ ] tested my changes
 - [ ] added/updated automated tests
-- [ ] updated the changelog
 - [ ] considered whether the docs need updating
 - [ ] followed the [contribution guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md)
 
