@@ -18,8 +18,6 @@ import { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import { getBestCICSplexes } from "./plexUtils";
 import { runGetCache, runGetResource } from "./resourceUtils";
-import { CICSLogger } from "./CICSLogger";
-import { ResourceContainer } from "../resources";
 
 export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();

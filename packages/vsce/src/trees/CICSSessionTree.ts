@@ -16,6 +16,7 @@ import constants from "../constants/CICS.defaults";
 import errorConstants from "../constants/CICS.errorMessages";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
+import { ResourceContainer } from "../resources/ResourceContainer";
 import { SessionHandler } from "../resources/SessionHandler";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
@@ -24,6 +25,8 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -37,22 +40,19 @@ export class CICSSessionTree extends TreeItem {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.profile = profile;
     this.createSessionFromProfile();
-    this.resetSync();
-  }
+    this.initialize();
+    this.children = []
+  }  
 
-  private resetSync() {
+  private initialize() {
     this.setIsExpanded(false);
     this.isUnauthorized = undefined;
     this.contextValue = `cicssession.${this.profile.name}`;
     this.refreshIcon();
-    this.children = [];
   }
 
   public async reset() {
-    this.setIsExpanded(false);
-    this.isUnauthorized = undefined;
-    this.contextValue = `cicssession.${this.profile.name}`;
-    this.refreshIcon();
+    this.initialize();
     await this.clearChildren();
   }
 
@@ -220,11 +220,48 @@ export class CICSSessionTree extends TreeItem {
   }
 
   public async resetAllResourceContainers() {
+    // Collect all fetchers that need to be reset
+    const fetchersToReset: ResourceContainer[] = [];
+
+    // Helper function to collect fetchers from resource container nodes
+    const collectFetchers = (nodes: any[]) => {
+      if (!nodes) return;
+      for (const node of nodes) {
+        if (node instanceof CICSResourceContainerNode) {
+          const fetcher = node.getFetcher();
+          if (fetcher && fetcher) {
+            fetchersToReset.push(fetcher);
+          }
+        }
+      }
+    };
+
     // Iterate through all children (Plex or Region trees)
     for (const child of this.children) {
-      if (child instanceof CICSRegionTree || child instanceof CICSPlexTree) {
-        await child.getChildren();
+      if (child instanceof CICSRegionTree) {
+        // For region trees, collect resource container fetchers
+        collectFetchers(child.getChildrenWithoutReset());
+      } else if (child instanceof CICSPlexTree) {
+        // For plex trees, iterate through children
+        const plexChildren = child.getChildrenWithoutReset();
+        for (const plexChild of plexChildren) {
+          if (plexChild instanceof CICSResourceContainerNode) {
+            // Collect plex-level resource container fetchers
+            const fetcher = plexChild.getFetcher();
+            if (fetcher) {
+              fetchersToReset.push(fetcher);
+            }
+          } else if (plexChild instanceof CICSRegionsContainer) {
+            // For regions container, iterate through regions and collect fetchers
+            for (const region of plexChild.children) {
+              collectFetchers(region.getChildrenWithoutReset());
+            }
+          }
+        }
       }
     }
+
+    // Reset all fetchers in parallel for better performance
+    await Promise.all(fetchersToReset.map(fetcher => fetcher.reset()));
   }
 }

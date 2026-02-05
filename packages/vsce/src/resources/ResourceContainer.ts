@@ -271,9 +271,9 @@ export class ResourceContainer {
     const summariesWithTokens = this.summaries.size > 0
       ? Array.from(this.summaries.values()).filter((summary) => summary?.cachetoken)
       : [];
-    
+    const cacheToken = summariesWithTokens.map(s => s.cachetoken).join(', ');
     if (summariesWithTokens.length > 0) {
-      CICSLogger.debug(`Discarding ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
+      CICSLogger.debug(`Discarding ${summariesWithTokens.length} cache token(s) [${cacheToken}] for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
       
       const discardPromises = summariesWithTokens.map((summary) =>
         runGetCache(
@@ -290,7 +290,7 @@ export class ResourceContainer {
         })
       );
       await Promise.all(discardPromises);
-      CICSLogger.debug(`Discarded  ${summariesWithTokens.length} cache token(s) for profile ${this.context.profileName}.`);
+      CICSLogger.debug(`Discarded ${summariesWithTokens.length} cache token(s) [${cacheToken}] for profile ${this.context.profileName}.`);
     }
     this.summaries.clear();
     this.nextIndex.clear();

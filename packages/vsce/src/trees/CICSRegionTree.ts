@@ -146,10 +146,18 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
   }
 
   public async getChildren() {
-    for (const c of this.children) {
-      await (c as CICSResourceContainerNode<IResource>).reset();
-    }
+    // for (const c of this.children) {
+    //   await (c as CICSResourceContainerNode<IResource>).reset();
+    // }
     return Promise.resolve(this.children);
+  }
+
+  /**
+   * Get children without triggering reset on resource containers.
+   * Used when we need to access children for operations that will handle reset separately.
+   */
+  public getChildrenWithoutReset() {
+    return this.children;
   }
 
   public getParent() {
