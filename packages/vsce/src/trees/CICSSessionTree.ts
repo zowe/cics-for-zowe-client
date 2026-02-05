@@ -51,9 +51,10 @@ export class CICSSessionTree extends TreeItem {
     this.refreshIcon();
   }
 
-  public async reset() {
+  public reset() {
     this.initialize();
-    await this.clearChildren();
+    this.resetAllResourceContainers();
+    this.clearChildren();
   }
 
   public refreshIcon() {
@@ -71,9 +72,8 @@ export class CICSSessionTree extends TreeItem {
     SessionHandler.getInstance().getSession(this.profile);
   }
 
-  public async clearChildren() {
-   await this.resetAllResourceContainers();
-   this.children = [];
+  public clearChildren() {
+    this.children = [];
   }
 
   public getSession() {
@@ -106,7 +106,8 @@ export class CICSSessionTree extends TreeItem {
       }
     }
 
-    await this.clearChildren();
+    this.resetAllResourceContainers();
+    this.clearChildren();
 
     try {
       for (const item of plexInfo) {
@@ -219,49 +220,54 @@ export class CICSSessionTree extends TreeItem {
     }
   }
 
-  public async resetAllResourceContainers() {
-    // Collect all fetchers that need to be reset
-    const fetchersToReset: ResourceContainer[] = [];
-
-    // Helper function to collect fetchers from resource container nodes
-    const collectFetchers = (nodes: any[]) => {
-      if (!nodes) return;
-      for (const node of nodes) {
-        if (node instanceof CICSResourceContainerNode) {
-          const fetcher = node.getFetcher();
-          if (fetcher && fetcher) {
-            fetchersToReset.push(fetcher);
-          }
-        }
-      }
-    };
-
-    // Iterate through all children (Plex or Region trees)
+  public resetAllResourceContainers() {
+    // Call reset() on all resource containers 
     for (const child of this.children) {
       if (child instanceof CICSRegionTree) {
-        // For region trees, collect resource container fetchers
-        collectFetchers(child.getChildrenWithoutReset());
+        this.resetRegionTreeContainers(child);
       } else if (child instanceof CICSPlexTree) {
-        // For plex trees, iterate through children
-        const plexChildren = child.getChildrenWithoutReset();
-        for (const plexChild of plexChildren) {
-          if (plexChild instanceof CICSResourceContainerNode) {
-            // Collect plex-level resource container fetchers
-            const fetcher = plexChild.getFetcher();
-            if (fetcher) {
-              fetchersToReset.push(fetcher);
-            }
-          } else if (plexChild instanceof CICSRegionsContainer) {
-            // For regions container, iterate through regions and collect fetchers
-            for (const region of plexChild.children) {
-              collectFetchers(region.getChildrenWithoutReset());
-            }
-          }
+        this.resetPlexTreeContainers(child);
+      }
+    }
+  }
+
+  private resetRegionTreeContainers(regionTree: CICSRegionTree): void {
+    const nodes = regionTree.getChildrenFromRegion();
+    this.resetContainerNodes(nodes);
+  }
+
+  private resetPlexTreeContainers(plexTree: CICSPlexTree): void {
+    const plexChildren = plexTree.getChildrenPlex();
+    
+    for (const plexChild of plexChildren) {
+      if (plexChild instanceof CICSResourceContainerNode) {
+        const fetcher = plexChild.getFetcher?.();
+        if (fetcher) {
+          fetcher.reset();
+        }
+      } else if (plexChild instanceof CICSRegionsContainer) {
+        this.resetRegionsContainerNodes(plexChild);
+      }
+    }
+  }
+
+  private resetRegionsContainerNodes(regionsContainer: CICSRegionsContainer): void {
+    for (const region of regionsContainer.children) {
+      const nodes = region.getChildrenFromRegion();
+      this.resetContainerNodes(nodes);
+    }
+  }
+
+  private resetContainerNodes(nodes: any[]): void {
+    if (!nodes) return;
+    
+    for (const node of nodes) {
+      if (node instanceof CICSResourceContainerNode) {
+        const fetcher = node.getFetcher?.();
+        if (fetcher) {
+          fetcher.reset();
         }
       }
     }
-
-    // Reset all fetchers in parallel for better performance
-    await Promise.all(fetchersToReset.map(fetcher => fetcher.reset()));
   }
 }
