@@ -52,7 +52,7 @@ test.describe("Hyperlink navigation tests", async () => {
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("LOG");
     await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.JVM_SERVER_NAME));
 
-    const jvmlogLink = getResourceInspector(page).getByRole("link", { name: "//DD:JVMLOG" });
+    const jvmlogLink = getResourceInspector(page).getByRole("cell", { name: "Log: //DD:JVMLOG" }).getByRole("link");
     await jvmlogLink.waitFor({ state: "visible", timeout: 500 });
     await jvmlogLink.click();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/hyperlinks/3.png" });
