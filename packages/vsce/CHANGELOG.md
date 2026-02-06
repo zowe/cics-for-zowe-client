@@ -17,6 +17,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
 - Enhancement: Discard CMCI result sets when the resource node is collapsed. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
 - Enhancement: Remove auto prompt on 401 and add "Update Credentials" button in notification. [#566](https://github.com/zowe/cics-for-zowe-client/issues/566)
+- Enhancement: Discard CMCI result sets when refresh button is clicked, Also dicarding the cache when filter is removed from a resource. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
 
 ## `3.17.0`
 
