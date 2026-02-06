@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Enhancement: Updated highlight information for CICS Resources: JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#573](https://github.com/zowe/cics-for-zowe-client/pull/573)
+- BugFix: Fixed All JVM Servers to display correct server endpoints. [#584](https://github.com/zowe/cics-for-zowe-client/pull/584)
 
 ## `3.18.0`
 

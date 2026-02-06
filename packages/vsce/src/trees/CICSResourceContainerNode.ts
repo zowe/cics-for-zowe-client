@@ -201,7 +201,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
           r.meta.getLabel(r.resource),
           {
             cicsplexName: this.cicsplexName,
-            regionName: this.regionName,
+            regionName: this.regionName || r.resource.attributes.eyu_cicsname,
             parentNode: this,
             profile: this.profile,
           },
