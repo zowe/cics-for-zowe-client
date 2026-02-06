@@ -210,7 +210,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
             resource: r.resource,
           },
           r.meta.childType,
-          this.regionName ? null : ` (${r.resource.attributes.eyu_cicsname})`
+          this.regionName ? null : `(${r.resource.attributes.eyu_cicsname})`
         )
     );
 
