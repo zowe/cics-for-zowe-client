@@ -28,6 +28,7 @@ describe("Bundle Part Meta", () => {
       enablestatus: "ENABLED",
       eyu_cicsname: "REG",
       partcount: "2",
+      availstatus: "AVAILABLE",
     });
     bundlePartMock = new Resource({
       bundle: "BUND1",
