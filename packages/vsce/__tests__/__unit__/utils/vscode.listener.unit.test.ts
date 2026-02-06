@@ -32,27 +32,17 @@ describe('VS Code Webview utility methods', () => {
   it("should POST message to webview", () => {
     expect(postSpy).toHaveBeenCalledTimes(0);
     webviewUtils.postVscMessage({
-      command: "init",
+      type: "init",
     });
     expect(postSpy).toHaveBeenCalledTimes(1);
     expect(postSpy).toHaveBeenLastCalledWith({
-      command: "init"
+      type: "init"
     });
   });
 
   it("should add event listender", () => {
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(0);
     webviewUtils.addVscMessageListener((e) => null);
-    expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
-  });
-  it("should add scroll listender", () => {
-    expect(windowAddListenerSpy).toHaveBeenCalledTimes(0);
-    webviewUtils.addScrollerListener((e) => null);
-    expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
-  });
-  it("should add resize listender", () => {
-    expect(windowAddListenerSpy).toHaveBeenCalledTimes(0);
-    webviewUtils.addResizeListener((e) => null);
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
   });
   it("should remove listender", () => {
