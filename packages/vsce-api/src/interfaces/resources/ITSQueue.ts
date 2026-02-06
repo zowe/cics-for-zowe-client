@@ -16,8 +16,8 @@ export interface ITSQueue extends IResource {
   location: string;
   numitems: string;
   hexname: string;
-  quelength?: string;
-  expiryint?: string;
-  transid?: string;
-  tsmodel?: string;
+  quelength: string;
+  expiryint: string;
+  transid: string;
+  tsmodel: string;
 }
