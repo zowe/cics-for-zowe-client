@@ -4,5 +4,5 @@
   xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
   version="3.0" connect_version="0610">
   <resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
-    recordcount="1" />
+    recordcount="2" />
 </response>

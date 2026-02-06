@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMServer/MYPLEX1/?CRITERIA=(name%3DMYJVM1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSAllJVMServers/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00JVMSERVERTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSAllJVMServers/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00JVMSERVERTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSAllJVMServers/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
