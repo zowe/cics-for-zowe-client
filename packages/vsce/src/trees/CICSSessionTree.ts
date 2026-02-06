@@ -16,7 +16,6 @@ import constants from "../constants/CICS.defaults";
 import errorConstants from "../constants/CICS.errorMessages";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
-import { ResourceContainer } from "../resources/ResourceContainer";
 import { SessionHandler } from "../resources/SessionHandler";
 import { getIconFilePathFromName } from "../utils/iconUtils";
 import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
