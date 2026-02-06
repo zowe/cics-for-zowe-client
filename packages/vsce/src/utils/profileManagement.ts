@@ -23,7 +23,6 @@ export class ProfileManagement {
   private static zoweExplorerAPI = ZoweVsCodeExtension.getZoweExplorerApi();
   private static ProfilesCache = ProfileManagement.zoweExplorerAPI.getExplorerExtenderApi().getProfilesCache();
 
-
   public static apiDoesExist() {
     if (ProfileManagement.zoweExplorerAPI) {
       return true;
@@ -112,10 +111,8 @@ export class ProfileManagement {
           },
         },
       });
-
       return response.resultsummary.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` ? response.resultsummary.cachetoken : null;
     } catch (error) {
-      
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_NOT_FOUND) {
           // Not a failure, just means it's not a Plex
