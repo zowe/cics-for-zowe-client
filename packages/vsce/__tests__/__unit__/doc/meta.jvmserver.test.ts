@@ -25,6 +25,13 @@ describe("JVMServer Meta", () => {
       name: "JVM1",
       status: "ENABLED",
       enablestatus: "ENABLED",
+      profile: "DFHJVMPR",
+      javahome: "/usr/lpp/java/J8.0_64",
+      threadlimit: "15",
+      log: "STDOUT",
+      definetime: "2026-01-19T02:20:55.000000+00:00",
+      changetime: "2026-01-20T10:30:00.000000+00:00",
+      changeusrid: "ADMIN01",
     });
   });
   it("should return icon name", () => {

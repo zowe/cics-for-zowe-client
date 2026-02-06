@@ -13,4 +13,11 @@ import { IResourceWithEnableStatus } from "./IResource";
 
 export interface IJVMServer extends IResourceWithEnableStatus {
   name: string;
+  profile: string;
+  javahome: string;
+  threadlimit: string;
+  log: string;
+  definetime: string;
+  changetime: string;
+  changeusrid: string;
 }

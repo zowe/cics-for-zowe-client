@@ -14,4 +14,6 @@ import { IResource } from "./IResource";
 export interface ILibraryDataset extends IResource {
   dsname: string;
   library: string;
+  dsnum: string;
+  searchpos: string;
 }

@@ -42,7 +42,17 @@ describe("Delete TS Queue Command tests", () => {
     },
     {
       meta: TSQueueMeta,
-      resource: new Resource({ eyu_cicsname: "MYREG", hexname: "HEXNAME1", location: "ASD", name: "MYQUEUE1", numitems: "1" }),
+      resource: new Resource({
+        eyu_cicsname: "MYREG",
+        hexname: "HEXNAME1",
+        location: "ASD",
+        name: "MYQUEUE1",
+        numitems: "1",
+        quelength: "100",
+        expiryint: "0",
+        transid: "TRANS1",
+        tsmodel: "MODEL1",
+      }),
     }
   );
 
@@ -124,7 +134,17 @@ describe("Delete TS Queue Command tests", () => {
       },
       {
         meta: TSQueueMeta,
-        resource: new Resource({ eyu_cicsname: "MYREG", hexname: "HEXNAME1", location: "ASD", name: "MYQUEUE1", numitems: "1" }),
+        resource: new Resource({
+          eyu_cicsname: "MYREG",
+          hexname: "HEXNAME1",
+          location: "ASD",
+          name: "MYQUEUE1",
+          numitems: "1",
+          quelength: "100",
+          expiryint: "0",
+          transid: "TRANS1",
+          tsmodel: "MODEL1",
+        }),
       }
     );
 

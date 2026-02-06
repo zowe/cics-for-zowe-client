@@ -17,4 +17,5 @@ export interface IBundle extends IResourceWithEnableStatus {
   enablestatus: string;
   name: string;
   partcount: string;
+  availstatus: string;
 }

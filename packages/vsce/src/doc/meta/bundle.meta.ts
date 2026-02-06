@@ -63,6 +63,14 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   getHighlights(bundle: Resource<IBundle>) {
     return [
       {
+        key: l10n.t("Enable status"),
+        value: bundle.attributes.enablestatus,
+      },
+      {
+        key: l10n.t("Available Status"),
+        value: bundle.attributes.availstatus,
+      },
+      {
         key: l10n.t("Bundle Directory"),
         value: bundle.attributes.bundledir,
       },

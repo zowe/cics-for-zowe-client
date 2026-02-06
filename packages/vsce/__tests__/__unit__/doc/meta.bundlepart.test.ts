@@ -28,6 +28,7 @@ describe("Bundle Part Meta", () => {
       enablestatus: "ENABLED",
       eyu_cicsname: "REG",
       partcount: "2",
+      availstatus: "AVAILABLE",
     });
     bundlePartMock = new Resource({
       bundle: "BUND1",
@@ -36,6 +37,8 @@ describe("Bundle Part Meta", () => {
       eyu_cicsname: "REG1",
       partclass: "CLS",
       status: "ENABLED",
+      availstatus: "AVAILABLE",
+      parttype: "OSGI",
     });
   });
 
@@ -90,6 +93,14 @@ describe("Bundle Part Meta", () => {
       {
         key: "Bundle",
         value: "BUND1",
+      },
+      {
+        key: "Available Status",
+        value: "AVAILABLE",
+      },
+      {
+        key: "Type",
+        value: "OSGI",
       },
     ]);
   });
