@@ -27,7 +27,6 @@ export class ResourceContainer {
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
-  //public static previousCache:String;
 
   constructor(
     private resourceTypes: IResourceMeta<IResource>[],
@@ -185,7 +184,6 @@ export class ResourceContainer {
         startIndex: start,
         count,
       });
-      //ResourceContainer.previousCache=summary.cachetoken;
 
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
