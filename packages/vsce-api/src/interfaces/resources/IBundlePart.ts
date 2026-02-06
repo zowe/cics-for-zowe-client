@@ -15,6 +15,6 @@ export interface IBundlePart extends IResourceWithEnableStatus {
   bundle: string;
   bundlepart: string;
   partclass: string;
-  availstatus?: string;
-  parttype?: string;
+  availstatus: string;
+  parttype: string;
 }
