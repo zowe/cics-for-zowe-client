@@ -221,30 +221,20 @@ export class CICSSessionTree extends TreeItem {
   }
 
   public resetAllResourceContainers() {
-    // Call reset() on all resource containers 
+    // Call reset() on all resource containers
     for (const child of this.children) {
       if (child instanceof CICSRegionTree) {
-        this.resetRegionTreeContainers(child);
+        this.resetContainerNodes(child.children);
       } else if (child instanceof CICSPlexTree) {
         this.resetPlexTreeContainers(child);
       }
     }
   }
 
-  private resetRegionTreeContainers(regionTree: CICSRegionTree): void {
-    const nodes = regionTree.getChildrenFromRegion();
-    this.resetContainerNodes(nodes);
-  }
-
   private resetPlexTreeContainers(plexTree: CICSPlexTree): void {
-    const plexChildren = plexTree.getChildrenPlex();
-    
-    for (const plexChild of plexChildren) {
+    for (const plexChild of plexTree.children) {
       if (plexChild instanceof CICSResourceContainerNode) {
-        const fetcher = plexChild.getFetcher?.();
-        if (fetcher) {
-          fetcher.reset();
-        }
+        plexChild.getFetcher?.()?.reset();
       } else if (plexChild instanceof CICSRegionsContainer) {
         this.resetRegionsContainerNodes(plexChild);
       }
@@ -253,8 +243,7 @@ export class CICSSessionTree extends TreeItem {
 
   private resetRegionsContainerNodes(regionsContainer: CICSRegionsContainer): void {
     for (const region of regionsContainer.children) {
-      const nodes = region.getChildrenFromRegion();
-      this.resetContainerNodes(nodes);
+      this.resetContainerNodes(region.children);
     }
   }
 
@@ -263,10 +252,7 @@ export class CICSSessionTree extends TreeItem {
     
     for (const node of nodes) {
       if (node instanceof CICSResourceContainerNode) {
-        const fetcher = node.getFetcher?.();
-        if (fetcher) {
-          fetcher.reset();
-        }
+        node.getFetcher?.()?.reset();
       }
     }
   }
