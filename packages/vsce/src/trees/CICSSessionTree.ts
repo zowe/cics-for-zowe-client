@@ -24,7 +24,6 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
-import { CICSRegionsContainer } from "./CICSRegionsContainer";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 
 export class CICSSessionTree extends TreeItem {
