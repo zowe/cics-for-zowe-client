@@ -149,7 +149,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     return Promise.resolve(this.children);
   }
 
-    public getParent() {
+  public getParent() {
     return this.directParent;
   }
 

@@ -25,6 +25,8 @@ import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -225,24 +227,22 @@ export class CICSSessionTree extends TreeItem {
     }
   }
 
-  private resetResourceContainers(node: any): void {
-    if (!node || !node.children) {
+  private resetResourceContainers(node: CICSRegionTree | CICSPlexTree): void {
+    if (!node.children || node.children.length === 0) {
       return;
     }
     for (const child of node.children) {
-      this.resetContainerNodes(child);
+      this.resetContainerNodes(child as CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>);
     }
   }
 
-  private resetContainerNodes(node: any): void {
-    // If node is a CICSResourceContainerNode, reset its fetcher
+  private resetContainerNodes(node: CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>): void {
     if (node instanceof CICSResourceContainerNode) {
       node.getFetcher?.()?.reset();
     }
-    // If node has children, recursively call on each of them
-    if (node?.children) {
+    if (node?.children && node.children.length > 0) {
       for (const child of node.children) {
-        this.resetContainerNodes(child);
+        this.resetContainerNodes(child as CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>);
       }
     }
   }

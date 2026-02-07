@@ -5,7 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Enhancement: Updated highlight information for CICS Resources: JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#573](https://github.com/zowe/cics-for-zowe-client/pull/573)
--Enhancement: Discard CMCI result sets when refresh button is clicked, Also dicarding the cache when filter is removed from a resource. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
+- Enhancement: Discard CMCI result sets when refresh button is clicked, Also dicarding the cache when filter is removed from a resource. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
 
 ## `3.18.0`
 
