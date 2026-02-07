@@ -115,14 +115,6 @@ export class CICSPlexTree extends TreeItem {
     return this.children;
   }
 
-  /**
-   * Get children without triggering any side effects.
-   * Used when we need to access children for operations that will handle initialization separately.
-   */
-  public getChildrenPlex() {
-    return this.children;
-  }
-
   public clearChildren() {
     this.children = [];
   }

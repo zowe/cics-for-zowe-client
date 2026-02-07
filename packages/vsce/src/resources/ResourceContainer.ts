@@ -197,7 +197,7 @@ export class ResourceContainer {
             summonly: true,
           }
         );
-        CICSLogger.debug(`Discarded ${summary.cachetoken} cache token(s) for profile ${this.context.profileName}.`);
+        CICSLogger.debug(`Discarded cache ${summary.cachetoken} for profile ${this.context.profileName}.`);
         // Set cachetoken to null after invalidation
         summary.cachetoken = null;
       }
@@ -271,7 +271,7 @@ export class ResourceContainer {
       : [];
     const cacheToken = summariesWithTokens.map(s => s.cachetoken).join(', ');
     if (summariesWithTokens.length > 0) {
-      CICSLogger.debug(`Discarding ${summariesWithTokens.length} cache token(s) [${cacheToken}] for profile ${this.context.profileName}. If discard fails, the cache will be automatically discarded by the server.`);
+      CICSLogger.debug(`Discarding the following caches for profile ${this.context.profileName}: ${cacheToken}.`);
       
       const discardPromises = summariesWithTokens.map((summary) =>
         runGetCache(
@@ -284,11 +284,11 @@ export class ResourceContainer {
             summonly: true,
           }
         ).catch((error) => {
-          CICSLogger.debug(`Cache token ${summary.cachetoken} discard failed for profile ${this.context.profileName}: ${error.message}. The cache will be automatically discarded by the server.`);
+          CICSLogger.debug(`Cache token ${summary.cachetoken} discard failed for profile ${this.context.profileName}: ${error.message}.`);
         })
       );
       await Promise.all(discardPromises);
-      CICSLogger.debug(`Discarded ${summariesWithTokens.length} cache token(s) [${cacheToken}] for profile ${this.context.profileName}.`);
+      CICSLogger.debug(`Discarded the following caches for profile ${this.context.profileName}: ${cacheToken}.`);
     }
     this.summaries.clear();
     this.nextIndex.clear();

@@ -149,15 +149,7 @@ export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {
     return Promise.resolve(this.children);
   }
 
-  /**
-   * Get children without triggering reset on resource containers.
-   * Used when we need to access children for operations that will handle reset separately.
-   */
-  public getChildrenFromRegion() {
-    return this.children;
-  }
-
-  public getParent() {
+    public getParent() {
     return this.directParent;
   }
 
