@@ -149,7 +149,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
             SessionHandler.getInstance().getSession(updatedProfile);
             Gui.showMessage(l10n.t("Credentials updated for profile {0}", updatedProfile.name));
 
-            await node.reset();
+            node.reset();
             node.requiresIconUpdate = true;
             this.refresh();
 
