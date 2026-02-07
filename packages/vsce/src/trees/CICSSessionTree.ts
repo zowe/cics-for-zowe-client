@@ -222,36 +222,28 @@ export class CICSSessionTree extends TreeItem {
   public resetAllResourceContainers() {
     // Call reset() on all resource containers
     for (const child of this.children) {
-      if (child instanceof CICSRegionTree) {
-        this.resetContainerNodes(child.children);
-      } else if (child instanceof CICSPlexTree) {
-        this.resetPlexTreeContainers(child);
-      }
+      this.resetResourceContainers(child);
     }
   }
 
-  private resetPlexTreeContainers(plexTree: CICSPlexTree): void {
-    for (const plexChild of plexTree.children) {
-      if (plexChild instanceof CICSResourceContainerNode) {
-        plexChild.getFetcher?.()?.reset();
-      } else if (plexChild instanceof CICSRegionsContainer) {
-        this.resetRegionsContainerNodes(plexChild);
-      }
+  private resetResourceContainers(node: any): void {
+    if (!node || !node.children) {
+      return;
+    }
+    for (const child of node.children) {
+      this.resetContainerNodes(child);
     }
   }
 
-  private resetRegionsContainerNodes(regionsContainer: CICSRegionsContainer): void {
-    for (const region of regionsContainer.children) {
-      this.resetContainerNodes(region.children);
+  private resetContainerNodes(node: any): void {
+    // If node is a CICSResourceContainerNode, reset its fetcher
+    if (node instanceof CICSResourceContainerNode) {
+      node.getFetcher?.()?.reset();
     }
-  }
-
-  private resetContainerNodes(nodes: any[]): void {
-    if (!nodes) return;
-    
-    for (const node of nodes) {
-      if (node instanceof CICSResourceContainerNode) {
-        node.getFetcher?.()?.reset();
+    // If node has children, recursively call on each of them
+    if (node?.children) {
+      for (const child of node.children) {
+        this.resetContainerNodes(child);
       }
     }
   }
