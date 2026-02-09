@@ -24,6 +24,9 @@ import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTree } from "./CICSTree";
+import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
+import { CICSRegionsContainer } from "./CICSRegionsContainer";
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
@@ -37,14 +40,20 @@ export class CICSSessionTree extends TreeItem {
     super(profile.name, TreeItemCollapsibleState.Collapsed);
     this.profile = profile;
     this.createSessionFromProfile();
-    this.reset();
-  }
+    this.initialize();
+    this.children = []
+  }  
 
-  public reset() {
+  private initialize() {
     this.setIsExpanded(false);
     this.isUnauthorized = undefined;
     this.contextValue = `cicssession.${this.profile.name}`;
     this.refreshIcon();
+  }
+
+  public reset() {
+    this.initialize();
+    this.resetAllResourceContainers();
     this.clearChildren();
   }
 
@@ -97,6 +106,7 @@ export class CICSSessionTree extends TreeItem {
       }
     }
 
+    this.resetAllResourceContainers();
     this.clearChildren();
 
     try {
@@ -207,6 +217,33 @@ export class CICSSessionTree extends TreeItem {
       }
     } else {
       return this.children.find((reg) => reg instanceof CICSRegionTree && reg.getRegionName() === regionName) as CICSRegionTree;
+    }
+  }
+
+  public resetAllResourceContainers() {
+    // Call reset() on all resource containers
+    for (const child of this.children) {
+      this.resetResourceContainers(child);
+    }
+  }
+
+  private resetResourceContainers(node: CICSRegionTree | CICSPlexTree): void {
+    if (!node.children || node.children.length === 0) {
+      return;
+    }
+    for (const child of node.children) {
+      this.resetContainerNodes(child as CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>);
+    }
+  }
+
+  private resetContainerNodes(node: CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>): void {
+    if (node instanceof CICSResourceContainerNode) {
+      node.getFetcher?.()?.reset();
+    }
+    if (node?.children && node.children.length > 0) {
+      for (const child of node.children) {
+        this.resetContainerNodes(child as CICSRegionTree | CICSRegionsContainer | CICSResourceContainerNode<IResource>);
+      }
     }
   }
 }
