@@ -201,6 +201,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
           r.meta.getLabel(r.resource),
           {
             cicsplexName: this.cicsplexName,
+            //Use parent regionName if set else resource own region from eyu_cicsname
             regionName: this.regionName || r.resource.attributes.eyu_cicsname,
             parentNode: this,
             profile: this.profile,
@@ -209,6 +210,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
             meta: r.meta,
             resource: r.resource,
           },
+          //when this.regionName is undefined
           r.meta.childType,
           this.regionName ? null : `(${r.resource.attributes.eyu_cicsname})`
         )
