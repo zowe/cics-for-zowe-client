@@ -202,7 +202,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
           {
             cicsplexName: this.cicsplexName,
             //Use parent regionName if set else resource own region from eyu_cicsname
-            regionName: this.regionName || r.resource.attributes.eyu_cicsname,
+            regionName: r.resource.attributes.eyu_cicsname,
             parentNode: this,
             profile: this.profile,
           },
