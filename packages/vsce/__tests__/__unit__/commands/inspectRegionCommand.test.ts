@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 import * as vscode from "vscode";
 
 jest.mock("../../../src/commands/setCICSRegionCommand", () => ({

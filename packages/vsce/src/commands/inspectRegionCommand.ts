@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, ExtensionContext } from "vscode";
 import { ManagedRegionMeta, RegionMeta } from "../doc/meta";

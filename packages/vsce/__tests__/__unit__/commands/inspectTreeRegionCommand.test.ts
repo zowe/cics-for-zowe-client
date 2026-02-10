@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 import type { Extension } from "vscode";
 import * as vscode from "vscode";
 

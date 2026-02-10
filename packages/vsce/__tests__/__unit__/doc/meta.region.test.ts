@@ -8,6 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
 import { RegionMeta } from "../../../src/doc";
 import { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { Resource } from "../../../src/resources";
