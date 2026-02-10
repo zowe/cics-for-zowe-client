@@ -107,7 +107,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DMYPROG1)",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
@@ -125,7 +125,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DMYPROG2)",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"

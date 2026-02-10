@@ -81,7 +81,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/ERRORS?CRITERIA=(name%3DDFHRPL)",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DDFHRPL)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
