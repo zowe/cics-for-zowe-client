@@ -10,6 +10,7 @@
  */
 
 import { IResource, IResourceContext, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { Gui } from "@zowe/zowe-explorer-api";
 import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
 import { showInspectResource } from "../commands/inspectResourceCommandUtils";
 import { IContainedResource, getMetas } from "../doc";
@@ -84,14 +85,15 @@ export const handleRefreshCommand = async (
     async (progress) => {
       progress.report({ message: l10n.t("Refreshing...") });
 
-      try {
-        const updatedResources = await fetchUpdatedResources(resources);
-        const resourcesToDisplay = instance ? mergeWithExistingResources(instance.getResources(), updatedResources) : updatedResources;
+      const updatedResources = await fetchUpdatedResources(resources);
 
-        await showInspectResource(context, resourcesToDisplay);
-      } catch (error) {
-        showRefreshError(error);
+      if (updatedResources.length === 0) {
+        return Gui.showMessage(l10n.t("Resource(s) {0} not found.", resources.map((r) => r.name).join(", ")));
       }
+
+      const resourcesToDisplay = instance ? mergeWithExistingResources(instance.getResources(), updatedResources) : updatedResources;
+
+      await showInspectResource(context, resourcesToDisplay);
     }
   );
 };

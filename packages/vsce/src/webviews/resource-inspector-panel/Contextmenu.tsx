@@ -36,7 +36,7 @@ const DropDown = ({ children }: DropDownProps) => {
 
   useEffect(() => {
     const close = (e: Event) => {
-      if (!dropdownRef.current.contains(e.target)) {
+      if (!dropdownRef?.current.contains(e.target)) {
         setOpen(false);
       }
     };
