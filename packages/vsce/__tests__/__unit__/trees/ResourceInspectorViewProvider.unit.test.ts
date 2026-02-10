@@ -55,6 +55,8 @@ jest.mock("../../../src/resources", () => {
 });
 
 import { IPipeline } from "@zowe/cics-for-zowe-explorer-api";
+import { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { IProfileLoaded } from "@zowe/imperative";
 import * as vscode from "vscode";
 import { ExtensionContext, Uri, WebviewView } from "vscode";
 import { PipelineMeta } from "../../../src/doc";
@@ -99,11 +101,6 @@ jest.mock("@zowe/zowe-explorer-api", () => {
   };
 });
 
-const resCxt = {
-  profileName: "MYPROF",
-  regionName: "MYREG",
-};
-
 describe("Resource Inspector View provider", () => {
   const myResource = {
     meta: PipelineMeta,
@@ -123,11 +120,23 @@ describe("Resource Inspector View provider", () => {
     expect(instance1).toEqual(instance2);
   });
 
-  it("should set resource when webview NOT ready", () => {
+  it("should set resource when webview NOT ready", async () => {
     const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-    ri.setResource(myResource);
+    await ri.setResources([
+      {
+        containedResource: myResource,
+        ctx: {
+          profile: {} as IProfileLoaded,
+          regionName: "MYREG",
+          session: {} as CICSSession,
+        },
+      },
+    ]);
     // @ts-ignore - private property not accessible
-    expect(ri.resource).toEqual(myResource);
+    const riResources = ri.resources;
+    expect(riResources).toHaveLength(1);
+    expect(riResources[0].meta).toEqual(myResource.meta);
+    expect(riResources[0].resource).toEqual(myResource.resource.attributes);
   });
 
   it("should resolve webview", () => {
@@ -148,7 +157,6 @@ describe("Resource Inspector View provider", () => {
     };
 
     const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-    ri.setResourceContext(resCxt);
     ri.resolveWebviewView(webviewViewMock as unknown as WebviewView);
     // @ts-ignore - private property not accessible
     expect(ri.webviewView?.webview.options).toEqual({
@@ -161,19 +169,30 @@ describe("Resource Inspector View provider", () => {
     expect(ri.webviewView?.webview.onDidReceiveMessage).toBeDefined();
   });
 
-  it("should set resource when webview ready", () => {
+  it("should set resource when webview ready", async () => {
     const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-    ri.setResourceContext(resCxt);
 
     // @ts-ignore - private property not accessible
-    const sendSpy = jest.spyOn(ri, "sendResourceDataToWebView");
+    const sendSpy = jest.spyOn(ResourceInspectorViewProvider.prototype, "sendResourceDataToWebView");
     expect(sendSpy).toHaveBeenCalledTimes(0);
 
     // @ts-ignore - private property not accessible
     ri.webviewReady = true;
-    ri.setResource(myResource);
+    await ri.setResources([
+      {
+        containedResource: myResource,
+        ctx: {
+          profile: {} as IProfileLoaded,
+          regionName: "MYREG",
+          session: {} as CICSSession,
+        },
+      },
+    ]);
     // @ts-ignore - private property not accessible
-    expect(ri.resource).toEqual(myResource);
+    const riResources = ri.resources;
+    expect(riResources).toHaveLength(1);
+    expect(riResources[0].meta).toEqual(myResource.meta);
+    expect(riResources[0].resource).toEqual(myResource.resource.attributes);
     expect(sendSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -188,7 +207,6 @@ describe("Resource Inspector View provider", () => {
 
     it("should call findProfileAndShowJobSpool when region data is found", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       const mockRegionData = {
         jobid: "JOB12345",
@@ -206,7 +224,7 @@ describe("Resource Inspector View provider", () => {
       findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
+      await ri.handleShowLogsForHyperlink({ profile: { name: "MYPROF" }, regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       expect(runGetResourceMock).toHaveBeenCalledWith({
         profileName: "MYPROF",
@@ -227,7 +245,6 @@ describe("Resource Inspector View provider", () => {
 
     it("should show error message when region records are empty", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       runGetResourceMock.mockResolvedValue({
         response: {
@@ -241,7 +258,7 @@ describe("Resource Inspector View provider", () => {
       findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
+      await ri.handleShowLogsForHyperlink({ profile: { name: "MYPROF" }, regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       expect(runGetResourceMock).toHaveBeenCalled();
       expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find region data and job id for region MYREG to show logs.");
@@ -250,7 +267,6 @@ describe("Resource Inspector View provider", () => {
 
     it("should show error message when region records are not found", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       runGetResourceMock.mockResolvedValue({
         response: {
@@ -262,7 +278,7 @@ describe("Resource Inspector View provider", () => {
       findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
+      await ri.handleShowLogsForHyperlink({ profile: { name: "MYPROF" }, regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       expect(runGetResourceMock).toHaveBeenCalled();
       expect(showErrorMessageSpy).toHaveBeenCalledWith("Could not find any record for region MYREG to show logs.");
@@ -271,7 +287,6 @@ describe("Resource Inspector View provider", () => {
 
     it("should show error message when runGetResource throws an error", async () => {
       const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
-      ri.setResourceContext({ profileName: "MYPROF", regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       const errorMessage = "API connection failed";
       runGetResourceMock.mockRejectedValue(new Error(errorMessage));
@@ -280,7 +295,7 @@ describe("Resource Inspector View provider", () => {
       findProfileAndShowJobSpoolMock.mockClear();
 
       // @ts-ignore - calling private method for test
-      await ri.handleShowLogsForHyperlink();
+      await ri.handleShowLogsForHyperlink({ profile: { name: "MYPROF" }, regionName: "MYREG", cicsplexName: "MYPLEX" });
 
       expect(runGetResourceMock).toHaveBeenCalled();
       expect(showErrorMessageSpy).toHaveBeenCalledWith(`Failed to show logs for region MYREG: ${errorMessage}`);

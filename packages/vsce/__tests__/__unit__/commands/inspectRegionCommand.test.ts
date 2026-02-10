@@ -48,10 +48,16 @@ describe("Test suite for Inspect Region command", () => {
     await (command as any)();
 
     expect(setModule.setCICSRegion).toHaveBeenCalled();
-    expect(inspectModule.inspectRegionByName).toHaveBeenCalledWith(context, ManagedRegionMeta, {
-      profileName: "PROFILE1",
-      cicsplexName: "PLEX1",
-      regionName: "REG1",
-    });
+    expect(inspectModule.inspectRegionByName).toHaveBeenCalledWith(
+      context,
+      ManagedRegionMeta,
+      expect.objectContaining({
+        profile: {
+          name: "PROFILE1",
+        },
+        cicsplexName: "PLEX1",
+        regionName: "REG1",
+      })
+    );
   });
 });

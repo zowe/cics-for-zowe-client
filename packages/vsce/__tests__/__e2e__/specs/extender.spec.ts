@@ -99,12 +99,10 @@ test.describe("Extender tests", () => {
     await findAndClickText(page, "Inspect Resource");
     await screenshot(page);
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
-    await screenshot(page);
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
     await screenshot(page);
 
-    await getResourceInspector(page).getByText("...").click();
+    await getResourceInspector(page).locator(".codicon.codicon-kebab-vertical").first().click();
     await page.waitForTimeout(200);
     await screenshot(page);
     await expect(getResourceInspector(page).getByText("MY TEST ACTION")).toBeVisible();
