@@ -9,132 +9,45 @@
  *
  */
 
-import { VscodeTextfield } from "@vscode-elements/react-elements";
-
-import * as React from "react";
-import * as vscode from "../common/vscode";
-
-import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
-import "../css/style.css";
-import Breadcrumb from "./Breadcrumb";
-import Contextmenu from "./Contextmenu";
-import useThemeDetection from "./hooks/useThemeDetection";
-import useLayoutManager from "./hooks/useLayoutManager";
-import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
+import { useEffect, useState } from "react";
+import {
+  IResourceInspectorIconPath,
+  IResourceInspectorResource,
+  addVscMessageListener,
+  postVscMessage,
+  removeVscMessageListener,
+} from "../common/vscode";
+import ResourceCompare from "./ResourceCompare";
+import SingleResource from "./SingleResource";
 
 const ResourceInspector = () => {
-  const [search, setSearch] = React.useState("");
-  const isDarkTheme = useThemeDetection();
+  const [resources, setResources] = useState<IResourceInspectorResource[]>([]);
+  const [resourceIconPath, setResourceIconPath] = useState<IResourceInspectorIconPath>();
 
-  const [resourceInfo, setResourceInfo] = React.useState<{
-    name: string;
-    refreshIconPath: { light: string; dark: string };
-    resourceIconPath: { light: string; dark: string };
-    humanReadableNameSingular: string;
-    highlights: { key: string; value: string; }[];
-    resource: IResource;
-    resourceContext: IResourceProfileNameInfo;
-  }>();
-  const [resourceActions, setResourceActions] = React.useState<{
-    id: string;
-    name: string;
-  }[]>([]);
-
-  // Use the layout manager hook to handle DOM-related operations
-  const { containerRef } = useLayoutManager();
-
-  React.useEffect(() => {
-    const listener = (event: MessageEvent<vscode.TransformWebviewMessage>): void => {
-      setResourceInfo(event.data.data);
-      setResourceActions(event.data.actions);
-      setSearch("");
+  useEffect(() => {
+    const listener = (event: MessageEvent): void => {
+      if (event.data.type === "updateResources") {
+        setResources(event.data.resources);
+        setResourceIconPath(event.data.resourceIconPath);
+      }
     };
-    vscode.addVscMessageListener(listener);
-    vscode.postVscMessage({ command: "init" });
+
+    addVscMessageListener(listener);
+    postVscMessage({ type: "init" });
+
     return () => {
-      vscode.removeVscMessageListener(listener);
+      removeVscMessageListener(listener);
     };
   }, []);
+
   return (
     <div
-      className="resource-inspector-container"
+      className="flex flex-col items-start gap-0 py-0 px-4 min-w-xl w-full max-w-7xl bg-(--vscode-editor-background)"
       data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'
-      ref={containerRef}
     >
-      <table id="resource-info-table" className="border-collapse">
-        <thead id="resource-info-table-header" className="resource-info-table-header">
-          <th id="resource-title" className="resource-title">
-            <div className="resource-title-container">
-              <div className="breadcrumb-container">
-                {resourceInfo && (
-                  <Breadcrumb
-                    resourceContext={resourceInfo?.resourceContext}
-                    resourceName={resourceInfo?.name}
-                    resourceType={resourceInfo?.humanReadableNameSingular}
-                    resourceIconPath={resourceInfo?.resourceIconPath}
-                    isDarkTheme={isDarkTheme}
-                  />
-                )}
-              </div>
-              <div className="context-menu-container">
-                {resourceInfo && <Contextmenu
-                  resourceActions={resourceActions}
-                  refreshIconPath={resourceInfo?.refreshIconPath}
-                  isDarkTheme={isDarkTheme}
-                />}
-              </div>
-            </div>
-          </th>
-        </thead>
-        <tbody className="padding-left-10">
-          {resourceInfo?.highlights.length > 0 && (
-            <tr className="resource-info-rows">
-              {resourceInfo.highlights.map((highlight) => (
-                <td key={highlight.key} className="resource-info-row">
-                  <span className="vscode-breadcrumb-foreground-color">{highlight.key}:</span> <span className="label-text-color">{renderHyperlinkableValue(highlight.value)}</span>
-                </td>
-              ))}
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <table className="border-collapse">
-        <thead id="attributes-header" className="attributes-header-section">
-          <tr>
-            <th className="attributes-title" colSpan={2}>
-              <div className="attributes-header-row">
-                <div className="header-label-div">
-                  <span className="header-label">ATTRIBUTE</span>
-                </div>
-                <div className="header-label-value-div">
-                  <span className="header-label-value">VALUE</span>
-                </div>
-                <VscodeTextfield
-                  type="text"
-                  placeholder="Keyword search..."
-                  onInput={(e: { target: HTMLInputElement }) => setSearch(e.target.value)}
-                  value={search}
-                  className="attribute-search"
-                />
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {resourceInfo && Object.entries(resourceInfo.resource)
-              .filter(([key, value]) => !key.startsWith("_"))
-              .filter(
-                ([key, value]) =>
-                  key.toLowerCase().trim().includes(search.toLowerCase().trim()) || value.toLowerCase().trim().includes(search.toLowerCase().trim())
-              )
-              .map(([key, value]) => (
-                <tr key={key}>
-                  <td className="resource-attr-key">{key.toUpperCase()}</td>
-                  <td className="resource-attr-value">{renderHyperlinkableValue(value)}</td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
+      <div className="z-80 w-full h-2 sticky top-0 bg-(--vscode-editor-background)" />
+      {resources?.length === 1 && <SingleResource resources={resources} resourceIconPath={resourceIconPath} />}
+      {resources?.length === 2 && <ResourceCompare resources={resources} />}
     </div>
   );
 };

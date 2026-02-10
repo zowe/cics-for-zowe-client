@@ -38,15 +38,15 @@ const extensionConfig = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, '../../node_modules', '@vscode', 'codicons', 'dist', 'codicon.css'),
-          to: path.resolve(__dirname, 'dist', 'codicon.css')
+          from: path.resolve(__dirname, "../../node_modules", "@vscode", "codicons", "dist", "codicon.css"),
+          to: path.resolve(__dirname, "dist", "codicon.css"),
         },
         {
-          from: path.resolve(__dirname, '../../node_modules', '@vscode', 'codicons', 'dist', 'codicon.ttf'),
-          to: path.resolve(__dirname, 'dist', 'codicon.ttf')
-        }
-      ]
-    })
+          from: path.resolve(__dirname, "../../node_modules", "@vscode", "codicons", "dist", "codicon.ttf"),
+          to: path.resolve(__dirname, "dist", "codicon.ttf"),
+        },
+      ],
+    }),
   ],
   externals: [
     {
@@ -119,15 +119,9 @@ function webviews(mode) {
           ],
         },
         {
-          test: /\.(css)$/,
-          use: [
-            {
-              loader: "style-loader",
-            },
-            {
-              loader: "css-loader",
-            },
-          ],
+          test: /\.s?css$/,
+          use: ["style-loader", "css-loader", "postcss-loader"],
+          exclude: /\.module\.s?(c|a)ss$/,
         },
       ],
     },

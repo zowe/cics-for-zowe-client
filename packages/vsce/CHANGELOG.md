@@ -7,6 +7,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Updated highlight information for CICS Resources: JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#573](https://github.com/zowe/cics-for-zowe-client/pull/573)
 - BugFix: Fixed All JVM Servers to display correct server endpoints. [#558](https://github.com/zowe/cics-for-zowe-client/issues/558)
 - Enhancement: Discard CMCI result sets when refresh button is clicked, Also dicarding the cache when filter is removed from a resource. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
+- Enhancement: Added Compare command to view two CICS resources side by side. [#560](https://github.com/zowe/cics-for-zowe-client/issues/560)
 
 ## `3.18.0`
 

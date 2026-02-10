@@ -9,83 +9,161 @@
  *
  */
 
-import { IResource, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
-import { inspectResourceCallBack } from "../commands/inspectResourceCommandUtils";
+import { showInspectResource } from "../commands/inspectResourceCommandUtils";
+import { IContainedResource, getMetas } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
-import { findResourceNodeInTree } from "../utils/treeUtils";
-import { TransformWebviewMessage } from "../webviews/common/vscode";
+import { Resource, ResourceContainer } from "../resources";
+import { IResourceInspectorResource } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 
-export async function executeAction(
-  command: string,
-  message: TransformWebviewMessage,
+type IResourceWithContext = {
+  containedResource: IContainedResource<IResource>;
+  ctx: IResourceContext;
+};
+
+export const handleActionCommand = async (
+  actionId: string,
+  resources: IResourceInspectorResource[],
   instance: ResourceInspectorViewProvider,
   context: ExtensionContext
-) {
-  const resource = instance.getResource();
-  const resourceContext = instance.getResourceContext();
+) => {
+  const action = CICSResourceExtender.getAction(actionId);
+  if (!action) {
+    return;
+  }
 
-  let node = instance.getNode() ?? findResourceNodeInTree(instance.cicsTree, resourceContext, resource);
-  if (!node) {
-    node = new CICSResourceContainerNode<IResource>(
-      "Resource Inspector Node",
-      {
-        parentNode: null as any,
-        profile: resourceContext.profile,
-        cicsplexName: resourceContext.cicsplexName,
-        regionName: resourceContext.regionName,
-      },
-      resource
+  if (typeof action.action === "string") {
+    await executeCommandAction(action.action, resources);
+    if (action.refreshResourceInspector) {
+      await handleRefreshCommand(resources, instance, context);
+    }
+  } else {
+    const firstResource = resources[0];
+    await action.action(firstResource.resource as ResourceTypeMap[keyof ResourceTypeMap], firstResource.context);
+  }
+};
+
+const executeCommandAction = async (commandName: string, resources: IResourceInspectorResource[]) => {
+  for (const resource of resources) {
+    const node = createResourceNode(resource);
+    await commands.executeCommand(commandName, node);
+  }
+};
+
+const createResourceNode = (resource: IResourceInspectorResource): CICSResourceContainerNode<IResource> => {
+  const meta = getMetas().find((m) => m.resourceName === resource.meta.resourceName);
+
+  return new CICSResourceContainerNode<IResource>(
+    "Resource Inspector Node",
+    {
+      parentNode: null as any,
+      profile: resource.context.profile,
+      cicsplexName: resource.context.cicsplexName,
+      regionName: resource.context.regionName,
+    },
+    {
+      meta,
+      resource: new Resource(resource.resource),
+    }
+  );
+};
+
+export const handleRefreshCommand = async (
+  resources: IResourceInspectorResource[],
+  instance: ResourceInspectorViewProvider | null,
+  context: ExtensionContext
+) => {
+  await window.withProgress(
+    {
+      location: ProgressLocation.Notification,
+      cancellable: false,
+    },
+    async (progress) => {
+      progress.report({ message: l10n.t("Refreshing...") });
+
+      try {
+        const updatedResources = await fetchUpdatedResources(resources);
+        const resourcesToDisplay = instance ? mergeWithExistingResources(instance.getResources(), updatedResources) : updatedResources;
+
+        await showInspectResource(context, resourcesToDisplay);
+      } catch (error) {
+        showRefreshError(error);
+      }
+    }
+  );
+};
+
+const fetchUpdatedResources = async (resources: IResourceInspectorResource[]): Promise<IResourceWithContext[]> => {
+  const updatedResources: IResourceWithContext[] = [];
+
+  for (const resource of resources) {
+    const meta = getMetas().find((m) => m.resourceName === resource.meta.resourceName);
+    const resourceContainer = new ResourceContainer([meta], {
+      profileName: resource.context.profile.name,
+      cicsplexName: resource.context.cicsplexName,
+      regionName: resource.context.regionName,
+    });
+
+    resourceContainer.setCriteria([resource.name]);
+    const fetchedResources = await resourceContainer.fetchNextPage();
+
+    updatedResources.push(
+      ...fetchedResources.map((containedResource) => ({
+        containedResource,
+        ctx: resource.context,
+      }))
     );
   }
 
-  if (command === "action") {
-    const action = CICSResourceExtender.getAction(message.actionId);
-    if (!action) {
-      return;
-    }
-    if (typeof action.action === "string") {
-      await commands.executeCommand(action.action, node);
-      if (action.refreshResourceInspector) {
-        await refreshWithProgress();
-      }
-    } else {
-      await action.action(resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], resourceContext);
-    }
-  }
-  if (command === "refresh") {
-    await refreshWithProgress();
-  }
+  return updatedResources;
+};
 
-  async function refreshWithProgress() {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        token.onCancellationRequested(() => {});
-        progress.report({
-          message: l10n.t("Refreshing {0} {1}", resource.meta.humanReadableNameSingular, resource.meta.getName(resource.resource)),
-        });
-        try {
-          await inspectResourceCallBack(
-            context,
-            resource,
-            { profileName: resourceContext.profile.name, cicsplexName: resourceContext.cicsplexName, regionName: resourceContext.regionName },
-            instance.getNode()
-          );
-        } catch (error) {
-          window.showErrorMessage(
-            l10n.t(
-              "Something went wrong while performing Refresh - {0}",
-              JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ")
-            )
-          );
-        }
-      }
-    );
-  }
-}
+const mergeWithExistingResources = (
+  existingResources: IResourceInspectorResource[],
+  updatedResources: IResourceWithContext[]
+): IResourceWithContext[] => {
+  return existingResources.map((existingResource) => {
+    const matchingResource = findMatchingResource(existingResource, updatedResources);
+    return matchingResource ?? createFallbackResource(existingResource);
+  });
+};
+
+const findMatchingResource = (
+  existingResource: IResourceInspectorResource,
+  updatedResources: IResourceWithContext[]
+): IResourceWithContext | undefined => {
+  return updatedResources.find((updated) => resourcesMatch(existingResource, updated));
+};
+
+const resourcesMatch = (existing: IResourceInspectorResource, updated: IResourceWithContext): boolean => {
+  const updatedName = updated.containedResource.meta.getName(updated.containedResource.resource);
+
+  return (
+    updatedName === existing.name &&
+    updated.containedResource.meta.resourceName === existing.meta.resourceName &&
+    updated.ctx.profile.name === existing.context.profile.name &&
+    updated.ctx.cicsplexName === existing.context.cicsplexName &&
+    updated.ctx.regionName === existing.context.regionName
+  );
+};
+
+const createFallbackResource = (existingResource: IResourceInspectorResource): IResourceWithContext => {
+  const meta = getMetas().find((m) => m.resourceName === existingResource.meta.resourceName);
+
+  return {
+    containedResource: {
+      meta,
+      resource: new Resource(existingResource.resource),
+    },
+    ctx: existingResource.context,
+  };
+};
+
+const showRefreshError = (error: unknown): void => {
+  const errorMessage = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ");
+
+  window.showErrorMessage(l10n.t("Something went wrong while performing Refresh - {0}", errorMessage));
+};

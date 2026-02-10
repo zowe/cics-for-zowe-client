@@ -24,8 +24,10 @@ import * as filterResourceCommands from "./filterResourceCommands";
 import { getFilterPlexResources } from "./getFilterPlexResources";
 import { getInquireProgramCommand } from "./inquireProgram";
 import { getInquireTransactionCommand } from "./inquireTransaction";
+import { getInspectRegionCommand } from "./inspectRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
-import { getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
+import { getInspectTreeRegionCommand } from "./inspectTreeRegionCommand";
+import { getCompareResourcesCommand, getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
 import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getOpenLocalFileCommand } from "./openLocalFileCommand";
@@ -37,8 +39,6 @@ import { showBundleDirectory } from "./showBundleDirectoryCommand";
 import { showLibraryCommand } from "./showLibraryCommand";
 import * as showLogsCommands from "./showLogsCommand";
 import { getShowRegionSITParametersCommand } from "./showParameterCommand";
-import { getInspectTreeRegionCommand } from "./inspectTreeRegionCommand";
-import { getInspectRegionCommand } from "./inspectRegionCommand";
 
 export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, context: ExtensionContext) => {
   return [
@@ -74,6 +74,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInquireProgramCommand(treeDataProv, treeview),
 
     getInspectTreeResourceCommand(context, treeview),
+    getCompareResourcesCommand(context, treeview),
     getToggleResourceSettingCommand(),
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),
@@ -83,7 +84,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     showBundleDirectory(),
 
     getDeleteTSQueueCommand(treeDataProv, treeview),
-    getInspectTreeRegionCommand(context, treeview),
+    getInspectTreeRegionCommand(context),
     getInspectRegionCommand(context),
   ];
 };

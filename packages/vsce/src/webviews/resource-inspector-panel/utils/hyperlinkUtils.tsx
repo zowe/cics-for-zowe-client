@@ -9,7 +9,7 @@
  *
  */
 
-import * as React from "react";
+import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { postVscMessage } from "../../common/vscode";
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [/^\/\/DD:.+/];
@@ -28,16 +28,17 @@ export const isHyperlinkableValue = (value: string): boolean => {
  * @param value - The string value to render
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string): React.ReactNode => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext) => {
   if (isHyperlinkableValue(value)) {
     return (
       <a
         href="javascript:void(0)"
-        className="hyperlinkable-value"
+        className="underline cursor-pointer"
         onClick={(e) => {
           e.preventDefault();
           postVscMessage({
-            command: "showLogsForHyperlink",
+            type: "showLogsForHyperlink",
+            resourceContext: ctx,
           });
         }}
       >

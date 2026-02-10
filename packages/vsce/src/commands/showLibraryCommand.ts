@@ -10,6 +10,7 @@
  */
 
 import { ILibrary, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { TreeView, commands, l10n, window } from "vscode";
 import { LibraryMeta, ProgramMeta } from "../doc";
 import { CICSRegionTree, CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
@@ -38,15 +39,36 @@ const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map
   return librariesToReveal;
 };
 
-const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgram>, treeview: TreeView<any>): Promise<CICSRegionTree[]> => {
+const getRegionTreeForNode = async (
+  node: CICSResourceContainerNode<IProgram>,
+  regionName: string,
+  treeview: TreeView<any>,
+  tree: CICSTree
+): Promise<CICSRegionTree | undefined> => {
+  if (!node.getParent()) {
+    const profileName = node.getProfileName();
+    const cicsplexName = node.cicsplexName;
+
+    const sessionNode = tree.getLoadedProfiles().find((session) => session.getProfile().name === profileName);
+
+    if (!sessionNode) {
+      return undefined;
+    }
+
+    await treeview.reveal(sessionNode, { expand: true });
+    return sessionNode.getRegionNodeFromName(regionName, cicsplexName);
+  }
+
   const programsLabel = l10n.t("Programs");
+  let regionTrees: CICSRegionTree[];
+
   if (node.getParent().label === programsLabel) {
     const parent = node.getParent().getParent();
     if (parent.getParent() instanceof CICSRegionsContainer) {
       await treeview.reveal(parent.getParent(), { expand: true });
-      return parent.getParent().children as CICSRegionTree[];
+      regionTrees = parent.getParent().children as CICSRegionTree[];
     } else {
-      return [parent as CICSRegionTree];
+      regionTrees = [parent as CICSRegionTree];
     }
   } else {
     const regionsContainer = node
@@ -54,8 +76,10 @@ const getListOfAvailableRegions = async (node: CICSResourceContainerNode<IProgra
       .getParent()
       .children.filter((child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
     await treeview.reveal(regionsContainer, { expand: true });
-    return regionsContainer.children;
+    regionTrees = regionsContainer.children;
   }
+
+  return regionTrees.find((regTree) => regTree.getRegionName() === regionName);
 };
 
 export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
@@ -78,10 +102,13 @@ export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    const listOfRegions: CICSRegionTree[] = await getListOfAvailableRegions(nodes[0], treeview);
-
     for (const [region, libraries] of librariesToReveal) {
-      const regionTree: CICSRegionTree = listOfRegions.filter((regTree) => regTree.getRegionName() === region)[0];
+      const regionTree: CICSRegionTree = await getRegionTreeForNode(nodes[0], region, treeview, tree);
+
+      if (!regionTree) {
+        Gui.showMessage(l10n.t("Could not find region {0} in the tree", region), { severity: MessageSeverity.WARN });
+        continue;
+      }
 
       await treeview.reveal(regionTree, { expand: true });
 

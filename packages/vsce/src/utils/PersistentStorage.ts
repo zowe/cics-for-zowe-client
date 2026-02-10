@@ -21,8 +21,8 @@ class SPersistentStorage {
   }
   private context: ExtensionContext;
 
-  public setContext(cxt: ExtensionContext) {
-    this.context = cxt;
+  public setContext(ctx: ExtensionContext) {
+    this.context = ctx;
   }
 
   private constructor() {

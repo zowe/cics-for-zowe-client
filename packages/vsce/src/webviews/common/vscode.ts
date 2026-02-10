@@ -9,46 +9,40 @@
  *
  */
 
-import { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { IResourceMeta } from "../../doc";
+import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "./messages";
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 
-export interface TransformWebviewMessage {
-  command: string;
-  data?: {
-    name: string;
-    refreshIconPath: { light: string; dark: string };
-    resourceIconPath: { light: string; dark: string };
-    resourceName: string;
-    humanReadableNameSingular: string;
-    highlights: { key: string; value: string }[];
-    resource: IResource;
-    resourceContext: IResourceProfileNameInfo;
-  };
-  actions?: {
-    id: string;
-    name: string;
-  }[];
-  actionId?: string;
+export interface IResourceInspectorResource {
+  name: string;
+  context: IResourceContext;
+  highlights: { key: string; value: string }[];
+  resource: IResource;
+  meta: IResourceMeta<IResource>;
+  actions: IResourceInspectorAction[];
 }
 
-export function postVscMessage(message: TransformWebviewMessage): void {
-  vscode.postMessage({ ...message });
+export interface IResourceInspectorIconPath {
+  light: string;
+  dark: string;
 }
 
-export function addVscMessageListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+export interface IResourceInspectorAction {
+  id: string;
+  name: string;
+}
+
+export function postVscMessage(message: WebviewToExtensionMessage): void {
+  vscode.postMessage(message);
+}
+
+export function addVscMessageListener(listener: (ev: MessageEvent<ExtensionToWebviewMessage>) => unknown): void {
   window.addEventListener("message", listener);
 }
 
-export function addScrollerListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
-  window.addEventListener("scroll", listener);
-}
-
-export function addResizeListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
-  window.addEventListener("resize", listener);
-}
-
-export function removeVscMessageListener(listener: (ev: MessageEvent<TransformWebviewMessage>) => unknown): void {
+export function removeVscMessageListener(listener: (ev: MessageEvent<ExtensionToWebviewMessage>) => unknown): void {
   window.removeEventListener("message", listener);
 }

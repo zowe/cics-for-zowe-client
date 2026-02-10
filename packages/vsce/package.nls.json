@@ -30,6 +30,7 @@
   "cics.phaseIn.title": "Phase In",
   "cics.manageProfile.title": "Manage Profile",
   "cics.inspectResource.title": "Inspect Resource",
+  "cics.compareResource.title": "Compare",
   "cics.inspectCICSResource.title": "Inspect CICS Resource",
   "cics.inquireTransaction.title": "Inquire Transaction",
   "cics.inquireProgram.title": "Inquire Program",

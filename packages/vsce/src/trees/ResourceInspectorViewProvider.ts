@@ -9,14 +9,7 @@
  *
  */
 
-import {
-  IResource,
-  IResourceContext,
-  IResourceProfileNameInfo,
-  ResourceAction,
-  ResourceTypeMap,
-  ResourceTypes,
-} from "@zowe/cics-for-zowe-explorer-api";
+import { IResource, IResourceContext, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
@@ -24,13 +17,14 @@ import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n,
 import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
-import { SessionHandler } from "../resources";
+import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
-import { executeAction } from "./ResourceInspectorUtils";
+import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
+import { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
+import { handleActionCommand, handleRefreshCommand } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
@@ -39,12 +33,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public cicsTree: CICSTree;
 
   private context: ExtensionContext;
-  private node: CICSResourceContainerNode<IResource>;
 
   private webviewView?: WebviewView;
-  private resource: IContainedResource<IResource>;
-
-  private resourceContext: IResourceProfileNameInfo;
+  private resources: IResourceInspectorResource[];
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -60,17 +51,6 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     return this.instance;
   }
 
-  getResourceContext(): IResourceContext {
-    const profile = SessionHandler.getInstance().getProfile(this.resourceContext.profileName);
-
-    return {
-      profile,
-      session: SessionHandler.getInstance().getSession(profile),
-      regionName: this.resourceContext.regionName,
-      cicsplexName: this.resourceContext.cicsplexName,
-    };
-  }
-
   /**
    * Method called by VS Code when a view first becomes visible.
    * Captures and stores the webview instance we get back to reuse for it's life.
@@ -84,19 +64,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     };
     this.webviewView.webview.html = this._getHtmlForWebview(this.webviewView.webview);
 
-    this.webviewView.webview.onDidReceiveMessage(async (message) => {
-      if (message.command === "init") {
-        this.webviewReady = true;
-        await this.sendResourceDataToWebView();
-      } else if (message.command === "showLogsForHyperlink") {
-        await this.handleShowLogsForHyperlink();
-      } else {
-        executeAction(message.command, message, this, this.context);
+    this.webviewView.webview.onDidReceiveMessage(async (message: WebviewToExtensionMessage) => {
+      switch (message.type) {
+        case "init":
+          this.webviewReady = true;
+          await this.sendResourceDataToWebView();
+          break;
+        case "refresh":
+          await handleRefreshCommand(message.resources, this, this.context);
+          break;
+        case "executeAction":
+          await handleActionCommand(message.actionId, message.resources, this, this.context);
+          break;
+        case "showLogsForHyperlink":
+          await this.handleShowLogsForHyperlink(message.resourceContext);
+          break;
       }
     });
     this.webviewView.onDidDispose(() => {
       this.webviewReady = false;
-      this.resource = undefined;
+      this.resources = undefined;
     });
   }
 
@@ -104,39 +91,28 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResource(resource: IContainedResource<IResource>) {
-    this.resource = resource;
+  public async setResources(resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]) {
+    const riResources: IResourceInspectorResource[] = [];
+    for (const res of resources) {
+      const actions = await this.getActionsForResource(res);
+      riResources.push({
+        resource: res.containedResource.resource.attributes,
+        meta: res.containedResource.meta,
+        context: res.ctx,
+        highlights: res.containedResource.meta.getHighlights(res.containedResource.resource),
+        name: res.containedResource.meta.getName(res.containedResource.resource),
+        actions,
+      });
+    }
+    this.resources = riResources;
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
     }
   }
 
-  /**
-   * Returns the current resource being displayed.
-   */
-  public getResource(): IContainedResource<IResource> {
-    return this.resource;
-  }
-
-  /**
-   * Sets the current node being used.
-   */
-  public setNode(node?: CICSResourceContainerNode<IResource>) {
-    this.node = node;
-    return this;
-  }
-
-  /**
-   * Returns the current node being used.
-   */
-  public getNode(): CICSResourceContainerNode<IResource> {
-    return this.node;
-  }
-
-  public setResourceContext(context: IResourceProfileNameInfo): ResourceInspectorViewProvider {
-    this.resourceContext = context;
-    return this;
+  public getResources(): IResourceInspectorResource[] {
+    return this.resources;
   }
 
   /**
@@ -156,27 +132,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Posts resource data to the react app which is listening for updates.
    */
   private async sendResourceDataToWebView() {
-    await this.webviewView.webview.postMessage({
-      data: {
-        name: this.resource.meta.getName(this.resource.resource),
-        refreshIconPath: this.createIconPaths(IconBuilder.getIconFilePathFromName("refresh")),
-        resourceIconPath: this.createIconPaths(IconBuilder.resource(this.resource)),
-        humanReadableNameSingular: this.resource.meta.humanReadableNameSingular,
-        highlights: this.resource.meta.getHighlights(this.resource.resource),
-        resource: this.resource.resource.attributes,
-        resourceContext: this.resourceContext,
-      },
-      actions: (await this.getActions()).map((action) => {
-        return {
-          id: action.id,
-          name: action.name,
-        };
-      }),
-    });
+    const containedResource: IContainedResource<IResource> = {
+      resource: new Resource(this.resources[0].resource),
+      meta: this.resources[0].meta,
+    };
+
+    const message: ExtensionToWebviewMessage = {
+      type: "updateResources",
+      resources: this.resources,
+      resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
+      humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
+      humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
+    };
+
+    await this.webviewView.webview.postMessage(message);
   }
 
-  private async getActions() {
-    // Required as Array.filter cannot be asyncronous
+  private async getActionsForResource(r: {
+    containedResource: IContainedResource<IResource>;
+    ctx: IResourceContext;
+  }): Promise<IResourceInspectorAction[]> {
     const asyncFilter = async (
       arr: ResourceAction<keyof ResourceTypeMap>[],
       predicate: (action: ResourceAction<keyof ResourceTypeMap>) => Promise<boolean>
@@ -186,7 +161,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     };
 
     // Gets actions for this resource type
-    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[this.resource.meta.resourceName as ResourceTypes]);
+    let actionsForResource = CICSResourceExtender.getActionsFor(ResourceTypes[r.containedResource.meta.resourceName as ResourceTypes]);
 
     // Filter out resources that shouldn't be visible
     actionsForResource = await asyncFilter(actionsForResource, async (action: ResourceAction<keyof ResourceTypeMap>) => {
@@ -196,15 +171,14 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       if (typeof action.visibleWhen === "boolean") {
         return action.visibleWhen;
       } else {
-        const visible = await action.visibleWhen(
-          this.resource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap],
-          this.getResourceContext()
-        );
+        const visible = await action.visibleWhen(r.containedResource.resource.attributes as ResourceTypeMap[keyof ResourceTypeMap], r.ctx);
         return visible;
       }
     });
 
-    return actionsForResource;
+    return actionsForResource.map((ac) => {
+      return { id: ac.id, name: ac.name };
+    });
   }
 
   /**
@@ -236,11 +210,11 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Handles the showLogsForHyperlink request from the webview
    * Fetches region data directly using runGetResource and calls showRegionLogs command
    */
-  private async handleShowLogsForHyperlink() {
-    const { regionName, cicsplexName, profileName } = this.resourceContext;
+  private async handleShowLogsForHyperlink(ctx: IResourceContext) {
+    const { regionName, cicsplexName, profile } = ctx;
     try {
       const { response } = await runGetResource({
-        profileName,
+        profileName: profile.name,
         resourceName: CicsCmciConstants.CICS_CMCI_REGION,
         regionName,
         cicsPlex: cicsplexName,
@@ -252,7 +226,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           const regionData = regionRecords[0];
           if (regionData && regionData.jobid) {
             const jobid = regionData.jobid;
-            const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
+            const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
             await findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
           }
         } else {

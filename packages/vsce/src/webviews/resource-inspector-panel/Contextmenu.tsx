@@ -1,133 +1,245 @@
-import { VscodeContextMenu } from "@vscode-elements/react-elements";
-import * as React from "react";
-import { Uri } from "vscode";
-import * as vscode from "../common/vscode";
-import "../css/style.css";
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-const Contextmenu = ({
-  resourceActions,
-  refreshIconPath,
-  isDarkTheme,
-}: {
-  resourceActions: { id: string; name: string; iconPath?: { light: Uri; dark: Uri } }[];
-  refreshIconPath: { light: string; dark: string };
-  isDarkTheme: boolean;
-}) => {
-  const [x, setX] = React.useState(0);
-  const [y, setY] = React.useState(0);
-  const [show, setShow] = React.useState(false);
+import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useTheme } from "../common/ThemeContext";
+import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
 
-  const menuRef = React.useRef<HTMLDivElement | null>(null);
-  const threeDotsRef = React.useRef<HTMLDivElement | null>(null);
+const DropdownContext = createContext<{
+  open: boolean;
+  setOpen: (o: boolean) => void;
+  buttonRef: RefObject<HTMLButtonElement> | null;
+}>({
+  open: false,
+  setOpen: (o: boolean) => {},
+  buttonRef: null,
+});
 
-  // Open dropdown and positioning it at three dots
-  const handleThreeDotsClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    if (show) {
-      setShow(false); // Close if already open
-    } else {
-      const rect = event.currentTarget.getBoundingClientRect();
-      setX(rect.left);
-      setY(rect.top + rect.height);
-      setShow(true);
-    }
-    event.stopPropagation();
-  };
+interface DropDownProps {
+  children: ReactNode;
+}
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      // Prevent the default to avoid scrolling when Space is pressed
-      event.preventDefault();
-      // Call your existing click handler logic
-      handleThreeDotsClick(event as unknown as React.MouseEvent);
-    }
-  };
+const DropDown = ({ children }: DropDownProps) => {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Handle click outside to close
-  React.useEffect(() => {
-    if (!show) return;
-    const clickHandler = (event: MouseEvent) => {
-      const menuEl = menuRef.current;
-      const dotsEl = threeDotsRef.current;
-      if (menuEl && !menuEl.contains(event.target as Node) && dotsEl && !dotsEl.contains(event.target as Node)) {
-        setShow(false);
+  useEffect(() => {
+    const close = (e: Event) => {
+      if (!dropdownRef.current.contains(e.target)) {
+        setOpen(false);
       }
     };
-    window.addEventListener("mousedown", clickHandler);
-    return () => window.removeEventListener("mousedown", clickHandler);
-  }, [show]);
 
-  // When window loses focus, closing dropdown
-  React.useEffect(() => {
-    if (!show) return;
-    const onBlur = () => setShow(false);
-    window.addEventListener("blur", onBlur);
-    return () => window.removeEventListener("blur", onBlur);
-  }, [show]);
+    if (open) {
+      window.addEventListener("click", close);
+    }
 
-  // Handle menu item selection
-  React.useEffect(() => {
-    if (!show) return;
-    const menuEl = menuRef.current;
-    if (!menuEl) return;
-    const handleSelect = (event: Event) => {
-      const customEvent = event as CustomEvent<any>;
-      const { value } = customEvent.detail;
-      vscode.postVscMessage({ command: "action", actionId: value });
-      setShow(false);
-    };
-    menuEl.addEventListener("vsc-context-menu-select", handleSelect as EventListener);
     return () => {
-      menuEl.removeEventListener("vsc-context-menu-select", handleSelect as EventListener);
+      window.removeEventListener("click", close);
     };
-  }, [show]);
-
-  // Refresh handler
-  const handleRefresh = () => {
-    vscode.postVscMessage({ command: "refresh" });
-  };
-
-  const showThreeDots = resourceActions.length > 0;
+  }, [open]);
 
   return (
-    <div className="dropdown-container">
-      <img
-        id="refresh-icon"
-        src={isDarkTheme ? refreshIconPath.dark : refreshIconPath.light}
-        className="refresh-icon"
-        onClick={handleRefresh}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            handleRefresh();
-          }
-        }}
-      />
-      {showThreeDots && (
-        <div id="three-dots" className="three-dots" onClick={handleThreeDotsClick} ref={threeDotsRef} tabIndex={0} onKeyDown={handleKeyDown}>
-          ...
-        </div>
-      )}
-      {show && (
-        <VscodeContextMenu
-          data={resourceActions.map(({ id, name }) => ({ label: name, value: id }))}
-          show={true}
-          ref={menuRef}
-          style={
-            {
-              position: "absolute",
-              top: y,
-              right: "-20px",
-              fontWeight: "900",
-              minWidth: 0, // Allow shrinking to content width
-              paddingLeft: "2px", // Set 2px left padding
-              whiteSpace: "nowrap",
-            } as React.CSSProperties
-          }
-        />
-      )}
-    </div>
+    <DropdownContext value={{ open, setOpen, buttonRef }}>
+      <div ref={dropdownRef} className="relative">
+        {children}
+      </div>
+    </DropdownContext>
   );
 };
 
-export default Contextmenu;
+const DropDownButton = ({ tabIndex }: { tabIndex?: number }) => {
+  const { isDark } = useTheme();
+  const { open, setOpen, buttonRef } = useContext(DropdownContext);
+
+  const toggleOpen = () => {
+    setOpen(!open);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleOpen();
+    }
+  };
+
+  return (
+    <button
+      ref={buttonRef}
+      onClick={toggleOpen}
+      onKeyDown={handleKeyDown}
+      tabIndex={tabIndex}
+      className={`flex items-center justify-center p-0.5 rounded-sm ${isDark ? "hover-lighter" : "hover-darker"}`}
+      aria-label="Actions menu"
+      aria-expanded={open}
+    >
+      <span className="codicon codicon-kebab-vertical rotate-90 cursor-pointer font-bold" />
+    </button>
+  );
+};
+
+interface DropDownContentProps {
+  children: ReactNode;
+}
+
+const DropDownContent = ({ children }: DropDownContentProps) => {
+  const { open, buttonRef } = useContext(DropdownContext);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      if (open && buttonRef?.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.bottom + 2,
+          left: rect.right - 192, // 192px = width of menu to offset to the left
+        });
+      }
+    };
+
+    if (open) {
+      updatePosition();
+      window.addEventListener("resize", updatePosition);
+      window.addEventListener("scroll", updatePosition, true);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [open, buttonRef]);
+
+  if (!open) {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      className="fixed z-60 flex flex-col bg-(--vscode-editor-background) min-w-48 rounded-lg p-1 border border-(--vscode-disabledForeground)"
+      style={{ top: `${position.top}px`, left: `${position.left}px` }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
+};
+
+interface DropDownListProps {
+  children: ReactNode;
+}
+
+const DropDownList = ({ children }: DropDownListProps) => {
+  const { setOpen } = useContext(DropdownContext);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (listRef.current) {
+      const firstItem = listRef.current.querySelector("li");
+      if (firstItem) {
+        (firstItem as HTMLElement).focus();
+      }
+    }
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const items = listRef.current?.querySelectorAll("li");
+    if (!items) return;
+
+    const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % items.length;
+      (items[nextIndex] as HTMLElement).focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = currentIndex <= 0 ? items.length - 1 : currentIndex - 1;
+      (items[prevIndex] as HTMLElement).focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+    }
+  };
+
+  return (
+    <ul ref={listRef} onClick={() => setOpen(false)} onKeyDown={handleKeyDown} className="flex flex-col gap-0 py-0.5" role="menu">
+      {children}
+    </ul>
+  );
+};
+
+interface DropDownListItemProps {
+  children: ReactNode;
+  actionId: string;
+  resourceName: string;
+  resourceContext: IResourceContext;
+  resources: IResourceInspectorResource[];
+}
+
+const DropDownListItem = ({ children, actionId, resourceName, resourceContext, resources }: DropDownListItemProps) => {
+  const { setOpen } = useContext(DropdownContext);
+
+  const handleClick = () => {
+    postVscMessage({ type: "executeAction", actionId, resources });
+    setOpen(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  return (
+    <li
+      className="cursor-pointer hover:bg-(--vscode-button-background) hover:text-white rounded-md px-2 py-0.5"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="menuitem"
+    >
+      {children}
+    </li>
+  );
+};
+
+export const ContextMenu = ({
+  data,
+  tabIndex,
+}: {
+  data: { label: string; value: string; resourceName: string; resourceContext: IResourceContext; resources: IResourceInspectorResource[] }[];
+  tabIndex?: number;
+}) => {
+  return (
+    <DropDown>
+      <DropDownButton tabIndex={tabIndex} />
+      <DropDownContent>
+        <DropDownList>
+          {data.map((d) => (
+            <DropDownListItem
+              key={d.value}
+              actionId={d.value}
+              resourceName={d.resourceName}
+              resourceContext={d.resourceContext}
+              resources={d.resources}
+            >
+              {d.label}
+            </DropDownListItem>
+          ))}
+        </DropDownList>
+      </DropDownContent>
+    </DropDown>
+  );
+};
