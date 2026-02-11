@@ -24,7 +24,6 @@
     {
       "scenarioName": "Enable Disable Program",
       "requiredScenarioState": "myprog1-disabled",
-      "newScenarioState": "myprog1-enabled",
       "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG1)",
