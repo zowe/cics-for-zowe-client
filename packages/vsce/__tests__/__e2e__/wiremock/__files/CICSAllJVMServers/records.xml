@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" 
+version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" cachetoken="00JVMSERVERTOKEN" />
+	<records>
+		<cicsjvmserver _keydata="C5E8E4C3D4C3C9D1" basdefinever="0" changeagent="SYSTEM" changeagrel="0740" changetime="2026-02-02T02:11:00.000000+00:00" 
+		changeusrid="EXPAUTO" clscachefree="189970464" clscachesize="268434896" clssstrgallc="293216312" clssstrgused="59731272" codecachallc="268435456" 
+		codecachused="22123600" currentheap="120140640" datacachallc="18874368" datacachused="12582912" definesource="SYSTEM" 
+		definetime="2026-02-02T02:11:00.000000+00:00" enablestatus="ENABLED" eyu_cicsname="MYREG1" eyu_cicsrel="E740" eyu_reserved="0" 
+		gcpolicy="-Xgcpolicy:gencon" initheap="134217728" installagent="CREATESPI" installtime="2026-02-02T02:11:00.000000+00:00" installusrid="EXPAUTO" 
+		javahome="/java/J8.0_64" jvmprofile="MYJVM1" lerunopts="DFHAXRO" log="//DD:JVMLOG" maxheap="2147483648" name="MYJVM1" occupancy="120140640" 
+		peakheap="120152928" pid="34080139" profile="/u/expauto/jvmprofs/MYREG1/MYJVM1.jvmprofile" profiledir="/u/expauto/jvmprofs/MYREG1" 
+		srvcrttmegmt="2026-02-02T02:11:12.667559+00:00" srvcrttmelcl="2026-02-02T02:11:12.667559+00:00" srvgcmjrcnt="0" srvgcmjrcpu="0" srvgcmjrfrd="0" 
+		srvgcmnrcnt="2" srvgcmnrcpu="4" srvgcmnrfrd="155719624" srvsysthcnt="4" srvsysthdwt="0" srvsysthnwt="0" srvsysthpwt="0" srvsysthwtt="0" srvthrcurr="8" 
+		srvthrhwm="9" srvthrwaits="0" srvthrwcurr="0" srvthrwhwm="0" srvthrwtime="0000:00:00.000000" srvusecount="0" stderr="//DD:JVMERR" stdout="//DD:JVMOUT" 
+		threadlimit="15" trace="//DD:JVMTRACE" workdir="/u/expauto" />
+	</records>
+</response>

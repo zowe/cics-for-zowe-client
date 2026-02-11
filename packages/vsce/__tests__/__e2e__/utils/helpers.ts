@@ -25,6 +25,8 @@ export const constants = {
   LIBRARY_1_NAME: "MYLIB1",
   LIBRARY_DS_1_NAME: "MYLIBDS1",
   JVM_SERVER_1_NAME: "MYJVM1",
+  ALL_JVMSERVER_NAME1: "MYJVM1 (MYREG1)",
+  ALL_JVMSERVER_NAME2: "MYJVM2 (MYREG1)",
   JVM_ENDPOINT_1_NAME: "MYJVMENDPOINT1 (9080)",
   BUNDLE_1_NAME: "MYBUNDLE1 (DISABLED)",
   BUNDLE_1_USS_PATH: "/u/expauto/bundles/test_plugin_1.0.1",
@@ -37,6 +39,7 @@ export const constants = {
   LIBRARY_NAME: "DFHRPL",
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
+  ALL_JVM_SERVERS: "All JVM Servers",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. 
   Please refer to the IBM documentation for additional details`,
   BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
@@ -151,8 +154,8 @@ export const getClipboardContent = async (page: Page) => {
 export const collectTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
-): Promise<Array<{ label: string; index: number; }>> => {
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
+): Promise<Array<{ label: string; index: number }>> => {
   const { includeAll = false, waitForLabel, selector = '[role="treeitem"]' } = options ?? {};
 
   if (waitForLabel) {
@@ -160,7 +163,7 @@ export const collectTreeItemsOrder = async (
   }
 
   const allTreeItems = await page.locator(selector).all();
-  const itemsWithIndices: Array<{ label: string; index: number; }> = [];
+  const itemsWithIndices: Array<{ label: string; index: number }> = [];
 
   for (const treeItem of allTreeItems) {
     const ariaLabel = await treeItem.getAttribute("aria-label");
@@ -188,7 +191,7 @@ export const collectTreeItemsOrder = async (
 export const assertTreeItemsOrder = async (
   page: Page,
   expectedOrder: string[],
-  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string; }
+  options?: { includeAll?: boolean; waitForLabel?: string; selector?: string }
 ): Promise<void> => {
   const items = await collectTreeItemsOrder(page, expectedOrder, options);
   const actualOrder = items.map((it) => it.label);
@@ -226,7 +229,7 @@ export const expectedPlexOrder = [
 ];
 
 export const clickTreeNode = async (page: Page, text: string, button: "left" | "right" | "middle" = "left") => {
-  page.locator('.monaco-highlighted-label', { hasText: text }).first().click({ button, force: true });
+  page.locator(".monaco-highlighted-label", { hasText: text }).first().click({ button, force: true });
 };
 
 export const expectedProfileOrder = [constants.ACE_PROFILE_NAME, constants.PROFILE_NAME];

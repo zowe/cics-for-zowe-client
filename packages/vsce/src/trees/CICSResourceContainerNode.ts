@@ -201,7 +201,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
           r.meta.getLabel(r.resource),
           {
             cicsplexName: this.cicsplexName,
-            regionName: this.regionName,
+            //when we don't have a region as the parent (e.g. in the All Files tree node) the node
+            regionName: r.resource.attributes.eyu_cicsname,
             parentNode: this,
             profile: this.profile,
           },

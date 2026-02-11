@@ -59,3 +59,27 @@ test.describe("JVM Endpoint tests", () => {
     await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toHaveText("MYJVMENDPOINT1 (9080)");
   });
 });
+
+test.describe("JVM Endpoint should be visible from plex-level", () => {
+  test("All JVM Servers should be visible", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.ALL_JVM_SERVERS);
+
+    const filterButton = page.getByRole("button", { name: "Filter Resources", exact: true });
+    await expect(filterButton).toBeVisible();
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    await expect(textBox).toBeEditable();
+    await textBox.fill("MYJVM1");
+    await textBox.press("Enter");
+    await page.waitForTimeout(200);
+
+    await expect(getTreeItem(page, constants.ALL_JVMSERVER_NAME1)).toBeVisible();
+    await expect(getTreeItem(page, constants.ALL_JVMSERVER_NAME2)).toBeVisible();
+
+    await page.getByRole("treeitem", { name: "MYJVM1 (MYREG1)" }).click();
+    await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
+  });
+});

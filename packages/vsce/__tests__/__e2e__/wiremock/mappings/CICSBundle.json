@@ -42,7 +42,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/ERRORS?CRITERIA=(name%3DMYBUNDLE1)",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"ENABLE\"/>\n </request>"
