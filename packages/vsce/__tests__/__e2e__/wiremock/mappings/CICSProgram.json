@@ -85,7 +85,33 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSProgram/summary.xml",
+        "bodyFileName": "CICSProgram/errors/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00PROGERRORCACHE/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/errors/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00PROGERRORCACHE?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/errors/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -98,7 +124,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSProgram/programs-not-found.xml",
+        "bodyFileName": "CICSProgram/errors/programs-not-found.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -107,7 +133,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG1)",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DMYPROG1)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
@@ -116,7 +142,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSProgram/error-on-disable.xml",
+        "bodyFileName": "CICSProgram/errors/error-on-disable.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -125,7 +151,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG2)",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(PROGRAM%3DMYPROG2)",
         "bodyPatterns": [
           {
             "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
@@ -134,7 +160,7 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSProgram/error-on-disable.xml",
+        "bodyFileName": "CICSProgram/errors/error-on-disable.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
