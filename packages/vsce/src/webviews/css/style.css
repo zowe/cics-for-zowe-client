@@ -1,7 +1,15 @@
 @import "tailwindcss";
 
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+
 #webviewRoot {
   background-color: var(--vscode-editor-background);
+  height: 100%;
 }
 
 input:focus {

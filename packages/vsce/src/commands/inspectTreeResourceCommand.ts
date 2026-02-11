@@ -55,7 +55,7 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
     }
 
     if (treeNodes[0].getContainedResource().meta !== treeNodes[1].getContainedResource().meta) {
-      return Gui.showMessage(l10n.t("Resources are not the same resource type."), { severity: MessageSeverity.ERROR });
+      return Gui.showMessage(l10n.t("Cannot compare CICS resources of different types."), { severity: MessageSeverity.ERROR });
     }
 
     return showInspectResource(
