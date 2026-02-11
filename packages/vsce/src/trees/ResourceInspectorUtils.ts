@@ -112,12 +112,14 @@ const fetchUpdatedResources = async (resources: IResourceInspectorResource[]): P
     resourceContainer.setCriteria([resource.name]);
     const fetchedResources = await resourceContainer.fetchNextPage();
 
-    updatedResources.push(
-      ...fetchedResources.map((containedResource) => ({
-        containedResource,
-        ctx: resource.context,
-      }))
-    );
+    if (fetchedResources?.length > 0) {
+      updatedResources.push(
+        ...fetchedResources.map((containedResource) => ({
+          containedResource,
+          ctx: resource.context,
+        }))
+      );
+    }
   }
 
   return updatedResources;
@@ -162,10 +164,4 @@ const createFallbackResource = (existingResource: IResourceInspectorResource): I
     },
     ctx: existingResource.context,
   };
-};
-
-const showRefreshError = (error: unknown): void => {
-  const errorMessage = JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(/(\\n\t|\\n|\\t)/gm, " ");
-
-  window.showErrorMessage(l10n.t("Something went wrong while performing Refresh - {0}", errorMessage));
 };

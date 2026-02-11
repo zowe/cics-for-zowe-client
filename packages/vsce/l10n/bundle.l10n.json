@@ -37,6 +37,7 @@
   "Could not find any record for region {0} to show logs.": "Could not find any record for region {0} to show logs.",
   "Failed to show logs for region {0}: {1}": "Failed to show logs for region {0}: {1}",
   "Refreshing...": "Refreshing...",
+  "Resource(s) {0} not found.": "Resource(s) {0} not found.",
   "Something went wrong while performing Refresh - {0}": "Something went wrong while performing Refresh - {0}",
   "Update Credentials": "Update Credentials",
   "Update the selected profile's credentials": "Update the selected profile's credentials",

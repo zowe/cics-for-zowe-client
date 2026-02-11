@@ -38,6 +38,7 @@ import { IResourceInspectorResource } from "../../../src/webviews/common/vscode"
 import { handleActionCommand, handleRefreshCommand } from "../../../src/trees/ResourceInspectorUtils";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import { profile } from "../../__mocks__";
+import { Gui } from "@zowe/zowe-explorer-api";
 
 const vscode = require("vscode");
 
@@ -81,6 +82,7 @@ describe("ResourceInspectorUtils", () => {
     mockResourceContainer = {
       setCriteria: jest.fn(),
       fetchNextPage: jest.fn(),
+      ensureSummaries: jest.fn(),
     } as any;
 
     (ResourceContainer as jest.Mock).mockImplementation(() => mockResourceContainer);
@@ -253,15 +255,13 @@ describe("ResourceInspectorUtils", () => {
 
       it("should handle refresh error and show error message", async () => {
         const error = new Error("Fetch failed");
-        mockResourceContainer.fetchNextPage.mockRejectedValue(error);
+        mockResourceContainer.ensureSummaries.mockRejectedValue(error);
 
         const resources = [createMockResource("PROG1")];
 
         await handleRefreshCommand(resources, mockInstance, mockContext);
 
-        expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
-          expect.stringContaining("Something went wrong while performing Refresh")
-        );
+        expect(Gui.showMessage).toHaveBeenCalledWith("Resource(s) PROG1 not found.");
       });
 
       it("should report progress during refresh", async () => {
@@ -339,7 +339,7 @@ describe("ResourceInspectorUtils", () => {
         await handleRefreshCommand(resources, mockInstance, mockContext);
 
         expect(mockResourceContainer.fetchNextPage).not.toHaveBeenCalled();
-        expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(mockContext, []);
+        expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
       });
 
       it("should handle null instance for refresh", async () => {
