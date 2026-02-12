@@ -21,6 +21,12 @@
     "onView:cics-view",
     "onCommand:cics-extension-for-zowe.toggleResourceSetting"
   ],
+  "postcss": {
+    "plugins": {
+      "@tailwindcss/postcss": {},
+      "autoprefixer": {}
+    }
+  },
   "extensionDependencies": [
     "Zowe.vscode-extension-for-zowe"
   ],
@@ -257,6 +263,11 @@
         "category": "Zowe Explorer for IBM CICS TS"
       },
       {
+        "command": "cics-extension-for-zowe.compareTreeResources",
+        "title": "%cics.compareResource.title%",
+        "category": "Zowe Explorer for IBM CICS TS"
+      },
+      {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "%cics.inquireTransaction.title%",
         "category": "Zowe Explorer for IBM CICS TS"
@@ -310,6 +321,10 @@
       "commandPalette": [
         {
           "command": "cics-extension-for-zowe.inspectTreeResource",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.compareTreeResources",
           "when": "never"
         },
         {
@@ -484,6 +499,11 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.inspectTreeResource",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && listDoubleSelection",
+          "command": "cics-extension-for-zowe.compareTreeResources",
           "group": "1.CICSResourceNode.inquire"
         },
         {
@@ -863,6 +883,13 @@
     "mocha": "^11.1.0",
     "mustache": "^4.2.0",
     "@vscode/l10n-dev": "^0.0.35",
+    "@tailwindcss/postcss": "^4.1.17",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
+    "postcss-preset-env": "^10.4.0",
+    "tailwindcss": "^4.1.17",
+    "webpack": "^5.103.0",
+    "webpack-dev-server": "^5.2.2",
     "raw-loader": "^4.0.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

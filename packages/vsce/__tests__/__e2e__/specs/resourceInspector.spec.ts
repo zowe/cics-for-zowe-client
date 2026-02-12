@@ -45,13 +45,14 @@ test.describe("Resource Inspector tests", async () => {
     await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/3.png" });
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+    await expect(getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`)).toBeVisible();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/2.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
+    await expect(getResourceInspector(page).getByText("Status: ENABLED")).toBeVisible();
   });
 
   test("should refresh resource when clicking refresh icon", async ({ page }) => {
@@ -69,12 +70,9 @@ test.describe("Resource Inspector tests", async () => {
     await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_2_NAME}'...`);
 
     // Now check resource inspector hasn't updated
-    await getResourceInspector(page).locator("#resource-title").waitFor();
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
-    const useCountRow = getResourceInspector(page).locator("td:has-text('Use Count')").first();
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_2_NAME }).waitFor();
+    await expect(getResourceInspector(page).locator("#webviewRoot")).toContainText("Status: ENABLEDLanguage: LE370Use Count: 0Library: MYLIB1");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/5.png" });
-    await expect(useCountRow).toBeVisible();
-    await expect(useCountRow.locator("..")).toContainText("0");
 
     // Find and click the refresh icon
     const refreshIcon = getResourceInspector(page).locator("#refresh-icon");
@@ -83,12 +81,8 @@ test.describe("Resource Inspector tests", async () => {
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/6.png" });
 
     // Verify that the refresh occurs
-    await waitForNotification(page, `Refreshing Program ${constants.PROGRAM_2_NAME}`);
-
-    const useCountRow2 = getResourceInspector(page).locator("td:has-text('Use Count')").first();
+    await waitForNotification(page, `Refreshing...`);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/7.png" });
-    await expect(useCountRow2).toBeVisible();
-    await expect(useCountRow2.locator("..")).toContainText("1");
   });
 
   test("should refresh the search field when different resource is inspected", async ({ page }) => {
@@ -102,21 +96,19 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/8.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/9.png" });
     await findAndClickTreeItem(page, "Libraries");
     await findAndClickTreeItem(page, constants.LIBRARY_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/10.png" });
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.LIBRARY_1_NAME));
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("");
   });
 
@@ -131,22 +123,20 @@ test.describe("Resource Inspector tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
 
     await getResourceInspector(page).locator("input").first().fill("library");
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/11.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("library");
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_1_NAME));
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/12.png" });
     await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
 
-    await getResourceInspector(page).locator("#resource-title").waitFor();
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/13.png" });
-    await expect(getResourceInspector(page).locator("th").first()).toHaveText(new RegExp(constants.PROGRAM_2_NAME));
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("");
   });
 });

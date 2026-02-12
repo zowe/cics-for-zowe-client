@@ -8,6 +8,8 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
+
+import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, ExtensionContext } from "vscode";
 import { ManagedRegionMeta, RegionMeta } from "../doc/meta";
 import { inspectRegionByName } from "./inspectResourceCommandUtils";
@@ -20,8 +22,9 @@ export function getInspectRegionCommand(context: ExtensionContext) {
       return;
     }
 
-    const regionContext = {
-      profileName: newRegion.profile.name,
+    const regionContext: IResourceContext = {
+      session: newRegion.session,
+      profile: newRegion.profile,
       cicsplexName: newRegion.cicsPlexName,
       regionName: newRegion.regionName,
     };

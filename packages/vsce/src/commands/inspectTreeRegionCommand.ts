@@ -8,11 +8,13 @@
  * Copyright Contributors to the Zowe Project.
  *
  */
-import { commands, ExtensionContext, TreeView } from "vscode";
+
+import { commands, ExtensionContext } from "vscode";
+import { CICSRegionTree } from "../trees";
 import { inspectRegionByNode } from "./inspectResourceCommandUtils";
 
-export function getInspectTreeRegionCommand(context: ExtensionContext, treeview: TreeView<any>) {
-  return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: any) => {
+export function getInspectTreeRegionCommand(context: ExtensionContext) {
+  return commands.registerCommand("cics-extension-for-zowe.inspectTreeRegion", async (node: CICSRegionTree) => {
     await inspectRegionByNode(context, node);
   });
 }

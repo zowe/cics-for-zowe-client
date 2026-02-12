@@ -9,10 +9,15 @@
  *
  */
 
-import * as React from "react";
-import { createRoot } from 'react-dom/client';
-import ResourceInspector from './ResourceInspector';
+import { createRoot } from "react-dom/client";
+import { ThemeProvider } from "../common/ThemeContext";
+import "../css/style.css";
+import ResourceInspector from "./ResourceInspector";
 
-const container = document.getElementById('webviewRoot');
+const container = document.getElementById("webviewRoot");
 const root = createRoot(container);
-root.render(<ResourceInspector />);
+root.render(
+  <ThemeProvider>
+    <ResourceInspector />
+  </ThemeProvider>
+);
