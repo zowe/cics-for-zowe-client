@@ -63,8 +63,8 @@ describe("Test suite for errorUtils", () => {
       getMetasMock.mockReturnValue(mockMetas);
     });
 
-    it("should return GET_COMMAND_URI for 'get' resource type", () => {
-      expect(getHelpTopicNameFromMetas("get")).toEqual({ docFile: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT });
+    it("should return GET_COMMAND_DOC_FILE for 'get' resource type", () => {
+      expect(getHelpTopicNameFromMetas("get")).toEqual({ docFile: URLConstants.GET_COMMAND_DOC_FILE, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT });
     });
 
     it("should return docFile and fragment for LIBRARY resource type", () => {

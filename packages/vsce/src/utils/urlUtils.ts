@@ -21,8 +21,10 @@ export async function openDocumentation(resourceType: string): Promise<void> {
 export function generateDocumentationURL(resourceType: string): Uri | undefined {
   const result = getHelpTopicNameFromMetas(resourceType);
 
+  const commandPath = resourceType === URLConstants.GET_RESOURCE ? URLConstants.COMMANDS_CPSM : URLConstants.COMMANDS_SPI;
+
   // eslint-disable-next-line max-len
-  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.VERSION}/${URLConstants.SET_COMMAND_PATH}`;
+  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.VERSION}/${URLConstants.REFERENCE_SYSTEM_PROGRAMMING}/${commandPath}`;
   const docUrl = result?.docFile ? `${cicsDocHost}/${result.docFile}` : cicsDocHost;
   const uri = Uri.parse(docUrl);
 

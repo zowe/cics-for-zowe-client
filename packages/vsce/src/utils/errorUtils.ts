@@ -18,7 +18,7 @@ export function getErrorCode(error: any) {
 
 export function getHelpTopicNameFromMetas(resourceType: string): { docFile: string; anchor: string } | undefined {
   if (resourceType === URLConstants.GET_RESOURCE) {
-    return { docFile: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT };
+    return { docFile: URLConstants.GET_COMMAND_DOC_FILE, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT };
   }
   const result = getResourceTypeAndHelpTopic(resourceType);
   if (!result || !result.docFile) {
