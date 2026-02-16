@@ -107,4 +107,14 @@ test.describe("Profile tests", () => {
     const profileNames = allLabels.map((s) => s.trim()).filter((name) => expectedProfileOrder.includes(name));
     expect(profileNames).toEqual(expectedProfileOrder);
   });
+
+  test("Should show no entry icon for unauthorized profile", async ({ page }) => {
+    await expect(getTreeItem(page, constants.ACE_PROFILE_NAME)).toBeVisible();
+    await findAndClickTreeItem(page, "ace-wiremock");
+    await expect(getTreeItem(page, constants.ACE_PROFILE_NAME).locator(".custom-view-tree-node-item-icon")).toHaveAttribute(
+      "style",
+      /profile-disconnected/
+    );
+  }); 
+
 });

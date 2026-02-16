@@ -101,6 +101,7 @@ export class CICSSessionTree extends TreeItem {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
           plexInfo = await this.handleUnauthorizedAndRetry(error);
         } else {
+          this.setUnauthorized();
           CICSErrorHandler.handleCMCIRestError(error);
         }
       }
