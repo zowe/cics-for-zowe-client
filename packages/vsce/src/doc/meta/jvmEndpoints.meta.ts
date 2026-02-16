@@ -21,7 +21,7 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   humanReadableNamePlural: l10n.t("JVM Endpoints"),
   humanReadableNameSingular: l10n.t("JVM Endpoint"),
   eibfnName: "JVMENDPOINT",
-  queryParamForSet: "commands-set-jvmendpoint",
+  setCommandDocFile: "dfha8_setjvmendpoint.html",
   anchorFragmentForSet: "setjvmendpoint__title__6",
 
   buildCriteria(criteria: string[], parentResource?: IJVMServer) {

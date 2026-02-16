@@ -21,16 +21,16 @@ jest.mock("../../../src/doc", () => ({
 const mockMetas = [
   {
     eibfnName: "LIBRARY",
-    queryParamForSet: "commands-set-library",
+    setCommandDocFile: "dfha8_setlibrary.html",
     anchorFragmentForSet: "setlibrary1__conditions__title__1",
   },
   {
     eibfnName: "PROGRAM",
-    queryParamForSet: "sc-set-program",
+    setCommandDocFile: "dfha8_setprogram.html",
     anchorFragmentForSet: "dfha8fq__title__6",
   },
 ];
-  
+
 describe("Test suite for errorUtils", () => {
   describe("Tests for getErrorCode()", () => {
     it("should return error code from mDetails.errorCode", () => {
@@ -64,15 +64,15 @@ describe("Test suite for errorUtils", () => {
     });
 
     it("should return GET_COMMAND_URI for 'get' resource type", () => {
-      expect(getHelpTopicNameFromMetas("get")).toEqual({ queryParam: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT });
+      expect(getHelpTopicNameFromMetas("get")).toEqual({ docFile: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT });
     });
 
-    it("should return queryParam and fragment for LIBRARY resource type", () => {
-      expect(getHelpTopicNameFromMetas("library")).toEqual({ queryParam: "commands-set-library", anchor: "setlibrary1__conditions__title__1" });
+    it("should return docFile and fragment for LIBRARY resource type", () => {
+      expect(getHelpTopicNameFromMetas("library")).toEqual({ docFile: "dfha8_setlibrary.html", anchor: "setlibrary1__conditions__title__1" });
     });
 
-    it("should return queryParam and fragment for PROGRAM resource type", () => {
-      expect(getHelpTopicNameFromMetas("program")).toEqual({ queryParam: "sc-set-program", anchor: "dfha8fq__title__6" });
+    it("should return docFile and fragment for PROGRAM resource type", () => {
+      expect(getHelpTopicNameFromMetas("program")).toEqual({ docFile: "dfha8_setprogram.html", anchor: "dfha8fq__title__6" });
     });
 
     it("should return undefined for unknown resource type", () => {
@@ -80,7 +80,7 @@ describe("Test suite for errorUtils", () => {
     });
 
     it("should return undefined when resourceType is undefined", () => {
-      expect(getHelpTopicNameFromMetas(undefined)).toBeUndefined();
+      expect(getHelpTopicNameFromMetas(undefined as any)).toBeUndefined();
     });
   });
 
@@ -99,7 +99,7 @@ describe("Test suite for errorUtils", () => {
     });
 
     it("should return undefined when eibfnAlt is undefined", () => {
-      expect(getEIBFNameFromMetas(undefined)).toBeUndefined();
+      expect(getEIBFNameFromMetas(undefined as any)).toBeUndefined();
     });
   });
 });

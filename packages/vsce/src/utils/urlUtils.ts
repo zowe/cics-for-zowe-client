@@ -19,16 +19,12 @@ export async function openDocumentation(resourceType: string): Promise<void> {
 }
 
 export function generateDocumentationURL(resourceType: string): Uri | undefined {
-  // eslint-disable-next-line max-len
-  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
-  const baseUri = Uri.parse(cicsDocHost);
-
   const result = getHelpTopicNameFromMetas(resourceType);
 
-  if (result?.queryParam) {
-    return baseUri.with({ query: `topic=${result.queryParam}` });
-  }
+  // eslint-disable-next-line max-len
+  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.VERSION}/${URLConstants.SET_COMMAND_PATH}`;
+  const docUrl = result?.docFile ? `${cicsDocHost}/${result.docFile}` : cicsDocHost;
+  const uri = Uri.parse(docUrl);
 
-  // Fallback to default pattern
-  return baseUri;
+  return result?.anchor ? uri.with({ fragment: result.anchor }) : uri;
 }

@@ -21,7 +21,7 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   humanReadableNamePlural: l10n.t("Local Files"),
   humanReadableNameSingular: l10n.t("Local File"),
   eibfnName: "FILE",
-  queryParamForSet: "commands-set-file",
+  setCommandDocFile: "dfha8_setfile.html",
   anchorFragmentForSet: "dfha8fi__title__12",
 
   buildCriteria(criteria: string[]) {

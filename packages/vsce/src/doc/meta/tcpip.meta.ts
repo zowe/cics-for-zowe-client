@@ -21,7 +21,7 @@ export const TCPIPMeta: IResourceMeta<ITCPIP> = {
   humanReadableNamePlural: l10n.t("TCP/IP Services"),
   humanReadableNameSingular: l10n.t("TCP/IP Service"),
   eibfnName: "TCPIPSERVICE",
-  queryParamForSet: "commands-set-tcpipservice",
+  setCommandDocFile: "dfha8_settcpipservice.html",
   anchorFragmentForSet: "dfha8fx__title__6",
 
   buildCriteria(criteria: string[]) {

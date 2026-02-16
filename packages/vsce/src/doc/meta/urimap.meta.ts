@@ -21,7 +21,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   humanReadableNamePlural: l10n.t("URI Maps"),
   humanReadableNameSingular: l10n.t("URI Map"),
   eibfnName: "URIMAP",
-  queryParamForSet: "commands-set-urimap",
+  setCommandDocFile: "dfha8_seturimap.html",
   anchorFragmentForSet: "dfha8_seturimap__title__6",
 
   buildCriteria(criteria: string[]) {

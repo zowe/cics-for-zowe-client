@@ -22,7 +22,7 @@ export const BundleMeta: IResourceMeta<IBundle> = {
   humanReadableNamePlural: l10n.t("Bundles"),
   humanReadableNameSingular: l10n.t("Bundle"),
   eibfnName: "BUNDLE",
-  queryParamForSet: "sc-set-bundle",
+  setCommandDocFile: "dfha8_setbundle.html",
   anchorFragmentForSet: "dfha8_setbundle__title__6",
 
   buildCriteria(criteria: string[]) {

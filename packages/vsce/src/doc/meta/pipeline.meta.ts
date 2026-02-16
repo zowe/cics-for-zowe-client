@@ -21,7 +21,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   humanReadableNamePlural: l10n.t("Pipelines"),
   humanReadableNameSingular: l10n.t("Pipeline"),
   eibfnName: "PIPELINE",
-  queryParamForSet: "commands-set-pipeline",
+  setCommandDocFile: "dfha8_setpipeline.html",
   anchorFragmentForSet: "dfha8bv__title__6",
 
   buildCriteria(criteria: string[]) {

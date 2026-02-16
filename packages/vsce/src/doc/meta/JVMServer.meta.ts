@@ -22,7 +22,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNamePlural: l10n.t("JVM Servers"),
   humanReadableNameSingular: l10n.t("JVM Server"),
   eibfnName: "JVMSERVER",
-  queryParamForSet: "commands-set-jvmserver",
+  setCommandDocFile: "dfha8_setjvmserver.html",
   anchorFragmentForSet: "dfha8_setenclave__title__6",
 
   buildCriteria(criteria: string[]) {

@@ -21,7 +21,7 @@ export const BundlePartMeta: IResourceMeta<IBundlePart> = {
   humanReadableNamePlural: l10n.t("Bundle Parts"),
   humanReadableNameSingular: l10n.t("Bundle Part"),
   eibfnName: "BUNDLE",
-  queryParamForSet: "sc-set-bundle",
+  setCommandDocFile: "dfha8_setbundle.html",
   anchorFragmentForSet: "dfha8_setbundle__title__6",
 
   buildCriteria(criteria: string[], parentResource?: IBundle) {

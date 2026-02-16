@@ -21,7 +21,7 @@ export const WebServiceMeta: IResourceMeta<IWebService> = {
   humanReadableNamePlural: l10n.t("Web Services"),
   humanReadableNameSingular: l10n.t("Web Service"),
   eibfnName: "WEBSERVICE",
-  queryParamForSet: "commands-set-webservice",
+  setCommandDocFile: "dfha8_setwebservice.html",
   anchorFragmentForSet: "dfhe4_spi_set_webservice__title__6",
 
   buildCriteria(criteria: string[]) {

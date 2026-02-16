@@ -21,7 +21,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   humanReadableNamePlural: l10n.t("Transactions"),
   humanReadableNameSingular: l10n.t("Transaction"),
   eibfnName: "TRANSACTION",
-  queryParamForSet: "commands-set-transaction",
+  setCommandDocFile: "dfha8_settransaction.html",
   anchorFragmentForSet: "dfha8gf__title__6",
 
   buildCriteria(criteria: string[]) {
