@@ -33,7 +33,7 @@
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
     "prepublishOnly": "npm run build",
-    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\" --fix",
     "package": "npm pack --pack-destination=../../dist",
     "test": "npm run test:unit && npm run test:system",
     "test:system": "echo 'Nothing to system test'",
