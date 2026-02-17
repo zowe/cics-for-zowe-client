@@ -4,10 +4,10 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- BugFix: Display no-entry icon decoration when profile connection fails. [#582](https://github.com/zowe/cics-for-zowe-client/issues/582)
-- Enhancement: Updated highlight information for CICS Resources: JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#573](https://github.com/zowe/cics-for-zowe-client/pull/573)
-- BugFix: Fixed All JVM Servers to display correct server endpoints. [#558](https://github.com/zowe/cics-for-zowe-client/issues/558)
-- Enhancement: Discard CMCI result sets when refresh button is clicked, Also dicarding the cache when filter is removed from a resource. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
+- BugFix: Update icon when profile connection fails. [#582](https://github.com/zowe/cics-for-zowe-client/issues/582)
+- Enhancement: Updated highlight information for JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
+- BugFix: Removed duplicate resource nodes in nested CICS resources. [#558](https://github.com/zowe/cics-for-zowe-client/issues/558)
+- Enhancement: Discard CMCI result sets when refreshed or filter is removed. [#310](https://github.com/zowe/cics-for-zowe-client/issues/310)
 - Enhancement: Added Compare command to view two CICS resources side by side. [#560](https://github.com/zowe/cics-for-zowe-client/issues/560)
 
 ## `3.18.0`

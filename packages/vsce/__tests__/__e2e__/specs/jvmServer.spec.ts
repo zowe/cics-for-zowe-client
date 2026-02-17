@@ -11,7 +11,6 @@
 
 import { expect, test } from "@playwright/test";
 import {
-  clickTreeNode,
   constants,
   findAndClickText,
   findAndClickTreeItem,

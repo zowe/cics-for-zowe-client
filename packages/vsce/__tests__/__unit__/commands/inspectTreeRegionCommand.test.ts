@@ -57,7 +57,7 @@ describe("Test suite for Inspect Region command", () => {
     const context = {} as any;
     (inspectModule.inspectRegionByNode as jest.Mock).mockResolvedValue(undefined);
 
-    const command = (getInspectTreeRegionCommand as any)(context, { selection: [] } as any);
+    const command = getInspectTreeRegionCommand(context);
 
     const fakeNode = {
       getContainedResource: (): any => ({ meta: ManagedRegionMeta, resource: { attributes: { cicsname: "REG1" } } }),

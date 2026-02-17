@@ -9,7 +9,7 @@
  *
  */
 
-import { createProfile, fetchAllProfilesMock, getAllProfilesMock, getJesApiMock, getUssApiMock, loadNamedProfileMock, profile } from "../";
+import { createProfile, fetchAllProfilesMock, getAllProfilesMock, getJesApiMock, getUssApiMock, loadNamedProfileMock } from "../";
 
 const zeApi: any = jest.createMockFromModule("@zowe/zowe-explorer-api");
 
