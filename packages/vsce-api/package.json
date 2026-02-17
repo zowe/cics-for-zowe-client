@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cics-for-zowe-explorer-api",
-  "version": "6.18.0",
+  "version": "6.19.0",
   "author": "Zowe",
   "license": "EPL-2.0",
   "description": "Zowe Explorer for IBM CICS Transaction Server API",

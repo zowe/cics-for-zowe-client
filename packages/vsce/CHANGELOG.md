@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.19.0`
 
 - BugFix: Update icon when profile connection fails. [#582](https://github.com/zowe/cics-for-zowe-client/issues/582)
 - Enhancement: Updated highlight information for JVM Server, TS Queue, Bundle, Bundle Part, JVM Endpoint, Library Dataset. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)
