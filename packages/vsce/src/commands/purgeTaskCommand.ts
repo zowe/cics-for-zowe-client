@@ -9,13 +9,13 @@
  *
  */
 
-import { CicsCmciConstants, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
-import { ProgressLocation, TreeView, commands, l10n, window } from "vscode";
+import { CicsCmciConstants, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import type { IProfileLoaded } from "@zowe/imperative";
+import { ProgressLocation, type TreeView, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { TaskMeta } from "../doc";
-import { ICommandParams } from "../doc/commands/ICommandParams";
-import { CICSTree } from "../trees/CICSTree";
+import type { ICommandParams } from "../doc/commands/ICommandParams";
+import type { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { runPutResource } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";

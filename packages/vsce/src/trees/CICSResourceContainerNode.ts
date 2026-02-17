@@ -9,15 +9,15 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { l10n, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
-import { CICSPlexTree, TextTreeItem } from ".";
-import { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
-import { Resource, ResourceContainer } from "../resources";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { imperative } from "@zowe/zowe-explorer-api";
+import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { type CICSPlexTree, TextTreeItem } from ".";
+import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
+import { type Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
 import PersistentStorage from "../utils/PersistentStorage";
-import { CICSRegionTree } from "./CICSRegionTree";
+import type { CICSRegionTree } from "./CICSRegionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
 import { ViewMore } from "./ViewMore";
 

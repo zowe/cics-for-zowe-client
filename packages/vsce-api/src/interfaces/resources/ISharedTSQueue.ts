@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "./IResource";
+import type { IResource } from "./IResource";
 
 export interface ISharedTSQueue extends IResource {
   name: string;

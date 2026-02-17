@@ -9,11 +9,11 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { WebviewPanel, commands, l10n, window } from "vscode";
+import { type WebviewPanel, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { runGetResource } from "../utils/resourceUtils";
 import { getParametersHtml } from "../utils/webviewHTML";
 

@@ -10,11 +10,11 @@
  */
 
 import { CicsCmciConstants, CicsCmciRestError, getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
-import { Gui, MessageSeverity, Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import { Gui, MessageSeverity, type Types, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
-import { CICSPlexTree } from "../trees/CICSPlexTree";
+import type { CICSPlexTree } from "../trees/CICSPlexTree";
 import { toArray } from "./commandUtils";
 import { getBestCICSplexes } from "./plexUtils";
 import { runGetCache, runGetResource } from "./resourceUtils";

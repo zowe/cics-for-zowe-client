@@ -9,13 +9,13 @@
  *
  */
 
-import { ExtensionContext, window } from "vscode";
+import { type ExtensionContext, window } from "vscode";
 import { CICSTree } from "./trees/CICSTree";
 import { getFolderIcon } from "./utils/iconUtils";
 import { ProfileManagement } from "./utils/profileManagement";
 import { getZoweExplorerVersion } from "./utils/workspaceUtils";
 
-import { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
+import type { IExtensionAPI } from "@zowe/cics-for-zowe-explorer-api";
 import { getCommands } from "./commands";
 import { CICSMessages } from "./constants/CICS.messages";
 import CICSExtenderApiConfig from "./extending/CICSExtenderApiConfig";

@@ -9,18 +9,18 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { IProfileLoaded } from "@zowe/imperative";
-import { FileManagement, Gui, ZoweVsCodeExtension, imperative } from "@zowe/zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IProfileLoaded } from "@zowe/imperative";
+import { FileManagement, Gui, ZoweVsCodeExtension, type imperative } from "@zowe/zowe-explorer-api";
 import {
-  Event,
+  type Event,
   EventEmitter,
-  ProviderResult,
-  QuickPickItem,
-  QuickPickOptions,
-  TreeDataProvider,
-  TreeItem,
-  TreeView,
+  type ProviderResult,
+  type QuickPickItem,
+  type QuickPickOptions,
+  type TreeDataProvider,
+  type TreeItem,
+  type TreeView,
   commands,
   l10n,
   window,

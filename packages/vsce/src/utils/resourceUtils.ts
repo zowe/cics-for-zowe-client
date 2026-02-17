@@ -9,14 +9,21 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { getCache, getResource, ICMCIApiResponse, ICMCIResponseResultSummary, IResourceQueryParams, putResource } from "@zowe/cics-for-zowe-sdk";
-import { AuthOrder, IProfileLoaded } from "@zowe/imperative";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import {
+  getCache,
+  getResource,
+  type ICMCIApiResponse,
+  type ICMCIResponseResultSummary,
+  type IResourceQueryParams,
+  putResource
+} from "@zowe/cics-for-zowe-sdk";
+import { AuthOrder, type IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
-import { CICSResourceContainerNode } from "../trees";
+import type { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
 import { getErrorCode } from "./errorUtils";
 
@@ -207,7 +214,7 @@ export const buildNewSession = (profile: IProfileLoaded) => {
 export const buildRequestLoggerString = (
   method: "GET" | "PUT" | "POST",
   resourceName: string,
-  opts: { [key: string]: string | boolean | number } = {}
+  opts: { [key: string]: string | boolean | number; } = {}
 ): string => {
   let output = `${method.toUpperCase()} - Resource [${resourceName}]`;
   for (const [k, v] of Object.entries(opts)) {
@@ -220,7 +227,7 @@ export const buildRequestLoggerString = (
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean,
+  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
   parentResource?: IResource
 ) {
@@ -250,7 +257,7 @@ export async function pollForCompleteAction<T extends IResource>(
   criteriaMetCallback(response);
 }
 
-export function buildUserAgentHeader(): { "User-Agent": string } {
+export function buildUserAgentHeader(): { "User-Agent": string; } {
   const zeId = `zowe.vscode-extension-for-zowe`;
   const cicsExtId = `zowe.cics-extension-for-zowe`;
 

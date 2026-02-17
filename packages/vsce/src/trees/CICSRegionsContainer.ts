@@ -16,9 +16,9 @@ import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import { ProfileManagement } from "../utils/profileManagement";
 import { runGetResource } from "../utils/resourceUtils";
-import { CICSPlexTree } from "./CICSPlexTree";
+import type { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSTree } from "./CICSTree";
+import type { CICSTree } from "./CICSTree";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];

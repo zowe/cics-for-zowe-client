@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, defineProgram, ICMCIApiResponse, IProgramParms } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, defineProgram, type ICMCIApiResponse, type IProgramParms } from "../../../src";
 
 describe("CMCI - Define program", () => {
   const program = "program";

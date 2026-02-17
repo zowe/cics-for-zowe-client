@@ -9,10 +9,10 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { type ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { IResourceParms, getResource } from "../../../src";
-import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
+import { type IResourceParms, getResource } from "../../../src";
+import type { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;

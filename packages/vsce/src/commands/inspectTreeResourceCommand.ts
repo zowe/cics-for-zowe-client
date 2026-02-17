@@ -9,10 +9,10 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, TreeView, commands, l10n, window } from "vscode";
-import { CICSResourceContainerNode } from "../trees";
+import { type ExtensionContext, type TreeView, commands, l10n, window } from "vscode";
+import type { CICSResourceContainerNode } from "../trees";
 import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {

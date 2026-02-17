@@ -10,8 +10,8 @@
  */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { IHandlerParameters, Session } from "@zowe/imperative";
-import { ICMCIApiResponse } from "../../../../src";
+import { type IHandlerParameters, Session } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "../../../../src";
 import { TransactionDefinition } from "../../../../src/delete/transaction/Transaction.definition";
 import TransactionHandler from "../../../../src/delete/transaction/Transaction.handler";
 

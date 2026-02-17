@@ -9,10 +9,10 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram } from "../../../../src";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { type IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram } from "../../../../src";
+import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;

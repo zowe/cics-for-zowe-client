@@ -9,7 +9,7 @@
  *
  */
 
-import { ResourceAction, ResourceTypeMap } from "./ResourceAction";
+import type { ResourceAction, ResourceTypeMap } from "./ResourceAction";
 
 export interface IResourceExtender {
   registeredActions: Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>;

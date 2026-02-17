@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "./IResource";
+import type { IResource } from "./IResource";
 
 export interface ILibraryDataset extends IResource {
   dsname: string;

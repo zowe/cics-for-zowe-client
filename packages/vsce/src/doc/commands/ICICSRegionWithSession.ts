@@ -9,8 +9,8 @@
  *
  */
 
-import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import type { IProfileLoaded } from "@zowe/imperative";
 
 export interface ICICSRegionWithSession {
   profile: IProfileLoaded;

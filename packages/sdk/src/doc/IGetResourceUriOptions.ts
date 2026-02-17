@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceQueryParams } from "./IResourceQueryParms";
+import type { IResourceQueryParams } from "./IResourceQueryParms";
 
 export interface IGetResourceUriOptions {
   /**

@@ -9,9 +9,9 @@
  *
  */
 
-import { TreeView, commands, l10n, window } from "vscode";
+import { type TreeView, commands, l10n, window } from "vscode";
 import { LocalFileMeta } from "../doc";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { actionTreeItem } from "./actionResourceCommand";
 

@@ -11,8 +11,8 @@
 
 import { getToggleResourceSettingCommand } from "./toggleResourceSettingCommand";
 
-import { ExtensionContext, TreeView } from "vscode";
-import { CICSTree } from "../trees/CICSTree";
+import type { ExtensionContext, TreeView } from "vscode";
+import type { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";

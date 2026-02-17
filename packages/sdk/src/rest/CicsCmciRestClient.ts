@@ -9,12 +9,12 @@
  *
  */
 
-import { AbstractRestClient, AbstractSession, IImperativeError, ImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
+import { AbstractRestClient, type AbstractSession, type IImperativeError, ImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
 import { Builder, Parser } from "xml2js";
 import { CicsCmciConstants } from "../constants";
 import { CicsCmciMessages } from "../constants/CicsCmci.messages";
-import { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
-import { ICMCIRequestOptions } from "../doc/ICMCIRequestOptions";
+import type { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
+import type { ICMCIRequestOptions } from "../doc/ICMCIRequestOptions";
 import { CicsCmciRestError } from "./CicsCmciRestError";
 
 /**

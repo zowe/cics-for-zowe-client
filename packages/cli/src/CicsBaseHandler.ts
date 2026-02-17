@@ -9,8 +9,8 @@
  *
  */
 
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { AbstractSession, ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import type { AbstractSession, ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import { CicsSession } from "./CicsSession";
 
 /**

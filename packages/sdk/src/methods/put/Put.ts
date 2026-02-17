@@ -9,9 +9,9 @@
  *
  */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { ICMCIApiResponse, IGetResourceUriOptions, IResourceParms } from "../../doc";
-import { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
+import { type AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import type { ICMCIApiResponse, IGetResourceUriOptions, IResourceParms } from "../../doc";
+import type { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 

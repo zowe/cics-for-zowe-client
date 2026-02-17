@@ -9,9 +9,17 @@
  *
  */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { type AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../../constants";
-import { IBundleParms, ICMCIApiResponse, IGetResourceUriOptions, IProgramParms, ITransactionParms, IURIMapParms, IWebServiceParms } from "../../doc";
+import type {
+  IBundleParms,
+  ICMCIApiResponse,
+  IGetResourceUriOptions,
+  IProgramParms,
+  ITransactionParms,
+  IURIMapParms,
+  IWebServiceParms
+} from "../../doc";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 

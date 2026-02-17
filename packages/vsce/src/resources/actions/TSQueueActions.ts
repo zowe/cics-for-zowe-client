@@ -9,7 +9,7 @@
  *
  */
 
-import { ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceAction, type ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { l10n } from "vscode";
 
 const TSActions: ResourceActionOptions<ResourceTypes.CICSTSQueue>[] = [

@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, ExtensionContext } from "vscode";
+import { commands, type ExtensionContext } from "vscode";
 
 import { inspectResource, inspectResourceByName } from "./inspectResourceCommandUtils";
 

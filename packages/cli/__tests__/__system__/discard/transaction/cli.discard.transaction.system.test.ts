@@ -9,10 +9,10 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
 import { CicsCmciConstants, CicsCmciRestClient } from "../../../../src";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 const programName = "program1";

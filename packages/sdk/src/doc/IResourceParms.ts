@@ -9,7 +9,7 @@
  *
  */
 
-import { IGetResourceUriOptions } from "./IGetResourceUriOptions";
+import type { IGetResourceUriOptions } from "./IGetResourceUriOptions";
 
 export interface IResourceParms extends IGetResourceUriOptions {
   /**

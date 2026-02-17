@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { IProfileLoaded } from "@zowe/imperative";
+import type { IProfileLoaded } from "@zowe/imperative";
 import { l10n, TreeItem, TreeItemCollapsibleState } from "vscode";
 import constants from "../constants/CICS.defaults";
 import errorConstants from "../constants/CICS.errorMessages";
@@ -18,15 +18,15 @@ import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources/SessionHandler";
 import { getIconFilePathFromName } from "../utils/iconUtils";
-import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { type InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 import { updateProfile } from "../utils/profileUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { CICSPlexTree } from "./CICSPlexTree";
 import { CICSRegionTree } from "./CICSRegionTree";
-import { CICSTree } from "./CICSTree";
+import type { CICSTree } from "./CICSTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
-import { CICSRegionsContainer } from "./CICSRegionsContainer";
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { CICSRegionsContainer } from "./CICSRegionsContainer";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];

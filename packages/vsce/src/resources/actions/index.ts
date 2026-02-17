@@ -9,7 +9,7 @@
  *
  */
 
-import { ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";

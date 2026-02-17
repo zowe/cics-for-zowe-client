@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource, IResourceContext, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { type IResource, type IResourceContext, type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
@@ -22,8 +22,8 @@ import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
 import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
-import { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
+import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
+import type { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
 import { handleActionCommand, handleRefreshCommand } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 

@@ -9,8 +9,8 @@
  *
  */
 
-import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { IResourceInspectorIconPath, IResourceInspectorResource } from "./vscode";
+import type { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResourceInspectorIconPath, IResourceInspectorResource } from "./vscode";
 
 /**
  * Messages sent FROM webview TO extension

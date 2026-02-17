@@ -9,7 +9,7 @@
  *
  */
 
-import { imperative } from "@zowe/zowe-explorer-api";
+import type { imperative } from "@zowe/zowe-explorer-api";
 
 export const getCICSProfileDefinition = (): imperative.ICommandProfileTypeConfiguration => {
   return {

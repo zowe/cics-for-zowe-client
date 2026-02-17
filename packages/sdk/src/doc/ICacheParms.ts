@@ -9,7 +9,7 @@
  *
  */
 
-import { IResultCacheParms } from "./IResultCacheParms";
+import type { IResultCacheParms } from "./IResultCacheParms";
 
 export interface ICacheParms extends IResultCacheParms {
   /**

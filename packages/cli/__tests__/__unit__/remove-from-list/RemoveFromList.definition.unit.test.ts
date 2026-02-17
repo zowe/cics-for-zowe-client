@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics remove-from-list", () => {
   const REMOVE_FROM_LIST_RESOURCES = 1;

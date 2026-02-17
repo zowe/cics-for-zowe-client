@@ -9,7 +9,7 @@
  *
  */
 
-import { IProfile, SessConstants, Session } from "@zowe/imperative";
+import { type IProfile, SessConstants, Session } from "@zowe/imperative";
 
 export class CICSSession extends Session {
   cicsplexName?: string;

@@ -9,11 +9,11 @@
  *
  */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { ICMCIApiResponse } from "../../doc";
-import { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
-import { ICacheParms } from "../../doc/ICacheParms";
-import { IResultCacheParms } from "../../doc/IResultCacheParms";
+import { type AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "../../doc";
+import type { ICMCIRequestOptions } from "../../doc/ICMCIRequestOptions";
+import type { ICacheParms } from "../../doc/ICacheParms";
+import type { IResultCacheParms } from "../../doc/IResultCacheParms";
 import { CicsCmciRestClient } from "../../rest";
 import { Utils } from "../../utils";
 

@@ -9,9 +9,9 @@
  *
  */
 
-import { ResourceTypes } from "../resources";
-import { IResourceContext } from "./IResourceContext";
-import {
+import type { ResourceTypes } from "../resources";
+import type { IResourceContext } from "./IResourceContext";
+import type {
   IBundle,
   IJVMServer,
   ILibrary,

@@ -10,8 +10,8 @@
  */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { IHandlerParameters, Session } from "@zowe/imperative";
-import { ICMCIApiResponse } from "../../../../src";
+import { type IHandlerParameters, Session } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "../../../../src";
 import { CSDGroupDefinition } from "../../../../src/add-to-list/csdGroup/CSDGroup.definition";
 import CSDGroupHandler from "../../../../src/add-to-list/csdGroup/CSDGroup.handler";
 

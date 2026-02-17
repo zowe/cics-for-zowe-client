@@ -9,10 +9,10 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { type ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { IURIMapParms, defineUrimapPipeline, deleteUrimap } from "../../../src";
-import { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
+import { type IURIMapParms, defineUrimapPipeline, deleteUrimap } from "../../../src";
+import type { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

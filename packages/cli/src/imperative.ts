@@ -11,7 +11,7 @@
 
 // Imperative version of Zowe CLI
 import { getCICSProfileDefinition } from "@zowe/cics-for-zowe-sdk";
-import { IImperativeConfig } from "@zowe/imperative";
+import type { IImperativeConfig } from "@zowe/imperative";
 import { PluginConstants } from "./PluginConstants";
 
 const config: IImperativeConfig = {

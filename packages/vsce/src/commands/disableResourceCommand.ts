@@ -9,10 +9,10 @@
  *
  */
 
-import { IBundle, IJVMEndpoint, IJVMServer, ILibrary, ILocalFile, IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
-import { TreeView, commands, l10n, window } from "vscode";
+import type { IBundle, IJVMEndpoint, IJVMServer, ILibrary, ILocalFile, IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
+import { type TreeView, commands, l10n, window } from "vscode";
 import { BundleMeta, JVMEndpointMeta, JVMServerMeta, LibraryMeta, LocalFileMeta, ProgramMeta, TransactionMeta } from "../doc";
-import { CICSResourceContainerNode, CICSTree } from "../trees";
+import type { CICSResourceContainerNode, CICSTree } from "../trees";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { actionTreeItem } from "./actionResourceCommand";
 

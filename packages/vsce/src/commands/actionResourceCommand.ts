@@ -9,13 +9,13 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { ICMCIApiResponse, ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
-import { CICSResourceContainerNode } from "../trees";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSResourceContainerNode } from "../trees";
+import type { CICSTree } from "../trees/CICSTree";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
 import { resourceActionVerbMap, setResource } from "./setResource";

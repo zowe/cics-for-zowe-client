@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IURIMapParms, deleteUrimap } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type ICMCIApiResponse, type IURIMapParms, deleteUrimap } from "../../../src";
 
 describe("CMCI - Delete urimap", () => {
   const urimap = "urimap";

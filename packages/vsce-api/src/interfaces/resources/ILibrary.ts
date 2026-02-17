@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceWithEnableStatus } from "./IResource";
+import type { IResourceWithEnableStatus } from "./IResource";
 
 export interface ILibrary extends IResourceWithEnableStatus {
   name: string;
