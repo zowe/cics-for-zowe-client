@@ -246,4 +246,12 @@ describe("Test suite for CICSSessionTree", () => {
       expect(() => sessionTree.resetAllResourceContainers()).not.toThrow();
     });
   });
+  describe("Test suite for icon decorations", () => {
+    it("Should change from no-entry to green tick icon when connection succeeds", () => {
+      sessionTree.setUnauthorized();
+      expect(iconSpy).toHaveBeenCalledWith("profile-disconnected");
+      sessionTree.setAuthorized();
+      expect(iconSpy).toHaveBeenCalledWith("profile");
+    });
+  });
 });
