@@ -23,7 +23,7 @@ const MAX_MODAL_LIST_ITEMS = 10;
  * Checks if a profile supports a specific type of connection
  *
  * @param profile - The profile to check
- * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss or ZoweExplorerApiType.Jes)
+ * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss, ZoweExplorerApiType.Jes, or ZoweExplorerApiType.Mvs)
  * @returns True if the profile supports the specified connection type, false otherwise
  */
 export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: ZoweExplorerApiType): boolean {
@@ -36,6 +36,9 @@ export function doesProfileSupportConnectionType(profile: IProfileLoaded, connec
         break;
       case ZoweExplorerApiType.Jes:
         explorerApi.getJesApi(profile);
+        break;
+      case ZoweExplorerApiType.Mvs:
+        explorerApi.getMvsApi(profile);
         break;
       default:
         return false;
@@ -183,6 +186,50 @@ export async function findProfileAndShowJobSpool(cicsProfile: IProfileLoaded, jo
   }
   CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${regionName}: ${chosenProfileName} / ${jobid}`);
   commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
+}
+
+/**
+ * Finds a related z/OS profile and shows a dataset in Zowe Explorer
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param datasetName - The dataset name to show
+ * @param regionName - The region name (used for logging and error messages)
+ * @returns Promise that resolves when the command is executed or rejects on error
+ */
+export async function findProfileAndShowDataSet(cicsProfile: IProfileLoaded, datasetName: string, regionName: string): Promise<void> {
+  // Check if the zowe.ds.setDataSetFilter command is available
+  const availableCommands = await commands.getCommands();
+  // if (!availableCommands.includes("zowe.ds.setDataSetFilter")) {
+  //   CICSLogger.debug("zowe.ds.setDataSetFilter command is not available");
+  //   window.showWarningMessage(
+  //     l10n.t("The dataset hyperlink feature requires Zowe Explorer with the 'zowe.ds.setDataSetFilter' command. Please update Zowe Explorer to use this feature.")
+  //   );
+  //   return;
+  // }
+
+  const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
+  // Filter profiles that support MVS/Dataset operations
+  const zosProfiles = allProfiles.filter(
+    (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Mvs)
+  );
+
+  let chosenProfileName: string;
+
+  // find profiles that match by base profile or hostname, and have valid credentials
+  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
+  if (matchingZosProfile) {
+    chosenProfileName = matchingZosProfile.name;
+  } else {
+    chosenProfileName = await promptUserForProfile(zosProfiles);
+    CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
+    if (chosenProfileName === null) {
+      window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF)."));
+      return;
+    } else if (chosenProfileName === undefined) {
+      return;
+    }
+  }
+  CICSLogger.info(`Calling zowe.ds.setDataSetFilter for region ${regionName}: ${chosenProfileName} / ${datasetName}`);
+  commands.executeCommand("zowe.ds.setDataSetFilter", chosenProfileName, datasetName);
 }
 
 /**

@@ -35,7 +35,7 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
       (attr: keyof IResource) => [
         attr.toUpperCase(),
         ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context)
+          (res) => renderHyperlinkableValue(res.resource[attr], res.context, attr)
         )
       ]
     );

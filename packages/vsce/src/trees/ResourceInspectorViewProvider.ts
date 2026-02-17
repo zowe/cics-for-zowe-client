@@ -20,7 +20,7 @@ import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
-import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
+import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
 import { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
@@ -78,6 +78,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           break;
         case "showLogsForHyperlink":
           await this.handleShowLogsForHyperlink(message.resourceContext);
+          break;
+        case "showDatasetForHyperlink":
+          await this.handleShowDatasetForHyperlink(message.resourceContext, message.datasetName);
           break;
       }
     });
@@ -240,6 +243,21 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     } catch (error) {
       CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
       window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+    }
+  }
+
+  /**
+   * Handles the showDatasetForHyperlink request from the webview
+   * Calls findProfileAndShowDataSet to show the dataset in Zowe Explorer
+   */
+  private async handleShowDatasetForHyperlink(ctx: IResourceContext, datasetName: string) {
+    const { regionName, profile } = ctx;
+    try {
+      const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
+      await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+    } catch (error) {
+      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
+      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
     }
   }
 }

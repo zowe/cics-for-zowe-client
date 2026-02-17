@@ -12,7 +12,24 @@
 import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { postVscMessage } from "../../common/vscode";
 
-const HYPERLINKABLE_PATTERNS: RegExp[] = [/^\/\/DD:.+/];
+// Pattern for //DD:* format (job spool logs)
+const JOB_SPOOL_PATTERN = /^\/\/DD:.+/;
+
+// Pattern for MVS dataset names (e.g., A.B.C, MY.DATASET, SYS1.PROCLIB)
+// Dataset names can have 1-44 characters, with qualifiers separated by dots
+// Each qualifier can be 1-8 characters, alphanumeric plus national characters (@, #, $)
+const DATASET_PATTERN = /^[A-Z0-9@#$]{1,8}(\.[A-Z0-9@#$]{1,8}){0,21}$/;
+
+const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
+
+/**
+ * Check if a value matches the dataset pattern
+ * @param value - The string value to check
+ * @returns true if the value matches the dataset pattern, false otherwise
+ */
+export const isDatasetValue = (value: string): boolean => {
+  return typeof value === "string" && DATASET_PATTERN.test(value);
+};
 
 /**
  * Check if a value matches any hyperlinkable pattern (//DD:* etc.)
@@ -26,9 +43,12 @@ export const isHyperlinkableValue = (value: string): boolean => {
 /**
  * Render a value as a hyperlink if it matches a hyperlinkable pattern
  * @param value - The string value to render
+ * @param ctx - The resource context
+ * @param attributeName - The name of the attribute (optional, used to identify dataset attributes)
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, ctx: IResourceContext) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string) => {
+  // Check for job spool pattern (//DD:*)
   if (isHyperlinkableValue(value)) {
     return (
       <a
@@ -46,5 +66,27 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext) =
       </a>
     );
   }
+
+  // Check for dataset pattern (for dsname and librarydsn attributes)
+  const isDatasetAttribute = attributeName === "dsname" || attributeName === "librarydsn";
+  if (isDatasetAttribute && isDatasetValue(value)) {
+    return (
+      <a
+        href="javascript:void(0)"
+        className="underline cursor-pointer"
+        onClick={(e) => {
+          e.preventDefault();
+          postVscMessage({
+            type: "showDatasetForHyperlink",
+            resourceContext: ctx,
+            datasetName: value,
+          });
+        }}
+      >
+        {value}
+      </a>
+    );
+  }
+
   return value;
 };
