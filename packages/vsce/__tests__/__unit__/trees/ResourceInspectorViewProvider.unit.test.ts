@@ -28,9 +28,11 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
 
 const toArrayMock = jest.fn((val) => (Array.isArray(val) ? val : [val]));
 const findProfileAndShowJobSpoolMock = jest.fn();
+const findProfileAndShowDataSetMock = jest.fn();
 jest.mock("../../../src/utils/commandUtils", () => ({
   toArray: toArrayMock,
   findProfileAndShowJobSpool: findProfileAndShowJobSpoolMock,
+  findProfileAndShowDataSet: findProfileAndShowDataSetMock,
 }));
 
 jest.mock("../../../src/utils/CICSLogger", () => ({
@@ -64,7 +66,9 @@ import { Resource } from "../../../src/resources";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 const executeCommandMock = jest.fn();
+const getCommandsMock = jest.fn().mockResolvedValue(["zowe.ds.setDataSetFilter", "other.command"]);
 jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
+jest.spyOn(vscode.commands, "getCommands").mockImplementation(getCommandsMock);
 
 const sampleExtensionContext: ExtensionContext = {
   extensionUri: {
@@ -300,6 +304,97 @@ describe("Resource Inspector View provider", () => {
       expect(runGetResourceMock).toHaveBeenCalled();
       expect(showErrorMessageSpy).toHaveBeenCalledWith(`Failed to show logs for region MYREG: ${errorMessage}`);
       expect(findProfileAndShowJobSpoolMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("handleShowDatasetForHyperlink", () => {
+    beforeEach(() => {
+      getProfileMock.mockReturnValue({
+        name: "MYPROF",
+        host: "example.com",
+        port: 1234,
+      });
+    });
+
+    it("should call findProfileAndShowDataSet with correct parameters", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "MYPROF" },
+      };
+
+      const datasetName = "SYS1.PROCLIB";
+
+      findProfileAndShowDataSetMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowDatasetForHyperlink(mockContext, datasetName);
+
+      expect(getProfileMock).toHaveBeenCalledWith("MYPROF");
+      expect(findProfileAndShowDataSetMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "MYPROF",
+          host: "example.com",
+          port: 1234,
+        }),
+        datasetName,
+        "TESTREGION"
+      );
+    });
+
+    it("should handle errors gracefully", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "MYPROF" },
+      };
+
+      const datasetName = "SYS1.PROCLIB";
+      const errorMessage = "Profile not found";
+
+      findProfileAndShowDataSetMock.mockRejectedValue(new Error(errorMessage));
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      findProfileAndShowDataSetMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowDatasetForHyperlink(mockContext, datasetName);
+
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to show dataset"));
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(expect.stringContaining(datasetName));
+    });
+
+    it("should handle different dataset names", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "REGION1",
+        cicsplexName: "PLEX1",
+        profile: { name: "MYPROF" },
+      };
+
+      const datasets = ["USER.TEST.DATA", "PROD.CICS.LOADLIB", "MY.DATASET"];
+
+      for (const dataset of datasets) {
+        findProfileAndShowDataSetMock.mockClear();
+
+        // @ts-ignore - calling private method for test
+        await ri.handleShowDatasetForHyperlink(mockContext, dataset);
+
+        expect(findProfileAndShowDataSetMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: "MYPROF",
+            host: "example.com",
+            port: 1234,
+          }),
+          dataset,
+          "REGION1"
+        );
+      }
     });
   });
 });

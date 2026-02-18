@@ -196,38 +196,28 @@ export async function findProfileAndShowJobSpool(cicsProfile: IProfileLoaded, jo
  * @returns Promise that resolves when the command is executed or rejects on error
  */
 export async function findProfileAndShowDataSet(cicsProfile: IProfileLoaded, datasetName: string, regionName: string): Promise<void> {
-  // Check if the zowe.ds.setDataSetFilter command is available
-  const availableCommands = await commands.getCommands();
-  // if (!availableCommands.includes("zowe.ds.setDataSetFilter")) {
-  //   CICSLogger.debug("zowe.ds.setDataSetFilter command is not available");
-  //   window.showWarningMessage(
-  //     l10n.t("The dataset hyperlink feature requires Zowe Explorer with the 'zowe.ds.setDataSetFilter' command. Please update Zowe Explorer to use this feature.")
-  //   );
-  //   return;
-  // }
-
+  // Fetch and filter profiles in a single operation
   const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
-  // Filter profiles that support MVS/Dataset operations
   const zosProfiles = allProfiles.filter(
-    (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Mvs)
+    (profile) => profile.type !== "zftp" && doesProfileSupportConnectionType(profile, ZoweExplorerApiType.Mvs)
   );
 
-  let chosenProfileName: string;
-
-  // find profiles that match by base profile or hostname, and have valid credentials
-  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
-  if (matchingZosProfile) {
-    chosenProfileName = matchingZosProfile.name;
-  } else {
-    chosenProfileName = await promptUserForProfile(zosProfiles);
-    CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
-    if (chosenProfileName === null) {
-      window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF)."));
-      return;
-    } else if (chosenProfileName === undefined) {
-      return;
-    }
+  // Early return if no compatible profiles found
+  if (zosProfiles.length === 0) {
+    window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF)."));
+    return;
   }
+
+  // Try to find matching profile automatically, otherwise prompt user
+  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
+  const chosenProfileName = matchingZosProfile?.name ?? await promptUserForProfile(zosProfiles);
+
+  // Handle user cancellation or no profile selected
+  if (!chosenProfileName) {
+    chosenProfileName === null ? window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF).")) : void 0;
+    return;
+  }
+
   CICSLogger.info(`Calling zowe.ds.setDataSetFilter for region ${regionName}: ${chosenProfileName} / ${datasetName}`);
   commands.executeCommand("zowe.ds.setDataSetFilter", chosenProfileName, datasetName);
 }

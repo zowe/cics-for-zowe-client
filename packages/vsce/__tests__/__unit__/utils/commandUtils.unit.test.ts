@@ -11,10 +11,18 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui } from "@zowe/zowe-explorer-api";
+import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { commands, window } from "vscode";
 import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
-import { createProfile, fetchAllProfilesMock, getJesApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
+import { ProfileManagement } from "../../../src/utils/profileManagement";
+import { createProfile, fetchAllProfilesMock, getJesApiMock, getMvsApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
+
+// Mock ZoweVsCodeExtension.getZoweExplorerApi()
+jest.spyOn(ZoweVsCodeExtension, "getZoweExplorerApi").mockReturnValue({
+  getJesApi: getJesApiMock,
+  getMvsApi: getMvsApiMock,
+} as any);
 
 describe("Command Utils tests", () => {
   describe("splitCmciErrorMessage", () => {
@@ -157,6 +165,71 @@ describe("Command Utils tests", () => {
         { modal: true, detail: "Tsk1\nTsk2" },
         "Purge"
       );
+    });
+  });
+
+  describe("findProfileAndShowDataSet", () => {
+    const cicsProfile = createProfile("mycics", "cics", "example.com", "user1");
+    const zosmfProfile = createProfile("myzosmf", "zosmf", "example.com", "user1");
+    const datasetName = "SYS1.PROCLIB";
+    const regionName = "MYREGION";
+
+    beforeEach(() => {
+      vscodeExecuteCommandMock.mockReset();
+      showErrorMessageMock.mockReset();
+    });
+
+    it("should call zowe.ds.setDataSetFilter when matching profile is found automatically", async () => {
+      fetchAllProfilesMock.mockResolvedValue([zosmfProfile]);
+
+      await commandUtils.findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+
+      expect(fetchAllProfilesMock).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.ds.setDataSetFilter", "myzosmf", datasetName);
+      expect(showErrorMessageMock).not.toHaveBeenCalled();
+    });
+
+    it("should prompt user when no matching profile is found", async () => {
+      const otherProfile = createProfile("other", "zosmf", "different.com", "user2");
+      fetchAllProfilesMock.mockResolvedValue([otherProfile]);
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue("other");
+      fetchAllProfilesMock.mockResolvedValueOnce([otherProfile]).mockResolvedValueOnce([otherProfile]);
+
+      await commandUtils.findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+
+      expect(Gui.showQuickPick).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.ds.setDataSetFilter", "other", datasetName);
+    });
+
+    it("should show error when no profiles support MVS", async () => {
+      fetchAllProfilesMock.mockResolvedValue([]);
+
+      await commandUtils.findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+
+      expect(showErrorMessageMock).toHaveBeenCalledWith("Could not find any profiles that will access Data Sets (for instance z/OSMF).");
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should return early when user cancels profile selection", async () => {
+      const otherProfile = createProfile("other", "zosmf", "different.com", "user2");
+      fetchAllProfilesMock.mockResolvedValue([otherProfile]);
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue(undefined);
+
+      await commandUtils.findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+
+      expect(Gui.showQuickPick).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
+      expect(showErrorMessageMock).not.toHaveBeenCalled();
+    });
+
+    it("should filter out zftp profiles", async () => {
+      const ftpProfile = createProfile("myftp", "zftp", "example.com", "user1");
+      fetchAllProfilesMock.mockResolvedValue([ftpProfile, zosmfProfile]);
+
+      await commandUtils.findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+
+      // Should use zosmf profile, not ftp
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.ds.setDataSetFilter", "myzosmf", datasetName);
     });
   });
 });
