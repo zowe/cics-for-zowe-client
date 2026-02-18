@@ -15,10 +15,8 @@ import { postVscMessage } from "../../common/vscode";
 // Pattern for //DD:* format (job spool logs)
 const JOB_SPOOL_PATTERN = /^\/\/DD:.+/;
 
-// Pattern for MVS dataset names (e.g., A.B.C, MY.DATASET, SYS1.PROCLIB)
-// Dataset names can have 1-44 characters, with qualifiers separated by dots
-// Each qualifier can be 1-8 characters, alphanumeric plus national characters (@, #, $)
-const DATASET_PATTERN = /^[A-Z0-9@#$]{1,8}(\.[A-Z0-9@#$]{1,8}){0,21}$/;
+// Pattern for MVS dataset names with exactly 4 qualifiers (e.g., EXPAUTO.CPSM.IYCWENW2.DFHLRQ)
+const DATASET_PATTERN = /^[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}$/;
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
 
@@ -41,53 +39,48 @@ export const isHyperlinkableValue = (value: string): boolean => {
 };
 
 /**
+ * Helper function to create a hyperlink element
+ * @param value - The string value to display
+ * @param onClick - The click handler function
+ * @returns React anchor element
+ */
+const createHyperlink = (value: string, onClick: (e: React.MouseEvent) => void) => (
+  <a href="javascript:void(0)" className="underline cursor-pointer" onClick={onClick}>
+    {value}
+  </a>
+);
+
+/**
  * Render a value as a hyperlink if it matches a hyperlinkable pattern
  * @param value - The string value to render
  * @param ctx - The resource context
  * @param attributeName - The name of the attribute (optional, used to identify dataset attributes)
- * @param hasDatasetCommand - Whether the zowe.ds.setDataSetFilter command is available
+ * @param shouldRenderDatasetLinks - Whether dataset links should be rendered
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string, hasDatasetCommand?: boolean) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string, shouldRenderDatasetLinks?: boolean) => {
   // Check for job spool pattern (//DD:*)
   if (isHyperlinkableValue(value)) {
-    return (
-      <a
-        href="javascript:void(0)"
-        className="underline cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault();
-          postVscMessage({
-            type: "showLogsForHyperlink",
-            resourceContext: ctx,
-          });
-        }}
-      >
-        {value}
-      </a>
-    );
+    return createHyperlink(value, (e) => {
+      e.preventDefault();
+      postVscMessage({
+        type: "showLogsForHyperlink",
+        resourceContext: ctx,
+      });
+    });
   }
 
-  // Check for dataset pattern (for dsname and librarydsn attributes)
-  // Only render as hyperlink if the dataset command is available
-  const isDatasetAttribute = attributeName === "dsname" || attributeName === "librarydsn";
-  if (isDatasetAttribute && isDatasetValue(value) && hasDatasetCommand) {
-    return (
-      <a
-        href="javascript:void(0)"
-        className="underline cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault();
-          postVscMessage({
-            type: "showDatasetForHyperlink",
-            resourceContext: ctx,
-            datasetName: value,
-          });
-        }}
-      >
-        {value}
-      </a>
-    );
+  // Check for dataset pattern
+  // Only render as hyperlink if dataset links should be rendered
+  if (isDatasetValue(value) && shouldRenderDatasetLinks) {
+    return createHyperlink(value, (e) => {
+      e.preventDefault();
+      postVscMessage({
+        type: "showDatasetForHyperlink",
+        resourceContext: ctx,
+        datasetName: value,
+      });
+    });
   }
 
   return value;

@@ -20,62 +20,62 @@ import { isDatasetValue, isHyperlinkableValue } from "../../../src/webviews/reso
 
 describe("hyperlinkUtils", () => {
   describe("isDatasetValue", () => {
-    test("should return true for valid dataset names", () => {
-      expect(isDatasetValue("SYS1.PROCLIB")).toBe(true);
-      expect(isDatasetValue("MY.DATASET")).toBe(true);
-      expect(isDatasetValue("A.B.C")).toBe(true);
-      expect(isDatasetValue("USER.TEST.DATA")).toBe(true);
-      expect(isDatasetValue("PROD.CICS.LOADLIB")).toBe(true);
+    test("should return true for valid dataset names with exactly 4 qualifiers", () => {
+      expect(isDatasetValue("EXPAUTO.CPSM.IYCWENW2.DFHLRQ")).toBe(true);
+      expect(isDatasetValue("USER.TEST.DATA.SET")).toBe(true);
+      expect(isDatasetValue("A.B.C.D")).toBe(true);
+      expect(isDatasetValue("PROD.CICS.LOAD.LIB")).toBe(true);
+      expect(isDatasetValue("SYS1.PROC.LIB.DATA")).toBe(true);
     });
 
-    test("should return true for dataset names with national characters", () => {
-      expect(isDatasetValue("USER@TST")).toBe(true);
-      expect(isDatasetValue("DATA#SET")).toBe(true);
-      expect(isDatasetValue("MY$DATA")).toBe(true);
-      expect(isDatasetValue("A@B#C$D")).toBe(true);
-      expect(isDatasetValue("SYS1.PROC@LB")).toBe(true);
-      expect(isDatasetValue("USER#.TEST$")).toBe(true);
+    test("should return true for dataset names with national characters and 4 qualifiers", () => {
+      expect(isDatasetValue("USER@.TST.DATA.SET")).toBe(true);
+      expect(isDatasetValue("DATA#.SET.TEST.LIB")).toBe(true);
+      expect(isDatasetValue("MY$.DATA.PROD.SET")).toBe(true);
+      expect(isDatasetValue("A@B.C#D.E$F.GHI")).toBe(true);
     });
 
-    test("should return true for single qualifier datasets", () => {
-      expect(isDatasetValue("DATASET")).toBe(true);
-      expect(isDatasetValue("A")).toBe(true);
-      expect(isDatasetValue("TEST123")).toBe(true);
+    test("should return false for dataset names with fewer than 4 qualifiers", () => {
+      expect(isDatasetValue("SYS1.PROCLIB")).toBe(false);
+      expect(isDatasetValue("MY.DATASET")).toBe(false);
+      expect(isDatasetValue("A.B.C")).toBe(false);
+      expect(isDatasetValue("USER.TEST.DATA")).toBe(false);
+      expect(isDatasetValue("DATASET")).toBe(false);
+      expect(isDatasetValue("A")).toBe(false);
+      expect(isDatasetValue("TEST123")).toBe(false);
     });
 
-    test("should return true for datasets with maximum qualifiers (22)", () => {
+    test("should return false for dataset names with more than 4 qualifiers", () => {
+      expect(isDatasetValue("A.B.C.D.E")).toBe(false);
+      expect(isDatasetValue("USER.TEST.DATA.SET.EXTRA")).toBe(false);
       const maxQualifiers = "A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V";
-      expect(isDatasetValue(maxQualifiers)).toBe(true);
+      expect(isDatasetValue(maxQualifiers)).toBe(false);
     });
 
     test("should return false for invalid dataset names", () => {
       // Lowercase letters
-      expect(isDatasetValue("my.dataset")).toBe(false);
-      expect(isDatasetValue("SYS1.proclib")).toBe(false);
+      expect(isDatasetValue("my.dataset.test.data")).toBe(false);
+      expect(isDatasetValue("SYS1.proclib.test.data")).toBe(false);
       
       // Invalid characters
-      expect(isDatasetValue("MY-DATASET")).toBe(false);
-      expect(isDatasetValue("MY_DATASET")).toBe(false);
-      expect(isDatasetValue("MY DATASET")).toBe(false);
-      expect(isDatasetValue("MY!DATASET")).toBe(false);
+      expect(isDatasetValue("MY-DATA.SET.TEST.LIB")).toBe(false);
+      expect(isDatasetValue("MY_DATA.SET.TEST.LIB")).toBe(false);
+      expect(isDatasetValue("MY DATA.SET.TEST.LIB")).toBe(false);
+      expect(isDatasetValue("MY!DATA.SET.TEST.LIB")).toBe(false);
       
       // Qualifier too long (>8 characters)
-      expect(isDatasetValue("VERYLONGNAME.DATA")).toBe(false);
-      expect(isDatasetValue("A.TOOLONGQUALIFIER")).toBe(false);
-      
-      // Too many qualifiers (>22)
-      const tooManyQualifiers = "A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V.W";
-      expect(isDatasetValue(tooManyQualifiers)).toBe(false);
+      expect(isDatasetValue("VERYLONGNAME.DATA.TEST.LIB")).toBe(false);
+      expect(isDatasetValue("A.TOOLONGQUALIFIER.TEST.LIB")).toBe(false);
       
       // Empty or invalid
       expect(isDatasetValue("")).toBe(false);
       expect(isDatasetValue(".")).toBe(false);
       expect(isDatasetValue("..")).toBe(false);
-      expect(isDatasetValue("A..B")).toBe(false);
+      expect(isDatasetValue("A..B.C.D")).toBe(false);
       
       // Starting or ending with dot
-      expect(isDatasetValue(".DATASET")).toBe(false);
-      expect(isDatasetValue("DATASET.")).toBe(false);
+      expect(isDatasetValue(".DATASET.TEST.DATA.LIB")).toBe(false);
+      expect(isDatasetValue("DATASET.TEST.DATA.LIB.")).toBe(false);
     });
 
     test("should return false for non-string values", () => {

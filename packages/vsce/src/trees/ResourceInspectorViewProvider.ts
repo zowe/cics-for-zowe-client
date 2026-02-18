@@ -142,7 +142,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     // Check if the zowe.ds.setDataSetFilter command is available
     const availableCommands = await commands.getCommands();
-    const hasDatasetCommand = availableCommands.includes("zowe.ds.setDataSetFilter");
+    const shouldRenderDatasetLinks = availableCommands.includes("zowe.ds.setDataSetFilter");
 
     const message: ExtensionToWebviewMessage = {
       type: "updateResources",
@@ -150,7 +150,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
-      hasDatasetCommand,
+      shouldRenderDatasetLinks,
     };
 
     await this.webviewView.webview.postMessage(message);
