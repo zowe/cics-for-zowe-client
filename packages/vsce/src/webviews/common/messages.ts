@@ -31,4 +31,5 @@ export type ExtensionToWebviewMessage = {
   resourceIconPath: IResourceInspectorIconPath;
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
+  hasDatasetCommand: boolean;
 };

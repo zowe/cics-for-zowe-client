@@ -13,7 +13,7 @@ import { IResource, IResourceContext, ResourceAction, ResourceTypeMap, ResourceT
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n, window } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands, l10n, window } from "vscode";
 import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
@@ -140,12 +140,17 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       meta: this.resources[0].meta,
     };
 
+    // Check if the zowe.ds.setDataSetFilter command is available
+    const availableCommands = await commands.getCommands();
+    const hasDatasetCommand = availableCommands.includes("zowe.ds.setDataSetFilter");
+
     const message: ExtensionToWebviewMessage = {
       type: "updateResources",
       resources: this.resources,
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
+      hasDatasetCommand,
     };
 
     await this.webviewView.webview.postMessage(message);

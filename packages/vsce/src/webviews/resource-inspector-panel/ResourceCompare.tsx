@@ -16,7 +16,7 @@ import { Breadcrumb } from "./Breadcrumb";
 import CompareTable from "./CompareTable";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 
-const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[]; }) => {
+const ResourceCompare = ({ resources, hasDatasetCommand }: { resources: IResourceInspectorResource[]; hasDatasetCommand: boolean; }) => {
 
   const [resourceHeaders, setResourceHeaders] = useState<(string | JSX.Element)[]>([]);
   const [resourceRows, setResourceRows] = useState<(string | JSX.Element)[][]>([]);
@@ -45,7 +45,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
       (attr: keyof IResource) => [
         attr.toUpperCase(),
         ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context)
+          (res) => renderHyperlinkableValue(res.resource[attr], res.context, attr, hasDatasetCommand)
         )
       ]
     );
@@ -53,7 +53,7 @@ const ResourceCompare = ({ resources }: { resources: IResourceInspectorResource[
     setResourceHeaders(_headers);
     setResourceRows(_rows);
 
-  }, [resources]);
+  }, [resources, hasDatasetCommand]);
 
   const handleRefresh = () => {
     postVscMessage({

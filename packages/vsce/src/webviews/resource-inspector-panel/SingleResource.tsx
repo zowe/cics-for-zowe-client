@@ -19,7 +19,7 @@ import { Breadcrumb } from "./Breadcrumb";
 import { ContextMenu } from "./Contextmenu";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 
-const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceInspectorResource[]; resourceIconPath: IResourceInspectorIconPath; }) => {
+const SingleResource = ({ resources, resourceIconPath, hasDatasetCommand }: { resources: IResourceInspectorResource[]; resourceIconPath: IResourceInspectorIconPath; hasDatasetCommand: boolean; }) => {
   const { isDark } = useTheme();
   const [resourceHeaders, setResourceHeaders] = useState<(string | JSX.Element)[]>([]);
   const [resourceRows, setResourceRows] = useState<(string | JSX.Element)[][]>([]);
@@ -35,7 +35,7 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
       (attr: keyof IResource) => [
         attr.toUpperCase(),
         ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context, attr)
+          (res) => renderHyperlinkableValue(res.resource[attr], res.context, attr, hasDatasetCommand)
         )
       ]
     );
@@ -43,7 +43,7 @@ const SingleResource = ({ resources, resourceIconPath }: { resources: IResourceI
     setResourceHeaders(_headers);
     setResourceRows(_rows);
 
-  }, [resources]);
+  }, [resources, hasDatasetCommand]);
 
   const refreshResource = () => {
     postVscMessage({

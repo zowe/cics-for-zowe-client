@@ -45,9 +45,10 @@ export const isHyperlinkableValue = (value: string): boolean => {
  * @param value - The string value to render
  * @param ctx - The resource context
  * @param attributeName - The name of the attribute (optional, used to identify dataset attributes)
+ * @param hasDatasetCommand - Whether the zowe.ds.setDataSetFilter command is available
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string, hasDatasetCommand?: boolean) => {
   // Check for job spool pattern (//DD:*)
   if (isHyperlinkableValue(value)) {
     return (
@@ -68,8 +69,9 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, a
   }
 
   // Check for dataset pattern (for dsname and librarydsn attributes)
+  // Only render as hyperlink if the dataset command is available
   const isDatasetAttribute = attributeName === "dsname" || attributeName === "librarydsn";
-  if (isDatasetAttribute && isDatasetValue(value)) {
+  if (isDatasetAttribute && isDatasetValue(value) && hasDatasetCommand) {
     return (
       <a
         href="javascript:void(0)"
