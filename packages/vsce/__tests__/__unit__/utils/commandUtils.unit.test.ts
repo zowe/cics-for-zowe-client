@@ -12,10 +12,8 @@
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
-import { commands, window } from "vscode";
 import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
-import { ProfileManagement } from "../../../src/utils/profileManagement";
 import { createProfile, fetchAllProfilesMock, getJesApiMock, getMvsApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
 
 // Mock ZoweVsCodeExtension.getZoweExplorerApi()
