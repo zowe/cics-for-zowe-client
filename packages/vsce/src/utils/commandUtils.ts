@@ -213,8 +213,10 @@ export async function findProfileAndShowDataSet(cicsProfile: IProfileLoaded, dat
   const chosenProfileName = matchingZosProfile?.name ?? await promptUserForProfile(zosProfiles);
 
   // Handle user cancellation or no profile selected
-  if (!chosenProfileName) {
-    chosenProfileName === null ? window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF).")) : void 0;
+  if (chosenProfileName === null) {
+    window.showErrorMessage(l10n.t("Could not find any profiles that will access Data Sets (for instance z/OSMF)."));
+    return;
+  } else if (chosenProfileName === undefined) {
     return;
   }
 
