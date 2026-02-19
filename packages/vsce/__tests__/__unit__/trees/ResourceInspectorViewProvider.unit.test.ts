@@ -39,6 +39,7 @@ jest.mock("../../../src/utils/CICSLogger", () => ({
   CICSLogger: {
     debug: jest.fn(),
     info: jest.fn(),
+    warn: jest.fn(),
     error: jest.fn(),
   },
 }));
@@ -395,6 +396,35 @@ describe("Resource Inspector View provider", () => {
           "REGION1"
         );
       }
+    });
+
+    it("should handle null profile gracefully", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "NONEXISTENT" },
+      };
+
+      const datasetName = "SYS1.PROCLIB";
+
+      // Mock getProfile to return undefined/null
+      getProfileMock.mockReturnValue(undefined);
+
+      const CICSLogger = require("../../../src/utils/CICSLogger").CICSLogger;
+      const showWarningMessageSpy = jest.spyOn(require("vscode").window, "showWarningMessage");
+      findProfileAndShowDataSetMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowDatasetForHyperlink(mockContext, datasetName);
+
+      expect(getProfileMock).toHaveBeenCalledWith("NONEXISTENT");
+      expect(CICSLogger.warn).toHaveBeenCalledWith(expect.stringContaining("No CICS profile found"));
+      expect(CICSLogger.warn).toHaveBeenCalledWith(expect.stringContaining("NONEXISTENT"));
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("CICS profile not found"));
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("NONEXISTENT"));
+      expect(findProfileAndShowDataSetMock).not.toHaveBeenCalled();
     });
   });
 });

@@ -259,6 +259,11 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     const { regionName, profile } = ctx;
     try {
       const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
+      if (!cicsProfile) {
+      CICSLogger.warn(`No CICS profile found: ${profile.name}`);
+      window.showWarningMessage(l10n.t("CICS profile not found: {0}", profile.name));
+      return;
+    }
       await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
     } catch (error) {
       CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
