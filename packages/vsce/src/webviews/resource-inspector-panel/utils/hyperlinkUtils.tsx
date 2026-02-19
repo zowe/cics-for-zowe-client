@@ -15,8 +15,8 @@ import { postVscMessage } from "../../common/vscode";
 // Pattern for //DD:* format (job spool logs)
 const JOB_SPOOL_PATTERN = /^\/\/DD:.+/;
 
-// Pattern for MVS dataset names with exactly 4 qualifiers (e.g., EXPAUTO.CPSM.IYCWENW2.DFHLRQ)
-const DATASET_PATTERN = /^[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}\.[A-Z@#$][A-Z0-9@#$]{0,7}$/;
+// Pattern for MVS dataset names
+const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,4}|[A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,3}\([A-Z@#$][A-Z0-9@#$\-]{0,7}\))$/;
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
 
@@ -58,7 +58,7 @@ const createHyperlink = (value: string, onClick: (e: React.MouseEvent) => void) 
  * @param shouldRenderDatasetLinks - Whether dataset links should be rendered
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, attributeName?: string, shouldRenderDatasetLinks?: boolean) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, shouldRenderDatasetLinks: boolean = false) => {
   // Check for job spool pattern (//DD:*)
   if (isHyperlinkableValue(value)) {
     return createHyperlink(value, (e) => {

@@ -45,7 +45,7 @@ const ResourceCompare = ({ resources, shouldRenderDatasetLinks }: { resources: I
       (attr: keyof IResource) => [
         attr.toUpperCase(),
         ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context, attr, shouldRenderDatasetLinks)
+          (res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)
         )
       ]
     );

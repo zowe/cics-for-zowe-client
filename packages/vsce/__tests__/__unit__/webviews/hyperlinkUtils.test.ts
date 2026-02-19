@@ -20,34 +20,81 @@ import { isDatasetValue, isHyperlinkableValue } from "../../../src/webviews/reso
 
 describe("hyperlinkUtils", () => {
   describe("isDatasetValue", () => {
-    test("should return true for valid dataset names with exactly 4 qualifiers", () => {
+    test("should return true for dataset names with 2 qualifiers", () => {
+      expect(isDatasetValue("USER.STORE")).toBe(true);
+      expect(isDatasetValue("SYS1.PROCLIB")).toBe(true);
+      expect(isDatasetValue("MY.DATASET")).toBe(true);
+      expect(isDatasetValue("A.B")).toBe(true);
+    });
+
+    test("should return true for dataset names with 2 qualifiers and member name", () => {
+      expect(isDatasetValue("USER.STORE(MEMBER)")).toBe(true);
+      expect(isDatasetValue("SYS1.PROCLIB(JCL)")).toBe(true);
+      expect(isDatasetValue("A.B(C)")).toBe(true);
+    });
+
+    test("should return true for dataset names with 3 qualifiers", () => {
+      expect(isDatasetValue("AAA.BBB.CCC")).toBe(true);
+      expect(isDatasetValue("USER.TEST.DATA")).toBe(true);
+      expect(isDatasetValue("A.B.C")).toBe(true);
+    });
+
+    test("should return true for dataset names with 3 qualifiers and member name", () => {
+      expect(isDatasetValue("AAA.BBB(CCC)")).toBe(true);
+      expect(isDatasetValue("USER.TEST(DATA)")).toBe(true);
+      expect(isDatasetValue("A.B(C)")).toBe(true);
+    });
+
+    test("should return true for dataset names with 4 qualifiers", () => {
+      expect(isDatasetValue("AAA.BBB.CCC.DDD")).toBe(true);
       expect(isDatasetValue("EXPAUTO.CPSM.IYCWENW2.DFHLRQ")).toBe(true);
       expect(isDatasetValue("USER.TEST.DATA.SET")).toBe(true);
       expect(isDatasetValue("A.B.C.D")).toBe(true);
-      expect(isDatasetValue("PROD.CICS.LOAD.LIB")).toBe(true);
-      expect(isDatasetValue("SYS1.PROC.LIB.DATA")).toBe(true);
     });
 
-    test("should return true for dataset names with national characters and 4 qualifiers", () => {
-      expect(isDatasetValue("USER@.TST.DATA.SET")).toBe(true);
-      expect(isDatasetValue("DATA#.SET.TEST.LIB")).toBe(true);
-      expect(isDatasetValue("MY$.DATA.PROD.SET")).toBe(true);
-      expect(isDatasetValue("A@B.C#D.E$F.GHI")).toBe(true);
+    test("should return true for dataset names with 4 qualifiers and member name", () => {
+      expect(isDatasetValue("AAA.BBB.CCC(DDD)")).toBe(true);
+      expect(isDatasetValue("USER.TEST.DATA(SET)")).toBe(true);
+      expect(isDatasetValue("A.B.C(D)")).toBe(true);
     });
 
-    test("should return false for dataset names with fewer than 4 qualifiers", () => {
-      expect(isDatasetValue("SYS1.PROCLIB")).toBe(false);
-      expect(isDatasetValue("MY.DATASET")).toBe(false);
-      expect(isDatasetValue("A.B.C")).toBe(false);
-      expect(isDatasetValue("USER.TEST.DATA")).toBe(false);
+    test("should return true for dataset names with 5 qualifiers", () => {
+      expect(isDatasetValue("AAA.BBB.CCC.DDD.EEE")).toBe(true);
+      expect(isDatasetValue("USER.TEST.DATA.SET.LIB")).toBe(true);
+      expect(isDatasetValue("A.B.C.D.E")).toBe(true);
+    });
+
+    test("should return true for dataset names with 5 qualifiers and member name", () => {
+      expect(isDatasetValue("AAA.BBB.CCC.DDD(EEE)")).toBe(true);
+      expect(isDatasetValue("USER.TEST.DATA.SET(LIB)")).toBe(true);
+      expect(isDatasetValue("A.B.C.D(E)")).toBe(true);
+    });
+
+    test("should return true for dataset names with national characters", () => {
+      expect(isDatasetValue("USER@.TST.DATA")).toBe(true);
+      expect(isDatasetValue("DATA#.SET.TEST")).toBe(true);
+      expect(isDatasetValue("MY$.DATA.PROD")).toBe(true);
+      expect(isDatasetValue("A@B.C#D.E$F")).toBe(true);
+      expect(isDatasetValue("USER@.TST(DATA)")).toBe(true);
+    });
+
+    test("should return true for dataset names with hyphens", () => {
+      expect(isDatasetValue("MY-DATA.SET.TEST")).toBe(true);
+      expect(isDatasetValue("USER-01.TEST-02.DATA")).toBe(true);
+      expect(isDatasetValue("A-B.C-D.E-F")).toBe(true);
+      expect(isDatasetValue("HLQ.ABC-123.XYZ")).toBe(true);
+      expect(isDatasetValue("MY-DATA.SET(TEST-01)")).toBe(true);
+    });
+
+    test("should return false for dataset names with fewer than 2 qualifiers", () => {
       expect(isDatasetValue("DATASET")).toBe(false);
       expect(isDatasetValue("A")).toBe(false);
       expect(isDatasetValue("TEST123")).toBe(false);
     });
 
-    test("should return false for dataset names with more than 4 qualifiers", () => {
-      expect(isDatasetValue("A.B.C.D.E")).toBe(false);
-      expect(isDatasetValue("USER.TEST.DATA.SET.EXTRA")).toBe(false);
+    test("should return false for dataset names with more than 5 qualifiers", () => {
+      expect(isDatasetValue("A.B.C.D.E.F")).toBe(false);
+      expect(isDatasetValue("USER.TEST.DATA.SET.LIB.EXTRA")).toBe(false);
       const maxQualifiers = "A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V";
       expect(isDatasetValue(maxQualifiers)).toBe(false);
     });
@@ -57,11 +104,13 @@ describe("hyperlinkUtils", () => {
       expect(isDatasetValue("my.dataset.test.data")).toBe(false);
       expect(isDatasetValue("SYS1.proclib.test.data")).toBe(false);
       
-      // Invalid characters
-      expect(isDatasetValue("MY-DATA.SET.TEST.LIB")).toBe(false);
+      // Invalid characters (underscore, space, exclamation)
       expect(isDatasetValue("MY_DATA.SET.TEST.LIB")).toBe(false);
       expect(isDatasetValue("MY DATA.SET.TEST.LIB")).toBe(false);
       expect(isDatasetValue("MY!DATA.SET.TEST.LIB")).toBe(false);
+      
+      // Hyphen as first character (invalid)
+      expect(isDatasetValue("-MYDATA.SET.TEST.LIB")).toBe(false);
       
       // Qualifier too long (>8 characters)
       expect(isDatasetValue("VERYLONGNAME.DATA.TEST.LIB")).toBe(false);
