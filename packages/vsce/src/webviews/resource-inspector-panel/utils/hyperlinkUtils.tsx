@@ -19,14 +19,15 @@ const JOB_SPOOL_PATTERN = /^\/\/DD:.+/;
 const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,4}|[A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,3}\([A-Z@#$][A-Z0-9@#$\-]{0,7}\))$/;
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
+const HYPERLINKABLE_PATTERNS_DATASET: RegExp[] = [DATASET_PATTERN];
 
 /**
- * Check if a value matches the dataset pattern
+ * Check if a value matches any hyperlinkable pattern
  * @param value - The string value to check
- * @returns true if the value matches the dataset pattern, false otherwise
+ * @returns true if the value matches any hyperlinkable pattern for dataset, false otherwise
  */
 export const isDatasetValue = (value: string): boolean => {
-  return typeof value === "string" && DATASET_PATTERN.test(value);
+  return HYPERLINKABLE_PATTERNS_DATASET.some((pattern) => pattern.test(value));
 };
 
 /**

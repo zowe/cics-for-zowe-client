@@ -144,6 +144,11 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     const availableCommands = await commands.getCommands();
     const shouldRenderDatasetLinks = availableCommands.includes("zowe.ds.setDataSetFilter");
 
+    // Provide information if the dataset filter command is not available
+    if (!shouldRenderDatasetLinks) {
+      CICSLogger.info("The zowe.ds.setDataSetFilter command is not available, so hyperlinks to Data Sets will not be enabled");
+    }
+
     const message: ExtensionToWebviewMessage = {
       type: "updateResources",
       resources: this.resources,
