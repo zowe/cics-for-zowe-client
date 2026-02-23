@@ -31,6 +31,7 @@ export class CICSExtensionError extends Error {
       const resultSummary = error.resultSummary;
       const api_function = resultSummary.api_function;
       const feedback = error.errors?.feedback;
+      const profileName = this.cicsExtensionError.profileName;
       this.cicsExtensionError.resp1Code = parseInt(resultSummary.api_response1);
       this.cicsExtensionError.resp2Code = parseInt(resultSummary.api_response2);
 
@@ -39,10 +40,11 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}.",
+            "Failed to {0} {1} {2} on profile {3} with API: {4}, RESP: {5} ({6}) and RESP2: {7}.",
             feedback.action,
             this.cicsExtensionError.resourceType,
             resourceName,
+            profileName,
             api_function,
             feedback.resp,
             feedback.resp_alt,
@@ -54,11 +56,12 @@ export class CICSExtensionError extends Error {
         this.cicsExtensionError.errorMessage =
           errorMessage ||
           l10n.t(
-            `The request failed` +
-              (resourceName ? ` for resources: {0}. ` : `. `) +
-              `Response details: API_FUNCTION: {1}, ` +
-              `RESP: {2} ({3}), ` +
-              `RESP2: {4} ({5}).`,
+            `The request failed on profile {0}` +
+              (resourceName ? ` for resources: {1}. ` : `. `) +
+              `Response details: API_FUNCTION: {2}, ` +
+              `RESP: {3} ({4}), ` +
+              `RESP2: {5} ({6}).`,
+            profileName,
             resourceName,
             api_function,
             resultSummary.api_response1,
@@ -74,22 +77,16 @@ export class CICSExtensionError extends Error {
       const profileName = this.cicsExtensionError.profileName;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
 
-      // Check if this is a profile connection error
-      if (profileName && !resourceName) {
-        this.cicsExtensionError.errorMessage =
-          errorMessage ||
-          l10n.t(
-            "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}",
-            profileName,
-            errorCode ? `Status code: ${errorCode}, ` : ``,
-            resource,msg
-          );
-      } else {
-        // Regular request failure
-        this.cicsExtensionError.errorMessage =
-          errorMessage ||
-          l10n.t("Failed to send request. Response details - {0}URL: {1}, Message: {2}", errorCode ? `Status code: ${errorCode}, ` : ``, resource, msg);
-      }
+      // include profile name
+      this.cicsExtensionError.errorMessage =
+        errorMessage ||
+        l10n.t(
+          "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}",
+          profileName,
+          errorCode ? `Status code: ${errorCode}, ` : ``,
+          resource,
+          msg
+        );
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
