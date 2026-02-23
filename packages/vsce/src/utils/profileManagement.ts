@@ -118,8 +118,16 @@ export class ProfileManagement {
           // Not a failure, just means it's not a Plex
           return null;
         }
+        // new error with profile name
+        throw new CICSExtensionError({
+          baseError: error.cicsExtensionError.baseError,
+          profileName: profile.name,
+          statusCode: error.cicsExtensionError.statusCode,
+          resp1Code: error.cicsExtensionError.resp1Code,
+          resp2Code: error.cicsExtensionError.resp2Code,
+        });
       }
-      throw new CICSExtensionError({ baseError: error });
+      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
     }
   }
 
