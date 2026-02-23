@@ -49,7 +49,7 @@ export const constants = {
   Message: Rest API failure with HTTP(S) status 404`,
   LIBRARY_DISABLE_ERROR_MESSAGE: `Failed to DISABLE LIBRARY DFHRPL with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6. 
   Please refer to the IBM documentation for additional details`,
-  NO_CONNECTION_ERROR_MESSAGE: `Failed to send request. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.`,
+  NO_CONNECTION_ERROR_MESSAGE: "Failed to send request on profile test-login. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.",
   PROGRAM_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG1 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
   Please refer to the IBM documentation for additional details`,
   PROGRAM2_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG2 with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1. 
