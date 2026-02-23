@@ -101,12 +101,6 @@ export class CICSSessionTree extends TreeItem {
         if (error.cicsExtensionError.statusCode === constants.HTTP_ERROR_UNAUTHORIZED) {
           plexInfo = await this.handleUnauthorizedAndRetry(error);
         } else {
-          // Add profile name
-          const originalMessage = error.cicsExtensionError.errorMessage;
-          error.cicsExtensionError.errorMessage = originalMessage.replace(
-            "Failed to send request.",
-            `Failed to send request on profile ${this.profile.name}.`
-          );
           this.setUnauthorized();
           CICSErrorHandler.handleCMCIRestError(error);
         }

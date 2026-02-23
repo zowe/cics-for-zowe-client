@@ -87,6 +87,7 @@
   "Enable Local File": "Enable Local File",
   "Disable Local File": "Disable Local File",
   "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}.": "Failed to {0} {1} {2} with API: {3}, RESP: {4} ({5}) and RESP2: {6}.",
+  "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}": "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}",
   "Failed to send request. Response details - {0}URL: {1}, Message: {2}": "Failed to send request. Response details - {0}URL: {1}, Message: {2}",
   "The request failed. Error message: {0}, Cause: {1}": "The request failed. Error message: {0}, Cause: {1}",
   "{0} Please refer to the [IBM documentation]({1}) for additional details": "{0} Please refer to the [IBM documentation]({1}) for additional details",
