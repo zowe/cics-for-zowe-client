@@ -103,7 +103,10 @@ export class CICSSessionTree extends TreeItem {
         } else {
           // Add profile name
           const originalMessage = error.cicsExtensionError.errorMessage;
-          error.cicsExtensionError.errorMessage = l10n.t("Failed to connect to profile {0}. {1}", this.profile.name, originalMessage);
+          error.cicsExtensionError.errorMessage = originalMessage.replace(
+            "Failed to send request.",
+            `Failed to send request on profile ${this.profile.name}.`
+          );
           this.setUnauthorized();
           CICSErrorHandler.handleCMCIRestError(error);
         }
