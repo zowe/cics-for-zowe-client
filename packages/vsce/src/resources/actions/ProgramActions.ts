@@ -45,6 +45,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSProgram>[] = [
     resourceType: ResourceTypes.CICSProgram,
     action: "cics-extension-for-zowe.showLibrary",
   },
+  {
+    id: "CICS.CICSProgram.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSProgram,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getProgramActions(): ResourceAction<ResourceTypes.CICSProgram>[] {

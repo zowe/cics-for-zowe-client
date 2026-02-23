@@ -29,6 +29,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSRegion>[] = [
     action: "cics-extension-for-zowe.showRegionLogs",
     refreshResourceInspector: false,
   },
+  {
+    id: "CICS.CICSRegion.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSRegion,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getRegionActions(): ResourceAction<ResourceTypes.CICSRegion>[] {

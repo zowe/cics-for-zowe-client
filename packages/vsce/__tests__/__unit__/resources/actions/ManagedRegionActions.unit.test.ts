@@ -30,7 +30,7 @@ describe("Managed Region Actions from Resource Inspector", () => {
   describe("Integration with Resource Inspector", () => {
     it("should provide actions that can be executed from Resource Inspector", () => {
       const managedActions = getManagedRegionActions();
-      expect(managedActions).toHaveLength(2);
+      expect(managedActions).toHaveLength(3);
     });
     it("should be visible when region is ACTIVE", () => {
       const actions = getManagedRegionActions();

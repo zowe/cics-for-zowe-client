@@ -20,6 +20,13 @@ const TSActions: ResourceActionOptions<ResourceTypes.CICSTSQueue>[] = [
     action: "cics-extension-for-zowe.deleteTSQueue",
     refreshResourceInspector: false,
   },
+  {
+    id: "CICS.CICSTSQueue.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSTSQueue,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 const sharedTSActions: ResourceActionOptions<ResourceTypes.CICSSharedTSQueue>[] = [
   {
@@ -27,6 +34,13 @@ const sharedTSActions: ResourceActionOptions<ResourceTypes.CICSSharedTSQueue>[] 
     name: l10n.t("Delete"),
     resourceType: ResourceTypes.CICSSharedTSQueue,
     action: "cics-extension-for-zowe.deleteTSQueue",
+    refreshResourceInspector: false,
+  },
+  {
+    id: "CICS.CICSSharedTSQueue.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSSharedTSQueue,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
     refreshResourceInspector: false,
   },
 ];
