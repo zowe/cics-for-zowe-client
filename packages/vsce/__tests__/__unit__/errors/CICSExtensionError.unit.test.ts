@@ -55,7 +55,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to Disable PROGRAM MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6."
+      "Failed to Disable PROGRAM MyProg on profile with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6."
     );
   });
 
@@ -89,7 +89,7 @@ describe("Test suite for CICSExtensionError", () => {
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The request failed for resources: MyProg. " + "Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
+      "The request failed on profile for resources: MyProg. Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
     );
   });
 
@@ -104,7 +104,7 @@ describe("Test suite for CICSExtensionError", () => {
     sut = new CICSExtensionError({ baseError: baseErrorMock });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to send request. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
+      "Failed to send request on profile . Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
     );
   });
 
