@@ -71,10 +71,25 @@ export class CICSExtensionError extends Error {
       const errorCode = error.mDetails.errorCode || error.errorCode;
       const resource = error.mDetails.resource;
       const msg = error.mDetails.msg;
+      const profileName = this.cicsExtensionError.profileName;
       this.cicsExtensionError.statusCode = parseInt(errorCode);
-      this.cicsExtensionError.errorMessage =
-        errorMessage ||
-        l10n.t("Failed to send request. Response details - {0}URL: {1}, Message: {2}", errorCode ? `Status code: ${errorCode}, ` : ``, resource, msg);
+
+      // Check if this is a profile connection error
+      if (profileName && !resourceName) {
+        this.cicsExtensionError.errorMessage =
+          errorMessage ||
+          l10n.t(
+            "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}",
+            profileName,
+            errorCode ? `Status code: ${errorCode}, ` : ``,
+            resource,msg
+          );
+      } else {
+        // Regular request failure
+        this.cicsExtensionError.errorMessage =
+          errorMessage ||
+          l10n.t("Failed to send request. Response details - {0}URL: {1}, Message: {2}", errorCode ? `Status code: ${errorCode}, ` : ``, resource, msg);
+      }
       this.cicsExtensionError.baseError = error;
     } else if (error instanceof CICSExtensionError) {
       this.cicsExtensionError.errorMessage = error.cicsExtensionError.errorMessage;
