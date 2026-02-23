@@ -40,22 +40,20 @@ export const constants = {
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
   ALL_JVM_SERVERS: "All JVM Servers",
-  JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile test-login with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10.
+  JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. Please refer to the IBM documentation for additional details`,
+  BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
-  BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile test-login with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
-  Please refer to the IBM documentation for additional details`,
-  TRANSACTION_INVALID_FILTER_ERROR_MESSAGE: `Failed to send request on profile test-login. Response details - Status code: 404,
+  TRANSACTION_INVALID_FILTER_ERROR_MESSAGE: `Failed to send request on profile wiremock_localhost. Response details - Status code: 404,
   URL: /CICSSystemManagement/CICSLocalTransaction/MYPLEX1/ERRORS?CRITERIA=(TRANID%3DFILTER)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT,
   Message: Rest API failure with HTTP(S) status 404`,
-  LIBRARY_DISABLE_ERROR_MESSAGE: `Failed to DISABLE LIBRARY DFHRPL on profile test-login with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
+  LIBRARY_DISABLE_ERROR_MESSAGE: `Failed to DISABLE LIBRARY DFHRPL on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
   NO_CONNECTION_ERROR_MESSAGE: "Failed to send request on profile test-login. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.",
-  PROGRAM_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG1 on profile test-login with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
+  PROGRAM_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
   Please refer to the IBM documentation for additional details`,
-  PROGRAM2_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG2 on profile test-login with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
+  PROGRAM2_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG2 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
   Please refer to the IBM documentation for additional details`,
-  PROGRAM_NOT_FOUND_ERROR_MESSAGE: `The request failed for resources: PROG3, PROG4. 
-  Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for additional details`,
+  PROGRAM_NOT_FOUND_ERROR_MESSAGE: "The request failed on profile wiremock_localhost for resources: PROG3, PROG4. Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for additional details",
 };
 
 export const getTree = (page: Page, exactText: string) => {
