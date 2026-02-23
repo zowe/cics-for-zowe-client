@@ -22,7 +22,7 @@ export const TaskMeta: IResourceMeta<ITask> = {
   humanReadableNameSingular: l10n.t("Task"),
   eibfnName: "TASK",
   setCommandDocFile: "dfha8_settask.html",
-  anchorFragmentForSet: "dfha803__title__6",
+  anchorFragmentForSet: "dfha803__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TASK=${n}`).join(" OR ");

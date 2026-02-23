@@ -22,7 +22,7 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   humanReadableNameSingular: l10n.t("URI Map"),
   eibfnName: "URIMAP",
   setCommandDocFile: "dfha8_seturimap.html",
-  anchorFragmentForSet: "dfha8_seturimap__title__6",
+  anchorFragmentForSet: "dfha8_seturimap__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

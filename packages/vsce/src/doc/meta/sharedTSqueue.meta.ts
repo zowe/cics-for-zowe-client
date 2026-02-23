@@ -22,7 +22,7 @@ export const SharedTSQueueMeta: IResourceMeta<ISharedTSQueue> = {
   humanReadableNameSingular: l10n.t("Shared TS Queue"),
   eibfnName: "TSQUEUE",
   setCommandDocFile: "dfha8_settsqueue.html",
-  anchorFragmentForSet: "dfha8gg__title__6",
+  anchorFragmentForSet: "dfha8gg__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");

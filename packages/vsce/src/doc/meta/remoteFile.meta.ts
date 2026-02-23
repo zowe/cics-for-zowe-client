@@ -22,7 +22,7 @@ export const RemoteFileMeta: IResourceMeta<IRemoteFile> = {
   humanReadableNameSingular: l10n.t("Remote File"),
   eibfnName: "FILE",
   setCommandDocFile: "dfha8_setfile.html",
-  anchorFragmentForSet: "dfha8fi__title__12",
+  anchorFragmentForSet: "dfha8fi__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");

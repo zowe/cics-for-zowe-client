@@ -22,7 +22,7 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   humanReadableNameSingular: l10n.t("Transaction"),
   eibfnName: "TRANSACTION",
   setCommandDocFile: "dfha8_settransaction.html",
-  anchorFragmentForSet: "dfha8gf__title__6",
+  anchorFragmentForSet: "dfha8gf__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");

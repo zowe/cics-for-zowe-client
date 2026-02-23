@@ -22,7 +22,7 @@ export const PipelineMeta: IResourceMeta<IPipeline> = {
   humanReadableNameSingular: l10n.t("Pipeline"),
   eibfnName: "PIPELINE",
   setCommandDocFile: "dfha8_setpipeline.html",
-  anchorFragmentForSet: "dfha8bv__title__6",
+  anchorFragmentForSet: "dfha8bv__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

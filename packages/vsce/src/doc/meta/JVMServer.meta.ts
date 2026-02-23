@@ -23,7 +23,7 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNameSingular: l10n.t("JVM Server"),
   eibfnName: "JVMSERVER",
   setCommandDocFile: "dfha8_setjvmserver.html",
-  anchorFragmentForSet: "dfha8_setenclave__title__6",
+  anchorFragmentForSet: "dfha8_setenclave__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

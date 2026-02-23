@@ -28,7 +28,7 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
         authority: "www.ibm.com",
         path: `${BASE_PATH}/dfha8_setprogram.html`,
         scheme: "https",
-        fragment: "dfha8fq__title__6",
+        fragment: "dfha8fq__conditions",
       })
     );
   });
@@ -42,7 +42,7 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
         authority: "www.ibm.com",
         path: `${BASE_PATH}/dfha8_setbundle.html`,
         scheme: "https",
-        fragment: "dfha8_setbundle__title__6",
+        fragment: "dfha8_setbundle__conditions",
       })
     );
   });
@@ -56,7 +56,7 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
         authority: "www.ibm.com",
         path: `${BASE_PATH}/dfha8_settsqueue.html`,
         scheme: "https",
-        fragment: "dfha8gg__title__6",
+        fragment: "dfha8gg__conditions",
       })
     );
   });
@@ -70,7 +70,7 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
         authority: "www.ibm.com",
         path: `${BASE_PATH}/dfha8_settransaction.html`,
         scheme: "https",
-        fragment: "dfha8gf__title__6",
+        fragment: "dfha8gf__conditions",
       })
     );
   });
