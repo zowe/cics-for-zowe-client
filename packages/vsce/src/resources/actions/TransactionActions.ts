@@ -33,6 +33,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSLocalTransaction>[] = [
     visibleWhen: (transaction: ITransaction, _cx: IResourceContext) => transaction.status !== "DISABLED",
     action: "cics-extension-for-zowe.disableTransaction",
   },
+  {
+    id: "CICS.CICSLocalTransaction.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSLocalTransaction,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getTransactionActions(): ResourceAction<ResourceTypes.CICSLocalTransaction>[] {

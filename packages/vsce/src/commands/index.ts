@@ -16,6 +16,7 @@ import { CICSTree } from "../trees/CICSTree";
 import { getAddSessionCommand } from "./addSessionCommand";
 import { getClearPlexFilterCommand } from "./clearPlexFilterCommand";
 import { getCloseLocalFileCommand } from "./closeLocalFileCommand";
+import { getCompareResourceFromInspectorCommand, getCompareTreeResourceCommand } from "./compareResourceCommand";
 import { getCopyNameCommand, getCopyUserAgentHeaderCommand } from "./copyCommand";
 import { getDeleteTSQueueCommand } from "./deleteTSQueueCommand";
 import { getDisableResourceCommands } from "./disableResourceCommand";
@@ -75,6 +76,8 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getInspectTreeResourceCommand(context, treeview),
     getCompareResourcesCommand(context, treeview),
+    getCompareTreeResourceCommand(context),
+    getCompareResourceFromInspectorCommand(context),
     getToggleResourceSettingCommand(),
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),

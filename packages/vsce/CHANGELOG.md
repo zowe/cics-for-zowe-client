@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Trigger comparison from Resource Inspector and tree view. [#560](https://github.com/zowe/cics-for-zowe-client/issues/560)
+
 ## `3.19.0`
 
 - BugFix: Update icon when profile connection fails. [#582](https://github.com/zowe/cics-for-zowe-client/issues/582)

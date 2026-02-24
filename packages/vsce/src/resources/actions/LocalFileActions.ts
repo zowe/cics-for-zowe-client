@@ -41,6 +41,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSLocalFile>[] = [
     visibleWhen: (localFile: ILocalFile, _cx: IResourceContext) => localFile.enablestatus !== "DISABLED",
     action: "cics-extension-for-zowe.disableLocalFile",
   },
+  {
+    id: "CICS.CICSLocalFile.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSLocalFile,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getLocalFileActions(): ResourceAction<ResourceTypes.CICSLocalFile>[] {

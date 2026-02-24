@@ -29,6 +29,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSManagedRegion>[] = [
     visibleWhen: (region: IManagedRegion, _cx: IResourceContext) => region.cicsstate !== "INACTIVE",
     refreshResourceInspector: false,
   },
+  {
+    id: "CICS.CICSManagedRegion.COMPARE_TO",
+    name: l10n.t("Compare to..."),
+    resourceType: ResourceTypes.CICSManagedRegion,
+    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getManagedRegionActions(): ResourceAction<ResourceTypes.CICSManagedRegion>[] {

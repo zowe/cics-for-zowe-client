@@ -29,7 +29,7 @@ describe("Region Actions from Resource Inspector", () => {
   describe("Region Actions from Resource Inspector", () => {
     it("should provide actions that can be executed from Resource Inspector", () => {
       const actions = getRegionActions();
-      expect(actions).toHaveLength(2);
+      expect(actions).toHaveLength(3);
     });
     it("should be visible when region is ACTIVE", () => {
       const actions = getRegionActions();

@@ -74,6 +74,7 @@
   "Inquire Program": "Inquire Program",
   "Enable Transaction": "Enable Transaction",
   "Disable Transaction": "Disable Transaction",
+  "Compare to...": "Compare to...",
   "Delete": "Delete",
   "Show SIT Parameters": "Show SIT Parameters",
   "Show Region Logs": "Show Region Logs",
@@ -268,6 +269,10 @@
   "Choose how to purge tasks while disabling the JVM server": "Choose how to purge tasks while disabling the JVM server",
   "No CICS {0} or {1} selected": "No CICS {0} or {1} selected",
   "Copied User-Agent header to clipboard": "Copied User-Agent header to clipboard",
+  "No resource is currently open in the Resource Inspector": "No resource is currently open in the Resource Inspector",
+  "No CICS resource information available to compare": "No CICS resource information available to compare",
+  "Failed to compare resources: {0}": "Failed to compare resources: {0}",
+  "Enter {0} name to compare with": "Enter {0} name to compare with",
   "No CICS local file selected": "No CICS local file selected",
   "All Resources": "All Resources"
 }
