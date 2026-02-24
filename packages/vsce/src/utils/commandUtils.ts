@@ -240,6 +240,22 @@ export async function findProfileAndShowDataSet(cicsProfile: IProfileLoaded, dat
 }
 
 /**
+ * Finds a related z/OS profile and shows a USS file in Zowe Explorer
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param ussPath - The USS file path to show
+ * @param regionName - The region name (used for logging and error messages)
+ * @returns Promise that resolves when the command is executed or rejects on error
+ */
+export async function findProfileAndShowUssFile(cicsProfile: IProfileLoaded, ussPath: string, regionName: string): Promise<void> {
+  return findProfileAndExecuteZoweCommand(cicsProfile, ussPath, regionName, {
+    connectionType: ZoweExplorerApiType.Uss,
+    commandName: "zowe.uss.setUssPath",
+    resourceType: "USS",
+    noProfileErrorMessage: "Could not find any profiles that will access USS (for instance z/OSMF).",
+  });
+}
+
+/**
  * Returns an array of selected nodes in the current treeview.
  * @param treeview - Tree View of the required view
  * @param instanceOf - Instance of the node to include in the selection

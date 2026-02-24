@@ -20,7 +20,7 @@ import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
-import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
+import { findProfileAndShowDataSet, findProfileAndShowJobSpool, findProfileAndShowUssFile, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
 import type { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
@@ -81,6 +81,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           break;
         case "showDatasetForHyperlink":
           await this.handleShowDatasetForHyperlink(message.resourceContext, message.datasetName);
+          break;
+        case "showUssFileForHyperlink":
+          await this.handleShowUssFileForHyperlink(message.resourceContext, message.ussPath);
           break;
       }
     });
@@ -273,6 +276,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     } catch (error) {
       CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
       window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
+    }
+  }
+
+  /**
+   * Handles the showUssFileForHyperlink request from the webview
+   * Calls findProfileAndShowUssFile to show the USS file in Zowe Explorer
+   */
+  private async handleShowUssFileForHyperlink(ctx: IResourceContext, ussPath: string) {
+    const { regionName, profile } = ctx;
+    try {
+      const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
+      if (!cicsProfile) {
+        CICSLogger.warn(`No CICS profile found: ${profile.name}`);
+        window.showWarningMessage(l10n.t("CICS profile not found: {0}", profile.name));
+        return;
+      }
+      await findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+    } catch (error) {
+      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${error.message}`);
+      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, error.message));
     }
   }
 }

@@ -14,12 +14,13 @@ import { IProfileLoaded } from "@zowe/imperative";
 import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
-import { createProfile, fetchAllProfilesMock, getJesApiMock, getMvsApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
+import { createProfile, fetchAllProfilesMock, getJesApiMock, getMvsApiMock, getUssApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
 
 // Mock ZoweVsCodeExtension.getZoweExplorerApi()
 jest.spyOn(ZoweVsCodeExtension, "getZoweExplorerApi").mockReturnValue({
   getJesApi: getJesApiMock,
   getMvsApi: getMvsApiMock,
+  getUssApi: getUssApiMock,
 } as any);
 
 describe("Command Utils tests", () => {
@@ -228,6 +229,98 @@ describe("Command Utils tests", () => {
 
       // Should use zosmf profile, not ftp
       expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.ds.setDataSetFilter", "myzosmf", datasetName);
+    });
+  });
+
+  describe("findProfileAndShowUssFile", () => {
+    const cicsProfile = createProfile("mycics", "cics", "example.com", "user1");
+    const zosmfProfile = createProfile("myzosmf", "zosmf", "example.com", "user1");
+    const ussPath = "/u/user/file.txt";
+    const regionName = "MYREGION";
+
+    beforeEach(() => {
+      vscodeExecuteCommandMock.mockReset();
+      showErrorMessageMock.mockReset();
+    });
+
+    it("should call zowe.uss.setUssPath when matching profile is found automatically", async () => {
+      fetchAllProfilesMock.mockResolvedValue([zosmfProfile]);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      expect(fetchAllProfilesMock).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "myzosmf", ussPath);
+      expect(showErrorMessageMock).not.toHaveBeenCalled();
+    });
+
+    it("should prompt user when no matching profile is found", async () => {
+      const otherProfile = createProfile("other", "zosmf", "different.com", "user2");
+      fetchAllProfilesMock.mockResolvedValue([otherProfile]);
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue("other");
+      fetchAllProfilesMock.mockResolvedValueOnce([otherProfile]).mockResolvedValueOnce([otherProfile]);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      expect(Gui.showQuickPick).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "other", ussPath);
+    });
+
+    it("should show error when no profiles support USS", async () => {
+      fetchAllProfilesMock.mockResolvedValue([]);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      expect(showErrorMessageMock).toHaveBeenCalledWith("Could not find any profiles that will access USS (for instance z/OSMF).");
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should return early when user cancels profile selection", async () => {
+      const otherProfile = createProfile("other", "zosmf", "different.com", "user2");
+      fetchAllProfilesMock.mockResolvedValue([otherProfile]);
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue(undefined);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      expect(Gui.showQuickPick).toHaveBeenCalled();
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
+      expect(showErrorMessageMock).not.toHaveBeenCalled();
+    });
+
+    it("should filter out zftp profiles", async () => {
+      const ftpProfile = createProfile("myftp", "zftp", "example.com", "user1");
+      fetchAllProfilesMock.mockResolvedValue([ftpProfile, zosmfProfile]);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      // Should use zosmf profile, not ftp
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "myzosmf", ussPath);
+    });
+
+    it("should filter out profiles that don't support USS", async () => {
+      const unsupportedProfile = createProfile("unsupported", "other", "example.com", "user1");
+      getUssApiMock.mockImplementation((profile: IProfileLoaded) => {
+        if (profile.type === "zosmf") return true;
+        throw new Error("Not supported");
+      });
+      fetchAllProfilesMock.mockResolvedValue([unsupportedProfile, zosmfProfile]);
+
+      await commandUtils.findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+
+      expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "myzosmf", ussPath);
+    });
+
+    it("should handle different USS paths", async () => {
+      fetchAllProfilesMock.mockResolvedValue([zosmfProfile]);
+
+      const ussPaths = ["/var/log/app.log", "/opt/config.xml", "/home/user/data.txt"];
+
+      for (const path of ussPaths) {
+        vscodeExecuteCommandMock.mockClear();
+
+        await commandUtils.findProfileAndShowUssFile(cicsProfile, path, regionName);
+
+        expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "myzosmf", path);
+      }
     });
   });
 });

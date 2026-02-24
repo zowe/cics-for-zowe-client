@@ -37,6 +37,7 @@
   "Failed to show logs for region {0}: {1}": "Failed to show logs for region {0}: {1}",
   "CICS profile not found: {0}": "CICS profile not found: {0}",
   "Failed to show dataset {0}: {1}": "Failed to show dataset {0}: {1}",
+  "Failed to show USS file {0}: {1}": "Failed to show USS file {0}: {1}",
   "Refreshing...": "Refreshing...",
   "Resource(s) {0} not found.": "Resource(s) {0} not found.",
   "Update Credentials": "Update Credentials",

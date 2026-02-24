@@ -20,7 +20,8 @@ export type WebviewToExtensionMessage =
   | { type: "refresh"; resources: IResourceInspectorResource[]; }
   | { type: "executeAction"; actionId: string; resources: IResourceInspectorResource[]; }
   | { type: "showLogsForHyperlink"; resourceContext: IResourceContext; }
-  | { type: "showDatasetForHyperlink"; resourceContext: IResourceContext; datasetName: string; };
+  | { type: "showDatasetForHyperlink"; resourceContext: IResourceContext; datasetName: string; }
+  | { type: "showUssFileForHyperlink"; resourceContext: IResourceContext; ussPath: string; };
 
 /**
  * Messages sent FROM extension TO webview
