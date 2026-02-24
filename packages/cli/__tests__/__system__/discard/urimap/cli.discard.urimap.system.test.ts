@@ -9,8 +9,8 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 jest.mock("@zowe/cli-test-utils");

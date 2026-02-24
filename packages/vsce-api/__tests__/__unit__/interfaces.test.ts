@@ -10,12 +10,12 @@
  */
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
-import { imperative } from "@zowe/zowe-explorer-api";
-import { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
-import { IResourceContext } from "../../src/interfaces/IResourceContext";
-import { IResourceExtender } from "../../src/interfaces/IResourceExtender";
-import { ResourceAction, ResourceTypeMap } from "../../src/interfaces/ResourceAction";
-import { IProgram, IResource } from "../../src/interfaces/resources";
+import type { imperative } from "@zowe/zowe-explorer-api";
+import type { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
+import type { IResourceContext } from "../../src/interfaces/IResourceContext";
+import type { IResourceExtender } from "../../src/interfaces/IResourceExtender";
+import { ResourceAction, type ResourceTypeMap } from "../../src/interfaces/ResourceAction";
+import type { IProgram, IResource } from "../../src/interfaces/resources";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 
 describe("Interfaces", () => {

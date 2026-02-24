@@ -10,10 +10,10 @@
  */
 
 import { deleteWebservice } from "@zowe/cics-for-zowe-sdk";
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { IWebServiceParms } from "../../../../src";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import type { IWebServiceParms } from "../../../../src";
+import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../../__src__/TestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

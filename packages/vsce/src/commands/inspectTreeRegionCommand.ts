@@ -9,8 +9,8 @@
  *
  */
 
-import { commands, ExtensionContext } from "vscode";
-import { CICSRegionTree } from "../trees";
+import { commands, type ExtensionContext } from "vscode";
+import type { CICSRegionTree } from "../trees";
 import { inspectRegionByNode } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeRegionCommand(context: ExtensionContext) {

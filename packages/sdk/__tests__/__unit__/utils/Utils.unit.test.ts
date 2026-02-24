@@ -9,8 +9,8 @@
  *
  */
 
-import { IGetResourceUriOptions } from "../../../src";
-import { IResultCacheParms } from "../../../src/doc/IResultCacheParms";
+import type { IGetResourceUriOptions } from "../../../src";
+import type { IResultCacheParms } from "../../../src/doc/IResultCacheParms";
 import { Utils } from "../../../src/utils";
 
 describe("Utils - getResourceUri", () => {

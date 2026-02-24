@@ -9,12 +9,12 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, l10n, window } from "vscode";
+import { type TreeView, commands, l10n, window } from "vscode";
 import { SessionHandler } from "../resources/SessionHandler";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";

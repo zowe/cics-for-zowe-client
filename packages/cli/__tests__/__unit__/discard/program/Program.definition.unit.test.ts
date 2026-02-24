@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics discard program", () => {
   it("should not have changed", () => {

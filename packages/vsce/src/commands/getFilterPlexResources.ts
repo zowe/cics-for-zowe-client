@@ -10,10 +10,10 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, TreeView, commands, l10n, window } from "vscode";
+import { ProgressLocation, type TreeView, commands, l10n, window } from "vscode";
 import { CICSRegionsContainer } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
 import { getPatternFromFilter } from "../utils/filterUtils";
 

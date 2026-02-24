@@ -10,7 +10,7 @@
  */
 
 import { ImperativeError, RestClient, Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestError, ICMCIApiResponse, IResourceParms, getResource } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestError, type ICMCIApiResponse, type IResourceParms, getResource } from "../../../src";
 import { nodataContent, nodataXmlResponse, ok2RecordsXmlResponse, okContent2Records } from "../../__mocks__/CmciGetResponse";
 
 describe("CMCI - Get resource", () => {

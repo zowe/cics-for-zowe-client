@@ -11,8 +11,8 @@
 
 import { ImperativeError } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
-import { ICMCIApiResponse, ICMCIResponseResultSummary } from "../doc";
-import { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
+import type { ICMCIApiResponse, ICMCIResponseResultSummary } from "../doc";
+import type { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
 
 export class CicsCmciRestError extends ImperativeError {
   resultSummary: ICMCIResponseResultSummary;

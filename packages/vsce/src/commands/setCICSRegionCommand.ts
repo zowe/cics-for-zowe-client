@@ -9,15 +9,15 @@
  *
  */
 
-import { IProfileLoaded } from "@zowe/imperative";
+import type { IProfileLoaded } from "@zowe/imperative";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
-import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
+import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { FilterDescriptor } from "../utils/filterUtils";
 import * as regionUtils from "../utils/lastUsedRegionUtils";
-import { InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { type InfoLoaded, ProfileManagement } from "../utils/profileManagement";
 
 export function setCICSRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setCICSRegion", async () => {

@@ -9,11 +9,11 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, l10n, window } from "vscode";
-import { CICSResourceContainerNode } from "../trees";
-import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSResourceContainerNode } from "../trees";
+import type { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
+import type { CICSTree } from "../trees/CICSTree";
 
 /**
  * Clear filter for a Regions Container (previously this was available on a plex)

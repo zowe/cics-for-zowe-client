@@ -9,8 +9,8 @@
  *
  */
 
-import { ResourceTypes } from "../resources";
-import { IResourceExtender } from "./IResourceExtender";
+import type { ResourceTypes } from "../resources";
+import type { IResourceExtender } from "./IResourceExtender";
 
 export interface IExtensionAPI {
   resources: {

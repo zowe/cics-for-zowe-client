@@ -9,14 +9,20 @@
  *
  */
 
-import { IResource, IResourceContext, IResourceProfileNameInfo, ResourceTypes, SupportedResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import {
+  type IResource,
+  type IResourceContext,
+  type IResourceProfileNameInfo,
+  ResourceTypes,
+  SupportedResourceTypes
+} from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, InputBoxOptions, ProgressLocation, QuickPickItem, commands, l10n, window } from "vscode";
+import { type ExtensionContext, type InputBoxOptions, ProgressLocation, type QuickPickItem, commands, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import {
-  IContainedResource,
-  IResourceMeta,
+  type IContainedResource,
+  type IResourceMeta,
   LocalFileMeta,
   ManagedRegionMeta,
   RegionMeta,
@@ -25,17 +31,17 @@ import {
   TSQueueMeta,
   getMetas,
 } from "../doc";
-import { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { Resource, ResourceContainer } from "../resources";
-import { CICSRegionTree } from "../trees";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
+import { type Resource, ResourceContainer } from "../resources";
+import type { CICSRegionTree } from "../trees";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
 export async function showInspectResource(
   context: ExtensionContext,
-  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]
+  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext; }[]
 ) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
@@ -116,7 +122,7 @@ async function loadResourcesWithProgress(
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => {});
+      token.onCancellationRequested(() => { });
 
       const resources = await loadResources(resourceTypes, resourceName, resourceContext, parentResource);
       if (!resources) {
@@ -211,7 +217,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   return resourceTypeMap;
 }
 
-async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
+async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[]; }> {
   const resourceTypeMap = getInspectableResourceTypes();
 
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());

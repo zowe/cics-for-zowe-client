@@ -9,14 +9,14 @@
  *
  */
 
-import { IResource, ISharedTSQueue, ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciConstants, CicsCmciRestClient, IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, l10n, window } from "vscode";
+import type { IResource, ISharedTSQueue, ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
+import { CicsCmciConstants, CicsCmciRestClient, type IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
+import { type TreeView, commands, l10n, window } from "vscode";
 import { SharedTSQueueMeta, TSQueueMeta } from "../doc";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources/SessionHandler";
-import { CICSResourceContainerNode, CICSTree } from "../trees";
+import type { CICSResourceContainerNode, CICSTree } from "../trees";
 import { buildConfirmationDescription, getConfirmationForAction } from "../utils/commandUtils";
 import { buildUserAgentHeader } from "../utils/resourceUtils";
 

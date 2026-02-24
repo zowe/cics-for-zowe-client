@@ -13,8 +13,8 @@
  * Interface representing API response from CMCI's web interface, parsed from XML to a javascript object
  * using the xml2js package.
  */
-import { ICMCIResponseErrors } from "./ICMCIResponseErrors";
-import { ICMCIResponseResultSummary } from "./ICMCIResponseResultSummary";
+import type { ICMCIResponseErrors } from "./ICMCIResponseErrors";
+import type { ICMCIResponseResultSummary } from "./ICMCIResponseResultSummary";
 
 export interface ICMCIApiResponse {
   /**

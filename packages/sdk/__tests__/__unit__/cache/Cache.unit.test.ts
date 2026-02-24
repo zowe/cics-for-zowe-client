@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, getCache, ICacheParms, ICMCIApiResponse } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, getCache, type ICacheParms, type ICMCIApiResponse } from "../../../src";
 
 describe("CMCI - Get Cache", () => {
   const content: ICMCIApiResponse = {

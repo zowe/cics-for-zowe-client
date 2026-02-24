@@ -9,7 +9,13 @@
  *
  */
 
-import { IResourceContext, ITransaction, ResourceAction, ResourceActionOptions, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import {
+  type IResourceContext,
+  type ITransaction,
+  ResourceAction,
+  type ResourceActionOptions,
+  ResourceTypes
+} from "@zowe/cics-for-zowe-explorer-api";
 import { l10n } from "vscode";
 
 const actions: ResourceActionOptions<ResourceTypes.CICSLocalTransaction>[] = [

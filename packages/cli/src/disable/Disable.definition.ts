@@ -9,10 +9,10 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 import { UrimapDefinition } from "./urimap/Urimap.definition";
 
-import i18nTypings from "../-strings-/en";
+import type i18nTypings from "../-strings-/en";
 import { CicsSession } from "../CicsSession";
 
 // Does not use the import in anticipation of some internationalization work to be done later.

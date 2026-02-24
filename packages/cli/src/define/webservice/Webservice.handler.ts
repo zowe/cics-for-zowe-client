@@ -9,11 +9,11 @@
  *
  */
 
-import { ICMCIApiResponse, defineWebservice } from "@zowe/cics-for-zowe-sdk";
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { type ICMCIApiResponse, defineWebservice } from "@zowe/cics-for-zowe-sdk";
+import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
-import i18nTypings from "../../-strings-/en";
+import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).DEFINE.RESOURCES.WEBSERVICE;

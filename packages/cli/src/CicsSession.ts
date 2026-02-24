@@ -11,11 +11,11 @@
 
 import {
   ConnectionPropsForSessCfg,
-  ICommandArguments,
-  ICommandOptionDefinition,
-  IHandlerParameters,
-  IProfile,
-  ISession,
+  type ICommandArguments,
+  type ICommandOptionDefinition,
+  type IHandlerParameters,
+  type IProfile,
+  type ISession,
   Logger,
   Session,
 } from "@zowe/imperative";

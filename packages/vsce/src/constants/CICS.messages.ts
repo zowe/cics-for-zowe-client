@@ -9,7 +9,7 @@
  *
  */
 
-import { IMessageDefinition } from "@zowe/imperative";
+import type { IMessageDefinition } from "@zowe/imperative";
 import { l10n } from "vscode";
 
 export const CICSMessages: { [key: string]: IMessageDefinition } = {

@@ -9,7 +9,7 @@
  *
  */
 
-import { IResource } from "./IResource";
+import type { IResource } from "./IResource";
 
 export interface IManagedRegion extends IResource {
   cicsstate: string;

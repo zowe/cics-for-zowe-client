@@ -9,7 +9,7 @@
  *
  */
 
-import { IProfile, SessConstants } from "@zowe/imperative";
+import { type IProfile, SessConstants } from "@zowe/imperative";
 import { CICSSession } from "../../../src/core/CICSSession";
 
 // Helper to peek into protected Session internals

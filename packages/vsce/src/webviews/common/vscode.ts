@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { IResourceMeta } from "../../doc";
-import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "./messages";
+import type { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResourceMeta } from "../../doc";
+import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "./messages";
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();

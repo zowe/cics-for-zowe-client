@@ -10,7 +10,7 @@
  */
 
 import { commands } from "vscode";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSTree } from "../trees/CICSTree";
 
 export function getRefreshCommand(tree: CICSTree) {
   return commands.registerCommand("cics-extension-for-zowe.refreshTree", () => tree.refresh());

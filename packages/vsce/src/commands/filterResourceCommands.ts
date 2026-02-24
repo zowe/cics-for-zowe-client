@@ -9,11 +9,11 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { commands, TreeView } from "vscode";
-import { ICICSTreeNode } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
-import { CICSTree } from "../trees/CICSTree";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, type TreeView } from "vscode";
+import type { ICICSTreeNode } from "../doc";
+import type { CICSResourceContainerNode } from "../trees";
+import type { CICSTree } from "../trees/CICSTree";
 import { getPatternFromFilter } from "../utils/filterUtils";
 
 export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICICSTreeNode>) {

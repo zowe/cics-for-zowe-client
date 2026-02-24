@@ -9,21 +9,21 @@
  *
  */
 
-import { IResource, IResourceContext, ResourceAction, ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { type IResource, type IResourceContext, type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands, l10n, window } from "vscode";
-import { CICSTree } from ".";
-import { IContainedResource } from "../doc";
+import { type ExtensionContext, Uri, type Webview, type WebviewView, type WebviewViewProvider, commands, l10n, window } from "vscode";
+import type { CICSTree } from ".";
+import type { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
 import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
-import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
-import { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
+import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
+import type { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
 import { handleActionCommand, handleRefreshCommand } from "./ResourceInspectorUtils";
 import Mustache = require("mustache");
 

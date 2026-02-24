@@ -9,12 +9,12 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 import { CicsSession } from "../CicsSession";
 
 import { CSDGroupDefinition } from "./csdGroup/CSDGroup.definition";
 
-import i18nTypings from "../-strings-/en";
+import type i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).ADDTOLIST;

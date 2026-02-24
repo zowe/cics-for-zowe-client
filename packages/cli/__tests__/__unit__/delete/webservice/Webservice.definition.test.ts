@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics delete web service", () => {
   it("should not have changed", () => {

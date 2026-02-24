@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, IBundleParms, ICMCIApiResponse, defineBundle } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type IBundleParms, type ICMCIApiResponse, defineBundle } from "../../../src";
 
 describe("CMCI - Define bundle", () => {
   const bundle = "bundle";

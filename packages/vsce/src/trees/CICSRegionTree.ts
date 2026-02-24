@@ -9,13 +9,13 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
-  ICICSTreeNode,
-  IResourceMeta,
+  type ICICSTreeNode,
+  type IResourceMeta,
   JVMServerMeta,
   LibraryMeta,
   LocalFileMeta,
@@ -31,9 +31,9 @@ import {
   WebServiceMeta,
 } from "../doc";
 import { getIconByStatus } from "../utils/iconUtils";
-import { CICSPlexTree } from "./CICSPlexTree";
+import type { CICSPlexTree } from "./CICSPlexTree";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
-import { CICSSessionTree } from "./CICSSessionTree";
+import type { CICSSessionTree } from "./CICSSessionTree";
 import { CICSTreeNode } from "./CICSTreeNode";
 
 export class CICSRegionTree extends CICSTreeNode implements ICICSTreeNode {

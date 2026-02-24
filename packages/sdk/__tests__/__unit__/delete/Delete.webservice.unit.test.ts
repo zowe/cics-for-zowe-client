@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IWebServiceParms, deleteWebservice } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type ICMCIApiResponse, type IWebServiceParms, deleteWebservice } from "../../../src";
 
 describe("CMCI - Delete web service", () => {
   const webservice = "webservice";

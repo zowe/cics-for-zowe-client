@@ -9,12 +9,12 @@
  *
  */
 
-import { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
+import type { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { TreeView, commands, l10n, window } from "vscode";
+import { type TreeView, commands, l10n, window } from "vscode";
 import { ProgramMeta, TransactionMeta } from "../doc";
-import { CICSResourceContainerNode } from "../trees";
-import { CICSTree } from "../trees/CICSTree";
+import type { CICSResourceContainerNode } from "../trees";
+import type { CICSTree } from "../trees/CICSTree";
 import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
 

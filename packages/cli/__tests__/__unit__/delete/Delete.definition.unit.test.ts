@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics delete program", () => {
   const DELETE_RESOURCES = 4;

@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics install urimap", () => {
   it("should not have changed", () => {

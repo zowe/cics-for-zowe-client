@@ -10,10 +10,10 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { l10n, MessageItem } from "vscode";
+import { l10n, type MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { generateDocumentationURL } from "../utils/urlUtils";
-import { CICSExtensionError } from "./CICSExtensionError";
+import type { CICSExtensionError } from "./CICSExtensionError";
 
 export class CICSErrorHandler {
   static handleCMCIRestError(error: CICSExtensionError, action?: MessageItem[]): Thenable<string | MessageItem> {

@@ -9,7 +9,7 @@
  *
  */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics remove-from-list csdGroup", () => {
   it("should not have changed", () => {

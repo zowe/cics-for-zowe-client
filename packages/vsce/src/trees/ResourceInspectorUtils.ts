@@ -9,16 +9,16 @@
  *
  */
 
-import { IResource, IResourceContext, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource, IResourceContext, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
+import { type ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
 import { showInspectResource } from "../commands/inspectResourceCommandUtils";
-import { IContainedResource, getMetas } from "../doc";
+import { type IContainedResource, getMetas } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, ResourceContainer } from "../resources";
-import { IResourceInspectorResource } from "../webviews/common/vscode";
+import type { IResourceInspectorResource } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
-import { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
+import type { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
 
 type IResourceWithContext = {
   containedResource: IContainedResource<IResource>;

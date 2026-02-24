@@ -11,8 +11,8 @@
 
 import { ImperativeExpect } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
-import { IGetResourceUriOptions } from "../doc";
-import { IResultCacheParms } from "../doc/IResultCacheParms";
+import type { IGetResourceUriOptions } from "../doc";
+import type { IResultCacheParms } from "../doc/IResultCacheParms";
 
 /**
  * Class for providing static utility methods

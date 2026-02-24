@@ -9,8 +9,8 @@
  *
  */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
+import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 // Test environment will be populated in the "beforeAll"
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

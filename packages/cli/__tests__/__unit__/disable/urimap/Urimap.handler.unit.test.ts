@@ -10,8 +10,8 @@
  */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { IHandlerParameters, Session } from "@zowe/imperative";
-import { ICMCIApiResponse } from "../../../../src";
+import { type IHandlerParameters, Session } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "../../../../src";
 import { UrimapDefinition } from "../../../../src/disable/urimap/Urimap.definition";
 import UrimapHandler from "../../../../src/disable/urimap/Urimap.handler";
 

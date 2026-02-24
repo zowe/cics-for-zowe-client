@@ -11,7 +11,7 @@
 
 import { compare } from "compare-versions";
 import { extensions } from "vscode";
-import { IExtensionAPI } from "./interfaces";
+import type { IExtensionAPI } from "./interfaces";
 
 export async function getCICSForZoweExplorerAPI(minimumVersion?: string): Promise<IExtensionAPI | undefined> {
   const cicsExtension = extensions.getExtension("Zowe.cics-extension-for-zowe");

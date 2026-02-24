@@ -9,8 +9,8 @@
  *
  */
 
-import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { commands, ExtensionContext } from "vscode";
+import type { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { commands, type ExtensionContext } from "vscode";
 import { ManagedRegionMeta, RegionMeta } from "../doc/meta";
 import { inspectRegionByName } from "./inspectResourceCommandUtils";
 import { setCICSRegion } from "./setCICSRegionCommand";

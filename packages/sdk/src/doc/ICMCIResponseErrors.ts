@@ -9,7 +9,7 @@
  *
  */
 
-import { ICMCIResponseErrorFeedBack } from "./ICMCIResponseErrorFeedBack";
+import type { ICMCIResponseErrorFeedBack } from "./ICMCIResponseErrorFeedBack";
 
 /**
  * Represents the "errors" field of the CMCI API response, parsed from XML

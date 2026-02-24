@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, IURIMapParms, defineUrimapServer } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type ICMCIApiResponse, type IURIMapParms, defineUrimapServer } from "../../../src";
 
 describe("CMCI - Define server URIMap", () => {
   const urimap = "urimap";

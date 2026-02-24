@@ -9,12 +9,12 @@
  *
  */
 
-import { IProfileLoaded } from "@zowe/imperative";
+import type { IProfileLoaded } from "@zowe/imperative";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { l10n, QuickPick, QuickPickItem } from "vscode";
+import { l10n, type QuickPick, type QuickPickItem } from "vscode";
 import { CICSLogger } from "./CICSLogger";
 import PersistentStorage from "./PersistentStorage";
-import { InfoLoaded, ProfileManagement } from "./profileManagement";
+import { type InfoLoaded, ProfileManagement } from "./profileManagement";
 
 export function getLastUsedRegion(): { profileName: string; regionName: string; cicsPlexName: string } {
   return PersistentStorage.getLastUsedRegion();

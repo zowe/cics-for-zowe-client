@@ -10,9 +10,9 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ConfigurationTarget, ExtensionContext, workspace } from "vscode";
+import { ConfigurationTarget, type ExtensionContext, workspace } from "vscode";
 import constants from "../constants/CICS.defaults";
-import { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
+import type { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
 
 class SPersistentStorage {
   private static _instance: SPersistentStorage;

@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, installTransaction, ITransactionParms } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type ICMCIApiResponse, installTransaction, type ITransactionParms } from "../../../src";
 
 describe("CMCI - Install transaction", () => {
   const transaction = "transaction";

@@ -10,7 +10,7 @@
  */
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, ICMCIApiResponse, ICSDGroupParms, addCSDGroupToList } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, type ICMCIApiResponse, type ICSDGroupParms, addCSDGroupToList } from "../../../src";
 
 describe("CMCI - Add csdGroup to list", () => {
   const region = "region";
