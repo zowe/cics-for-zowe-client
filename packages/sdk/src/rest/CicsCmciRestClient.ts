@@ -254,7 +254,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
       const xmlDetails = CicsCmciRestClient.parseStringSync(details);
       // if we didn't get an error, make the parsed details part of the error
       details = TextUtils.prettyJson(xmlDetails, undefined, false);
-    } catch (e) {
+    } catch (_e) {
       // if there's an error, the causeErrors text is not json
       this.log.debug("Encountered an error trying to parse causeErrors as XML  - causeErrors is likely not JSON format");
     }

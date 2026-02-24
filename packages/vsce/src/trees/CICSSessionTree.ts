@@ -41,8 +41,8 @@ export class CICSSessionTree extends TreeItem {
     this.profile = profile;
     this.createSessionFromProfile();
     this.initialize();
-    this.children = []
-  }  
+    this.children = [];
+  }
 
   private initialize() {
     this.setIsExpanded(false);
@@ -129,7 +129,7 @@ export class CICSSessionTree extends TreeItem {
           this.children.push(newPlexTree);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       this.setUnauthorized();
       this.setIsExpanded(false);
     } finally {

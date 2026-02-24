@@ -60,7 +60,7 @@ export async function fetchBaseProfileWithoutError(profile: IProfileLoaded): Pro
   let baseProfile = undefined;
   try {
     baseProfile = await ProfileManagement.getProfilesCache().fetchBaseProfile(profile.name);
-  } catch (ex) {
+  } catch (_ex) {
     // this isn't an error we're interested in - we were checking if a base profile existed
     CICSLogger.debug(`No base profile found for ${profile.name}`);
   }

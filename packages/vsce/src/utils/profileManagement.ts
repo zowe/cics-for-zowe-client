@@ -71,7 +71,6 @@ export class ProfileManagement {
   }
 
   public static async regionIsGroup(profile: imperative.IProfileLoaded): Promise<boolean> {
-    let isGroup = false;
     try {
       const { response } = await runGetResource({
         profileName: profile.name,
@@ -81,7 +80,7 @@ export class ProfileManagement {
         params: { criteria: `GROUP=${profile.profile.regionName}`, queryParams: { summonly: true, nodiscard: false } },
       });
 
-      isGroup = response.resultsummary.recordcount !== "0";
+      return response.resultsummary.recordcount !== "0";
     } catch (error) {
       let errorMessage;
       if (error instanceof CicsCmciRestError) {
@@ -95,8 +94,6 @@ export class ProfileManagement {
 
       throw new CICSExtensionError({ baseError: error, errorMessage: error });
     }
-
-    return isGroup;
   }
 
   public static async isPlex(profile: imperative.IProfileLoaded): Promise<string | null> {
@@ -245,7 +242,7 @@ export class ProfileManagement {
         if (response.records.cicscicsplex) {
           const cicscicsplexs = getBestCICSplexes(toArray(response.records.cicscicsplex));
 
-          cicscicsplexs.forEach((value: {}, key: string) => {
+          cicscicsplexs.forEach((_value, key: string) => {
             infoLoaded.push({
               plexname: key,
               regions: [],

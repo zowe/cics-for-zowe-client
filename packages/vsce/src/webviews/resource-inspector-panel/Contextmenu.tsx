@@ -21,7 +21,7 @@ const DropdownContext = createContext<{
   buttonRef: RefObject<HTMLButtonElement> | null;
 }>({
   open: false,
-  setOpen: (o: boolean) => {},
+  setOpen: (_o: boolean) => {},
   buttonRef: null,
 });
 
@@ -187,7 +187,7 @@ interface DropDownListItemProps {
   resources: IResourceInspectorResource[];
 }
 
-const DropDownListItem = ({ children, actionId, resourceName, resourceContext, resources }: DropDownListItemProps) => {
+const DropDownListItem = ({ children, actionId, resources }: DropDownListItemProps) => {
   const { setOpen } = useContext(DropdownContext);
 
   const handleClick = () => {

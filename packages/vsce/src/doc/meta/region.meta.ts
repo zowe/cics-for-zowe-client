@@ -9,11 +9,11 @@
  *
  */
 
+import { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import type { Resource } from "../../resources/Resource";
 import PersistentStorage from "../../utils/PersistentStorage";
-import type { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { IResourceMeta } from "./IResourceMeta";
 
 export const RegionMeta: IResourceMeta<IRegion> = {
@@ -38,7 +38,6 @@ export const RegionMeta: IResourceMeta<IRegion> = {
     return `${CicsCmciConstants.CICS_CMCI_REGION}.${region.attributes.cicsname}`;
   },
 
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   getIconName: function (_region: Resource<IRegion>): string {
     return "region";
   },

@@ -12,7 +12,6 @@
 const fs = require("fs");
 const cp = require("child_process");
 const chalk = require("chalk");
-const getLockfile = require("npm-lockfile/getLockfile");
 
 const rootDir = __dirname + "/../";
 const cliDir = rootDir + "packages/cli/";
@@ -39,18 +38,42 @@ fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for @zowe/cics-for-zowe-cli
 const zoweRegistry = require(cliDir + "package.json").publishConfig.registry;
-getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry }).then((lockfile) => {
-  fs.writeFileSync(cliShrinkwrapFile, lockfile);
+
+// Create temporary .npmrc with custom registry for @zowe scope
+const npmrcPath = cliDir + ".npmrc";
+const npmrcContent = `@zowe:registry=${zoweRegistry}`;
+const hadNpmrc = fs.existsSync(npmrcPath);
+const originalNpmrc = hadNpmrc ? fs.readFileSync(npmrcPath, "utf-8") : null;
+
+try {
+  // Write temporary .npmrc
+  fs.writeFileSync(npmrcPath, npmrcContent);
+  
+  // Run npm install with package-lock-only to resolve dependencies
+  cp.execSync("npm install --package-lock-only", { cwd: cliDir, stdio: "inherit" });
+  
+  // Convert package-lock.json to npm-shrinkwrap.json if it exists
+  const packageLockPath = cliDir + "package-lock.json";
+  if (fs.existsSync(packageLockPath)) {
+    const lockfile = JSON.parse(fs.readFileSync(packageLockPath, "utf-8"));
+    fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(lockfile, null, 2));
+    // Clean up package-lock.json as we're using shrinkwrap
+    fs.unlinkSync(packageLockPath);
+  }
+  
   console.log(chalk.green("Lockfile contents written!"));
   monorepoShrinkwrap();
-}).catch((err) => {
-  if (err.statusCode !== 404) {
-    console.error(err);
-    process.exit(1);
-  } else {
-    console.log(chalk.green("Lockfile contents written!"));
+} catch (err) {
+  console.error(err);
+  process.exit(1);
+} finally {
+  // Restore or remove .npmrc
+  if (hadNpmrc) {
+    fs.writeFileSync(npmrcPath, originalNpmrc);
+  } else if (fs.existsSync(npmrcPath)) {
+    fs.unlinkSync(npmrcPath);
   }
-});
+}
 
 function monorepoShrinkwrap() {
   const pkgA = rootDir + "package.json";

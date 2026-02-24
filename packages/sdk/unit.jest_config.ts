@@ -9,5 +9,13 @@
  *
  */
 
-import { ConfigGlobals, createConfig } from "../../common.jest_config";
-export default createConfig("unit", "Zowe CICS SDK Unit Tests") as ConfigGlobals;
+import { Config } from "jest";
+
+const baseConfig = require("../../jest.config.ts");
+
+const conf: Config = {
+    ...baseConfig,
+    displayName: "Zowe CICS SDK Unit Tests",
+}
+
+module.exports = conf;

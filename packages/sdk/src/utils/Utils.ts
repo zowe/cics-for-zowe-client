@@ -57,7 +57,6 @@ export class Utils {
 
     if (options?.queryParams?.overrideWarningCount) {
       cmciResource += `${delimiter}${CicsCmciConstants.OVERRIDE_WARNING_COUNT}`;
-      delimiter = "&";
     }
 
     return cmciResource;
