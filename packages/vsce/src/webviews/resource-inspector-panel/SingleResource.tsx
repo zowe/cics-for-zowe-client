@@ -55,7 +55,11 @@ const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks 
 
   return (
     <>
-      <div className={`sticky top-2 w-full bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} z-50 px-2 h-8 flex items-center justify-between`}>
+      <div
+        className={`sticky top-2 w-full bg-(--vscode-editor-background) ${
+          isDark ? "bg-lighter" : "bg-darker"
+        } z-50 px-2 h-8 flex items-center justify-between`}
+      >
         <Breadcrumb
           cicsplexName={resources[0].context.cicsplexName}
           regionName={resources[0].context.regionName}

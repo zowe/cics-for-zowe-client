@@ -19,7 +19,9 @@ export async function openDocumentation(resourceType: string): Promise<void> {
 }
 
 export function generateDocumentationURL(resourceType: string): Uri | undefined {
-  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${URLConstants.VERSION}`;
+  const cicsDocHost = `${URLConstants.HOSTNAME}/${URLConstants.DOCPAGE}/${URLConstants.ENLANGUAGE}/${URLConstants.CICSTS_PAGE}/${
+    URLConstants.VERSION
+  }`;
   const baseUri = Uri.parse(cicsDocHost);
 
   const result = getHelpTopicNameFromMetas(resourceType);
