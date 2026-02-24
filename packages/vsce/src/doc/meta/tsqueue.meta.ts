@@ -21,8 +21,8 @@ export const TSQueueMeta: IResourceMeta<ITSQueue> = {
   humanReadableNamePlural: l10n.t("TS Queues"),
   humanReadableNameSingular: l10n.t("TS Queue"),
   eibfnName: "TSQUEUE",
-  queryParamForSet: "commands-set-tsqueue-tsqname",
-  anchorFragmentForSet: "dfha8gg__title__6",
+  setCommandDocFile: "dfha8_settsqueue.html",
+  anchorFragmentForSet: "dfha8gg__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `NAME=${n}`).join(" OR ");

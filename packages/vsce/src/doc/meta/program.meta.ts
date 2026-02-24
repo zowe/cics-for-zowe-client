@@ -21,8 +21,8 @@ export const ProgramMeta: IResourceMeta<IProgram> = {
   humanReadableNamePlural: l10n.t("Programs"),
   humanReadableNameSingular: l10n.t("Program"),
   eibfnName: "PROGRAM",
-  queryParamForSet: "sc-set-program",
-  anchorFragmentForSet: "dfha8fq__title__6",
+  setCommandDocFile: "dfha8_setprogram.html",
+  anchorFragmentForSet: "dfha8fq__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `PROGRAM=${n}`).join(" OR ");

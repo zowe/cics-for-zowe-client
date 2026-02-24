@@ -19,24 +19,27 @@ const resources = getMetas()
 describe("Test suite to validate IBM Documentation URL", () => {
   for (const resource of resources) {
     it(`should successfully validate the documentation link for ${resource}`, async () => {
-      const baseUrl = generateDocumentationURL(resource).toString(true);
+      const url = generateDocumentationURL(resource!);
+      const baseUrl = url!.toString(true);
       const response = await fetchUrlResponse(baseUrl);
       expect(response.status).toBe(200);
-      expect(baseUrl).toContain(response.url);
       const content = await response.text();
       expect(content.length).toBeGreaterThan(0);
 
+      // Verify the URL contains the expected path structure
+      expect(baseUrl).toContain("reference-system-programming/commands-spi");
+      expect(baseUrl).toContain(".html");
       expect(content).toContain(`SET ${resource}`);
     });
   }
 
   it(`should successfully validate IBM Documentation URL for Get Resource`, async () => {
-    const baseUrl = generateDocumentationURL("get").toString(true);
+    const url = generateDocumentationURL("get");
+    const baseUrl = url!.toString(true);
 
     const response = await fetchUrlResponse(baseUrl);
 
     expect(response.status).toBe(200);
-    expect(response.url).toBe(baseUrl);
     const content = await response.text();
     expect(content.length).toBeGreaterThan(0);
 

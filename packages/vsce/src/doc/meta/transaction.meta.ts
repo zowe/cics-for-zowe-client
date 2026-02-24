@@ -21,8 +21,8 @@ export const TransactionMeta: IResourceMeta<ITransaction> = {
   humanReadableNamePlural: l10n.t("Transactions"),
   humanReadableNameSingular: l10n.t("Transaction"),
   eibfnName: "TRANSACTION",
-  queryParamForSet: "commands-set-transaction",
-  anchorFragmentForSet: "dfha8gf__title__6",
+  setCommandDocFile: "dfha8_settransaction.html",
+  anchorFragmentForSet: "dfha8gf__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `TRANID=${n}`).join(" OR ");

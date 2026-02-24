@@ -22,8 +22,8 @@ export const LibraryMeta: IResourceMeta<ILibrary> = {
   humanReadableNamePlural: l10n.t("Libraries"),
   humanReadableNameSingular: l10n.t("Library"),
   eibfnName: "LIBRARY",
-  queryParamForSet: "commands-set-library",
-  anchorFragmentForSet: "setlibrary1__conditions__title__1",
+  setCommandDocFile: "dfha8_setlibrary.html",
+  anchorFragmentForSet: "setlibrary1__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

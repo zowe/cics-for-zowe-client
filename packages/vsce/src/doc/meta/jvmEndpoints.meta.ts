@@ -21,8 +21,8 @@ export const JVMEndpointMeta: IResourceMeta<IJVMEndpoint> = {
   humanReadableNamePlural: l10n.t("JVM Endpoints"),
   humanReadableNameSingular: l10n.t("JVM Endpoint"),
   eibfnName: "JVMENDPOINT",
-  queryParamForSet: "commands-set-jvmendpoint",
-  anchorFragmentForSet: "setjvmendpoint__title__6",
+  setCommandDocFile: "dfha8_setjvmendpoint.html",
+  anchorFragmentForSet: "setjvmendpoint__conditions",
 
   buildCriteria(criteria: string[], parentResource?: IJVMServer) {
     let criteriaString = `(${criteria.map((n) => `JVMENDPOINT='${n}'`).join(" OR ")})`;

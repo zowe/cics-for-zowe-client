@@ -21,8 +21,8 @@ export const LocalFileMeta: IResourceMeta<ILocalFile> = {
   humanReadableNamePlural: l10n.t("Local Files"),
   humanReadableNameSingular: l10n.t("Local File"),
   eibfnName: "FILE",
-  queryParamForSet: "commands-set-file",
-  anchorFragmentForSet: "dfha8fi__title__12",
+  setCommandDocFile: "dfha8_setfile.html",
+  anchorFragmentForSet: "dfha8fi__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `file=${n}`).join(" OR ");

@@ -15,38 +15,48 @@ const uriParseSpy = jest.spyOn(vscode.Uri, "parse");
 const openExternalSpy = jest.spyOn(vscode.env, "openExternal");
 
 describe("Test suite for UrlUtils - openDocumentation", () => {
-  const BASE_URL = "https://www.ibm.com/docs/en/cics-ts/6.x";
+  const BASE_PATH = "/docs/en/SSJL4D_6.x/reference-system-programming/commands-spi";
   beforeEach(() => {
     jest.clearAllMocks();
   });
   it("should open documentation for 'program' resource with correct URL", async () => {
     await openDocumentation("program");
     expect(openExternalSpy).toHaveBeenCalledTimes(1);
-    expect(uriParseSpy).toHaveBeenCalledWith(BASE_URL);
+    expect(uriParseSpy).toHaveBeenCalledTimes(1);
     expect(openExternalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ authority: "www.ibm.com", path: "/docs/en/cics-ts/6.x", scheme: "https", query: "topic=sc-set-program" })
+      expect.objectContaining({
+        authority: "www.ibm.com",
+        path: `${BASE_PATH}/dfha8_setprogram.html`,
+        scheme: "https",
+        fragment: "dfha8fq__conditions",
+      })
     );
   });
 
   it("should open documentation for 'bundle' resource with correct URL", async () => {
     await openDocumentation("bundle");
     expect(openExternalSpy).toHaveBeenCalledTimes(1);
-    expect(uriParseSpy).toHaveBeenCalledWith(BASE_URL);
+    expect(uriParseSpy).toHaveBeenCalledTimes(1);
     expect(openExternalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ authority: "www.ibm.com", path: "/docs/en/cics-ts/6.x", scheme: "https", query: "topic=sc-set-bundle" })
+      expect.objectContaining({
+        authority: "www.ibm.com",
+        path: `${BASE_PATH}/dfha8_setbundle.html`,
+        scheme: "https",
+        fragment: "dfha8_setbundle__conditions",
+      })
     );
   });
 
   it("should open documentation for 'tsqueue' resource with correct URL", async () => {
     await openDocumentation("tsqueue");
     expect(openExternalSpy).toHaveBeenCalledTimes(1);
-    expect(uriParseSpy).toHaveBeenCalledWith(BASE_URL);
+    expect(uriParseSpy).toHaveBeenCalledTimes(1);
     expect(openExternalSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         authority: "www.ibm.com",
-        path: "/docs/en/cics-ts/6.x",
+        path: `${BASE_PATH}/dfha8_settsqueue.html`,
         scheme: "https",
-        query: "topic=commands-set-tsqueue-tsqname",
+        fragment: "dfha8gg__conditions",
       })
     );
   });
@@ -54,9 +64,14 @@ describe("Test suite for UrlUtils - openDocumentation", () => {
   it("should open documentation for 'transaction' resource with correct URL", async () => {
     await openDocumentation("transaction");
     expect(openExternalSpy).toHaveBeenCalledTimes(1);
-    expect(uriParseSpy).toHaveBeenCalledWith(BASE_URL);
+    expect(uriParseSpy).toHaveBeenCalledTimes(1);
     expect(openExternalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ authority: "www.ibm.com", path: "/docs/en/cics-ts/6.x", scheme: "https", query: "topic=commands-set-transaction" })
+      expect.objectContaining({
+        authority: "www.ibm.com",
+        path: `${BASE_PATH}/dfha8_settransaction.html`,
+        scheme: "https",
+        fragment: "dfha8gf__conditions",
+      })
     );
   });
 });

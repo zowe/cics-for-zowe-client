@@ -16,22 +16,22 @@ export function getErrorCode(error: any) {
   return error.mDetails?.errorCode || error.response?.status;
 }
 
-export function getHelpTopicNameFromMetas(resourceType: string): { queryParam: string; anchor: string } | undefined {
+export function getHelpTopicNameFromMetas(resourceType: string): { docFile: string; anchor: string } | undefined {
   if (resourceType === URLConstants.GET_RESOURCE) {
-    return { queryParam: URLConstants.GET_COMMAND_URI, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT };
+    return { docFile: URLConstants.GET_COMMAND_DOC_FILE, anchor: URLConstants.GET_COMMAND_URI_FRAGMENT };
   }
   const result = getResourceTypeAndHelpTopic(resourceType);
-  if (!result || !result.queryParam) {
+  if (!result || !result.docFile) {
     return undefined;
   }
-  return { queryParam: result.queryParam, anchor: result.anchor };
+  return { docFile: result.docFile, anchor: result.anchor };
 }
 
 export function getEIBFNameFromMetas(eibfnAlt: string): string | undefined {
   return getResourceTypeAndHelpTopic(eibfnAlt)?.eibfnName;
 }
 
-function getResourceTypeAndHelpTopic(resourceType: string): { eibfnName: string; queryParam: string; anchor: string } | undefined {
+function getResourceTypeAndHelpTopic(resourceType: string): { eibfnName: string; docFile: string; anchor: string } | undefined {
   if (!resourceType) {
     return undefined;
   }
@@ -44,7 +44,7 @@ function getResourceTypeAndHelpTopic(resourceType: string): { eibfnName: string;
 
   return {
     eibfnName: meta.eibfnName,
-    queryParam: meta.queryParamForSet,
+    docFile: meta.setCommandDocFile,
     anchor: meta.anchorFragmentForSet,
   };
 }
