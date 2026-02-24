@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DefineTransactionHandler should call the defineTransaction api 1`] = `"The transaction '%s' was defined successfully."`;
 

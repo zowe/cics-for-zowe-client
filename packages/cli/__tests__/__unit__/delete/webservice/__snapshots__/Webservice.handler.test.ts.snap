@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DeleteWebserviceHandler should call the deleteWebservice api 1`] = `"The urimap '%s' was deleted successfully."`;
 
