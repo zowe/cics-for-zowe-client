@@ -13,7 +13,7 @@ import type { IResource, IResourceContext } from "@zowe/cics-for-zowe-explorer-a
 import type { IResourceMeta } from "../../doc";
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "./messages";
 
-// @ts-ignore
+// @ts-expect-error - not available out of vs code
 const vscode = acquireVsCodeApi();
 
 export interface IResourceInspectorResource {

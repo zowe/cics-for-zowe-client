@@ -93,7 +93,7 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
   );
 };
 
-const TableRow = ({ row, idx }: { row: (string | JSX.Element)[]; idx: number; }) => {
+const TableRow = ({ row }: { row: (string | JSX.Element)[]; idx: number; }) => {
   const { isDark } = useTheme();
   return (
     <tr className={`h-8 zebra-${isDark ? "dark" : "light"}`}>

@@ -47,8 +47,7 @@ describe("CMCI - Get Cache", () => {
 
     it("should throw error if no parms are defined", async () => {
       try {
-        // @ts-ignore - cannot be undefined
-        response = await getCache(dummySession, undefined);
+        response = await getCache(dummySession, undefined as any);
       } catch (err) {
         error = err;
       }
@@ -60,8 +59,7 @@ describe("CMCI - Get Cache", () => {
 
     it("should throw error if cache token is not defined", async () => {
       try {
-        // @ts-ignore - cacheToken cannot be undefined
-        response = await getCache(dummySession, { cacheToken: undefined });
+        response = await getCache(dummySession, { cacheToken: undefined as any });
       } catch (err) {
         error = err;
       }

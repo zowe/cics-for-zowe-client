@@ -9,4 +9,6 @@
  *
  */
 
-module.exports = require("jest-mock-vscode").createVSCodeMock(jest);
+import * as gl from "jest-mock-vscode";
+
+export default gl.createVSCodeMock(jest);

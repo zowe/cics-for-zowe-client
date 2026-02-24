@@ -52,7 +52,7 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSRes
       if (response.records?.cicsregion) {
         jobid = toArray(response.records.cicsregion)[0].jobid;
       }
-    } catch (ex) {
+    } catch (_ex) {
       // unlikely to get here but logging this would be useful in future
     }
   }

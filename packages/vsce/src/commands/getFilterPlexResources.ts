@@ -9,9 +9,10 @@
  *
  */
 
+import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { ProgressLocation, type TreeView, commands, l10n, window } from "vscode";
-import { CICSRegionsContainer } from "../trees";
+import { CICSRegionsContainer, CICSResourceContainerNode } from "../trees";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import type { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -117,8 +118,7 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
                     treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Libraries"))[0];
                   }
                   if (treeToFilter) {
-                    // @ts-ignore
-                    treeToFilter.setCriteria([pattern]);
+                    (treeToFilter as CICSResourceContainerNode<IResource>).setCriteria([pattern]);
                   }
                 }
               }
