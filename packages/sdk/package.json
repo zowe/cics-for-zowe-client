@@ -33,7 +33,7 @@
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
     "prepublishOnly": "npm run build",
-    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\" --fix",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "package": "npm pack --pack-destination=../../dist",

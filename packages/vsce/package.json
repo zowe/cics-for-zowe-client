@@ -848,7 +848,7 @@
     "vscode:prepublish": "npm run getPrebuilds && npm run build:production",
     "build": "webpack --mode development && npm run l10n:export",
     "build:production": "webpack --mode production",
-    "lint": "eslint src --ext ts --fix",
+    "lint": "eslint src --ext ts",
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "webpack --mode development --watch",

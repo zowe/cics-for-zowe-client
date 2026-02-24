@@ -13,9 +13,9 @@ import { type IResource, type IResourceContext, type ResourceAction, type Resour
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands, l10n, window } from "vscode";
-import { CICSTree } from ".";
-import { IContainedResource } from "../doc";
+import { type ExtensionContext, Uri, type Webview, type WebviewView, type WebviewViewProvider, commands, l10n, window } from "vscode";
+import type { CICSTree } from ".";
+import type { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
