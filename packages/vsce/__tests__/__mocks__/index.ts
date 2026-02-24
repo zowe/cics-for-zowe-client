@@ -34,6 +34,9 @@ export const profile2 = createProfile("MYPROF2", "cics", "example2.com", "myuser
 export const getJesApiMock = jest.fn();
 getJesApiMock.mockReturnValue(true);
 
+export const getMvsApiMock = jest.fn();
+getMvsApiMock.mockReturnValue(true);
+
 export const getUssApiMock = jest.fn();
 getUssApiMock.mockReturnValue(true);
 

@@ -23,12 +23,14 @@ import SingleResource from "./SingleResource";
 const ResourceInspector = () => {
   const [resources, setResources] = useState<IResourceInspectorResource[]>([]);
   const [resourceIconPath, setResourceIconPath] = useState<IResourceInspectorIconPath>();
+  const [shouldRenderDatasetLinks, setShouldRenderDatasetLinks] = useState<boolean>(false);
 
   useEffect(() => {
     const listener = (event: MessageEvent): void => {
       if (event.data.type === "updateResources") {
         setResources(event.data.resources);
         setResourceIconPath(event.data.resourceIconPath);
+        setShouldRenderDatasetLinks(event.data.shouldRenderDatasetLinks ?? false);
       }
     };
 
@@ -46,8 +48,8 @@ const ResourceInspector = () => {
       data-vscode-context='{"webviewSection": "main", "mouseCount": 4}'
     >
       <div className="z-80 w-full h-2 sticky top-0 bg-(--vscode-editor-background)" />
-      {resources?.length === 1 && <SingleResource resources={resources} resourceIconPath={resourceIconPath} />}
-      {resources?.length === 2 && <ResourceCompare resources={resources} />}
+      {resources?.length === 1 && <SingleResource resources={resources} resourceIconPath={resourceIconPath} shouldRenderDatasetLinks={shouldRenderDatasetLinks} />}
+      {resources?.length === 2 && <ResourceCompare resources={resources} shouldRenderDatasetLinks={shouldRenderDatasetLinks} />}
     </div>
   );
 };

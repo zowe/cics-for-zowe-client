@@ -23,7 +23,7 @@ const MAX_MODAL_LIST_ITEMS = 10;
  * Checks if a profile supports a specific type of connection
  *
  * @param profile - The profile to check
- * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss or ZoweExplorerApiType.Jes)
+ * @param connectionType - The type of connection to check for (ZoweExplorerApiType.Uss, ZoweExplorerApiType.Jes, or ZoweExplorerApiType.Mvs)
  * @returns True if the profile supports the specified connection type, false otherwise
  */
 export function doesProfileSupportConnectionType(profile: IProfileLoaded, connectionType: ZoweExplorerApiType): boolean {
@@ -36,6 +36,9 @@ export function doesProfileSupportConnectionType(profile: IProfileLoaded, connec
         break;
       case ZoweExplorerApiType.Jes:
         explorerApi.getJesApi(profile);
+        break;
+      case ZoweExplorerApiType.Mvs:
+        explorerApi.getMvsApi(profile);
         break;
       default:
         return false;
@@ -153,36 +156,87 @@ export async function promptUserForProfile(zosProfiles: IProfileLoaded[]): Promi
 }
 
 /**
+ * Configuration for finding and executing Zowe Explorer commands
+ */
+interface ZoweCommandConfig {
+  connectionType: ZoweExplorerApiType;
+  commandName: string;
+  resourceType: string;
+  noProfileErrorMessage: string;
+}
+
+/**
+ * Generic method to find a related z/OS profile and execute a Zowe Explorer command
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param resourceIdentifier - The resource identifier (jobid, dataset name, etc.)
+ * @param regionName - The region name (used for logging)
+ * @param config - Configuration for the command execution
+ * @returns Promise that resolves when the command is executed or rejects on error
+ */
+async function findProfileAndExecuteZoweCommand(
+  cicsProfile: IProfileLoaded,
+  resourceIdentifier: string,
+  regionName: string,
+  config: ZoweCommandConfig
+): Promise<void> {
+  // Fetch and filter profiles in a single operation
+  const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
+  const zosProfiles = allProfiles.filter(
+    (profile) => profile.type !== "zftp" && doesProfileSupportConnectionType(profile, config.connectionType)
+  );
+
+  // Early return if no compatible profiles found
+  if (zosProfiles.length === 0) {
+    window.showErrorMessage(l10n.t(config.noProfileErrorMessage));
+    return;
+  }
+
+  // Try to find matching profile automatically, otherwise prompt user
+  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
+  const chosenProfileName = matchingZosProfile?.name ?? (await promptUserForProfile(zosProfiles));
+
+  // Handle user cancellation or no profile selected
+  if (chosenProfileName === null) {
+    window.showErrorMessage(l10n.t(config.noProfileErrorMessage));
+    return;
+  } else if (chosenProfileName === undefined) {
+    return;
+  }
+
+  CICSLogger.info(`Calling ${config.commandName} for region ${regionName}: ${chosenProfileName} / ${resourceIdentifier}`);
+  commands.executeCommand(config.commandName, chosenProfileName, resourceIdentifier);
+}
+
+/**
+ * Finds a related z/OS profile and shows job spool in Zowe Explorer
  * @param cicsProfile - The CICS profile to find a related z/OS profile for
  * @param jobid - The job ID to show logs for
  * @param regionName - The region name (used for logging and error messages)
  * @returns Promise that resolves when the command is executed or rejects on error
  */
 export async function findProfileAndShowJobSpool(cicsProfile: IProfileLoaded, jobid: string, regionName: string): Promise<void> {
-  const allProfiles = await ProfileManagement.getProfilesCache().fetchAllProfiles();
-  // do not include the FTP profile because it doesn't support spools for running jobs.
-  const zosProfiles = allProfiles.filter(
-    (element) => !["zftp"].includes(element.type) && doesProfileSupportConnectionType(element, ZoweExplorerApiType.Jes)
-  );
+  return findProfileAndExecuteZoweCommand(cicsProfile, jobid, regionName, {
+    connectionType: ZoweExplorerApiType.Jes,
+    commandName: "zowe.jobs.setJobSpool",
+    resourceType: "JES",
+    noProfileErrorMessage: "Could not find any profiles that will access JES (for instance z/OSMF).",
+  });
+}
 
-  let chosenProfileName: string;
-
-  // find profiles that match by base profile or hostname, and have valid credentials
-  const matchingZosProfile = await findRelatedZosProfiles(cicsProfile, zosProfiles);
-  if (matchingZosProfile) {
-    chosenProfileName = matchingZosProfile.name;
-  } else {
-    chosenProfileName = await promptUserForProfile(zosProfiles);
-    CICSLogger.debug(`User picked z/OS profile: ${chosenProfileName}`);
-    if (chosenProfileName === null) {
-      window.showErrorMessage(l10n.t("Could not find any profiles that will access JES (for instance z/OSMF)."));
-      return;
-    } else if (chosenProfileName === undefined) {
-      return;
-    }
-  }
-  CICSLogger.info(`Calling zowe.jobs.setJobSpool for region ${regionName}: ${chosenProfileName} / ${jobid}`);
-  commands.executeCommand("zowe.jobs.setJobSpool", chosenProfileName, jobid);
+/**
+ * Finds a related z/OS profile and shows a dataset in Zowe Explorer
+ * @param cicsProfile - The CICS profile to find a related z/OS profile for
+ * @param datasetName - The dataset name to show
+ * @param regionName - The region name (used for logging and error messages)
+ * @returns Promise that resolves when the command is executed or rejects on error
+ */
+export async function findProfileAndShowDataSet(cicsProfile: IProfileLoaded, datasetName: string, regionName: string): Promise<void> {
+  return findProfileAndExecuteZoweCommand(cicsProfile, datasetName, regionName, {
+    connectionType: ZoweExplorerApiType.Mvs,
+    commandName: "zowe.ds.setDataSetFilter",
+    resourceType: "Data Sets",
+    noProfileErrorMessage: "Could not find any profiles that will access Data Sets (for instance z/OSMF).",
+  });
 }
 
 /**

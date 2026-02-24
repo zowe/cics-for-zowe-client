@@ -19,7 +19,8 @@ export type WebviewToExtensionMessage =
   | { type: "init"; }
   | { type: "refresh"; resources: IResourceInspectorResource[]; }
   | { type: "executeAction"; actionId: string; resources: IResourceInspectorResource[]; }
-  | { type: "showLogsForHyperlink"; resourceContext: IResourceContext; };
+  | { type: "showLogsForHyperlink"; resourceContext: IResourceContext; }
+  | { type: "showDatasetForHyperlink"; resourceContext: IResourceContext; datasetName: string; };
 
 /**
  * Messages sent FROM extension TO webview
@@ -30,4 +31,5 @@ export type ExtensionToWebviewMessage = {
   resourceIconPath: IResourceInspectorIconPath;
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
+  shouldRenderDatasetLinks: boolean;
 };

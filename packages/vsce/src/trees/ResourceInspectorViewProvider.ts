@@ -13,14 +13,14 @@ import { IResource, IResourceContext, ResourceAction, ResourceTypeMap, ResourceT
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { HTMLTemplate } from "@zowe/zowe-explorer-api";
 import { randomUUID } from "crypto";
-import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, l10n, window } from "vscode";
+import { ExtensionContext, Uri, Webview, WebviewView, WebviewViewProvider, commands, l10n, window } from "vscode";
 import { CICSTree } from ".";
 import { IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
-import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
+import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
 import { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
@@ -78,6 +78,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
           break;
         case "showLogsForHyperlink":
           await this.handleShowLogsForHyperlink(message.resourceContext);
+          break;
+        case "showDatasetForHyperlink":
+          await this.handleShowDatasetForHyperlink(message.resourceContext, message.datasetName);
           break;
       }
     });
@@ -137,12 +140,22 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       meta: this.resources[0].meta,
     };
 
+    // Check if the zowe.ds.setDataSetFilter command is available
+    const availableCommands = await commands.getCommands();
+    const shouldRenderDatasetLinks = availableCommands.includes("zowe.ds.setDataSetFilter");
+
+    // log information if the dataset filter command is not available
+    if (!shouldRenderDatasetLinks) {
+      CICSLogger.info("The zowe.ds.setDataSetFilter command is not available, so hyperlinks to Data Sets will not be enabled");
+    }
+
     const message: ExtensionToWebviewMessage = {
       type: "updateResources",
       resources: this.resources,
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
+      shouldRenderDatasetLinks,
     };
 
     await this.webviewView.webview.postMessage(message);
@@ -240,6 +253,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     } catch (error) {
       CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
       window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+    }
+  }
+
+  /**
+   * Handles the showDatasetForHyperlink request from the webview
+   * Calls findProfileAndShowDataSet to show the dataset in Zowe Explorer
+   */
+  private async handleShowDatasetForHyperlink(ctx: IResourceContext, datasetName: string) {
+    const { regionName, profile } = ctx;
+    try {
+      const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
+      if (!cicsProfile) {
+      CICSLogger.warn(`No CICS profile found: ${profile.name}`);
+      window.showWarningMessage(l10n.t("CICS profile not found: {0}", profile.name));
+      return;
+    }
+      await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
+    } catch (error) {
+      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
+      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
     }
   }
 }
