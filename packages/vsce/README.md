@@ -336,4 +336,3 @@ Error messages arising from the Zowe Explorer extension identify the `Source` as
 Before filing an issue, check the [Troubleshooting guide](/packages/vsce/docs/Troubleshooting.md) first to ensure that the issue has not already been addressed.
 
 To file issues, use the [Zowe Explorer for IBM CICS Transaction Server issue list](https://github.com/zowe/cics-for-zowe-client/issues), or chat with use on [Slack](https://openmainframeproject.slack.com/archives/CUVE37Z5F) by indicating the message is for the Zowe Explorer for IBM CICS Transaction Server extension.
-
