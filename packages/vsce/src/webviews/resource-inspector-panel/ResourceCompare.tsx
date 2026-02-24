@@ -16,8 +16,7 @@ import { Breadcrumb } from "./Breadcrumb";
 import CompareTable from "./CompareTable";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 
-const ResourceCompare = ({ resources, shouldRenderDatasetLinks }: { resources: IResourceInspectorResource[]; shouldRenderDatasetLinks: boolean; }) => {
-
+const ResourceCompare = ({ resources, shouldRenderDatasetLinks }: { resources: IResourceInspectorResource[]; shouldRenderDatasetLinks: boolean }) => {
   const [resourceHeaders, setResourceHeaders] = useState<(string | JSX.Element)[]>([]);
   const [resourceRows, setResourceRows] = useState<(string | JSX.Element)[][]>([]);
 
@@ -41,18 +40,13 @@ const ResourceCompare = ({ resources, shouldRenderDatasetLinks }: { resources: I
     ];
 
     const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));
-    const _rows = attributes.map(
-      (attr: keyof IResource) => [
-        attr.toUpperCase(),
-        ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)
-        )
-      ]
-    );
+    const _rows = attributes.map((attr: keyof IResource) => [
+      attr.toUpperCase(),
+      ...resources.map((res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)),
+    ]);
 
     setResourceHeaders(_headers);
     setResourceRows(_rows);
-
   }, [resources, shouldRenderDatasetLinks]);
 
   const handleRefresh = () => {

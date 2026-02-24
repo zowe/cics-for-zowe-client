@@ -16,6 +16,7 @@ import { postVscMessage } from "../../common/vscode";
 const JOB_SPOOL_PATTERN = /^\/\/DD:.+/;
 
 // Pattern for MVS dataset names
+/* eslint-disable-next-line no-useless-escape */ /* eslint-disable-next-line max-len */
 const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,4}|[A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7}){1,3}\([A-Z@#$][A-Z0-9@#$\-]{0,7}\))$/;
 
 // Pattern for z/OS Unix System Services (USS) file paths
