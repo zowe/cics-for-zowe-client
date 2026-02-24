@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DefineUrimapPipelineHandler should call the defineUrimapPipeline api with all options specified 1`] = `"The URIMAP '%s' was defined successfully."`;
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DefineWebserviceHandler should call the defineWebservice api 1`] = `"The WEBSERVICE '%s' was defined successfully."`;
 
