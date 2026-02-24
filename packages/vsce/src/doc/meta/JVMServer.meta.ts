@@ -22,8 +22,8 @@ export const JVMServerMeta: IResourceMeta<IJVMServer> = {
   humanReadableNamePlural: l10n.t("JVM Servers"),
   humanReadableNameSingular: l10n.t("JVM Server"),
   eibfnName: "JVMSERVER",
-  queryParamForSet: "commands-set-jvmserver",
-  anchorFragmentForSet: "dfha8_setenclave__title__6",
+  setCommandDocFile: "dfha8_setjvmserver.html",
+  anchorFragmentForSet: "dfha8_setenclave__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");

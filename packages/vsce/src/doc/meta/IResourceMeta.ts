@@ -17,7 +17,7 @@ export interface IResourceMeta<T extends IResource> {
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
   eibfnName?: string;
-  queryParamForSet?: string;
+  setCommandDocFile?: string;
   anchorFragmentForSet?: string;
 
   buildCriteria(criteria: string[], parentResource?: IResource): string;

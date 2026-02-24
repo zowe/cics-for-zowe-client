@@ -21,8 +21,8 @@ export const URIMapMeta: IResourceMeta<IURIMap> = {
   humanReadableNamePlural: l10n.t("URI Maps"),
   humanReadableNameSingular: l10n.t("URI Map"),
   eibfnName: "URIMAP",
-  queryParamForSet: "commands-set-urimap",
-  anchorFragmentForSet: "dfha8_seturimap__title__6",
+  setCommandDocFile: "dfha8_seturimap.html",
+  anchorFragmentForSet: "dfha8_seturimap__conditions",
 
   buildCriteria(criteria: string[]) {
     return criteria.map((n) => `name=${n}`).join(" OR ");
