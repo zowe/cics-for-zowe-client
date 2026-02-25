@@ -69,7 +69,7 @@ import { Resource } from "../../../src/resources";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 const executeCommandMock = jest.fn();
-const getCommandsMock = jest.fn().mockResolvedValue(["zowe.ds.setDataSetFilter", "other.command"]);
+const getCommandsMock = jest.fn().mockResolvedValue(["zowe.ds.setDataSetFilter", "zowe.uss.setUssPath", "other.command"]);
 jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
 jest.spyOn(vscode.commands, "getCommands").mockImplementation(getCommandsMock);
 

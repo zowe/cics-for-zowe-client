@@ -86,7 +86,7 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, s
   }
 
   // Check for USS file path pattern
-  // Only render as hyperlink if dataset links should be rendered (USS files use same permission)
+  // Only render as hyperlink if Zowe Explorer links should be rendered
   if (isUssPathValue(value) && shouldRenderDatasetLinks) {
     return createHyperlink(value, (e) => {
       e.preventDefault();
@@ -99,7 +99,7 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, s
   }
 
   // Check for dataset pattern
-  // Only render as hyperlink if dataset links should be rendered
+  // Only render as hyperlink if Zowe Explorer links should be rendered
   if (isDatasetValue(value) && shouldRenderDatasetLinks) {
     return createHyperlink(value, (e) => {
       e.preventDefault();

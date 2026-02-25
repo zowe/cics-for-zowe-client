@@ -143,13 +143,14 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       meta: this.resources[0].meta,
     };
 
-    // Check if the zowe.ds.setDataSetFilter command is available
+    // Check if both Zowe Explorer commands are available (datasets and USS files)
     const availableCommands = await commands.getCommands();
-    const shouldRenderDatasetLinks = availableCommands.includes("zowe.ds.setDataSetFilter");
+    const shouldRenderZoweExplorerLinks = availableCommands.includes("zowe.ds.setDataSetFilter") &&
+                                          availableCommands.includes("zowe.uss.setUssPath");
 
-    // log information if the dataset filter command is not available
-    if (!shouldRenderDatasetLinks) {
-      CICSLogger.info("The zowe.ds.setDataSetFilter command is not available, so hyperlinks to Data Sets will not be enabled");
+    // log information if the Zowe Explorer commands are not available
+    if (!shouldRenderZoweExplorerLinks) {
+      CICSLogger.info("Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, so hyperlinks to Data Sets and USS files will not be enabled");
     }
 
     const message: ExtensionToWebviewMessage = {
@@ -158,7 +159,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
-      shouldRenderDatasetLinks,
+      shouldRenderDatasetLinks: shouldRenderZoweExplorerLinks,
     };
 
     await this.webviewView.webview.postMessage(message);
