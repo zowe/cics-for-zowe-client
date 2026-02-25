@@ -220,10 +220,8 @@ describe("hyperlinkUtils", () => {
     test("should return false for empty or invalid paths", () => {
       expect(isUssPathValue("")).toBe(false);
       expect(isUssPathValue("/")).toBe(false);
-      // Note: "//" matches the current pattern but is technically invalid
-      // The pattern allows "/" in the path, so "//" is matched
-      // expect(isUssPathValue("//")).toBe(false);
-      // expect(isUssPathValue("/a//b")).toBe(false);
+      expect(isUssPathValue("//")).toBe(false);
+      expect(isUssPathValue("/a//b")).toBe(false);
     });
 
     test("should return false for non-string values", () => {
