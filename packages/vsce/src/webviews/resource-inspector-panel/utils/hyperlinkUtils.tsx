@@ -21,7 +21,7 @@ const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,
 // Pattern for z/OS Unix System Services (USS) file paths
 // Matches absolute paths starting with / (e.g., /u/user/file.txt, /var/log/app.log)
 // Requires at least one non-slash character after the initial slash and no consecutive slashes
-const USS_PATH_PATTERN = /^\/[a-zA-Z0-9_\-.]+(\/?[a-zA-Z0-9_\-.]+)*$/;
+const USS_PATH_PATTERN = /^\/[a-zA-Z0-9_\-.]+(\/[a-zA-Z0-9_\-.]+)*$/;
 
 const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
 const HYPERLINKABLE_PATTERNS_DATASET: RegExp[] = [DATASET_PATTERN];
