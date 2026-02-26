@@ -42,4 +42,8 @@ export interface ICICSExtensionError {
    * Type of the resource
    */
   resourceType?: string;
+  /**
+   * Name of the profile
+   */
+  profileName?: string;
 }

@@ -77,7 +77,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
@@ -86,7 +86,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   try {
     return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [buildUserAgentHeader()]);
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
   }
 }
 
@@ -117,7 +117,7 @@ export async function runGetCache(
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error });
+      throw new CICSExtensionError({ baseError: error, profileName });
     }
   }
 
@@ -132,7 +132,7 @@ export async function runGetCache(
       [buildUserAgentHeader()]
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error });
+    throw new CICSExtensionError({ baseError: error, profileName });
   }
 }
 
@@ -165,7 +165,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
@@ -181,7 +181,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
       buildRequestOptions()
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
   }
 }
 
