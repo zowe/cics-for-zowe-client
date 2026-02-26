@@ -305,7 +305,7 @@ describe("CMCI - Get resource", () => {
       expect(response).toBeUndefined();
       expect(error).toBeInstanceOf(CicsCmciRestError);
       if (error instanceof CicsCmciRestError) {
-        expect(error.RESPONSE_1).toEqual(1027);
+        expect(error.RESPONSE_1).toEqual(CicsCmciConstants.RESPONSE_1_CODES.NODATA);
         expect(error.RESPONSE_1_ALT).toEqual("NODATA");
       }
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);

@@ -61,8 +61,8 @@ const CompareTable = ({ headers, rows, onRefresh, className = "", refreshTabInde
 
         {showHiddenRows && filteredHiddenRows.map((row, idx: number) => (
           <tr key={`tr-hidden-${idx}`} className={`zebra-${isDark ? "dark" : "light"} h-8`}>
-            {row.map((txt, idx) => (
-              <td key={`td-${idx}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
+            {row.map((txt, idx2) => (
+              <td key={`td-${idx2}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
             ))}
             <td></td>
           </tr>

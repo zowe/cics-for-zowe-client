@@ -14,7 +14,8 @@
         "newLine": "lf",
         "strictNullChecks": false,
         "noUnusedLocals": false,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "esModuleInterop": true,
     },
     "exclude": [
         "lib",

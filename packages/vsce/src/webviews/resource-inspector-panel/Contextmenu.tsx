@@ -101,9 +101,11 @@ const DropDownContent = ({ children }: DropDownContentProps) => {
     const updatePosition = () => {
       if (open && buttonRef?.current) {
         const rect = buttonRef.current.getBoundingClientRect();
+
+        const MENU_OFFSET = 192;
         setPosition({
           top: rect.bottom + 2,
-          left: rect.right - 192, // 192px = width of menu to offset to the left
+          left: rect.right - MENU_OFFSET,
         });
       }
     };
@@ -154,7 +156,9 @@ const DropDownList = ({ children }: DropDownListProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const items = listRef.current?.querySelectorAll("li");
-    if (!items) return;
+    if (!items) {
+      return;
+    }
 
     const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
 
