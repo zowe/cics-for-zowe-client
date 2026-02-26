@@ -3,8 +3,16 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 
+const MAX_COMPLEXITY = 15;
+const MAX_LINE_LENGTH = 150;
+
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: {...globals.browser, ...globals.node} } },
+  { 
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: { js }, 
+    extends: ["js/recommended"], 
+    languageOptions: { globals: { ...globals.browser, ...globals.node } } 
+  },
   tseslint.configs.recommended,
   {
     rules: {
@@ -16,18 +24,18 @@ export default defineConfig([
         "caughtErrorsIgnorePattern": "^_"
         }
       ],
-      "max-len": ["error", { code: 150 }],
+      "max-len": ["error", { code: MAX_LINE_LENGTH }],
       "space-in-parens": "warn",
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/consistent-type-imports": [
         "error",
-        {"fixStyle": "inline-type-imports"}
+        { "fixStyle": "inline-type-imports" }
       ],
 
       "@typescript-eslint/no-shadow": "error",
       "@typescript-eslint/no-unused-expressions": "error",
       "array-callback-return": "error",
-      "complexity": ["warn",15],
+      "complexity": ["warn", MAX_COMPLEXITY],
       "constructor-super": "error",
       "getter-return": "error",
       "no-console": "warn",
@@ -39,7 +47,7 @@ export default defineConfig([
       "no-extra-semi": "error",
       "no-implicit-globals": "error",
       "no-irregular-whitespace": "warn",
-      "no-magic-numbers":["warn", {"ignore": [-1, 0, 1, 2, 4]}],
+      "no-magic-numbers":["warn", { "ignore": [-1, 0, 1, 2, 4] }],
       "no-multiple-empty-lines": "warn",
       "no-return-await": "warn",
       "no-sequences": "warn",
@@ -49,6 +57,8 @@ export default defineConfig([
       "prefer-object-spread": "warn",
       "curly": "error",
       "semi": "error",
+      "object-curly-spacing": ["error", "always"],
+      "comma-spacing": "error",
     }
   },
   {
