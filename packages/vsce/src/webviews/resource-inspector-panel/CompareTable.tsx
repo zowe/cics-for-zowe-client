@@ -9,7 +9,7 @@
  *
  */
 
-import { JSX, useCallback, useMemo, useState } from "react";
+import { type JSX, useCallback, useMemo, useState } from "react";
 import { RefreshButton } from "../common/RefreshButton";
 import Table from "../common/Table";
 import { useTheme } from "../common/ThemeContext";

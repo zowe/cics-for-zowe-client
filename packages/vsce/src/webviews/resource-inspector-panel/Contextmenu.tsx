@@ -9,11 +9,11 @@
  *
  */
 
-import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
+import type { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { createContext, type ReactNode, type RefObject, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
+import { type IResourceInspectorResource, postVscMessage } from "../common/vscode";
 
 const DropdownContext = createContext<{
   open: boolean;

@@ -12,7 +12,7 @@
 import { useState } from "react";
 import { Chevron } from "../common/Chevron";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorIconPath, IResourceInspectorResource } from "../common/vscode";
+import type { IResourceInspectorIconPath, IResourceInspectorResource } from "../common/vscode";
 import { ContextMenu } from "./Contextmenu";
 
 const SecondaryText = ({ txt, className = "" }: { txt: string; className?: string }) => (

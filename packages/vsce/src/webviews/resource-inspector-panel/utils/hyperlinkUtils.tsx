@@ -9,7 +9,7 @@
  *
  */
 
-import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
 import { postVscMessage } from "../../common/vscode";
 
 // Pattern for //DD:* format (job spool logs)

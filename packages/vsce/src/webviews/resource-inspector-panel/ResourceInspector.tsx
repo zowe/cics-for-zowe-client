@@ -11,8 +11,8 @@
 
 import { useEffect, useState } from "react";
 import {
-  IResourceInspectorIconPath,
-  IResourceInspectorResource,
+  type IResourceInspectorIconPath,
+  type IResourceInspectorResource,
   addVscMessageListener,
   postVscMessage,
   removeVscMessageListener,
