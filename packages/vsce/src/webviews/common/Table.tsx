@@ -22,9 +22,11 @@ interface ITableProps {
   searchTabIndex?: number;
 }
 
-const TableSearchContext = createContext<{ filterValue: string; setFilterValue: (s: string) => void; }>({
+const STICKY_LEVEL_INCREMENT = 8;
+
+const TableSearchContext = createContext<{ filterValue: string; setFilterValue: (s: string) => void }>({
   filterValue: "",
-  setFilterValue: () => { },
+  setFilterValue: () => {},
 });
 
 export { TableSearchContext };
@@ -45,7 +47,9 @@ const Table = ({ headers, rows, stickyLevel = 0, className = "", headerActions, 
     <table className={`${className} border-collapse border-spacing-4 w-full text-xs`}>
       <thead>
         <tr
-          className={`text-left bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} h-8 sticky top-${stickyLevel * 8 + 2}`}
+          className={`text-left bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} h-8 sticky top-${
+            stickyLevel * STICKY_LEVEL_INCREMENT + 2
+          }`}
           style={{ zIndex: 60 }}
         >
           {headers.map((hder, idx: number) => {
@@ -66,17 +70,16 @@ const Table = ({ headers, rows, stickyLevel = 0, className = "", headerActions, 
         </tr>
       </thead>
       <tbody className="text-left">
-        {rows?.filter(filterSearchCriteria)
-          .map((row, idx: number) =>
-            <TableRow row={row} idx={idx} key={`tr-${idx}`} />
-          )}
+        {rows?.filter(filterSearchCriteria).map((row, idx: number) => (
+          <TableRow row={row} idx={idx} key={`tr-${idx}`} />
+        ))}
         {customRows && customRows(filterValue)}
       </tbody>
     </table>
   );
 };
 
-const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
+const TableSearchInput = ({ tabIndex }: { tabIndex?: number }) => {
   const { isDark } = useTheme();
   const { filterValue, setFilterValue } = useContext(TableSearchContext);
 
@@ -91,14 +94,12 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number; }) => {
         onChange={(e) => setFilterValue(e.target.value)}
         tabIndex={tabIndex}
       />
-      {filterValue.length > 0 && (
-        <span className={`absolute right-1 cursor-pointer codicon codicon-close`} onClick={() => setFilterValue("")} />
-      )}
+      {filterValue.length > 0 && <span className={`absolute right-1 cursor-pointer codicon codicon-close`} onClick={() => setFilterValue("")} />}
     </div>
   );
 };
 
-const TableRow = ({ row }: { row: (string | JSX.Element)[]; idx: number; }) => {
+const TableRow = ({ row }: { row: (string | JSX.Element)[]; idx: number }) => {
   const { isDark } = useTheme();
   return (
     <tr className={`h-8 zebra-${isDark ? "dark" : "light"}`}>
