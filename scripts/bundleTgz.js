@@ -26,17 +26,18 @@ const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "in
 fsE.mkdirpSync("dist");
 
 const cleanUp = () => {
-    fsE.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });
+    fsE.removeSync(path.join(cliPkgDir, "node_modules"));
     if (fs.existsSync(path.join(cliPkgDir, "node_modules_old"))) {
         fsE.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
     }
     if (fs.existsSync(pkgJsonFile + ".bak")) {
         fsE.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
     }
-    fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
-    fs.rmSync(path.join(rootDir, "npm-shrinkwrap.json"), { force: true });
+    fsE.removeSync(path.join(cliPkgDir, "npm-shrinkwrap.json"));
+    fsE.removeSync(path.join(rootDir, "npm-shrinkwrap.json"));
 }
 
+fsE.removeSync(path.join(cliPkgDir, "node_modules_old"));
 if (fs.existsSync(path.join(cliPkgDir, "node_modules"))) {
     fsE.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
 }

@@ -9,17 +9,25 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { JSX, useEffect, useState } from "react";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { type JSX, useEffect, useState } from "react";
 import { RefreshButton } from "../common/RefreshButton";
 import Table from "../common/Table";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorIconPath, IResourceInspectorResource, postVscMessage } from "../common/vscode";
+import { type IResourceInspectorIconPath, type IResourceInspectorResource, postVscMessage } from "../common/vscode";
 import { Breadcrumb } from "./Breadcrumb";
 import { ContextMenu } from "./Contextmenu";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 
-const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks }: { resources: IResourceInspectorResource[]; resourceIconPath: IResourceInspectorIconPath; shouldRenderDatasetLinks: boolean; }) => {
+const SingleResource = ({
+  resources,
+  resourceIconPath,
+  shouldRenderDatasetLinks,
+}: {
+  resources: IResourceInspectorResource[];
+  resourceIconPath: IResourceInspectorIconPath;
+  shouldRenderDatasetLinks: boolean;
+}) => {
   const { isDark } = useTheme();
   const [resourceHeaders, setResourceHeaders] = useState<(string | JSX.Element)[]>([]);
   const [resourceRows, setResourceRows] = useState<(string | JSX.Element)[][]>([]);
@@ -31,18 +39,13 @@ const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks 
 
     const _headers: (string | JSX.Element)[] = ["ATTRIBUTE", "VALUE"];
     const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));
-    const _rows = attributes.map(
-      (attr: keyof IResource) => [
-        attr.toUpperCase(),
-        ...resources.map(
-          (res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)
-        )
-      ]
-    );
+    const _rows = attributes.map((attr: keyof IResource) => [
+      attr.toUpperCase(),
+      ...resources.map((res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)),
+    ]);
 
     setResourceHeaders(_headers);
     setResourceRows(_rows);
-
   }, [resources, shouldRenderDatasetLinks]);
 
   const refreshResource = () => {
@@ -52,10 +55,13 @@ const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks 
     });
   };
 
-
   return (
     <>
-      <div className={`sticky top-2 w-full bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} z-50 px-2 h-8 flex items-center justify-between`}>
+      <div
+        className={`sticky top-2 w-full bg-(--vscode-editor-background) ${
+          isDark ? "bg-lighter" : "bg-darker"
+        } z-50 px-2 h-8 flex items-center justify-between`}
+      >
         <Breadcrumb
           cicsplexName={resources[0].context.cicsplexName}
           regionName={resources[0].context.regionName}
@@ -75,7 +81,7 @@ const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks 
                 value: ac.id,
                 resourceName: resources[0].name || "",
                 resourceContext: resources[0].context,
-                resources: resources
+                resources: resources,
               }))}
             />
           )}
@@ -86,18 +92,13 @@ const SingleResource = ({ resources, resourceIconPath, shouldRenderDatasetLinks 
       <HighlightsSection resource={resources[0]} />
 
       <div className="w-full">
-        <Table
-          headers={resourceHeaders}
-          rows={resourceRows}
-          stickyLevel={1}
-          searchTabIndex={3}
-        />
+        <Table headers={resourceHeaders} rows={resourceRows} stickyLevel={1} searchTabIndex={3} />
       </div>
     </>
   );
 };
 
-const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource; }) => {
+const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource }) => {
   return (
     <div className="flex flex-col gap-0.5 px-4 mt-2 mb-4">
       {resource.highlights.map((h) => (

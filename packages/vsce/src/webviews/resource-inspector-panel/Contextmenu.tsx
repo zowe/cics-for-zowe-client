@@ -9,11 +9,11 @@
  *
  */
 
-import { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
-import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
+import type { IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { createContext, type ReactNode, type RefObject, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
+import { type IResourceInspectorResource, postVscMessage } from "../common/vscode";
 
 const DropdownContext = createContext<{
   open: boolean;
@@ -21,7 +21,7 @@ const DropdownContext = createContext<{
   buttonRef: RefObject<HTMLButtonElement> | null;
 }>({
   open: false,
-  setOpen: (o: boolean) => {},
+  setOpen: (_o: boolean) => {},
   buttonRef: null,
 });
 
@@ -101,9 +101,11 @@ const DropDownContent = ({ children }: DropDownContentProps) => {
     const updatePosition = () => {
       if (open && buttonRef?.current) {
         const rect = buttonRef.current.getBoundingClientRect();
+
+        const MENU_OFFSET = 192;
         setPosition({
           top: rect.bottom + 2,
-          left: rect.right - 192, // 192px = width of menu to offset to the left
+          left: rect.right - MENU_OFFSET,
         });
       }
     };
@@ -154,7 +156,9 @@ const DropDownList = ({ children }: DropDownListProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const items = listRef.current?.querySelectorAll("li");
-    if (!items) return;
+    if (!items) {
+      return;
+    }
 
     const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
 
@@ -187,7 +191,7 @@ interface DropDownListItemProps {
   resources: IResourceInspectorResource[];
 }
 
-const DropDownListItem = ({ children, actionId, resourceName, resourceContext, resources }: DropDownListItemProps) => {
+const DropDownListItem = ({ children, actionId, resources }: DropDownListItemProps) => {
   const { setOpen } = useContext(DropdownContext);
 
   const handleClick = () => {

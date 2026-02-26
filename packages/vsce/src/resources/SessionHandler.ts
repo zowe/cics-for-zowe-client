@@ -15,14 +15,14 @@ import type { ISessionHandler } from "../doc/resources/ISessionHandler";
 import { ProfileManagement } from "../utils/profileManagement";
 
 export class SessionHandler implements ISessionHandler {
-  private sessions: Map<String, CICSSession>;
-  private profiles: Map<String, IProfileLoaded>;
+  private sessions: Map<string, CICSSession>;
+  private profiles: Map<string, IProfileLoaded>;
 
   private static instance: SessionHandler;
 
   private constructor() {
-    this.sessions = new Map<String, CICSSession>();
-    this.profiles = new Map<String, IProfileLoaded>();
+    this.sessions = new Map<string, CICSSession>();
+    this.profiles = new Map<string, IProfileLoaded>();
   }
 
   // Creating a singleton instance of SessionHandler

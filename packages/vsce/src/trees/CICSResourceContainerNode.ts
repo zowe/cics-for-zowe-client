@@ -12,7 +12,7 @@
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
 import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
-import { type CICSPlexTree, TextTreeItem } from ".";
+import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { type Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
@@ -47,8 +47,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     super(
       label,
       resourceTypes.length > 0 ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None,
-      // @ts-ignore
-      opts.parentNode,
+      opts.parentNode as ICICSTreeNode,
       opts.profile
     );
 
@@ -230,8 +229,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   private updateDescription() {
     this.requireDescriptionUpdate = true;
-    // @ts-ignore
-    this.getSessionNode().getParent().refresh(this);
+    (this.getSessionNode() as CICSSessionTree).getParent().refresh(this);
   }
 
   private buildDescription() {

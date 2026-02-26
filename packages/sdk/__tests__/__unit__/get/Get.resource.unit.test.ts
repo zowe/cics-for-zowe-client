@@ -45,8 +45,7 @@ describe("CMCI - Get resource", () => {
 
     it("should throw error if no parms are defined", async () => {
       try {
-        // @ts-ignore - Not allowed to pass undefined here
-        response = await getResource(dummySession, undefined);
+        response = await getResource(dummySession, undefined as any);
       } catch (err) {
         error = err;
       }
@@ -60,8 +59,7 @@ describe("CMCI - Get resource", () => {
       try {
         response = await getResource(dummySession, {
           regionName: "fake",
-          // @ts-ignore - Not allowed to pass undefined here
-          name: undefined,
+          name: undefined as any,
         });
       } catch (err) {
         error = err;
@@ -307,7 +305,7 @@ describe("CMCI - Get resource", () => {
       expect(response).toBeUndefined();
       expect(error).toBeInstanceOf(CicsCmciRestError);
       if (error instanceof CicsCmciRestError) {
-        expect(error.RESPONSE_1).toEqual(1027);
+        expect(error.RESPONSE_1).toEqual(CicsCmciConstants.RESPONSE_1_CODES.NODATA);
         expect(error.RESPONSE_1_ALT).toEqual("NODATA");
       }
       expect(getExpectStringMock).toHaveBeenCalledWith(dummySession, endPoint, []);
