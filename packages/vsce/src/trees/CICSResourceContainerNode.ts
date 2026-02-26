@@ -12,7 +12,7 @@
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
 import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
-import { type CICSPlexTree, CICSSessionTree, TextTreeItem } from ".";
+import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { type Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";

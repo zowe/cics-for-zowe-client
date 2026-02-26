@@ -9,9 +9,9 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { JSX, useEffect, useState } from "react";
-import { IResourceInspectorResource, postVscMessage } from "../common/vscode";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { type JSX, useEffect, useState } from "react";
+import { type IResourceInspectorResource, postVscMessage } from "../common/vscode";
 import { Breadcrumb } from "./Breadcrumb";
 import CompareTable from "./CompareTable";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";

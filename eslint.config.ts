@@ -18,6 +18,11 @@ export default defineConfig([
       ],
       "max-len": ["error", { code: 150 }],
       "space-in-parens": "warn",
+      "@typescript-eslint/no-import-type-side-effects": "error",
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {"fixStyle": "inline-type-imports"}
+      ],
     }
   },
   {

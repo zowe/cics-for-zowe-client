@@ -9,7 +9,7 @@
  *
  */
 
-import { createContext, JSX, useContext, useEffect, useState } from "react";
+import { createContext, type JSX, useContext, useEffect, useState } from "react";
 import { useTheme } from "./ThemeContext";
 
 interface ITableProps {

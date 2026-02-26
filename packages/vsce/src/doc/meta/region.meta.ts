@@ -9,7 +9,7 @@
  *
  */
 
-import { IRegion } from "@zowe/cics-for-zowe-explorer-api";
+import type { IRegion } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import type { Resource } from "../../resources/Resource";

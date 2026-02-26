@@ -9,12 +9,12 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { JSX, useEffect, useState } from "react";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import { type JSX, useEffect, useState } from "react";
 import { RefreshButton } from "../common/RefreshButton";
 import Table from "../common/Table";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorIconPath, IResourceInspectorResource, postVscMessage } from "../common/vscode";
+import { type IResourceInspectorIconPath, type IResourceInspectorResource, postVscMessage } from "../common/vscode";
 import { Breadcrumb } from "./Breadcrumb";
 import { ContextMenu } from "./Contextmenu";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
