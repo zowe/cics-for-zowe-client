@@ -9,7 +9,7 @@
  *
  */
 
-import { Config } from "jest";
+import type { Config } from "jest";
 
 const baseConfig: Config = {
   maxWorkers: "100%",
