@@ -16,7 +16,7 @@
   setState: jest.fn(),
 }));
 
-import { isDatasetValue, isHyperlinkableValue } from "../../../src/webviews/resource-inspector-panel/utils/hyperlinkUtils";
+import { isDatasetValue, isHyperlinkableValue, isUssPathValue } from "../../../src/webviews/resource-inspector-panel/utils/hyperlinkUtils";
 
 describe("hyperlinkUtils", () => {
   describe("isDatasetValue", () => {
@@ -157,6 +157,86 @@ describe("hyperlinkUtils", () => {
     test("should return false for invalid input", () => {
       expect(isHyperlinkableValue(null as any)).toBe(false);
       expect(isHyperlinkableValue(undefined as any)).toBe(false);
+    });
+  });
+
+  describe("isUssPathValue", () => {
+    test("should return true for valid USS absolute paths", () => {
+      expect(isUssPathValue("/u/user/file.txt")).toBe(true);
+      expect(isUssPathValue("/var/log/app.log")).toBe(true);
+      expect(isUssPathValue("/opt/app/config.xml")).toBe(true);
+      expect(isUssPathValue("/home/user/data/file.dat")).toBe(true);
+      expect(isUssPathValue("/etc/config")).toBe(true);
+      expect(isUssPathValue("/tmp/test.tmp")).toBe(true);
+    });
+
+    test("should return true for USS paths with hyphens and underscores", () => {
+      expect(isUssPathValue("/u/user-name/file_name.txt")).toBe(true);
+      expect(isUssPathValue("/var/log-files/app_log.log")).toBe(true);
+      expect(isUssPathValue("/opt/my-app/config_file.xml")).toBe(true);
+      expect(isUssPathValue("/home/user_01/data-file.dat")).toBe(true);
+    });
+
+    test("should return true for USS paths with multiple directory levels", () => {
+      expect(isUssPathValue("/a/b/c/d/e/f/g/file.txt")).toBe(true);
+      expect(isUssPathValue("/u/cicsts/logs/DFHLOG01.txt")).toBe(true);
+      expect(isUssPathValue("/var/cics/region1/logs/messages.log")).toBe(true);
+    });
+
+    test("should return true for USS paths without file extensions", () => {
+      expect(isUssPathValue("/u/user/file")).toBe(true);
+      expect(isUssPathValue("/var/log/messages")).toBe(true);
+      expect(isUssPathValue("/etc/passwd")).toBe(true);
+      expect(isUssPathValue("/bin/bash")).toBe(true);
+    });
+
+    test("should return true for USS paths with dots in filenames", () => {
+      expect(isUssPathValue("/u/user/file.backup.txt")).toBe(true);
+      expect(isUssPathValue("/var/log/app.2024.01.15.log")).toBe(true);
+      expect(isUssPathValue("/opt/config.prod.xml")).toBe(true);
+    });
+
+    test("should return false for relative paths", () => {
+      expect(isUssPathValue("relative/path/file.txt")).toBe(false);
+      expect(isUssPathValue("./file.txt")).toBe(false);
+      expect(isUssPathValue("../parent/file.txt")).toBe(false);
+      expect(isUssPathValue("file.txt")).toBe(false);
+    });
+
+    test("should return false for Windows-style paths", () => {
+      expect(isUssPathValue("C:\\Windows\\System32")).toBe(false);
+      expect(isUssPathValue("D:\\Data\\file.txt")).toBe(false);
+      expect(isUssPathValue("\\\\server\\share\\file")).toBe(false);
+    });
+
+    test("should return false for paths with invalid characters", () => {
+      expect(isUssPathValue("/u/user/file with spaces.txt")).toBe(false);
+      expect(isUssPathValue("/var/log/app@log.txt")).toBe(false);
+      expect(isUssPathValue("/opt/config#file.xml")).toBe(false);
+      expect(isUssPathValue("/home/user/file$name.dat")).toBe(false);
+      expect(isUssPathValue("/tmp/file*name.tmp")).toBe(false);
+    });
+
+    test("should return false for empty or invalid paths", () => {
+      expect(isUssPathValue("")).toBe(false);
+      expect(isUssPathValue("/")).toBe(false);
+      expect(isUssPathValue("//")).toBe(false);
+      expect(isUssPathValue("/a//b")).toBe(false);
+    });
+
+    test("should return false for non-string values", () => {
+      expect(isUssPathValue(null as any)).toBe(false);
+      expect(isUssPathValue(undefined as any)).toBe(false);
+      expect(isUssPathValue(123 as any)).toBe(false);
+      expect(isUssPathValue({} as any)).toBe(false);
+      expect(isUssPathValue([] as any)).toBe(false);
+    });
+
+    test("should return false for URLs or URIs", () => {
+      expect(isUssPathValue("http://example.com/path")).toBe(false);
+      expect(isUssPathValue("https://example.com/file.txt")).toBe(false);
+      expect(isUssPathValue("ftp://server/file")).toBe(false);
+      expect(isUssPathValue("file:///path/to/file")).toBe(false);
     });
   });
 });

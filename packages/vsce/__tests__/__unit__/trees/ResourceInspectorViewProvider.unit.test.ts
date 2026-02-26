@@ -29,10 +29,12 @@ jest.mock("../../../src/utils/resourceUtils", () => ({
 const toArrayMock = jest.fn((val) => (Array.isArray(val) ? val : [val]));
 const findProfileAndShowJobSpoolMock = jest.fn();
 const findProfileAndShowDataSetMock = jest.fn();
+const findProfileAndShowUssFileMock = jest.fn();
 jest.mock("../../../src/utils/commandUtils", () => ({
   toArray: toArrayMock,
   findProfileAndShowJobSpool: findProfileAndShowJobSpoolMock,
   findProfileAndShowDataSet: findProfileAndShowDataSetMock,
+  findProfileAndShowUssFile: findProfileAndShowUssFileMock,
 }));
 
 jest.mock("../../../src/utils/CICSLogger", () => ({
@@ -67,7 +69,7 @@ import { Resource } from "../../../src/resources";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 const executeCommandMock = jest.fn();
-const getCommandsMock = jest.fn().mockResolvedValue(["zowe.ds.setDataSetFilter", "other.command"]);
+const getCommandsMock = jest.fn().mockResolvedValue(["zowe.ds.setDataSetFilter", "zowe.uss.setUssPath", "other.command"]);
 jest.spyOn(vscode.commands, "executeCommand").mockImplementation(executeCommandMock);
 jest.spyOn(vscode.commands, "getCommands").mockImplementation(getCommandsMock);
 
@@ -425,6 +427,153 @@ describe("Resource Inspector View provider", () => {
       expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("CICS profile not found"));
       expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("NONEXISTENT"));
       expect(findProfileAndShowDataSetMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("handleShowUssFileForHyperlink", () => {
+    beforeEach(() => {
+      getProfileMock.mockReturnValue({
+        name: "MYPROF",
+        host: "example.com",
+        port: 1234,
+      });
+    });
+
+    it("should call findProfileAndShowUssFile with correct parameters", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "MYPROF" },
+      };
+
+      const ussPath = "/u/user/file.txt";
+
+      findProfileAndShowUssFileMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowUssFileForHyperlink(mockContext, ussPath);
+
+      expect(getProfileMock).toHaveBeenCalledWith("MYPROF");
+      expect(findProfileAndShowUssFileMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "MYPROF",
+          host: "example.com",
+          port: 1234,
+        }),
+        ussPath,
+        "TESTREGION"
+      );
+    });
+
+    it("should handle errors gracefully", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "MYPROF" },
+      };
+
+      const ussPath = "/var/log/app.log";
+      const errorMessage = "Profile not found";
+
+      findProfileAndShowUssFileMock.mockRejectedValue(new Error(errorMessage));
+
+      const showErrorMessageSpy = jest.spyOn(require("vscode").window, "showErrorMessage");
+      findProfileAndShowUssFileMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowUssFileForHyperlink(mockContext, ussPath);
+
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to show USS file"));
+      expect(showErrorMessageSpy).toHaveBeenCalledWith(expect.stringContaining(ussPath));
+    });
+
+    it("should handle different USS paths", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "REGION1",
+        cicsplexName: "PLEX1",
+        profile: { name: "MYPROF" },
+      };
+
+      const ussPaths = ["/u/user/file.txt", "/var/log/app.log", "/opt/config.xml", "/home/user/data.dat"];
+
+      for (const ussPath of ussPaths) {
+        findProfileAndShowUssFileMock.mockClear();
+
+        // @ts-ignore - calling private method for test
+        await ri.handleShowUssFileForHyperlink(mockContext, ussPath);
+
+        expect(findProfileAndShowUssFileMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: "MYPROF",
+            host: "example.com",
+            port: 1234,
+          }),
+          ussPath,
+          "REGION1"
+        );
+      }
+    });
+
+    it("should handle null profile gracefully", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "NONEXISTENT" },
+      };
+
+      const ussPath = "/u/user/file.txt";
+
+      // Mock getProfile to return undefined/null
+      getProfileMock.mockReturnValue(undefined);
+
+      const CICSLogger = require("../../../src/utils/CICSLogger").CICSLogger;
+      const showWarningMessageSpy = jest.spyOn(require("vscode").window, "showWarningMessage");
+      findProfileAndShowUssFileMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowUssFileForHyperlink(mockContext, ussPath);
+
+      expect(getProfileMock).toHaveBeenCalledWith("NONEXISTENT");
+      expect(CICSLogger.warn).toHaveBeenCalledWith(expect.stringContaining("No CICS profile found"));
+      expect(CICSLogger.warn).toHaveBeenCalledWith(expect.stringContaining("NONEXISTENT"));
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("CICS profile not found"));
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(expect.stringContaining("NONEXISTENT"));
+      expect(findProfileAndShowUssFileMock).not.toHaveBeenCalled();
+    });
+
+    it("should handle USS paths with multiple directory levels", async () => {
+      const ri = ResourceInspectorViewProvider.getInstance(sampleExtensionContext);
+
+      const mockContext = {
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+        profile: { name: "MYPROF" },
+      };
+
+      const ussPath = "/u/cicsts/logs/region1/DFHLOG01.txt";
+
+      findProfileAndShowUssFileMock.mockClear();
+
+      // @ts-ignore - calling private method for test
+      await ri.handleShowUssFileForHyperlink(mockContext, ussPath);
+
+      expect(findProfileAndShowUssFileMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "MYPROF",
+          host: "example.com",
+          port: 1234,
+        }),
+        ussPath,
+        "TESTREGION"
+      );
     });
   });
 });

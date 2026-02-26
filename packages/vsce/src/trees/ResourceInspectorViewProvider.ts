@@ -20,7 +20,7 @@ import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import IconBuilder from "../utils/IconBuilder";
-import { findProfileAndShowDataSet, findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
+import { findProfileAndShowDataSet, findProfileAndShowJobSpool, findProfileAndShowUssFile, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
 import type { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
@@ -82,6 +82,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         case "showDatasetForHyperlink":
           await this.handleShowDatasetForHyperlink(message.resourceContext, message.datasetName);
           break;
+        case "showUssFileForHyperlink":
+          await this.handleShowUssFileForHyperlink(message.resourceContext, message.ussPath);
+          break;
       }
     });
     this.webviewView.onDidDispose(() => {
@@ -140,13 +143,14 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       meta: this.resources[0].meta,
     };
 
-    // Check if the zowe.ds.setDataSetFilter command is available
+    // Check if both Zowe Explorer commands are available (datasets and USS files)
     const availableCommands = await commands.getCommands();
-    const shouldRenderDatasetLinks = availableCommands.includes("zowe.ds.setDataSetFilter");
+    const shouldRenderZoweExplorerLinks = availableCommands.includes("zowe.ds.setDataSetFilter") &&
+                                          availableCommands.includes("zowe.uss.setUssPath");
 
-    // log information if the dataset filter command is not available
-    if (!shouldRenderDatasetLinks) {
-      CICSLogger.info("The zowe.ds.setDataSetFilter command is not available, so hyperlinks to Data Sets will not be enabled");
+    // log information if the Zowe Explorer commands are not available
+    if (!shouldRenderZoweExplorerLinks) {
+      CICSLogger.debug("Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, so hyperlinks to Data Sets and USS files will not be enabled");
     }
 
     const message: ExtensionToWebviewMessage = {
@@ -155,7 +159,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       resourceIconPath: this.createIconPaths(IconBuilder.resource(containedResource)),
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
-      shouldRenderDatasetLinks,
+      shouldRenderDatasetLinks: shouldRenderZoweExplorerLinks,
     };
 
     await this.webviewView.webview.postMessage(message);
@@ -273,6 +277,26 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     } catch (error) {
       CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
       window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
+    }
+  }
+
+  /**
+   * Handles the showUssFileForHyperlink request from the webview
+   * Calls findProfileAndShowUssFile to show the USS file in Zowe Explorer
+   */
+  private async handleShowUssFileForHyperlink(ctx: IResourceContext, ussPath: string) {
+    const { regionName, profile } = ctx;
+    try {
+      const cicsProfile = SessionHandler.getInstance().getProfile(profile.name);
+      if (!cicsProfile) {
+        CICSLogger.warn(`No CICS profile found: ${profile.name}`);
+        window.showWarningMessage(l10n.t("CICS profile not found: {0}", profile.name));
+        return;
+      }
+      await findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
+    } catch (error) {
+      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${error.message}`);
+      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, error.message));
     }
   }
 }

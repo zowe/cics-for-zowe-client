@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 - Enhancement: Enabled CICS attribute links to Data Sets in Zowe Explorer. [#590](https://github.com/zowe/cics-for-zowe-client/issues/590)
+- Enhancement: Enabled CICS attribute links to USS in Zowe Explorer. [#598](https://github.com/zowe/cics-for-zowe-client/issues/598)
 
 ## `3.19.0`
 
