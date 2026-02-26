@@ -150,7 +150,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     // log information if the Zowe Explorer commands are not available
     if (!shouldRenderZoweExplorerLinks) {
-      CICSLogger.info("Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, so hyperlinks to Data Sets and USS files will not be enabled");
+      CICSLogger.debug("Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, so hyperlinks to Data Sets and USS files will not be enabled");
     }
 
     const message: ExtensionToWebviewMessage = {
