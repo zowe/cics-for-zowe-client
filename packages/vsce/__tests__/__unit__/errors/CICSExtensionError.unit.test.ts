@@ -123,10 +123,11 @@ describe("Test suite for CICSExtensionError", () => {
 
     sut = new CICSExtensionError({
       baseError: error,
+      profileName: "myprof",
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The request failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
+      "The request on profile myprof failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
     );
   });
 });
