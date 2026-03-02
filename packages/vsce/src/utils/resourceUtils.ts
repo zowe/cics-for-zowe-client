@@ -55,7 +55,7 @@ interface IRunGetCacheQueryParams {
 
 export async function runGetResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams) {
   CICSLogger.debug(
-    buildRequestLoggerString(profileName, "GET", resourceName, undefined, {
+    buildRequestLoggerString(profileName, "GET", resourceName, {
       regionName,
       cicsPlex,
       criteria: params?.criteria,
@@ -95,7 +95,7 @@ export async function runGetCache(
   { nodiscard, summonly }: IRunGetCacheQueryParams = { nodiscard: true, summonly: false }
 ) {
   CICSLogger.debug(
-    buildRequestLoggerString(profileName, "GET", "CICSResultCache", undefined, {
+    buildRequestLoggerString(profileName, "GET", "CICSResultCache", {
       cacheToken,
       startIndex,
       count,
@@ -138,13 +138,19 @@ export async function runGetCache(
 
 export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
   CICSLogger.debug(
-    buildRequestLoggerString(profileName, "PUT", resourceName, requestBody, {
-      cicsPlex,
-      regionName,
-      criteria: params?.criteria,
-      parameters: params?.parameter,
-      ...params?.queryParams,
-    })
+    buildRequestLoggerString(
+      profileName,
+      "PUT",
+      resourceName,
+      {
+        cicsPlex,
+        regionName,
+        criteria: params?.criteria,
+        parameters: params?.parameter,
+        ...params?.queryParams,
+      },
+      requestBody
+    )
   );
 
   const profile = SessionHandler.getInstance().getProfile(profileName);
@@ -215,14 +221,14 @@ export const buildRequestLoggerString = (
   profile: string,
   method: "GET" | "PUT" | "POST",
   resourceName: string,
-  requestBody?: string,
-  opts: { [key: string]: string | boolean | number } = {}
+  opts: { [key: string]: string | boolean | number | any } = {},
+  requestBody?: any
 ): string => {
   let output = `${profile}: ${method.toUpperCase()} ${resourceName}`;
 
   for (const [k, v] of Object.entries(opts)) {
     if (v) {
-      output += `, ${k.toUpperCase()} [${v}]`;
+      output += `, ${k.toUpperCase()}[${v}]`;
     }
   }
 
