@@ -104,10 +104,13 @@ describe("Test suite for CICSExtensionError", () => {
       resource: "localhost:8080/login/",
     });
 
-    sut = new CICSExtensionError({ baseError: baseErrorMock });
+    sut = new CICSExtensionError({
+      baseError: baseErrorMock,
+      profileName: "myprof",
+    });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to send request on profile . Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
+      "Failed to send request on profile myprof. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
     );
   });
 
