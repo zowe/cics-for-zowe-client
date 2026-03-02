@@ -46,4 +46,8 @@ export interface ICICSExtensionError {
    * Name of the profile
    */
   profileName?: string;
+  /**
+   * Stack trace of the base error (for unidentified errors)
+   */
+  stackTrace?: string;
 }

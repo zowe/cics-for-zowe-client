@@ -17,7 +17,7 @@ import type { CICSExtensionError } from "./CICSExtensionError";
 
 export class CICSErrorHandler {
   static handleCMCIRestError(error: CICSExtensionError, action?: MessageItem[]): Thenable<string | MessageItem> {
-    const { errorMessage: msg, resourceType } = error.cicsExtensionError;
+    const { errorMessage: msg, resourceType, stackTrace } = error.cicsExtensionError;
 
     let message = msg;
     if (resourceType && !action && msg) {
@@ -27,7 +27,7 @@ export class CICSErrorHandler {
       }
     }
 
-    return this.notifyErrorMessage({ errorMessage: message, action });
+    return this.notifyErrorMessage({ errorMessage: message, additionalInfo: stackTrace, action });
   }
 
   handleExtensionError() {}
@@ -41,7 +41,7 @@ export class CICSErrorHandler {
     additionalInfo?: string;
     action?: MessageItem[];
   }): Thenable<string | MessageItem> {
-    const logMessage = additionalInfo ? `${this.trimLineBreaks(errorMessage)} ${additionalInfo}` : this.trimLineBreaks(errorMessage);
+    const logMessage = additionalInfo ? `${this.trimLineBreaks(errorMessage)}\n${additionalInfo}` : this.trimLineBreaks(errorMessage);
 
     CICSLogger.error(logMessage);
 
