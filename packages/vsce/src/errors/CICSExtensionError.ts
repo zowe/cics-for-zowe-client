@@ -97,7 +97,12 @@ export class CICSExtensionError extends Error {
     } else {
       const err = error as Error;
       // At this point we're not entirely certain what's gone wrong. Include a stack trace as well.
-      this.cicsExtensionError.errorMessage = l10n.t("The request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
+      this.cicsExtensionError.errorMessage = l10n.t(
+        "The request on profile {0} failed. Error message: {1}, Cause: {2}",
+        this.cicsExtensionError.profileName,
+        err.message,
+        `${err.cause}`
+      );
       this.cicsExtensionError.stackTrace = err.stack;
     }
   }
