@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Add profile name to feedback interface to improve error reporting in VSCE. [#581](https://github.com/zowe/cics-for-zowe-client/issues/581)
+
 ## `6.18.0`
 
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
