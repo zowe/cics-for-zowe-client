@@ -93,9 +93,12 @@ export class CICSExtensionError extends Error {
       this.cicsExtensionError.statusCode = error.cicsExtensionError.statusCode;
       this.cicsExtensionError.resp1Code = error.cicsExtensionError.resp1Code;
       this.cicsExtensionError.resp2Code = error.cicsExtensionError.resp2Code;
+      this.cicsExtensionError.stackTrace = error.cicsExtensionError.stackTrace;
     } else {
       const err = error as Error;
+      // At this point we're not entirely certain what's gone wrong. Include a stack trace as well.
       this.cicsExtensionError.errorMessage = l10n.t("The request failed. Error message: {0}, Cause: {1}", err.message, `${err.cause}`);
+      this.cicsExtensionError.stackTrace = err.stack;
     }
   }
 }
