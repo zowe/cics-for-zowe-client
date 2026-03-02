@@ -28,6 +28,30 @@ class SCICSResourceExtender implements IResourceExtender {
     arr.push(action);
     this.registeredActions.set(action.resourceType, arr);
   }
+
+  unregisterAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): boolean {
+    const actions = this.registeredActions.get(action.resourceType);
+    if (!actions?.length) {
+      return false;
+    }
+
+    const index = actions.findIndex((a) => a.id === action.id);
+    if (index === -1) {
+      return false;
+    }
+
+    actions.splice(index, 1);
+    if (actions.length === 0) {
+      this.registeredActions.delete(action.resourceType);
+    }
+
+    return true;
+  }
+
+  unregisterAllActions(): void {
+    this.registeredActions.clear();
+  }
+
   getActions() {
     return [...this.registeredActions.values()].flat();
   }

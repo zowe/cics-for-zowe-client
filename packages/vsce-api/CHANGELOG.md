@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Allow to dispose IResourceExtender action registrations. [#592](https://github.com/zowe/cics-for-zowe-client/issues/592)
+
 ## `6.19.0`
 
 - Enhancement: Added attributes to resource interfaces: JVM Server, TS Queue, Bundle, Bundle Part, Library Dataset. [#500](https://github.com/zowe/cics-for-zowe-client/issues/500)

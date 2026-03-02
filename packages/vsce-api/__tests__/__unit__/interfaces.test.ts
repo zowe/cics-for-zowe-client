@@ -36,6 +36,23 @@ describe("Interfaces", () => {
       arr.push(acc as unknown as ResourceAction<keyof ResourceTypeMap>);
       this.registeredActions.set(acc.resourceType, arr);
     },
+    unregisterAction: function <TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): boolean {
+      const actions = this.registeredActions.get(action.resourceType);
+      if (!actions?.length) return false;
+
+      const index = actions.findIndex((a: ResourceAction<keyof ResourceTypeMap>) => a.id === action.id);
+      if (index === -1) return false;
+
+      actions.splice(index, 1);
+      if (actions.length === 0) {
+        this.registeredActions.delete(action.resourceType);
+      }
+
+      return true;
+    },
+    unregisterAllActions: function (): void {
+      this.registeredActions.clear();
+    },
     getActions: function (): ResourceAction<keyof ResourceTypeMap>[] {
       return [...this.registeredActions.values()].flat() as ResourceAction<keyof ResourceTypeMap>[];
     },

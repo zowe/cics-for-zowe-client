@@ -6,7 +6,11 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 - Enhancement: Enabled CICS attribute links to Data Sets in Zowe Explorer. [#590](https://github.com/zowe/cics-for-zowe-client/issues/590)
 - Enhancement: Enabled CICS attribute links to USS in Zowe Explorer. [#598](https://github.com/zowe/cics-for-zowe-client/issues/598)
+<<<<<<< HEAD
 - BugFix: Show relevant profile name in error notifications. [#581](https://github.com/zowe/cics-for-zowe-client/issues/581)
+=======
+- Enhancement: Allow to dispose IResourceExtender action registrations. [#592](https://github.com/zowe/cics-for-zowe-client/issues/592)
+>>>>>>> 04108d4d (deregister action for resource extender.)
 
 ## `3.19.0`
 
