@@ -31,27 +31,11 @@ describe("Interfaces", () => {
 
   const extender: IResourceExtender = {
     registeredActions: new Map(),
-    registerAction: function <TType extends keyof ResourceTypeMap>(acc: ResourceAction<TType>): void {
+    registerAction: function <TType extends keyof ResourceTypeMap>(acc: ResourceAction<TType>) {
       const arr = this.registeredActions.get(acc.resourceType) || [];
       arr.push(acc as unknown as ResourceAction<keyof ResourceTypeMap>);
       this.registeredActions.set(acc.resourceType, arr);
-    },
-    unregisterAction: function <TType extends keyof ResourceTypeMap>(act: ResourceAction<TType>): boolean {
-      const actions = this.registeredActions.get(act.resourceType) || [];
-      if (!actions?.length) return false;
-
-      const index = actions.findIndex((a: ResourceAction<keyof ResourceTypeMap>) => a.id === act.id);
-      if (index === -1) return false;
-
-      actions.splice(index, 1);
-      if (actions.length === 0) {
-        this.registeredActions.delete(act.resourceType);
-      }
-
-      return true;
-    },
-    unregisterAllActions: function (): void {
-      this.registeredActions.clear();
+      return { dispose: () => {} };
     },
     getActions: function (): ResourceAction<keyof ResourceTypeMap>[] {
       return [...this.registeredActions.values()].flat() as ResourceAction<keyof ResourceTypeMap>[];
