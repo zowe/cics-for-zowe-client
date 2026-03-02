@@ -121,18 +121,24 @@ describe("Resource Util Helper methods", () => {
   });
 
   it("should build a GET request string with string and boolean options", () => {
-    const logString = buildRequestLoggerString("GET", "MYRES", { MORE: "OPTIONS", SPECIFIED: true });
-    expect(logString).toEqual("GET - Resource [MYRES], MORE [OPTIONS], SPECIFIED [true]");
+    const logString = buildRequestLoggerString("profilename", "GET", "MYRES", { MORE: "OPTIONS", SPECIFIED: true });
+    expect(logString).toEqual("profilename: GET MYRES, MORE[OPTIONS], SPECIFIED[true]");
   });
 
   it("should build a PUT request string with no options", () => {
-    const logString = buildRequestLoggerString("PUT", "MYRES");
-    expect(logString).toEqual("PUT - Resource [MYRES]");
+    const logString = buildRequestLoggerString("profilename", "PUT", "MYRES");
+    expect(logString).toEqual("profilename: PUT MYRES");
   });
 
   it("should build a POST request string with upper and lowercase options", () => {
-    const logString = buildRequestLoggerString("POST", "MYRES", { lower: "case", UPPER: "CASE" });
-    expect(logString).toEqual("POST - Resource [MYRES], LOWER [case], UPPER [CASE]");
+    const logString = buildRequestLoggerString("profilename", "POST", "MYRES", { lower: "case", UPPER: "CASE" });
+    expect(logString).toEqual("profilename: POST MYRES, LOWER[case], UPPER[CASE]");
+  });
+
+  it("should build a PUT request string with request body", () => {
+    const requestBody = { request: { action: { $: { name: "DISABLE" } } } };
+    const logString = buildRequestLoggerString("profilename", "PUT", "MYRES", { regionName: "MYREG" }, requestBody);
+    expect(logString).toEqual('profilename: PUT MYRES, REGIONNAME[MYREG], REQUESTBODY[{"request":{"action":{"$":{"name":"DISABLE"}}}}]');
   });
 });
 
@@ -156,7 +162,7 @@ describe("Resource Util requesters", () => {
     }
 
     expect(loggerSpy).toHaveBeenCalledTimes(1);
-    expect(loggerSpy).toHaveBeenCalledWith(`GET - Resource [MYRES]`);
+    expect(loggerSpy).toHaveBeenCalledWith(`MYPROF: GET MYRES`);
 
     expect(getResourceMock).toHaveBeenCalledTimes(1);
     expect(authOrderSpy).toHaveBeenCalledTimes(1);
