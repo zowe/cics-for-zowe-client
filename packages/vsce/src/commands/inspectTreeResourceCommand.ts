@@ -80,7 +80,12 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       return compareTreeNodeWithPrompts(inspectorAsNode, context);
     }
 
-    // Case 2: Exactly 2 resources selected in tree - direct comparison
+    // Case 2: Not exactly 2 resources selected in tree - return early
+    if (treeNodes.length !== 2) {
+      return;
+    }
+
+    // Case 3: Exactly 2 resources selected in tree - direct comparison
     if (treeNodes.length === 2) {
       if (treeNodes[0].getContainedResource().meta !== treeNodes[1].getContainedResource().meta) {
         return Gui.showMessage(l10n.t("Cannot compare CICS resources of different types."), { severity: MessageSeverity.ERROR });
@@ -102,12 +107,12 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       );
     }
 
-    // Case 3: Single resource selected in tree - prompt for second resource
+    // Case 4: Single resource selected in tree - prompt for second resource
     if (treeNodes.length === 1) {
       return compareTreeNodeWithPrompts(treeNodes[0], context);
     }
 
-    // Case 4: Command invoked with node parameter (right-click on single resource)
+    // Case 5: Command invoked with node parameter (right-click on single resource)
     if (node) {
       return compareTreeNodeWithPrompts(node, context);
     }
