@@ -43,7 +43,6 @@ describe("Test suite for CICSExtensionError", () => {
             resp_alt: "INVREQ",
             resp2: "6",
             action: "Disable",
-            profile: "myprof",
           },
         },
       },

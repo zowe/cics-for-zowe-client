@@ -24,5 +24,4 @@ export interface ICMCIResponseErrorFeedBack {
   resp: string;
   resp_alt: string;
   resp2: string;
-  profile: string;
 }
