@@ -511,7 +511,7 @@
           "group": "1.CICSResourceNode.inquire"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && listDoubleSelection",
           "command": "cics-extension-for-zowe.compareTreeResources",
           "group": "1.CICSResourceNode.inquire"
         },
