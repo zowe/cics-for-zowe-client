@@ -14,11 +14,11 @@ import constants from "../../../src/constants/CICS.defaults";
 import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
 import { CICSExtensionError } from "../../../src/errors/CICSExtensionError";
 import { CICSTree } from "../../../src/trees";
-import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import * as iconUtils from "../../../src/utils/iconUtils";
 import { ProfileManagement } from "../../../src/utils/profileManagement";
@@ -47,6 +47,7 @@ const unauthorizedError = new CICSExtensionError({
   baseError: mockRestClientError,
   statusCode: constants.HTTP_ERROR_UNAUTHORIZED,
   errorMessage: "Invalid user or session expired",
+  profileName: "thisProfile",
 });
 
 describe("Test suite for CICSSessionTree", () => {
@@ -118,6 +119,7 @@ describe("Test suite for CICSSessionTree", () => {
         baseError: mockRestClientError,
         statusCode: constants.HTTP_ERROR_UNAUTHORIZED,
         errorMessage: "Invalid user or session expired",
+        profileName: "thisProfile",
       });
 
       getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
@@ -166,14 +168,14 @@ describe("Test suite for CICSSessionTree", () => {
       const mockFetcher = { reset: jest.fn() };
       const mockResourceContainer = Object.create(CICSResourceContainerNode.prototype);
       mockResourceContainer.getFetcher = jest.fn().mockReturnValue(mockFetcher);
-      
+
       const mockRegionTree = Object.create(CICSRegionTree.prototype);
       mockRegionTree.children = [mockResourceContainer];
-      
+
       sessionTree.children = [mockRegionTree];
-      
+
       sessionTree.resetAllResourceContainers();
-      
+
       expect(mockResourceContainer.getFetcher).toHaveBeenCalled();
       expect(mockFetcher.reset).toHaveBeenCalled();
     });
@@ -182,15 +184,15 @@ describe("Test suite for CICSSessionTree", () => {
       const mockFetcher = { reset: jest.fn() };
       const mockResourceContainer = Object.create(CICSResourceContainerNode.prototype);
       mockResourceContainer.getFetcher = jest.fn().mockReturnValue(mockFetcher);
-      
+
       const mockPlexTree = Object.create(CICSPlexTree.prototype);
       mockPlexTree.children = [mockResourceContainer];
       mockPlexTree.plexName = "TESTPLEX";
-      
+
       sessionTree.children = [mockPlexTree];
-      
+
       sessionTree.resetAllResourceContainers();
-      
+
       expect(mockResourceContainer.getFetcher).toHaveBeenCalled();
       expect(mockFetcher.reset).toHaveBeenCalled();
     });
@@ -199,21 +201,21 @@ describe("Test suite for CICSSessionTree", () => {
       const mockFetcher = { reset: jest.fn() };
       const mockResourceContainer = Object.create(CICSResourceContainerNode.prototype);
       mockResourceContainer.getFetcher = jest.fn().mockReturnValue(mockFetcher);
-      
+
       const mockRegionTree = Object.create(CICSRegionTree.prototype);
       mockRegionTree.children = [mockResourceContainer];
-      
+
       const mockRegionsContainer = Object.create(CICSRegionsContainer.prototype);
       mockRegionsContainer.children = [mockRegionTree];
-      
+
       const mockPlexTree = Object.create(CICSPlexTree.prototype);
       mockPlexTree.children = [mockRegionsContainer];
       mockPlexTree.plexName = "TESTPLEX";
-      
+
       sessionTree.children = [mockPlexTree];
-      
+
       sessionTree.resetAllResourceContainers();
-      
+
       expect(mockResourceContainer.getFetcher).toHaveBeenCalled();
       expect(mockFetcher.reset).toHaveBeenCalled();
     });
@@ -221,28 +223,28 @@ describe("Test suite for CICSSessionTree", () => {
     it("should handle undefined or null fetcher gracefully", () => {
       const mockResourceContainer = Object.create(CICSResourceContainerNode.prototype);
       mockResourceContainer.getFetcher = jest.fn().mockReturnValue(undefined);
-      
+
       const mockRegionTree = Object.create(CICSRegionTree.prototype);
       mockRegionTree.children = [mockResourceContainer];
-      
+
       sessionTree.children = [mockRegionTree];
-      
+
       expect(() => sessionTree.resetAllResourceContainers()).not.toThrow();
       expect(mockResourceContainer.getFetcher).toHaveBeenCalled();
     });
 
     it("should handle empty children array", () => {
       sessionTree.children = [];
-      
+
       expect(() => sessionTree.resetAllResourceContainers()).not.toThrow();
     });
 
     it("should handle null children in nodes", () => {
       const mockRegionTree = Object.create(CICSRegionTree.prototype);
       mockRegionTree.children = null as any;
-      
+
       sessionTree.children = [mockRegionTree];
-      
+
       expect(() => sessionTree.resetAllResourceContainers()).not.toThrow();
     });
   });

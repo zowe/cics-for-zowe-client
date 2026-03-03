@@ -10,8 +10,8 @@
  */
 
 import type { IResource, ISharedTSQueue, ITSQueue } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciConstants, CicsCmciRestClient, type IGetResourceUriOptions, Utils } from "@zowe/cics-for-zowe-sdk";
-import { type TreeView, commands, l10n, window } from "vscode";
+import { CicsCmciConstants, CicsCmciRestClient, Utils, type IGetResourceUriOptions } from "@zowe/cics-for-zowe-sdk";
+import { commands, l10n, window, type TreeView } from "vscode";
 import { SharedTSQueueMeta, TSQueueMeta } from "../doc";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
@@ -68,7 +68,7 @@ export const deleteTSQueueCommand = async (
       }
     } catch (error) {
       CICSErrorHandler.handleCMCIRestError(
-        new CICSExtensionError({ baseError: error, resourceName: c.getContainedResourceName(), errorMessage: `${error}` })
+        new CICSExtensionError({ baseError: error, resourceName: c.getContainedResourceName(), errorMessage: `${error}`, profileName: "lala" })
       );
     }
   }
