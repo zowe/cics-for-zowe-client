@@ -24,7 +24,7 @@ const TSActions: ResourceActionOptions<ResourceTypes.CICSTSQueue>[] = [
     id: "CICS.CICSTSQueue.COMPARE_TO",
     name: l10n.t("Compare to..."),
     resourceType: ResourceTypes.CICSTSQueue,
-    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
 ];
@@ -40,7 +40,7 @@ const sharedTSActions: ResourceActionOptions<ResourceTypes.CICSSharedTSQueue>[] 
     id: "CICS.CICSSharedTSQueue.COMPARE_TO",
     name: l10n.t("Compare to..."),
     resourceType: ResourceTypes.CICSSharedTSQueue,
-    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
 ];

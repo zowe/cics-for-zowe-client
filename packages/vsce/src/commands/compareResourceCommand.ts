@@ -11,68 +11,52 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, InputBoxOptions, commands, l10n, window } from "vscode";
+import { ExtensionContext, InputBoxOptions, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import { IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
 import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
-import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import { IResourceInspectorResource } from "../webviews/common/vscode";
 import { showInspectResource } from "./inspectResourceCommandUtils";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
-export function getCompareResourceFromInspectorCommand(context: ExtensionContext) {
-  return commands.registerCommand("cics-extension-for-zowe.compareResourceFromInspector", async (node: CICSResourceContainerNode<IResource>) => {
-    // Get the current resource from the Resource Inspector
-    const resourceInspector = ResourceInspectorViewProvider.getInstance(context);
-    const currentResources = resourceInspector.getResources();
+/**
+ * Helper function to compare a tree node resource with another resource (with prompts)
+ * @param node The tree node containing the resource to compare
+ * @param context Extension context
+ */
+export async function compareTreeNodeWithPrompts(node: CICSResourceContainerNode<IResource>, context: ExtensionContext) {
+  if (!node) {
+    await window.showErrorMessage(l10n.t("No CICS resource selected"));
+    return;
+  }
 
-    if (!currentResources || currentResources.length === 0) {
-      await window.showErrorMessage(l10n.t("No resource is currently open in the Resource Inspector"));
-      return;
-    }
+  const nodeMeta = node.getContainedResource().meta;
+  const nodeResource = node.getContainedResource().resource;
 
-    // Use the first resource as the base for comparison
-    const currentResource = currentResources[0];
+  if (!nodeMeta || !nodeResource) {
+    await window.showErrorMessage(l10n.t("No CICS resource information available to compare"));
+    return;
+  }
 
-    await compareResourceFromInspector(currentResource, context);
-  });
-}
+  // Convert tree node to IResourceInspectorResource format
+  const currentResource: IResourceInspectorResource = {
+    resource: nodeResource.attributes,
+    meta: nodeMeta,
+    context: {
+      profile: node.getProfile(),
+      session: node.getSession(),
+      cicsplexName: node.cicsplexName,
+      regionName: node.regionName ?? nodeResource.attributes.eyu_cicsname,
+    },
+    highlights: nodeMeta.getHighlights(nodeResource),
+    name: nodeMeta.getName(nodeResource),
+    actions: [], // Not needed for comparison
+  };
 
-export function getCompareTreeResourceCommand(context: ExtensionContext) {
-  return commands.registerCommand("cics-extension-for-zowe.compareTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
-    if (!node) {
-      await window.showErrorMessage(l10n.t("No CICS resource selected"));
-      return;
-    }
-
-    const nodeMeta = node.getContainedResource().meta;
-    const nodeResource = node.getContainedResource().resource;
-
-    if (!nodeMeta || !nodeResource) {
-      await window.showErrorMessage(l10n.t("No CICS resource information available to compare"));
-      return;
-    }
-
-    // Convert tree node to IResourceInspectorResource format
-    const currentResource: IResourceInspectorResource = {
-      resource: nodeResource.attributes,
-      meta: nodeMeta,
-      context: {
-        profile: node.getProfile(),
-        session: node.getSession(),
-        cicsplexName: node.cicsplexName,
-        regionName: node.regionName ?? nodeResource.attributes.eyu_cicsname,
-      },
-      highlights: nodeMeta.getHighlights(nodeResource),
-      name: nodeMeta.getName(nodeResource),
-      actions: [], // Not needed for comparison
-    };
-
-    await compareResourceFromInspector(currentResource, context);
-  });
+  await compareResourceFromInspector(currentResource, context);
 }
 
 async function compareResourceFromInspector(currentResource: IResourceInspectorResource, context: ExtensionContext) {

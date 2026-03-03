@@ -45,7 +45,7 @@ const actions: ResourceActionOptions<ResourceTypes.CICSLocalFile>[] = [
     id: "CICS.CICSLocalFile.COMPARE_TO",
     name: l10n.t("Compare to..."),
     resourceType: ResourceTypes.CICSLocalFile,
-    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
 ];

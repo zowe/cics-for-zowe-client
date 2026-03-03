@@ -39,7 +39,7 @@ const actions: ResourceActionOptions<ResourceTypes.CICSManagedRegion>[] = [
     id: "CICS.CICSManagedRegion.COMPARE_TO",
     name: l10n.t("Compare to..."),
     resourceType: ResourceTypes.CICSManagedRegion,
-    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
 ];

@@ -49,7 +49,7 @@ const actions: ResourceActionOptions<ResourceTypes.CICSProgram>[] = [
     id: "CICS.CICSProgram.COMPARE_TO",
     name: l10n.t("Compare to..."),
     resourceType: ResourceTypes.CICSProgram,
-    action: "cics-extension-for-zowe.compareResourceFromInspector",
+    action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
 ];
