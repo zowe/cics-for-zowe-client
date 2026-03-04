@@ -9,16 +9,16 @@
  *
  */
 
-import { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { ExtensionContext, InputBoxOptions, l10n, window } from "vscode";
+import { type ExtensionContext, type InputBoxOptions, l10n, window } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
-import { IContainedResource, IResourceMeta } from "../doc";
+import type { IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
-import { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { CICSLogger } from "../utils/CICSLogger";
-import { IResourceInspectorResource } from "../webviews/common/vscode";
+import type { IResourceInspectorResource } from "../webviews/common/vscode";
 import { showInspectResource } from "./inspectResourceCommandUtils";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
