@@ -47,8 +47,7 @@ describe("CMCI - Define bundle", () => {
 
     it("should throw error if no parms are defined", async () => {
       try {
-        // @ts-ignore - undefined is not a valid argument
-        response = await defineBundle(dummySession, undefined);
+        response = await defineBundle(dummySession, undefined as any);
       } catch (err) {
         error = err;
       }
@@ -62,8 +61,7 @@ describe("CMCI - Define bundle", () => {
       try {
         response = await defineBundle(dummySession, {
           regionName: "fake",
-          // @ts-ignore - name is required
-          name: undefined,
+          name: undefined as any,
           csdGroup: "fake",
           bundleDir: "fake",
         });
@@ -81,8 +79,7 @@ describe("CMCI - Define bundle", () => {
         response = await defineBundle(dummySession, {
           regionName: "fake",
           name: "fake",
-          // @ts-ignore - csdgroup is required
-          csdGroup: undefined,
+          csdGroup: undefined as any,
           bundleDir: "fake",
         });
       } catch (err) {
@@ -97,8 +94,7 @@ describe("CMCI - Define bundle", () => {
     it("should throw error if CICS Region name is not defined", async () => {
       try {
         response = await defineBundle(dummySession, {
-          // @ts-ignore - regionName is required
-          regionName: undefined,
+          regionName: undefined as any,
           name: "fake",
           csdGroup: "fake",
           bundleDir: "fake",
@@ -118,8 +114,7 @@ describe("CMCI - Define bundle", () => {
           regionName: "fake",
           name: "fake",
           csdGroup: "fake",
-          // @ts-ignore - bundleDir is required
-          bundleDir: undefined,
+          bundleDir: undefined as any,
         });
       } catch (err) {
         error = err;

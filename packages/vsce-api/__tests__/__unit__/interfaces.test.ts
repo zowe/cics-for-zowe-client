@@ -73,8 +73,7 @@ describe("Interfaces", () => {
     },
   };
 
-  // @ts-ignore - profile will not be undefined
-  const session: CICSSession = new CICSSession(profile.profile);
+  const session: CICSSession = new CICSSession(profile.profile as any);
 
   const cx: IResourceContext = {
     profile,

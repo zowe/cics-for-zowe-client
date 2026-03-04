@@ -9,5 +9,5 @@
  *
  */
 
-import { ConfigGlobals, createConfig } from "../../common.jest_config";
+import { ConfigGlobals, createConfig } from "../../common.jest_config.js";
 export default createConfig("system", "Zowe CICS SDK System Tests") as ConfigGlobals;

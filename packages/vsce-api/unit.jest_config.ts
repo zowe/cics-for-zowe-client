@@ -9,5 +9,13 @@
  *
  */
 
-import { ConfigGlobals, createConfig } from "../../common.jest_config";
-export default createConfig("unit", "Zowe Explorer for IBM CICS Transaction Server API Unit Tests") as ConfigGlobals;
+import { Config } from "jest";
+
+const baseConfig = require("../../jest.config.ts");
+
+const conf: Config = {
+    ...baseConfig,
+    displayName: "Zowe Explorer for IBM CICS Transaction Server API Unit Tests",
+}
+
+module.exports = conf;

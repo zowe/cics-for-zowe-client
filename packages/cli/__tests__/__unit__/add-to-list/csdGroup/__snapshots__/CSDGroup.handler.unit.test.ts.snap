@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AddToListProgramHandler should call the addCSDGroupToList api 1`] = `"The CSD Group '%s' was successfully added to '%s'."`;
 

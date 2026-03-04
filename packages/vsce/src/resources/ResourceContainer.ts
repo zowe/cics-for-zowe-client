@@ -14,11 +14,11 @@ import type { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import type { IContainedResource, IResourceMeta } from "../doc";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
 import { runGetCache, runGetResource } from "../utils/resourceUtils";
 import { Resource } from "./Resource";
-import { CICSLogger } from "../utils/CICSLogger";
 
 export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
@@ -266,13 +266,11 @@ export class ResourceContainer {
    */
   async reset() {
     // Discard all cache tokens if not already discarded
-    const summariesWithTokens = this.summaries.size > 0
-      ? Array.from(this.summaries.values()).filter((summary) => summary?.cachetoken)
-      : [];
-    const cacheToken = summariesWithTokens.map(s => s.cachetoken).join(', ');
+    const summariesWithTokens = this.summaries.size > 0 ? Array.from(this.summaries.values()).filter((summary) => summary?.cachetoken) : [];
+    const cacheToken = summariesWithTokens.map((s) => s.cachetoken).join(", ");
     if (summariesWithTokens.length > 0) {
       CICSLogger.debug(`Discarding the following caches for profile ${this.context.profileName}: ${cacheToken}.`);
-      
+
       const discardPromises = summariesWithTokens.map((summary) =>
         runGetCache(
           {
@@ -299,5 +297,4 @@ export class ResourceContainer {
     summ.recordcount = `${parseInt(summ.recordcount) - count}`;
     this.summaries.set(meta, summ);
   }
-
 }

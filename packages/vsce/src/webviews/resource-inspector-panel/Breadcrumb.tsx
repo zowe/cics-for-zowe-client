@@ -12,7 +12,7 @@
 import { useState } from "react";
 import { Chevron } from "../common/Chevron";
 import { useTheme } from "../common/ThemeContext";
-import { IResourceInspectorIconPath, IResourceInspectorResource } from "../common/vscode";
+import type { IResourceInspectorIconPath, IResourceInspectorResource } from "../common/vscode";
 import { ContextMenu } from "./Contextmenu";
 
 const SecondaryText = ({ txt, className = "" }: { txt: string; className?: string }) => (
@@ -47,7 +47,13 @@ export const Breadcrumb = (props: {
         onMouseLeave={() => setShowTooltip(false)}
       >
         {showFullPath && showTooltip && (
-          <div className="bg-(--vscode-editor-background) rounded-md shadow-lg text-(--vscode-foreground) text-xs border border-[color-mix(in_srgb,var(--vscode-disabledForeground),black_50%)] px-2 py-1 absolute left-0 top-5 flex items-center gap-1 z-20">
+          <div
+            className={
+              "bg-(--vscode-editor-background) rounded-md shadow-lg text-(--vscode-foreground)" +
+              " text-xs border border-[color-mix(in_srgb,var(--vscode-disabledForeground),black_50%)]" +
+              " px-2 py-1 absolute left-0 top-5 flex items-center gap-1 z-20"
+            }
+          >
             {profileName && (
               <>
                 <span>{profileName}</span>

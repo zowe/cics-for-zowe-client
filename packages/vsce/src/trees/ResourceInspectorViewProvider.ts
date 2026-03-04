@@ -16,6 +16,7 @@ import { randomUUID } from "crypto";
 import { type ExtensionContext, Uri, type Webview, type WebviewView, type WebviewViewProvider, commands, l10n, window } from "vscode";
 import type { CICSTree } from ".";
 import type { IContainedResource } from "../doc";
+import * as Mustache from "mustache";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -25,7 +26,6 @@ import { runGetResource } from "../utils/resourceUtils";
 import type { ExtensionToWebviewMessage, WebviewToExtensionMessage } from "../webviews/common/messages";
 import type { IResourceInspectorAction, IResourceInspectorResource } from "../webviews/common/vscode";
 import { handleActionCommand, handleRefreshCommand } from "./ResourceInspectorUtils";
-import Mustache = require("mustache");
 
 export class ResourceInspectorViewProvider implements WebviewViewProvider {
   public static readonly viewType = "resource-inspector";
@@ -150,7 +150,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
     // log information if the Zowe Explorer commands are not available
     if (!shouldRenderZoweExplorerLinks) {
-      CICSLogger.debug("Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, so hyperlinks to Data Sets and USS files will not be enabled");
+      CICSLogger.debug(
+        "Zowe Explorer commands (zowe.ds.setDataSetFilter and/or zowe.uss.setUssPath) are not available, " +
+        "so hyperlinks to Data Sets and USS files will not be enabled"
+      );
     }
 
     const message: ExtensionToWebviewMessage = {

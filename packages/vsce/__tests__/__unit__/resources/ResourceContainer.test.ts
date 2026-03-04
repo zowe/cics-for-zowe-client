@@ -185,11 +185,11 @@ describe("Resource Container", () => {
     // and parameters including nodiscard: false and summonly: true
     const resetCalls = getCacheMock.mock.calls.slice(initialGetCacheCallCount);
     expect(resetCalls.length).toBeGreaterThan(0);
-    
+
     // Check that at least one call has nodiscard: false and summonly: true
-    const discardCall = resetCalls.find(call => {
-    const params = call[1];
-    return params && params.nodiscard === false && params.summonly === true;
+    const discardCall = resetCalls.find((call) => {
+      const params = call[1];
+      return params && params.nodiscard === false && params.summonly === true;
     });
     expect(discardCall).toBeDefined();
     expect(container.hasMore()).toBeFalsy();

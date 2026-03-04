@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        node-version: [20.x, 22.x, 24.x]
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
@@ -105,12 +105,26 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run build
+      - name: Run package
         id: build
-        run: npm run build
+        run: npm run package
 
       - name: Install browsers
         run: npx playwright install --with-deps
+      
+      - name: Install SDK
+        run: |
+          npm install ./dist/zowe-cics-for-zowe-sdk-6.*.tgz
+          node scripts/sdk-test.js
+      
+      - name: Install CLI
+        run: |
+          npm install -g @zowe/cli@zowe-v3-lts
+          zowe --version
+          zowe plugins list
+          zowe plugins install ./dist/zowe-cics-for-zowe-cli-6.*.tgz
+          zowe plugins list
+          zowe cics --help
 
       - name: E2E Tests
         if: ${{ always() && steps.build.outcome == 'success' }}

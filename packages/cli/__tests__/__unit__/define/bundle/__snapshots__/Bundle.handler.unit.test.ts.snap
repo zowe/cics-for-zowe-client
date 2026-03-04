@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DefineBundleHandler should call the defineBundle api 1`] = `"The bundle '%s' was defined successfully."`;
 

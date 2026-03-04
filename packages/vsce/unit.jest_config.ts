@@ -9,8 +9,14 @@
  *
  */
 
-import { ConfigGlobals, createConfig } from "../../common.jest_config";
+import { Config } from "jest";
 
-const defaultConfig = createConfig("unit", "Zowe CICS VSCE Unit Tests");
-defaultConfig.testPathIgnorePatterns.push("<rootDir>/__tests__/playwright");
-export default defaultConfig as ConfigGlobals;
+const baseConfig = require("../../jest.config.ts");
+
+const conf: Config = {
+    ...baseConfig,
+    displayName: "Zowe CICS VSCE Unit Tests",
+    testPathIgnorePatterns: [...baseConfig.testPathIgnorePatterns, "<rootDir>/__tests__/playwright"],
+}
+
+module.exports = conf;
