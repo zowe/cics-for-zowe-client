@@ -34,10 +34,14 @@ class SCICSResourceExtender implements IResourceExtender {
 
   private removeAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): void {
     const actions = this.registeredActions.get(action.resourceType);
-    if (!actions?.length) return;
+    if (!actions?.length) {
+      return;
+    }
 
     const index = actions.findIndex((a) => a.id === action.id);
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     actions.splice(index, 1);
     if (actions.length === 0) {

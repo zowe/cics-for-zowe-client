@@ -4,7 +4,7 @@ All notable changes to the Zowe Explorer for IBM CICS Transaction Server API wil
 
 ## Recent Changes
 
-- Enhancement: Allow to dispose IResourceExtender action registrations. [#592](https://github.com/zowe/cics-for-zowe-client/issues/592)
+- Enhancement: Add Disposable return type to IResourceExtender.registerAction. [#592](https://github.com/zowe/cics-for-zowe-client/issues/592)
 
 ## `6.19.0`
 
