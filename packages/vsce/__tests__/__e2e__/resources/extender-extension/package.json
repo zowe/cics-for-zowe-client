@@ -18,7 +18,14 @@
     "*"
   ],
   "main": "./out/extension.js",
-  "contributes": {},
+  "contributes": {
+    "commands": [
+      {
+        "command": "extender-extension.removeAction",
+        "title": "Remove Action"
+      }
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "webpack --mode development",
