@@ -75,7 +75,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
 
     getInspectTreeResourceCommand(context, treeview),
     getCompareResourcesCommand(context, treeview),
-    getCompareResourceToCommand(context, treeview),
+    getCompareResourceToCommand(),
     getToggleResourceSettingCommand(),
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),

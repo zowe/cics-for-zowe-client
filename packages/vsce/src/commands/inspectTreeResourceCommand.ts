@@ -52,7 +52,6 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
   return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async (node: CICSResourceContainerNode<IResource>) => {
     const treeNodes: CICSResourceContainerNode<IResource>[] = [...new Set(treeview.selection)];
 
-    // Case 1: Called from Resource Inspector (no tree selection and no node parameter)
     if (treeNodes.length === 0 && !node) {
       const resourceInspector = ResourceInspectorViewProvider.getInstance(context);
       const currentResources = resourceInspector.getResources();
@@ -80,12 +79,10 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       return compareTreeNodeWithPrompts(inspectorAsNode, context);
     }
 
-    // Case 2: Not exactly 2 resources selected in tree - return early
-    if (treeNodes.length !== 2) {
-      return;
+    if (treeNodes.length === 1) {
+      return compareTreeNodeWithPrompts(treeNodes[0], context);
     }
 
-    // Case 3: Exactly 2 resources selected in tree - direct comparison
     if (treeNodes.length === 2) {
       if (treeNodes[0].getContainedResource().meta !== treeNodes[1].getContainedResource().meta) {
         return Gui.showMessage(l10n.t("Cannot compare CICS resources of different types."), { severity: MessageSeverity.ERROR });
@@ -107,19 +104,17 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       );
     }
 
-    // Case 4: Single resource selected in tree - prompt for second resource
-    if (treeNodes.length === 1) {
-      return compareTreeNodeWithPrompts(treeNodes[0], context);
+    if (treeNodes.length > 2) {
+      return;
     }
 
-    // Case 5: Command invoked with node parameter (right-click on single resource)
-    if (node) {
+    if(node){
       return compareTreeNodeWithPrompts(node, context);
     }
   });
 }
 
-export function getCompareResourceToCommand(context: ExtensionContext, treeview: TreeView<any>) {
+export function getCompareResourceToCommand() {
   return commands.registerCommand("cics-extension-for-zowe.compareTreeResourceTo", async (node: CICSResourceContainerNode<IResource>) => {
     // This command is just an alias for compareTreeResources with a different title
     // It's used for single-selection context menu and inspector actions
