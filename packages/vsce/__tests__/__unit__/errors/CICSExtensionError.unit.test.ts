@@ -52,10 +52,11 @@ describe("Test suite for CICSExtensionError", () => {
     sut = new CICSExtensionError({
       baseError: baseErrorMock,
       resourceName: "MyProg",
+      profileName: "myprof",
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to Disable PROGRAM MyProg with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6."
+      "Failed to Disable PROGRAM MyProg on profile myprof with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6."
     );
   });
 
@@ -86,10 +87,11 @@ describe("Test suite for CICSExtensionError", () => {
     sut = new CICSExtensionError({
       baseError: baseErrorMock,
       resourceName: "MyProg",
+      profileName: "myprof",
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The request failed for resources: MyProg. " + "Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
+      "The request failed on profile myprof for resources: MyProg. Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
     );
   });
 
@@ -101,10 +103,13 @@ describe("Test suite for CICSExtensionError", () => {
       resource: "localhost:8080/login/",
     });
 
-    sut = new CICSExtensionError({ baseError: baseErrorMock });
+    sut = new CICSExtensionError({
+      baseError: baseErrorMock,
+      profileName: "myprof",
+    });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "Failed to send request. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
+      "Failed to send request on profile myprof. Response details - URL: localhost:8080/login/, Message: The username or password is incorrect"
     );
   });
 
@@ -117,10 +122,11 @@ describe("Test suite for CICSExtensionError", () => {
 
     sut = new CICSExtensionError({
       baseError: error,
+      profileName: "myprof",
     });
 
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The request failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
+      "The request on profile myprof failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
     );
   });
 });

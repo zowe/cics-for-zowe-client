@@ -13,10 +13,10 @@ import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import {
   getCache,
   getResource,
+  putResource,
   type ICMCIApiResponse,
   type ICMCIResponseResultSummary,
   type IResourceQueryParams,
-  putResource
 } from "@zowe/cics-for-zowe-sdk";
 import { AuthOrder, type IProfileLoaded } from "@zowe/imperative";
 import { extensions } from "vscode";
@@ -55,7 +55,7 @@ interface IRunGetCacheQueryParams {
 
 export async function runGetResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams) {
   CICSLogger.debug(
-    buildRequestLoggerString("GET", resourceName, {
+    buildRequestLoggerString(profileName, "GET", resourceName, {
       regionName,
       cicsPlex,
       criteria: params?.criteria,
@@ -77,7 +77,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
@@ -86,7 +86,7 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
   try {
     return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [buildUserAgentHeader()]);
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
   }
 }
 
@@ -95,7 +95,7 @@ export async function runGetCache(
   { nodiscard, summonly }: IRunGetCacheQueryParams = { nodiscard: true, summonly: false }
 ) {
   CICSLogger.debug(
-    buildRequestLoggerString("GET", "CICSResultCache", {
+    buildRequestLoggerString(profileName, "GET", "CICSResultCache", {
       cacheToken,
       startIndex,
       count,
@@ -117,7 +117,7 @@ export async function runGetCache(
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error });
+      throw new CICSExtensionError({ baseError: error, profileName });
     }
   }
 
@@ -132,19 +132,25 @@ export async function runGetCache(
       [buildUserAgentHeader()]
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error });
+    throw new CICSExtensionError({ baseError: error, profileName });
   }
 }
 
 export async function runPutResource({ profileName, resourceName, regionName, cicsPlex, params }: IRunGetPutResourceParams, requestBody: any) {
   CICSLogger.debug(
-    buildRequestLoggerString("PUT", resourceName, {
-      cicsPlex,
-      regionName,
-      criteria: params?.criteria,
-      parameters: params?.parameter,
-      ...params?.queryParams,
-    })
+    buildRequestLoggerString(
+      profileName,
+      "PUT",
+      resourceName,
+      {
+        cicsPlex,
+        regionName,
+        criteria: params?.criteria,
+        parameters: params?.parameter,
+        ...params?.queryParams,
+      },
+      requestBody
+    )
   );
 
   const profile = SessionHandler.getInstance().getProfile(profileName);
@@ -165,7 +171,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
     }
   }
 
@@ -181,7 +187,7 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
       buildRequestOptions()
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
   }
 }
 
@@ -212,22 +218,31 @@ export const buildNewSession = (profile: IProfileLoaded) => {
 };
 
 export const buildRequestLoggerString = (
+  profile: string,
   method: "GET" | "PUT" | "POST",
   resourceName: string,
-  opts: { [key: string]: string | boolean | number; } = {}
+  opts: { [key: string]: string | boolean | number | any } = {},
+  requestBody?: any
 ): string => {
-  let output = `${method.toUpperCase()} - Resource [${resourceName}]`;
+  let output = `${profile}: ${method.toUpperCase()} ${resourceName}`;
+
   for (const [k, v] of Object.entries(opts)) {
     if (v) {
-      output += `, ${k.toUpperCase()} [${v}]`;
+      output += `, ${k.toUpperCase()}[${v}]`;
     }
   }
+
+  // Append REQUESTBODY as JSON string at the end if it exists
+  if (requestBody) {
+    output += `, REQUESTBODY[${JSON.stringify(requestBody)}]`;
+  }
+
   return output;
 };
 
 export async function pollForCompleteAction<T extends IResource>(
   node: CICSResourceContainerNode<T>,
-  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any; }) => boolean,
+  isCompletionCriteriaMet: (response: { resultsummary: ICMCIResponseResultSummary; records: any }) => boolean,
   criteriaMetCallback: (response: ICMCIApiResponse) => void,
   parentResource?: IResource
 ) {
@@ -257,7 +272,7 @@ export async function pollForCompleteAction<T extends IResource>(
   criteriaMetCallback(response);
 }
 
-export function buildUserAgentHeader(): { "User-Agent": string; } {
+export function buildUserAgentHeader(): { "User-Agent": string } {
   const zeId = `zowe.vscode-extension-for-zowe`;
   const cicsExtId = `zowe.cics-extension-for-zowe`;
 

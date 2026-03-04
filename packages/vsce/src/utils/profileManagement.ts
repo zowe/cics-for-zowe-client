@@ -89,10 +89,10 @@ export class ProfileManagement {
         errorMessage = l10n.t("{0} requesting Region groups.", error.errorCode);
       }
       if (errorMessage) {
-        throw new CICSExtensionError({ baseError: error, errorMessage: errorMessage });
+        throw new CICSExtensionError({ baseError: error, profileName: profile.name, errorMessage: errorMessage });
       }
 
-      throw new CICSExtensionError({ baseError: error, errorMessage: error });
+      throw new CICSExtensionError({ baseError: error, profileName: profile.name, errorMessage: error });
     }
   }
 
@@ -116,7 +116,7 @@ export class ProfileManagement {
           return null;
         }
       }
-      throw new CICSExtensionError({ baseError: error });
+      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
     }
   }
 
@@ -153,7 +153,7 @@ export class ProfileManagement {
         ) {
           error.cicsExtensionError.errorMessage = l10n.t("Plex {0} and Region {1} not found.", profile.profile.cicsPlex, profile.profile.regionName);
         }
-        throw new CICSExtensionError({ baseError: error });
+        throw new CICSExtensionError({ baseError: error, profileName: profile.name });
       }
     }
 
@@ -190,7 +190,7 @@ export class ProfileManagement {
         ) {
           error.cicsExtensionError.errorMessage = l10n.t("CICSplex {0} not found.", profile.profile.cicsPlex);
         }
-        throw new CICSExtensionError({ baseError: error });
+        throw new CICSExtensionError({ baseError: error, profileName: profile.name });
       }
     }
 
@@ -225,7 +225,7 @@ export class ProfileManagement {
         ) {
           error.cicsExtensionError.errorMessage = l10n.t("Region {0} not found.", profile.profile.regionName);
         }
-        throw new CICSExtensionError({ baseError: error });
+        throw new CICSExtensionError({ baseError: error, profileName: profile.name });
       }
     }
 
@@ -253,6 +253,7 @@ export class ProfileManagement {
       } catch (error) {
         throw new CICSExtensionError({
           baseError: error,
+          profileName: profile.name,
           errorMessage: l10n.t("Error retrieving cache - {0}", error.message),
         });
       }
@@ -270,7 +271,7 @@ export class ProfileManagement {
           });
         }
       } catch (error) {
-        throw new CICSExtensionError({ baseError: error });
+        throw new CICSExtensionError({ baseError: error, profileName: profile.name });
       }
     }
 
@@ -316,7 +317,7 @@ export class ProfileManagement {
           return [];
         }
       }
-      throw new CICSExtensionError({ baseError: error });
+      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
     }
   }
 }
