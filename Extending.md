@@ -116,7 +116,7 @@ Here, we'll create an action using the `ResourceAction` class, and register it u
 ```typescript
 import { getCICSForZoweExplorerAPI, IExtensionAPI, IResourceAction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
-const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.13.0");
+const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.15.0");
 
 const myCustomResourceAction = new ResourceAction({
   id: "MY.UNIQUE.ACTION.ID",
@@ -125,7 +125,14 @@ const myCustomResourceAction = new ResourceAction({
   action: "command.available.to.vscode",
 });
 
-cicsAPI.resources.resourceExtender.registerAction(myCustomResourceAction);
+const disposable = cicsAPI.resources.resourceExtender.registerAction(myCustomResourceAction);
+```
+
+The `registerAction` method returns a `Disposable` object that can be used to unregister the action when it's no longer needed:
+
+```typescript
+// To remove the registered action later
+disposable.dispose();
 ```
 
 Mandatory fields that must be supplied when creating an action are:
@@ -157,7 +164,7 @@ Note: The type of the resource parameter is dictated by the `resourceType` param
 import { getCICSForZoweExplorerAPI, IExtensionAPI, IResourceAction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
 
 export async function activate(ctx) {
-  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.13.0");
+  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.15.0");
 
   const myCustomResourceAction = new ResourceAction({
     id: "MY.UNIQUE.ACTION.ID",
@@ -166,7 +173,10 @@ export async function activate(ctx) {
     action: "command.available.to.vscode",
   });
 
-  cicsAPI.resources.resourceExtender.registerAction(myCustomResourceAction);
+  const disposable = cicsAPI.resources.resourceExtender.registerAction(myCustomResourceAction);
+
+  // Add to context subscriptions for automatic cleanup when extension deactivates
+  ctx.subscriptions.push(disposable);
 }
 ```
 
@@ -185,7 +195,7 @@ import {
 } from "@zowe/cics-for-zowe-explorer-api";
 
 export async function activate(ctx) {
-  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.13.0");
+  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.15.0");
 
   const myResourceLoggingAction = new ResourceAction({
     id: "CUSTOM.ENABLED.PROGRAM.FUNCTIOn",
@@ -203,7 +213,8 @@ export async function activate(ctx) {
     },
   });
 
-  cicsAPI.resources.resourceExtender.registerAction(myResourceLoggingAction);
+  const disposable = cicsAPI.resources.resourceExtender.registerAction(myResourceLoggingAction);
+  ctx.subscriptions.push(disposable);
 }
 ```
 
@@ -224,7 +235,7 @@ export async function activate(ctx) {
     console.log(`${val}: Transaction ${cicsTranId} running with task ID ${cicsTaskId} in region ${cicsRegionName}`);
   });
 
-  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.13.0");
+  const cicsAPI: IExtensionAPI | undefined = await getCICSForZoweExplorerAPI("3.15.0");
 
   if (cicsAPI) {
     const myResourceLoggingAction = new ResourceAction({
@@ -242,7 +253,8 @@ export async function activate(ctx) {
       },
     });
 
-    cicsAPI.resources.resourceExtender.registerAction(myResourceLoggingAction);
+    const disposable = cicsAPI.resources.resourceExtender.registerAction(myResourceLoggingAction);
+    ctx.subscriptions.push(disposable);
   }
 }
 ```
