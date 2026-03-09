@@ -9,7 +9,7 @@
  *
  */
 
-import { type ICMCIApiResponse, getResource } from "@zowe/cics-for-zowe-sdk";
+import { getResource, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
 import ResourceHandler from "../../../src/get/resource/Resource.handler";
 
@@ -145,9 +145,7 @@ describe("Get Resource Handler", () => {
       const error = new Error("Failed to get resource");
       (getResource as jest.Mock).mockRejectedValue(error);
 
-      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow(
-        "Failed to get resource"
-      );
+      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow("Failed to get resource");
     });
 
     it("should work without optional criteria parameter", async () => {

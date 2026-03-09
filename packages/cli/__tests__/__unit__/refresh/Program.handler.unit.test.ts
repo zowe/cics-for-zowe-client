@@ -9,7 +9,7 @@
  *
  */
 
-import { type ICMCIApiResponse, programNewcopy } from "@zowe/cics-for-zowe-sdk";
+import { programNewcopy, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
 import ProgramHandler from "../../../src/refresh/program/Program.handler";
 
@@ -118,10 +118,7 @@ describe("Refresh Program Handler", () => {
     it("should log success message", async () => {
       await handler.processWithSession(mockParams, mockSession);
 
-      expect(mockParams.response.console.log).toHaveBeenCalledWith(
-        expect.stringContaining("successfully"),
-        "TESTPROG"
-      );
+      expect(mockParams.response.console.log).toHaveBeenCalledWith(expect.stringContaining("successfully"), "TESTPROG");
     });
 
     it("should return the API response", async () => {
@@ -134,9 +131,7 @@ describe("Refresh Program Handler", () => {
       const error = new Error("Failed to refresh program");
       (programNewcopy as jest.Mock).mockRejectedValue(error);
 
-      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow(
-        "Failed to refresh program"
-      );
+      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow("Failed to refresh program");
     });
 
     it("should work without optional cicsPlex parameter", async () => {

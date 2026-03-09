@@ -10,7 +10,7 @@
  */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { type IHandlerParameters, Session } from "@zowe/imperative";
+import { Session, type IHandlerParameters } from "@zowe/imperative";
 import type { ICMCIApiResponse } from "../../../../src";
 import { WebServiceDefinition } from "../../../../src/define/webservice/Webservice.definition";
 import WebServiceHandler from "../../../../src/define/webservice/Webservice.handler";

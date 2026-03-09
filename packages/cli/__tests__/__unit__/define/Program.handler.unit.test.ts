@@ -9,7 +9,7 @@
  *
  */
 
-import { type ICMCIApiResponse, defineProgram } from "@zowe/cics-for-zowe-sdk";
+import { defineProgram, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
 import ProgramHandler from "../../../src/define/program/Program.handler";
 
@@ -120,10 +120,7 @@ describe("Define Program Handler", () => {
     it("should log success message", async () => {
       await handler.processWithSession(mockParams, mockSession);
 
-      expect(mockParams.response.console.log).toHaveBeenCalledWith(
-        expect.stringContaining("successfully"),
-        "TESTPROG"
-      );
+      expect(mockParams.response.console.log).toHaveBeenCalledWith(expect.stringContaining("successfully"), "TESTPROG");
     });
 
     it("should return the API response", async () => {
@@ -136,9 +133,7 @@ describe("Define Program Handler", () => {
       const error = new Error("Failed to define program");
       (defineProgram as jest.Mock).mockRejectedValue(error);
 
-      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow(
-        "Failed to define program"
-      );
+      await expect(handler.processWithSession(mockParams, mockSession)).rejects.toThrow("Failed to define program");
     });
 
     it("should work without optional cicsPlex parameter", async () => {

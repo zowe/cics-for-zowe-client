@@ -20,10 +20,7 @@ jest.mock("../../src/CicsSession");
 describe("CicsBaseHandler", () => {
   // Create a concrete implementation for testing
   class TestHandler extends CicsBaseHandler {
-    public async processWithSession(
-      commandParameters: IHandlerParameters,
-      session: AbstractSession
-    ): Promise<ICMCIApiResponse> {
+    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
       return {
         response: {
           resultsummary: {
@@ -98,11 +95,7 @@ describe("CicsBaseHandler", () => {
     it("should create a session and call processWithSession", async () => {
       await handler.process(mockParams);
 
-      expect(CicsSession.createSessCfgFromArgs).toHaveBeenCalledWith(
-        mockParams.arguments,
-        true,
-        mockParams
-      );
+      expect(CicsSession.createSessCfgFromArgs).toHaveBeenCalledWith(mockParams.arguments, true, mockParams);
       expect(mockParams.response.progress.endBar).toHaveBeenCalled();
       expect(mockParams.response.data.setObj).toHaveBeenCalled();
     });
