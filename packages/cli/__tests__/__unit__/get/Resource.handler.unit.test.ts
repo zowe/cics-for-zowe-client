@@ -10,7 +10,7 @@
  */
 
 import { getResource, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
+import type { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import ResourceHandler from "../../../src/get/resource/Resource.handler";
 
 // Mock the SDK

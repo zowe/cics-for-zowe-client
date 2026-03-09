@@ -10,7 +10,7 @@
  */
 
 import { defineProgram, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
+import type { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import ProgramHandler from "../../../src/define/program/Program.handler";
 
 // Mock the SDK

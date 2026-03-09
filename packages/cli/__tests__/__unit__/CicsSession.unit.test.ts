@@ -9,8 +9,10 @@
  *
  */
 
-import { ICommandArguments, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
+import { Session, type ICommandArguments, type IHandlerParameters, type IProfile } from "@zowe/imperative";
 import { CicsSession } from "../../src/CicsSession";
+
+const TEST_PORT = 1490;
 
 describe("CicsSession", () => {
   describe("createBasicCicsSession", () => {
@@ -19,7 +21,7 @@ describe("CicsSession", () => {
         name: "testProfile",
         type: "cics",
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         pass: "testpass",
         basePath: "/CICSSystemManagement",
@@ -30,7 +32,7 @@ describe("CicsSession", () => {
 
       expect(session).toBeInstanceOf(Session);
       expect(session.ISession.hostname).toBe("example.com");
-      expect(session.ISession.port).toBe(1490);
+      expect(session.ISession.port).toBe(TEST_PORT);
       expect(session.ISession.user).toBe("testuser");
       expect(session.ISession.password).toBe("testpass");
       expect(session.ISession.basePath).toBe("/CICSSystemManagement");
@@ -43,7 +45,7 @@ describe("CicsSession", () => {
         name: "testProfile",
         type: "cics",
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         pass: "testpass",
       };
@@ -59,7 +61,7 @@ describe("CicsSession", () => {
         name: "testProfile",
         type: "cics",
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         pass: "testpass",
         protocol: "http",
@@ -78,7 +80,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
         basePath: "/CICSSystemManagement",
@@ -90,7 +92,7 @@ describe("CicsSession", () => {
 
       expect(session).toBeInstanceOf(Session);
       expect(session.ISession.hostname).toBe("example.com");
-      expect(session.ISession.port).toBe(1490);
+      expect(session.ISession.port).toBe(TEST_PORT);
       expect(session.ISession.user).toBe("testuser");
       expect(session.ISession.password).toBe("testpass");
       expect(session.ISession.basePath).toBe("/CICSSystemManagement");
@@ -104,7 +106,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
       };
@@ -120,7 +122,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
         protocol: "http",
@@ -139,7 +141,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
         basePath: "/CICSSystemManagement",
@@ -151,7 +153,7 @@ describe("CicsSession", () => {
 
       expect(session).toBeInstanceOf(Session);
       expect(session.ISession.hostname).toBe("example.com");
-      expect(session.ISession.port).toBe(1490);
+      expect(session.ISession.port).toBe(TEST_PORT);
       expect(session.ISession.user).toBe("testuser");
       expect(session.ISession.password).toBe("testpass");
       expect(session.ISession.protocol).toBe("https");
@@ -162,7 +164,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
       };
@@ -178,7 +180,7 @@ describe("CicsSession", () => {
         $0: "zowe",
         _: ["cics"],
         host: "example.com",
-        port: 1490,
+        port: TEST_PORT,
         user: "testuser",
         password: "testpass",
       };

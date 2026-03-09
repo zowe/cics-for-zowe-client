@@ -9,8 +9,8 @@
  *
  */
 
-import { type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
-import { type AbstractSession, type IHandlerParameters } from "@zowe/imperative";
+import type { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import type { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { CicsBaseHandler } from "../../src/CicsBaseHandler";
 import { CicsSession } from "../../src/CicsSession";
 
@@ -20,7 +20,7 @@ jest.mock("../../src/CicsSession");
 describe("CicsBaseHandler", () => {
   // Create a concrete implementation for testing
   class TestHandler extends CicsBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
+    public async processWithSession(_commandParameters: IHandlerParameters, _session: AbstractSession): Promise<ICMCIApiResponse> {
       return {
         response: {
           resultsummary: {
