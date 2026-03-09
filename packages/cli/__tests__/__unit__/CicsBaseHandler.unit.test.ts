@@ -152,5 +152,3 @@ describe("CicsBaseHandler", () => {
     });
   });
 });
-
-// Made with Bob
