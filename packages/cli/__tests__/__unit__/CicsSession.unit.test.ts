@@ -202,5 +202,3 @@ describe("CicsSession", () => {
     });
   });
 });
-
-// Made with Bob

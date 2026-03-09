@@ -115,4 +115,80 @@ describe("DefineWebserviceHandler", () => {
       }
     );
   });
+
+  it("should strip leading double slash from wsbind path for Git Bash compatibility", async () => {
+    const handler = new WebServiceHandler();
+
+    const commandParameters = { ...DEFAULT_PARAMETERS };
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      webserviceName: websvcName,
+      csdGroup,
+      pipelineName,
+      wsbind: "//testWsbind", // Double slash prefix
+      regionName,
+      cicsPlex,
+      host,
+      port,
+      user,
+      password,
+      rejectUnauthorized,
+      protocol,
+    };
+
+    await handler.process(commandParameters);
+
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+
+    // Verify that the double slash was stripped to single slash
+    expect(functionSpy).toHaveBeenCalledWith(
+      expect.any(Session),
+      expect.objectContaining({
+        name: websvcName,
+        csdGroup,
+        pipelineName,
+        wsBind: "/testWsbind", // Should be single slash
+        regionName,
+        cicsPlex,
+      })
+    );
+  });
+
+  it("should not modify wsbind path if it does not start with double slash", async () => {
+    const handler = new WebServiceHandler();
+
+    const commandParameters = { ...DEFAULT_PARAMETERS };
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      webserviceName: websvcName,
+      csdGroup,
+      pipelineName,
+      wsbind: "/singleSlashPath", // Single slash prefix
+      regionName,
+      cicsPlex,
+      host,
+      port,
+      user,
+      password,
+      rejectUnauthorized,
+      protocol,
+    };
+
+    await handler.process(commandParameters);
+
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+
+    // Verify that single slash path remains unchanged
+    expect(functionSpy).toHaveBeenCalledWith(
+      expect.any(Session),
+      expect.objectContaining({
+        name: websvcName,
+        csdGroup,
+        pipelineName,
+        wsBind: "/singleSlashPath", // Should remain unchanged
+        regionName,
+        cicsPlex,
+      })
+    );
+  });
 });
