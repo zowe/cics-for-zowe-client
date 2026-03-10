@@ -31,10 +31,11 @@ describe("Interfaces", () => {
 
   const extender: IResourceExtender = {
     registeredActions: new Map(),
-    registerAction: function <TType extends keyof ResourceTypeMap>(acc: ResourceAction<TType>): void {
+    registerAction: function <TType extends keyof ResourceTypeMap>(acc: ResourceAction<TType>) {
       const arr = this.registeredActions.get(acc.resourceType) || [];
       arr.push(acc as unknown as ResourceAction<keyof ResourceTypeMap>);
       this.registeredActions.set(acc.resourceType, arr);
+      return { dispose: () => {} };
     },
     getActions: function (): ResourceAction<keyof ResourceTypeMap>[] {
       return [...this.registeredActions.values()].flat() as ResourceAction<keyof ResourceTypeMap>[];

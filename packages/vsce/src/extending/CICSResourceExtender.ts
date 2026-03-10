@@ -10,6 +10,7 @@
  */
 
 import type { IResourceExtender, ResourceAction, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import type { Disposable } from "vscode";
 import { getBuiltInResourceActions } from "../resources/actions";
 
 class SCICSResourceExtender implements IResourceExtender {
@@ -23,11 +24,31 @@ class SCICSResourceExtender implements IResourceExtender {
     this.registeredActions = getBuiltInResourceActions();
   }
 
-  registerAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>) {
+  registerAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): Disposable {
     const arr = this.registeredActions.get(action.resourceType) || [];
     arr.push(action);
     this.registeredActions.set(action.resourceType, arr);
+
+    return { dispose: () => this.removeAction(action) };
   }
+
+  private removeAction<TType extends keyof ResourceTypeMap>(action: ResourceAction<TType>): void {
+    const actions = this.registeredActions.get(action.resourceType);
+    if (!actions?.length) {
+      return;
+    }
+
+    const index = actions.findIndex((a) => a.id === action.id);
+    if (index === -1) {
+      return;
+    }
+
+    actions.splice(index, 1);
+    if (actions.length === 0) {
+      this.registeredActions.delete(action.resourceType);
+    }
+  }
+
   getActions() {
     return [...this.registeredActions.values()].flat();
   }

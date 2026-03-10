@@ -112,6 +112,52 @@ test.describe("Extender tests", () => {
 
     await expect(page.locator("h2").filter({ hasText: "Get Started with VS Code for the Web" })).toBeVisible();
     await screenshot(page);
+  });
+
+  test("should dispose the extended action", async ({ page, request }) => {
+    await resetWiremock(request);
+    await prepareZoweExplorerView(page);
+
+    await screenshot(page);
+
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+    await screenshot(page);
+
+    await page.getByRole("button", { name: "Notifications" }).click();
+    await screenshot(page);
+    await page.getByRole("button", { name: "Clear All Notifications" }).click();
+    await screenshot(page);
+    await runInCommandPalette(page, "View: Close All Editors");
+    await screenshot(page);
+
+    await runInCommandPalette(page, "Remove Action");
+    const notification = await page.getByRole("list", { name: "Removed TEST.ACTION.1", exact: false });
+    await expect(notification).toBeVisible();
+    await expect(notification).toContainText("Removed TEST.ACTION.1");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right");
+    await page.waitForTimeout(200);
+    await screenshot(page);
+    await findAndClickText(page, "Inspect Resource");
+    await screenshot(page);
+
+    await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_1_NAME }).waitFor();
+    await screenshot(page);
+
+    await getResourceInspector(page).locator(".codicon.codicon-kebab-vertical").first().click();
+    await page.waitForTimeout(200);
+    await screenshot(page);
+    await expect(getResourceInspector(page).getByText("MY TEST ACTION")).not.toBeVisible();
+    await screenshot(page);
+
+  });
+
+  test("should uninstall extension extending CICS", async ({ page, request }) => {
+    await resetWiremock(request);
+    await prepareZoweExplorerView(page);
 
     await page.getByLabel("Extensions").first().click();
     await screenshot(page);

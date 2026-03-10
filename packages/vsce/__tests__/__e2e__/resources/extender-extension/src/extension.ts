@@ -10,9 +10,11 @@
  */
 
 import { getCICSForZoweExplorerAPI, ResourceAction, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
-import { commands, ExtensionContext, window } from "vscode";
+import { commands, Disposable, ExtensionContext, window } from "vscode";
 
-export async function activate(_context: ExtensionContext) {
+let disposeAction: Disposable | undefined;
+
+export async function activate(context: ExtensionContext) {
   window.showInformationMessage("TEST EXTENSION ACTIVATED");
   const cicsAPI = await getCICSForZoweExplorerAPI();
 
@@ -26,8 +28,20 @@ export async function activate(_context: ExtensionContext) {
       },
     });
 
-    cicsAPI.resources.resourceExtender.registerAction(action);
+    disposeAction = cicsAPI.resources.resourceExtender.registerAction(action);
     window.showInformationMessage("Registered TEST.ACTION.1");
+
+    // Register the "Remove Action" command
+    const removeActionCommand = commands.registerCommand("extender-extension.removeAction", () => {
+      if (disposeAction) {
+        disposeAction.dispose();
+        window.showInformationMessage("Removed TEST.ACTION.1");
+      } else {
+        window.showWarningMessage("No action to remove");
+      }
+    });
+
+    context.subscriptions.push(removeActionCommand);
   } else {
     window.showErrorMessage("No CICS API Found");
   }
