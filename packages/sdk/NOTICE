@@ -153,28 +153,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------
 
-** isexe; version 3.1.1 -- https://github.com/isaacs/isexe#readme
-Copyright (c) 2016-2022 Isaac Z. Schlueter and Contributors
-
-The ISC License
-
-Copyright (c) 2016-2022 Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-------
-
 ** lru-cache; version 10.4.3 -- https://github.com/isaacs/node-lru-cache#readme
 Copyright (c) 2010-2023 Isaac Z. Schlueter and Contributors
 
@@ -299,7 +277,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 Copyright (c) Isaac Z. Schlueter and Contributors
 ** read; version 3.0.1 -- https://github.com/npm/read#readme
 Copyright (c) Isaac Z. Schlueter and Contributors
-** semver; version 7.7.3 -- https://github.com/npm/node-semver#readme
+** semver; version 7.7.4 -- https://github.com/npm/node-semver#readme
 Copyright Isaac Z. Schlueter
 Copyright (c) Isaac Z. Schlueter and Contributors
 ** which; version 4.0.0 -- https://github.com/npm/node-which#readme
@@ -320,31 +298,6 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-------
-
-** flatted; version 3.3.3 -- https://github.com/WebReflection/flatted#readme
-(c) 2020-present Andrea Giammarchi
-Copyright (c) 2018-2020, Andrea Giammarchi
-Copyright (c) 2018-2021, Andrea Giammarchi
-Copyright (c) 2018-2025, Andrea Giammarchi
-
-ISC License
-
-Copyright (c) 2018-2020, Andrea Giammarchi, @WebReflection
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
-OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
 
 
 ------
@@ -392,6 +345,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ------
 
 ** yargs-parser; version 21.1.1 -- https://github.com/yargs/yargs-parser#readme
+Copyright (C) 2016 Contributors
 Copyright (c) 2016, Contributors
 
 Copyright (c) 2016, Contributors
@@ -843,31 +797,6 @@ THE SOFTWARE.
 
 ------
 
-** fs-extra; version 11.3.3 -- https://github.com/jprichardson/node-fs-extra
-Copyright (c) 2011-2024 JP Richardson
-Copyright (c) 2011-2024 JP Richardson (https://github.com/jprichardson)
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors
-
-(The MIT License)
-
-Copyright (c) 2011-2024 JP Richardson
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
- merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-------
-
 ** safe-stable-stringify; version 2.5.0 -- https://github.com/BridgeAR/safe-stable-stringify#readme
 Copyright (c) Ruben Bridgewater
 
@@ -1026,7 +955,7 @@ SOFTWARE.
 ------
 
 ** emoji-regex; version 8.0.0 -- https://mths.be/emoji-regex
-Copyright Mathias Bynens <https://mathiasbynens.be/>
+Copyright Mathias Bynens https://mathiasbynens.be
 ** punycode.js; version 2.3.1 -- https://mths.be/punycode
 Copyright Mathias Bynens <https://mathiasbynens.be/>
 ** uc.micro; version 2.1.0 -- https://github.com/markdown-it/uc.micro#readme
@@ -1263,7 +1192,7 @@ SOFTWARE.
 
 ------
 
-** markdown-it; version 14.1.0 -- https://github.com/markdown-it/markdown-it#readme
+** markdown-it; version 14.1.1 -- https://github.com/markdown-it/markdown-it#readme
 Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin
 Copyright Joyent, Inc. and other Node contributors
 
@@ -1758,6 +1687,35 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+------
+
+** @sinclair/typebox; version 0.27.10 -- https://github.com/sinclairzx81/typebox-legacy#readme
+Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
+
+TypeBox: JSON Schema Type Builder with Static Type Resolution for TypeScript 
+
+The MIT License (MIT)
+
+Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 ------
 
@@ -2795,7 +2753,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------
 
-** sax; version 1.4.4 -- https://github.com/isaacs/sax-js#readme
+** isexe; version 3.1.5 -- https://github.com/isaacs/isexe#readme
 
 # Blue Oak Model License
 
