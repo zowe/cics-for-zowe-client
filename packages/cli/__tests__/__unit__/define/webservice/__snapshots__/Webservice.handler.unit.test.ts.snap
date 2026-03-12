@@ -15,3 +15,35 @@ exports[`DefineWebserviceHandler should call the defineWebservice api 2`] = `
   },
 }
 `;
+
+exports[`DefineWebserviceHandler should not modify wsbind path if it does not start with double slash 1`] = `"The WEBSERVICE '%s' was defined successfully."`;
+
+exports[`DefineWebserviceHandler should not modify wsbind path if it does not start with double slash 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`DefineWebserviceHandler should strip leading double slash from wsbind path for Git Bash compatibility 1`] = `"The WEBSERVICE '%s' was defined successfully."`;
+
+exports[`DefineWebserviceHandler should strip leading double slash from wsbind path for Git Bash compatibility 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
