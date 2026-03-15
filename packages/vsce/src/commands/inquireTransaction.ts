@@ -9,17 +9,19 @@
  *
  */
 
-import type { IResource, ITask, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { TaskMeta, TransactionMeta } from "../doc";
-import type { CICSResourceContainerNode } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
+import { getCommandInvocationContext, InvocationSource, revealResourceInTree } from "./revealNodeInTree";
 
 /**
- * Inquire the associated transaction tree item from a task tree item
+ * Inquire the associated transaction from a task
+ * Handles three scenarios:
+ * 1. Task from a region tree node
+ * 2. Task from "All Tasks" (CICSplex level)
+ * 3. Task from Resource Inspector
  */
 export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireTransaction", async (node) => {
@@ -28,32 +30,46 @@ export function getInquireTransactionCommand(tree: CICSTree, treeview: TreeView<
       return;
     }
 
-    const nodes = findSelectedNodes(treeview, TaskMeta, node) as CICSResourceContainerNode<ITask>[];
-    if (!nodes || !nodes.length) {
+    // Determine invocation context: Region tree, "All X" tree, or Resource Inspector
+    const context = getCommandInvocationContext(treeview, TaskMeta, node, tree);
+    
+    if (!context.resources || context.resources.length === 0) {
       window.showErrorMessage(l10n.t("No CICS Task selected"));
       return;
     }
 
-    let transactionTree: CICSResourceContainerNode<ITransaction> | undefined;
-    const label = nodes[0].getParent().label;
-
-    //if the label is All Tasks, we need to get the transaction tree from the regions node
-    if (label === l10n.t("All Tasks")) {
-      transactionTree = await getResourceTree<ITransaction>(treeview, nodes, CicsCmciConstants.CICS_LOCAL_TRANSACTION);
-    } else {
-      transactionTree = nodes[0]
-        .getParent()
-        .getParent()
-        .children.filter((child: CICSResourceContainerNode<IResource>) =>
-          child.resourceTypes.includes(TransactionMeta)
-        )[0] as CICSResourceContainerNode<ITransaction>;
+    // Verify it's a Task resource (for inspector invocations)
+    if (context.source === InvocationSource.ResourceInspector) {
+      const firstResource = context.resources[0];
+      if (firstResource.meta.resourceName !== CicsCmciConstants.CICS_CMCI_TASK) {
+        window.showErrorMessage(l10n.t("This command can only be used with Task resources"));
+        return;
+      }
     }
 
-    const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.tranid);
+    // Get transaction names from all selected tasks (works for all invocation sources)
+    const transactionNames = context.resources
+      .map((item) => item.resource.tranid)
+      .filter((name): name is string => !!name);
+    
+    if (transactionNames.length === 0) {
+      window.showErrorMessage(l10n.t("No transaction associated with this task"));
+      return;
+    }
 
-    transactionTree.setCriteria(pattern);
-    transactionTree.description = pattern.join(" OR ");
-    tree._onDidChangeTreeData.fire(transactionTree);
-    await treeview.reveal(transactionTree, { expand: true });
+    // Use context from the first resource
+    const resourceContext = context.resources[0].context;
+
+    try {
+      await revealResourceInTree({
+        tree,
+        treeview,
+        context: resourceContext,
+        resourceMeta: TransactionMeta,
+        resourceNames: transactionNames,
+      });
+    } catch (error) {
+      window.showErrorMessage(error instanceof Error ? error.message : String(error));
+    }
   });
 }

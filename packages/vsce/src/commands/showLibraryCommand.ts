@@ -9,125 +9,129 @@
  *
  */
 
-import type { ILibrary, IProgram, IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { LibraryMeta, ProgramMeta } from "../doc";
-import { type CICSRegionTree, CICSRegionsContainer, type CICSResourceContainerNode } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
+import { getCommandInvocationContext, InvocationSource, revealResourceInTree, type IUnifiedResourceItem } from "./revealNodeInTree";
 
-const getLibrariesToReveal = (nodes: CICSResourceContainerNode<IProgram>[]): Map<string, Map<string, Set<string>>> => {
-  const librariesToReveal: Map<string, Map<string, Set<string>>> = new Map();
-  for (const childNode of nodes) {
-    const region = childNode.regionName ?? childNode.getContainedResource().resource.attributes.eyu_cicsname;
-    const library = childNode.getContainedResource().resource.attributes.library;
-    const libraryDsn = childNode.getContainedResource().resource.attributes.librarydsn;
+/**
+ * Interface for library information extracted from a program
+ */
+interface ILibraryInfo {
+  library: string;
+  libraryDsn: string;
+}
 
-    if (library && libraryDsn) {
-      if (!librariesToReveal.has(region)) {
-        librariesToReveal.set(region, new Map());
-      }
-      if (!librariesToReveal.get(region)!.has(library)) {
-        librariesToReveal.get(region)!.set(library, new Set<string>());
-      }
-      librariesToReveal.get(region)!.get(library)!.add(libraryDsn);
-    }
+/**
+ * Extracts library information from a program resource
+ */
+function extractLibraryInfo(programResource: IUnifiedResourceItem<any>): ILibraryInfo | null {
+  const { library, librarydsn } = programResource.resource;
+  
+  if (!library || !librarydsn) {
+    return null;
   }
+  
+  return { library, libraryDsn: librarydsn };
+}
 
-  return librariesToReveal;
-};
-
-const getRegionTreeForNode = async (
-  node: CICSResourceContainerNode<IProgram>,
-  regionName: string,
+/**
+ * Handles showing library from Resource Inspector invocation
+ */
+async function handleResourceInspectorInvocation(
+  tree: CICSTree,
   treeview: TreeView<any>,
-  tree: CICSTree
-): Promise<CICSRegionTree | undefined> => {
-  if (!node.getParent()) {
-    const profileName = node.getProfileName();
-    const cicsplexName = node.cicsplexName;
-
-    const sessionNode = tree.getLoadedProfiles().find((session) => session.getProfile().name === profileName);
-
-    if (!sessionNode) {
-      return undefined;
-    }
-
-    await treeview.reveal(sessionNode, { expand: true });
-    return sessionNode.getRegionNodeFromName(regionName, cicsplexName);
+  programResource: IUnifiedResourceItem<any>
+): Promise<void> {
+  const libraryInfo = extractLibraryInfo(programResource);
+  
+  if (!libraryInfo) {
+    window.showErrorMessage(l10n.t("No library information found for this program"));
+    return;
   }
 
-  const programsLabel = l10n.t("Programs");
-  let regionTrees: CICSRegionTree[];
+  const { library } = libraryInfo;
+  const context = programResource.context;
 
-  if (node.getParent().label === programsLabel) {
-    const parent = node.getParent().getParent();
-    if (parent.getParent() instanceof CICSRegionsContainer) {
-      await treeview.reveal(parent.getParent(), { expand: true });
-      regionTrees = parent.getParent().children as CICSRegionTree[];
-    } else {
-      regionTrees = [parent as CICSRegionTree];
-    }
-  } else {
-    const regionsContainer = node
-      .getParent()
-      .getParent()
-      .children.filter((child) => child instanceof CICSRegionsContainer)[0] as CICSRegionsContainer;
-    await treeview.reveal(regionsContainer, { expand: true });
-    regionTrees = regionsContainer.children;
+  try {
+    await revealResourceInTree({
+      tree,
+      treeview,
+      context,
+      resourceMeta: LibraryMeta,
+      resourceName: library,
+      selectAndFocus: true,
+      customSuccessMessage: l10n.t("Library '{0}' revealed in the tree", library),
+    });
+  } catch (error) {
+    window.showErrorMessage(error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * Handles showing libraries from tree node invocation
+ */
+async function handleTreeNodeInvocation(
+  tree: CICSTree,
+  treeview: TreeView<any>,
+  resources: IUnifiedResourceItem<any>[]
+): Promise<void> {
+  // Extract unique library names from all selected programs
+  const libraryNames = [...new Set(
+    resources
+      .map((item) => extractLibraryInfo(item)?.library)
+      .filter((name): name is string => !!name)
+  )];
+
+  if (libraryNames.length === 0) {
+    await window.showInformationMessage(l10n.t("No libraries found in selected CICS programs"));
+    return;
   }
 
-  return regionTrees.find((regTree) => regTree.getRegionName() === regionName);
-};
+  // Use context from the first resource
+  const context = resources[0].context;
 
+  try {
+    await revealResourceInTree({
+      tree,
+      treeview,
+      context,
+      resourceMeta: LibraryMeta,
+      resourceNames: libraryNames,
+      selectAndFocus: libraryNames.length === 1,
+    });
+  } catch (error) {
+    window.showErrorMessage(error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * Registers the show library command
+ */
 export function showLibraryCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibrary", async (node) => {
+    // Check if Library resources are visible in settings
     const hiddenMsg = l10n.t("CICS Library resources are not visible. Enable them from your VS Code settings.");
     const libraryLabel = l10n.t("Library");
+    
     if (!openSettingsForHiddenResourceType(hiddenMsg, libraryLabel)) {
       return;
     }
 
-    const nodes = findSelectedNodes(treeview, ProgramMeta, node) as CICSResourceContainerNode<IProgram>[];
-    if (!nodes || nodes.length === 0) {
+    // Determine invocation context (tree node vs Resource Inspector)
+    const context = getCommandInvocationContext(treeview, ProgramMeta, node, tree);
+
+    if (!context.resources || context.resources.length === 0) {
       window.showErrorMessage(l10n.t("No CICS Program selected"));
       return;
     }
 
-    const librariesToReveal = getLibrariesToReveal(nodes);
-    if (librariesToReveal.size === 0) {
-      await window.showInformationMessage(l10n.t("No libraries found in selected CICS programs"));
-      return;
-    }
-
-    for (const [region, libraries] of librariesToReveal) {
-      const regionTree: CICSRegionTree = await getRegionTreeForNode(nodes[0], region, treeview, tree);
-
-      if (!regionTree) {
-        Gui.showMessage(l10n.t("Could not find region {0} in the tree", region), { severity: MessageSeverity.WARN });
-        continue;
-      }
-
-      await treeview.reveal(regionTree, { expand: true });
-
-      const libraryTree: CICSResourceContainerNode<ILibrary> = regionTree.children.filter((resourceTree: CICSResourceContainerNode<IResource>) =>
-        resourceTree.resourceTypes.includes(LibraryMeta)
-      )[0] as CICSResourceContainerNode<ILibrary>;
-
-      libraryTree.clearCriteria();
-      await libraryTree.getFetcher().reset();
-      libraryTree.setCriteria([...libraries.keys()]);
-      await treeview.reveal(libraryTree, { expand: true });
-
-      for (const child of libraryTree.children) {
-        const crit = [...libraries.get((child as CICSResourceContainerNode<ILibrary>).getContainedResourceName())];
-        (child as CICSResourceContainerNode<ILibrary>).clearCriteria();
-        await (child as CICSResourceContainerNode<ILibrary>).getFetcher().reset();
-        (child as CICSResourceContainerNode<ILibrary>).setCriteria(crit);
-        await treeview.reveal(child, { expand: true });
-      }
+    // Handle based on invocation source
+    if (context.source === InvocationSource.ResourceInspector) {
+      await handleResourceInspectorInvocation(tree, treeview, context.resources[0]);
+    } else {
+      await handleTreeNodeInvocation(tree, treeview, context.resources);
     }
   });
 }

@@ -9,17 +9,18 @@
  *
  */
 
-import type { IProgram, IResource, ITransaction } from "@zowe/cics-for-zowe-explorer-api";
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { ProgramMeta, TransactionMeta } from "../doc";
-import type { CICSResourceContainerNode } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
-import { findSelectedNodes, getResourceTree } from "../utils/commandUtils";
 import { openSettingsForHiddenResourceType } from "../utils/workspaceUtils";
+import { getCommandInvocationContext, revealResourceInTree } from "./revealNodeInTree";
 
 /**
- * Inquire the associated transaction tree item from a task tree item
+ * Inquire the associated program from a transaction
+ * Handles three scenarios:
+ * 1. Transaction from a region tree node
+ * 2. Transaction from "All Local Transactions" (CICSplex level)
+ * 3. Transaction from Resource Inspector
  */
 export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inquireProgram", async (node) => {
@@ -28,32 +29,38 @@ export function getInquireProgramCommand(tree: CICSTree, treeview: TreeView<any>
       return;
     }
 
-    const nodes = findSelectedNodes(treeview, TransactionMeta, node) as CICSResourceContainerNode<ITransaction>[];
-    if (!nodes || !nodes.length) {
+    // Determine invocation context: Region tree, "All X" tree, or Resource Inspector
+    const context = getCommandInvocationContext(treeview, TransactionMeta, node, tree);
+    
+    if (!context.resources || context.resources.length === 0) {
       window.showErrorMessage(l10n.t("No CICS Transaction selected"));
       return;
     }
 
-    let programTree: CICSResourceContainerNode<IProgram> | undefined;
-    const label = nodes[0].getParent().label;
-
-    //if the label is All Local Transactions, we need to get the program tree from the regions node
-    if (label === l10n.t("All Local Transactions")) {
-      programTree = await getResourceTree<IProgram>(treeview, nodes, CicsCmciConstants.CICS_PROGRAM_RESOURCE);
-    } else {
-      programTree = nodes[0]
-        .getParent()
-        .getParent()
-        .children.filter((child: CICSResourceContainerNode<IResource>) =>
-          child.resourceTypes.includes(ProgramMeta)
-        )[0] as CICSResourceContainerNode<IProgram>;
+    // Get program names from all selected transactions (works for all invocation sources)
+    const programNames = context.resources
+      .map((item) => item.resource.program)
+      .filter((name): name is string => !!name);
+    
+    if (programNames.length === 0) {
+      window.showErrorMessage(l10n.t("No program associated with this transaction"));
+      return;
     }
 
-    const pattern = nodes.map((n) => n.getContainedResource().resource.attributes.program);
+    // Use context from the first resource
+    const resourceContext = context.resources[0].context;
 
-    programTree.setCriteria(pattern);
-    programTree.description = pattern.join(" OR ");
-    tree._onDidChangeTreeData.fire(programTree);
-    await treeview.reveal(programTree, { expand: true });
+    try {
+      await revealResourceInTree({
+        tree,
+        treeview,
+        context: resourceContext,
+        resourceMeta: ProgramMeta,
+        resourceNames: programNames,
+        clearFilter: false,
+      });
+    } catch (error) {
+      window.showErrorMessage(error instanceof Error ? error.message : String(error));
+    }
   });
 }
