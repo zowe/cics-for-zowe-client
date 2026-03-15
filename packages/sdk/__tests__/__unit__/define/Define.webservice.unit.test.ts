@@ -332,5 +332,137 @@ describe("CMCI - Define web service", () => {
       expect(response).toContain(content);
       expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });
+
+    it("should be able to define a web service with description", async () => {
+      defineParms.cicsPlex = cicsPlex;
+      defineParms.description = "Test Description";
+      const requestBodyWithDesc = {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
+            },
+            attributes: {
+              $: {
+                name: websvc,
+                csdgroup: group,
+                pipeline,
+                wsbind: wsBind,
+                validation: "no",
+                description: "Test Description",
+              },
+            },
+          },
+        },
+      };
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
+
+      response = await defineWebservice(dummySession, defineParms);
+
+      expect(response).toContain(content);
+      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBodyWithDesc);
+    });
+
+    it("should be able to define a web service with wsdlFile", async () => {
+      defineParms.cicsPlex = cicsPlex;
+      defineParms.description = undefined;
+      defineParms.wsdlFile = "/path/to/wsdl.xml";
+      const requestBodyWithWsdl = {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
+            },
+            attributes: {
+              $: {
+                name: websvc,
+                csdgroup: group,
+                pipeline,
+                wsbind: wsBind,
+                validation: "no",
+                wsdlFile: "/path/to/wsdl.xml",
+              },
+            },
+          },
+        },
+      };
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
+
+      response = await defineWebservice(dummySession, defineParms);
+
+      expect(response).toContain(content);
+      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBodyWithWsdl);
+    });
+
+    it("should be able to define a web service with both description and wsdlFile", async () => {
+      defineParms.cicsPlex = cicsPlex;
+      defineParms.description = "Test Description";
+      defineParms.wsdlFile = "/path/to/wsdl.xml";
+      const requestBodyWithBoth = {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
+            },
+            attributes: {
+              $: {
+                name: websvc,
+                csdgroup: group,
+                pipeline,
+                wsbind: wsBind,
+                validation: "no",
+                description: "Test Description",
+                wsdlFile: "/path/to/wsdl.xml",
+              },
+            },
+          },
+        },
+      };
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
+
+      response = await defineWebservice(dummySession, defineParms);
+
+      expect(response).toContain(content);
+      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBodyWithBoth);
+    });
+
+    it("should be able to define a web service with validation set to true", async () => {
+      defineParms.cicsPlex = cicsPlex;
+      defineParms.description = undefined;
+      defineParms.wsdlFile = undefined;
+      defineParms.validation = true;
+      const requestBodyWithValidation = {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
+            },
+            attributes: {
+              $: {
+                name: websvc,
+                csdgroup: group,
+                pipeline,
+                wsbind: wsBind,
+                validation: "yes",
+              },
+            },
+          },
+        },
+      };
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
+
+      response = await defineWebservice(dummySession, defineParms);
+
+      expect(response).toContain(content);
+      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBodyWithValidation);
+    });
   });
 });
