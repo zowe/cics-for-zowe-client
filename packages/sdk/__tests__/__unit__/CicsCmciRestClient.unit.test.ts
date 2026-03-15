@@ -126,4 +126,233 @@ describe("CicsCmciRestClient tests", () => {
   </listHeader>
 </root>`);
   });
+
+  describe("deleteExpectParsedXml", () => {
+    const deleteClientExpect = jest.spyOn(RestClient, "deleteExpectString");
+
+    beforeEach(() => {
+      deleteClientExpect.mockClear();
+    });
+
+    it("should return a formatted JSON object based on the XML retrieved from DELETE", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      deleteClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.deleteExpectParsedXml(dummySession, testEndpoint, dummyHeaders);
+      expect(deleteClientExpect).toHaveBeenCalledWith(dummySession, testEndpoint, dummyHeaders);
+      expect(response).toEqual(expectedJson);
+    });
+  });
+
+  describe("putExpectParsedXml", () => {
+    const putClientExpect = jest.spyOn(RestClient, "putExpectString");
+
+    beforeEach(() => {
+      putClientExpect.mockClear();
+    });
+
+    it("should return a formatted JSON object based on the XML retrieved from PUT with object payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      const payload = { request: { update: { attributes: { status: "ENABLED" } } } };
+      putClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
+      expect(putClientExpect).toHaveBeenCalled();
+      expect(response).toEqual(expectedJson);
+    });
+
+    it("should return a formatted JSON object based on the XML retrieved from PUT with string payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      const payload = "<request><update><attributes><status>ENABLED</status></attributes></update></request>";
+      putClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
+      expect(putClientExpect).toHaveBeenCalled();
+      expect(response).toEqual(expectedJson);
+    });
+
+    it("should handle PUT with null payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      putClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, null);
+      expect(putClientExpect).toHaveBeenCalledWith(dummySession, testEndpoint, dummyHeaders, null);
+      expect(response).toEqual(expectedJson);
+    });
+
+    it("should handle PUT with failOnNoData=false when no records returned", async () => {
+      const xmlResponse = "<response>" + "<resultsummary api_response1='1024' api_response2='0' />" + "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            testing: [],
+          },
+        },
+      };
+      putClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, {}, { failOnNoData: false });
+      expect(response).toEqual(expectedJson);
+    });
+  });
+
+  describe("postExpectParsedXml", () => {
+    const postClientExpect = jest.spyOn(RestClient, "postExpectString");
+
+    beforeEach(() => {
+      postClientExpect.mockClear();
+    });
+
+    it("should return a formatted JSON object based on the XML retrieved from POST with object payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      const payload = { request: { create: { attributes: { name: "TESTPROG" } } } };
+      postClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
+      expect(postClientExpect).toHaveBeenCalled();
+      expect(response).toEqual(expectedJson);
+    });
+
+    it("should return a formatted JSON object based on the XML retrieved from POST with string payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      const payload = "<request><create><attributes><name>TESTPROG</name></attributes></create></request>";
+      postClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
+      expect(postClientExpect).toHaveBeenCalled();
+      expect(response).toEqual(expectedJson);
+    });
+
+    it("should handle POST with null payload", async () => {
+      const xmlResponse =
+        "<response>" +
+        "<resultsummary api_response1='1024' api_response2='0' />" +
+        "<records><program name='TESTPROG'/></records>" +
+        "</response>";
+      const expectedJson: any = {
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            api_response2: "0",
+          },
+          records: {
+            program: {
+              name: "TESTPROG",
+            },
+          },
+        },
+      };
+      postClientExpect.mockResolvedValue(xmlResponse);
+
+      const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, null);
+      expect(postClientExpect).toHaveBeenCalledWith(dummySession, testEndpoint, dummyHeaders, null);
+      expect(response).toEqual(expectedJson);
+    });
+  });
 });

@@ -425,5 +425,40 @@ describe("CMCI - Define server URIMap", () => {
       expect(response).toContain(content);
       expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });
+
+    it("should be able to define a URIMap with enable set to false", async () => {
+      defineParms.description = undefined;
+      defineParms.tcpipservice = undefined;
+      defineParms.enable = false;
+      endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_URIMAP + "/" + cicsPlex + "/" + region;
+      const requestBodyDisabled = {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
+            },
+            attributes: {
+              $: {
+                name: urimap,
+                csdgroup: group,
+                path,
+                host,
+                scheme,
+                program,
+                usage: "server",
+                status: "DISABLED",
+              },
+            },
+          },
+        },
+      };
+
+      response = await defineUrimapServer(dummySession, defineParms);
+
+      expect(response).toContain(content);
+      expect(defineSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBodyDisabled);
+    });
   });
 });
