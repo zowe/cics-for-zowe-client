@@ -56,7 +56,7 @@ export class CICSRegionsContainer extends TreeItem {
         this.addRegionsUtility(regionInfo);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
-        tree._onDidChangeTreeData.fire(undefined);
+        tree._onDidChangeTreeData.fire(this);
         if (!this.children.length) {
           window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
         }
@@ -135,6 +135,11 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   public async getChildren(): Promise<CICSRegionTree[]> {
+    // If filter is active (not "*"), return cached children
+    if (this.activeFilter !== "*") {
+      return this.children;
+    }
+
     if (this.refreshNode) {
       this.refreshNode = false;
       return this.children;
