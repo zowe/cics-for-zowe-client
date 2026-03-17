@@ -34,12 +34,9 @@
   "devDependencies": {
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.0",
     "@zowe/cics-for-zowe-sdk": "^6.8.0",
     "@zowe/zowe-explorer-api": "^3.2.1",
-    "compare-versions": "^6.1.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {
