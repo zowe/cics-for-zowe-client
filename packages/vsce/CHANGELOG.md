@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+# Recent Changes
+
+- BugFix: Region filtering selects only regions. [#575] (https://github.com/zowe/cics-for-zowe-client/issues/575)
+
 ## `3.20.0`
 
 - Enhancement: Enabled CICS attribute links to Data Sets in Zowe Explorer. [#590](https://github.com/zowe/cics-for-zowe-client/issues/590)
