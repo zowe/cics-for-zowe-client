@@ -25,13 +25,3 @@ export interface ICMCIResponseErrorFeedBack {
   resp_alt: string;
   resp2: string;
 }
-
-/**
- * Type guard to check if an object is a valid ICMCIResponseErrorFeedBack
- * @param obj - The object to check
- * @returns true if the object has the required properties
- */
-export function isICMCIResponseErrorFeedBack(obj: any): obj is ICMCIResponseErrorFeedBack {
-  return !!obj && typeof obj.eibfn_alt === 'string' && typeof obj.resp === 'string' &&
-         typeof obj.resp_alt === 'string' && typeof obj.resp2 === 'string';
-}

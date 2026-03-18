@@ -21,12 +21,3 @@ import type { ICMCIResponseErrorFeedBack } from "./ICMCIResponseErrorFeedBack";
 export interface ICMCIResponseErrors {
   feedback: ICMCIResponseErrorFeedBack;
 }
-
-/**
- * Type guard to check if an object is a valid ICMCIResponseErrors
- * @param obj - The object to check
- * @returns true if the object has the required properties
- */
-export function isICMCIResponseErrors(obj: any): obj is ICMCIResponseErrors {
-  return !!obj && obj.feedback !== undefined;
-}

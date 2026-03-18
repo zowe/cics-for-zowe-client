@@ -19,6 +19,8 @@ const conf: Config = {
     collectCoverageFrom: [
         "src/**/*.ts",
         "!**/__tests__/**",
+        "!src/doc/**",
+        "!src/rest/CicsCmciRestError.ts"
     ],
 }
 
