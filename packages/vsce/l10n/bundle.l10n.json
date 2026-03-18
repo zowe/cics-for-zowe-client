@@ -286,6 +286,5 @@
   "No CICS resource information available to compare": "No CICS resource information available to compare",
   "Failed to compare resources: {0}": "Failed to compare resources: {0}",
   "Enter {0} name to compare with": "Enter {0} name to compare with",
-  "No CICS local file selected": "No CICS local file selected",
-  "All Resources": "All Resources"
+  "No CICS local file selected": "No CICS local file selected"
 }

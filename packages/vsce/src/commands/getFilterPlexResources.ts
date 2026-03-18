@@ -34,7 +34,6 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
-    const plex = chosenNode.getParent();
     await treeview.reveal(chosenNode, { expand: true });
 
     // Only filter regions

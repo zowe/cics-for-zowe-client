@@ -9,47 +9,17 @@
  *
  */
 
-import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { commands, l10n, window } from "vscode";
-import type { CICSResourceContainerNode } from "../trees";
+import { commands } from "vscode";
 import type { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import type { CICSTree } from "../trees/CICSTree";
 
 /**
- * Clear filter for a Regions Container (previously this was available on a plex)
+ * Clear filter for a Regions Container
  * @param tree
- * @param treeview
  * @returns
  */
 export function getClearPlexFilterCommand(tree: CICSTree) {
   return commands.registerCommand("cics-extension-for-zowe.clearPlexFilter", async (node: CICSRegionsContainer) => {
-    const plex = node.getParent();
-    const plexProfile = plex.getProfile();
-
-    let resourceOptions = [l10n.t("All Resources")];
-    if (!plexProfile.profile.regionName || !plexProfile.profile.cicsPlex) {
-      resourceOptions = [l10n.t("Regions"), ...resourceOptions];
-    }
-
-    const resourceToClear = await window.showQuickPick(resourceOptions);
-
-    if (!resourceToClear) {
-      return;
-    }
-
     node.filterRegions("*", tree);
-
-    if (resourceToClear === l10n.t("Regions")) {
-      return;
-    }
-
-    for (const region of node.children) {
-      if (region.getIsActive() && region.children) {
-        for (const child of region.children) {
-          (child as CICSResourceContainerNode<IResource>).clearCriteria();
-        }
-        tree._onDidChangeTreeData.fire(region);
-      }
-    }
   });
 }
