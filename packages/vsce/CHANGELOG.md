@@ -2,9 +2,9 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-# Recent Changes
+## Recent Changes
 
-- BugFix: Region filtering selects only regions. [#575] (https://github.com/zowe/cics-for-zowe-client/issues/575)
+- BugFix: Fixed plex resource filtering to only filter regions. [#575](https://github.com/zowe/cics-for-zowe-client/issues/575)
 
 ## `3.20.0`
 
