@@ -25,9 +25,9 @@ describe("CMCI - Put resource", () => {
   };
 
   const dummySession = new Session({
-    user: "fake",
-    password: "fake",
-    hostname: "fake",
+    user: "user",
+    password: "password",
+    hostname: "host",
     port: 1490,
   });
 
