@@ -54,6 +54,7 @@ export class CICSRegionsContainer extends TreeItem {
     CICSLogger.debug(`Filter region [${pattern}]`);
 
     this.activeFilter = pattern;
+    this.updateLabelAndContext();
     await PersistentStorage.setCriteria(this.buildFilterStorageKey(), pattern === "*" ? undefined : pattern);
 
     await window.withProgress(
