@@ -59,4 +59,28 @@ test.describe("LocalFile tests", () => {
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toHaveText(constants.LOCAL_FILE_1_NAME);
   });
+  test("should disable the local-file action when a CICS Local File is Un-enabled", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Files");
+
+    await findAndClickTreeItem(page, constants.LOCAL_FILE_1_NAME, "right");
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Close Local File");
+
+    await expect(page.getByRole("button", { name: "Wait", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Wait", exact: true }).click();
+    await page.waitForTimeout(200);
+
+    await expect(getTreeItem(page, `${constants.LOCAL_FILE_1_NAME} (Unenabled) (Closed)`)).toHaveText(
+      `${constants.LOCAL_FILE_1_NAME} (Unenabled) (Closed)`
+    );
+
+    await findAndClickTreeItem(page, `${constants.LOCAL_FILE_1_NAME} (Unenabled) (Closed)`, "right");
+    await page.waitForTimeout(200);
+    await expect(page.getByRole("menuitem", { name: "Enable Local File" })).toBeVisible();
+    await expect(page.getByRole("menuitem", { name: "Disable Local File" })).toBeVisible();
+    await page.keyboard.press("Escape");
+  });
 });
