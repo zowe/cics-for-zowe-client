@@ -636,7 +636,7 @@
           "group": "2.CICSResourceNode.action"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.ENABLED.*/",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICSLocalFile.(ENABLED|UNENABLED).*/",
           "command": "cics-extension-for-zowe.disableLocalFile",
           "group": "2.CICSResourceNode.action"
         },

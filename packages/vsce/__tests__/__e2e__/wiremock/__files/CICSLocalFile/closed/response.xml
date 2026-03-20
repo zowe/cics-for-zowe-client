@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd" 
+version="3.0" connect_version="0610">
+	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt="" recordcount="1" displayed_recordcount="1" />
+	<records>
+		<cicslocalfile _keydata="C3E4E2E3D6D4C5D9" accessmethod="VSAM" add="ADDABLE" addcnt="0" basdefinever="0" 
+        basedsname="USER.AUTO.CBSA.CUSTOMER" blockformat="BLOCKED" blockkeyln="N/A" blocksize="N/A" browse="BROWSABLE" 
+        browsecnt="0" browupdcnt="0" changeagent="SYSTEM" changeagrel="0710" changetime="2026-03-16T02:10:52.000000+00:00" 
+        changeusrid="USER" datasettype="K" definesource="SYSTEM" definetime="2026-03-16T02:10:52.000000+00:00" delete="DELETABLE" 
+        dexcpcnt="0" disposition="SHARE" dsname="USER.AUTO.CBSA.CUSTOMER" emptystatus="NOEMPTYREQ" enablestatus="UNENABLED" exclusive="NOTAPPLIC" 
+        eyu_cicsname="MYREG1" eyu_cicsrel="E760" eyu_reserved="0" file="LOCFILE1" fwdrecstatus="NOTFWDRCVBLE" getcnt="0" getupdcnt="0" 
+        gmtfilecls="0000-00-00T00:00:00.000000+00:00" gmtfileopn="0000-00-00T00:00:00.000000+00:00" iexcpcnt="0" installagent="SYSTEM" 
+        installtime="2026-03-16T02:10:52.000000+00:00" installusrid="USER" journalnum="0" keylength="0" keyposition="0" locdelcnt="0" 
+        lsrpoolid="1" numactstring="0" numdatbuff="0" numindexbuff="0" numstringwt="0" object="BASE" openstatus="CLOSED" rbatype="NOTAPPLIC" 
+        read="READABLE" readinteg="NOTAPPLIC" recordformat="VARIABLE" recordsize="0" recovstatus="NOTRECOVABLE" reltype="NOTAPPLIC" rlsaccess="NOTRLS" 
+        rlsreqwtto="0" strings="6" timeclose="00:00:00.0" timeopen="00:00:00.0" update="UPDATABLE" updatecnt="0" vsamtype="NOTAPPLIC" wstrccurcnt="0" wstrcnt="0" />
+	</records>
+</response>
