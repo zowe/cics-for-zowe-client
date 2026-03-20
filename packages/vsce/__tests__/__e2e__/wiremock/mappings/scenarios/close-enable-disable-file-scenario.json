@@ -1,0 +1,25 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Close File",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "locfile1-closed",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLocalFile/MYPLEX1/MYREG1?CRITERIA=(file%3DLOCFILE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n  <action name=\"CLOSE\">\n    <parameter name=\"BUSY\" value=\"WAIT\"/>\n  </action>\n</request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLocalFile/closed/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
