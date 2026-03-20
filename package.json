@@ -21,7 +21,8 @@
     "lintErrors": "npm run lintErrors --workspaces",
     "prepare": "husky install",
     "license": "node scripts/updateLicenses.js",
-    "pretty": "turbo pretty --no-cache"
+    "pretty": "turbo pretty --no-cache",
+    "audit": "npm audit --workspaces --omit=dev --audit-level=moderate"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",
