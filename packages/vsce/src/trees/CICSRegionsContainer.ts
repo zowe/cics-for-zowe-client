@@ -132,7 +132,7 @@ export class CICSRegionsContainer extends TreeItem {
       }
     }
 
-    this.description = `${this.activeFilter !== "*" ? l10n.t("({0}) ", this.activeFilter) : ""}${l10n.t("{0}/{1}", activeCount, totalCount)}`;
+    this.description = l10n.t("{0}/{1}", activeCount, totalCount);
   }
 
   private patternIntoRegex(pattern: string) {
