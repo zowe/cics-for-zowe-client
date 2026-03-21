@@ -65,7 +65,7 @@ export class CICSRegionsContainer extends TreeItem {
       },
       async () => {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
-        this.addRegionsUtility(regionInfo);
+        this.addRegionsUtility(regionInfo, false);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
         // Setting refreshNode flag to prevent reload
@@ -112,8 +112,9 @@ export class CICSRegionsContainer extends TreeItem {
   /**
    * Count the number of total and active regions
    * @param regionsArray
+   * @param includeFilterInDescription - Whether to include the filter in the description (used when label doesn't have it)
    */
-  private addRegionsUtility(regionsArray: any[]) {
+  private addRegionsUtility(regionsArray: any[], includeFilterInDescription: boolean = true) {
     this.children = [];
 
     let activeCount = 0;
@@ -132,7 +133,7 @@ export class CICSRegionsContainer extends TreeItem {
       }
     }
 
-    this.description = l10n.t("{0}/{1}", activeCount, totalCount);
+    this.description = `${includeFilterInDescription && this.activeFilter !== "*" ? l10n.t("({0}) ", this.activeFilter) : ""}${l10n.t("{0}/{1}", activeCount, totalCount)}`;
   }
 
   private patternIntoRegex(pattern: string) {
