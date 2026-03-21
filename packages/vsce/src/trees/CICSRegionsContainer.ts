@@ -14,6 +14,7 @@ import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window } fr
 import { CICSLogger } from "../utils/CICSLogger";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
+import PersistentStorage from "../utils/PersistentStorage";
 import { ProfileManagement } from "../utils/profileManagement";
 import { runGetResource } from "../utils/resourceUtils";
 import type { CICSPlexTree } from "./CICSPlexTree";
@@ -23,7 +24,6 @@ import type { CICSTree } from "./CICSTree";
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
   parent: CICSPlexTree;
-  resourceFilters: any;
   activeFilter: string;
   refreshNode: boolean = false;
 
@@ -32,31 +32,45 @@ export class CICSRegionsContainer extends TreeItem {
     public iconPath = getFolderIcon(false)
   ) {
     super(l10n.t("Regions"), TreeItemCollapsibleState.Collapsed);
-    this.contextValue = `cicsregionscontainer.`;
     this.parent = parent;
     this.children = [];
-    this.activeFilter = "*";
+
+    //To store the filter
+    const savedFilter = PersistentStorage.getCriteria(this.buildFilterStorageKey());
+    this.activeFilter = savedFilter || "*";
+    this.updateLabelAndContext();
+  }
+
+  private buildFilterStorageKey(): string {
+    return `${this.parent.getProfile().name}-${this.parent.getPlexName()}-regions-filter`;
+  }
+
+  private updateLabelAndContext(): void {
+    this.setLabel(this.activeFilter === "*" ? l10n.t("Regions") : l10n.t("Regions ({0})", this.activeFilter));
+    this.contextValue = `cicsregionscontainer.${this.activeFilter !== "*" ? "FILTERED" : ""}`;
   }
 
   public async filterRegions(pattern: string, tree: CICSTree) {
     CICSLogger.debug(`Filter region [${pattern}]`);
 
-    this.children = [];
     this.activeFilter = pattern;
-    this.setLabel(this.activeFilter === "*" ? l10n.t("Regions") : l10n.t("Regions ({0})", this.activeFilter));
+    this.updateLabelAndContext();
+    await PersistentStorage.setCriteria(this.buildFilterStorageKey(), pattern === "*" ? undefined : pattern);
+
     await window.withProgress(
       {
         title: l10n.t("Filtering regions"),
         location: ProgressLocation.Notification,
         cancellable: true,
       },
-      async (_, token) => {
-        token.onCancellationRequested(() => {});
+      async () => {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
-        this.addRegionsUtility(regionInfo);
+        this.addRegionsUtility(regionInfo, false);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
-        tree._onDidChangeTreeData.fire(undefined);
+        // Setting refreshNode flag to prevent reload
+        this.refreshNode = true;
+        tree._onDidChangeTreeData.fire(this);
         if (!this.children.length) {
           window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
         }
@@ -73,7 +87,6 @@ export class CICSRegionsContainer extends TreeItem {
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
-    this.clearChildren();
     const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
     this.addRegionsUtility(regionsArray);
     // Keep container open after label change
@@ -99,12 +112,14 @@ export class CICSRegionsContainer extends TreeItem {
   /**
    * Count the number of total and active regions
    * @param regionsArray
+   * @param includeFilterInDescription - Whether to include the filter in the description (used when label doesn't have it)
    */
-  private addRegionsUtility(regionsArray: any[]) {
+  private addRegionsUtility(regionsArray: any[], includeFilterInDescription: boolean = true) {
+    this.children = [];
+
     let activeCount = 0;
     let totalCount = 0;
     const parentPlex = this.getParent();
-    //parentPlex.getActiveFilter() ? RegExp(parentPlex.getActiveFilter()!) : undefined;
     const regionFilterRegex = this.activeFilter ? new RegExp(this.patternIntoRegex(this.activeFilter)) : "";
     for (const region of regionsArray) {
       // If region filter exists then match it
@@ -118,20 +133,20 @@ export class CICSRegionsContainer extends TreeItem {
       }
     }
 
-    this.description = `${this.activeFilter !== "*" ? l10n.t("({0}) ", this.activeFilter) : ""}${l10n.t("{0}/{1}", activeCount, totalCount)}`;
+    const filterPrefix = includeFilterInDescription && this.activeFilter !== "*" ? l10n.t("({0}) ", this.activeFilter) : "";
+    this.description = `${filterPrefix}${l10n.t("{0}/{1}", activeCount, totalCount)}`;
   }
 
   private patternIntoRegex(pattern: string) {
     const patternList = pattern.split(",");
     let patternString = "";
     for (const index in patternList) {
-      patternString += `(^${patternList[index].trim().replace("*", "(.*)")})`;
+      patternString += `(^${patternList[index].trim().replace(/\*/g, "(.*)")})`;
       if (parseInt(index) !== patternList.length - 1) {
         patternString += "|";
       }
     }
-    const regex = new RegExp(patternString);
-    return regex;
+    return patternString;
   }
 
   public async getChildren(): Promise<CICSRegionTree[]> {
@@ -142,21 +157,16 @@ export class CICSRegionsContainer extends TreeItem {
     const parentPlex = this.getParent();
     if (parentPlex.getProfile().profile.regionName && parentPlex.getProfile().profile.cicsPlex) {
       if (parentPlex.getGroupName()) {
-        this.clearChildren();
         await this.loadRegionsInCICSGroup(this.getParent().getSessionNode().getParent());
         this.iconPath = getFolderIcon(true);
       }
     } else {
-      this.clearChildren();
-      await this.loadRegionsInPlex();
+      if (this.activeFilter === "*" || this.children.length === 0) {
+        await this.loadRegionsInPlex();
 
-      if (this.children.length === 0) {
-        this.getParent().children = this.getParent().children.filter((c) => c instanceof CICSRegionsContainer);
+        this.getParent().refreshNode = true;
+        this.refreshNode = true;
       }
-
-      this.getParent().refreshNode = true;
-      this.refreshNode = true;
-      this.getParent().getSessionNode().getParent().refresh(this.getParent());
     }
 
     return this.children;

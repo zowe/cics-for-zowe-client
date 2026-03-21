@@ -9,11 +9,9 @@
  *
  */
 
-import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ProgressLocation, type TreeView, commands, l10n, window } from "vscode";
-import { CICSRegionsContainer, type CICSResourceContainerNode } from "../trees";
-import { CICSRegionTree } from "../trees/CICSRegionTree";
+import { commands, l10n, window, type TreeView } from "vscode";
+import { CICSRegionsContainer } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
 import { getPatternFromFilter } from "../utils/filterUtils";
@@ -36,97 +34,15 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
       window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
-    const plex = chosenNode.getParent();
     await treeview.reveal(chosenNode, { expand: true });
-    const plexProfile = plex.getProfile();
-    let resourceToFilter: any;
-    if (plexProfile.profile.regionName && plexProfile.profile.cicsPlex) {
-      resourceToFilter = await window.showQuickPick([
-        l10n.t("Programs"),
-        l10n.t("Local Transactions"),
-        l10n.t("Local Files"),
-        l10n.t("Tasks"),
-        l10n.t("Libraries"),
-      ]);
-    } else {
-      resourceToFilter = await window.showQuickPick([
-        l10n.t("Regions"),
-        l10n.t("Programs"),
-        l10n.t("Local Transactions"),
-        l10n.t("Local Files"),
-        l10n.t("Tasks"),
-        l10n.t("Libraries"),
-      ]);
-    }
-    let resourceHistory;
-    if (resourceToFilter === "Programs") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_PROGRAM_RESOURCE);
-    } else if (resourceToFilter === "Local Transactions") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
-    } else if (resourceToFilter === "Local Files") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_LOCAL_FILE);
-    } else if (resourceToFilter === "Tasks") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION);
-    } else if (resourceToFilter === "Libraries") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_LIBRARY_RESOURCE);
-    } else if (resourceToFilter === "Regions") {
-      resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_REGION);
-    } else {
-      window.showInformationMessage(l10n.t("No Selection Made"));
-      return;
-    }
-    const pattern = await getPatternFromFilter(resourceToFilter.slice(0, -1), resourceHistory);
-    if (pattern) {
-      if (resourceToFilter === "Programs") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_PROGRAM_RESOURCE, pattern);
-      } else if (resourceToFilter === "Local Transactions") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION, pattern);
-      } else if (resourceToFilter === "Local Files") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, pattern);
-      } else if (resourceToFilter === "Regions") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_REGION, pattern);
-      } else if (resourceToFilter === "Tasks") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LOCAL_TRANSACTION, pattern);
-      } else if (resourceToFilter === "Libraries") {
-        await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_LIBRARY_RESOURCE, pattern);
-      }
 
-      if (resourceToFilter === "Regions") {
-        chosenNode.filterRegions(pattern, tree);
-      } else {
-        await window.withProgress(
-          {
-            title: l10n.t("Loading Resources"),
-            location: ProgressLocation.Notification,
-            cancellable: true,
-          },
-          (_, token): Promise<void> => {
-            token.onCancellationRequested(() => {});
-            for (const region of chosenNode.children) {
-              if (region instanceof CICSRegionTree) {
-                if (region.getIsActive()) {
-                  let treeToFilter;
-                  if (resourceToFilter === "Programs") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Programs."))[0];
-                  } else if (resourceToFilter === "Local Transactions") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Transactions"))[0];
-                  } else if (resourceToFilter === "Local Files") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Local Files"))[0];
-                  } else if (resourceToFilter === "Tasks") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Tasks"))[0];
-                  } else if (resourceToFilter === "Libraries") {
-                    treeToFilter = region.children?.filter((child: any) => child.contextValue.includes("CICSResourceNode.Libraries"))[0];
-                  }
-                  if (treeToFilter) {
-                    (treeToFilter as CICSResourceContainerNode<IResource>).setCriteria([pattern]);
-                  }
-                }
-              }
-            }
-            return;
-          }
-        );
-      }
+    // Only filter regions
+    const resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION);
+    const pattern = await getPatternFromFilter("Region", resourceHistory);
+
+    if (pattern) {
+      await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, pattern);
+      chosenNode.filterRegions(pattern, tree);
       tree._onDidChangeTreeData.fire(chosenNode);
     }
   });
