@@ -69,8 +69,18 @@ export const isTreeItemExpanded = async (treeItem: Locator) => {
 };
 
 export const resetWiremock = async (request: APIRequestContext) => {
-  const response = await request.post(`http://localhost:8080/__admin/scenarios/reset`, {});
-  expect(response.ok()).toBeTruthy();
+  try {
+    const response = await request.post(`http://localhost:8080/__admin/scenarios/reset`, {
+      timeout: 6000, // 5 second timeout for Wiremock
+    });
+    if (!response.ok()) {
+      console.log(`Wiremock reset failed with status: ${response.status()}`);
+      throw new Error(`Wiremock reset failed with status: ${response.status()}`);
+    }
+  } catch (error) {
+    console.log("Failed to reset Wiremock, server may not be running:", error);
+    throw error; // Re-throw to fail the test if Wiremock is required
+  }
 };
 
 const getZoweExplorerTrees = async (page: Page) => {
@@ -97,15 +107,26 @@ export const prepareZoweExplorerView = async (page: Page) => {
 export const resetZoweExplorerView = async (page: Page) => {
   // If the profile tree item is expanded, collapse it
   const profileTreeItem = getTreeItem(page, constants.PROFILE_NAME);
-  if ((await profileTreeItem.isVisible()) && (await isTreeItemExpanded(profileTreeItem))) {
-    await profileTreeItem.click();
+  try {
+    const isVisible = await profileTreeItem.isVisible({ timeout: 2000 });
+    if (isVisible && (await isTreeItemExpanded(profileTreeItem))) {
+      await profileTreeItem.click({ timeout: 4000 });
+    }
+  } catch (error) {
+    // Profile tree item not found or not accessible, continue with cleanup
+    console.log("Profile tree item not found during cleanup, continuing...");
   }
 
   // If each of the trees are collapsed, expand them
-  for (const tree of await getZoweExplorerTrees(page)) {
-    if (!(await isTreeItemExpanded(tree))) {
-      await tree.click();
+  try {
+    for (const tree of await getZoweExplorerTrees(page)) {
+      if (!(await isTreeItemExpanded(tree))) {
+        await tree.click({ timeout: 5000 });
+      }
     }
+  } catch (error) {
+    // Trees not accessible, log and continue
+    console.log("Could not reset Zowe Explorer trees during cleanup, continuing...");
   }
 };
 

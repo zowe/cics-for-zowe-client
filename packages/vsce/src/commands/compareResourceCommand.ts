@@ -153,5 +153,3 @@ async function loadResourceForComparison(
 
   return resources[0];
 }
-
-// Made with Bob

@@ -329,7 +329,7 @@ export class CICSTree implements TreeDataProvider<CICSSessionTree> {
   }
 
   getParent(element: any): ProviderResult<any> {
-    element.getParent();
+    return element.getParent();
   }
 
   public _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
