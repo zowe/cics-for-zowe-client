@@ -27,6 +27,7 @@ test.beforeEach(async ({ page, request }) => {
 });
 
 test.afterEach(async ({ page }) => {
+  await page.waitForTimeout(100);
   await resetZoweExplorerView(page);
 });
 
