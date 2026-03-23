@@ -271,26 +271,41 @@ describe("CMCI - Define web service", () => {
   });
 
   describe("success scenarios", () => {
-    const requestBody: any = {
-      request: {
-        create: {
-          parameter: {
-            $: {
-              name: "CSD",
+    // Helper function to create request body with optional parameters
+    function webServiceRequestBody(validation?: string, description?: string, wsdlFile?: string): any {
+      const attributes: any = {
+        name: websvc,
+        csdgroup: group,
+        pipeline,
+        wsbind: wsBind,
+        validation: validation || "no",
+      };
+
+      if (description) {
+        attributes.description = description;
+      }
+
+      if (wsdlFile) {
+        attributes.wsdlFile = wsdlFile;
+      }
+
+      return {
+        request: {
+          create: {
+            parameter: {
+              $: {
+                name: "CSD",
+              },
             },
-          },
-          attributes: {
-            $: {
-              name: websvc,
-              csdgroup: group,
-              pipeline,
-              wsbind: wsBind,
-              validation: "no",
+            attributes: {
+              $: attributes,
             },
           },
         },
-      },
-    };
+      };
+    }
+
+    const requestBody = webServiceRequestBody();
 
     const defineSpy = jest.spyOn(CicsCmciRestClient, "postExpectParsedXml").mockResolvedValue(content);
 
@@ -298,7 +313,7 @@ describe("CMCI - Define web service", () => {
       response = undefined;
       error = undefined;
       defineSpy.mockClear();
-      defineSpy.mockResolvedValue(content);
+      defineSpy.mockResolvedValueOnce(content);
     });
 
     it("should be able to define a web service without cicsPlex specified", async () => {
@@ -336,27 +351,7 @@ describe("CMCI - Define web service", () => {
     it("should be able to define a web service with description", async () => {
       defineParms.cicsPlex = cicsPlex;
       defineParms.description = "Test Description";
-      const requestBodyWithDesc = {
-        request: {
-          create: {
-            parameter: {
-              $: {
-                name: "CSD",
-              },
-            },
-            attributes: {
-              $: {
-                name: websvc,
-                csdgroup: group,
-                pipeline,
-                wsbind: wsBind,
-                validation: "no",
-                description: "Test Description",
-              },
-            },
-          },
-        },
-      };
+      const requestBodyWithDesc = webServiceRequestBody("no", "Test Description");
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
 
       response = await defineWebservice(dummySession, defineParms);
@@ -369,27 +364,7 @@ describe("CMCI - Define web service", () => {
       defineParms.cicsPlex = cicsPlex;
       defineParms.description = undefined;
       defineParms.wsdlFile = "/path/to/wsdl.xml";
-      const requestBodyWithWsdl = {
-        request: {
-          create: {
-            parameter: {
-              $: {
-                name: "CSD",
-              },
-            },
-            attributes: {
-              $: {
-                name: websvc,
-                csdgroup: group,
-                pipeline,
-                wsbind: wsBind,
-                validation: "no",
-                wsdlFile: "/path/to/wsdl.xml",
-              },
-            },
-          },
-        },
-      };
+      const requestBodyWithWsdl = webServiceRequestBody("no", undefined, "/path/to/wsdl.xml");
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
 
       response = await defineWebservice(dummySession, defineParms);
@@ -402,28 +377,7 @@ describe("CMCI - Define web service", () => {
       defineParms.cicsPlex = cicsPlex;
       defineParms.description = "Test Description";
       defineParms.wsdlFile = "/path/to/wsdl.xml";
-      const requestBodyWithBoth = {
-        request: {
-          create: {
-            parameter: {
-              $: {
-                name: "CSD",
-              },
-            },
-            attributes: {
-              $: {
-                name: websvc,
-                csdgroup: group,
-                pipeline,
-                wsbind: wsBind,
-                validation: "no",
-                description: "Test Description",
-                wsdlFile: "/path/to/wsdl.xml",
-              },
-            },
-          },
-        },
-      };
+      const requestBodyWithBoth = webServiceRequestBody("no", "Test Description", "/path/to/wsdl.xml");
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
 
       response = await defineWebservice(dummySession, defineParms);
@@ -437,26 +391,7 @@ describe("CMCI - Define web service", () => {
       defineParms.description = undefined;
       defineParms.wsdlFile = undefined;
       defineParms.validation = true;
-      const requestBodyWithValidation = {
-        request: {
-          create: {
-            parameter: {
-              $: {
-                name: "CSD",
-              },
-            },
-            attributes: {
-              $: {
-                name: websvc,
-                csdgroup: group,
-                pipeline,
-                wsbind: wsBind,
-                validation: "yes",
-              },
-            },
-          },
-        },
-      };
+      const requestBodyWithValidation = webServiceRequestBody("yes");
       endPoint = "/" + CicsCmciConstants.CICS_SYSTEM_MANAGEMENT + "/" + CicsCmciConstants.CICS_DEFINITION_WEBSERVICE + "/" + cicsPlex + "/" + region;
 
       response = await defineWebservice(dummySession, defineParms);
@@ -466,3 +401,4 @@ describe("CMCI - Define web service", () => {
     });
   });
 });
+

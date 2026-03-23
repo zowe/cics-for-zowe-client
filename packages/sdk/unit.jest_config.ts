@@ -18,11 +18,7 @@ const conf: Config = {
     displayName: "Zowe CICS SDK Unit Tests",
     collectCoverageFrom: [
         "src/**/*.ts",
-        "!**/__tests__/**",
-        "!**/index.ts",
-        "!**/main.ts",
-        "!src/doc/ICMCIResponseErrorFeedBack.ts",
-        "!src/doc/ICMCIResponseErrors.ts"
+        "!**/__tests__/**"
     ],
 }
 
