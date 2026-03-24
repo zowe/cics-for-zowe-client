@@ -61,7 +61,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.filterRegions("IYC*", cicsTree);
 
       expect(regionsContainer.activeFilter).toBe("IYC*");
-      expect(regionsContainer.label).toEqual("Regions (IYC*)");
+      expect(regionsContainer.label).toEqual("Regions");
     });
   });
 
@@ -79,7 +79,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInCICSGroup(cicsTree);
 
       expect(regionsContainer.label).toBe("Regions");
-      expect(regionsContainer.description).toBe("(cics) 1/1");
+      expect(regionsContainer.description).toBe("region=cics [1/1]");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
@@ -96,7 +96,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.label).toBe("Regions");
-      expect(regionsContainer.description).toBe("2/2");
+      expect(regionsContainer.description).toBe("[2/2]");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
