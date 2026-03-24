@@ -98,4 +98,24 @@ test.describe("Region Filter", () => {
     await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.REGION_ERROR)).toBeVisible();
   });
+  test("Should give correct description", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
+    await expect(filterButton).toBeVisible();
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    await expect(textBox).toBeEditable();
+    await textBox.fill("MYREG1");
+    await textBox.press("Enter");
+
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.REGION_ERROR)).not.toBeVisible();
+
+    await expect(getTreeItem(page, constants.REGION_NAME)).toHaveText(constants.REGION_NAME);
+    await expect(getTreeItem(page, "Regions region=MYREG1 [1/1]", false)).toHaveCount(1);
+  });
 });

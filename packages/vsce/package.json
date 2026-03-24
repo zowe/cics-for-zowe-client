@@ -576,7 +576,7 @@
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^cicsregionscontainer.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^cicsregionscontainer.FILTERED/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.clearPlexFilter",
           "group": "inline"
         },
