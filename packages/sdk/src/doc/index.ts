@@ -13,6 +13,8 @@ export * from "./IBundleParms";
 export * from "./ICMCIApiResponse";
 export * from "./ICMCIRequestOptions";
 export * from "./ICMCIResponseResultSummary";
+export * from "./ICMCIResponseErrorFeedBack";
+export * from "./ICMCIResponseErrors";
 export * from "./ICSDGroupParms";
 export * from "./ICacheParms";
 export * from "./IGetResourceUriOptions";

@@ -16,6 +16,10 @@ const baseConfig = require("../../jest.config.ts");
 const conf: Config = {
     ...baseConfig,
     displayName: "Zowe CICS SDK Unit Tests",
+    collectCoverageFrom: [
+        "src/**/*.ts",
+        "!**/__tests__/**"
+    ],
 }
 
 module.exports = conf;
