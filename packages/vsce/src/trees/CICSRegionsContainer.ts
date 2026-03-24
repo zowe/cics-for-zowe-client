@@ -155,25 +155,22 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   private updateDescription(): void {
-    if (this.children.length === 0) {
-      this.description = "";
-    } else {
-      let activeCount = 0;
-      const totalCount = this.children.length;
+    let activeCount = 0;
+    const totalCount = this.children.length;
 
-      for (const child of this.children) {
-        if (child.region?.cicsstate === "ACTIVE") {
-          activeCount += 1;
-        }
+    for (const child of this.children) {
+      if (child.region?.cicsstate === "ACTIVE") {
+        activeCount += 1;
       }
-
-      let description = "";
-      if (this.activeFilter && this.activeFilter !== "*") {
-        description = `region=${this.activeFilter} `;
-      }
-      description += `[${activeCount}/${totalCount}]`;
-      this.description = description;
     }
+
+    let description = "";
+    if (this.activeFilter && this.activeFilter !== "*") {
+      description = `region=${this.activeFilter} `;
+    }
+    description += `[${activeCount}/${totalCount}]`;
+    this.description = description;
+
     this.requireDescriptionUpdate = true;
     this.getParent().getSessionNode().getParent().refresh(this);
   }
