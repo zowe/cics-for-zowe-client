@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Enable previously used resource filters to be edited before reuse. [#618](https://github.com/zowe/cics-for-zowe-client/issues/618)
+
 ## `3.20.0`
 
 - Enhancement: Enabled CICS attribute links to Data Sets in Zowe Explorer. [#590](https://github.com/zowe/cics-for-zowe-client/issues/590)
