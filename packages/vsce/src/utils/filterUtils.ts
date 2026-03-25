@@ -38,6 +38,84 @@ export const buildQuickPick = (resName: string, history: string[]) => {
   return quickpick;
 };
 
+/**
+ * Shows an edit quickpick dialog for a selected filter choice.
+ * Allows the user to either use the filter as-is or edit it before applying.
+ *
+ * @internal This is an internal helper function for getPatternFromFilter
+ * @param choiceLabel - The label of the selected filter choice
+ * @returns The pattern to use, or undefined if cancelled
+ */
+export async function showEditQuickpick(choiceLabel: string): Promise<string | undefined> {
+  const editQuickpick = Gui.createQuickPick();
+  editQuickpick.items = [
+    { label: choiceLabel, description: l10n.t("Press Enter to use this filter") },
+    { label: l10n.t("Edit filter"), description: l10n.t("Modify the filter before applying") }
+  ];
+  editQuickpick.placeholder = l10n.t("Press Enter to use '{0}' or select 'Edit filter'", choiceLabel);
+  editQuickpick.value = choiceLabel;
+  editQuickpick.ignoreFocusOut = true;
+  editQuickpick.show();
+  
+  const editChoice = await Gui.resolveQuickPick(editQuickpick);
+  const editInput = editQuickpick.value;
+  editQuickpick.hide();
+  
+  // If user pressed Enter without selecting an item, use the edited input
+  if (!editChoice && editInput) {
+    return editInput;
+  }
+  
+  if (!editChoice) {
+    // User cancelled without any input
+    window.showInformationMessage(l10n.t("No Selection Made"));
+    return undefined;
+  }
+  
+  // If user modified the input or selected first option, use the input value
+  if (editInput !== choiceLabel || editChoice.label === choiceLabel) {
+    return editInput;
+  }
+  
+  // User selected "Edit filter" - show input box
+  return Gui.showInputBox({
+    prompt: l10n.t("Edit filter"),
+    value: choiceLabel
+  });
+}
+
+/**
+ * Normalizes and formats a pattern string.
+ * Converts to uppercase if case-insensitive and removes whitespace.
+ *
+ * @internal This is an internal helper function for getPatternFromFilter
+ * @param pattern - The pattern to normalize
+ * @param caseSensitive - Whether the pattern should be case-sensitive
+ * @returns The normalized pattern
+ */
+export function normalizePattern(pattern: string, caseSensitive: boolean): string {
+  let normalized = pattern;
+  if (!caseSensitive) {
+    normalized = normalized.toUpperCase();
+  }
+  return normalized.replace(/\s/g, "");
+}
+
+/**
+ * Checks if user input matches the selected choice (case-insensitive comparison).
+ *
+ * @internal This is an internal helper function for getPatternFromFilter
+ * @param userInput - The text typed by the user
+ * @param choiceLabel - The label of the selected choice
+ * @param caseSensitive - Whether to perform case-sensitive comparison
+ * @returns True if the input matches the choice
+ */
+export function inputMatchesChoice(userInput: string, choiceLabel: string, caseSensitive: boolean): boolean {
+  const normalizedInput = caseSensitive ? userInput : userInput.toUpperCase();
+  const normalizedChoice = caseSensitive ? choiceLabel : choiceLabel.toUpperCase();
+  return normalizedInput === normalizedChoice;
+}
+
 export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
   const quickpick = buildQuickPick(resourceName, resourceHistory);
   quickpick.show();
@@ -45,100 +123,33 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
   const userInput = quickpick.value;
   quickpick.hide();
 
-  let pattern: string;
-  if (!choice && userInput) {
-    pattern = userInput;
-  } else if (!choice) {
-    return;
+  let pattern: string | undefined;
+  
+  // Handle case where no choice was selected
+  if (!choice) {
+    if (userInput) {
+      pattern = userInput;
+    } else {
+      return undefined;
+    }
   } else {
     // A history item was selected
-    // Check if user typed the value or clicked a different item from the list
-    const normalizedInput = filterCaseSensitive ? userInput : userInput.toUpperCase();
-    const normalizedChoice = filterCaseSensitive ? choice.label : choice.label.toUpperCase();
-    
-    if (userInput && normalizedInput === normalizedChoice) {
-      // User typed text that matches the selected item exactly - apply immediately
+    // If user typed text that matches the selected item exactly, apply immediately
+    if (userInput && inputMatchesChoice(userInput, choice.label, filterCaseSensitive)) {
       pattern = userInput;
-    } else if (userInput && normalizedInput !== normalizedChoice) {
-      // User typed to filter, then clicked a different item - show edit quickpick with that item
-      // This handles: user types "CUS" to filter, then clicks "CUSTOMER" from filtered list
-      const editQuickpick = Gui.createQuickPick();
-      editQuickpick.items = [
-        { label: choice.label, description: l10n.t("Press Enter to use this filter") },
-        { label: l10n.t("Edit filter"), description: l10n.t("Modify the filter before applying") }
-      ];
-      editQuickpick.placeholder = l10n.t("Press Enter to use '{0}' or select 'Edit filter'", choice.label);
-      editQuickpick.value = choice.label;
-      editQuickpick.ignoreFocusOut = true;
-      editQuickpick.show();
-      
-      const editChoice = await Gui.resolveQuickPick(editQuickpick);
-      const editInput = editQuickpick.value;
-      editQuickpick.hide();
-      
-      // If user pressed Enter without selecting an item, use the edited input
-      if (!editChoice && editInput) {
-        pattern = editInput;
-      } else if (!editChoice) {
-        // User cancelled without any input
-        window.showInformationMessage(l10n.t("No Selection Made"));
-        return;
-      } else if (editInput !== choice.label || editChoice.label === choice.label) {
-        // If user modified the input or selected first option, use the input value
-        pattern = editInput;
-      } else {
-        // User selected "Edit filter" - show input box
-        pattern = await Gui.showInputBox({
-          prompt: l10n.t("Edit filter"),
-          value: choice.label
-        });
-      }
     } else {
-      // No text in input - user clicked a history item directly - show edit quickpick
-      const editQuickpick = Gui.createQuickPick();
-      editQuickpick.items = [
-        { label: choice.label, description: l10n.t("Press Enter to use this filter") },
-        { label: l10n.t("Edit filter"), description: l10n.t("Modify the filter before applying") }
-      ];
-      editQuickpick.placeholder = l10n.t("Press Enter to use '{0}' or select 'Edit filter'", choice.label);
-      editQuickpick.value = choice.label;
-      editQuickpick.ignoreFocusOut = true;
-      editQuickpick.show();
-      
-      const editChoice = await Gui.resolveQuickPick(editQuickpick);
-      const editInput = editQuickpick.value;
-      editQuickpick.hide();
-      
-      // If user pressed Enter without selecting an item, use the edited input
-      if (!editChoice && editInput) {
-        pattern = editInput;
-      } else if (!editChoice) {
-        // User cancelled without any input
-        window.showInformationMessage(l10n.t("No Selection Made"));
-        return;
-      } else if (editInput !== choice.label || editChoice.label === choice.label) {
-        // If user modified the input or selected first option, use the input value
-        pattern = editInput;
-      } else {
-        // User selected "Edit filter" - show input box
-        pattern = await Gui.showInputBox({
-          prompt: l10n.t("Edit filter"),
-          value: choice.label
-        });
-      }
+      // User either clicked directly or typed to filter then clicked a different item
+      // Show edit quickpick to allow confirmation or editing
+      pattern = await showEditQuickpick(choice.label);
     }
   }
 
   if (!pattern) {
     window.showInformationMessage(l10n.t("You must enter a pattern"));
-    return;
+    return undefined;
   }
 
-  if (!filterCaseSensitive) {
-    pattern = pattern.toUpperCase();
-  }
-
-  return pattern.replace(/\s/g, "");
+  return normalizePattern(pattern, filterCaseSensitive);
 }
 
 export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {
