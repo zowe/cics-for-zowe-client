@@ -81,6 +81,7 @@ describe("Filter Resource Commands", () => {
       const mockPattern = "NEWPROG*";
       (getPatternFromFilter as jest.Mock).mockResolvedValue(mockPattern);
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -101,6 +102,7 @@ describe("Filter Resource Commands", () => {
       const mockPattern = "PROG*,CUST*,TEST*";
       (getPatternFromFilter as jest.Mock).mockResolvedValue(mockPattern);
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -112,6 +114,7 @@ describe("Filter Resource Commands", () => {
       const mockPattern = "PROG* , CUST* , TEST*";
       (getPatternFromFilter as jest.Mock).mockResolvedValue(mockPattern);
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -125,6 +128,7 @@ describe("Filter Resource Commands", () => {
       // Clear previous mock calls
       jest.clearAllMocks();
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -147,6 +151,7 @@ describe("Filter Resource Commands", () => {
       };
       resourceNode.resourceTypes.push(secondResourceType as any);
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -160,6 +165,7 @@ describe("Filter Resource Commands", () => {
       const mockPattern = "CaseSensitive*";
       (getPatternFromFilter as jest.Mock).mockResolvedValue(mockPattern);
 
+      getFilterResourcesCommand(tree, treeview);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -185,6 +191,7 @@ describe("Filter Resource Commands", () => {
     });
 
     it("should clear filter and reset node", async () => {
+      getClearFilterCommand(tree);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
@@ -195,6 +202,7 @@ describe("Filter Resource Commands", () => {
     });
 
     it("should not reveal node after clearing filter", async () => {
+      getClearFilterCommand(tree);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(resourceNode);
