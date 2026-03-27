@@ -25,6 +25,7 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   activeFilter: string;
   private requireDescriptionUpdate: boolean = false;
+  private hasBuiltInFilter: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
@@ -34,9 +35,18 @@ export class CICSRegionsContainer extends TreeItem {
     this.parent = parent;
     this.children = [];
 
-    //To store the filter
-    const savedFilter = PersistentStorage.getCriteria(this.buildFilterStorageKey());
-    this.activeFilter = savedFilter || "*";
+    // if profile has plexname and regionname in the Zowe config
+    const profile = parent.getProfile().profile;
+    const profileRegionName = profile.cicsPlex && profile.regionName ? profile.regionName : undefined;
+
+    if (profileRegionName) {
+      this.activeFilter = profileRegionName;
+      this.hasBuiltInFilter = true; //this filter came from config
+      this.description = `region=${this.activeFilter}`;
+    } else {
+      this.activeFilter = "*";
+      this.hasBuiltInFilter = false;
+    }
     this.updateLabelAndContext();
   }
 
@@ -52,7 +62,8 @@ export class CICSRegionsContainer extends TreeItem {
   public async filterRegions(pattern: string, _tree: CICSTree) {
     this.activeFilter = pattern;
     this.updateLabelAndContext();
-    await PersistentStorage.setCriteria(this.buildFilterStorageKey(), pattern === "*" ? undefined : pattern);
+    // saving teh filter
+    await PersistentStorage.setCriteria(this.buildFilterStorageKey(), pattern);
 
     await window.withProgress(
       {
@@ -144,9 +155,13 @@ export class CICSRegionsContainer extends TreeItem {
     if (parentPlex.getProfile().profile.regionName && parentPlex.getProfile().profile.cicsPlex) {
       if (parentPlex.getGroupName()) {
         await this.loadRegionsInCICSGroup(this.getParent().getSessionNode().getParent());
+      } else {
+        if (this.activeFilter !== "*" || this.children.length === 0) {
+          await this.loadRegionsInPlex();
+        }
       }
     } else {
-      if (this.activeFilter === "*" || this.children.length === 0) {
+      if (this.activeFilter !== "*" || this.children.length === 0) {
         await this.loadRegionsInPlex();
       }
     }
