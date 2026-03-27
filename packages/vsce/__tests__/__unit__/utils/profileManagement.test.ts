@@ -74,12 +74,20 @@ describe("ProfileManagement", () => {
 
   describe("registerCICSProfiles", () => {
     it("should call initForZowe with correct parameters", async () => {
-      const initForZoweSpy = jest.spyOn(mockZoweAPI.getExplorerExtenderApi(), 'initForZowe');
+      const mockInitForZowe = jest.fn().mockResolvedValue(undefined);
+      const mockExtenderApi = {
+        initForZowe: mockInitForZowe,
+        getProfilesCache: jest.fn().mockReturnValue(mockProfilesCache),
+      };
+      
+      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock).mockReturnValue({
+        getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
+      });
       
       await ProfileManagement.registerCICSProfiles();
 
-      expect(initForZoweSpy).toHaveBeenCalled();
-      expect(initForZoweSpy).toHaveBeenCalledWith("cics", expect.any(Array));
+      expect(mockInitForZowe).toHaveBeenCalled();
+      expect(mockInitForZowe).toHaveBeenCalledWith("cics", expect.any(Array));
     });
   });
 
@@ -102,23 +110,50 @@ describe("ProfileManagement", () => {
 
   describe("profilesCacheRefresh", () => {
     it("should refresh profiles cache", async () => {
-      const refreshSpy = jest.spyOn(mockProfilesCache, 'refresh');
+      const mockRefresh = jest.fn().mockResolvedValue(undefined);
+      const mockCache = {
+        refresh: mockRefresh,
+        getProfileInfo: jest.fn().mockResolvedValue({}),
+      };
+      
+      const mockExtenderApi = {
+        initForZowe: jest.fn().mockResolvedValue(undefined),
+        getProfilesCache: jest.fn().mockReturnValue(mockCache),
+      };
+      
+      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock).mockReturnValue({
+        getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
+      });
       
       await ProfileManagement.profilesCacheRefresh();
 
-      expect(refreshSpy).toHaveBeenCalled();
+      expect(mockRefresh).toHaveBeenCalled();
     });
   });
 
   describe("getConfigInstance", () => {
     it("should return profile info", async () => {
-      const mockProfileInfo = { test: "info", getAllProfiles: jest.fn(), getTeamConfig: jest.fn() };
-      mockProfilesCache.getProfileInfo.mockResolvedValue(mockProfileInfo);
+      const mockProfileInfo = { getAllProfiles: jest.fn(), getTeamConfig: jest.fn() };
+      const mockGetProfileInfo = jest.fn().mockResolvedValue(mockProfileInfo);
+      const mockCache = {
+        refresh: jest.fn().mockResolvedValue(undefined),
+        getProfileInfo: mockGetProfileInfo,
+      };
+      
+      const mockExtenderApi = {
+        initForZowe: jest.fn().mockResolvedValue(undefined),
+        getProfilesCache: jest.fn().mockReturnValue(mockCache),
+      };
+      
+      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock).mockReturnValue({
+        getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
+      });
 
       const result = await ProfileManagement.getConfigInstance();
 
       expect(result).toBeDefined();
-      expect(result).toHaveProperty('test', 'info');
+      expect(result).toHaveProperty('getAllProfiles');
+      expect(result).toHaveProperty('getTeamConfig');
     });
   });
 
