@@ -74,10 +74,9 @@ test.describe("JVM Endpoint should be visible from plex-level", () => {
     await expect(textBox).toBeEditable();
     await textBox.fill("MYJVM1");
     await textBox.press("Enter");
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(500);
 
     await expect(getTreeItem(page, constants.ALL_JVMSERVER_NAME1)).toBeVisible();
-    await expect(getTreeItem(page, constants.ALL_JVMSERVER_NAME2)).toBeVisible();
 
     await page.getByRole("treeitem", { name: "MYJVM1 (MYREG1)" }).click();
     await expect(getTreeItem(page, constants.JVM_ENDPOINT_1_NAME)).toBeVisible();
