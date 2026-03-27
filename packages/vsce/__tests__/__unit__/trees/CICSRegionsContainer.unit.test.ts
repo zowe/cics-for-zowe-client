@@ -16,7 +16,20 @@ import { CICSTree } from "../../../src/trees/CICSTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { getResourceMock, profile } from "../../__mocks__";
 
-jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
+jest.spyOn(PersistentStorage, "setCriteria").mockResolvedValue(undefined);
+const mockContext = {
+  workspaceState: {
+    get: jest.fn(),
+    update: jest.fn(),
+  },
+  globalState: {
+    get: jest.fn(),
+    update: jest.fn(),
+    setKeysForSync: jest.fn(),
+  },
+} as any;
+
+PersistentStorage.setContext(mockContext);
 
 const record = [
   { cicsname: "cics", cicsstate: "ACTIVE" },
@@ -37,17 +50,18 @@ describe("Test suite for CICSRegionsContainer", () => {
   });
 
   describe("Test suite for filterRegions", () => {
-    it("should filter regions based on the pattern", () => {
+    it("should filter regions based on the pattern", async () => {
       getResourceMock.mockResolvedValueOnce({
         response: {
           resultSummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
           records: { cicsmanagedregion: record },
         },
       });
-      regionsContainer.filterRegions("IYC*", cicsTree);
+
+      await regionsContainer.filterRegions("IYC*", cicsTree);
 
       expect(regionsContainer.activeFilter).toBe("IYC*");
-      expect(regionsContainer.label).toEqual("Regions (IYC*)");
+      expect(regionsContainer.label).toEqual("Regions");
     });
   });
 
@@ -65,7 +79,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInCICSGroup(cicsTree);
 
       expect(regionsContainer.label).toBe("Regions");
-      expect(regionsContainer.description).toBe("(cics) 1/1");
+      expect(regionsContainer.description).toBe("region=cics [1/1]");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });
@@ -82,7 +96,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.label).toBe("Regions");
-      expect(regionsContainer.description).toBe("2/2");
+      expect(regionsContainer.description).toBe("[2/2]");
       expect(regionsContainer.collapsibleState).toBe(2);
     });
   });

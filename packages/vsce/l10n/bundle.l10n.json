@@ -62,11 +62,8 @@
   "{cicsplex} - {region}": "{cicsplex} - {region}",
   "Use the search button to filter resources": "Use the search button to filter resources",
   "Regions": "Regions",
-  "Regions ({0})": "Regions ({0})",
   "Filtering regions": "Filtering regions",
   "No regions found for {0}": "No regions found for {0}",
-  "({0}) ": "({0}) ",
-  "{0}/{1}": "{0}/{1}",
   "Files": "Files",
   "TS Queues": "TS Queues",
   "All {0}": "All {0}",
@@ -274,8 +271,6 @@
   "No CICS Transaction selected": "No CICS Transaction selected",
   "No program associated with this transaction": "No program associated with this transaction",
   "No 'Regions' node selected": "No 'Regions' node selected",
-  "Local Transactions": "Local Transactions",
-  "Loading Resources": "Loading Resources",
   "Wait": "Wait",
   "No Wait": "No Wait",
   "Force": "Force",
@@ -288,6 +283,5 @@
   "No CICS resource information available to compare": "No CICS resource information available to compare",
   "Failed to compare resources: {0}": "Failed to compare resources: {0}",
   "Enter {0} name to compare with": "Enter {0} name to compare with",
-  "No CICS local file selected": "No CICS local file selected",
-  "All Resources": "All Resources"
+  "No CICS local file selected": "No CICS local file selected"
 }

@@ -83,7 +83,7 @@ describe("Test suite for CICSLocalFileTree", () => {
           },
         },
       });
-      expect((await plexTree.getChildren())?.length).toEqual(1);
+      expect((await plexTree.getChildren())?.length).toEqual(11);
     });
   });
 

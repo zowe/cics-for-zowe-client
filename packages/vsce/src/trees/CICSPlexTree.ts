@@ -106,7 +106,8 @@ export class CICSPlexTree extends TreeItem {
       return this.children;
     }
 
-    if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName()) {
+    const hasBuiltInFilter = this.regionsContainer["hasBuiltInFilter"];
+    if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName() && !hasBuiltInFilter) {
       await this.loadOnlyRegion();
       return this.children;
     }
