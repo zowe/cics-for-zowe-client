@@ -89,7 +89,7 @@ const SingleResource = ({
         </div>
       </div>
 
-      <HighlightsSection resource={resources[0]} />
+      <HighlightsSection resource={resources[0]} shouldRenderDatasetLinks={shouldRenderDatasetLinks} />
 
       <div className="w-full">
         <Table headers={resourceHeaders} rows={resourceRows} stickyLevel={1} searchTabIndex={3} />
@@ -98,13 +98,13 @@ const SingleResource = ({
   );
 };
 
-const HighlightsSection = ({ resource }: { resource: IResourceInspectorResource }) => {
+const HighlightsSection = ({ resource, shouldRenderDatasetLinks }: { resource: IResourceInspectorResource; shouldRenderDatasetLinks: boolean }) => {
   return (
     <div className="flex flex-col gap-0.5 px-4 mt-2 mb-4">
       {resource.highlights.map((h) => (
         <div key={h.key} className="text-sm">
           <span className="text-(--vscode-disabledForeground)">{h.key}: </span>
-          {h.value}
+          {renderHyperlinkableValue(h.value, resource.context, shouldRenderDatasetLinks)}
         </div>
       ))}
     </div>
