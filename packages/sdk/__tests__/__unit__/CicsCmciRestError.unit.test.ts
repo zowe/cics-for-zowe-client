@@ -13,6 +13,15 @@ import { CicsCmciRestError } from "../../src/rest/CicsCmciRestError";
 import { CicsCmciConstants } from "../../src/constants/CicsCmci.constants";
 import type { ICMCIApiResponse } from "../../src/doc/ICMCIApiResponse";
 
+// Test constants for response codes
+const TEST_RESPONSE_CODE_512 = 512;
+const TEST_RESPONSE_CODE_16 = 16;
+const TEST_RESPONSE_CODE_20 = 20;
+const TEST_RESPONSE_CODE_12 = 12;
+const TEST_RESPONSE_CODE_100 = 100;
+const TEST_RESPONSE_CODE_8 = 8;
+const TEST_RESPONSE_CODE_1 = 1;
+
 describe("CicsCmciRestError tests", () => {
   describe("Constructor and basic properties", () => {
     it("should create an error with message and response", () => {
@@ -84,7 +93,7 @@ describe("CicsCmciRestError tests", () => {
       const error = new CicsCmciRestError("Test error", mockResponse);
 
       expect(error.RESPONSE_1).toBe(CicsCmciConstants.RESPONSE_1_CODES.OK);
-      expect(error.RESPONSE_2).toBe(512);
+      expect(error.RESPONSE_2).toBe(TEST_RESPONSE_CODE_512);
       expect(typeof error.RESPONSE_1).toBe("number");
       expect(typeof error.RESPONSE_2).toBe("number");
     });
@@ -134,8 +143,8 @@ describe("CicsCmciRestError tests", () => {
 
       const error = new CicsCmciRestError("Feedback error", mockResponse);
 
-      expect(error.FEEDBACKRESP).toBe(16);
-      expect(error.FEEDBACKRESP_2).toBe(1);
+      expect(error.FEEDBACKRESP).toBe(TEST_RESPONSE_CODE_16);
+      expect(error.FEEDBACKRESP_2).toBe(TEST_RESPONSE_CODE_1);
       expect(error.FEEDBACKRESP_ALT).toBe("NOTFND");
       expect(error.EIBFN_ALT).toBe("PUT");
       expect(error.FEEDBACK_ACTION).toBe("RETRY");
@@ -208,7 +217,7 @@ describe("CicsCmciRestError tests", () => {
 
       const error = new CicsCmciRestError("Partial feedback", mockResponse);
 
-      expect(error.FEEDBACKRESP).toBe(20);
+      expect(error.FEEDBACKRESP).toBe(TEST_RESPONSE_CODE_20);
       expect(error.FEEDBACKRESP_2).toBe(0);
       expect(error.FEEDBACKRESP_ALT).toBe("INVREQ");
       expect(error.EIBFN_ALT).toBe("DELETE");
@@ -327,8 +336,8 @@ describe("CicsCmciRestError tests", () => {
 
       const error = new CicsCmciRestError("Authorization error", mockResponse);
 
-      expect(error.FEEDBACKRESP).toBe(12);
-      expect(error.FEEDBACKRESP_2).toBe(100);
+      expect(error.FEEDBACKRESP).toBe(TEST_RESPONSE_CODE_12);
+      expect(error.FEEDBACKRESP_2).toBe(TEST_RESPONSE_CODE_100);
       expect(error.FEEDBACKRESP_ALT).toBe("NOTAUTH");
       expect(error.EIBFN_ALT).toBe("INQUIRE");
       expect(error.FEEDBACK_ACTION).toBe("CONTACT_ADMINISTRATOR");
@@ -359,8 +368,8 @@ describe("CicsCmciRestError tests", () => {
 
       expect(error.RESPONSE_1).toBe(CicsCmciConstants.RESPONSE_1_CODES.OK);
       expect(error.RESPONSE_2).toBe(0);
-      expect(error.FEEDBACKRESP).toBe(16);
-      expect(error.FEEDBACKRESP_2).toBe(1);
+      expect(error.FEEDBACKRESP).toBe(TEST_RESPONSE_CODE_16);
+      expect(error.FEEDBACKRESP_2).toBe(TEST_RESPONSE_CODE_1);
     });
 
     it("should handle empty string values gracefully", () => {
@@ -461,7 +470,7 @@ describe("CicsCmciRestError tests", () => {
 
       const error = new CicsCmciRestError("Minimal feedback", mockResponse);
 
-      expect(error.FEEDBACKRESP).toBe(8);
+      expect(error.FEEDBACKRESP).toBe(TEST_RESPONSE_CODE_8);
       expect(error.FEEDBACKRESP_2).toBe(0);
       expect(error.FEEDBACKRESP_ALT).toBe("DISABLED");
       expect(error.EIBFN_ALT).toBe("POST");

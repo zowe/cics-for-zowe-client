@@ -12,37 +12,16 @@
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import type { imperative } from "@zowe/zowe-explorer-api";
 // Import all interfaces to ensure they're included in coverage
-import "../../src/interfaces/IExtensionAPI";
-import "../../src/interfaces/IResourceContext";
-import "../../src/interfaces/IResourceExtender";
-import "../../src/interfaces/ResourceAction";
-import "../../src/interfaces/resources/IBundle";
-import "../../src/interfaces/resources/IBundlePart";
-import "../../src/interfaces/resources/IJVMEndpoint";
-import "../../src/interfaces/resources/IJVMServer";
-import "../../src/interfaces/resources/ILibrary";
-import "../../src/interfaces/resources/ILibraryDataset";
-import "../../src/interfaces/resources/ILocalFile";
-import "../../src/interfaces/resources/IManagedRegion";
-import "../../src/interfaces/resources/IPipeline";
-import "../../src/interfaces/resources/IProgram";
-import "../../src/interfaces/resources/IRegion";
-import "../../src/interfaces/resources/IRemoteFile";
-import "../../src/interfaces/resources/IResource";
-import "../../src/interfaces/resources/ISharedTSQueue";
-import "../../src/interfaces/resources/ITCPIP";
-import "../../src/interfaces/resources/ITSQueue";
-import "../../src/interfaces/resources/ITask";
-import "../../src/interfaces/resources/ITransaction";
-import "../../src/interfaces/resources/IURIMap";
-import "../../src/interfaces/resources/IWebService";
 import "../../src/interfaces";
-import "../../src/interfaces/resources";
-
 import type { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
-import type { IResourceContext, IResourceRegionInfo, IResourceProfileNameInfo, IResourceProfileInfo } from "../../src/interfaces/IResourceContext";
+import type {
+  IResourceContext,
+  IResourceRegionInfo,
+  IResourceProfileNameInfo,
+  IResourceProfileInfo,
+} from "../../src/interfaces/IResourceContext";
 import type { IResourceExtender } from "../../src/interfaces/IResourceExtender";
-import { ResourceAction, type ResourceTypeMap, type ResourceActionOptions } from "../../src/interfaces/ResourceAction";
+import { ResourceAction, type ResourceTypeMap } from "../../src/interfaces/ResourceAction";
 import type {
   IProgram,
   IResource,
@@ -65,7 +44,7 @@ import type {
   ITask,
   ITransaction,
   IURIMap,
-  IWebService
+  IWebService,
 } from "../../src/interfaces/resources";
 import { ResourceTypes, SupportedResourceTypes } from "../../src/resources";
 
