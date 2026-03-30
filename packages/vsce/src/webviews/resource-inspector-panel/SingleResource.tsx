@@ -22,11 +22,11 @@ import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 const SingleResource = ({
   resources,
   resourceIconPath,
-  shouldRenderDatasetLinks,
+  shouldRenderZoweExplorerLinks,
 }: {
   resources: IResourceInspectorResource[];
   resourceIconPath: IResourceInspectorIconPath;
-  shouldRenderDatasetLinks: boolean;
+  shouldRenderZoweExplorerLinks: boolean;
 }) => {
   const { isDark } = useTheme();
   const [resourceHeaders, setResourceHeaders] = useState<(string | JSX.Element)[]>([]);
@@ -41,12 +41,12 @@ const SingleResource = ({
     const attributes = Object.keys(resources[0].resource).filter((attr) => !attr.startsWith("_"));
     const _rows = attributes.map((attr: keyof IResource) => [
       attr.toUpperCase(),
-      ...resources.map((res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderDatasetLinks)),
+      ...resources.map((res) => renderHyperlinkableValue(res.resource[attr], res.context, shouldRenderZoweExplorerLinks)),
     ]);
 
     setResourceHeaders(_headers);
     setResourceRows(_rows);
-  }, [resources, shouldRenderDatasetLinks]);
+  }, [resources, shouldRenderZoweExplorerLinks]);
 
   const refreshResource = () => {
     postVscMessage({
@@ -89,7 +89,7 @@ const SingleResource = ({
         </div>
       </div>
 
-      <HighlightsSection resource={resources[0]} shouldRenderDatasetLinks={shouldRenderDatasetLinks} />
+      <HighlightsSection resource={resources[0]} shouldRenderZoweExplorerLinks={shouldRenderZoweExplorerLinks} />
 
       <div className="w-full">
         <Table headers={resourceHeaders} rows={resourceRows} stickyLevel={1} searchTabIndex={3} />
@@ -98,13 +98,19 @@ const SingleResource = ({
   );
 };
 
-const HighlightsSection = ({ resource, shouldRenderDatasetLinks }: { resource: IResourceInspectorResource; shouldRenderDatasetLinks: boolean }) => {
+const HighlightsSection = ({
+  resource,
+  shouldRenderZoweExplorerLinks,
+}: {
+  resource: IResourceInspectorResource;
+  shouldRenderZoweExplorerLinks: boolean;
+}) => {
   return (
     <div className="flex flex-col gap-0.5 px-4 mt-2 mb-4">
       {resource.highlights.map((h) => (
         <div key={h.key} className="text-sm">
           <span className="text-(--vscode-disabledForeground)">{h.key}: </span>
-          {renderHyperlinkableValue(h.value, resource.context, shouldRenderDatasetLinks)}
+          {renderHyperlinkableValue(h.value, resource.context, shouldRenderZoweExplorerLinks)}
         </div>
       ))}
     </div>

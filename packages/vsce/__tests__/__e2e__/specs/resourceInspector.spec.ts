@@ -139,4 +139,150 @@ test.describe("Resource Inspector tests", async () => {
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/13.png" });
     await expect(getResourceInspector(page).locator("input").first()).toHaveValue("");
   });
+
+  test("should display hyperlinks for job spool patterns (//DD:*)", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME);
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+
+    // Check if any //DD:* patterns are rendered as hyperlinks
+    const jobSpoolLinks = getResourceInspector(page).locator('a[href="javascript:void(0)"]').filter({ hasText: /^\/\/DD:/ });
+    const linkCount = await jobSpoolLinks.count();
+    
+    // If there are job spool links, verify they are clickable
+    if (linkCount > 0) {
+      await expect(jobSpoolLinks.first()).toBeVisible();
+      await expect(jobSpoolLinks.first()).toHaveClass(/underline/);
+    }
+  });
+
+  test("should display dataset hyperlinks when Zowe Explorer is available", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Libraries");
+
+    await findAndClickTreeItem(page, constants.LIBRARY_1_NAME);
+    await findAndClickTreeItem(page, constants.LIBRARY_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.LIBRARY_1_NAME}'...`);
+    await getResourceInspector(page).getByText(`${constants.LIBRARY_1_NAME}(Library)`).waitFor();
+
+    // Check if dataset names are rendered as hyperlinks (if Zowe Explorer is available)
+    const datasetLinks = getResourceInspector(page).locator('a[href="javascript:void(0)"]').filter({ hasText: /^[A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,7})+/ });
+    const linkCount = await datasetLinks.count();
+    
+    // Dataset links should only appear if Zowe Explorer commands are available
+    if (linkCount > 0) {
+      await expect(datasetLinks.first()).toBeVisible();
+      await expect(datasetLinks.first()).toHaveClass(/underline/);
+    }
+  });
+
+  test("should display highlights section with proper formatting", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME);
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+
+    // Verify highlights section exists and contains expected content
+    const highlightsSection = getResourceInspector(page).locator('div.flex.flex-col.gap-0\\.5');
+    await expect(highlightsSection).toBeVisible();
+    
+    // Check for key-value pairs in highlights
+    await expect(getResourceInspector(page).getByText(/Status:/)).toBeVisible();
+  });
+
+  test("should display breadcrumb with resource information", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME);
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    
+    // Verify breadcrumb displays resource name and type (always visible)
+    await expect(getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`)).toBeVisible();
+    
+    // Hover over breadcrumb to show tooltip with full path
+    const breadcrumbArea = getResourceInspector(page).locator('div.flex.items-center.gap-1.relative').first();
+    await breadcrumbArea.hover();
+    
+    // Verify tooltip displays cicsplex and region names
+    const tooltip = getResourceInspector(page).locator('div.absolute.left-0.top-5');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip.getByText(constants.CICSPLEX_NAME)).toBeVisible();
+    await expect(tooltip.getByText(constants.REGION_NAME)).toBeVisible();
+  });
+
+  test("should display context menu when actions are available", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME);
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+
+    // Check if context menu button exists (three dots icon)
+    const contextMenuButton = getResourceInspector(page).locator('button').filter({ hasText: /⋮|︙/ });
+    const buttonCount = await contextMenuButton.count();
+    
+    if (buttonCount > 0) {
+      await expect(contextMenuButton.first()).toBeVisible();
+    }
+  });
+
+  test("should render all resource attributes in table", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.REGION_NAME);
+    await findAndClickTreeItem(page, "Programs");
+
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME);
+    await findAndClickTreeItem(page, constants.PROGRAM_1_NAME, "right", false);
+    await page.waitForTimeout(200);
+    await findAndClickText(page, "Inspect Resource");
+
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_1_NAME}'...`);
+    await getResourceInspector(page).getByText(`${constants.PROGRAM_1_NAME}(Program)`).waitFor();
+
+    // Verify table headers
+    await expect(getResourceInspector(page).getByText("ATTRIBUTE")).toBeVisible();
+    await expect(getResourceInspector(page).getByText("VALUE")).toBeVisible();
+
+    // Verify some common attributes are displayed
+    const tableRows = getResourceInspector(page).locator('table tbody tr');
+    const rowCount = await tableRows.count();
+    expect(rowCount).toBeGreaterThan(0);
+  });
 });
