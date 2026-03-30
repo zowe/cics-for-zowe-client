@@ -24,25 +24,25 @@ const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,
 // Requires at least one non-slash character after the initial slash and no consecutive slashes
 const USS_PATH_PATTERN = /^\/[a-zA-Z0-9_\-.]+(\/[a-zA-Z0-9_\-.]+)*$/;
 
-const HYPERLINKABLE_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
-const HYPERLINKABLE_PATTERNS_DATASET: RegExp[] = [DATASET_PATTERN];
+const JOB_SPOOL_PATTERNS: RegExp[] = [JOB_SPOOL_PATTERN];
+
+const DATASET_PATTERNS: RegExp[] = [DATASET_PATTERN];
 
 /**
- * Check if a value matches any hyperlinkable pattern
  * @param value - The string value to check
- * @returns true if the value matches any hyperlinkable pattern for dataset, false otherwise
+ * @returns true if the value matches a dataset pattern, false otherwise
  */
 export const isDatasetValue = (value: string): boolean => {
-  return HYPERLINKABLE_PATTERNS_DATASET.some((pattern) => pattern.test(value));
+  return DATASET_PATTERNS.some((pattern) => pattern.test(value));
 };
 
 /**
- * Check if a value matches any hyperlinkable pattern (//DD:* etc.)
+ * Check if a value matches a job spool pattern (//DD:* etc.)
  * @param value - The string value to check
- * @returns true if the value matches any hyperlinkable pattern, false otherwise
+ * @returns true if the value matches a job spool pattern, false otherwise
  */
 export const isHyperlinkableValue = (value: string): boolean => {
-  return HYPERLINKABLE_PATTERNS.some((pattern) => pattern.test(value));
+  return JOB_SPOOL_PATTERNS.some((pattern) => pattern.test(value));
 };
 
 /**
@@ -70,11 +70,10 @@ const createHyperlink = (value: string, onClick: (e: React.MouseEvent) => void) 
  * Render a value as a hyperlink if it matches a hyperlinkable pattern
  * @param value - The string value to render
  * @param ctx - The resource context
- * @param attributeName - The name of the attribute (optional, used to identify dataset attributes)
- * @param shouldRenderDatasetLinks - Whether dataset links should be rendered
+ * @param shouldRenderZoweExplorerLinks - Whether Zowe Explorer links (datasets and USS files) should be rendered
  * @returns React node with hyperlink if pattern matches, otherwise the plain value
  */
-export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, shouldRenderDatasetLinks: boolean = false) => {
+export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, shouldRenderZoweExplorerLinks: boolean = false) => {
   // Check for job spool pattern (//DD:*)
   if (isHyperlinkableValue(value)) {
     return createHyperlink(value, (e) => {
@@ -88,7 +87,7 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, s
 
   // Check for USS file path pattern
   // Only render as hyperlink if Zowe Explorer links should be rendered
-  if (isUssPathValue(value) && shouldRenderDatasetLinks) {
+  if (isUssPathValue(value) && shouldRenderZoweExplorerLinks) {
     return createHyperlink(value, (e) => {
       e.preventDefault();
       postVscMessage({
@@ -101,7 +100,7 @@ export const renderHyperlinkableValue = (value: string, ctx: IResourceContext, s
 
   // Check for dataset pattern
   // Only render as hyperlink if Zowe Explorer links should be rendered
-  if (isDatasetValue(value) && shouldRenderDatasetLinks) {
+  if (isDatasetValue(value) && shouldRenderZoweExplorerLinks) {
     return createHyperlink(value, (e) => {
       e.preventDefault();
       postVscMessage({
