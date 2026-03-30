@@ -20,6 +20,7 @@ import type { CICSTree } from "../trees/CICSTree";
  */
 export function getClearPlexFilterCommand(tree: CICSTree) {
   return commands.registerCommand("cics-extension-for-zowe.clearPlexFilter", async (node: CICSRegionsContainer) => {
-    node.filterRegions("*", tree);
+    await node.filterRegions("*");
+    tree._onDidChangeTreeData.fire(node);
   });
 }
