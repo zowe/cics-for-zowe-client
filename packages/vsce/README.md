@@ -207,9 +207,9 @@ To reset the filter to its initial criteria, use the **Clear Filter** icon <img 
 
 **Tip:** To apply multiple filters, separate entries with a comma. You can append any filter with an `\*`, which indicates wildcard filtering.
 
-### Show and filter resources in a CICSplex
+### Filter visible regions in a CICSplex
 
-In the same way as filtering resources in a region, you can apply a filter on regions in a plex. Use the **Filter** and **Clear Filter** buttons against the Regions tree element to manage filters across the whole set of regions.
+You can apply a filter on regions in a CICSplex. Use the **Filter** and **Clear Filter** buttons against the Regions tree element to manage which regions are visible.
 
 <p align="center">
 <img src="/packages/vsce/docs/images/plex-filter.gif" alt="Zowe CICS Explorer Filter" width="700px"/>
