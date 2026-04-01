@@ -369,5 +369,3 @@ describe("purgeTaskCommand", () => {
     });
   });
 });
-
-// Made with Bob

@@ -48,5 +48,3 @@ describe("ISessionHandler Interface", () => {
     expect(mockSessionHandler.getSession(mockProfile)).toBeUndefined();
   });
 });
-
-// Made with Bob

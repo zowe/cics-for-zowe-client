@@ -264,5 +264,3 @@ describe("profileUtils", () => {
     });
   });
 });
-
-// Made with Bob

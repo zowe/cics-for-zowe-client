@@ -122,5 +122,3 @@ describe("Webview Messages", () => {
     });
   });
 });
-
-// Made with Bob

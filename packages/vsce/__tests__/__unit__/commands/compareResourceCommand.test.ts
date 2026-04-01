@@ -12,8 +12,6 @@
 import { window, l10n, type ExtensionContext } from "vscode";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
-import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
-import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Resource, ResourceContainer } from "../../../src/resources";
 import { ProgramMeta } from "../../../src/doc/meta/program.meta";
 import * as setCICSRegionCommand from "../../../src/commands/setCICSRegionCommand";
@@ -311,5 +309,3 @@ describe("compareResourceCommand", () => {
     });
   });
 });
-
-// Made with Bob

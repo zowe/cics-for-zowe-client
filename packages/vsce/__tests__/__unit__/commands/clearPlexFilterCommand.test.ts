@@ -11,10 +11,6 @@
 
 import { commands, window } from "vscode";
 import { getClearPlexFilterCommand } from "../../../src/commands/clearPlexFilterCommand";
-import { CICSTree } from "../../../src/trees/CICSTree";
-import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
-import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
-import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 
 jest.mock("vscode");
@@ -204,4 +200,4 @@ describe("clearPlexFilterCommand", () => {
   });
 });
 
-// Made with Bob
+

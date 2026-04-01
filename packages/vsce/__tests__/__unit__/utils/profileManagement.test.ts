@@ -75,13 +75,20 @@ describe("ProfileManagement", () => {
   describe("registerCICSProfiles", () => {
     it("should call initForZowe with correct parameters", async () => {
       const mockInitForZowe = jest.fn().mockResolvedValue(undefined);
-      const mockExtenderApi = {
-        initForZowe: mockInitForZowe,
-        getProfilesCache: jest.fn().mockReturnValue(mockProfilesCache),
+      
+      // Access the private static property and mock it
+      const mockAPI = {
+        getExplorerExtenderApi: jest.fn().mockReturnValue({
+          initForZowe: mockInitForZowe,
+          getProfilesCache: jest.fn().mockReturnValue(mockProfilesCache),
+        }),
       };
       
-      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock).mockReturnValue({
-        getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
+      // Override the private static property
+      Object.defineProperty(ProfileManagement, 'zoweExplorerAPI', {
+        value: mockAPI,
+        writable: true,
+        configurable: true,
       });
       
       await ProfileManagement.registerCICSProfiles();
@@ -116,18 +123,19 @@ describe("ProfileManagement", () => {
         getProfileInfo: jest.fn().mockResolvedValue({}),
       };
       
-      const mockExtenderApi = {
-        initForZowe: jest.fn().mockResolvedValue(undefined),
-        getProfilesCache: jest.fn().mockReturnValue(mockCache),
-      };
+      // Spy on getProfilesCache to return our mock cache
+      const getProfilesCacheSpy = jest.spyOn(ProfileManagement, 'getProfilesCache').mockReturnValue(mockCache as any);
       
-      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock).mockReturnValue({
-        getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
-      });
+      // Spy on getExplorerApis to return mockZoweAPI
+      const getExplorerApisSpy = jest.spyOn(ProfileManagement, 'getExplorerApis').mockReturnValue(mockZoweAPI);
       
       await ProfileManagement.profilesCacheRefresh();
 
       expect(mockRefresh).toHaveBeenCalled();
+      expect(mockRefresh).toHaveBeenCalledWith(mockZoweAPI);
+      
+      getProfilesCacheSpy.mockRestore();
+      getExplorerApisSpy.mockRestore();
     });
   });
 
@@ -725,4 +733,4 @@ describe("ProfileManagement", () => {
   });
 });
 
-// Made with Bob
+// 

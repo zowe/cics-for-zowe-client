@@ -74,5 +74,3 @@ describe("ICICSExtensionError Interface", () => {
     expect(mockError3.baseError).toBe(123);
   });
 });
-
-// Made with Bob

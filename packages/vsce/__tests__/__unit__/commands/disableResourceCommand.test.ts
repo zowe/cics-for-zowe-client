@@ -583,5 +583,3 @@ describe("disableResourceCommand", () => {
     });
   });
 });
-
-// Made with Bob

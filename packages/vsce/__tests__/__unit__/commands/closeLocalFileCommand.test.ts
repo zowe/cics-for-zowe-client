@@ -11,7 +11,6 @@
 
 import { commands, window, TreeView } from "vscode";
 import { getCloseLocalFileCommand } from "../../../src/commands/closeLocalFileCommand";
-import { CICSTree } from "../../../src/trees/CICSTree";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import * as actionResourceCommand from "../../../src/commands/actionResourceCommand";
 
@@ -210,5 +209,3 @@ describe("closeLocalFileCommand", () => {
     });
   });
 });
-
-// Made with Bob

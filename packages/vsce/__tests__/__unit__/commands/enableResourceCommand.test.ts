@@ -422,5 +422,3 @@ describe("enableResourceCommand", () => {
     });
   });
 });
-
-// Made with Bob
