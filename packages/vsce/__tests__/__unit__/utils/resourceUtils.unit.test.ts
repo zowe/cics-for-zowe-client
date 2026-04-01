@@ -54,6 +54,7 @@ import {
   buildResourceParms,
   buildUserAgentHeader,
   runGetResource,
+  runPutResource,
 } from "../../../src/utils/resourceUtils";
 import { getResourceMock, profile } from "../../__mocks__";
 
@@ -217,5 +218,324 @@ describe("Resource Util requesters", () => {
     expect(response).toHaveProperty("response");
     expect(response?.response).toHaveProperty("resultsummary");
     expect(response?.response.resultsummary).toHaveProperty("recordcount");
+  });
+
+  it("should handle error when not 401 or no token", async () => {
+    getResourceMock.mockReset();
+
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "500" });
+
+    getResourceMock.mockImplementationOnce(() => {
+      throw errorToThrow;
+    });
+
+    let error;
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+      });
+    } catch (err) {
+      error = err;
+    }
+
+    expect(getErrorCodeMock).toHaveBeenCalledTimes(1);
+    expect(error).toBeDefined();
+    expect(getResourceMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should handle error on retry", async () => {
+    getResourceMock.mockReset();
+
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+
+    getResourceMock.mockImplementation(() => {
+      throw errorToThrow;
+    });
+
+    let error;
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+      });
+    } catch (err) {
+      error = err;
+    }
+
+    expect(getErrorCodeMock).toHaveBeenCalledTimes(1);
+    expect(error).toBeDefined();
+    expect(getResourceMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("runGetCache", () => {
+  const { runGetCache } = require("../../../src/utils/resourceUtils");
+  const { getCacheMock } = require("../../__mocks__");
+  
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should get cache successfully", async () => {
+    const mockResponse = {
+      response: {
+        records: { cicscicsplex: [{ name: "PLEX1" }] },
+      },
+    };
+    
+    getCacheMock.mockResolvedValue(mockResponse);
+
+    const result = await runGetCache(
+      { profileName: "MYPROF", cacheToken: "TOKEN123" },
+      { nodiscard: true, summonly: false }
+    );
+
+    expect(result).toEqual(mockResponse);
+    expect(getCacheMock).toHaveBeenCalled();
+  });
+
+
+  it("should use default query params", async () => {
+    const mockResponse = { response: { records: {} } };
+    getCacheMock.mockResolvedValue(mockResponse);
+
+    await runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" });
+
+    expect(getCacheMock).toHaveBeenCalled();
+  });
+});
+
+describe("runPutResource", () => {
+  const { runPutResource } = require("../../../src/utils/resourceUtils");
+  const { putResourceMock } = require("../../__mocks__");
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should put resource successfully", async () => {
+    const mockResponse = { response: { resultsummary: {} } };
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+
+    putResourceMock.mockResolvedValue(mockResponse);
+
+    const result = await runPutResource(
+      {
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        regionName: "MYREG",
+        cicsPlex: "MYPLEX",
+      },
+      requestBody
+    );
+
+    expect(result).toEqual(mockResponse);
+    expect(putResourceMock).toHaveBeenCalled();
+  });
+
+});
+
+describe("pollForCompleteAction", () => {
+  const { pollForCompleteAction } = require("../../../src/utils/resourceUtils");
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getResourceMock.mockResolvedValue(successResponse);
+  });
+
+  it("should poll until criteria is met", async () => {
+    const mockNode = {
+      getProfile: () => profile,
+      getContainedResource: () => ({
+        meta: {
+          resourceName: "MYRES",
+          getName: () => "TESTPROG",
+          buildCriteria: () => "PROGRAM=TESTPROG",
+        },
+        resource: {},
+      }),
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG",
+    };
+
+    const isCompletionCriteriaMet = jest.fn().mockReturnValue(true);
+    const criteriaMetCallback = jest.fn();
+
+    await pollForCompleteAction(mockNode as any, isCompletionCriteriaMet, criteriaMetCallback);
+
+    expect(isCompletionCriteriaMet).toHaveBeenCalled();
+    expect(criteriaMetCallback).toHaveBeenCalled();
+    expect(getResourceMock).toHaveBeenCalled();
+  });
+
+  it("should poll multiple times until criteria is met", async () => {
+    const mockNode = {
+      getProfile: () => profile,
+      getContainedResource: () => ({
+        meta: {
+          resourceName: "MYRES",
+          getName: () => "TESTPROG",
+          buildCriteria: () => "PROGRAM=TESTPROG",
+        },
+        resource: {},
+      }),
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG",
+    };
+
+    const isCompletionCriteriaMet = jest.fn()
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true);
+    const criteriaMetCallback = jest.fn();
+
+    await pollForCompleteAction(mockNode as any, isCompletionCriteriaMet, criteriaMetCallback);
+
+    expect(isCompletionCriteriaMet).toHaveBeenCalledTimes(3);
+    expect(criteriaMetCallback).toHaveBeenCalled();
+    expect(getResourceMock).toHaveBeenCalledTimes(3);
+  });
+
+  it("should poll with parent resource", async () => {
+    const parentResource = { name: "PARENT" };
+    const mockNode = {
+      getProfile: () => profile,
+      getContainedResource: () => ({
+        meta: {
+          resourceName: "MYRES",
+          getName: () => "TESTPROG",
+          buildCriteria: (names: string[], parent: any) => {
+            expect(parent).toBe(parentResource);
+            return "PROGRAM=TESTPROG";
+          },
+        },
+        resource: {},
+      }),
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG",
+    };
+
+    const isCompletionCriteriaMet = jest.fn().mockReturnValue(true);
+    const criteriaMetCallback = jest.fn();
+
+    await pollForCompleteAction(mockNode as any, isCompletionCriteriaMet, criteriaMetCallback, parentResource as any);
+
+    expect(criteriaMetCallback).toHaveBeenCalled();
+  });
+});
+
+describe("getResourceNameFromCriteria error handling", () => {
+  beforeEach(() => {
+    getResourceMock.mockReset();
+  });
+
+  it("should extract single resource name from criteria in error message", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM=TESTPROG",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("TESTPROG");
+    }
+  });
+
+  it("should extract multiple resource names from OR criteria in error message", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM=PROG1 OR PROGRAM=PROG2 OR PROGRAM=PROG3",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("PROG1, PROG2, PROG3");
+    }
+  });
+
+  it("should handle criteria with spaces around equals sign", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM = PROG1 OR PROGRAM = PROG2",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("PROG1, PROG2");
+    }
+  });
+
+  it("should handle undefined criteria gracefully", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {},
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBeUndefined();
+    }
+  });
+
+  it("should extract resource names in PUT request errors", async () => {
+    const { putResourceMock } = require("../../__mocks__");
+    putResourceMock.mockReset();
+    
+    const errorToThrow = new Error("PUT error");
+    putResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+          params: {
+            criteria: "TRANSACTION=TRN1 OR TRANSACTION=TRN2",
+          },
+        },
+        { request: { action: { $: { name: "ENABLE" } } } }
+      );
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("TRN1, TRN2");
+    }
   });
 });
