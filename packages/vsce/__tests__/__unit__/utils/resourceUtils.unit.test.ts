@@ -54,6 +54,7 @@ import {
   buildResourceParms,
   buildUserAgentHeader,
   runGetResource,
+  runPutResource,
 } from "../../../src/utils/resourceUtils";
 import { getResourceMock, profile } from "../../__mocks__";
 
@@ -432,18 +433,12 @@ describe("pollForCompleteAction", () => {
   });
 });
 
-describe("getResourceNameFromCriteria", () => {
-  const resourceUtils = require("../../../src/utils/resourceUtils");
-  
-  // Access the private function through module exports for testing
-  const getResourceNameFromCriteria = (criteria: string) => {
-    // This function is private, but we can test it indirectly through runGetResource error handling
-    // For now, we'll test the public functions that use it
-    return criteria;
-  };
-
-  it("should be tested through runGetResource error handling", async () => {
+describe("getResourceNameFromCriteria error handling", () => {
+  beforeEach(() => {
     getResourceMock.mockReset();
+  });
+
+  it("should extract single resource name from criteria in error message", async () => {
     const errorToThrow = new Error("Test error");
     getResourceMock.mockRejectedValue(errorToThrow);
 
@@ -452,12 +447,95 @@ describe("getResourceNameFromCriteria", () => {
         profileName: "MYPROF",
         resourceName: "MYRES",
         params: {
-          criteria: "PROGRAM=PROG1 OR PROGRAM=PROG2",
+          criteria: "PROGRAM=TESTPROG",
         },
       });
-    } catch (error) {
-      // Error should contain resource name extracted from criteria
+      fail("Should have thrown an error");
+    } catch (error: any) {
       expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("TESTPROG");
+    }
+  });
+
+  it("should extract multiple resource names from OR criteria in error message", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM=PROG1 OR PROGRAM=PROG2 OR PROGRAM=PROG3",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("PROG1, PROG2, PROG3");
+    }
+  });
+
+  it("should handle criteria with spaces around equals sign", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM = PROG1 OR PROGRAM = PROG2",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("PROG1, PROG2");
+    }
+  });
+
+  it("should handle undefined criteria gracefully", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {},
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBeUndefined();
+    }
+  });
+
+  it("should extract resource names in PUT request errors", async () => {
+    const { putResourceMock } = require("../../__mocks__");
+    putResourceMock.mockReset();
+    
+    const errorToThrow = new Error("PUT error");
+    putResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+          params: {
+            criteria: "TRANSACTION=TRN1 OR TRANSACTION=TRN2",
+          },
+        },
+        { request: { action: { $: { name: "ENABLE" } } } }
+      );
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBe("TRN1, TRN2");
     }
   });
 });

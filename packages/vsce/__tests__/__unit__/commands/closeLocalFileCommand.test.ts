@@ -9,7 +9,7 @@
  *
  */
 
-import { commands, window, TreeView } from "vscode";
+import { commands, window } from "vscode";
 import { getCloseLocalFileCommand } from "../../../src/commands/closeLocalFileCommand";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import * as actionResourceCommand from "../../../src/commands/actionResourceCommand";

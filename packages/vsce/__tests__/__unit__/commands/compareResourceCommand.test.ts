@@ -9,7 +9,7 @@
  *
  */
 
-import { window, l10n, type ExtensionContext } from "vscode";
+import { window, type ExtensionContext } from "vscode";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
 import { Resource, ResourceContainer } from "../../../src/resources";
