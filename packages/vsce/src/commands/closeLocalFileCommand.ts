@@ -9,11 +9,17 @@
  *
  */
 
-import { type TreeView, commands, l10n, window } from "vscode";
+import type { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
+import { closeLocalFile } from "@zowe/cics-for-zowe-sdk";
+import { ProgressLocation, type TreeView, commands, l10n, window } from "vscode";
+import constants from "../constants/CICS.defaults";
 import { LocalFileMeta } from "../doc";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { SessionHandler } from "../resources";
 import type { CICSTree } from "../trees/CICSTree";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { findSelectedNodes } from "../utils/commandUtils";
-import { actionTreeItem } from "./actionResourceCommand";
+import { evaluateTreeNodes } from "../utils/treeUtils";
 
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
@@ -39,14 +45,45 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
 
     const busyDecision = busyChoices[picked] ?? "WAIT";
 
-    await actionTreeItem({
-      action: "CLOSE",
-      nodes,
-      tree,
-      parameter: {
-        name: "BUSY",
-        value: busyDecision.replace(" ", "").toUpperCase(),
+    await window.withProgress(
+      {
+        title: l10n.t("Closing"),
+        location: ProgressLocation.Notification,
+        cancellable: false,
       },
-    });
+      async (progress, token) => {
+        token.onCancellationRequested(() => {});
+
+        const nodesToRefresh = new Set();
+
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i] as CICSResourceContainerNode<ILocalFile>;
+          progress.report({
+            message: l10n.t("{0} of {1}", i + 1, nodes.length),
+            increment: (1 / nodes.length) * constants.PERCENTAGE_MAX,
+          });
+
+          try {
+            const profile = SessionHandler.getInstance().getProfile(node.getProfileName());
+            const session = SessionHandler.getInstance().getSession(profile);
+
+            const response = await closeLocalFile(session, {
+              name: node.getContainedResource().resource.attributes.file,
+              regionName: node.regionName ?? node.getContainedResource().resource.attributes.eyu_cicsname,
+              cicsPlex: node.cicsplexName,
+              busy: busyDecision,
+            });
+
+            nodesToRefresh.add(node.getParent());
+            evaluateTreeNodes(node, response, node.getContainedResource().meta);
+          } catch (error) {
+            CICSErrorHandler.handleCMCIRestError(error);
+          }
+        }
+        nodesToRefresh.forEach((v) => {
+          tree.refresh(v);
+        });
+      }
+    );
   });
 }

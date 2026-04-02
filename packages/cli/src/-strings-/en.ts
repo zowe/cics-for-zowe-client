@@ -266,6 +266,30 @@ export default {
       },
     },
   },
+  CLOSE: {
+    SUMMARY: "Close resources in CICS",
+    DESCRIPTION: "Close resources (for example, local files) in CICS through IBM CMCI.",
+    RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Close a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to close. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to close the local file",
+          CICSPLEX: "The name of the CICSPlex in which to close the local file",
+          BUSY: "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was closed successfully.",
+        },
+        EXAMPLES: {
+          EX1: "Close a local file named TESTFILE from the region named MYREGION",
+          EX2: "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+        },
+      },
+    },
+  },
   DISABLE: {
     SUMMARY: "Disable resources from CICS",
     DESCRIPTION: "Disable resources (for example, urimaps) from CICS through IBM CMCI.",
