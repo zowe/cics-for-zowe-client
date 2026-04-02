@@ -40,5 +40,6 @@
   "cics.toggleVisibleCICSResource.title": "Toggle visible CICS Resources",
   "cics.deleteTSQueue.title": "Delete TS Queue",
   "cics.inspectRegion.title": "Inspect CICS Region",
-  "cics.inspectTreeRegion.title": "Inspect Region"
+  "cics.inspectTreeRegion.title": "Inspect Region",
+  "cics.showLibraryDataset.title": "Show in Data Sets"
 }
