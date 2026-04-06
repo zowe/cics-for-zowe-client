@@ -1,7 +1,6 @@
 import type { ILibraryDataset } from "@zowe/cics-for-zowe-explorer-api";
 import { commands, l10n, window, type TreeView } from "vscode";
 import { LibraryDatasetMeta } from "../doc";
-import { SessionHandler } from "../resources/SessionHandler";
 import type { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowDataSet, findSelectedNodes } from "../utils/commandUtils";
@@ -18,14 +17,18 @@ export function showLibraryDatasetCommand(treeview: TreeView<any>) {
     const libraryDataset = selectedNode.getContainedResource().resource;
     const datasetName = libraryDataset.attributes.dsname;
     const regionName = selectedNode.regionName;
-    const profileName = selectedNode.getProfile().name;
+    const cicsProfile = selectedNode.getProfile();
 
     try {
       CICSLogger.debug(`Showing dataset ${datasetName} for library dataset in region ${regionName}`);
-      const cicsProfile = SessionHandler.getInstance().getProfile(profileName);
       await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
     } catch (error) {
-      window.showErrorMessage(error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Failed to show dataset ${datasetName} for library dataset in region ${regionName}: ${errorMessage}`);
+      if (error instanceof Error && error.stack) {
+        CICSLogger.error(`Stack trace: ${error.stack}`);
+      }
+      window.showErrorMessage(l10n.t("Failed to show dataset: {0}", errorMessage));
     }
   });
 }

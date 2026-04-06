@@ -27,9 +27,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -213,7 +211,7 @@
   "CICS Region {0}": "CICS Region {0}",
   "No region selected": "No region selected",
   "Could not find Job ID for region {0}.": "Could not find Job ID for region {0}.",
-  "No CICS Library Dataset selected": "No CICS Library Dataset selected",
+  "No CICS Library Dataset selected": "No CICS Library Data set selected",
   "CICS Library resources are not visible. Enable them from your VS Code settings.": "CICS Library resources are not visible. Enable them from your VS Code settings.",
   "No CICS Program selected": "No CICS Program selected",
   "No libraries found in selected CICS programs": "No libraries found in selected CICS programs",
