@@ -11,14 +11,12 @@
 
 import { commands, window } from "vscode";
 import { showLibraryDatasetCommand } from "../../../src/commands/showLibraryDatasetCommand";
-import { SessionHandler } from "../../../src/resources/SessionHandler";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 import * as commandUtils from "../../../src/utils/commandUtils";
 
 // Mock dependencies
 jest.mock("vscode");
 jest.mock("../../../src/utils/commandUtils");
-jest.mock("../../../src/resources/SessionHandler");
 jest.mock("../../../src/utils/CICSLogger");
 
 describe("showLibraryDatasetCommand", () => {
@@ -28,7 +26,6 @@ describe("showLibraryDatasetCommand", () => {
   const mockShowErrorMessage = window.showErrorMessage as jest.Mock;
   const mockFindSelectedNodes = commandUtils.findSelectedNodes as jest.Mock;
   const mockFindProfileAndShowDataSet = commandUtils.findProfileAndShowDataSet as jest.Mock;
-  const mockGetInstance = SessionHandler.getInstance as jest.Mock;
   const mockDebug = CICSLogger.debug as jest.Mock;
 
   beforeEach(() => {
@@ -53,18 +50,13 @@ describe("showLibraryDatasetCommand", () => {
         regionName: "TESTREGION",
       };
 
-      const mockSessionHandler = {
-        getProfile: jest.fn().mockReturnValue(mockProfile),
-      };
-
-      mockGetInstance.mockReturnValue(mockSessionHandler);
       mockFindSelectedNodes.mockReturnValue([mockNode]);
       (commandUtils.findProfileAndShowDataSet as jest.Mock).mockResolvedValue(undefined);
 
       await commandCallback(null);
 
       expect(mockDebug).toHaveBeenCalledWith("Showing dataset TEST.DATASET.NAME for library dataset in region TESTREGION");
-      expect(mockSessionHandler.getProfile).toHaveBeenCalledWith("TESTPROF");
+      expect(mockNode.getProfile).toHaveBeenCalled();
       expect(commandUtils.findProfileAndShowDataSet).toHaveBeenCalledWith(mockProfile, "TEST.DATASET.NAME", "TESTREGION");
     });
   });
@@ -89,12 +81,7 @@ describe("showLibraryDatasetCommand", () => {
         regionName: "TESTREGION",
       };
 
-      const mockSessionHandler = {
-        getProfile: jest.fn().mockReturnValue(mockProfile),
-      };
-
       const error = new Error("Failed to show dataset");
-      mockGetInstance.mockReturnValue(mockSessionHandler);
       mockFindSelectedNodes.mockReturnValue([mockNode]);
       (commandUtils.findProfileAndShowDataSet as jest.Mock).mockRejectedValue(error);
 
@@ -123,11 +110,6 @@ describe("showLibraryDatasetCommand", () => {
         regionName: "SECONDREGION",
       };
 
-      const mockSessionHandler = {
-        getProfile: jest.fn().mockReturnValue(mockProfile),
-      };
-
-      mockGetInstance.mockReturnValue(mockSessionHandler);
       mockFindSelectedNodes.mockReturnValue([mockNode1, mockNode2]);
       (commandUtils.findProfileAndShowDataSet as jest.Mock).mockResolvedValue(undefined);
 

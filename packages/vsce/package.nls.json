@@ -41,5 +41,5 @@
   "cics.deleteTSQueue.title": "Delete TS Queue",
   "cics.inspectRegion.title": "Inspect CICS Region",
   "cics.inspectTreeRegion.title": "Inspect Region",
-  "cics.showLibraryDataset.title": "Show in Data Sets view"
+  "cics.showLibraryDataset.title": "Show in Data Sets View"
 }

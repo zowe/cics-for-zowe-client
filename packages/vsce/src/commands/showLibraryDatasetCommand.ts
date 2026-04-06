@@ -28,7 +28,7 @@ export function showLibraryDatasetCommand(treeview: TreeView<any>) {
       if (error instanceof Error && error.stack) {
         CICSLogger.error(`Stack trace: ${error.stack}`);
       }
-      window.showErrorMessage(l10n.t("Failed to show dataset: {0}", errorMessage));
+      window.showErrorMessage(l10n.t("Failed to show dataset"));
     }
   });
 }
