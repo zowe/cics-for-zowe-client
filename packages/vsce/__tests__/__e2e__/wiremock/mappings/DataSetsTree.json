@@ -1,0 +1,61 @@
+{
+  "mappings": [
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/zosmf/restfiles/ds",
+        "queryParameters": {
+          "dslevel": {
+            "equalTo": "MYLIBDS1"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "DataSetsTree/dataset-list.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "priority": 2,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/zosmf/restfiles/ds",
+        "queryParameters": {
+          "dslevel": {
+            "matches": ".*MYLIBDS1.*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "DataSetsTree/dataset-list.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/zosmf/restfiles/ds"
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": {
+          "items": [],
+          "returnedRows": 0,
+          "totalRows": 0,
+          "JSONversion": 1
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}
