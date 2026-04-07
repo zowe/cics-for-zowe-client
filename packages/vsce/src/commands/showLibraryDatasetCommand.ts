@@ -5,6 +5,16 @@ import type { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowDataSet, findSelectedNodes } from "../utils/commandUtils";
 
+/**
+ * Registers a command to show a CICS library dataset in Zowe Explorer.
+ *
+ * This command extracts the dataset name from a selected library dataset node
+ * and displays it in the Zowe Explorer MVS view, allowing users to browse
+ * the dataset contents.
+ *
+ * @param treeview - The tree view containing CICS library dataset nodes
+ * @returns
+ */
 export function showLibraryDatasetCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibraryDataset", async (node) => {
     const nodes = findSelectedNodes(treeview, LibraryDatasetMeta, node) as CICSResourceContainerNode<ILibraryDataset>[];
@@ -28,7 +38,7 @@ export function showLibraryDatasetCommand(treeview: TreeView<any>) {
       if (error instanceof Error && error.stack) {
         CICSLogger.error(`Stack trace: ${error.stack}`);
       }
-      window.showErrorMessage(l10n.t("Failed to show dataset"));
+      window.showErrorMessage(l10n.t("Failed to show dataset: {0}", errorMessage));
     }
   });
 }

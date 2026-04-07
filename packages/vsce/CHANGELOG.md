@@ -4,9 +4,9 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added "Show in Data sets view" command for CICS Library Datasets to view them in Zowe Explorer. [#43](https://github.com/zowe/cics-for-zowe-client/issues/43)
+- Enhancement: Added "Show in Data sets View" command for CICS Library Datasets to view them in Zowe Explorer. [#43](https://github.com/zowe/cics-for-zowe-client/issues/43)
 - Enhancement: Inquire program, Show Library and Inquire Transaction can open respective resources from Resource Inspector. [#449](https://github.com/zowe/cics-for-zowe-client/issues/449)
-- BugFix: Region filtering selects only regions. [#575] (https://github.com/zowe/cics-for-zowe-client/issues/575)
+- BugFix: Region filtering selects only regions. [#575](https://github.com/zowe/cics-for-zowe-client/issues/575)
 
 ## `3.20.0`
 
