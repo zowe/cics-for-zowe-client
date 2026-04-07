@@ -74,9 +74,9 @@ test.describe("Library tests", () => {
 
       await findAndClickTreeItem(page, constants.LIBRARY_DS_1_NAME, "right");
       await page.waitForTimeout(200);
-      await expect(page.getByText("Show in Data Sets view", { exact: true })).toBeVisible();
+      await expect(page.getByText("Show in Data Sets View", { exact: true })).toBeVisible();
 
-      await findAndClickText(page, "Show in Data Sets view");
+      await findAndClickText(page, "Show in Data Sets View");
 
       await expect(page.getByText("Data Sets", { exact: true })).toBeVisible();
       await page.waitForTimeout(1000);
