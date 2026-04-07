@@ -13,7 +13,7 @@ import { findProfileAndShowDataSet, findSelectedNodes } from "../utils/commandUt
  * the dataset contents.
  *
  * @param treeview - The tree view containing CICS library dataset nodes
- * @returns
+ * @returns - Displays the dataset in Zowe Explorer
  */
 export function showLibraryDatasetCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibraryDataset", async (node) => {
