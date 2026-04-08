@@ -182,6 +182,9 @@ describe("Interfaces", () => {
       });
       
       extender.registerAction(testAction);
+      const actions = extender.getActionsFor(ResourceTypes.CICSProgram);
+      expect(actions).toContain(testAction);
+      expect(actions).toHaveLength(1);
       const retrieved = extender.getAction("test.action.id");
       expect(retrieved).toBeDefined();
       expect(retrieved?.id).toBe("test.action.id");
@@ -198,8 +201,18 @@ describe("Interfaces", () => {
     });
 
     it("should get actions for specific type", () => {
+      const testAction = new ResourceAction({
+        id: "test.specific.action",
+        name: "Test Specific Action",
+        resourceType: ResourceTypes.CICSProgram,
+        action: "test.command",
+      });
+      
+      extender.registerAction(testAction);
       const programActions = extender.getActionsFor(ResourceTypes.CICSProgram);
       expect(Array.isArray(programActions)).toBe(true);
+      expect(programActions).toContain(testAction);
+      expect(programActions).toHaveLength(2);
     });
   });
 
