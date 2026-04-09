@@ -26,7 +26,7 @@ import { findProfileAndShowDataSet, findSelectedNodes } from "../utils/commandUt
  * @param treeview - The tree view containing CICS library dataset nodes
  * @returns - Displays the dataset in Zowe Explorer
  */
-export function showLibraryDatasetCommand(treeview: TreeView<any>) {
+export function showLibraryDatasetCommand(treeview: TreeView<CICSResourceContainerNode<ILibraryDataset>>) {
   return commands.registerCommand("cics-extension-for-zowe.showLibraryDataset", async (node) => {
     const nodes = findSelectedNodes(treeview, LibraryDatasetMeta, node) as CICSResourceContainerNode<ILibraryDataset>[];
 
