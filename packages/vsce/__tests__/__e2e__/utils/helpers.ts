@@ -40,7 +40,6 @@ export const constants = {
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
   ALL_JVM_SERVERS: "All JVM Servers",
-  DATA_SETS: "DATA SETS",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. Please refer to the IBM documentation for additional details`,
   BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,

@@ -31,7 +31,7 @@ export function showLibraryDatasetCommand(treeview: TreeView<CICSResourceContain
     const nodes = findSelectedNodes(treeview, LibraryDatasetMeta, node) as CICSResourceContainerNode<ILibraryDataset>[];
 
     if (!nodes || nodes.length === 0) {
-      window.showErrorMessage(l10n.t("No CICS Library Dataset selected"));
+      window.showErrorMessage(l10n.t("No CICS Library Data Set selected"));
       return;
     }
     const selectedNode = nodes[0];
@@ -45,11 +45,9 @@ export function showLibraryDatasetCommand(treeview: TreeView<CICSResourceContain
       await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      CICSLogger.error(`Failed to show dataset ${datasetName} for library dataset in region ${regionName}: ${errorMessage}`);
-      if (error instanceof Error && error.stack) {
-        CICSLogger.error(`Stack trace: ${error.stack}`);
-      }
-      window.showErrorMessage(l10n.t("Failed to show dataset: {0}", errorMessage));
+      const errorWithStack = error instanceof Error && error.stack ? `${error.message}\n${error.stack}` : errorMessage;
+      CICSLogger.error(`Failed to show dataset ${datasetName} for library dataset in region ${regionName}: ${errorWithStack}`);
+      window.showErrorMessage(l10n.t("Failed to show Data Set: {0}", errorMessage));
     }
   });
 }
