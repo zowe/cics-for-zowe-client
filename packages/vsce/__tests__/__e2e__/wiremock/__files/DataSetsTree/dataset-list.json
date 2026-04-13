@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "dsname": "MYLIBDS1",
+      "blksz": "32760",
+      "catnm": "CATALOG.MASTER",
+      "cdate": "2024/01/15",
+      "dev": "3390",
+      "dsntp": "PDS",
+      "dsorg": "PO",
+      "edate": "***None***",
+      "extx": "1",
+      "lrecl": "80",
+      "migr": "NO",
+      "mvol": "N",
+      "ovf": "NO",
+      "rdate": "2024/03/20",
+      "recfm": "FB",
+      "sizex": "15",
+      "spacu": "TRACKS",
+      "used": "5",
+      "vol": "USER01",
+      "vols": "USER01"
+    }
+  ],
+  "returnedRows": 1,
+  "totalRows": 1,
+  "JSONversion": 1
+}
