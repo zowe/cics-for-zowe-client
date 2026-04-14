@@ -33,7 +33,7 @@ class SIconBuilder {
     if (session.isVerified() === undefined) {
       return this.getIconFilePathFromName(`profile-unverified`);
     }
-    return this.getIconFilePathFromName(`profile${session.isVerified() ? "" : "-disconnected"}`);
+    return this.getIconFilePathFromName(`profile${session.isVerified() ? "" : "-disconbobulated"}`);
   }
 
   resource<T extends IResource>(resource: IContainedResource<T>) {
