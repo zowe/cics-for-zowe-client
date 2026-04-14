@@ -10,7 +10,7 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
-import { type QuickPickItem, l10n, window } from "vscode";
+import { type QuickPickItem, l10n } from "vscode";
 
 export class FilterDescriptor implements QuickPickItem {
   constructor(private text: string) {}
@@ -26,15 +26,10 @@ export class FilterDescriptor implements QuickPickItem {
 }
 
 export const buildQuickPick = (resName: string, history: string[]) => {
-  const items = history.map((loadedFilter) => {
-    return { label: loadedFilter };
-  });
-
   const quickpick = Gui.createQuickPick();
-  quickpick.items = items;
+  quickpick.items = history.map((loadedFilter) => ({ label: loadedFilter }));
   quickpick.placeholder = l10n.t("Select a filter or type to create a new one (use commas to separate multiple values)");
   quickpick.ignoreFocusOut = true;
-
   return quickpick;
 };
 
@@ -55,32 +50,43 @@ export async function showEditQuickpick(choiceLabel: string): Promise<string | u
   editQuickpick.placeholder = l10n.t("Press Enter to use '{0}' or select 'Edit filter'", choiceLabel);
   editQuickpick.value = choiceLabel;
   editQuickpick.ignoreFocusOut = true;
-  editQuickpick.show();
   
-  const editChoice = await Gui.resolveQuickPick(editQuickpick);
+  return new Promise<string | undefined>((resolve) => {
+    let wasAccepted = false;
+    
+    editQuickpick.onDidAccept(() => {
+      wasAccepted = true;
+      const selectedItem = editQuickpick.selectedItems[0];
   const editInput = editQuickpick.value;
+      
   editQuickpick.hide();
   
-  // If user pressed Enter without selecting an item, use the edited input
-  if (!editChoice && editInput) {
-    return editInput;
+      if (selectedItem) {
+        // User selected an item from the list
+        if (selectedItem.label === choiceLabel) {
+          // Selected first option - use the input value (may have been edited)
+          resolve(editInput);
+        } else {
+          // Selected "Edit filter" - show input box
+          Gui.showInputBox({
+            prompt: l10n.t("Edit filter"),
+            value: choiceLabel
+          }).then(resolve);
   }
-  
-  if (!editChoice) {
-    // User cancelled without any input
-    window.showInformationMessage(l10n.t("No Selection Made"));
-    return undefined;
-  }
-  
-  // If user modified the input or selected first option, use the input value
-  if (editInput !== choiceLabel || editChoice.label === choiceLabel) {
-    return editInput;
-  }
-  
-  // User selected "Edit filter" - show input box
-  return Gui.showInputBox({
-    prompt: l10n.t("Edit filter"),
-    value: choiceLabel
+      } else {
+        // User pressed Enter without selecting an item - use the edited input (or undefined if empty)
+        resolve(editInput || undefined);
+      }
+    });
+    
+    editQuickpick.onDidHide(() => {
+      if (!wasAccepted) {
+        // User pressed Escape or dismissed without accepting
+        resolve(undefined);
+      }
+    });
+    
+    editQuickpick.show();
   });
 }
 
@@ -118,38 +124,47 @@ export function inputMatchesChoice(userInput: string, choiceLabel: string, caseS
 
 export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
   const quickpick = buildQuickPick(resourceName, resourceHistory);
-  quickpick.show();
-  const choice = await Gui.resolveQuickPick(quickpick);
+  
+  return new Promise<string | undefined>((resolve) => {
+    let wasAccepted = false;
+    
+    // Track when user accepts (Enter key or item selection)
+    quickpick.onDidAccept(() => {
+      wasAccepted = true;
+      const selectedItem = quickpick.selectedItems[0];
   const userInput = quickpick.value;
+      
   quickpick.hide();
 
-  let pattern: string | undefined;
-  
-  // Handle case where no choice was selected
-  if (!choice) {
-    if (userInput) {
-      pattern = userInput;
-    } else {
-      return undefined;
-    }
-  } else {
-    // A history item was selected
+      // If an item was selected from the list
+      if (selectedItem) {
     // If user typed text that matches the selected item exactly, apply immediately
-    if (userInput && inputMatchesChoice(userInput, choice.label, filterCaseSensitive)) {
-      pattern = userInput;
+        if (userInput && inputMatchesChoice(userInput, selectedItem.label, filterCaseSensitive)) {
+          const normalized = normalizePattern(userInput, filterCaseSensitive);
+          resolve(normalized);
     } else {
       // User either clicked directly or typed to filter then clicked a different item
       // Show edit quickpick to allow confirmation or editing
-      pattern = await showEditQuickpick(choice.label);
-    }
-  }
-
-  if (!pattern) {
-    window.showInformationMessage(l10n.t("You must enter a pattern"));
-    return undefined;
-  }
-
-  return normalizePattern(pattern, filterCaseSensitive);
+          showEditQuickpick(selectedItem.label).then((pattern) => {
+            resolve(pattern ? normalizePattern(pattern, filterCaseSensitive) : undefined);
+          });
+        }
+      } else {
+        // User typed something new and pressed Enter (no item selected), or pressed Enter with no input
+        resolve(userInput ? normalizePattern(userInput, filterCaseSensitive) : undefined);
+      }
+    });
+    
+    // Track when user dismisses (Escape key or clicking outside)
+    quickpick.onDidHide(() => {
+      if (!wasAccepted) {
+        // User pressed Escape or dismissed without accepting
+        resolve(undefined);
+      }
+    });
+    
+    quickpick.show();
+  });
 }
 
 export function toEscapedCriteriaString(activeFilter: string, attribute: string): string {

@@ -72,8 +72,6 @@ test.describe("Region Filter", () => {
     await expect(textBox).toBeEditable();
     await textBox.fill("NOREG");
     await textBox.press("Escape");
-
-    await expect(page.getByText("No Selection Made", { exact: true })).toBeVisible();
   });
   test("Should clear all filters", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);

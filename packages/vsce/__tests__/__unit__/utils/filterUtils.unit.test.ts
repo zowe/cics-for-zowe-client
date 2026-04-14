@@ -13,17 +13,33 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { buildQuickPick, FilterDescriptor, getPatternFromFilter, toEscapedCriteriaString } from "../../../src/utils/filterUtils";
 
 // Helper function to create a mock QuickPick
-const createMockQuickPick = (value: string) => ({
-  show: jest.fn(),
-  hide: jest.fn(),
-  value,
-});
+const createMockQuickPick = (value: string, selectedItems: any[] = []) => {
+  const mockQuickPick = {
+    show: jest.fn(),
+    hide: jest.fn(),
+    value,
+    selectedItems,
+    onDidAccept: jest.fn(),
+    onDidHide: jest.fn(),
+  };
+  
+  // Auto-trigger onDidAccept when show is called (simulates user pressing Enter)
+  mockQuickPick.show.mockImplementation(() => {
+    const acceptHandler = mockQuickPick.onDidAccept.mock.calls[0]?.[0];
+    if (acceptHandler) {
+      // Simulate async behavior
+      setTimeout(() => acceptHandler(), 0);
+    }
+  });
+  
+  return mockQuickPick;
+};
 
 // Helper function to setup single quickpick scenario
 const setupSingleQuickPick = (value: string, resolvedValue?: { label: string; description?: string }) => {
-  const mockQuickPick = createMockQuickPick(value);
+  const selectedItems = resolvedValue ? [resolvedValue] : [];
+  const mockQuickPick = createMockQuickPick(value, selectedItems);
   jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-  jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(resolvedValue);
   return mockQuickPick;
 };
 
@@ -34,18 +50,17 @@ const setupDualQuickPick = (
   firstResolve: { label: string; description?: string },
   secondResolve: { label: string; description?: string }
 ) => {
-  const mockQuickPick = createMockQuickPick(initialValue);
-  const mockEditQuickPick = createMockQuickPick(editValue);
+  const firstSelectedItems = firstResolve ? [firstResolve] : [];
+  const secondSelectedItems = secondResolve ? [secondResolve] : [];
+  
+  const mockQuickPick = createMockQuickPick(initialValue, firstSelectedItems);
+  const mockEditQuickPick = createMockQuickPick(editValue, secondSelectedItems);
   
   let callCount = 0;
   jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
     callCount++;
     return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
   });
-  
-  jest.spyOn(Gui, "resolveQuickPick")
-    .mockResolvedValueOnce(firstResolve)
-    .mockResolvedValueOnce(secondResolve);
   
   return { mockQuickPick, mockEditQuickPick };
 };
