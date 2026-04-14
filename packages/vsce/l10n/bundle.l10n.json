@@ -15,10 +15,11 @@
   "Profile {0} is invalid or not present": "Profile {0} is invalid or not present",
   "Error fetching CICSplex information for profile with reason {0}": "Error fetching CICSplex information for profile with reason {0}",
   "Select CICS Region": "Select CICS Region",
-  "{0} Create New {1} Filter (use a comma to separate multiple patterns e.g. LG*,I*)": "{0} Create New {1} Filter (use a comma to separate multiple patterns e.g. LG*,I*)",
-  "Select a Filter": "Select a Filter",
-  "No Selection Made": "No Selection Made",
-  "You must enter a pattern": "You must enter a pattern",
+  "Select a filter or type to create a new one (use commas to separate multiple values)": "Select a filter or type to create a new one (use commas to separate multiple values)",
+  "Press Enter to use this filter": "Press Enter to use this filter",
+  "Edit filter": "Edit filter",
+  "Modify the filter before applying": "Modify the filter before applying",
+  "Press Enter to use '{0}' or select 'Edit filter'": "Press Enter to use '{0}' or select 'Edit filter'",
   "Select a profile to access the logs": "Select a profile to access the logs",
   "Region name is missing in the node description.": "Region name is missing in the node description.",
   "Are you sure you want to {0} the following {1}?": "Are you sure you want to {0} the following {1}?",
@@ -27,7 +28,9 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": ["Log level"]
+    "comment": [
+      "Log level"
+    ]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",

@@ -89,7 +89,7 @@ test.describe("Error scenarios", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("FILTER");
     await textBox.press("Enter");
@@ -157,7 +157,7 @@ test.describe("Error scenarios", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("PROG3,PROG4");
     await textBox.press("Enter");

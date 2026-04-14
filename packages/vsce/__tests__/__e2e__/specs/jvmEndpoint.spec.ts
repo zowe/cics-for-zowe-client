@@ -70,7 +70,7 @@ test.describe("JVM Endpoint should be visible from plex-level", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("MYJVM1");
     await textBox.press("Enter");

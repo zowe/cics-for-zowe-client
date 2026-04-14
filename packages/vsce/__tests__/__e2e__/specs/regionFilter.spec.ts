@@ -31,7 +31,7 @@ test.describe("Region Filter", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("MYREG1");
     await textBox.press("Enter");
@@ -51,7 +51,7 @@ test.describe("Region Filter", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("NOREG");
     await textBox.press("Enter");
@@ -68,12 +68,10 @@ test.describe("Region Filter", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("NOREG");
     await textBox.press("Escape");
-
-    await expect(page.getByText("No Selection Made", { exact: true })).toBeVisible();
   });
   test("Should clear all filters", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
@@ -84,7 +82,7 @@ test.describe("Region Filter", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("MYREG1");
     await textBox.press("Enter");
@@ -107,7 +105,7 @@ test.describe("Region Filter", () => {
     await expect(filterButton).toBeVisible();
     await filterButton.click();
 
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: true });
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
     await textBox.fill("MYREG1");
     await textBox.press("Enter");
