@@ -16,8 +16,6 @@ import type {
   ICMCIResponseErrors,
 } from "../../../src/doc";
 
-const TEST_RECORD_COUNT = 3;
-
 describe("Doc Interface Tests", () => {
   describe("ICMCIApiResponse", () => {
     it("should accept a valid CMCI API response with all required fields", () => {
@@ -464,7 +462,7 @@ describe("Doc Interface Tests", () => {
       };
 
       expect(completeResponse.response.resultsummary.recordcount).toBe("3");
-      expect(completeResponse.response.records.program).toHaveLength(TEST_RECORD_COUNT);
+      expect(completeResponse.response.records.program).toHaveLength(3);
     });
 
     it("should work together in an error response scenario", () => {
