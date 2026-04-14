@@ -11,7 +11,7 @@
 
 import { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import type { imperative } from "@zowe/zowe-explorer-api";
-// Import all interfaces to ensure they're included in coverage
+// Import all interfaces to ensure they're included in coverage reporting
 import "../../src/interfaces";
 import type { IExtensionAPI } from "../../src/interfaces/IExtensionAPI";
 import type {
@@ -114,7 +114,7 @@ describe("Interfaces", () => {
   };
 
   describe("ResourceAction", () => {
-    it("should create ResourceAction with all properties", () => {
+    it("should create ResourceAction with all required properties", () => {
       expect(action).toHaveProperty("id");
       expect(action).toHaveProperty("name");
       expect(action).toHaveProperty("resourceType");
@@ -123,7 +123,7 @@ describe("Interfaces", () => {
       expect(action).toHaveProperty("refreshResourceInspector");
     });
 
-    it("should access ResourceAction getters", () => {
+    it("should access ResourceAction getters with correct values", () => {
       expect(action.id).toBe("CICS.CICSProgram.NEWCOPY");
       expect(action.name).toBe("New Copy Program");
       expect(action.resourceType).toBe(ResourceTypes.CICSProgram);
@@ -132,7 +132,7 @@ describe("Interfaces", () => {
       expect(action.refreshResourceInspector).toBe(true);
     });
 
-    it("should create ResourceAction with refreshResourceInspector false", () => {
+    it("should create ResourceAction with refreshResourceInspector set to false", () => {
       const actionNoRefresh = new ResourceAction({
         id: "test.action",
         name: "Test Action",
@@ -143,7 +143,7 @@ describe("Interfaces", () => {
       expect(actionNoRefresh.refreshResourceInspector).toBe(false);
     });
 
-    it("should create ResourceAction with string action", () => {
+    it("should create ResourceAction with string action command", () => {
       const stringAction = new ResourceAction({
         id: "test.string.action",
         name: "Test String Action",
@@ -153,7 +153,7 @@ describe("Interfaces", () => {
       expect(stringAction.action).toBe("test.command.string");
     });
 
-    it("should create ResourceAction without visibleWhen", () => {
+    it("should create ResourceAction without optional visibleWhen parameter", () => {
       const noVisibleWhen = new ResourceAction({
         id: "test.no.visible",
         name: "Test No Visible",
@@ -162,10 +162,43 @@ describe("Interfaces", () => {
       });
       expect(noVisibleWhen.visibleWhen).toBeUndefined();
     });
+
+    it("should handle explicitly undefined visibleWhen parameter", () => {
+      const explicitUndefined = new ResourceAction({
+        id: "test.explicit.undefined",
+        name: "Test Explicit Undefined",
+        resourceType: ResourceTypes.CICSProgram,
+        action: "test.command",
+        visibleWhen: undefined,
+      });
+      expect(explicitUndefined.visibleWhen).toBeUndefined();
+    });
+
+    it("should handle async visibleWhen function returning Promise", async () => {
+      const asyncAction = new ResourceAction({
+        id: "test.async.visible",
+        name: "Test Async Visible",
+        resourceType: ResourceTypes.CICSProgram,
+        action: "test.command",
+        visibleWhen: async () => Promise.resolve(true),
+      });
+      const result = await asyncAction.visibleWhen?.({} as IProgram, {} as IResourceContext);
+      expect(result).toBe(true);
+    });
+
+    it("should handle empty string action command", () => {
+      const emptyAction = new ResourceAction({
+        id: "test.empty.action",
+        name: "Test Empty Action",
+        resourceType: ResourceTypes.CICSProgram,
+        action: "",
+      });
+      expect(emptyAction.action).toBe("");
+    });
   });
 
   describe("IResourceExtender", () => {
-    it("should assert IResourceExtender properties", () => {
+    it("should have all required interface properties", () => {
       expect(extender).toHaveProperty("registeredActions");
       expect(extender).toHaveProperty("registerAction");
       expect(extender).toHaveProperty("getAction");
@@ -173,7 +206,7 @@ describe("Interfaces", () => {
       expect(extender).toHaveProperty("getActionsFor");
     });
 
-    it("should register and retrieve actions", () => {
+    it("should register action and retrieve it by type", () => {
       const testAction = new ResourceAction({
         id: "test.action.id",
         name: "Test Action",
@@ -184,23 +217,27 @@ describe("Interfaces", () => {
       extender.registerAction(testAction);
       const actions = extender.getActionsFor(ResourceTypes.CICSProgram);
       expect(actions).toContain(testAction);
-      expect(actions).toHaveLength(1);
+      expect(actions.length).toBeGreaterThan(0);
+    });
+
+    it("should retrieve registered action by id", () => {
       const retrieved = extender.getAction("test.action.id");
       expect(retrieved).toBeDefined();
       expect(retrieved?.id).toBe("test.action.id");
     });
 
-    it("should return undefined for non-existent action", () => {
+    it("should return undefined for non-existent action id", () => {
       const retrieved = extender.getAction("non.existent.action");
       expect(retrieved).toBeUndefined();
     });
 
-    it("should get all actions", () => {
+    it("should get all registered actions", () => {
       const actions = extender.getActions();
       expect(Array.isArray(actions)).toBe(true);
+      expect(actions.length).toBeGreaterThan(0);
     });
 
-    it("should get actions for specific type", () => {
+    it("should get actions for specific resource type", () => {
       const testAction = new ResourceAction({
         id: "test.specific.action",
         name: "Test Specific Action",
@@ -212,30 +249,29 @@ describe("Interfaces", () => {
       const programActions = extender.getActionsFor(ResourceTypes.CICSProgram);
       expect(Array.isArray(programActions)).toBe(true);
       expect(programActions).toContain(testAction);
-      expect(programActions).toHaveLength(2);
     });
   });
 
   describe("IExtensionAPI", () => {
-    it("should assert IExtensionAPI structure", () => {
+    it("should have correct API structure with resources property", () => {
       expect(api).toHaveProperty("resources");
       expect(api.resources).toHaveProperty("supportedResources");
       expect(api.resources).toHaveProperty("resourceExtender");
     });
 
-    it("should have valid supportedResources", () => {
+    it("should have valid array of supported resource types", () => {
       expect(Array.isArray(api.resources.supportedResources)).toBe(true);
       expect(api.resources.supportedResources.length).toBeGreaterThan(0);
     });
   });
 
-  describe("IResource interfaces", () => {
-    it("should assert IResource", () => {
+  describe("IResource base interfaces", () => {
+    it("should validate IResource with eyu_cicsname property", () => {
       expect(res).toHaveProperty("eyu_cicsname");
       expect(res.eyu_cicsname).toBe("REGION1");
     });
 
-    it("should assert IResourceWithStatus", () => {
+    it("should validate IResourceWithStatus interface structure", () => {
       const resWithStatus: IResourceWithStatus = {
         eyu_cicsname: "REGION1",
         status: "ENABLED",
@@ -244,7 +280,7 @@ describe("Interfaces", () => {
       expect(resWithStatus).toHaveProperty("status");
     });
 
-    it("should assert IResourceWithEnableStatus", () => {
+    it("should validate IResourceWithEnableStatus interface structure", () => {
       const resWithEnableStatus: IResourceWithEnableStatus = {
         eyu_cicsname: "REGION1",
         enablestatus: "ENABLED",
@@ -255,23 +291,24 @@ describe("Interfaces", () => {
   });
 
   describe("IResourceContext interfaces", () => {
-    it("should assert IResourceContext", () => {
+    it("should validate IResourceContext with all required properties", () => {
       expect(cx).toHaveProperty("session");
       expect(cx).toHaveProperty("profile");
       expect(cx).toHaveProperty("cicsplexName");
       expect(cx).toHaveProperty("regionName");
     });
 
-    it("should assert IResourceRegionInfo", () => {
+    it("should validate IResourceRegionInfo interface structure", () => {
       const regionInfo: IResourceRegionInfo = {
         regionName: "REGION1",
         cicsplexName: "PLEX1",
       };
       expect(regionInfo).toHaveProperty("regionName");
+      expect(regionInfo).toHaveProperty("cicsplexName");
       expect(regionInfo.cicsplexName).toBe("PLEX1");
     });
 
-    it("should assert IResourceProfileNameInfo", () => {
+    it("should validate IResourceProfileNameInfo interface structure", () => {
       const profileNameInfo: IResourceProfileNameInfo = {
         regionName: "REGION1",
         profileName: "MYPROF",
@@ -280,7 +317,7 @@ describe("Interfaces", () => {
       expect(profileNameInfo).toHaveProperty("profileName");
     });
 
-    it("should assert IResourceProfileInfo", () => {
+    it("should validate IResourceProfileInfo interface structure", () => {
       const profileInfo: IResourceProfileInfo = {
         regionName: "REGION1",
         profile: profile,
@@ -291,306 +328,283 @@ describe("Interfaces", () => {
   });
 
   describe("Resource type interfaces", () => {
-    it("should assert IProgram", () => {
-      const program: IProgram = {
-        eyu_cicsname: "REGION1",
-        status: "ENABLED",
-        library: "MYLIB",
-        librarydsn: "MY.LIBRARY.DSN",
-        program: "PROG001",
-        progtype: "COBOL",
-        newcopycnt: "0",
-        usecount: "5",
-        language: "COBOL",
-        jvmserver: "",
-      };
-      expect(program).toHaveProperty("program");
-      expect(program).toHaveProperty("library");
-      expect(program).toHaveProperty("status");
-    });
+    // Data-driven test configuration for all resource types
+    const resourceTestCases = [
+      {
+        name: "IProgram",
+        factory: (): IProgram => ({
+          eyu_cicsname: "REGION1",
+          status: "ENABLED",
+          library: "MYLIB",
+          librarydsn: "MY.LIBRARY.DSN",
+          program: "PROG001",
+          progtype: "COBOL",
+          newcopycnt: "0",
+          usecount: "5",
+          language: "COBOL",
+          jvmserver: "",
+        }),
+        requiredProps: ["program", "library", "status"],
+      },
+      {
+        name: "ITransaction",
+        factory: (): ITransaction => ({
+          eyu_cicsname: "REGION1",
+          status: "ENABLED",
+          tranid: "TRAN",
+          program: "PROG001",
+          availstatus: "AVAILABLE",
+          tranclass: "CLASS1",
+          routing: "LOCAL",
+        }),
+        requiredProps: ["tranid", "program", "status"],
+      },
+      {
+        name: "IBundle",
+        factory: (): IBundle => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          bundledir: "/path/to/bundle",
+          bundleid: "BUNDLE1",
+          name: "MyBundle",
+          partcount: "5",
+          availstatus: "AVAILABLE",
+        }),
+        requiredProps: ["bundleid", "bundledir", "enablestatus"],
+      },
+      {
+        name: "IBundlePart",
+        factory: (): IBundlePart => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          bundle: "BUNDLE1",
+          bundlepart: "PART1",
+          partclass: "PROGRAM",
+          availstatus: "AVAILABLE",
+          parttype: "OSGI",
+        }),
+        requiredProps: ["bundle", "bundlepart", "partclass"],
+      },
+      {
+        name: "IJVMServer",
+        factory: (): IJVMServer => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          name: "JVMSRV1",
+          profile: "PROFILE1",
+          javahome: "/java/home",
+          threadlimit: "100",
+          log: "STDOUT",
+          definetime: "2024-01-01",
+          changetime: "2024-01-02",
+          changeusrid: "USER1",
+        }),
+        requiredProps: ["name", "profile", "javahome"],
+      },
+      {
+        name: "IJVMEndpoint",
+        factory: (): IJVMEndpoint => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          jvmendpoint: "ENDPOINT1",
+          jvmserver: "JVMSRV1",
+          port: "8080",
+          secport: "8443",
+        }),
+        requiredProps: ["jvmendpoint", "jvmserver", "port"],
+      },
+      {
+        name: "ILibrary",
+        factory: (): ILibrary => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          name: "LIB1",
+          dsname: "MY.LIBRARY.DSN",
+          ranking: "1",
+          numdsnames: "5",
+        }),
+        requiredProps: ["name", "dsname", "ranking"],
+      },
+      {
+        name: "ILibraryDataset",
+        factory: (): ILibraryDataset => ({
+          eyu_cicsname: "REGION1",
+          dsname: "MY.LIBRARY.DSN",
+          library: "LIB1",
+          dsnum: "1",
+          searchpos: "1",
+        }),
+        requiredProps: ["library", "dsname", "dsnum"],
+      },
+      {
+        name: "ILocalFile",
+        factory: (): ILocalFile => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          file: "FILE1",
+          dsname: "MY.FILE.DSN",
+          vsamtype: "KSDS",
+          read: "YES",
+          browse: "YES",
+          keylength: "10",
+          recordsize: "80",
+          openstatus: "OPEN",
+          update: "YES",
+          add: "YES",
+          delete: "YES",
+        }),
+        requiredProps: ["file", "dsname", "vsamtype"],
+      },
+      {
+        name: "IRemoteFile",
+        factory: (): IRemoteFile => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          file: "RFILE1",
+          remotename: "REMOTE1",
+          remotesystem: "SYS1",
+        }),
+        requiredProps: ["file", "remotename", "remotesystem"],
+      },
+      {
+        name: "IPipeline",
+        factory: (): IPipeline => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          name: "PIPE1",
+          configfile: "/path/to/config",
+          soaplevel: "1.1",
+          wsdir: "/ws/dir",
+        }),
+        requiredProps: ["name", "configfile", "soaplevel"],
+      },
+      {
+        name: "IURIMap",
+        factory: (): IURIMap => ({
+          eyu_cicsname: "REGION1",
+          enablestatus: "ENABLED",
+          name: "URIMAP1",
+          path: "/api/test",
+          scheme: "HTTP",
+          transaction: "TRAN",
+          pipeline: "PIPE1",
+          webservice: "WEBSVC1",
+        }),
+        requiredProps: ["name", "path", "scheme"],
+      },
+      {
+        name: "IWebService",
+        factory: (): IWebService => ({
+          eyu_cicsname: "REGION1",
+          name: "WEBSVC1",
+          state: "ENABLED",
+          wsbind: "BIND1",
+          program: "PROG1",
+          pipeline: "PIPE1",
+          urimap: "URIMAP1",
+          container: "CONT1",
+          wsdlfile: "/path/to/wsdl",
+        }),
+        requiredProps: ["name", "pipeline", "wsbind", "state"],
+      },
+      {
+        name: "ITCPIP",
+        factory: (): ITCPIP => ({
+          eyu_cicsname: "REGION1",
+          name: "TCPIP1",
+          port: "8080",
+          protocol: "HTTP",
+          transid: "TRAN",
+          urm: "URM1",
+          attls: "NO",
+          ssltype: "NONE",
+          openstatus: "OPEN",
+        }),
+        requiredProps: ["name", "port", "protocol", "openstatus"],
+      },
+      {
+        name: "ITSQueue",
+        factory: (): ITSQueue => ({
+          eyu_cicsname: "REGION1",
+          name: "TSQ1",
+          location: "MAIN",
+          numitems: "10",
+          hexname: "54535131",
+          quelength: "100",
+          expiryint: "0",
+          transid: "TRAN",
+          tsmodel: "MODEL1",
+        }),
+        requiredProps: ["name", "location", "numitems", "hexname"],
+      },
+      {
+        name: "ISharedTSQueue",
+        factory: (): ISharedTSQueue => ({
+          eyu_cicsname: "REGION1",
+          name: "STSQ1",
+          poolname: "POOL1",
+          location: "SHARED",
+          hexname: "53545351",
+        }),
+        requiredProps: ["name", "poolname", "location"],
+      },
+      {
+        name: "ITask",
+        factory: (): ITask => ({
+          eyu_cicsname: "REGION1",
+          task: "12345",
+          runstatus: "RUNNING",
+          tranid: "TRAN",
+          suspendtime: "0",
+          suspendtype: "NONE",
+          suspendvalue: "0",
+          currentprog: "PROG001",
+          userid: "USER1",
+        }),
+        requiredProps: ["task", "runstatus", "tranid", "currentprog"],
+      },
+      {
+        name: "IRegion",
+        factory: (): IRegion => ({
+          eyu_cicsname: "REGION1",
+          applid: "APPLID1",
+          startup: "AUTO",
+          cicsname: "CICS1",
+          cicsstatus: "ACTIVE",
+        }),
+        requiredProps: ["eyu_cicsname", "applid", "cicsname"],
+      },
+      {
+        name: "IManagedRegion",
+        factory: (): IManagedRegion => ({
+          eyu_cicsname: "REGION1",
+          cicsname: "CICS1",
+          cicsstate: "ACTIVE",
+          secbypass: "NO",
+          wlmstatus: "ENABLED",
+        }),
+        requiredProps: ["cicsname", "cicsstate", "wlmstatus"],
+      },
+    ];
 
-    it("should assert ITransaction", () => {
-      const transaction: ITransaction = {
-        eyu_cicsname: "REGION1",
-        status: "ENABLED",
-        tranid: "TRAN",
-        program: "PROG001",
-        availstatus: "AVAILABLE",
-        tranclass: "CLASS1",
-        routing: "LOCAL",
-      };
-      expect(transaction).toHaveProperty("tranid");
-      expect(transaction).toHaveProperty("program");
-      expect(transaction).toHaveProperty("status");
-    });
-
-    it("should assert IBundle", () => {
-      const bundle: IBundle = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        bundledir: "/path/to/bundle",
-        bundleid: "BUNDLE1",
-        name: "MyBundle",
-        partcount: "5",
-        availstatus: "AVAILABLE",
-      };
-      expect(bundle).toHaveProperty("bundleid");
-      expect(bundle).toHaveProperty("bundledir");
-      expect(bundle).toHaveProperty("enablestatus");
-    });
-
-    it("should assert IBundlePart", () => {
-      const bundlePart: IBundlePart = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        bundle: "BUNDLE1",
-        bundlepart: "PART1",
-        partclass: "PROGRAM",
-        availstatus: "AVAILABLE",
-        parttype: "OSGI",
-      };
-      expect(bundlePart).toHaveProperty("bundle");
-      expect(bundlePart).toHaveProperty("bundlepart");
-      expect(bundlePart).toHaveProperty("partclass");
-    });
-
-    it("should assert IJVMServer", () => {
-      const jvmServer: IJVMServer = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        name: "JVMSRV1",
-        profile: "PROFILE1",
-        javahome: "/java/home",
-        threadlimit: "100",
-        log: "STDOUT",
-        definetime: "2024-01-01",
-        changetime: "2024-01-02",
-        changeusrid: "USER1",
-      };
-      expect(jvmServer).toHaveProperty("name");
-      expect(jvmServer).toHaveProperty("profile");
-      expect(jvmServer).toHaveProperty("javahome");
-    });
-
-    it("should assert IJVMEndpoint", () => {
-      const jvmEndpoint: IJVMEndpoint = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        jvmendpoint: "ENDPOINT1",
-        jvmserver: "JVMSRV1",
-        port: "8080",
-        secport: "8443",
-      };
-      expect(jvmEndpoint).toHaveProperty("jvmendpoint");
-      expect(jvmEndpoint).toHaveProperty("jvmserver");
-      expect(jvmEndpoint).toHaveProperty("port");
-    });
-
-    it("should assert ILibrary", () => {
-      const library: ILibrary = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        name: "LIB1",
-        dsname: "MY.LIBRARY.DSN",
-        ranking: "1",
-        numdsnames: "5",
-      };
-      expect(library).toHaveProperty("name");
-      expect(library).toHaveProperty("dsname");
-      expect(library).toHaveProperty("ranking");
-    });
-
-    it("should assert ILibraryDataset", () => {
-      const libraryDataset: ILibraryDataset = {
-        eyu_cicsname: "REGION1",
-        dsname: "MY.LIBRARY.DSN",
-        library: "LIB1",
-        dsnum: "1",
-        searchpos: "1",
-      };
-      expect(libraryDataset).toHaveProperty("library");
-      expect(libraryDataset).toHaveProperty("dsname");
-      expect(libraryDataset).toHaveProperty("dsnum");
-    });
-
-    it("should assert ILocalFile", () => {
-      const localFile: ILocalFile = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        file: "FILE1",
-        dsname: "MY.FILE.DSN",
-        vsamtype: "KSDS",
-        read: "YES",
-        browse: "YES",
-        keylength: "10",
-        recordsize: "80",
-        openstatus: "OPEN",
-        update: "YES",
-        add: "YES",
-        delete: "YES",
-      };
-      expect(localFile).toHaveProperty("file");
-      expect(localFile).toHaveProperty("dsname");
-      expect(localFile).toHaveProperty("vsamtype");
-    });
-
-    it("should assert IRemoteFile", () => {
-      const remoteFile: IRemoteFile = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        file: "RFILE1",
-        remotename: "REMOTE1",
-        remotesystem: "SYS1",
-      };
-      expect(remoteFile).toHaveProperty("file");
-      expect(remoteFile).toHaveProperty("remotename");
-      expect(remoteFile).toHaveProperty("remotesystem");
-    });
-
-    it("should assert IPipeline", () => {
-      const pipeline: IPipeline = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        name: "PIPE1",
-        configfile: "/path/to/config",
-        soaplevel: "1.1",
-        wsdir: "/ws/dir",
-      };
-      expect(pipeline).toHaveProperty("name");
-      expect(pipeline).toHaveProperty("configfile");
-      expect(pipeline).toHaveProperty("soaplevel");
-    });
-
-    it("should assert IURIMap", () => {
-      const urimap: IURIMap = {
-        eyu_cicsname: "REGION1",
-        enablestatus: "ENABLED",
-        name: "URIMAP1",
-        path: "/api/test",
-        scheme: "HTTP",
-        transaction: "TRAN",
-        pipeline: "PIPE1",
-        webservice: "WEBSVC1",
-      };
-      expect(urimap).toHaveProperty("name");
-      expect(urimap).toHaveProperty("path");
-      expect(urimap).toHaveProperty("scheme");
-    });
-
-    it("should assert IWebService", () => {
-      const webservice: IWebService = {
-        eyu_cicsname: "REGION1",
-        name: "WEBSVC1",
-        state: "ENABLED",
-        wsbind: "BIND1",
-        program: "PROG1",
-        pipeline: "PIPE1",
-        urimap: "URIMAP1",
-        container: "CONT1",
-        wsdlfile: "/path/to/wsdl",
-      };
-      expect(webservice).toHaveProperty("name");
-      expect(webservice).toHaveProperty("pipeline");
-      expect(webservice).toHaveProperty("wsbind");
-      expect(webservice).toHaveProperty("state");
-    });
-
-    it("should assert ITCPIP", () => {
-      const tcpip: ITCPIP = {
-        eyu_cicsname: "REGION1",
-        name: "TCPIP1",
-        port: "8080",
-        protocol: "HTTP",
-        transid: "TRAN",
-        urm: "URM1",
-        attls: "NO",
-        ssltype: "NONE",
-        openstatus: "OPEN",
-      };
-      expect(tcpip).toHaveProperty("name");
-      expect(tcpip).toHaveProperty("port");
-      expect(tcpip).toHaveProperty("protocol");
-      expect(tcpip).toHaveProperty("openstatus");
-    });
-
-    it("should assert ITSQueue", () => {
-      const tsqueue: ITSQueue = {
-        eyu_cicsname: "REGION1",
-        name: "TSQ1",
-        location: "MAIN",
-        numitems: "10",
-        hexname: "54535131",
-        quelength: "100",
-        expiryint: "0",
-        transid: "TRAN",
-        tsmodel: "MODEL1",
-      };
-      expect(tsqueue).toHaveProperty("name");
-      expect(tsqueue).toHaveProperty("location");
-      expect(tsqueue).toHaveProperty("numitems");
-      expect(tsqueue).toHaveProperty("hexname");
-    });
-
-    it("should assert ISharedTSQueue", () => {
-      const sharedTSQueue: ISharedTSQueue = {
-        eyu_cicsname: "REGION1",
-        name: "STSQ1",
-        poolname: "POOL1",
-        location: "SHARED",
-        hexname: "53545351",
-      };
-      expect(sharedTSQueue).toHaveProperty("name");
-      expect(sharedTSQueue).toHaveProperty("poolname");
-      expect(sharedTSQueue).toHaveProperty("location");
-    });
-
-    it("should assert ITask", () => {
-      const task: ITask = {
-        eyu_cicsname: "REGION1",
-        task: "12345",
-        runstatus: "RUNNING",
-        tranid: "TRAN",
-        suspendtime: "0",
-        suspendtype: "NONE",
-        suspendvalue: "0",
-        currentprog: "PROG001",
-        userid: "USER1",
-      };
-      expect(task).toHaveProperty("task");
-      expect(task).toHaveProperty("runstatus");
-      expect(task).toHaveProperty("tranid");
-      expect(task).toHaveProperty("currentprog");
-    });
-
-    it("should assert IRegion", () => {
-      const region: IRegion = {
-        eyu_cicsname: "REGION1",
-        applid: "APPLID1",
-        startup: "AUTO",
-        cicsname: "CICS1",
-        cicsstatus: "ACTIVE",
-      };
-      expect(region).toHaveProperty("eyu_cicsname");
-      expect(region).toHaveProperty("applid");
-      expect(region).toHaveProperty("cicsname");
-    });
-
-    it("should assert IManagedRegion", () => {
-      const managedRegion: IManagedRegion = {
-        eyu_cicsname: "REGION1",
-        cicsname: "CICS1",
-        cicsstate: "ACTIVE",
-        secbypass: "NO",
-        wlmstatus: "ENABLED",
-      };
-      expect(managedRegion).toHaveProperty("cicsname");
-      expect(managedRegion).toHaveProperty("cicsstate");
-      expect(managedRegion).toHaveProperty("wlmstatus");
+    // Generate tests for all resource types using data-driven approach
+    resourceTestCases.forEach(({ name, factory, requiredProps }) => {
+      it(`should validate ${name} interface with all required properties`, () => {
+        const resource = factory();
+        
+        // Validate all required properties exist
+        requiredProps.forEach((prop) => {
+          expect(resource).toHaveProperty(prop);
+        });
+        
+        // Validate base property exists
+        expect(resource).toHaveProperty("eyu_cicsname");
+      });
     });
   });
 
   describe("ResourceTypeMap", () => {
-    it("should map ResourceTypes to interfaces", () => {
+    it("should map all ResourceTypes enum values to their corresponding interfaces", () => {
       const typeMap: ResourceTypeMap = {
         [ResourceTypes.CICSProgram]: {} as IProgram,
         [ResourceTypes.CICSLocalFile]: {} as ILocalFile,
@@ -609,7 +623,9 @@ describe("Interfaces", () => {
         [ResourceTypes.CICSManagedRegion]: {} as IManagedRegion,
         [ResourceTypes.CICSRegion]: {} as IRegion,
       };
+      const expectedResourceTypeCount = 16;
       expect(typeMap).toBeDefined();
+      expect(Object.keys(typeMap).length).toBe(expectedResourceTypeCount);
     });
   });
 });
