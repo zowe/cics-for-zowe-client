@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.21.0`
 
 - Enhancement: Added "Show in Data sets View" command for CICS Library Datasets to view them in Zowe Explorer. [#633](https://github.com/zowe/cics-for-zowe-client/issues/633)
 - Enhancement: Inquire program, Show Library and Inquire Transaction can open respective resources from Resource Inspector. [#449](https://github.com/zowe/cics-for-zowe-client/issues/449)
