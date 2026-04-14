@@ -12,6 +12,44 @@
 import { Gui } from "@zowe/zowe-explorer-api";
 import { buildQuickPick, FilterDescriptor, getPatternFromFilter, toEscapedCriteriaString } from "../../../src/utils/filterUtils";
 
+// Helper function to create a mock QuickPick
+const createMockQuickPick = (value: string) => ({
+  show: jest.fn(),
+  hide: jest.fn(),
+  value,
+});
+
+// Helper function to setup single quickpick scenario
+const setupSingleQuickPick = (value: string, resolvedValue?: { label: string; description?: string }) => {
+  const mockQuickPick = createMockQuickPick(value);
+  jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
+  jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(resolvedValue);
+  return mockQuickPick;
+};
+
+// Helper function to setup dual quickpick scenario (initial + edit)
+const setupDualQuickPick = (
+  initialValue: string,
+  editValue: string,
+  firstResolve: { label: string; description?: string },
+  secondResolve: { label: string; description?: string }
+) => {
+  const mockQuickPick = createMockQuickPick(initialValue);
+  const mockEditQuickPick = createMockQuickPick(editValue);
+  
+  let callCount = 0;
+  jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
+    callCount++;
+    return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
+  });
+  
+  jest.spyOn(Gui, "resolveQuickPick")
+    .mockResolvedValueOnce(firstResolve)
+    .mockResolvedValueOnce(secondResolve);
+  
+  return { mockQuickPick, mockEditQuickPick };
+};
+
 describe("FilterDescriptor", () => {
   it("should create FilterDescriptor with correct label", () => {
     const descriptor = new FilterDescriptor("Test Label");
@@ -60,65 +98,33 @@ describe("Filter Utils tests", () => {
   });
 
   it("should get pattern when user types exact match", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "NEWPATTERN",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce({ label: "NEWPATTERN" });
+    setupSingleQuickPick("NEWPATTERN", { label: "NEWPATTERN" });
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toEqual("NEWPATTERN");
   });
 
   it("should get pattern when user types without selecting", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "TYPED*",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("TYPED*", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toEqual("TYPED*");
   });
 
   it("should return undefined when no selection and no input", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toBeUndefined();
   });
 
   it("should show edit quickpick when user clicks history item", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "",
-    };
-    const mockEditQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "prev1",
-    };
-    
-    let callCount = 0;
-    jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
-      callCount++;
-      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
-    });
-    
-    jest.spyOn(Gui, "resolveQuickPick")
-      .mockResolvedValueOnce({ label: "prev1" })
-      .mockResolvedValueOnce({ label: "prev1", description: "Press Enter to use this filter" });
+    const { mockEditQuickPick } = setupDualQuickPick(
+      "",
+      "prev1",
+      { label: "prev1" },
+      { label: "prev1", description: "Press Enter to use this filter" }
+    );
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toEqual("PREV1");
@@ -126,26 +132,12 @@ describe("Filter Utils tests", () => {
   });
 
   it("should show edit quickpick when user types to filter then clicks different item", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "PRE",
-    };
-    const mockEditQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "prev1",
-    };
-    
-    let callCount = 0;
-    jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
-      callCount++;
-      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
-    });
-    
-    jest.spyOn(Gui, "resolveQuickPick")
-      .mockResolvedValueOnce({ label: "prev1" })
-      .mockResolvedValueOnce({ label: "prev1", description: "Press Enter to use this filter" });
+    const { mockEditQuickPick } = setupDualQuickPick(
+      "PRE",
+      "prev1",
+      { label: "prev1" },
+      { label: "prev1", description: "Press Enter to use this filter" }
+    );
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toEqual("PREV1");
@@ -153,52 +145,28 @@ describe("Filter Utils tests", () => {
   });
 
   it("should convert to uppercase when case insensitive", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "lowercase*",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("lowercase*", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", [], false);
     expect(pattern).toEqual("LOWERCASE*");
   });
 
   it("should preserve case when case sensitive", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "MixedCase*",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("MixedCase*", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", [], true);
     expect(pattern).toEqual("MixedCase*");
   });
 
   it("should remove whitespace from pattern", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "PAT TERN*",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("PAT TERN*", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", [], false);
     expect(pattern).toEqual("PATTERN*");
   });
 
   it("should handle comma-separated patterns", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "PAT1*, PAT2*",
-    };
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
-    jest.spyOn(Gui, "resolveQuickPick").mockResolvedValueOnce(undefined);
+    setupSingleQuickPick("PAT1*, PAT2*", undefined);
     
     const pattern = await getPatternFromFilter("MYRES", [], false);
     expect(pattern).toEqual("PAT1*,PAT2*");
@@ -206,27 +174,12 @@ describe("Filter Utils tests", () => {
 
 
   it("should show input box when 'Edit filter' option is selected", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "",
-    };
-    const mockEditQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "prev1",
-    };
-    
-    let callCount = 0;
-    jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
-      callCount++;
-      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
-    });
-    
-    jest.spyOn(Gui, "resolveQuickPick")
-      .mockResolvedValueOnce({ label: "prev1" })
-      .mockResolvedValueOnce({ label: "Edit filter", description: "Modify the filter before applying" });
-    
+    setupDualQuickPick(
+      "",
+      "prev1",
+      { label: "prev1" },
+      { label: "Edit filter", description: "Modify the filter before applying" }
+    );
     jest.spyOn(Gui, "showInputBox").mockResolvedValueOnce("INPUTBOX*");
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
@@ -235,27 +188,12 @@ describe("Filter Utils tests", () => {
   });
 
   it("should return undefined when pattern is empty after input", async () => {
-    const mockQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "",
-    };
-    const mockEditQuickPick = {
-      show: jest.fn(),
-      hide: jest.fn(),
-      value: "prev1",
-    };
-    
-    let callCount = 0;
-    jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
-      callCount++;
-      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
-    });
-    
-    jest.spyOn(Gui, "resolveQuickPick")
-      .mockResolvedValueOnce({ label: "prev1" })
-      .mockResolvedValueOnce({ label: "Edit filter", description: "Modify the filter before applying" });
-    
+    setupDualQuickPick(
+      "",
+      "prev1",
+      { label: "prev1" },
+      { label: "Edit filter", description: "Modify the filter before applying" }
+    );
     jest.spyOn(Gui, "showInputBox").mockResolvedValueOnce("");
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
