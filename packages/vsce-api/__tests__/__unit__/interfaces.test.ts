@@ -20,6 +20,7 @@ import type {
   IResourceProfileNameInfo,
   IResourceProfileInfo,
 } from "../../src/interfaces/IResourceContext";
+
 import type { IResourceExtender } from "../../src/interfaces/IResourceExtender";
 import { ResourceAction, type ResourceTypeMap } from "../../src/interfaces/ResourceAction";
 import type {
