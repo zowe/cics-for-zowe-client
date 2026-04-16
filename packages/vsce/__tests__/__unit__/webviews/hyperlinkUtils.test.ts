@@ -16,7 +16,7 @@
   setState: jest.fn(),
 }));
 
-import { isDatasetValue, isHyperlinkableValue, isUssPathValue } from "../../../src/webviews/resource-inspector-panel/utils/hyperlinkUtils";
+import { isDatasetValue, isJobSpoolValue, isUssPathValue } from "../../../src/webviews/resource-inspector-panel/utils/hyperlinkUtils";
 
 describe("hyperlinkUtils", () => {
   describe("isDatasetValue", () => {
@@ -135,28 +135,107 @@ describe("hyperlinkUtils", () => {
     });
   });
 
-  describe("isHyperlinkableValue", () => {
-    test("should return true for job spool pattern (//DD:*)", () => {
-      expect(isHyperlinkableValue("//DD:SYSOUT")).toBe(true);
-      expect(isHyperlinkableValue("//DD:JESMSGLG")).toBe(true);
-      expect(isHyperlinkableValue("//DD:JESJCL")).toBe(true);
-      expect(isHyperlinkableValue("//DD:JESYSMSG")).toBe(true);
-      expect(isHyperlinkableValue("//DD:STDOUT")).toBe(true);
-      expect(isHyperlinkableValue("//DD:STDERR")).toBe(true);
+  describe("isJobSpoolValue", () => {
+    test("should return true for valid //DD: patterns", () => {
+      expect(isJobSpoolValue("//DD:SYSOUT")).toBe(true);
+      expect(isJobSpoolValue("//DD:JESMSGLG")).toBe(true);
+      expect(isJobSpoolValue("//DD:JESJCL")).toBe(true);
+      expect(isJobSpoolValue("//DD:JESYSMSG")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYSPRINT")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYSTSPRT")).toBe(true);
+      expect(isJobSpoolValue("//DD:CEEDUMP")).toBe(true);
+      expect(isJobSpoolValue("//DD:MYFILE123")).toBe(true);
+      expect(isJobSpoolValue("//DD:FILE_NAME")).toBe(true);
+      expect(isJobSpoolValue("//DD:OUTPUT")).toBe(true);
+      expect(isJobSpoolValue("//DD:STDOUT")).toBe(true);
+      expect(isJobSpoolValue("//DD:STDERR")).toBe(true);
     });
 
-    test("should return false for non-matching patterns", () => {
-      expect(isHyperlinkableValue("DD:SYSOUT")).toBe(false);
-      expect(isHyperlinkableValue("//SYSOUT")).toBe(false);
-      expect(isHyperlinkableValue("SYS1.PROCLIB")).toBe(false);
-      expect(isHyperlinkableValue("MY.DATASET")).toBe(false);
-      expect(isHyperlinkableValue("")).toBe(false);
-      expect(isHyperlinkableValue("//DD:")).toBe(false);
+    test("should return true for //DD: with special characters", () => {
+      expect(isJobSpoolValue("//DD:FILE@NAME")).toBe(true);
+      expect(isJobSpoolValue("//DD:FILE#NAME")).toBe(true);
+      expect(isJobSpoolValue("//DD:FILE$NAME")).toBe(true);
+      expect(isJobSpoolValue("//DD:FILE-NAME")).toBe(true);
+      expect(isJobSpoolValue("//DD:FILE.NAME")).toBe(true);
+    });
+
+    test("should return true for //DD: with dot-separated dataset names", () => {
+      expect(isJobSpoolValue("//DD:USER.PROD.DATA.OUTPUT")).toBe(true);
+      expect(isJobSpoolValue("//DD:MYUSER.TEST.DATASET")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYS1.PROCLIB")).toBe(true);
+      expect(isJobSpoolValue("//DD:PROD.CICS.LOADLIB")).toBe(true);
+      expect(isJobSpoolValue("//DD:DEV.APP.CNTL")).toBe(true);
+      expect(isJobSpoolValue("//DD:FINANCE.PAYROLL.DATA.MASTER")).toBe(true);
+    });
+
+    test("should return false for invalid //DD: patterns", () => {
+      expect(isJobSpoolValue("//DD:")).toBe(false);
+      expect(isJobSpoolValue("//DD")).toBe(false);
+      expect(isJobSpoolValue("DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("/DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("///DD:SYSOUT")).toBe(false);
+    });
+
+    test("should return false for non-matching values", () => {
+      expect(isJobSpoolValue("")).toBe(false);
+      expect(isJobSpoolValue("SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("some random text")).toBe(false);
+      expect(isJobSpoolValue("123456")).toBe(false);
+      expect(isJobSpoolValue("/path/to/file")).toBe(false);
+      expect(isJobSpoolValue("USER.PROD.DATA")).toBe(false);
+      expect(isJobSpoolValue("SYS1.PROCLIB")).toBe(false);
+      expect(isJobSpoolValue("MY.DATASET")).toBe(false);
+      expect(isJobSpoolValue("//SYSOUT")).toBe(false);
+    });
+
+    test("should be case sensitive for //DD prefix", () => {
+      expect(isJobSpoolValue("//dd:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("//Dd:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("//DD:sysout")).toBe(true);
+      expect(isJobSpoolValue("//DD:user.prod.data")).toBe(true);
+    });
+
+    test("should not match //DD: with leading spaces", () => {
+      expect(isJobSpoolValue(" //DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("  //DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue(" //DD:USER.PROD.DATA")).toBe(false);
+    });
+
+    test("should match //DD: with trailing content", () => {
+      expect(isJobSpoolValue("//DD:SYSOUT ")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYSOUT extra")).toBe(true);
+      expect(isJobSpoolValue("//DD:USER.PROD.DATA extra")).toBe(true);
+    });
+
+    test("should not match //DD: in the middle of text", () => {
+      expect(isJobSpoolValue("text //DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("prefix//DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("text //DD:USER.DATA")).toBe(false);
+    });
+
+    test("should handle multiline strings", () => {
+      expect(isJobSpoolValue("//DD:SYSOUT\nmore text")).toBe(true);
+      expect(isJobSpoolValue("text\n//DD:SYSOUT")).toBe(false);
+      expect(isJobSpoolValue("//DD:USER.PROD.DATA\nmore")).toBe(true);
+    });
+
+    test("should match //DD: with mixed case in dataset names", () => {
+      expect(isJobSpoolValue("//DD:SysOut")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYSOUT")).toBe(true);
+      expect(isJobSpoolValue("//DD:sysout")).toBe(true);
+      expect(isJobSpoolValue("//DD:MyUser.Prod.DataSet")).toBe(true);
+    });
+
+    test("should match //DD: with complex qualified dataset names", () => {
+      expect(isJobSpoolValue("//DD:PROD.PAYROLL.MASTER.DATA")).toBe(true);
+      expect(isJobSpoolValue("//DD:SYS1.LINKLIB")).toBe(true);
+      expect(isJobSpoolValue("//DD:FINANCE.APP.CNTL")).toBe(true);
+      expect(isJobSpoolValue("//DD:DEV.CICS.REGION1.LOADLIB")).toBe(true);
     });
 
     test("should return false for invalid input", () => {
-      expect(isHyperlinkableValue(null as any)).toBe(false);
-      expect(isHyperlinkableValue(undefined as any)).toBe(false);
+      expect(isJobSpoolValue(null as any)).toBe(false);
+      expect(isJobSpoolValue(undefined as any)).toBe(false);
     });
   });
 

@@ -72,7 +72,7 @@ test.describe("Library tests", () => {
 
       await findAndClickTreeItem(page, constants.LIBRARY_1_NAME);
 
-      await findAndClickTreeItem(page, constants.LIBRARY_DS_1_NAME, "right");
+      await findAndClickTreeItem(page, constants.LIBRARY_DS_2_NAME, "right");
       await page.waitForTimeout(200);
       await expect(page.getByText("Show in Data Sets View", { exact: true })).toBeVisible();
 
@@ -88,7 +88,7 @@ test.describe("Library tests", () => {
       await page.waitForTimeout(500);
       expect(await isTreeItemExpanded(zosmfProfile)).toBe(true);
 
-      await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME, false).last()).toBeVisible({ timeout: 5000 });
+      await expect(getTreeItem(page, constants.LIBRARY_DS_2_NAME, false).last()).toBeVisible({ timeout: 5000 });
     });
   });
 });
