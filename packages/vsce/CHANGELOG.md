@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+ - Enhancement: Adds hyperlinks to appropriate attributes in RI highlights. [#621](https://github.com/zowe/cics-for-zowe-client/issues/621)
+
 ## `3.21.0`
 
 - Enhancement: Added "Show in Data sets View" command for CICS Library Datasets to view them in Zowe Explorer. [#633](https://github.com/zowe/cics-for-zowe-client/issues/633)
