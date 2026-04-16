@@ -95,7 +95,7 @@ test.describe("Program tests", () => {
     await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(
       1
     );
-    await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME)).toHaveCount(1);
+    await expect(getTreeItem(page, constants.LIBRARY_DS_2_NAME)).toHaveCount(1);
   });
 
   test("should copy program name", async ({ page }) => {

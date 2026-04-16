@@ -16,7 +16,7 @@
 			eyu_cicsrel="E710" eyu_reserved="0" fetchcnt="0" fetchtime="00:00:00.000000"
 			holdstatus="NOTAPPLIC" installagent="GRPLIST" installtime="2025-02-24T02:10:35.000000+00:00"
 			installusrid="EXPAUTO" jvmclass="" jvmserver="" language="LE370" length="0" library="MYLIB1"
-			librarydsn="MYLIBDS1" loadpoint="FF000000" lpastat="NOTAPPLIC" newcopycnt="0" operation=""
+			librarydsn="MYLIB.DS1" loadpoint="FF000000" lpastat="NOTAPPLIC" newcopycnt="0" operation=""
 			pgrjusecount="0" platform="" program="MYPROG1" progtype="PROGRAM" remotename=""
 			remotesystem=""
 			removecnt="0" rescount="0" residency="NONRESIDENT" rloading="0.000" rplid="0" rremoval="0.000"
