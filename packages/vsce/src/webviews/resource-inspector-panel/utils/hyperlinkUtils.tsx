@@ -21,8 +21,10 @@ const DATASET_PATTERN = /^([A-Z@#$][A-Z0-9@#$\-]{0,7}(\.[A-Z@#$][A-Z0-9@#$\-]{0,
 
 // Pattern for z/OS Unix System Services (USS) file paths
 // Matches absolute paths starting with / (e.g., /u/user/file.txt, /var/log/app.log)
-// Requires at least one non-slash character after the initial slash and no consecutive slashes
-const USS_PATH_PATTERN = /^\/[a-zA-Z0-9_\-.]+(\/[a-zA-Z0-9_\-.]+)*$/;
+// Requires at least one non-slash character after the initial slash and no consecutive slashes.
+// A single trailing slash is allowed so directory values like a JAVA_HOME of
+// "/usr/lpp/java/J8.0_64/" (as reported by CICS JVM server) still match.
+const USS_PATH_PATTERN = /^\/[a-zA-Z0-9_\-.]+(\/[a-zA-Z0-9_\-.]+)*\/?$/;
 
 /**
  * @param value - The string value to check
