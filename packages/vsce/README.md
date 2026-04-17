@@ -50,16 +50,13 @@ Ensure that you meet the following prerequisites before you use the extension:
 
 ## Features
 
-- Load profiles directly from a locally installed Zowe instance.
-- Create new CICS profiles and connect to them.
+- Use the CICS Resource Inspector to view details of CICS resources.
 - Work with a tree structure of resources including programs, local transactions, and local files within CICSplexes and CICS regions.
 - Perform actions such as `Enable`, `Disable`, `New Copy`, and `Phase In` directly from the UI.
 - Perform additional actions on local files including `Open` and `Close` directly from the UI.
 - Perform a `Purge` on tasks with the option to select from a `Purge` or `Force Purge`.
 - View and search attributes of resources and regions by right-clicking and using the dynamic filtering feature.
 - Apply multiple filters to regions, programs, local transactions local files, and/or tasks.
-
-To install CICS Extension for Zowe Explorer see [Installation](/packages/vsce/docs/installation-guide.md).
 
 ## Getting started
 

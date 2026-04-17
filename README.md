@@ -26,6 +26,8 @@ The code can also be downloaded from this Github repository. Each time we ship a
 
 ## Documentation
 
+See the Zowe CLI plug-ins and Zowe Explorer extension sections in the [Zowe documentation](https://docs.zowe.org/).
+
 Read more [about the Zowe CLI Plug-in for IBM CICS TS](packages/cli/README.md).
 Read more [about the Zowe Explorer for IBM CICS TS](packages/vsce/README.md).
 
