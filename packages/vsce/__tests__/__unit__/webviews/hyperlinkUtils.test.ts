@@ -262,6 +262,15 @@ describe("hyperlinkUtils", () => {
       expect(isUssPathValue("/var/cics/region1/logs/messages.log")).toBe(true);
     });
 
+    test("should return true for directory USS paths with a single trailing slash", () => {
+      // JAVA_HOME values from CICS JVM servers often end with a trailing slash
+      // (e.g. /usr/lpp/java/J8.0_64/). See #638.
+      expect(isUssPathValue("/usr/lpp/java/J8.0_64/")).toBe(true);
+      expect(isUssPathValue("/opt/java/")).toBe(true);
+      expect(isUssPathValue("/u/cicsts/")).toBe(true);
+      expect(isUssPathValue("/a/b/")).toBe(true);
+    });
+
     test("should return true for USS paths without file extensions", () => {
       expect(isUssPathValue("/u/user/file")).toBe(true);
       expect(isUssPathValue("/var/log/messages")).toBe(true);

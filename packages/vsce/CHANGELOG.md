@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
  - Enhancement: Adds hyperlinks to appropriate attributes in RI highlights. [#621](https://github.com/zowe/cics-for-zowe-client/issues/621)
+ - BugFix: Render USS paths with a trailing slash (e.g. `JAVA_HOME=/usr/lpp/java/J8.0_64/`) as hyperlinks in the Resource Inspector. [#638](https://github.com/zowe/cics-for-zowe-client/issues/638)
 
 ## `3.21.0`
 
