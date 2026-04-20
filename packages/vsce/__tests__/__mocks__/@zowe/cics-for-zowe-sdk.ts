@@ -9,7 +9,7 @@
  *
  */
 
-import { getCacheMock, getResourceMock } from "..";
+import { getCacheMock, getResourceMock, putResourceMock } from "..";
 
 const realSDK = jest.requireActual("@zowe/cics-for-zowe-sdk");
 
@@ -17,4 +17,5 @@ module.exports = {
   ...realSDK,
   getResource: getResourceMock,
   getCache: getCacheMock,
+  putResource: putResourceMock,
 };

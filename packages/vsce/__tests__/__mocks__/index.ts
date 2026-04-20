@@ -56,6 +56,7 @@ export const getAllProfilesMock = jest.fn().mockReturnValue([]);
 
 export const getResourceMock = jest.fn();
 export const getCacheMock = jest.fn();
+export const putResourceMock = jest.fn();
 
 export const workspaceConfigurationGetMock = jest.fn().mockReturnValue([profile.name, profile2.name, anotherProfile.name]);
 export const workspaceConfigurationUpdateMock = jest.fn();
