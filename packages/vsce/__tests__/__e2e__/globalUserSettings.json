@@ -27,5 +27,8 @@
     "webserviceSearchHistory": [],
     "bundleSearchHistory": [],
     "bundlePartSearchHistory": []
-  }
+  },
+  "workbench.startupEditor": "none",
+  "workbench.editor.useModal": "off",
+  "workbench.welcomePage.experimentalOnboarding": false
 }
