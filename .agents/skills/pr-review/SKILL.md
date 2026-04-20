@@ -1,157 +1,159 @@
 ---
 name: pr-review
-description: Review pull requests for this repository with emphasis on correctness, maintainability, test quality, and consistency with existing abstractions.
+description: This skill is mandatory to complete a pull request or PR on this repository with emphasis on correctness, maintainability, test quality, and consistency with existing abstractions.
 ---
 
 # CICS PR Review Skill
 
 You are reviewing pull requests for the `zowe/cics-for-zowe-client` repository.
 
-Your goal is to produce a small number of high-value review comments. Prefer correctness, regressions, maintainability, and test quality over broad stylistic feedback.
+## Core Directive
 
-Check with the user that you can switch to the target PR branch if appropriate, to make the review easier to manage.
+You MUST produce a small number of high-value review comments focused on correctness, regressions, maintainability, and test quality. You MUST NOT provide broad stylistic feedback.
 
-## Review priorities
+Before starting the review, ask the user if you should switch to the target PR branch to make the review easier to manage.
 
-Review in this order:
+## Review priorities (MANDATORY ORDER)
 
-1. correctness and regressions
-2. missing or weak tests for new behavior
-3. failure to reuse existing abstractions
-4. type safety concerns
-5. duplicated logic
-6. unnecessary complexity
-7. public API / docs / changelog correctness
-8. naming and readability issues that materially improve maintainability
+You MUST review in this exact order and MUST NOT skip priority levels:
 
-Do not optimize for comment count. Optimize for usefulness.
+1. **Correctness and regressions** - ALWAYS check first
+2. **Missing or weak tests** for new behavior
+3. **Failure to reuse existing abstractions**
+4. **Type safety concerns** (especially `any` type misuse)
+5. **Duplicated logic**
+6. **Unnecessary complexity**
+7. **Public API / docs / changelog correctness**
+8. **Naming and readability** issues that materially improve maintainability
+
+You MUST optimize for usefulness, NOT comment count. One high-value finding is better than ten low-value comments.
 
 ## Repository-specific review rules
 
-### Reuse existing abstractions
+### Reuse existing abstractions (MANDATORY)
 
-- Prefer extending existing commands, helpers, tree flows, resource-inspector flows, and shared utilities over introducing parallel implementations.
-- If a PR creates a second path for behavior that already exists elsewhere, flag it.
-- Prefer one common, well-tested code path over multiple similar implementations.
+- You MUST flag any PR that creates a second code path for behavior that already exists elsewhere.
+- You MUST recommend extending existing commands, helpers, tree flows, resource-inspector flows, and shared utilities instead of parallel implementations.
+- You MUST enforce one common, well-tested code path over multiple similar implementations.
 
-### Refactor duplication
+### Refactor duplication (MANDATORY)
 
-- Flag duplicated logic when two methods differ only by a condition, argument, or result shape.
-- Suggest extracting shared helpers or reusing existing workflows.
-- Pay particular attention to:
+- You MUST flag duplicated logic when two methods differ only by a condition, argument, or result shape.
+- You MUST suggest extracting shared helpers or reusing existing workflows.
+- You MUST pay particular attention to:
   - VSCE command handlers
   - reveal-in-tree flows
   - hyperlink rendering / pattern detection
   - filtering logic
 
-### Keep complexity under control
+### Keep complexity under control (MANDATORY)
 
-- Flag large or heavily branched methods that should be split into smaller helpers.
-- Flag state flags or temporary variables that duplicate information already present in the data.
-- Prefer orchestration methods that delegate to well-named helpers.
-- If a lint-ignore exists because of complexity, prefer recommending a refactor.
+- You MUST flag large or heavily branched methods that should be split into smaller helpers.
+- You MUST flag state flags or temporary variables that duplicate information already present in the data.
+- You MUST recommend orchestration methods that delegate to well-named helpers.
+- If a lint-ignore exists because of complexity, you MUST recommend a refactor instead.
 
-### Review tests for behavior, not coverage optics
+### Review tests for behavior, not coverage optics (MANDATORY)
 
-- New behavior should have meaningful tests.
-- Flag tests that are missing for new functionality, important edge cases, or failure paths.
-- Do not recommend excluding meaningful code from coverage just to improve percentages.
-- If logic could break when input shape changes, it should be tested.
+- You MUST flag missing tests for new functionality, important edge cases, or failure paths.
+- You MUST NOT recommend excluding meaningful code from coverage just to improve percentages.
+- You MUST flag untested logic that could break when input shape changes.
 
-### Unit test style preferences
+### Unit test style preferences (MANDATORY)
 
-- Prefer direct, local readability in unit tests.
+- You MUST prioritize direct, local readability in unit tests.
 - When reviewing test constants:
-  - **Do not recommend** adding single-use constants that only restate literals without adding domain meaning
-  - **Do not flag** existing single-use constants as unnecessary if the developer has chosen to use them
-  - **Do recommend** constants when they:
-    - add clear domain meaning, or
-    - truly centralize repeated setup used in multiple places, or
+  - You MUST NOT recommend adding single-use constants that only restate literals without adding domain meaning
+  - You MUST NOT flag existing single-use constants as unnecessary if the developer has chosen to use them
+  - You MUST ONLY recommend constants when they:
+    - add clear domain meaning, OR
+    - truly centralize repeated setup used in multiple places, OR
     - simplify test names by extracting complex values
-- Examples of constants that should not be recommended:
+- Examples of constants you MUST NOT recommend:
   - `TEST_RECORD_COUNT = 3`
   - `TEST_RESPONSE_CODE_16 = 16`
-- Flag tests that:
+- You MUST flag tests that:
   - share mutable state across cases
   - depend on execution order
   - introduce unnecessary indirection
   - over-abstract simple expectations
 
-### Type safety and TypeScript usage
+### Type safety and TypeScript usage (MANDATORY)
 
-- Flag inappropriate use of the `any` type when more specific types are available or can be inferred.
-- The `any` type should only be used when:
+- You MUST flag inappropriate use of the `any` type when more specific types are available or can be inferred.
+- The `any` type is ONLY acceptable when:
   - interfacing with truly dynamic external data where the shape cannot be known
   - wrapping third-party libraries with incomplete or incorrect type definitions
-  - the cost of typing exceeds the maintainability benefit (rare)
-- Prefer `unknown` over `any` when the type is genuinely unknown but will be validated.
-- Flag `any` in:
+  - the cost of typing exceeds the maintainability benefit (rare - requires justification)
+- You MUST recommend `unknown` over `any` when the type is genuinely unknown but will be validated.
+- You MUST flag `any` in:
   - function parameters and return types
   - interface/type definitions
   - variable declarations
-- Suggest specific types, union types, generics, or type guards as alternatives.
+- You MUST suggest specific types, union types, generics, or type guards as alternatives.
 
-### Avoid unnecessary defensive code
+### Avoid unnecessary defensive code (MANDATORY)
 
-- Do not favor redundant checks when types, invariants, or command context already guarantee valid input.
-- Flag validation that adds branching without protecting a realistic failure mode.
-- Prefer simpler code when input shape is already guaranteed upstream.
+- You MUST NOT favor redundant checks when types, invariants, or command context already guarantee valid input.
+- You MUST flag validation that adds branching without protecting a realistic failure mode.
+- You MUST recommend simpler code when input shape is already guaranteed upstream.
 
-### Regex and pattern matching
+### Regex and pattern matching (MANDATORY)
 
-- Flag pattern logic that is:
+- You MUST flag pattern logic that is:
   - too narrow for realistic production inputs
   - too broad and likely to cause false positives
   - more complex than necessary
   - risky from a regex performance perspective
-- Do not rely on hardcoded attribute names when the intended behavior is generic pattern detection.
+- You MUST flag hardcoded attribute names when the intended behavior is generic pattern detection.
 
-### User-facing UX and logging
+### User-facing UX and logging (MANDATORY)
 
-- Flag unnecessary popups when successful completion is already visible in the UI.
-- Prefer debug/trace logging for routine or repeated conditions.
-- User-facing warnings/errors should be actionable.
+- You MUST flag unnecessary popups when successful completion is already visible in the UI.
+- You MUST recommend debug/trace logging for routine or repeated conditions.
+- You MUST flag user-facing warnings/errors that are not actionable.
 
-### Changelog and docs
+### Changelog and docs (MANDATORY)
 
-- Flag changelog entries for non-user-facing changes.
-- Flag missing changelog entries for real user-facing changes.
-- If a public API, extender API, or extension point changes, docs/examples should usually change too.
-- If behavior is version-dependent, docs should state the supported version clearly.
-- Avoid over-reporting one change with multiple changelog entries.
+- You MUST flag changelog entries for non-user-facing changes.
+- You MUST flag missing changelog entries for real user-facing changes.
+- You MUST flag missing doc/example updates when a public API, extender API, or extension point changes.
+- You MUST flag missing version information when behavior is version-dependent.
+- You MUST flag over-reporting when one change has multiple changelog entries.
 
-### Naming and intent
+### Naming and intent (MANDATORY)
 
-- Prefer names that express intent and behavior, not internal mechanics.
-- If code requires explanation during review, consider whether it should be renamed or extracted.
-- Flag names that obscure purpose.
+- You MUST recommend names that express intent and behavior, not internal mechanics.
+- You MUST flag code that requires explanation during review - it should be renamed or extracted.
+- You MUST flag names that obscure purpose.
 
-### Cleanup and consistency
+### Cleanup and consistency (MANDATORY)
 
-- Flag unused imports, variables, dead code, and unnecessary lint suppressions.
-- Prefer consistency with established repository patterns unless the PR is making a clear improvement consistently.
+- You MUST flag unused imports, variables, dead code, and unnecessary lint suppressions.
+- You MUST enforce consistency with established repository patterns unless the PR is making a clear improvement consistently.
 
-## What not to comment on
+## What you MUST NOT comment on
 
-Do not comment on:
+You MUST NOT comment on:
 
 - minor style differences that do not improve clarity or maintainability
 - pure preference disagreements with no repository impact
 - already-resolved discussion points unless the issue still exists in the current diff
 - coverage numbers by themselves, unless they reflect missing meaningful tests
 - internal refactors that do not affect users, unless they introduce risk or confusion
+- existing single-use test constants (even if you wouldn't recommend adding them)
 
-## Expected output format
+## Expected output format (MANDATORY)
 
-When you find an issue, report it using this structure:
+When you find an issue, you MUST report it using this EXACT structure:
 
 - `Severity`: high | medium | low
 - `File`: path/to/file
 - `Issue`: one-sentence summary
 - `Why it matters`: repository-specific explanation
-- `Suggested change`: concrete recommendation
+- `Suggested change`: concrete, actionable recommendation
 
-Keep findings concise and technical.
+You MUST keep findings concise and technical. You MUST NOT be vague or use filler language.
 
 ## Severity guidance
 
@@ -184,21 +186,22 @@ Use for:
 - unnecessary changelog/doc noise
 - cosmetic abstractions in tests that reduce clarity
 
-## Preferred review style
+## Required review style (MANDATORY)
 
-Prefer comments like:
+You MUST write comments like:
 
-- “This introduces a second code path for behavior we already handle in X; please reuse the existing abstraction so the logic stays consistent and benefits from existing tests.”
-- “This test shares mutable state across cases, which makes it order-dependent and potentially flaky. Please reinitialize the fixture in `beforeEach`.”
-- “This changelog entry does not appear necessary because the change is not user-facing.”
-- “This single-use test constant adds indirection without adding meaning; please inline the literal here.”
+- "This introduces a second code path for behavior we already handle in X; please reuse the existing abstraction so the logic stays consistent and benefits from existing tests."
+- "This test shares mutable state across cases, which makes it order-dependent and potentially flaky. Please reinitialize the fixture in `beforeEach`."
+- "This changelog entry is not necessary because the change is not user-facing."
+- "The `any` type here should be replaced with `ISpecificType` to maintain type safety and prevent runtime errors."
 
-Avoid comments like:
+You MUST NOT write vague comments like:
 
-- “Clean this up.”
-- “This could be better.”
-- “Maybe refactor?”
-- “Nit: style.”
+- "Clean this up."
+- "This could be better."
+- "Maybe refactor?"
+- "Nit: style."
+- "This single-use test constant adds indirection without adding meaning; please inline the literal here." (contradicts the rule about not flagging existing single-use constants)
 
 ## Repository hotspots
 
@@ -212,14 +215,16 @@ Pay extra attention to these areas because they recur in review feedback:
 - unit tests that add indirection without improving clarity
 - inappropriate use of `any` when a specific type would be better
 
-## Review behavior
+## Review behavior (MANDATORY)
 
-- Be concise.
-- Prefer a few high-value findings over many low-value comments.
-- Do not invent missing requirements.
-- If something is acceptable but not ideal, classify it as low severity or omit it.
-- If no substantive issues are found, say so explicitly.
-- Do not praise excessively; focus on review value.
+- You MUST be concise.
+- You MUST provide a few high-value findings over many low-value comments.
+- You MUST NOT invent missing requirements.
+- If something is acceptable but not ideal, you MUST classify it as low severity or omit it entirely.
+- If no substantive issues are found, you MUST say so explicitly.
+- You MUST NOT praise excessively; focus only on review value.
+- You MUST follow the priority order defined above.
+- You MUST apply the severity guidance consistently.
 
 ## Default final summary shape
 
