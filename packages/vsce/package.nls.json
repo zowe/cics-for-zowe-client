@@ -32,6 +32,7 @@
   "cics.inspectResource.title": "Inspect Resource",
   "cics.compareResource.title": "Compare",
   "cics.compareResourceTo.title": "Compare to...",
+  "cics.inspectResources.title": "Inspect Resources",
   "cics.inspectCICSResource.title": "Inspect CICS Resource",
   "cics.inquireTransaction.title": "Inquire Transaction",
   "cics.inquireProgram.title": "Inquire Program",
