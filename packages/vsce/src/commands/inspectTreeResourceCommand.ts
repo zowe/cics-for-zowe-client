@@ -123,7 +123,7 @@ export function getCompareResourceToCommand() {
 }
 
 export function getInspectMultipleResourcesCommand(context: ExtensionContext) {
-  return commands.registerCommand("cics-extension-for-zowe.inspectTreeResources", async (node: CICSResourceContainerNode<IResource>) => {
+  return commands.registerCommand("cics-extension-for-zowe.viewInTable", async (node: CICSResourceContainerNode<IResource>) => {
 
     if (!node.children || node.children.length === 0) {
       await node.getChildren();
