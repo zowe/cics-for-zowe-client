@@ -9,6 +9,7 @@
  *
  */
 
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
 import type { ICICSRegionWithSession } from "../../../../src/doc/commands/ICICSRegionWithSession";
 import type { ICommandParams } from "../../../../src/doc/commands/ICommandParams";
 import type { ILastUsedRegion } from "../../../../src/doc/commands/ILastUsedRegion";
@@ -25,7 +26,7 @@ describe("Command Interfaces", () => {
           failNotFound: false,
         },
         cicsPlexName: "TESTPLEX",
-        session: {} as any,
+        session: {} as CICSSession,
         regionName: "TESTREGION",
       };
 
@@ -43,7 +44,7 @@ describe("Command Interfaces", () => {
           message: "",
           failNotFound: false,
         },
-        session: {} as any,
+        session: {} as CICSSession,
         regionName: "TESTREGION",
       };
 

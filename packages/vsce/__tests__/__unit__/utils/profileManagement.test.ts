@@ -22,9 +22,7 @@ jest.mock("@zowe/cics-for-zowe-sdk");
 jest.mock("../../../src/utils/resourceUtils");
 jest.mock("../../../src/utils/plexUtils");
 
-interface MockZoweAPI {
-  getExplorerExtenderApi: jest.Mock;
-}
+type MockZoweAPI = ReturnType<typeof ZoweVsCodeExtension.getZoweExplorerApi>;
 
 interface MockProfilesCache {
   refresh: jest.Mock;
@@ -126,7 +124,6 @@ describe("ProfileManagement", () => {
       const getProfilesCacheSpy = jest.spyOn(ProfileManagement, 'getProfilesCache').mockReturnValue(mockCache);
       
       // Spy on getExplorerApis to return mockZoweAPI
-      // @ts-expect-error - Partial mock for testing, only includes methods used in this test
       const getExplorerApisSpy = jest.spyOn(ProfileManagement, 'getExplorerApis').mockReturnValue(mockZoweAPI);
       
       await ProfileManagement.profilesCacheRefresh();

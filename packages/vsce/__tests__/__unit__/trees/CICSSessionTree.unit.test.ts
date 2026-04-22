@@ -33,14 +33,14 @@ const getProfileInfoSpy = jest.spyOn(ProfileManagement, "getPlexInfo");
 jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 const iconSpy = jest.spyOn(iconUtils, "getIconFilePathFromName");
 const handleCMCIRestErrorSpy = jest.spyOn(CICSErrorHandler, "handleCMCIRestError");
-const mockRestClientError = {
+const mockRestClientError = Object.assign(new Error("Unauthorized"), {
   mDetails: {
     errorCode: "401",
     resource: "https://example.com/api",
     msg: "Unauthorized",
   },
   errorCode: "401",
-};
+});
 
 // Create a mock unauthorized error using the mocked constructor
 const unauthorizedError = new CICSExtensionError({
@@ -115,8 +115,17 @@ describe("Test suite for CICSSessionTree", () => {
     });
 
     it("should handle retry authentication failure and notify error", async () => {
+      const retryMockRestClientError = Object.assign(new Error("Unauthorized"), {
+        mDetails: {
+          errorCode: "401",
+          resource: "https://example.com/api",
+          msg: "Unauthorized",
+        },
+        errorCode: "401",
+      });
+      
       const retryUnauthorizedError = new CICSExtensionError({
-        baseError: mockRestClientError,
+        baseError: retryMockRestClientError,
         statusCode: constants.HTTP_ERROR_UNAUTHORIZED,
         errorMessage: "Invalid user or session expired",
         profileName: "thisProfile",

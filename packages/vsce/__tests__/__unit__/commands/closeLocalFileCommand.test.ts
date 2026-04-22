@@ -9,10 +9,13 @@
  *
  */
 
-import { commands, window } from "vscode";
+import { commands, window, type TreeView, EventEmitter } from "vscode";
 import { getCloseLocalFileCommand } from "../../../src/commands/closeLocalFileCommand";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import * as actionResourceCommand from "../../../src/commands/actionResourceCommand";
+import type { CICSTree } from "../../../src/trees/CICSTree";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import type { ILocalFile, IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/trees/CICSTree");
@@ -20,27 +23,28 @@ jest.mock("../../../src/utils/commandUtils");
 jest.mock("../../../src/commands/actionResourceCommand");
 
 describe("closeLocalFileCommand", () => {
-  let mockTree: any;
-  let mockTreeView: any;
-  let commandCallback: any;
-  let mockNodes: any[];
+  let mockTree: Partial<CICSTree>;
+  let mockTreeView: Partial<TreeView<CICSResourceContainerNode<ILocalFile>>>;
+  let commandCallback: (node: CICSResourceContainerNode<ILocalFile> | null) => Promise<void>;
+  let mockNodes: Array<Partial<CICSResourceContainerNode<ILocalFile>>>;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     mockNodes = [
-      { label: "FILE1", resource: { name: "FILE1" } },
-      { label: "FILE2", resource: { name: "FILE2" } },
+      { label: "FILE1", resource: { name: "FILE1" } } as Partial<CICSResourceContainerNode<ILocalFile>>,
+      { label: "FILE2", resource: { name: "FILE2" } } as Partial<CICSResourceContainerNode<ILocalFile>>,
     ];
 
+    const mockEventEmitter = new EventEmitter<CICSResourceContainerNode<IResource> | undefined>();
+    mockEventEmitter.fire = jest.fn();
+
     mockTree = {
-      _onDidChangeTreeData: {
-        fire: jest.fn(),
-      },
+      _onDidChangeTreeData: mockEventEmitter,
     };
 
     mockTreeView = {
-      selection: mockNodes,
+      selection: mockNodes as CICSResourceContainerNode<ILocalFile>[],
     };
 
     (commands.registerCommand as jest.Mock) = jest.fn((cmd, callback) => {
@@ -53,7 +57,7 @@ describe("closeLocalFileCommand", () => {
   });
 
   it("should register the command", () => {
-    getCloseLocalFileCommand(mockTree, mockTreeView);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
     expect(commands.registerCommand).toHaveBeenCalledWith(
       "cics-extension-for-zowe.closeLocalFile",
       expect.any(Function)
@@ -64,7 +68,7 @@ describe("closeLocalFileCommand", () => {
     (commandUtils.findSelectedNodes as jest.Mock) = jest.fn().mockReturnValue(null);
     (window.showErrorMessage as jest.Mock) = jest.fn();
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
     await commandCallback(null);
 
     expect(window.showErrorMessage).toHaveBeenCalledWith("No CICS local file selected");
@@ -75,7 +79,7 @@ describe("closeLocalFileCommand", () => {
     (commandUtils.findSelectedNodes as jest.Mock) = jest.fn().mockReturnValue([]);
     (window.showErrorMessage as jest.Mock) = jest.fn();
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
     await commandCallback(null);
 
     expect(window.showErrorMessage).toHaveBeenCalledWith("No CICS local file selected");
@@ -85,8 +89,8 @@ describe("closeLocalFileCommand", () => {
   it("should show information message with busy choices", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Wait");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(window.showInformationMessage).toHaveBeenCalledWith(
       "Choose one of the following for the file busy condition",
@@ -99,8 +103,8 @@ describe("closeLocalFileCommand", () => {
   it("should return early if no choice is picked", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue(undefined);
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).not.toHaveBeenCalled();
   });
@@ -108,8 +112,8 @@ describe("closeLocalFileCommand", () => {
   it("should call actionTreeItem with WAIT when 'Wait' is selected", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Wait");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",
@@ -125,8 +129,8 @@ describe("closeLocalFileCommand", () => {
   it("should call actionTreeItem with NOWAIT when 'No Wait' is selected", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("No Wait");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",
@@ -142,8 +146,8 @@ describe("closeLocalFileCommand", () => {
   it("should call actionTreeItem with FORCE when 'Force' is selected", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Force");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",
@@ -159,8 +163,8 @@ describe("closeLocalFileCommand", () => {
   it("should default to WAIT for unknown choice", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Unknown");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",
@@ -178,8 +182,8 @@ describe("closeLocalFileCommand", () => {
     (commandUtils.findSelectedNodes as jest.Mock) = jest.fn().mockReturnValue(singleNode);
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Wait");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",
@@ -195,8 +199,8 @@ describe("closeLocalFileCommand", () => {
   it("should handle multiple node selection", async () => {
     (window.showInformationMessage as jest.Mock) = jest.fn().mockResolvedValue("Force");
 
-    getCloseLocalFileCommand(mockTree, mockTreeView);
-    await commandCallback(mockNodes[0]);
+    getCloseLocalFileCommand(mockTree as CICSTree, mockTreeView as TreeView<CICSResourceContainerNode<ILocalFile>>);
+    await commandCallback(mockNodes[0] as CICSResourceContainerNode<ILocalFile>);
 
     expect(actionResourceCommand.actionTreeItem).toHaveBeenCalledWith({
       action: "CLOSE",

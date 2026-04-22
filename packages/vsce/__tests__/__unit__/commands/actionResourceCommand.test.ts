@@ -56,7 +56,7 @@ describe("actionResourceCommand", () => {
     } as imperative.IProfileLoaded;
 
     // Create mock tree - use object literal with proper typing instead of instantiating
-    const mockEventEmitter = new EventEmitter<any>();
+    const mockEventEmitter = new EventEmitter<CICSResourceContainerNode<IResource> | undefined>();
     mockEventEmitter.fire = jest.fn();
     
     mockTree = {
@@ -76,7 +76,7 @@ describe("actionResourceCommand", () => {
       getParent: jest.fn(),
       getConfigLocationPrompt: jest.fn(),
       getProfileIcon: jest.fn(),
-    } as unknown as CICSTree;
+    } as Partial<CICSTree> as CICSTree;
 
     // Create mock parent node
     mockParentNode = {
@@ -88,7 +88,7 @@ describe("actionResourceCommand", () => {
       getLabel: jest.fn(),
       regionName: "TESTREGION",
       cicsplexName: "TESTPLEX",
-    } as unknown as CICSResourceContainerNode<IResource>;
+    } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
 
     // Create mock node with proper typing
     mockNode = {
@@ -109,7 +109,7 @@ describe("actionResourceCommand", () => {
         },
       }),
       getContainedResourceName: jest.fn().mockReturnValue("TESTPROG"),
-    } as unknown as CICSResourceContainerNode<IResource>;
+    } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
 
     mockProgress = {
       report: jest.fn(),
@@ -171,7 +171,7 @@ describe("actionResourceCommand", () => {
       const mockNode2 = {
         ...mockNode,
         getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
-      } as unknown as CICSResourceContainerNode<IResource>;
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
 
       await actionTreeItem({
         action: "DISABLE",
@@ -185,8 +185,8 @@ describe("actionResourceCommand", () => {
     });
 
     it("should report progress for each node", async () => {
-      const mockNode2 = { ...mockNode } as unknown as CICSResourceContainerNode<IResource>;
-      const mockNode3 = { ...mockNode } as unknown as CICSResourceContainerNode<IResource>;
+      const mockNode2 = { ...mockNode } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+      const mockNode3 = { ...mockNode } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
       const nodes = [mockNode, mockNode2, mockNode3];
 
       await actionTreeItem({
@@ -310,7 +310,7 @@ describe("actionResourceCommand", () => {
       const mockNode2 = {
         ...mockNode,
         getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
-      } as unknown as CICSResourceContainerNode<IResource>;
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
 
       (setResource as jest.Mock)
         .mockRejectedValueOnce(new Error("Test error"))
@@ -331,7 +331,7 @@ describe("actionResourceCommand", () => {
       const mockNode2 = {
         ...mockNode,
         getParent: jest.fn().mockReturnValue(mockParentNode),
-      } as unknown as CICSResourceContainerNode<IResource>;
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
 
       await actionTreeItem({
         action: "ENABLE",

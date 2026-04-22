@@ -9,17 +9,20 @@
  *
  */
 
-import { commands } from "vscode";
+import { commands, EventEmitter } from "vscode";
 import { getClearPlexFilterCommand } from "../../../src/commands/clearPlexFilterCommand";
+import type { CICSTree } from "../../../src/trees/CICSTree";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/trees/CICSTree");
 jest.mock("../../../src/trees/CICSRegionsContainer");
 
 describe("clearPlexFilterCommand", () => {
-  let mockTree: any;
-  let mockNode: any;
-  let commandCallback: any;
+  let mockTree: Partial<CICSTree>;
+  let mockNode: { filterRegions: jest.Mock };
+  let commandCallback: (node: { filterRegions: jest.Mock }) => Promise<void>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -28,10 +31,11 @@ describe("clearPlexFilterCommand", () => {
       filterRegions: jest.fn(),
     };
 
+    const mockEventEmitter = new EventEmitter<CICSResourceContainerNode<IResource> | undefined>();
+    mockEventEmitter.fire = jest.fn();
+
     mockTree = {
-      _onDidChangeTreeData: {
-        fire: jest.fn(),
-      },
+      _onDidChangeTreeData: mockEventEmitter,
     };
 
     (commands.registerCommand as jest.Mock) = jest.fn((cmd, callback) => {
@@ -41,7 +45,7 @@ describe("clearPlexFilterCommand", () => {
   });
 
   it("should register the command", () => {
-    getClearPlexFilterCommand(mockTree);
+    getClearPlexFilterCommand(mockTree as CICSTree);
     expect(commands.registerCommand).toHaveBeenCalledWith(
       "cics-extension-for-zowe.clearPlexFilter",
       expect.any(Function)
@@ -49,7 +53,7 @@ describe("clearPlexFilterCommand", () => {
   });
 
   it("should call filterRegions with '*' and tree", async () => {
-    getClearPlexFilterCommand(mockTree);
+    getClearPlexFilterCommand(mockTree as CICSTree);
     await commandCallback(mockNode);
 
     expect(mockNode.filterRegions).toHaveBeenCalledWith("*", mockTree);

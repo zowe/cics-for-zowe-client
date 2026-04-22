@@ -20,7 +20,7 @@ describe("ISessionHandler Interface", () => {
       type: "cics",
     };
 
-    const mockSession: CICSSession = {} as any;
+    const mockSession = {} as CICSSession;
 
     const mockSessionHandler: ISessionHandler = {
       getSession: (profile: IProfile) => mockSession,

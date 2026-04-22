@@ -9,12 +9,16 @@
  *
  */
 
-import { commands, window, ProgressLocation, TreeView } from "vscode";
+import { commands, window, ProgressLocation, TreeView, type Progress, type CancellationToken } from "vscode";
 import { getPurgeTaskCommand } from "../../../src/commands/purgeTaskCommand";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../../src/utils/commandUtils";
 import { runPutResource } from "../../../src/utils/resourceUtils";
 import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
 import { TaskMeta } from "../../../src/doc";
+import type { CICSTree } from "../../../src/trees/CICSTree";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import type { ITask } from "@zowe/cics-for-zowe-explorer-api";
+import type { imperative } from "@zowe/zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/utils/commandUtils");
@@ -22,25 +26,31 @@ jest.mock("../../../src/utils/resourceUtils");
 jest.mock("../../../src/utils/treeUtils");
 
 describe("purgeTaskCommand", () => {
-  let mockTree: any;
-  let mockTreeview: any;
-  let mockNode: any;
-  let mockParentNode: any;
-  let commandCallback: Function;
-  let mockProgress: any;
-  let mockToken: any;
+  let mockTree: Partial<CICSTree>;
+  let mockTreeview: TreeView<CICSResourceContainerNode<ITask>>;
+  let mockNode: Partial<CICSResourceContainerNode<ITask>>;
+  let mockParentNode: Partial<CICSResourceContainerNode<ITask>>;
+  let commandCallback: (node: CICSResourceContainerNode<ITask>) => Promise<void>;
+  let mockProgress: Progress<{ message?: string; increment?: number }>;
+  let mockToken: CancellationToken;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockParentNode = {
-      refresh: jest.fn(),
+    const mockProfile: imperative.IProfileLoaded = {
+      name: "testProfile",
+      type: "cics",
+      profile: {},
+      message: "",
+      failNotFound: false,
     };
 
+    mockParentNode = {
+      refresh: jest.fn(),
+    } as Partial<CICSResourceContainerNode<ITask>>;
+
     mockNode = {
-      getProfile: jest.fn().mockReturnValue({
-        name: "testProfile",
-      }),
+      getProfile: jest.fn().mockReturnValue(mockProfile),
       regionName: "TESTREGION",
       cicsplexName: "TESTPLEX",
       getContainedResource: jest.fn().mockReturnValue({
@@ -54,24 +64,27 @@ describe("purgeTaskCommand", () => {
       }),
       getContainedResourceName: jest.fn().mockReturnValue("00001"),
       getParent: jest.fn().mockReturnValue(mockParentNode),
-    };
+    } as Partial<CICSResourceContainerNode<ITask>>;
 
     mockTree = {
       refresh: jest.fn(),
       _onDidChangeTreeData: {
         fire: jest.fn(),
+        event: jest.fn(),
+        dispose: jest.fn(),
       },
-    };
+    } as Partial<CICSTree>;
 
-    mockTreeview = {} as TreeView<any>;
+    mockTreeview = {} as TreeView<CICSResourceContainerNode<ITask>>;
 
     mockProgress = {
       report: jest.fn(),
-    };
+    } as Progress<{ message?: string; increment?: number }>;
 
     mockToken = {
+      isCancellationRequested: false,
       onCancellationRequested: jest.fn(),
-    };
+    } as CancellationToken;
 
     (commands.registerCommand as jest.Mock) = jest.fn((commandId, callback) => {
       commandCallback = callback;
@@ -98,7 +111,7 @@ describe("purgeTaskCommand", () => {
 
   describe("getPurgeTaskCommand", () => {
     it("should register the command", () => {
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
       expect(commands.registerCommand).toHaveBeenCalledWith(
         "cics-extension-for-zowe.purgeTask",
@@ -110,9 +123,9 @@ describe("purgeTaskCommand", () => {
   describe("purgeTask command execution", () => {
     it("should purge task with Purge option", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(findSelectedNodes).toHaveBeenCalledWith(mockTreeview, TaskMeta, mockNode);
       expect(window.showInformationMessage).toHaveBeenCalledWith(
@@ -152,9 +165,9 @@ describe("purgeTaskCommand", () => {
 
     it("should purge task with Force Purge option", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Force Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(runPutResource).toHaveBeenCalledWith(
         expect.anything(),
@@ -173,9 +186,9 @@ describe("purgeTaskCommand", () => {
 
     it("should default to PURGE for unknown option", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Unknown Option");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(runPutResource).toHaveBeenCalledWith(
         expect.anything(),
@@ -194,9 +207,9 @@ describe("purgeTaskCommand", () => {
 
     it("should not purge when user cancels selection", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue(undefined);
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(runPutResource).not.toHaveBeenCalled();
       expect(window.withProgress).not.toHaveBeenCalled();
@@ -204,9 +217,9 @@ describe("purgeTaskCommand", () => {
 
     it("should show error when no tasks selected", async () => {
       (findSelectedNodes as jest.Mock).mockReturnValue([]);
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS"));
       expect(window.showInformationMessage).not.toHaveBeenCalled();
@@ -215,9 +228,9 @@ describe("purgeTaskCommand", () => {
 
     it("should show error when nodes is null", async () => {
       (findSelectedNodes as jest.Mock).mockReturnValue(null);
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(window.showErrorMessage).toHaveBeenCalled();
       expect(runPutResource).not.toHaveBeenCalled();
@@ -226,9 +239,9 @@ describe("purgeTaskCommand", () => {
     it("should use eyu_cicsname when regionName is not available", async () => {
       mockNode.regionName = undefined;
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(runPutResource).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -239,15 +252,15 @@ describe("purgeTaskCommand", () => {
     });
 
     it("should report progress for each task", async () => {
-      const mockNode2 = {
+      const mockNode2: Partial<CICSResourceContainerNode<ITask>> = {
         ...mockNode,
         getContainedResourceName: jest.fn().mockReturnValue("00002"),
       };
       (findSelectedNodes as jest.Mock).mockReturnValue([mockNode, mockNode2]);
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(mockProgress.report).toHaveBeenCalledTimes(2);
       expect(mockProgress.report).toHaveBeenNthCalledWith(1, expect.objectContaining({
@@ -263,9 +276,9 @@ describe("purgeTaskCommand", () => {
 
     it("should register cancellation token handler", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(mockToken.onCancellationRequested).toHaveBeenCalledWith(expect.any(Function));
     });
@@ -278,9 +291,9 @@ describe("purgeTaskCommand", () => {
       };
       (runPutResource as jest.Mock).mockRejectedValue(cmciError);
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(splitCmciErrorMessage).toHaveBeenCalledWith(cmciError.mMessage);
       expect(window.showErrorMessage).toHaveBeenCalledWith(
@@ -296,9 +309,9 @@ describe("purgeTaskCommand", () => {
       const genericError = new Error("Network error");
       (runPutResource as jest.Mock).mockRejectedValue(genericError);
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Force Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
         expect.stringContaining("FORCEPURGE")
@@ -317,9 +330,9 @@ describe("purgeTaskCommand", () => {
       };
       (runPutResource as jest.Mock).mockRejectedValue(errorWithFormatting);
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
         expect.not.stringContaining("\n")
@@ -333,9 +346,9 @@ describe("purgeTaskCommand", () => {
   describe("progress reporting", () => {
     it("should show correct progress title", async () => {
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(window.withProgress).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -357,9 +370,9 @@ describe("purgeTaskCommand", () => {
       };
       (runPutResource as jest.Mock).mockResolvedValue(mockResponse);
       (window.showInformationMessage as jest.Mock).mockResolvedValue("Purge");
-      getPurgeTaskCommand(mockTree, mockTreeview);
+      getPurgeTaskCommand(mockTree as CICSTree, mockTreeview);
 
-      await commandCallback(mockNode);
+      await commandCallback(mockNode as CICSResourceContainerNode<ITask>);
 
       expect(evaluateTreeNodes).toHaveBeenCalledWith(
         mockNode,

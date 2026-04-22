@@ -110,8 +110,9 @@ async function compareResourceFromInspector(currentResource: IResourceInspectorR
       },
     ]);
   } catch (error) {
-    CICSLogger.error(`Error comparing resources: ${error.message}`);
-    await window.showErrorMessage(l10n.t("Failed to compare resources: {0}", error.message));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    CICSLogger.error(`Error comparing resources: ${errorMessage}`);
+    await window.showErrorMessage(l10n.t("Failed to compare resources: {0}", errorMessage));
   }
 }
 

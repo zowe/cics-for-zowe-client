@@ -9,12 +9,16 @@
  *
  */
 
-import { commands, window, ViewColumn } from "vscode";
+import { commands, window, ViewColumn, type WebviewPanel, type TextEditor } from "vscode";
 import { getShowRegionSITParametersCommand } from "../../../src/commands/showParameterCommand";
 import { runGetResource } from "../../../src/utils/resourceUtils";
 import { getParametersHtml } from "../../../src/utils/webviewHTML";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import type { imperative } from "@zowe/zowe-explorer-api";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 
 jest.mock("vscode");
 jest.mock("../../../src/utils/resourceUtils");
@@ -22,12 +26,12 @@ jest.mock("../../../src/utils/webviewHTML");
 jest.mock("../../../src/trees/CICSRegionTree");
 
 describe("showParameterCommand", () => {
-  let commandCallback: Function;
-  let mockPanel: any;
-  let mockProfile: any;
-  let mockRegionNode: any;
-  let mockResourceNode: any;
-  let mockParentPlex: any;
+  let commandCallback: (node: CICSRegionTree | CICSResourceContainerNode<IResource>) => Promise<void>;
+  let mockPanel: { webview: { html: string } };
+  let mockProfile: imperative.IProfileLoaded;
+  let mockRegionNode: Partial<CICSRegionTree>;
+  let mockResourceNode: Partial<CICSResourceContainerNode<IResource>>;
+  let mockParentPlex: Partial<CICSPlexTree>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -40,16 +44,20 @@ describe("showParameterCommand", () => {
 
     mockProfile = {
       name: "testProfile",
+      type: "cics",
+      profile: {},
+      message: "",
+      failNotFound: false,
     };
 
     mockParentPlex = {
       getPlexName: jest.fn().mockReturnValue("TESTPLEX"),
-    };
+    } as Partial<CICSPlexTree>;
 
     mockRegionNode = {
       getProfile: jest.fn().mockReturnValue(mockProfile),
       label: "TESTREGION",
-      parentPlex: mockParentPlex,
+      parentPlex: mockParentPlex as CICSPlexTree,
     };
 
     mockResourceNode = {
@@ -64,7 +72,7 @@ describe("showParameterCommand", () => {
     });
 
     (window.createWebviewPanel as jest.Mock) = jest.fn().mockReturnValue(mockPanel);
-    (window.activeTextEditor as any) = undefined;
+    (window.activeTextEditor as TextEditor | undefined) = undefined;
 
     (runGetResource as jest.Mock) = jest.fn().mockResolvedValue({
       response: {
@@ -159,9 +167,9 @@ describe("showParameterCommand", () => {
       const regionTreeInstance = Object.create(CICSRegionTree.prototype);
       Object.assign(regionTreeInstance, mockRegionNode);
       
-      (window.activeTextEditor as any) = {
+      (window.activeTextEditor as TextEditor | undefined) = {
         viewColumn: ViewColumn.Two,
-      };
+      } as TextEditor;
       getShowRegionSITParametersCommand();
 
       await commandCallback(regionTreeInstance);
@@ -179,7 +187,7 @@ describe("showParameterCommand", () => {
     it("should show parameters for resource container node", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockResourceNode);
+      await commandCallback(mockResourceNode as CICSResourceContainerNode<IResource>);
 
       expect(runGetResource).toHaveBeenCalledWith({
         profileName: "testProfile",
@@ -197,7 +205,7 @@ describe("showParameterCommand", () => {
       mockResourceNode.cicsplexName = undefined;
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockResourceNode);
+      await commandCallback(mockResourceNode as CICSResourceContainerNode<IResource>);
 
       expect(runGetResource).toHaveBeenCalledWith({
         profileName: "testProfile",
@@ -213,7 +221,7 @@ describe("showParameterCommand", () => {
     it("should generate HTML with all parameters", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       const htmlCall = (getParametersHtml as jest.Mock).mock.calls[0];
       const webText = htmlCall[1];
@@ -234,7 +242,7 @@ describe("showParameterCommand", () => {
     it("should include filter dropdown options", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       const htmlCall = (getParametersHtml as jest.Mock).mock.calls[0];
       const webText = htmlCall[1];
@@ -250,7 +258,7 @@ describe("showParameterCommand", () => {
     it("should include search box", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       const htmlCall = (getParametersHtml as jest.Mock).mock.calls[0];
       const webText = htmlCall[1];
@@ -268,7 +276,7 @@ describe("showParameterCommand", () => {
       });
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       const htmlCall = (getParametersHtml as jest.Mock).mock.calls[0];
       const webText = htmlCall[1];
@@ -294,7 +302,7 @@ describe("showParameterCommand", () => {
       });
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       const htmlCall = (getParametersHtml as jest.Mock).mock.calls[0];
       const webText = htmlCall[1];
@@ -309,7 +317,7 @@ describe("showParameterCommand", () => {
     it("should create panel with correct title", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       expect(window.createWebviewPanel).toHaveBeenCalledWith(
         "zowe",
@@ -322,7 +330,7 @@ describe("showParameterCommand", () => {
     it("should enable scripts in webview", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       expect(window.createWebviewPanel).toHaveBeenCalledWith(
         expect.any(String),
@@ -335,7 +343,7 @@ describe("showParameterCommand", () => {
     it("should set webview HTML content", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockRegionNode);
+      await commandCallback(mockRegionNode as CICSRegionTree);
 
       expect(mockPanel.webview.html).toBe("<html>Mock HTML</html>");
     });
@@ -346,7 +354,7 @@ describe("showParameterCommand", () => {
       (runGetResource as jest.Mock).mockRejectedValue(new Error("API Error"));
       getShowRegionSITParametersCommand();
 
-      await expect(commandCallback(mockRegionNode)).rejects.toThrow("API Error");
+      await expect(commandCallback(mockRegionNode as CICSRegionTree)).rejects.toThrow("API Error");
     });
 
     it("should handle missing response records", async () => {
@@ -357,7 +365,7 @@ describe("showParameterCommand", () => {
       });
       getShowRegionSITParametersCommand();
 
-      await expect(commandCallback(mockRegionNode)).rejects.toThrow();
+      await expect(commandCallback(mockRegionNode as CICSRegionTree)).rejects.toThrow();
     });
   });
 
@@ -381,7 +389,7 @@ describe("showParameterCommand", () => {
     it("should correctly identify CICSResourceContainerNode", async () => {
       getShowRegionSITParametersCommand();
 
-      await commandCallback(mockResourceNode);
+      await commandCallback(mockResourceNode as CICSResourceContainerNode<IResource>);
 
       expect(runGetResource).toHaveBeenCalledWith(
         expect.objectContaining({

@@ -9,7 +9,9 @@
  *
  */
 
-import type { imperative } from "@zowe/zowe-explorer-api";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import type { IResourceContext } from "../../../../../vsce-api/src/interfaces";
+import { imperative, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
 
 /**
  * Generates a secure mock credential value for testing
@@ -48,21 +50,41 @@ export function createMockProfile(overrides?: Partial<imperative.IProfileLoaded>
 export function createMockProfilesCache() {
   return {
     refresh: jest.fn().mockResolvedValue(undefined),
-    getProfileInfo: jest.fn().mockResolvedValue({}),
+    getProfileInfo: jest.fn().mockReturnValue({}),
   };
 }
 
 /**
  * Creates a mock Zowe Explorer API with common structure
  */
-export function createMockZoweAPI(profilesCache?: any) {
+export function createMockZoweAPI(
+  profilesCache?: ReturnType<typeof createMockProfilesCache>,
+) {
   const cache = profilesCache || createMockProfilesCache();
-  return {
-    getExplorerExtenderApi: jest.fn().mockReturnValue({
-      getProfilesCache: jest.fn().mockReturnValue(cache),
-      initForZowe: jest.fn().mockResolvedValue(undefined),
-    }),
+  
+  const mockExtenderApi = {
+    getProfilesCache: jest.fn().mockReturnValue(cache),
+    initForZowe: jest.fn().mockResolvedValue(undefined),
+    reloadProfiles: jest.fn().mockResolvedValue(undefined),
   };
+
+  const mockZoweApi = {
+    getExplorerExtenderApi: jest.fn().mockReturnValue(mockExtenderApi),
+    registerUssApi: jest.fn(),
+    getUssApi: jest.fn(),
+    registerMvsApi: jest.fn(),
+    getMvsApi: jest.fn(),
+    registerJesApi: jest.fn(),
+    getJesApi: jest.fn(),
+    registerCommonApi: jest.fn(),
+    getCommonApi: jest.fn(),
+    registerCommandApi: jest.fn(),
+    getCommandApi: jest.fn(),
+    onProfilesUpdate: jest.fn(),
+    registeredApiTypes: jest.fn().mockReturnValue([]),
+  };
+
+  return mockZoweApi as ReturnType<typeof ZoweVsCodeExtension.getZoweExplorerApi>;
 }
 
 /**
@@ -77,9 +99,9 @@ export function createMockSessionTree(isUnauthorized = false) {
 /**
  * Creates a mock resource context for testing
  */
-export function createMockResourceContext(overrides?: any) {
+export function createMockResourceContext(overrides?: Partial<IResourceContext>): IResourceContext {
   return {
-    session: {} as any,
+    session: {} as CICSSession,
     profile: createMockProfile(),
     regionName: "TESTREGION",
     cicsplexName: "TESTPLEX",

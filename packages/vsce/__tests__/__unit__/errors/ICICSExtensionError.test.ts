@@ -53,9 +53,9 @@ describe("ICICSExtensionError Interface", () => {
     expect(mockError.profileName).toBe("testProfile");
   });
 
-  it("should allow baseError to be any type", () => {
+  it("should allow baseError to be Error or object type", () => {
     const mockError1: ICICSExtensionError = {
-      baseError: "string error",
+      baseError: new Error("string error"),
       profileName: "testProfile",
     };
 
@@ -65,12 +65,12 @@ describe("ICICSExtensionError Interface", () => {
     };
 
     const mockError3: ICICSExtensionError = {
-      baseError: 123,
+      baseError: { code: 123, message: "numeric code" },
       profileName: "testProfile",
     };
 
-    expect(mockError1.baseError).toBe("string error");
+    expect(mockError1.baseError).toBeInstanceOf(Error);
     expect(mockError2.baseError).toEqual({ custom: "error object" });
-    expect(mockError3.baseError).toBe(123);
+    expect(mockError3.baseError).toEqual({ code: 123, message: "numeric code" });
   });
 });

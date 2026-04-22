@@ -9,13 +9,15 @@
  *
  */
 
-import { ExtensionContext, window } from "vscode";
+import { ExtensionContext, window, type TreeView } from "vscode";
 import { activate, deactivate } from "../../src/extension";
 import { ProfileManagement } from "../../src/utils/profileManagement";
 import { getZoweExplorerVersion } from "../../src/utils/workspaceUtils";
 import { CICSLogger } from "../../src/utils/CICSLogger";
 import PersistentStorage from "../../src/utils/PersistentStorage";
 import { CICSTree } from "../../src/trees/CICSTree";
+import type { CICSResourceContainerNode } from "../../src/trees/CICSResourceContainerNode";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../src/utils/profileManagement");
@@ -26,9 +28,12 @@ jest.mock("../../src/trees/CICSTree");
 
 describe("extension", () => {
   let mockContext: ExtensionContext;
-  let mockTreeView: any;
-  let mockProfilesCache: any;
-  let mockApiRegister: any;
+  let mockTreeView: Partial<TreeView<CICSResourceContainerNode<IResource>>>;
+  let mockProfilesCache: { registerCustomProfilesType: jest.Mock };
+  let mockApiRegister: {
+    getExplorerExtenderApi: jest.Mock;
+    onProfilesUpdate: jest.Mock;
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -95,7 +100,7 @@ describe("extension", () => {
     });
 
     it("should call onProfilesUpdate callback when profiles are updated", async () => {
-      let profileUpdateCallback: any;
+      let profileUpdateCallback: (() => Promise<void>) | undefined;
       mockApiRegister.onProfilesUpdate = jest.fn((cb) => {
         profileUpdateCallback = cb;
       });
@@ -106,7 +111,7 @@ describe("extension", () => {
       expect(profileUpdateCallback).toBeDefined();
 
       // Trigger the callback
-      await profileUpdateCallback();
+      await profileUpdateCallback!();
 
       const mockCICSTreeInstance = (CICSTree as jest.Mock).mock.results[0].value;
       expect(mockCICSTreeInstance.refreshLoadedProfiles).toHaveBeenCalled();
@@ -167,8 +172,8 @@ describe("extension", () => {
     });
 
     it("should handle tree view expand events", async () => {
-      let expandCallback: any;
-      mockTreeView.onDidExpandElement = jest.fn((cb) => {
+      let expandCallback: ((event: { element: any }) => void) | undefined;
+      (mockTreeView as any).onDidExpandElement = jest.fn((cb) => {
         expandCallback = cb;
       });
 
@@ -177,29 +182,29 @@ describe("extension", () => {
       const mockElement = {
         refreshIcon: jest.fn(),
       };
-      expandCallback({ element: mockElement });
+      expandCallback!({ element: mockElement });
 
       expect(mockElement.refreshIcon).toHaveBeenCalledWith(true);
     });
 
     it("should handle tree view expand events without refreshIcon", async () => {
-      let expandCallback: any;
-      mockTreeView.onDidExpandElement = jest.fn((cb) => {
+      let expandCallback: ((event: { element: any }) => void) | undefined;
+      (mockTreeView as any).onDidExpandElement = jest.fn((cb) => {
         expandCallback = cb;
       });
 
       await activate(mockContext);
 
       const mockElement = {};
-      expandCallback({ element: mockElement });
+      expandCallback!({ element: mockElement });
 
       // Should not throw error
       expect(expandCallback).toBeDefined();
     });
 
     it("should handle tree view collapse events for regions container", async () => {
-      let collapseCallback: any;
-      mockTreeView.onDidCollapseElement = jest.fn((cb) => {
+      let collapseCallback: ((event: { element: any }) => void) | undefined;
+      (mockTreeView as any).onDidCollapseElement = jest.fn((cb) => {
         collapseCallback = cb;
       });
 
@@ -210,15 +215,15 @@ describe("extension", () => {
         iconPath: null as any,
         refreshIcon: jest.fn(),
       };
-      collapseCallback({ element: mockElement });
+      collapseCallback!({ element: mockElement });
 
       expect(mockElement.iconPath).toBeDefined();
       expect(mockElement.refreshIcon).toHaveBeenCalled();
     });
 
     it("should handle tree view collapse events for non-regions container", async () => {
-      let collapseCallback: any;
-      mockTreeView.onDidCollapseElement = jest.fn((cb) => {
+      let collapseCallback: ((event: { element: any }) => void) | undefined;
+      (mockTreeView as any).onDidCollapseElement = jest.fn((cb) => {
         collapseCallback = cb;
       });
 
@@ -228,7 +233,7 @@ describe("extension", () => {
         contextValue: "other.context",
         refreshIcon: jest.fn(),
       };
-      collapseCallback({ element: mockElement });
+      collapseCallback!({ element: mockElement });
 
       expect(mockElement.refreshIcon).toHaveBeenCalled();
     });
