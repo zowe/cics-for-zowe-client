@@ -16,6 +16,8 @@ import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
 import { useTheme } from "../common/ThemeContext";
 import { Breadcrumb } from "./Breadcrumb";
 import { RefreshButton } from "../common/RefreshButton";
+import { SearchInput } from "../common/SearchInput";
+import { getZebraClass, getHeaderBgClass, getRowBgClass } from "../common/tableUtils";
 
 
 interface Column<T> {
@@ -64,16 +66,12 @@ function ResourceTable<T extends Record<string, any>>({
         <table className="border-collapse w-full text-xs" style={{ minWidth: '1200px' }}>
           <thead>
             <tr
-              className={`text-left bg-(--vscode-editor-background) ${
-                isDark ? "bg-lighter" : "bg-darker"
-              } h-8 sticky top-0`}
+              className={`text-left ${getHeaderBgClass(isDark)} h-8 sticky top-0`}
               style={{ zIndex: 20 }}
             >
               {/* First column - sticky left */}
               <th
-                className={`text-left pl-2 pr-2 font-normal bg-(--vscode-editor-background) ${
-                  isDark ? "bg-lighter" : "bg-darker"
-                } sticky left-0`}
+                className={`text-left pl-2 pr-2 font-normal ${getHeaderBgClass(isDark)} sticky left-0`}
                 style={{
                   zIndex: 25,
                   minWidth: columns[0]?.width || '150px',
@@ -87,9 +85,7 @@ function ResourceTable<T extends Record<string, any>>({
               {columns.slice(1).map((col) => (
                 <th
                   key={String(col.key)}
-                  className={`text-left pl-2 pr-2 font-normal bg-(--vscode-editor-background) ${
-                    isDark ? "bg-lighter" : "bg-darker"
-                  }`}
+                  className={`text-left pl-2 pr-2 font-normal ${getHeaderBgClass(isDark)}`}
                   style={{ zIndex: 20, minWidth: col.width || '120px' }}
                 >
                   <span>{col.header}</span>
@@ -98,9 +94,7 @@ function ResourceTable<T extends Record<string, any>>({
 
               {/* Actions column - sticky right */}
               <th
-                className={`text-center pl-2 pr-2 font-normal bg-(--vscode-editor-background) ${
-                  isDark ? "bg-lighter" : "bg-darker"
-                } sticky right-0`}
+                className={`text-center pl-2 pr-2 font-normal ${getHeaderBgClass(isDark)} sticky right-0`}
                 style={{
                   zIndex: 25,
                   width: '60px',
@@ -114,16 +108,10 @@ function ResourceTable<T extends Record<string, any>>({
 
           <tbody className="text-left">
             {filteredData.map((row, rowIndex) => (
-              <tr key={rowIndex} className={`h-8 zebra-${isDark ? "dark" : "light"}`}>
+              <tr key={rowIndex} className={`h-8 ${getZebraClass(isDark)}`}>
                 {/* First column - sticky left */}
                 <td
-                  className={`pl-2 pr-2 max-w-48 sticky left-0 overflow-hidden text-ellipsis whitespace-nowrap ${
-                    rowIndex % 2 === 0
-                      ? "bg-(--vscode-editor-background)"
-                      : isDark
-                      ? "bg-[color-mix(in_srgb,var(--vscode-editor-background),white_3%)]"
-                      : "bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)]"
-                  }`}
+                  className={`pl-2 pr-2 max-w-48 sticky left-0 overflow-hidden text-ellipsis whitespace-nowrap ${getRowBgClass(rowIndex, isDark)}`}
                   style={{
                     zIndex: 10,
                     boxShadow: 'inset -3px 0 3px -3px rgba(0,0,0,0.15)'
@@ -147,13 +135,7 @@ function ResourceTable<T extends Record<string, any>>({
 
                 {/* Actions column - sticky right */}
                 <td
-                  className={`px-2 sticky right-0 ${
-                    rowIndex % 2 === 0
-                      ? "bg-(--vscode-editor-background)"
-                      : isDark
-                      ? "bg-[color-mix(in_srgb,var(--vscode-editor-background),white_3%)]"
-                      : "bg-[color-mix(in_srgb,var(--vscode-editor-background),black_5%)]"
-                  }`}
+                  className={`px-2 sticky right-0 ${getRowBgClass(rowIndex, isDark)}`}
                   style={{
                     zIndex: 10,
                     boxShadow: 'inset 3px 0 3px -3px rgba(0,0,0,0.15)'
@@ -253,7 +235,7 @@ const MultiResourceView = ({ resources }: { resources: IResourceInspectorResourc
     const isSingleRegion = regionNames.size === 1;
     setRegionName(isSingleRegion ? resources[0]?.context?.regionName : undefined);
     
-  }, []);
+  }, [resources]);
 
   if (!resources || resources.length < 2) {
     return null;
@@ -262,9 +244,7 @@ const MultiResourceView = ({ resources }: { resources: IResourceInspectorResourc
   return (
     <>
       <div
-        className={`sticky top-2 w-full bg-(--vscode-editor-background) ${
-          isDark ? "bg-lighter" : "bg-darker"
-        } z-50 px-2 h-8 flex items-center justify-between`}
+        className={`sticky top-2 w-full ${getHeaderBgClass(isDark)} z-50 px-2 h-8 flex items-center justify-between`}
       >
         <Breadcrumb
           cicsplexName={cicsplexName}
@@ -275,24 +255,11 @@ const MultiResourceView = ({ resources }: { resources: IResourceInspectorResourc
         />
 
         <div className="flex items-center gap-2">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              placeholder="Keyword search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-36 md:w-42 lg:w-64 ${
-                isDark ? "bg-darker" : "bg-lighter"
-              } pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal text-xs`}
-              tabIndex={2}
-            />
-            {searchQuery.length > 0 && (
-              <span
-                className="absolute right-1 cursor-pointer codicon codicon-close"
-                onClick={() => setSearchQuery("")}
-              />
-            )}
-          </div>
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            tabIndex={2}
+          />
           <RefreshButton onClick={handleRefresh} tabIndex={3} />
         </div>
       </div>
