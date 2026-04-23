@@ -22,8 +22,9 @@ export interface ICICSExtensionError {
 
   /*
    * Generic error from the catch statement
+   * Can be an Error object or any other type caught in catch blocks
    */
-  baseError: any;
+  baseError: Error | Record<string, unknown>;
 
   /*
    * Resp1 Code from the ResultSummary
