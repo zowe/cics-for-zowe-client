@@ -35,6 +35,7 @@ test.describe("LocalFile tests", () => {
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Files");
+    await page.waitForTimeout(200);
 
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toHaveText(constants.LOCAL_FILE_1_NAME);
     await expect(getTreeItem(page, constants.LOCAL_FILE_1_NAME)).toBeVisible();
@@ -64,6 +65,7 @@ test.describe("LocalFile tests", () => {
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
     await findAndClickTreeItem(page, constants.REGION_NAME);
     await findAndClickTreeItem(page, "Files");
+    await page.waitForTimeout(200);
 
     await findAndClickTreeItem(page, constants.LOCAL_FILE_1_NAME, "right");
     await page.waitForTimeout(200);

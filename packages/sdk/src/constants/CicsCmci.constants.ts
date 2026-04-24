@@ -185,6 +185,21 @@ export const CicsCmciConstants = {
   CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
 
   /**
+   * The criteria field name for local file resources
+   */
+  CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
+
+  /**
+   * Valid BUSY parameter values for closing local files
+   */
+  CICS_LOCAL_FILE_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
+
+  /**
+   * Maximum length for CICS resource names (programs, files, etc.)
+   */
+  CICS_RESOURCE_NAME_MAX_LENGTH: 8,
+
+  /**
    * The CICS CMCI remote file
    */
   CICS_CMCI_REMOTE_FILE: "CICSRemoteFile",

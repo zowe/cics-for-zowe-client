@@ -120,9 +120,11 @@ describe("closeLocalFileCommand", () => {
       nodes: mockNodes,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
+        name: "busy",
         value: "WAIT",
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 
@@ -137,9 +139,11 @@ describe("closeLocalFileCommand", () => {
       nodes: mockNodes,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
+        name: "busy",
         value: "NOWAIT",
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 
@@ -154,9 +158,11 @@ describe("closeLocalFileCommand", () => {
       nodes: mockNodes,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
+        name: "busy",
         value: "FORCE",
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 
@@ -171,9 +177,11 @@ describe("closeLocalFileCommand", () => {
       nodes: mockNodes,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
-        value: "WAIT",
+        name: "busy",
+        value: undefined,
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 
@@ -190,9 +198,11 @@ describe("closeLocalFileCommand", () => {
       nodes: singleNode,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
+        name: "busy",
         value: "WAIT",
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 
@@ -207,9 +217,11 @@ describe("closeLocalFileCommand", () => {
       nodes: mockNodes,
       tree: mockTree,
       parameter: {
-        name: "BUSY",
+        name: "busy",
         value: "FORCE",
       },
+      customAction: expect.any(Function),
+      getResourceName: expect.any(Function),
     });
   });
 });

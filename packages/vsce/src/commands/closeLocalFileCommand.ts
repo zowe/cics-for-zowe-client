@@ -9,12 +9,21 @@
  *
  */
 
+import type { ILocalFile } from "@zowe/cics-for-zowe-explorer-api";
+import { closeLocalFile } from "@zowe/cics-for-zowe-sdk";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { LocalFileMeta } from "../doc";
 import type { CICSTree } from "../trees/CICSTree";
+import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { findSelectedNodes } from "../utils/commandUtils";
 import { actionTreeItem } from "./actionResourceCommand";
 
+/**
+ * Registers the command to close CICS local files from the VS Code tree view
+ * @param tree - The CICS tree to refresh after closing
+ * @param treeview - The tree view containing selected nodes
+ * @returns Disposable command registration
+ */
 export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.closeLocalFile", async (clickedNode) => {
     const nodes = findSelectedNodes(treeview, LocalFileMeta, clickedNode);
@@ -29,24 +38,21 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
       [l10n.t("Force")]: "FORCE",
     };
 
-    const picked = await window.showInformationMessage(
+    const selectedBusyOption = await window.showInformationMessage(
       l10n.t("Choose one of the following for the file busy condition"),
       ...Object.keys(busyChoices)
     );
-    if (!picked) {
+    if (!selectedBusyOption) {
       return;
     }
-
-    const busyDecision = busyChoices[picked] ?? "WAIT";
 
     await actionTreeItem({
       action: "CLOSE",
       nodes,
       tree,
-      parameter: {
-        name: "BUSY",
-        value: busyDecision.replace(" ", "").toUpperCase(),
-      },
+      parameter: { name: "busy", value: busyChoices[selectedBusyOption] },
+      customAction: closeLocalFile,
+      getResourceName: (node) => (node as CICSResourceContainerNode<ILocalFile>).getContainedResource().resource.attributes.file,
     });
   });
 }
