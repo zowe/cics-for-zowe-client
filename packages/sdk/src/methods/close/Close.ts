@@ -35,18 +35,17 @@ export async function closeLocalFile(session: AbstractSession, parms: ILocalFile
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate file name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > CicsCmciConstants.CICS_RESOURCE_NAME_MAX_LENGTH) {
+  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS local file name "${parms.name}" exceeds maximum length of ${CicsCmciConstants.CICS_RESOURCE_NAME_MAX_LENGTH} characters`,
+      msg: `CICS local file name "${parms.name}" exceeds maximum length of ${CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH} characters`,
     });
   }
 
-  // Set default BUSY value if not provided
-  const busyValue = parms.busy && parms.busy.trim() ? parms.busy.trim() : "WAIT";
+  // Set default BUSY value if not provided and convert to uppercase
+  const busyValue = parms.busy?.trim().toUpperCase() || "WAIT";
   
   // Validate BUSY parameter
-  const busyUpper = busyValue.toUpperCase();
-  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyUpper as any)) {
+  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyValue as any)) {
     throw new ImperativeError({
       msg: `Invalid BUSY parameter value: "${busyValue}". Must be one of: ${CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ")}`,
     });
@@ -62,21 +61,20 @@ export async function closeLocalFile(session: AbstractSession, parms: ILocalFile
 
   const cmciResource = Utils.getResourceUri(CicsCmciConstants.CICS_CMCI_LOCAL_FILE, options);
 
+  // BUSY parameter is required by CMCI. Default to WAIT if not provided.
   const requestBody: any = {
     request: {
       action: {
         $: {
           name: "CLOSE",
         },
+        parameter: {
+          $: {
+            name: "BUSY",
+            value: busyValue,
+          },
+        },
       },
-    },
-  };
-
-  // BUSY parameter is required by CMCI. Default to WAIT if not provided.
-  requestBody.request.action.parameter = {
-    $: {
-      name: "BUSY",
-      value: busyUpper,
     },
   };
 

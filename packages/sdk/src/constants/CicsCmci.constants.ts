@@ -195,9 +195,9 @@ export const CicsCmciConstants = {
   CICS_LOCAL_FILE_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 
   /**
-   * Maximum length for CICS resource names (programs, files, etc.)
+   * Maximum length for CICS local file names
    */
-  CICS_RESOURCE_NAME_MAX_LENGTH: 8,
+  CICS_LOCAL_FILE_MAX_LENGTH: 8,
 
   /**
    * The CICS CMCI remote file
