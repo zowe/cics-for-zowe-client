@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Adds close local file operation. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
+
 ## `6.18.0`
 
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)

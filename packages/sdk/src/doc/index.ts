@@ -18,6 +18,7 @@ export * from "./ICMCIResponseErrors";
 export * from "./ICSDGroupParms";
 export * from "./ICacheParms";
 export * from "./IGetResourceUriOptions";
+export * from "./ILocalFileParms";
 export * from "./IProgramParms";
 export * from "./IResourceParms";
 export * from "./IResourceQueryParms";

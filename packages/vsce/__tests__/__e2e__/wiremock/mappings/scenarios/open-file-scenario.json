@@ -1,0 +1,25 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Open File",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "locfile1-opened",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLocalFile/MYPLEX1/MYREG1?CRITERIA=(file%3DLOCFILE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"OPEN\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLocalFile/open/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
