@@ -30,6 +30,15 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    await actionTreeItem({ action: "NEWCOPY", nodes, tree });
+    if(clickedNode.contextValue?.includes("PARENT.CICSLibraryDatasetName")){
+      return actionTreeItem({ 
+        action: "NEWCOPY", 
+        nodes, 
+        tree, 
+        getParentResource: (node: CICSResourceContainerNode<IProgram>) => node.getContainedResource().resource.attributes  
+      });
+    }
+
+    return actionTreeItem({ action: "NEWCOPY", nodes, tree });
   });
 }
