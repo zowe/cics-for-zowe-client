@@ -370,6 +370,22 @@ describe("runGetCache", () => {
 
     expect(getCacheMock).toHaveBeenCalled();
   });
+
+  it("should throw error on non-401 error", async () => {
+    getCacheMock.mockReset();
+    
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "500" });
+    
+    getCacheMock.mockImplementationOnce(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" })
+    ).rejects.toThrow();
+    
+    expect(getCacheMock).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("runPutResource", () => {
@@ -398,6 +414,31 @@ describe("runPutResource", () => {
 
     expect(result).toEqual(mockResponse);
     expect(putResourceMock).toHaveBeenCalled();
+  });
+
+  it("should throw error on non-401 error", async () => {
+    putResourceMock.mockReset();
+    
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "500" });
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    
+    putResourceMock.mockImplementationOnce(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+        },
+        requestBody
+      )
+    ).rejects.toThrow();
+    
+    expect(putResourceMock).toHaveBeenCalledTimes(1);
   });
 
 });

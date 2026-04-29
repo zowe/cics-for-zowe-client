@@ -67,10 +67,21 @@ describe("Command Utils tests", () => {
 
     it("should show error when no profiles support JES", async () => {
       fetchAllProfilesMock.mockResolvedValue([]);
-      // (Gui.showQuickPick as jest.Mock).mockResolvedValue(null);
 
       await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
 
+      expect(showErrorMessageMock).toHaveBeenCalledWith("Could not find any profiles that will access JES (for instance z/OSMF).");
+      expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
+    });
+
+    it("should show error when promptUserForProfile returns null", async () => {
+      const otherProfile = createProfile("other", "zosmf", "different.com", "user2");
+      fetchAllProfilesMock.mockResolvedValue([otherProfile]);
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue(null);
+
+      await commandUtils.findProfileAndShowJobSpool(cicsProfile, jobid, regionName);
+
+      expect(Gui.showQuickPick).toHaveBeenCalled();
       expect(showErrorMessageMock).toHaveBeenCalledWith("Could not find any profiles that will access JES (for instance z/OSMF).");
       expect(vscodeExecuteCommandMock).not.toHaveBeenCalled();
     });
@@ -321,6 +332,314 @@ describe("Command Utils tests", () => {
 
         expect(vscodeExecuteCommandMock).toHaveBeenCalledWith("zowe.uss.setUssPath", "myzosmf", path);
       }
+    });
+  });
+
+  describe("doesProfileSupportConnectionType", () => {
+    const profile = createProfile("test", "zosmf", "example.com", "user1");
+
+    it("should return false for unsupported connection type", () => {
+      const result = commandUtils.doesProfileSupportConnectionType(profile, 999 as any);
+      expect(result).toBe(false);
+    });
+
+    it("should return false when API throws error", () => {
+      getJesApiMock.mockImplementation(() => {
+        throw new Error("Not supported");
+      });
+      const result = commandUtils.doesProfileSupportConnectionType(profile, 1 as any);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("fetchBaseProfileWithoutError", () => {
+    const profile = createProfile("test", "cics", "example.com", "user1");
+
+    it("should return undefined when fetchBaseProfile throws error", async () => {
+      const mockFetchBaseProfile = jest.fn().mockRejectedValue(new Error("No base profile"));
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.fetchBaseProfileWithoutError(profile);
+      expect(result).toBeUndefined();
+      expect(mockFetchBaseProfile).toHaveBeenCalledWith("test");
+      
+      mockGetProfilesCache.mockRestore();
+    });
+  });
+
+  describe("findRelatedZosProfiles", () => {
+    const cicsProfile = createProfile("mycics", "cics", "example.com", "user1");
+    const zosmfProfile1 = createProfile("zosmf1", "zosmf", "example.com", "user1");
+    const zosmfProfile2 = createProfile("zosmf2", "zosmf", "different.com", "user2");
+    const baseProfile = createProfile("base", "base", "example.com", "user1");
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should find profile by matching base profile", async () => {
+      const mockFetchBaseProfile = jest.fn()
+        .mockResolvedValueOnce(baseProfile) // for cicsProfile
+        .mockResolvedValueOnce(baseProfile) // for zosmfProfile1
+        .mockResolvedValueOnce(undefined); // for zosmfProfile2
+
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.findRelatedZosProfiles(cicsProfile, [zosmfProfile1, zosmfProfile2]);
+      expect(result).toEqual(zosmfProfile1);
+    });
+
+    it("should find profile by matching hostname when no base profile match", async () => {
+      const mockFetchBaseProfile = jest.fn().mockResolvedValue(undefined);
+
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.findRelatedZosProfiles(cicsProfile, [zosmfProfile1, zosmfProfile2]);
+      expect(result).toEqual(zosmfProfile1);
+    });
+
+    it("should return undefined when no matching profile found", async () => {
+      const mockFetchBaseProfile = jest.fn().mockResolvedValue(undefined);
+
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.findRelatedZosProfiles(cicsProfile, [zosmfProfile2]);
+      expect(result).toBeUndefined();
+    });
+
+    it("should prioritize zosmf profiles and filter by credentials", async () => {
+      const otherProfile = createProfile("other", "other", "different.com", "user1");
+      const mockFetchBaseProfile = jest.fn().mockResolvedValue(undefined);
+
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.findRelatedZosProfiles(cicsProfile, [otherProfile, zosmfProfile1]);
+      expect(result).toEqual(zosmfProfile1);
+    });
+
+    it("should filter out profiles without credentials", async () => {
+      const profileWithoutUser = createProfile("nousers", "zosmf", "example.com", undefined);
+      if (profileWithoutUser.profile) {
+        profileWithoutUser.profile.user = undefined;
+      }
+      const mockFetchBaseProfile = jest.fn().mockResolvedValue(undefined);
+
+      const mockGetProfilesCache = jest.spyOn(require("../../../src/utils/profileManagement").ProfileManagement, "getProfilesCache");
+      mockGetProfilesCache.mockReturnValue({
+        fetchBaseProfile: mockFetchBaseProfile,
+        fetchAllProfiles: fetchAllProfilesMock,
+      });
+
+      const result = await commandUtils.findRelatedZosProfiles(cicsProfile, [profileWithoutUser, zosmfProfile1]);
+      expect(result).toEqual(zosmfProfile1);
+    });
+  });
+
+  describe("promptUserForProfile", () => {
+    it("should return null when no profiles available", async () => {
+      const result = await commandUtils.promptUserForProfile([]);
+      expect(result).toBeNull();
+    });
+
+    it("should prompt for credentials when profile has no credentials", async () => {
+      const profileWithoutCreds = createProfile("nocreds", "zosmf", "example.com", undefined);
+      if (profileWithoutCreds.profile) {
+        profileWithoutCreds.profile.user = undefined;
+        profileWithoutCreds.profile.certFile = undefined;
+        profileWithoutCreds.profile.tokenValue = undefined;
+      }
+
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue("nocreds");
+      
+      const mockUpdateCredentials = jest.fn().mockResolvedValue(undefined);
+      (ZoweVsCodeExtension as any).updateCredentials = mockUpdateCredentials;
+
+      fetchAllProfilesMock.mockResolvedValue([profileWithoutCreds]);
+
+      const result = await commandUtils.promptUserForProfile([profileWithoutCreds]);
+
+      expect(mockUpdateCredentials).toHaveBeenCalled();
+      expect(result).toBe("nocreds");
+    });
+
+    it("should not prompt for credentials when profile has user", async () => {
+      const profileWithUser = createProfile("withuser", "zosmf", "example.com", "user1");
+      (Gui.showQuickPick as jest.Mock).mockResolvedValue("withuser");
+      fetchAllProfilesMock.mockResolvedValue([profileWithUser]);
+
+      const mockUpdateCredentials = jest.fn();
+      (ZoweVsCodeExtension as any).updateCredentials = mockUpdateCredentials;
+
+      const result = await commandUtils.promptUserForProfile([profileWithUser]);
+
+      expect(mockUpdateCredentials).not.toHaveBeenCalled();
+      expect(result).toBe("withuser");
+    });
+  });
+
+  describe("findSelectedNodes", () => {
+    const mockTreeview = {
+      selection: [],
+    } as any;
+
+    const mockMeta = {
+      resourceName: "Program",
+    } as any;
+
+    const createMockNode = (label: string, resourceName: string) => ({
+      label,
+      getContainedResource: () => ({
+        meta: { resourceName },
+      }),
+    } as any);
+
+    it("should return filtered selection when no clicked node", () => {
+      const node1 = createMockNode("PROG1", "Program");
+      const node2 = createMockNode("TRAN1", "Transaction");
+      mockTreeview.selection = [node1, node2];
+
+      const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, undefined);
+      expect(result).toEqual([node1]);
+    });
+
+    it("should return clicked node when not in selection", () => {
+      const node1 = createMockNode("PROG1", "Program");
+      const node2 = createMockNode("PROG2", "Program");
+      mockTreeview.selection = [node1];
+
+      const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, node2);
+      expect(result).toEqual([node2]);
+    });
+
+    it("should return filtered selection when clicked node is in selection", () => {
+      const node1 = createMockNode("PROG1", "Program");
+      const node2 = createMockNode("TRAN1", "Transaction");
+      const node3 = createMockNode("PROG2", "Program");
+      mockTreeview.selection = [node1, node2, node3];
+
+      const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, node1);
+      expect(result).toEqual([node1, node3]);
+    });
+  });
+
+  describe("toArray", () => {
+    it("should return array when input is array", () => {
+      const input = [1, 2, 3];
+      const result = commandUtils.toArray(input);
+      expect(result).toEqual([1, 2, 3]);
+    });
+
+    it("should wrap single value in array", () => {
+      const input = "test";
+      const result = commandUtils.toArray(input);
+      expect(result).toEqual(["test"]);
+    });
+
+    it("should handle objects", () => {
+      const input = { key: "value" };
+      const result = commandUtils.toArray(input);
+      expect(result).toEqual([{ key: "value" }]);
+    });
+  });
+
+  describe("getResourceTree", () => {
+    const mockTreeview = {
+      reveal: jest.fn().mockResolvedValue(undefined),
+    } as any;
+
+    it("should throw error when region name is missing", async () => {
+      const mockNode = {
+        description: "",
+        getParent: jest.fn(),
+      } as any;
+
+      await expect(commandUtils.getResourceTree(mockTreeview, [mockNode], "Program")).rejects.toThrow(
+        "Region name is missing in the node description."
+      );
+    });
+
+    it("should return undefined when regions node not found", async () => {
+      const mockNode = {
+        description: "Test (REGION1)",
+        getParent: jest.fn().mockReturnValue({
+          getParent: jest.fn().mockReturnValue({
+            children: [],
+          }),
+        }),
+      } as any;
+
+      const result = await commandUtils.getResourceTree(mockTreeview, [mockNode], "Program");
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when region tree not found", async () => {
+      const mockRegionsNode = {
+        children: [],
+      } as any;
+
+      const mockNode = {
+        description: "Test (REGION1)",
+        getParent: jest.fn().mockReturnValue({
+          getParent: jest.fn().mockReturnValue({
+            children: [mockRegionsNode],
+          }),
+        }),
+      } as any;
+
+      mockRegionsNode.label = "Regions";
+
+      const result = await commandUtils.getResourceTree(mockTreeview, [mockNode], "Program");
+      expect(result).toBeUndefined();
+    });
+
+    it("should find and return resource tree", async () => {
+      const mockResourceTree = {
+        resourceTypes: [{ resourceName: "Program" }],
+      } as any;
+
+      const mockRegionTree = {
+        label: "REGION1",
+        children: [mockResourceTree],
+      } as any;
+
+      const mockRegionsNode = {
+        label: "Regions",
+        children: [mockRegionTree],
+      } as any;
+
+      const mockNode = {
+        description: "Test (REGION1)",
+        getParent: jest.fn().mockReturnValue({
+          getParent: jest.fn().mockReturnValue({
+            children: [mockRegionsNode],
+          }),
+        }),
+      } as any;
+
+      const result = await commandUtils.getResourceTree(mockTreeview, [mockNode], "Program");
+      expect(result).toEqual(mockResourceTree);
+      expect(mockTreeview.reveal).toHaveBeenCalledWith(mockRegionsNode, { expand: true });
+      expect(mockTreeview.reveal).toHaveBeenCalledWith(mockRegionTree, { expand: true });
     });
   });
 });

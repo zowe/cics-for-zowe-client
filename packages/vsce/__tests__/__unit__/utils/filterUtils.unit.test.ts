@@ -214,4 +214,50 @@ describe("Filter Utils tests", () => {
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
     expect(pattern).toBeUndefined();
   });
+
+  it("should return undefined when user presses Escape on main quickpick", async () => {
+    const mockQuickPick = createMockQuickPick("", []);
+    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
+    
+    // Override show to trigger onDidHide without onDidAccept
+    mockQuickPick.show.mockImplementation(() => {
+      const hideHandler = mockQuickPick.onDidHide.mock.calls[0]?.[0];
+      if (hideHandler) {
+        setTimeout(() => hideHandler(), 0);
+      }
+    });
+    
+    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    expect(pattern).toBeUndefined();
+  });
+
+  it("should return undefined when user presses Escape on edit quickpick", async () => {
+    const mockQuickPick = createMockQuickPick("", [{ label: "prev1" }]);
+    const mockEditQuickPick = createMockQuickPick("prev1", []);
+    
+    let callCount = 0;
+    jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
+      callCount++;
+      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
+    });
+    
+    // First quickpick accepts
+    mockQuickPick.show.mockImplementation(() => {
+      const acceptHandler = mockQuickPick.onDidAccept.mock.calls[0]?.[0];
+      if (acceptHandler) {
+        setTimeout(() => acceptHandler(), 0);
+      }
+    });
+    
+    // Edit quickpick is dismissed without accepting
+    mockEditQuickPick.show.mockImplementation(() => {
+      const hideHandler = mockEditQuickPick.onDidHide.mock.calls[0]?.[0];
+      if (hideHandler) {
+        setTimeout(() => hideHandler(), 0);
+      }
+    });
+    
+    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    expect(pattern).toBeUndefined();
+  });
 });
