@@ -275,7 +275,7 @@ describe("setCICSRegionCommand", () => {
         { plexname: "test", group: true },
       ]);
 
-      const result = await setCICSRegion();
+      await setCICSRegion();
 
       expect(Gui.showMessage).toHaveBeenCalled();
     });
@@ -328,7 +328,7 @@ describe("setCICSRegionCommand", () => {
       });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([]);
 
-      const result = await setCICSRegion();
+      await setCICSRegion();
 
       expect(Gui.showMessage).toHaveBeenCalledWith(
         expect.any(String),

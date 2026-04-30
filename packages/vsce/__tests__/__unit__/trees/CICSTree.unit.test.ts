@@ -218,7 +218,7 @@ describe("Test suite for CICSTree", () => {
 
     it("Should handle hide profile action", async () => {
       let capturedHideProfile: any;
-      const createQuickPickSpy = jest.spyOn(Gui, "createQuickPick").mockReturnValue({
+      jest.spyOn(Gui, "createQuickPick").mockReturnValue({
         ...mockQuickPick,
         set items(value: any[]) {
           // Capture the hideProfile item
@@ -237,7 +237,7 @@ describe("Test suite for CICSTree", () => {
 
     it("Should handle update credentials action", async () => {
       let capturedUpdateCreds: any;
-      const createQuickPickSpy = jest.spyOn(Gui, "createQuickPick").mockReturnValue({
+      jest.spyOn(Gui, "createQuickPick").mockReturnValue({
         ...mockQuickPick,
         set items(value: any[]) {
           // Capture the updateCreds item
@@ -273,7 +273,7 @@ describe("Test suite for CICSTree", () => {
 
     it("Should handle update credentials when user cancels", async () => {
       let capturedUpdateCreds: any;
-      const createQuickPickSpy = jest.spyOn(Gui, "createQuickPick").mockReturnValue({
+      jest.spyOn(Gui, "createQuickPick").mockReturnValue({
         ...mockQuickPick,
         set items(value: any[]) {
           // Capture the updateCreds item
@@ -370,7 +370,7 @@ describe("Test suite for CICSTree", () => {
 
     it("Should handle create new config action", async () => {
       let capturedCreateNew: any;
-      const createQuickPickSpy = jest.spyOn(Gui, "createQuickPick").mockReturnValue({
+      jest.spyOn(Gui, "createQuickPick").mockReturnValue({
         ...mockQuickPick,
         set items(value: any[]) {
           // Capture the create new config item
@@ -389,7 +389,7 @@ describe("Test suite for CICSTree", () => {
 
     it("Should handle edit config action", async () => {
       let capturedEditConfig: any;
-      const createQuickPickSpy = jest.spyOn(Gui, "createQuickPick").mockReturnValue({
+      jest.spyOn(Gui, "createQuickPick").mockReturnValue({
         ...mockQuickPick,
         set items(value: any[]) {
           // Capture the edit config item
