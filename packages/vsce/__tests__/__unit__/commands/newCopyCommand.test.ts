@@ -143,16 +143,6 @@ describe("newCopyCommand", () => {
     } as CICSResourceContainerNode<IProgram>;
   }
 
-  // Helper function to create mock node with parent resource
-  function createMockNodeWithParent(parentAttributes: Record<string, unknown>): CICSResourceContainerNode<IProgram> {
-    return createMockProgramNode({
-      getParent: jest.fn().mockReturnValue({
-        getContainedResource: jest.fn().mockReturnValue({
-          resource: { attributes: parentAttributes },
-        }),
-      }),
-    });
-  }
 
   // Helper function to execute the new copy command
   async function executeNewCopyCommand(node = mockNode) {
