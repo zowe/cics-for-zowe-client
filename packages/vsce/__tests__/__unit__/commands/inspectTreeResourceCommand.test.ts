@@ -96,7 +96,7 @@ describe("inspectTreeResourceCommand", () => {
     });
 
     it("should inspect resource when node is provided", async () => {
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(mockNode);
@@ -105,7 +105,7 @@ describe("inspectTreeResourceCommand", () => {
     });
 
     it("should show error when no node and no selection", async () => {
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -116,7 +116,7 @@ describe("inspectTreeResourceCommand", () => {
 
     it("should use last selected element from treeview", async () => {
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>];
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -130,7 +130,7 @@ describe("inspectTreeResourceCommand", () => {
         resource: mockResource,
       });
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>];
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -145,7 +145,7 @@ describe("inspectTreeResourceCommand", () => {
         resource: null,
       });
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>];
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -159,7 +159,7 @@ describe("inspectTreeResourceCommand", () => {
       const mockNode3 = { ...mockNode };
       // Need at least 3 nodes: after pop(), there should be > 1 left
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>, mockNode3 as CICSResourceContainerNode<IResource>];
-      const command = getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -196,7 +196,7 @@ describe("inspectTreeResourceCommand", () => {
       };
       (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
 
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -210,7 +210,7 @@ describe("inspectTreeResourceCommand", () => {
       };
       (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
 
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -220,7 +220,7 @@ describe("inspectTreeResourceCommand", () => {
 
     it("should compare single selected node", async () => {
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>];
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -231,7 +231,7 @@ describe("inspectTreeResourceCommand", () => {
     it("should compare two selected nodes of same type", async () => {
       const mockNode2 = { ...mockNode };
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>];
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -248,7 +248,7 @@ describe("inspectTreeResourceCommand", () => {
         }),
       };
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>];
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -263,7 +263,7 @@ describe("inspectTreeResourceCommand", () => {
       const mockNode2 = { ...mockNode };
       const mockNode3 = { ...mockNode };
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>, mockNode3 as CICSResourceContainerNode<IResource>];
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -273,7 +273,7 @@ describe("inspectTreeResourceCommand", () => {
     });
 
     it("should compare node when provided directly", async () => {
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(mockNode);
@@ -287,7 +287,7 @@ describe("inspectTreeResourceCommand", () => {
         regionName: undefined,
       };
       mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>];
-      const command = getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
@@ -309,7 +309,7 @@ describe("inspectTreeResourceCommand", () => {
     });
 
     it("should execute compareTreeResources command", async () => {
-      const command = getCompareResourceToCommand();
+      getCompareResourceToCommand();
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(mockNode);
@@ -321,5 +321,3 @@ describe("inspectTreeResourceCommand", () => {
     });
   });
 });
-
-

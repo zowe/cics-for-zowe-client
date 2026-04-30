@@ -10,11 +10,10 @@
  */
 
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { commands, l10n, QuickPickItem } from "vscode";
+import { commands, QuickPickItem } from "vscode";
 import { setCICSRegionCommand, getLastUsedRegion, setCICSRegion } from "../../../src/commands/setCICSRegionCommand";
 import { SessionHandler } from "../../../src/resources";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
-import { FilterDescriptor } from "../../../src/utils/filterUtils";
 import * as regionUtils from "../../../src/utils/lastUsedRegionUtils";
 import { ProfileManagement } from "../../../src/utils/profileManagement";
 
@@ -378,5 +377,3 @@ describe("setCICSRegionCommand", () => {
     });
   });
 });
-
-

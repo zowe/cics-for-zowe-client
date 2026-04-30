@@ -480,8 +480,6 @@ it("should handle customAction errors and wrap them in CICSExtensionError", asyn
   mockCustomAction.mockRejectedValueOnce(error);
   const getResourceName = jest.fn(() => "CUSTOMRES");
 
-  const CICSExtensionError = require("../../../src/errors/CICSExtensionError").CICSExtensionError;
-
   await actionTreeItem({
     action: "ENABLE",
     nodes: [mockNode],
@@ -652,6 +650,3 @@ it("should handle error without customAction properly", async () => {
 });
 });
 });
-
-
-

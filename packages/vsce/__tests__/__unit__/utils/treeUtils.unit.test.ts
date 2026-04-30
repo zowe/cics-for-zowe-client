@@ -14,7 +14,7 @@ import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { evaluateTreeNodes, findResourceNodeInTree } from "../../../src/utils/treeUtils";
+import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
 import { profile } from "../../__mocks__";
 
 jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(250);

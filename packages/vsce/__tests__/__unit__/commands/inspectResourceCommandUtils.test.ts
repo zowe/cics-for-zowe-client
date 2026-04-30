@@ -24,7 +24,7 @@ import { Gui } from "@zowe/zowe-explorer-api";
 import { getLastUsedRegion } from "../../../src/commands/setCICSRegionCommand";
 import { ResourceContainer } from "../../../src/resources";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
-import { ProgramMeta, RegionMeta, ManagedRegionMeta, LocalFileMeta, RemoteFileMeta } from "../../../src/doc";
+import { ProgramMeta, RegionMeta, ManagedRegionMeta, LocalFileMeta } from "../../../src/doc";
 
 jest.mock("vscode");
 jest.mock("@zowe/zowe-explorer-api");
@@ -554,5 +554,3 @@ describe("inspectResourceCommandUtils", () => {
     });
   });
 });
-
-

@@ -39,11 +39,11 @@ import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { doesProfileSupportConnectionType, fetchBaseProfileWithoutError, findRelatedZosProfiles, findProfileAndShowJobSpool } from "../../../src/utils/commandUtils";
+import { fetchBaseProfileWithoutError, findRelatedZosProfiles, findProfileAndShowJobSpool } from "../../../src/utils/commandUtils";
 import { SessionHandler } from "../../../src/resources/SessionHandler";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 import { ProfileManagement } from "../../../src/utils/profileManagement";
-import { createProfile, getJesApiMock, getResourceMock, profile, vscodeRegisterCommandMock } from "../../__mocks__";
+import { createProfile, getResourceMock, profile, vscodeRegisterCommandMock } from "../../__mocks__";
 
 const mockContext = {
   workspaceState: {
