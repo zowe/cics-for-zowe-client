@@ -11,7 +11,9 @@
 
 import { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { IProfileLoaded } from "@zowe/imperative";
-import { Gui, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { Gui, ZoweExplorerApiType, ZoweVsCodeExtension } from "@zowe/zowe-explorer-api";
+import { TreeView } from "vscode";
+import { IResourceMeta } from "../../../src/doc";
 import { CICSResourceContainerNode } from "../../../src/trees";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import { createProfile, fetchAllProfilesMock, getJesApiMock, getMvsApiMock, getUssApiMock, showErrorMessageMock, showInfoMessageMock, vscodeExecuteCommandMock } from "../../__mocks__";
@@ -21,7 +23,7 @@ jest.spyOn(ZoweVsCodeExtension, "getZoweExplorerApi").mockReturnValue({
   getJesApi: getJesApiMock,
   getMvsApi: getMvsApiMock,
   getUssApi: getUssApiMock,
-} as any);
+} as unknown as ReturnType<typeof ZoweVsCodeExtension.getZoweExplorerApi>);
 
 describe("Command Utils tests", () => {
   describe("splitCmciErrorMessage", () => {
@@ -339,7 +341,7 @@ describe("Command Utils tests", () => {
     const profile = createProfile("test", "zosmf", "example.com", "user1");
 
     it("should return false for unsupported connection type", () => {
-      const result = commandUtils.doesProfileSupportConnectionType(profile, 999 as any);
+      const result = commandUtils.doesProfileSupportConnectionType(profile, 999 as unknown as ZoweExplorerApiType);
       expect(result).toBe(false);
     });
 
@@ -347,7 +349,7 @@ describe("Command Utils tests", () => {
       getJesApiMock.mockImplementation(() => {
         throw new Error("Not supported");
       });
-      const result = commandUtils.doesProfileSupportConnectionType(profile, 1 as any);
+      const result = commandUtils.doesProfileSupportConnectionType(profile, 1 as unknown as ZoweExplorerApiType);
       expect(result).toBe(false);
     });
   });
@@ -472,7 +474,7 @@ describe("Command Utils tests", () => {
       (Gui.showQuickPick as jest.Mock).mockResolvedValue("nocreds");
       
       const mockUpdateCredentials = jest.fn().mockResolvedValue(undefined);
-      (ZoweVsCodeExtension as any).updateCredentials = mockUpdateCredentials;
+      (ZoweVsCodeExtension as unknown as { updateCredentials: jest.Mock }).updateCredentials = mockUpdateCredentials;
 
       fetchAllProfilesMock.mockResolvedValue([profileWithoutCreds]);
 
@@ -488,7 +490,7 @@ describe("Command Utils tests", () => {
       fetchAllProfilesMock.mockResolvedValue([profileWithUser]);
 
       const mockUpdateCredentials = jest.fn();
-      (ZoweVsCodeExtension as any).updateCredentials = mockUpdateCredentials;
+      (ZoweVsCodeExtension as unknown as { updateCredentials: jest.Mock }).updateCredentials = mockUpdateCredentials;
 
       const result = await commandUtils.promptUserForProfile([profileWithUser]);
 
@@ -498,25 +500,23 @@ describe("Command Utils tests", () => {
   });
 
   describe("findSelectedNodes", () => {
-    const mockTreeview = {
-      selection: [],
-    } as any;
-
     const mockMeta = {
       resourceName: "Program",
-    } as any;
+    } as unknown as IResourceMeta<IResource>;
 
     const createMockNode = (label: string, resourceName: string) => ({
       label,
       getContainedResource: () => ({
         meta: { resourceName },
       }),
-    } as any);
+    } as unknown as CICSResourceContainerNode<IResource>);
 
     it("should return filtered selection when no clicked node", () => {
       const node1 = createMockNode("PROG1", "Program");
       const node2 = createMockNode("TRAN1", "Transaction");
-      mockTreeview.selection = [node1, node2];
+      const mockTreeview = {
+        selection: [node1, node2],
+      } as unknown as TreeView<CICSResourceContainerNode<IResource>>;
 
       const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, undefined);
       expect(result).toEqual([node1]);
@@ -525,7 +525,9 @@ describe("Command Utils tests", () => {
     it("should return clicked node when not in selection", () => {
       const node1 = createMockNode("PROG1", "Program");
       const node2 = createMockNode("PROG2", "Program");
-      mockTreeview.selection = [node1];
+      const mockTreeview = {
+        selection: [node1],
+      } as unknown as TreeView<CICSResourceContainerNode<IResource>>;
 
       const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, node2);
       expect(result).toEqual([node2]);
@@ -535,7 +537,9 @@ describe("Command Utils tests", () => {
       const node1 = createMockNode("PROG1", "Program");
       const node2 = createMockNode("TRAN1", "Transaction");
       const node3 = createMockNode("PROG2", "Program");
-      mockTreeview.selection = [node1, node2, node3];
+      const mockTreeview = {
+        selection: [node1, node2, node3],
+      } as unknown as TreeView<CICSResourceContainerNode<IResource>>;
 
       const result = commandUtils.findSelectedNodes(mockTreeview, mockMeta, node1);
       expect(result).toEqual([node1, node3]);
@@ -565,13 +569,13 @@ describe("Command Utils tests", () => {
   describe("getResourceTree", () => {
     const mockTreeview = {
       reveal: jest.fn().mockResolvedValue(undefined),
-    } as any;
+    } as unknown as TreeView<CICSResourceContainerNode<IResource>>;
 
     it("should throw error when region name is missing", async () => {
       const mockNode = {
         description: "",
         getParent: jest.fn(),
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       await expect(commandUtils.getResourceTree(mockTreeview, [mockNode], "Program")).rejects.toThrow(
         "Region name is missing in the node description."
@@ -586,7 +590,7 @@ describe("Command Utils tests", () => {
             children: [],
           }),
         }),
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const result = await commandUtils.getResourceTree(mockTreeview, [mockNode], "Program");
       expect(result).toBeUndefined();
@@ -595,7 +599,7 @@ describe("Command Utils tests", () => {
     it("should return undefined when region tree not found", async () => {
       const mockRegionsNode = {
         children: [],
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const mockNode = {
         description: "Test (REGION1)",
@@ -604,7 +608,7 @@ describe("Command Utils tests", () => {
             children: [mockRegionsNode],
           }),
         }),
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       mockRegionsNode.label = "Regions";
 
@@ -615,17 +619,17 @@ describe("Command Utils tests", () => {
     it("should find and return resource tree", async () => {
       const mockResourceTree = {
         resourceTypes: [{ resourceName: "Program" }],
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const mockRegionTree = {
         label: "REGION1",
         children: [mockResourceTree],
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const mockRegionsNode = {
         label: "Regions",
         children: [mockRegionTree],
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const mockNode = {
         description: "Test (REGION1)",
@@ -634,7 +638,7 @@ describe("Command Utils tests", () => {
             children: [mockRegionsNode],
           }),
         }),
-      } as any;
+      } as unknown as CICSResourceContainerNode<IResource>;
 
       const result = await commandUtils.getResourceTree(mockTreeview, [mockNode], "Program");
       expect(result).toEqual(mockResourceTree);

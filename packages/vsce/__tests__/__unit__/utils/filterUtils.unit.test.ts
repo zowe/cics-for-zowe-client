@@ -10,10 +10,11 @@
  */
 
 import { Gui } from "@zowe/zowe-explorer-api";
+import { QuickPick, QuickPickItem } from "vscode";
 import { buildQuickPick, FilterDescriptor, getPatternFromFilter, toEscapedCriteriaString } from "../../../src/utils/filterUtils";
 
 // Helper function to create a mock QuickPick
-const createMockQuickPick = (value: string, selectedItems: any[] = []) => {
+const createMockQuickPick = (value: string, selectedItems: QuickPickItem[] = []) => {
   const mockQuickPick = {
     show: jest.fn(),
     hide: jest.fn(),
@@ -39,7 +40,7 @@ const createMockQuickPick = (value: string, selectedItems: any[] = []) => {
 const setupSingleQuickPick = (value: string, resolvedValue?: { label: string; description?: string }) => {
   const selectedItems = resolvedValue ? [resolvedValue] : [];
   const mockQuickPick = createMockQuickPick(value, selectedItems);
-  jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
+  jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as unknown as QuickPick<QuickPickItem>);
   return mockQuickPick;
 };
 
@@ -59,7 +60,7 @@ const setupDualQuickPick = (
   let callCount = 0;
   jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
     callCount++;
-    return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
+    return (callCount === 1 ? mockQuickPick : mockEditQuickPick) as unknown as QuickPick<QuickPickItem>;
   });
   
   return { mockQuickPick, mockEditQuickPick };
@@ -217,7 +218,7 @@ describe("Filter Utils tests", () => {
 
   it("should return undefined when user presses Escape on main quickpick", async () => {
     const mockQuickPick = createMockQuickPick("", []);
-    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as any);
+    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockQuickPick as unknown as QuickPick<QuickPickItem>);
     
     // Override show to trigger onDidHide without onDidAccept
     mockQuickPick.show.mockImplementation(() => {
@@ -238,7 +239,7 @@ describe("Filter Utils tests", () => {
     let callCount = 0;
     jest.spyOn(Gui, "createQuickPick").mockImplementation(() => {
       callCount++;
-      return callCount === 1 ? mockQuickPick as any : mockEditQuickPick as any;
+      return (callCount === 1 ? mockQuickPick : mockEditQuickPick) as unknown as QuickPick<QuickPickItem>;
     });
     
     // First quickpick accepts

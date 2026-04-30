@@ -9,33 +9,37 @@
  *
  */
 
-import { window } from "vscode";
+import { ExtensionContext, window } from "vscode";
 import { CICSSessionTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
 import { CICSTree } from "../../../src/trees/CICSTree";
+import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { ProfileManagement } from "../../../src/utils/profileManagement";
 import { getResourceMock, profile } from "../../__mocks__";
+import { imperative } from "@zowe/zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/utils/profileManagement");
 jest.spyOn(PersistentStorage, "setCriteria").mockResolvedValue(undefined);
 jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
-const mockContext = {
+const mockContext: Partial<ExtensionContext> = {
   workspaceState: {
     get: jest.fn(),
     update: jest.fn(),
+    keys: jest.fn().mockReturnValue([]),
   },
   globalState: {
     get: jest.fn(),
     update: jest.fn(),
+    keys: jest.fn().mockReturnValue([]),
     setKeysForSync: jest.fn(),
   },
-} as any;
+};
 
-PersistentStorage.setContext(mockContext);
+PersistentStorage.setContext(mockContext as ExtensionContext);
 
 const record = [
   { cicsname: "cics", cicsstate: "ACTIVE" },
@@ -198,7 +202,8 @@ describe("Test suite for CICSRegionsContainer", () => {
   describe("Test suite for getChildren", () => {
     it("should return children when requireDescriptionUpdate is true", async () => {
       regionsContainer["requireDescriptionUpdate"] = true;
-      regionsContainer.children = [{ getRegionName: () => "TEST" } as any];
+      const mockRegionTree = { getRegionName: () => "TEST" } as Partial<CICSRegionTree> as CICSRegionTree;
+      regionsContainer.children = [mockRegionTree];
 
       const children = await regionsContainer.getChildren();
 
@@ -218,7 +223,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
         ...profile,
         profile: { ...profile.profile, regionName: undefined, cicsPlex: undefined }
-      } as any);
+      } as imperative.IProfileLoaded);
 
       await regionsContainer.getChildren();
 
@@ -233,7 +238,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
         ...profile,
         profile: { ...profile.profile, regionName: undefined, cicsPlex: undefined }
-      } as any);
+      } as imperative.IProfileLoaded);
 
       await regionsContainer.getChildren();
 
@@ -309,7 +314,8 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should clear children", () => {
-      regionsContainer.children = [{ getRegionName: () => "TEST" } as any];
+      const mockRegionTree = { getRegionName: () => "TEST" } as Partial<CICSRegionTree> as CICSRegionTree;
+      regionsContainer.children = [mockRegionTree];
       regionsContainer.clearChildren();
       expect(regionsContainer.children.length).toBe(0);
     });
