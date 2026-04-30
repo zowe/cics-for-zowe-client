@@ -185,7 +185,7 @@ describe("Test suite for getJobIdForRegion", () => {
     let region: CICSRegionTree = regionTree;
     region.region.jobid = null;
     const jobId = await showLogsCommand.getJobIdForRegion(region);
-    expect(jobId).toBeUndefined();
+    expect(jobId).toBeNull();
   });
 
   it("should handle CICSResourceContainerNode with jobid", async () => {

@@ -19,7 +19,7 @@ import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 
-export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSResourceContainerNode<IResource>): Promise<string> {
+export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSResourceContainerNode<IResource>): Promise<string | undefined> {
   // when we have a CICSRGN table we have jobid, but not when we have a
   // MAS table. we get either CICSRGN or MAS depending on where we are in the
   // tree. request CICSRGN if jobid isn't available.
@@ -62,7 +62,7 @@ export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSRes
 export function getShowRegionLogs(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showRegionLogs", async (node: CICSRegionTree | CICSResourceContainerNode<IResource>) => {
     // Handle both CICSRegionTree (from tree view) and CICSResourceContainerNode (from Resource Inspector)
-    const selectedRegion = node instanceof CICSRegionTree ? (node ?? treeview.selection[0]) : node;
+    const selectedRegion = node ?? treeview.selection[0];
 
     if (!selectedRegion) {
       window.showErrorMessage(l10n.t("No region selected"));

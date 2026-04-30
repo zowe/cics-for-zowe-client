@@ -21,7 +21,10 @@ import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/resources/SessionHandler");
-jest.mock("../../../src/utils/commandUtils");
+jest.mock("../../../src/utils/commandUtils", () => ({
+  ...jest.requireActual("../../../src/utils/commandUtils"),
+  findProfileAndShowJobSpool: jest.fn(),
+}));
 jest.mock("../../../src/utils/resourceUtils");
 
 describe("showLogsCommand", () => {
