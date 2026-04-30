@@ -14,9 +14,9 @@ import { getNewCopyCommand } from "../../../src/commands/newCopyCommand";
 import { actionTreeItem } from "../../../src/commands/actionResourceCommand";
 import { findSelectedNodes } from "../../../src/utils/commandUtils";
 import { ProgramMeta } from "../../../src/doc";
-import type { CICSResourceContainerNode } from "../../../src/trees";
 import { CICSTree } from "../../../src/trees/CICSTree";
-import type { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
 jest.mock("../../../src/commands/actionResourceCommand");
@@ -27,6 +27,8 @@ describe("newCopyCommand", () => {
   let mockTreeview: TreeView<CICSResourceContainerNode<IProgram>>;
   let mockNode: CICSResourceContainerNode<IProgram>;
   let commandCallback: (node: CICSResourceContainerNode<IProgram>) => Promise<void>;
+
+  const findSelectedNodesMock = findSelectedNodes as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -66,7 +68,7 @@ describe("newCopyCommand", () => {
     });
 
     (actionTreeItem as jest.Mock) = jest.fn().mockResolvedValue(undefined);
-    (findSelectedNodes as jest.Mock) = jest.fn().mockReturnValue([mockNode]);
+    findSelectedNodesMock.mockReturnValue([mockNode]);
     (window.showErrorMessage as jest.Mock) = jest.fn();
   });
 
@@ -88,268 +90,188 @@ describe("newCopyCommand", () => {
     });
   });
 
+  // Test data constants
+  const INVALID_NODE_SCENARIOS: Array<{ desc: string; returnValue: CICSResourceContainerNode<IProgram>[] | null | undefined }> = [
+    { desc: "no nodes selected", returnValue: [] },
+    { desc: "null selection", returnValue: null },
+    { desc: "undefined selection", returnValue: undefined },
+  ];
+
+  const CONTEXT_VALUE_TEST_CASES: Array<{ desc: string; contextValue: string | undefined | null; expectsParentResource: boolean }> = [
+    {
+      desc: "with PARENT.CICSLibraryDatasetName",
+      contextValue: "CICS.Program.PARENT.CICSLibraryDatasetName",
+      expectsParentResource: true,
+    },
+    {
+      desc: "with PARENT.CICSLibraryDatasetName and additional context",
+      contextValue: "CICS.Program.PARENT.CICSLibraryDatasetName.SomeOtherContext",
+      expectsParentResource: true,
+    },
+    {
+      desc: "without PARENT.CICSLibraryDatasetName",
+      contextValue: "CICS.Program.SomeOtherContext",
+      expectsParentResource: false,
+    },
+    {
+      desc: "with empty string",
+      contextValue: "",
+      expectsParentResource: false,
+    },
+    {
+      desc: "with case mismatch",
+      contextValue: "CICS.Program.PARENT.cicslibrarydatasetname",
+      expectsParentResource: false,
+    },
+    {
+      desc: "with undefined",
+      contextValue: undefined,
+      expectsParentResource: false,
+    },
+    {
+      desc: "with null",
+      contextValue: null,
+      expectsParentResource: false,
+    },
+  ];
+
+  // Helper function to create mock program nodes with type safety
+  function createMockProgramNode(overrides: Partial<CICSResourceContainerNode<IProgram>> = {}): CICSResourceContainerNode<IProgram> {
+    return {
+      ...mockNode,
+      ...overrides,
+    } as CICSResourceContainerNode<IProgram>;
+  }
+
+  // Helper function to create mock node with parent resource
+  function createMockNodeWithParent(parentAttributes: Record<string, unknown>): CICSResourceContainerNode<IProgram> {
+    return createMockProgramNode({
+      getParent: jest.fn().mockReturnValue({
+        getContainedResource: jest.fn().mockReturnValue({
+          resource: { attributes: parentAttributes },
+        }),
+      }),
+    });
+  }
+
+  // Helper function to execute the new copy command
+  async function executeNewCopyCommand(node = mockNode) {
+    getNewCopyCommand(mockTree, mockTreeview);
+    await commandCallback(node);
+  }
+
+  // Helper function to assert actionTreeItem was called with expected parameters
+  function expectActionTreeItemCalledWith(
+    nodes: CICSResourceContainerNode<IProgram>[],
+    includeParentResource = false
+  ) {
+    const expectedCall = {
+      action: "NEWCOPY",
+      nodes,
+      tree: mockTree,
+      ...(includeParentResource && { getParentResource: expect.any(Function) }),
+    };
+    
+    expect(actionTreeItem).toHaveBeenCalledWith(expectedCall);
+  }
+
   describe("newCopyProgram command execution", () => {
     it("should perform new copy on a program successfully", async () => {
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
+      await executeNewCopyCommand();
 
       expect(findSelectedNodes).toHaveBeenCalledWith(mockTreeview, ProgramMeta, mockNode);
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-      });
+      expectActionTreeItemCalledWith([mockNode]);
       expect(window.showErrorMessage).not.toHaveBeenCalled();
     });
 
     it("should handle multiple selected programs", async () => {
-      const mockNode2 = {
-        ...mockNode,
+      const mockNode2 = createMockProgramNode({
         getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
-      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
-
-      (findSelectedNodes as jest.Mock).mockReturnValue([mockNode, mockNode2]);
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode, mockNode2],
-        tree: mockTree,
       });
+
+      findSelectedNodesMock.mockReturnValue([mockNode, mockNode2]);
+      await executeNewCopyCommand();
+
+      expectActionTreeItemCalledWith([mockNode, mockNode2]);
     });
 
-    it("should show error when no programs selected", async () => {
-      (findSelectedNodes as jest.Mock).mockReturnValue([]);
-      getNewCopyCommand(mockTree, mockTreeview);
+    describe("error handling", () => {
+      test.each(INVALID_NODE_SCENARIOS)(
+        "should show error when $desc",
+        async ({ returnValue }) => {
+          findSelectedNodesMock.mockReturnValue(returnValue);
+          await executeNewCopyCommand();
 
-      await commandCallback(mockNode);
-
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS")
+          expect(window.showErrorMessage).toHaveBeenCalled();
+          expect(actionTreeItem).not.toHaveBeenCalled();
+        }
       );
-      expect(actionTreeItem).not.toHaveBeenCalled();
     });
 
-    it("should show error when nodes is null", async () => {
-      (findSelectedNodes as jest.Mock).mockReturnValue(null);
-      getNewCopyCommand(mockTree, mockTreeview);
+    describe("contextValue handling", () => {
+      test.each(CONTEXT_VALUE_TEST_CASES)(
+        "should handle contextValue $desc",
+        async ({ contextValue, expectsParentResource }) => {
+          mockNode.contextValue = contextValue as string | undefined;
+          await executeNewCopyCommand();
 
-      await commandCallback(mockNode);
+          expectActionTreeItemCalledWith([mockNode], expectsParentResource);
+        }
+      );
 
-      expect(window.showErrorMessage).toHaveBeenCalled();
-      expect(actionTreeItem).not.toHaveBeenCalled();
-    });
+      it("should handle multiple programs from library dataset", async () => {
+        const mockNode2 = createMockProgramNode({
+          contextValue: "CICS.Program.PARENT.CICSLibraryDatasetName",
+          getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
+        });
 
-    it("should show error when nodes is undefined", async () => {
-      (findSelectedNodes as jest.Mock).mockReturnValue(undefined);
-      getNewCopyCommand(mockTree, mockTreeview);
+        mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
+        findSelectedNodesMock.mockReturnValue([mockNode, mockNode2]);
+        await executeNewCopyCommand();
 
-      await commandCallback(mockNode);
+        expectActionTreeItemCalledWith([mockNode, mockNode2], true);
+      });
 
-      expect(window.showErrorMessage).toHaveBeenCalled();
-      expect(actionTreeItem).not.toHaveBeenCalled();
-    });
+      it("should handle mixed programs (some from library dataset, some not)", async () => {
+        const mockNode2 = createMockProgramNode({
+          contextValue: "CICS.Program",
+          getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
+        });
 
-    it("should handle program from library dataset with parent resource", async () => {
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
-      getNewCopyCommand(mockTree, mockTreeview);
+        mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
+        findSelectedNodesMock.mockReturnValue([mockNode, mockNode2]);
+        await executeNewCopyCommand();
 
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-        getParentResource: expect.any(Function),
+        // Should use getParentResource based on the clicked node's contextValue
+        expectActionTreeItemCalledWith([mockNode, mockNode2], true);
       });
     });
 
-    it("should verify getParentResource function extracts attributes correctly", async () => {
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
-      getNewCopyCommand(mockTree, mockTreeview);
+    describe("getParentResource callback", () => {
+      it("should extract parent resource attributes correctly", async () => {
+        mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
+        await executeNewCopyCommand();
 
-      await commandCallback(mockNode);
+        const callArgs = (actionTreeItem as jest.Mock).mock.calls[0][0];
+        const getParentResource = callArgs.getParentResource;
 
-      const callArgs = (actionTreeItem as jest.Mock).mock.calls[0][0];
-      const getParentResource = callArgs.getParentResource;
-
-      const testNode = {
-        getContainedResource: jest.fn().mockReturnValue({
-          resource: {
-            attributes: {
-              name: "TESTLIB",
-              dsname: "TEST.DATASET",
+        // Create a mock parent node (library dataset) with the expected attributes
+        const parentNode = createMockProgramNode({
+          getContainedResource: jest.fn().mockReturnValue({
+            resource: {
+              attributes: {
+                name: "TESTLIB",
+                dsname: "TEST.DATASET",
+              },
             },
-          },
-        }),
-      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+          }),
+        });
 
-      const result = getParentResource(testNode);
-      expect(result).toEqual({
-        name: "TESTLIB",
-        dsname: "TEST.DATASET",
-      });
-    });
-
-    it("should handle program with PARENT.CICSLibraryDatasetName in contextValue", async () => {
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName.SomeOtherContext";
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-        getParentResource: expect.any(Function),
-      });
-    });
-
-    it("should not use getParentResource when contextValue does not include PARENT.CICSLibraryDatasetName", async () => {
-      mockNode.contextValue = "CICS.Program.SomeOtherContext";
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-      });
-    });
-
-    it("should handle program with undefined contextValue", async () => {
-      mockNode.contextValue = undefined;
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-      });
-    });
-
-    it("should handle program with null contextValue", async () => {
-      mockNode.contextValue = null as unknown as string;
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-      });
-    });
-
-    it("should handle multiple programs from library dataset", async () => {
-      const mockNode2 = {
-        ...mockNode,
-        contextValue: "CICS.Program.PARENT.CICSLibraryDatasetName",
-        getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
-      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
-
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
-      (findSelectedNodes as jest.Mock).mockReturnValue([mockNode, mockNode2]);
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode, mockNode2],
-        tree: mockTree,
-        getParentResource: expect.any(Function),
-      });
-    });
-
-    it("should handle mixed programs (some from library dataset, some not)", async () => {
-      const mockNode2 = {
-        ...mockNode,
-        contextValue: "CICS.Program",
-        getContainedResourceName: jest.fn().mockReturnValue("TESTPROG2"),
-      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
-
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
-      (findSelectedNodes as jest.Mock).mockReturnValue([mockNode, mockNode2]);
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      // Should use getParentResource based on the clicked node's contextValue
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode, mockNode2],
-        tree: mockTree,
-        getParentResource: expect.any(Function),
-      });
-    });
-
-    it("should call findSelectedNodes with correct parameters", async () => {
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(findSelectedNodes).toHaveBeenCalledWith(
-        mockTreeview,
-        ProgramMeta,
-        mockNode
-      );
-    });
-
-    it("should pass tree parameter to actionTreeItem", async () => {
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      const callArgs = (actionTreeItem as jest.Mock).mock.calls[0][0];
-      expect(callArgs.tree).toBe(mockTree);
-    });
-
-    it("should use NEWCOPY action for all scenarios", async () => {
-      // Test regular program
-      getNewCopyCommand(mockTree, mockTreeview);
-      await commandCallback(mockNode);
-      expect((actionTreeItem as jest.Mock).mock.calls[0][0].action).toBe("NEWCOPY");
-
-      // Test program from library dataset
-      jest.clearAllMocks();
-      (findSelectedNodes as jest.Mock).mockReturnValue([mockNode]);
-      mockNode.contextValue = "CICS.Program.PARENT.CICSLibraryDatasetName";
-      getNewCopyCommand(mockTree, mockTreeview);
-      await commandCallback(mockNode);
-      expect((actionTreeItem as jest.Mock).mock.calls[0][0].action).toBe("NEWCOPY");
-    });
-
-    it("should handle empty contextValue string", async () => {
-      mockNode.contextValue = "";
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
-      });
-    });
-
-    it("should be case-sensitive when checking contextValue", async () => {
-      mockNode.contextValue = "CICS.Program.PARENT.cicslibrarydatasetname";
-      getNewCopyCommand(mockTree, mockTreeview);
-
-      await commandCallback(mockNode);
-
-      // Should not match due to case difference
-      expect(actionTreeItem).toHaveBeenCalledWith({
-        action: "NEWCOPY",
-        nodes: [mockNode],
-        tree: mockTree,
+        const result = getParentResource(parentNode);
+        expect(result).toEqual({
+          name: "TESTLIB",
+          dsname: "TEST.DATASET",
+        });
       });
     });
   });

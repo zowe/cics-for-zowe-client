@@ -30,15 +30,16 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
       return;
     }
 
-    if(clickedNode.contextValue?.includes("PARENT.CICSLibraryDatasetName")){
-      return actionTreeItem({ 
+    // Programs under library datasets require parent resource information for NEWCOPY
+    if (clickedNode.contextValue?.includes("PARENT.CICSLibraryDatasetName")){
+      await actionTreeItem({
         action: "NEWCOPY", 
         nodes, 
         tree, 
-        getParentResource: (node: CICSResourceContainerNode<IProgram>) => node.getContainedResource().resource.attributes  
+        getParentResource: (node: CICSResourceContainerNode<IProgram>) => node.getContainedResource().resource.attributes
       });
     }
 
-    return actionTreeItem({ action: "NEWCOPY", nodes, tree });
+    await actionTreeItem({ action: "NEWCOPY", nodes, tree });
   });
 }
