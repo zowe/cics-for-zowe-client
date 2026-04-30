@@ -10,6 +10,8 @@
  */
 
 import type { ICICSRegionWithSession } from "../../../../src/doc/commands/ICICSRegionWithSession";
+import type { IProfileLoaded } from "@zowe/imperative";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 describe("ICICSRegionWithSession", () => {
   it("should define the interface structure", () => {
@@ -18,9 +20,9 @@ describe("ICICSRegionWithSession", () => {
         name: "testProfile",
         profile: {},
         type: "cics",
-      } as unknown as ICICSRegionWithSession["profile"],
+      } as IProfileLoaded,
       cicsPlexName: "PLEX1",
-      session: {} as unknown as ICICSRegionWithSession["session"],
+      session: {} as CICSSession,
       regionName: "REGION1",
     };
 
@@ -36,14 +38,12 @@ describe("ICICSRegionWithSession", () => {
         name: "testProfile",
         profile: {},
         type: "cics",
-      } as unknown as ICICSRegionWithSession["profile"],
+      } as IProfileLoaded,
       cicsPlexName: undefined,
-      session: {} as unknown as ICICSRegionWithSession["session"],
+      session: {} as CICSSession,
       regionName: "REGION1",
     };
 
     expect(mockRegionWithSession.cicsPlexName).toBeUndefined();
   });
 });
-
-
