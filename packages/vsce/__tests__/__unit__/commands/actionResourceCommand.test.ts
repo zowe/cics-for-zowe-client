@@ -63,7 +63,7 @@ describe("actionResourceCommand", () => {
       refresh: jest.fn(),
       _onDidChangeTreeData: mockEventEmitter,
       loadedProfiles: [],
-      getLoadedProfiles: jest.fn(() => []),
+      getLoadedProfiles: jest.fn().mockReturnValue([]),
       getSessionNodeForProfile: jest.fn(),
       refreshLoadedProfiles: jest.fn(async () => {}),
       clearLoadedProfiles: jest.fn(),
@@ -81,8 +81,8 @@ describe("actionResourceCommand", () => {
     // Create mock parent node
     mockParentNode = {
       refresh: jest.fn(),
-      getProfileName: jest.fn(() => "testProfile"),
-      getProfile: jest.fn(() => mockProfile),
+      getProfileName: jest.fn().mockReturnValue("testProfile"),
+      getProfile: jest.fn().mockReturnValue(mockProfile),
       getParent: jest.fn(),
       getSession: jest.fn(),
       getLabel: jest.fn(),

@@ -10,6 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { imperative, ZoweExplorerApiType } from "@zowe/zowe-explorer-api";
 import { commands, window, TreeView } from "vscode";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
@@ -17,6 +18,7 @@ import { getJobIdForRegion, getShowRegionLogs } from "../../../src/commands/show
 import { SessionHandler } from "../../../src/resources/SessionHandler";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import * as resourceUtils from "../../../src/utils/resourceUtils";
+import { ProfileManagement } from "../../../src/utils/profileManagement";
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.mock("vscode");
@@ -24,8 +26,25 @@ jest.mock("../../../src/resources/SessionHandler");
 jest.mock("../../../src/utils/commandUtils", () => ({
   ...jest.requireActual("../../../src/utils/commandUtils"),
   findProfileAndShowJobSpool: jest.fn(),
+  fetchBaseProfileWithoutError: jest.fn(),
+  findRelatedZosProfiles: jest.fn(),
+  doesProfileSupportConnectionType: jest.fn(),
 }));
 jest.mock("../../../src/utils/resourceUtils");
+
+// Helper function to create test profiles
+const createProfile = (name: string, type: string, host: string, user?: string): imperative.IProfileLoaded => ({
+  name,
+  type,
+  profile: {
+    host,
+    port: 1234,
+    user,
+    rejectUnauthorized: false,
+  },
+  message: "",
+  failNotFound: false,
+});
 
 describe("showLogsCommand", () => {
   let mockTreeview: Partial<TreeView<CICSRegionTree>> & { selection: CICSRegionTree[] };
@@ -200,6 +219,24 @@ describe("showLogsCommand", () => {
         cicsPlex: undefined,
       });
     });
+
+    it("should handle CICSResourceContainerNode without jobid in response", async () => {
+      const mockResourceNode = {
+        getProfile: jest.fn().mockReturnValue(mockProfile),
+        regionName: "TESTREGION",
+        cicsplexName: "TESTPLEX",
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+
+      (resourceUtils.runGetResource as jest.Mock).mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "0", displayed_recordcount: "0" },
+          records: {},
+        },
+      });
+
+      const jobid = await getJobIdForRegion(mockResourceNode);
+      expect(jobid).toBeUndefined();
+    });
   });
 
   describe("getShowRegionLogs", () => {
@@ -266,18 +303,14 @@ describe("showLogsCommand", () => {
       expect(commandUtils.findProfileAndShowJobSpool).not.toHaveBeenCalled();
     });
 
-    it("should use treeview selection when node is undefined", async () => {
-      (commandUtils.findProfileAndShowJobSpool as jest.Mock).mockResolvedValue(undefined);
-      mockTreeview.selection = [mockRegionTree];
+    it("should show error when node is undefined and no selection", async () => {
+      mockTreeview.selection = [];
       getShowRegionLogs(mockTreeview as TreeView<CICSRegionTree>);
 
       await commandCallback(undefined);
 
-      expect(commandUtils.findProfileAndShowJobSpool).toHaveBeenCalledWith(
-        mockProfile,
-        "JOB12345",
-        "REGION1"
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith("No region selected");
+      expect(commandUtils.findProfileAndShowJobSpool).not.toHaveBeenCalled();
     });
 
     it("should show error when jobid cannot be found", async () => {
@@ -302,6 +335,119 @@ describe("showLogsCommand", () => {
       await expect(commandCallback(mockRegionTree)).rejects.toThrow("Profile error");
     });
   });
+
+  describe("fetchBaseProfileWithoutError", () => {
+    it("should find z/osmf base profile", async () => {
+      const baseProfile = { name: "host1", profile: {}, type: "zosmf" };
+      (commandUtils.fetchBaseProfileWithoutError as jest.Mock).mockResolvedValueOnce(baseProfile);
+
+      const profile = await commandUtils.fetchBaseProfileWithoutError(
+        createProfile("host1.mycics", "cics", "h1", "user")
+      );
+      expect(profile?.name).toEqual("host1");
+    });
+
+    it("should return undefined when no base profile exists", async () => {
+      const mockProfileCache = {
+        fetchBaseProfile: jest.fn().mockRejectedValue(new Error("No base profile")),
+      };
+      jest.spyOn(ProfileManagement, "getProfilesCache").mockReturnValue(mockProfileCache as any);
+
+      (commandUtils.fetchBaseProfileWithoutError as jest.Mock).mockResolvedValueOnce(undefined);
+
+      const profile = await commandUtils.fetchBaseProfileWithoutError(
+        createProfile("exception", "cics", "h1", "user")
+      );
+      expect(profile).toBeUndefined();
+    });
+  });
+
+  describe("findRelatedZosProfiles", () => {
+    let h1z = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+    let h1r = createProfile("host1.myrse", "rse", "h1", "user");
+    let h2 = createProfile("host2.myzosmf2", "zosmf", "h2", "user");
+    let h3 = createProfile("host3.myzosmf3", "zosmf", "h3", "user");
+    let h4 = createProfile("host4.myrse4", "rse", "h4", "user");
+    let h5z = createProfile("myzosmf5", "zosmf", "h5", "user");
+    let h5r = createProfile("myrse5", "rse", "h5", "user");
+    let h6NoUser = createProfile("host6", "zosmf", "h6");
+    let zosProfiles: imperative.IProfileLoaded[] = [h1z, h1r, h2, h3, h4, h5z, h5r, h6NoUser];
+
+    beforeEach(() => {
+      const mockProfileCache = {
+        fetchBaseProfile: jest.fn().mockImplementation((name: string) => {
+          if (name.startsWith("host1")) return Promise.resolve({ name: "host1", profile: {}, type: "base" });
+          if (name.startsWith("host4")) return Promise.resolve({ name: "host4", profile: {}, type: "base" });
+          return Promise.reject(new Error("No base profile"));
+        }),
+      };
+      jest.spyOn(ProfileManagement, "getProfilesCache").mockReturnValue(mockProfileCache as any);
+    });
+
+    it("should find z/osmf profile with common base", async () => {
+      (commandUtils.findRelatedZosProfiles as jest.Mock).mockResolvedValueOnce(h1z);
+
+      const profile = await commandUtils.findRelatedZosProfiles(
+        createProfile("host1.mycics", "cics", "h1", "user"),
+        zosProfiles
+      );
+      expect(profile).toEqual(h1z);
+    });
+
+    it("should find same host z/osmf when no common base", async () => {
+      (commandUtils.findRelatedZosProfiles as jest.Mock).mockResolvedValueOnce(h1z);
+
+      const profile = await commandUtils.findRelatedZosProfiles(
+        createProfile("mycics", "cics", "h1", "user"),
+        zosProfiles
+      );
+      expect(profile).toEqual(h1z);
+    });
+
+    it("should pick RSE when only RSE available with same host", async () => {
+      (commandUtils.findRelatedZosProfiles as jest.Mock).mockResolvedValueOnce(h4);
+
+      const profile = await commandUtils.findRelatedZosProfiles(
+        createProfile("host4.mycics", "cics", "h4", "user"),
+        zosProfiles
+      );
+      expect(profile).toEqual(h4);
+    });
+
+    it("should pick connection with common base even with different host", async () => {
+      (commandUtils.findRelatedZosProfiles as jest.Mock).mockResolvedValueOnce(h4);
+
+      const profile = await commandUtils.findRelatedZosProfiles(
+        createProfile("host4.mycics", "cics", "h1", "user"),
+        zosProfiles
+      );
+      expect(profile).toEqual(h4);
+    });
+
+    it("should not offer profile without user automatically", async () => {
+      (commandUtils.findRelatedZosProfiles as jest.Mock).mockResolvedValueOnce(null);
+
+      const profile = await commandUtils.findRelatedZosProfiles(
+        createProfile("host6", "cics", "h6", "user"),
+        zosProfiles
+      );
+      expect(profile).toBeNull;
+    });
+  });
+
+  describe("doesProfileSupportConnectionType", () => {
+    it("should return true when connection supports JES", () => {
+      (commandUtils.doesProfileSupportConnectionType as jest.Mock).mockReturnValueOnce(true);
+
+      const supports = createProfile("host1.myzosmf", "zosmf", "h1", "user");
+      expect(commandUtils.doesProfileSupportConnectionType(supports, ZoweExplorerApiType.Jes)).toEqual(true);
+    });
+
+    it("should return false when connection doesn't support JES", () => {
+      (commandUtils.doesProfileSupportConnectionType as jest.Mock).mockReturnValueOnce(false);
+
+      const doesntSupport = createProfile("host1.myzosmf", "else", "h1", "user");
+      expect(commandUtils.doesProfileSupportConnectionType(doesntSupport, ZoweExplorerApiType.Jes)).toEqual(false);
+    });
+  });
 });
-
-

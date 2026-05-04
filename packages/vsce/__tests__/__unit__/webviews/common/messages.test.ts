@@ -55,10 +55,8 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("refresh");
-      if (message.type === "refresh") {
         expect(message.resources).toHaveLength(1);
         expect(message.resources[0].name).toBe("TESTPROG");
-      }
     });
 
     it("should create a valid executeAction message", () => {
@@ -70,10 +68,8 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("executeAction");
-      if (message.type === "executeAction") {
         expect(message.actionId).toBe("newcopy");
         expect(message.resources).toHaveLength(1);
-      }
     });
 
     it("should create executeAction message with empty resources", () => {
@@ -84,9 +80,7 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("executeAction");
-      if (message.type === "executeAction") {
         expect(message.resources).toEqual([]);
-      }
     });
 
     it("should create a valid showLogsForHyperlink message", () => {
@@ -101,9 +95,7 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("showLogsForHyperlink");
-      if (message.type === "showLogsForHyperlink") {
         expect(message.resourceContext.regionName).toBe("REGION1");
-      }
     });
 
     it("should create a valid showDatasetForHyperlink message", () => {
@@ -119,10 +111,8 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("showDatasetForHyperlink");
-      if (message.type === "showDatasetForHyperlink") {
         expect(message.datasetName).toBe("USER.DATASET");
         expect(message.resourceContext.regionName).toBe("REGION1");
-      }
     });
 
     it("should create a valid showUssFileForHyperlink message", () => {
@@ -138,10 +128,8 @@ describe("webviews/common/messages", () => {
       };
 
       expect(message.type).toBe("showUssFileForHyperlink");
-      if (message.type === "showUssFileForHyperlink") {
         expect(message.ussPath).toBe("/u/user/file.txt");
         expect(message.resourceContext.regionName).toBe("REGION1");
-      }
     });
 
     it("should handle multiple resources in refresh message", () => {
@@ -151,9 +139,7 @@ describe("webviews/common/messages", () => {
         resources,
       };
 
-      if (message.type === "refresh") {
         expect(message.resources).toHaveLength(2);
-      }
     });
   });
 
