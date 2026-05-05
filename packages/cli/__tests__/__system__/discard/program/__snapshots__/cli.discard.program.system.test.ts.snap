@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS discard program command should be able to display the help 1`] = `
 "
@@ -126,8 +126,7 @@ exports[`CICS discard program command should be able to display the help 1`] = `
  EXAMPLES
  --------
 
-   - Discard a program named PGM123 from the region named
-   MYREGION:
+   - Discard a program named PGM123 from the region named MYREGION:
 
       $ zowe cics discard program PGM123 --region-name MYREGION
 

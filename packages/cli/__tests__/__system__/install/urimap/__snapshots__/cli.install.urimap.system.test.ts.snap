@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS install urimap command should be able to display the help 1`] = `
 "
@@ -127,8 +127,8 @@ exports[`CICS install urimap command should be able to display the help 1`] = `
  EXAMPLES
  --------
 
-   - Install a urimap named URIMAPA to the region named MYREGION
-   belonging to the csdgroup MYGRP:
+   - Install a urimap named URIMAPA to the region named MYREGION belonging to the
+   csdgroup MYGRP:
 
       $ zowe cics install urimap URIMAPA CSDGROUP --region-name MYREGION
 

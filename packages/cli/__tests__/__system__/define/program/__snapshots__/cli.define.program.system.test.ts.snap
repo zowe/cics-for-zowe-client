@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS define program command should be able to display the help 1`] = `
 "
@@ -131,8 +131,8 @@ exports[`CICS define program command should be able to display the help 1`] = `
  EXAMPLES
  --------
 
-   - Define a program named PGM123 to the region name MYREGION
-   in the CSD group MYGRP:
+   - Define a program named PGM123 to the region name MYREGION in the CSD group
+   MYGRP:
 
       $ zowe cics define program PGM123 MYGRP --region-name MYREGION
 

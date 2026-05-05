@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`cics get resource should display the help 1`] = `
 "===============cics PROFILE HELP===============
@@ -174,8 +174,7 @@ exports[`cics get resource should display the help 1`] = `
 
       $ zowe cics get resource CICSProgram --region-name MYREGION
 
-   - Get local transaction resources from the region named
-   MYREGION:
+   - Get local transaction resources from the region named MYREGION:
 
       $ zowe cics get resource CICSLocalTransaction --region-name MYREGION
 
@@ -183,33 +182,32 @@ exports[`cics get resource should display the help 1`] = `
 
       $ zowe cics get resource CICSLocalFile --region-name MYREGION
 
-   - Get program definition resources from the CSD group named
-   GRP1 and the region named MYREGION:
+   - Get program definition resources from the CSD group named GRP1 and the region
+   named MYREGION:
 
       $ zowe cics get resource CICSDefinitionProgram --region-name MYREGION --parameter "CSDGROUP(GRP1)"
 
-   - Get transaction definition resources from the CSD group
-   named GRP1 and the region named MYREGION:
+   - Get transaction definition resources from the CSD group named GRP1 and the
+   region named MYREGION:
 
       $ zowe cics get resource CICSDefinitionTransaction --region-name MYREGION --parameter "CSDGROUP(GRP1)"
 
-   - Get URIMap definition resources from the CSD group named
-   GRP1 and the region named MYREGION:
+   - Get URIMap definition resources from the CSD group named GRP1 and the region
+   named MYREGION:
 
       $ zowe cics get resource CICSDefinitionURIMap --region-name MYREGION --parameter "CSDGROUP(GRP1)"
 
-   - Get program resources that start with the name PRG from the
-   region named MYREGION:
+   - Get program resources that start with the name PRG from the region named
+   MYREGION:
 
       $ zowe cics get resource CICSProgram --region-name MYREGION --criteria "PROGRAM=PRG*"
 
-   - Get a local transaction resource named TRAN from the region
-   named MYREGION:
+   - Get a local transaction resource named TRAN from the region named MYREGION:
 
       $ zowe cics get resource CICSLocalTransaction --region-name MYREGION --criteria "TRANID=TRAN"
 
-   - Get program resources that start with the name MYPRG from
-   the region named MYREGION and display various fields as a table:
+   - Get program resources that start with the name MYPRG from the region named
+   MYREGION and display various fields as a table:
 
       $ zowe cics get resource CICSProgram --region-name MYREGION --criteria "PROGRAM=MYPRG*" --rft table --rfh --rff program length status
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS install transaction command should be able to display the help 1`] = `
 "
@@ -131,8 +131,8 @@ exports[`CICS install transaction command should be able to display the help 1`]
  EXAMPLES
  --------
 
-   - Install a transaction named TRN1 to the region named
-   MYREGION in the CSD group MYGRP:
+   - Install a transaction named TRN1 to the region named MYREGION in the CSD group
+   MYGRP:
 
       $ zowe cics install transaction TRN1 MYGRP --region-name MYREGION
 

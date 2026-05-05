@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS define web service command should be able to display the help 1`] = `
 "
@@ -158,9 +158,9 @@ exports[`CICS define web service command should be able to display the help 1`] 
  EXAMPLES
  --------
 
-   - Define a webservice named WEBSVCA for the pipeline named
-   PIPE123 to the region named MYREGION in the CSD group MYGRP where the binding
-   file is /u/exampleapp/wsbind/example.log:
+   - Define a webservice named WEBSVCA for the pipeline named PIPE123 to the region
+   named MYREGION in the CSD group MYGRP where the binding file is
+   /u/exampleapp/wsbind/example.log:
 
       $ zowe cics define webservice WEBSVCA MYGRP --pipeline-name PIPELINE --wsbind /u/exampleapp/wsbind/example.log --region-name MYREGION
 

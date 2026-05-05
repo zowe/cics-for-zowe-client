@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS remove-from-list csdGroup command should be able to display the help 1`] = `
 "
@@ -131,8 +131,7 @@ exports[`CICS remove-from-list csdGroup command should be able to display the he
  EXAMPLES
  --------
 
-   - Remove the CSD Group MYGRP from the CSD List MYLIST in the
-   region named MYREG:
+   - Remove the CSD Group MYGRP from the CSD List MYLIST in the region named MYREG:
 
       $ zowe cics remove-from-list csdGroup MYGRP MYLIST --region-name MYREG
 

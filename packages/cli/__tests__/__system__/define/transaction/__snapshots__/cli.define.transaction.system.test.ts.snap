@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS define transaction command should be able to display the help 1`] = `
 "
@@ -136,8 +136,8 @@ exports[`CICS define transaction command should be able to display the help 1`] 
  EXAMPLES
  --------
 
-   - Define a transaction named TRN1 for the program named
-   PGM123 to the region named MYREGION in the CSD group MYGRP:
+   - Define a transaction named TRN1 for the program named PGM123 to the region
+   named MYREGION in the CSD group MYGRP:
 
       $ zowe cics define transaction TRN1 PGM123 MYGRP --region-name MYREGION
 
