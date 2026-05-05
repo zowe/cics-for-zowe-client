@@ -9,7 +9,7 @@
  *
  */
 
-import type { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import type { ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { ProgramMeta } from "../doc";
 import type { CICSResourceContainerNode } from "../trees";
@@ -36,7 +36,7 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
         action: "NEWCOPY", 
         nodes, 
         tree, 
-        getParentResource: (node: CICSResourceContainerNode<IProgram>) => node.getContainedResource().resource.attributes
+        getParentResource: (parentNode: CICSResourceContainerNode<ILibraryDataset>) => parentNode.getContainedResource().resource.attributes
       });
     }
 
