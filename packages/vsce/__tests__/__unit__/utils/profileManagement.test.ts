@@ -279,6 +279,14 @@ describe("ProfileManagement", () => {
 
       await expect(ProfileManagement.regionIsGroup(mockProfile)).rejects.toThrow(CICSExtensionError);
     });
+
+    it("should throw CICSExtensionError on generic error", async () => {
+      const mockError = new Error("Generic error");
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.regionIsGroup(mockProfile)).rejects.toThrow(CICSExtensionError);
+    });
   });
 
   describe("isPlex", () => {
@@ -404,6 +412,24 @@ describe("ProfileManagement", () => {
 
       await expect(ProfileManagement.regionPlexProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
     });
+
+    it("should handle INVALIDDATA error", async () => {
+      mockProfile.profile = {
+        ...mockProfile.profile,
+        regionName: "TESTREGION",
+        cicsPlex: "TESTPLEX",
+      };
+
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Invalid data"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.regionPlexProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
+    });
   });
 
   describe("plexProvided", () => {
@@ -449,6 +475,40 @@ describe("ProfileManagement", () => {
       );
       expect(result).toEqual([]);
     });
+
+    it("should handle INVALIDPARM error in plexProvided", async () => {
+      mockProfile.profile = {
+        ...mockProfile.profile,
+        cicsPlex: "TESTPLEX",
+      };
+
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Invalid param"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.plexProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
+    });
+
+    it("should handle INVALIDDATA error in plexProvided", async () => {
+      mockProfile.profile = {
+        ...mockProfile.profile,
+        cicsPlex: "TESTPLEX",
+      };
+
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Invalid data"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.plexProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
+    });
   });
 
   describe("regionProvided", () => {
@@ -493,6 +553,40 @@ describe("ProfileManagement", () => {
         { severity: MessageSeverity.ERROR }
       );
       expect(result).toEqual([]);
+    });
+
+    it("should handle INVALIDPARM error in regionProvided", async () => {
+      mockProfile.profile = {
+        ...mockProfile.profile,
+        regionName: "TESTREGION",
+      };
+
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Invalid param"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.regionProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
+    });
+
+    it("should handle INVALIDDATA error in regionProvided", async () => {
+      mockProfile.profile = {
+        ...mockProfile.profile,
+        regionName: "TESTREGION",
+      };
+
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Invalid data"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDDATA,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
+
+      await expect(ProfileManagement.regionProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
     });
   });
 

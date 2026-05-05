@@ -19,7 +19,7 @@ import { CICSLogger } from "../utils/CICSLogger";
 import { findProfileAndShowJobSpool, toArray } from "../utils/commandUtils";
 import { runGetResource } from "../utils/resourceUtils";
 
-export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSResourceContainerNode<IResource>): Promise<string> {
+export async function getJobIdForRegion(selectedRegion: CICSRegionTree | CICSResourceContainerNode<IResource>): Promise<string | undefined> {
   // when we have a CICSRGN table we have jobid, but not when we have a
   // MAS table. we get either CICSRGN or MAS depending on where we are in the
   // tree. request CICSRGN if jobid isn't available.
