@@ -11,13 +11,10 @@
 
 import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { type IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram } from "../../../../src";
 import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
-let csdGroup: string;
-let session: Session;
 let host: string;
 let port: number;
 let user: string;
@@ -31,7 +28,6 @@ describe("CICS refresh program command", () => {
       installPlugin: true,
       tempProfileTypes: ["cics"],
     });
-    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
     host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
     port = TEST_ENVIRONMENT.systemTestProperties.cics.port;

@@ -11,7 +11,7 @@
 
 import { type ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { type IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram, programNewcopy } from "../../../src";
+import { type IProgramParms, programNewcopy } from "../../../src";
 import type { ITestPropertiesSchema } from "../../__src__/ITestPropertiesSchema";
 import { generateRandomAlphaNumericString } from "../../__src__/TestUtils";
 

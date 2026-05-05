@@ -22,7 +22,11 @@ function createConfig(testType, title) {
         transformIgnorePatterns: ["^.+\\.cjs$", "^.+\\.js$", "^.+\\.json$"],
         testRegex: "(test|spec)\\.ts$",
         moduleFileExtensions: ["ts", "tsx", "js", "json"],
-        testPathIgnorePatterns: ["<rootDir>/__tests__/__results__", ".*/__".concat(isUnit ? "system" : "unit", "__/.*"), "<rootDir>/__tests__/__e2e__"],
+        testPathIgnorePatterns: [
+            "<rootDir>/__tests__/__results__", 
+            ".*/__".concat(isUnit ? "system" : "unit", "__/.*"), 
+            "<rootDir>/__tests__/__e2e__"
+        ],
         testEnvironment: "node",
         collectCoverage: isUnit,
         coverageReporters: ["json", "lcov", "text", "cobertura"],
