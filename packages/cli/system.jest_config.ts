@@ -9,5 +9,30 @@
  *
  */
 
-import { ConfigGlobals, createConfig } from "../../common.jest_config";
-export default createConfig("system", "Zowe CICS CLI System Tests") as ConfigGlobals;
+import { Config } from "jest";
+
+const baseConfig = require("../../jest.config.ts");
+
+const conf: Config = {
+    ...baseConfig,
+    displayName: "Zowe CICS CLI System Tests",
+    maxWorkers: 1,
+    collectCoverage: false,
+    coverageDirectory: "__tests__/__results__/system/coverage",
+    testPathIgnorePatterns: [
+        "<rootDir>/__tests__/__results__",
+        ".*/__unit__/.*",
+        "<rootDir>/__tests__/__e2e__"
+    ],
+    reporters: [
+        "default",
+        ["jest-junit", {
+            outputFile: "__tests__/__results__/system/junit.xml",
+            ancestorSeparator: " > ",
+            classNameTemplate: "system.{classname}",
+            title: "{title}"
+        }],
+    ],
+}
+
+module.exports = conf;
