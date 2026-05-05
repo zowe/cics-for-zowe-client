@@ -15,6 +15,7 @@ import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSche
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
+let session: Session;
 let host: string;
 let port: number;
 let user: string;
