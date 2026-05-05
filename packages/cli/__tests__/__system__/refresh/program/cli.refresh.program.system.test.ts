@@ -62,27 +62,14 @@ describe("CICS refresh program command", () => {
   });
 
   it("should be able to successfully refresh a program with basic options", async () => {
-    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-    const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
-
-    const options: IProgramParms = {
-      name: programName,
-      csdGroup,
-      regionName,
-    };
-
-    await defineProgram(session, options);
-    await installProgram(session, options);
+    // Use DFHBRCV - a standard CICS program that exists in the load library
+    const programName = "DFHBRCV";
 
     const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [programName, regionName]);
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
-
-    await discardProgram(session, options);
-    await deleteProgram(session, options);
   });
 
   it("should get a syntax error if program name is omitted", () => {
@@ -95,18 +82,8 @@ describe("CICS refresh program command", () => {
   });
 
   it("should be able to successfully refresh a program with profile options", async () => {
-    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-    const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
-
-    const options: IProgramParms = {
-      name: programName,
-      csdGroup,
-      regionName,
-    };
-
-    await defineProgram(session, options);
-    await installProgram(session, options);
+    // Use DFHBRCV - a standard CICS program that exists in the load library
+    const programName = "DFHBRCV";
 
     const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [
       programName,
@@ -120,8 +97,5 @@ describe("CICS refresh program command", () => {
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
-
-    await discardProgram(session, options);
-    await deleteProgram(session, options);
   });
 });

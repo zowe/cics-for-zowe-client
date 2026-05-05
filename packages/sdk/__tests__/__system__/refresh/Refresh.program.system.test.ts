@@ -51,17 +51,13 @@ describe("CICS Refresh program", () => {
     let error;
     let response;
 
-    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-    const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
+    // Use DFHBRCV - a standard CICS program that exists in the load library
+    const programName = "DFHBRCV";
 
     options.name = programName;
-    options.csdGroup = csdGroup;
     options.regionName = regionName;
 
     try {
-      await defineProgram(session, options);
-      await installProgram(session, options);
       response = await programNewcopy(session, options);
     } catch (err) {
       error = err;
@@ -70,8 +66,6 @@ describe("CICS Refresh program", () => {
     expect(error).toBeFalsy();
     expect(response).toBeTruthy();
     expect(response.response.resultsummary.api_response1).toBe("1024");
-    await discardProgram(session, options);
-    await deleteProgram(session, options);
   });
 
   it("should fail to refresh a program from CICS with invalid CICS region", async () => {
