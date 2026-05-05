@@ -9,7 +9,7 @@
  *
  */
 
-import type { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import type { ILibraryDataset, IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { type TreeView, commands, l10n, window } from "vscode";
 import { ProgramMeta } from "../doc";
 import type { CICSResourceContainerNode } from "../trees";
@@ -28,6 +28,16 @@ export function getNewCopyCommand(tree: CICSTree, treeview: TreeView<any>) {
     if (!nodes || !nodes.length) {
       await window.showErrorMessage(l10n.t(`No CICS {0} selected`, ProgramMeta.humanReadableNameSingular));
       return;
+    }
+
+    // Programs under library datasets require parent resource information for NEWCOPY
+    if (clickedNode.contextValue?.includes("PARENT.CICSLibraryDatasetName")){
+      await actionTreeItem({
+        action: "NEWCOPY", 
+        nodes, 
+        tree, 
+        getParentResource: (parentNode: CICSResourceContainerNode<ILibraryDataset>) => parentNode.getContainedResource().resource.attributes
+      });
     }
 
     await actionTreeItem({ action: "NEWCOPY", nodes, tree });
