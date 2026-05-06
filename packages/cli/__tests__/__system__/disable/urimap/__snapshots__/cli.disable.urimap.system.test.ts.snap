@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS disable urimap command should be able to display the help 1`] = `
 "
@@ -122,8 +122,7 @@ exports[`CICS disable urimap command should be able to display the help 1`] = `
  EXAMPLES
  --------
 
-   - Disable a urimap named URIMAPA from the region named
-   MYREGION:
+   - Disable a urimap named URIMAPA from the region named MYREGION:
 
       $ zowe cics disable urimap URIMAPA --region-name MYREGION
 

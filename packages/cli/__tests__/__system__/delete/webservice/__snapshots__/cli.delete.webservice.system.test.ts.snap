@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS delete web service command should be able to display the help 1`] = `
 "
@@ -127,8 +127,8 @@ exports[`CICS delete web service command should be able to display the help 1`] 
  EXAMPLES
  --------
 
-   - Delete a web service named WEBSVCA from the region named
-   MYREGION belonging to the csdgroup MYGRP:
+   - Delete a web service named WEBSVCA from the region named MYREGION belonging to
+   the csdgroup MYGRP:
 
       $ zowe cics delete webservice WEBSVCA MYGRP --region-name MYREGION
 

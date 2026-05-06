@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CICS define urimap-server command should be able to display the help 1`] = `
 "
@@ -167,9 +167,9 @@ exports[`CICS define urimap-server command should be able to display the help 1`
  EXAMPLES
  --------
 
-   - Define a URIMAP named URIMAPA for the program named PGM123
-   to the region named MYREGION in the CSD group MYGRP where the host is
-   www.example.com and the path is /example/index.html:
+   - Define a URIMAP named URIMAPA for the program named PGM123 to the region named
+   MYREGION in the CSD group MYGRP where the host is www.example.com and the path
+   is /example/index.html:
 
       $ zowe cics define urimap-server URIMAPA MYGRP --urimap-path /example/index.html --urimap-host www.example.com --program-name PGM123 --region-name MYREGION
 

@@ -11,12 +11,10 @@
 
 import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { Session } from "@zowe/imperative";
-import { type IProgramParms, defineProgram, deleteProgram, discardProgram, installProgram } from "../../../../src";
 import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
-let csdGroup: string;
 let session: Session;
 let host: string;
 let port: number;
@@ -31,7 +29,6 @@ describe("CICS refresh program command", () => {
       installPlugin: true,
       tempProfileTypes: ["cics"],
     });
-    csdGroup = TEST_ENVIRONMENT.systemTestProperties.cmci.csdGroup;
     regionName = TEST_ENVIRONMENT.systemTestProperties.cmci.regionName;
     host = TEST_ENVIRONMENT.systemTestProperties.cics.host;
     port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
@@ -62,27 +59,14 @@ describe("CICS refresh program command", () => {
   });
 
   it("should be able to successfully refresh a program with basic options", async () => {
-    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-    const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
-
-    const options: IProgramParms = {
-      name: programName,
-      csdGroup,
-      regionName,
-    };
-
-    await defineProgram(session, options);
-    await installProgram(session, options);
+    // Use DFHBRCV - a standard CICS program that exists in the load library
+    const programName = "DFHBRCV";
 
     const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [programName, regionName]);
     const stderr = output.stderr.toString();
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
-
-    await discardProgram(session, options);
-    await deleteProgram(session, options);
   });
 
   it("should get a syntax error if program name is omitted", () => {
@@ -95,18 +79,8 @@ describe("CICS refresh program command", () => {
   });
 
   it("should be able to successfully refresh a program with profile options", async () => {
-    // Expecting to be able to refresh a program called TESTPRG# (where # is a number from 1 to MAX_PROGRAMS)
-    const MAX_PROGRAMS = 4;
-    const programName = "TESTPRG" + (Math.floor(Math.random() * MAX_PROGRAMS) + 1).toString();
-
-    const options: IProgramParms = {
-      name: programName,
-      csdGroup,
-      regionName,
-    };
-
-    await defineProgram(session, options);
-    await installProgram(session, options);
+    // Use DFHBRCV - a standard CICS program that exists in the load library
+    const programName = "DFHBRCV";
 
     const output = runCliScript(__dirname + "/__scripts__/refresh_program.sh", TEST_ENVIRONMENT, [
       programName,
@@ -120,8 +94,5 @@ describe("CICS refresh program command", () => {
     expect(stderr).toEqual("");
     expect(output.status).toEqual(0);
     expect(output.stdout.toString()).toContain("success");
-
-    await discardProgram(session, options);
-    await deleteProgram(session, options);
   });
 });
