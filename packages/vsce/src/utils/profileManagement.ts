@@ -308,7 +308,13 @@ export class ProfileManagement {
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
         cicsPlex: plexName,
       });
-      if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
+      const responseCode = parseInt(response.resultsummary?.api_response1 || "0");
+      // Handle OK (1024) or NOTPERMIT (1031) - both can return partial records
+      if (
+        (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK ||
+         responseCode === 1031) &&
+        response.records?.cicsmanagedregion
+      ) {
         return toArray(response.records.cicsmanagedregion);
       }
     } catch (error) {

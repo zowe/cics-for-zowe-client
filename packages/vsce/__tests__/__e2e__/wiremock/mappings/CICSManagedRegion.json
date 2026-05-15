@@ -27,6 +27,19 @@
       }
     },
     {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX3/"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/myplex3-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
       "scenarioName": "Open Inspect Region for Region",
       "requiredScenarioState": "Started",
       "newScenarioState": "fetched-inspect-region-summary",

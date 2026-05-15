@@ -208,6 +208,11 @@ export class CicsCmciRestClient extends AbstractRestClient {
       okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
+    // Also accept NOTPERMIT (1031) if records are present (partial authorization scenario)
+    if (apiResponse.response?.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT}` && apiResponse.response?.records) {
+      return apiResponse;
+    }
+
     if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
       return apiResponse;
     }
