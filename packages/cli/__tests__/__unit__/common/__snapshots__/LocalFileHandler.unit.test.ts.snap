@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with backslash 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with backslash 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with forward slash 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with forward slash 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with backslash 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with backslash 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with forward slash 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with forward slash 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect CLOSE action from positionals array 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect CLOSE action from positionals array 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect OPEN action from positionals array 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect OPEN action from positionals array 2`] = `
+{
+  "response": {
+    "records": "testing",
+    "resultsummary": {
+      "api_response1": "1024",
+      "api_response2": "0",
+      "displayed_recordcount": "0",
+      "recordcount": "0",
+    },
+  },
+}
+`;

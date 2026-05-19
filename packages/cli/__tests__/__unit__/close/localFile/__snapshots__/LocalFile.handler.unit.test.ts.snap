@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 1`] = `"The local file '%s' was closed successfully."`;
+exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
 
 exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 2`] = `
 {
@@ -16,7 +16,7 @@ exports[`CloseLocalFileHandler should call the closeLocalFile api with busy para
 }
 `;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with lowercase busy parameter (case-insensitive) 1`] = `"The local file '%s' was closed successfully."`;
+exports[`CloseLocalFileHandler should call the closeLocalFile api with lowercase busy parameter (case-insensitive) 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
 
 exports[`CloseLocalFileHandler should call the closeLocalFile api with lowercase busy parameter (case-insensitive) 2`] = `
 {
@@ -32,7 +32,7 @@ exports[`CloseLocalFileHandler should call the closeLocalFile api with lowercase
 }
 `;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api without busy parameter 1`] = `"The local file '%s' was closed successfully."`;
+exports[`CloseLocalFileHandler should call the closeLocalFile api without busy parameter 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
 
 exports[`CloseLocalFileHandler should call the closeLocalFile api without busy parameter 2`] = `
 {

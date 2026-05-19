@@ -23,9 +23,9 @@ describe("CMCI - Close local file", () => {
   };
 
   const dummySession = new Session({
-    user: "fake",
-    password: "fake",
-    hostname: "fake",
+    user: "testuser",
+    password: "testpass",
+    hostname: "test.cics.host.com",
     port: 1490,
   });
 
@@ -292,38 +292,19 @@ describe("CMCI - Close local file", () => {
       expect(closeSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });
 
-    it("should handle whitespace-only BUSY parameter gracefully", async () => {
-      closeParms.busy = "   "; // Whitespace only defaults to WAIT
-      endPoint =
-        "/" +
-        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" +
-        CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
-        "/" +
-        region +
-        `?CRITERIA=(file%3D${closeParms.name})`;
-      requestBody = {
-        request: {
-          action: {
-            $: {
-              name: "CLOSE",
-            },
-            parameter: {
-              $: {
-                name: "BUSY",
-                value: "WAIT",
-              },
-            },
-          },
-        },
-      };
+    it("should throw error for whitespace-only BUSY parameter", async () => {
+      closeParms.busy = "   "; // Whitespace only becomes empty string after trim
+      
+      let thrownError: Error | undefined;
+      try {
+        await closeLocalFile(dummySession, closeParms);
+      } catch (err) {
+        thrownError = err as Error;
+      }
 
-      response = await closeLocalFile(dummySession, closeParms);
-      expect(response).toContain(content);
-      // Verify that BUSY parameter defaults to WAIT
-      expect(closeSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(thrownError).toBeDefined();
+      expect(thrownError?.message).toContain('Invalid BUSY parameter value: ""');
+      expect(thrownError?.message).toContain("Must be one of: WAIT, NOWAIT, FORCE");
     });
   });
 });
-
-

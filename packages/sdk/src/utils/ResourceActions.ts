@@ -1,0 +1,124 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
+import type { AbstractSession } from "@zowe/imperative";
+import { CicsCmciRestClient } from "../rest";
+import type { ICMCIApiResponse } from "../doc/ICMCIApiResponse";
+import type { IGetResourceUriOptions } from "../doc/IGetResourceUriOptions";
+import { Utils } from "./Utils";
+
+/**
+ * Base parameters for resource actions
+ */
+export interface IResourceActionParms {
+  /** The name of the resource */
+  name: string;
+  /** The CICS region name */
+  regionName: string;
+  /** The CICSPlex name (optional) */
+  cicsPlex?: string;
+  /** The CSD group name (optional) */
+  csdGroup?: string;
+}
+
+/**
+ * Performs a generic action on a CICS resource
+ * @param session - The CMCI session
+ * @param resourceType - The CMCI resource type (e.g., "CICSLocalFile")
+ * @param action - The action to perform (e.g., "CLOSE", "OPEN")
+ * @param params - The resource parameters
+ * @param criteriaField - The resource selection criteria field (e.g., "FILE")
+ * @param additionalParams - Additional action-specific parameters (e.g., { name: "BUSY", value: "WAIT" })
+ * @returns The CMCI API response
+ */
+export async function performAction(
+  session: AbstractSession,
+  resourceType: string,
+  action: string,
+  params: IResourceActionParms,
+  criteriaField: string,
+  additionalParams?: { name: string; value: string }
+): Promise<ICMCIApiResponse> {
+  // Build CMCI resource URI using the existing Utils helper
+  const options: IGetResourceUriOptions = {
+    cicsPlex: params.cicsPlex,
+    regionName: params.regionName,
+    criteria: `${criteriaField}=${params.name}`,
+  };
+
+  const cmciResource = Utils.getResourceUri(resourceType, options);
+
+  // Build request body
+  const requestBody: any = {
+    request: {
+      action: {
+        $: {
+          name: action,
+        },
+      },
+    },
+  };
+
+  // Add additional parameters if provided
+  if (additionalParams) {
+    requestBody.request.action.parameter = {
+      $: additionalParams,
+    };
+  }
+
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+
+/**
+ * Enables a CICS resource
+ * @param session - The CMCI session
+ * @param resourceType - The CMCI resource type
+ * @param params - The resource parameters
+ * @param criteriaField - The resource selection criteria field
+ * @returns The CMCI API response
+ * @throws Error if enable is not supported for this resource type
+ */
+export async function enableResource(
+  session: AbstractSession,
+  resourceType: string,
+  params: IResourceActionParms,
+  criteriaField: string
+): Promise<ICMCIApiResponse> {
+  throw new Error(
+    `Enable operation is not yet implemented for ${resourceType}. ` +
+    `This operation requires additional parameters and validation. ` +
+    `Please refer to the CICS documentation for the specific enable requirements.`
+  );
+}
+
+/**
+ * Disables a CICS resource
+ * @param session - The CMCI session
+ * @param resourceType - The CMCI resource type
+ * @param params - The resource parameters
+ * @param criteriaField - The resource selection criteria field
+ * @returns The CMCI API response
+ * @throws Error if disable is not supported for this resource type
+ */
+export async function disableResource(
+  session: AbstractSession,
+  resourceType: string,
+  params: IResourceActionParms,
+  criteriaField: string
+): Promise<ICMCIApiResponse> {
+  throw new Error(
+    `Disable operation is not yet implemented for ${resourceType}. ` +
+    `This operation requires additional parameters and validation. ` +
+    `Please refer to the CICS documentation for the specific disable requirements.`
+  );
+}
+
+

@@ -14,12 +14,12 @@ import { type IHandlerParameters, Session } from "@zowe/imperative";
 import type { ICMCIApiResponse } from "../../../../src";
 import LocalFileHandler from "../../../../src/common/LocalFileHandler";
 
-// Import the Close command group definition
-const CloseDefinition = require("../../../../src/close/Close.definition");
-const LocalFileDefinition = CloseDefinition.children![0];
+// Import the Open command group definition
+const OpenDefinition = require("../../../../src/open/Open.definition");
+const LocalFileDefinition = OpenDefinition.children![0];
 
 // Set up parent relationship for the handler to determine action type
-LocalFileDefinition.parent = CloseDefinition;
+LocalFileDefinition.parent = OpenDefinition;
 
 jest.mock("@zowe/cics-for-zowe-sdk");
 const sdk = require("@zowe/cics-for-zowe-sdk");
@@ -40,12 +40,12 @@ const PROFILE_MAP = {
   password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-  positionals: ["cics", "close", "CICSLocalFile"],
+  positionals: ["cics", "open", "CICSLocalFile"],
   definition: LocalFileDefinition,
   arguments: PROFILE_MAP,
 });
 
-describe("CloseLocalFileHandler", () => {
+describe("OpenLocalFileHandler", () => {
   const fileName = "TESTFILE";
   const regionName = "testRegion";
   const cicsPlex = "testPlex";
@@ -57,14 +57,14 @@ describe("CloseLocalFileHandler", () => {
     },
   };
 
-  const functionSpy = jest.spyOn(sdk, "closeLocalFile");
+  const functionSpy = jest.spyOn(sdk, "openLocalFile");
 
   beforeEach(() => {
     functionSpy.mockClear();
     functionSpy.mockImplementation(async () => defaultReturn);
   });
 
-  it("should call the closeLocalFile api without busy parameter", async () => {
+  it("should call the openLocalFile api", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -107,12 +107,11 @@ describe("CloseLocalFileHandler", () => {
       {
         name: fileName,
         regionName,
-        busy: undefined,
       }
     );
   });
 
-  it("should call the closeLocalFile api with busy parameter", async () => {
+  it("should call the openLocalFile api with cicsPlex", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -121,7 +120,6 @@ describe("CloseLocalFileHandler", () => {
       fileName,
       regionName,
       cicsPlex,
-      busy: "FORCE",
       host,
       port,
       user,
@@ -158,11 +156,11 @@ describe("CloseLocalFileHandler", () => {
         name: fileName,
         regionName,
         cicsPlex,
-        busy: "FORCE",
       }
     );
   });
-  it("should call the closeLocalFile api with lowercase busy parameter (case-insensitive)", async () => {
+
+  it("should not include busy parameter for open action", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -170,45 +168,22 @@ describe("CloseLocalFileHandler", () => {
       ...commandParameters.arguments,
       fileName,
       regionName,
+      busy: "WAIT", // This should be ignored for open action
       host,
       port,
       user,
       password,
       protocol,
       rejectUnauthorized,
-      busy: "wait", // lowercase
     };
 
     await handler.process(commandParameters);
 
     expect(functionSpy).toHaveBeenCalledTimes(1);
 
-    expect(functionSpy).toHaveBeenCalledWith(
-      new Session({
-        type: "basic",
-        hostname: PROFILE_MAP.host,
-        port: PROFILE_MAP.port,
-        user: PROFILE_MAP.user,
-        password: PROFILE_MAP.password,
-        rejectUnauthorized,
-        protocol,
-        _authCache: {
-          availableCreds: {
-            base64EncodedAuth: "c29tZW9uZTpzb21lc2VjcmV0",
-            password: "somesecret",
-            user: "someone",
-          },
-          didUserSetAuthOrder: false,
-          topDefaultAuth: "basic",
-        },
-        authTypeOrder: ["basic", "token", "bearer", "cert-pem"],
-      }),
-      {
-        name: fileName,
-        regionName,
-        busy: "wait", // Should be passed as-is; SDK will handle uppercase conversion
-      }
-    );
+    // Verify busy parameter is not passed to open action
+    const callArgs = functionSpy.mock.calls[0][1] as any;
+    expect(callArgs.busy).toBeUndefined();
   });
 });
 

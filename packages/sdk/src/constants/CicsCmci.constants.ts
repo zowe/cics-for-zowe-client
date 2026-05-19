@@ -200,6 +200,11 @@ export const CicsCmciConstants = {
   CICS_LOCAL_FILE_MAX_LENGTH: 8,
 
   /**
+   * Valid action types for local file operations
+   */
+  CICS_LOCAL_FILE_ACTIONS: ["CLOSE", "OPEN", "ENABLE", "DISABLE"],
+
+  /**
    * The CICS CMCI remote file
    */
   CICS_CMCI_REMOTE_FILE: "CICSRemoteFile",
@@ -277,3 +282,8 @@ export const CicsCmciConstants = {
    */
   DEFAULT_RESP_CODE: "0000",
 };
+
+/**
+ * Valid local file action types
+ */
+export type LocalFileAction = "CLOSE" | "OPEN" | "ENABLE" | "DISABLE";
