@@ -712,6 +712,7 @@
             "transactionSearchHistory": [],
             "localFileSearchHistory": [],
             "loadedCICSProfile": [],
+            "recentResources": [],
             "lastUsedRegion": {
               "regionName": null,
               "cicsPlexName": null,

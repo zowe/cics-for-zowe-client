@@ -9,17 +9,17 @@
  *
  */
 
-import { window, ProgressLocation, type Progress, type CancellationToken, EventEmitter } from "vscode";
-import { actionTreeItem } from "../../../src/commands/actionResourceCommand";
-import { setResource } from "../../../src/commands/setResource";
-import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
-import { pollForCompleteAction } from "../../../src/utils/resourceUtils";
-import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
-import { ProgramMeta } from "../../../src/doc/meta/program.meta";
-import { CICSTree } from "../../../src/trees/CICSTree";
-import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
+import { EventEmitter, ProgressLocation, window, type CancellationToken, type Progress } from "vscode";
+import { actionTreeItem } from "../../../src/commands/actionResourceCommand";
+import { setResource } from "../../../src/commands/setResource";
+import { ProgramMeta } from "../../../src/doc/meta/program.meta";
+import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
+import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+import { CICSTree } from "../../../src/trees/CICSTree";
+import { pollForCompleteAction } from "../../../src/utils/resourceUtils";
+import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
 
 jest.mock("vscode");
 jest.mock("../../../src/commands/setResource");
@@ -27,9 +27,12 @@ jest.mock("../../../src/errors/CICSErrorHandler");
 jest.mock("../../../src/utils/resourceUtils");
 jest.mock("../../../src/utils/treeUtils");
 jest.mock("../../../src/utils/PersistentStorage", () => ({
+  __esModule: true,
   default: {
     getLoadedCICSProfiles: jest.fn().mockReturnValue([]),
     getCriteria: jest.fn().mockReturnValue(""),
+    appendRecentResource: jest.fn().mockResolvedValue(undefined),
+    getRecentResources: jest.fn().mockReturnValue([]),
   },
 }));
 jest.mock("../../../src/utils/profileManagement");
@@ -58,7 +61,7 @@ describe("actionResourceCommand", () => {
     // Create mock tree - use object literal with proper typing instead of instantiating
     const mockEventEmitter = new EventEmitter<CICSResourceContainerNode<IResource> | undefined>();
     mockEventEmitter.fire = jest.fn();
-    
+
     mockTree = {
       refresh: jest.fn(),
       _onDidChangeTreeData: mockEventEmitter,
@@ -196,9 +199,12 @@ describe("actionResourceCommand", () => {
       });
 
       expect(mockProgress.report).toHaveBeenCalledTimes(3);
-      expect(mockProgress.report).toHaveBeenNthCalledWith(1, expect.objectContaining({
-        increment: expect.any(Number),
-      }));
+      expect(mockProgress.report).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          increment: expect.any(Number),
+        })
+      );
     });
 
     it("should use eyu_cicsname when regionName is not available", async () => {
@@ -275,12 +281,7 @@ describe("actionResourceCommand", () => {
         pollCriteria,
       });
 
-      expect(pollForCompleteAction).toHaveBeenCalledWith(
-        mockNode,
-        pollCriteria,
-        expect.any(Function),
-        undefined
-      );
+      expect(pollForCompleteAction).toHaveBeenCalledWith(mockNode, pollCriteria, expect.any(Function), undefined);
 
       expect(evaluateTreeNodes).not.toHaveBeenCalled();
     });
@@ -299,12 +300,7 @@ describe("actionResourceCommand", () => {
         getParentResource,
       });
 
-      expect(pollForCompleteAction).toHaveBeenCalledWith(
-        mockNode,
-        pollCriteria,
-        expect.any(Function),
-        mockParentResource
-      );
+      expect(pollForCompleteAction).toHaveBeenCalledWith(mockNode, pollCriteria, expect.any(Function), mockParentResource);
     });
 
     it("should handle errors and continue processing other nodes", async () => {
@@ -349,7 +345,7 @@ describe("actionResourceCommand", () => {
 
       for (const action of actions) {
         jest.clearAllMocks();
-        
+
         await actionTreeItem({
           action,
           nodes: [mockNode],
@@ -363,290 +359,278 @@ describe("actionResourceCommand", () => {
         );
       }
     });
-it("should register cancellation token handler", async () => {
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
+    it("should register cancellation token handler", async () => {
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+      });
+
+      expect(mockToken.onCancellationRequested).toHaveBeenCalledWith(expect.any(Function));
+    });
   });
 
-  expect(mockToken.onCancellationRequested).toHaveBeenCalledWith(expect.any(Function));
-});
-});
+  describe("customAction tests", () => {
+    let mockSession: { ISession: object };
+    let mockCustomAction: jest.Mock;
 
-describe("customAction tests", () => {
-let mockSession: { ISession: object };
-let mockCustomAction: jest.Mock;
+    beforeEach(() => {
+      mockSession = {
+        ISession: {},
+      };
 
-beforeEach(() => {
-  mockSession = {
-    ISession: {},
-  };
+      const SessionHandler = require("../../../src/resources/SessionHandler").SessionHandler;
+      SessionHandler.getInstance = jest.fn(() => ({
+        getProfile: jest.fn(() => mockProfile),
+        getSession: jest.fn(() => mockSession),
+      }));
 
-  const SessionHandler = require("../../../src/resources/SessionHandler").SessionHandler;
-  SessionHandler.getInstance = jest.fn(() => ({
-    getProfile: jest.fn(() => mockProfile),
-    getSession: jest.fn(() => mockSession),
-  }));
+      mockCustomAction = jest.fn(() =>
+        Promise.resolve({
+          response: {
+            resultsummary: {},
+            records: [],
+          },
+        })
+      );
+    });
 
-  mockCustomAction = jest.fn(() => Promise.resolve({
-    response: {
-      resultsummary: {},
-      records: [],
-    },
-  }));
-});
+    it("should use customAction when provided", async () => {
+      const getResourceName = jest.fn(() => "CUSTOMRES");
 
-it("should use customAction when provided", async () => {
-  const getResourceName = jest.fn(() => "CUSTOMRES");
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
 
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
+      expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
+        name: "CUSTOMRES",
+        regionName: "TESTREGION",
+        cicsPlex: "TESTPLEX",
+      });
+      expect(setResource).not.toHaveBeenCalled();
+      expect(getResourceName).toHaveBeenCalledWith(mockNode);
+    });
+
+    it("should pass parameter to customAction", async () => {
+      const parameter = { name: "testParam", value: "testValue" };
+      const getResourceName = jest.fn(() => "CUSTOMRES");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+        parameter,
+      });
+
+      expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
+        name: "CUSTOMRES",
+        regionName: "TESTREGION",
+        cicsPlex: "TESTPLEX",
+        testParam: "testValue",
+      });
+    });
+
+    it("should use eyu_cicsname when regionName is undefined with customAction", async () => {
+      mockNode.regionName = undefined;
+      const getResourceName = jest.fn(() => "CUSTOMRES");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
+        name: "CUSTOMRES",
+        regionName: "TESTREGION",
+        cicsPlex: "TESTPLEX",
+      });
+    });
+
+    it("should report progress with custom message for customAction", async () => {
+      const getResourceName = jest.fn(() => "CUSTOMRES");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(mockProgress.report).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining("CUSTOMRES"),
+        })
+      );
+    });
+
+    it("should handle customAction errors and wrap them in CICSExtensionError", async () => {
+      const error = new Error("Custom action failed");
+      mockCustomAction.mockRejectedValueOnce(error);
+      const getResourceName = jest.fn(() => "CUSTOMRES");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalled();
+      expect(mockProgress.report).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining("Failed to enable"),
+        })
+      );
+    });
+
+    it("should show summary message for multiple nodes with customAction - all success", async () => {
+      const mockNode2 = {
+        ...mockNode,
+        getContainedResourceName: jest.fn(() => "TESTPROG2"),
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+
+      const getResourceName = jest.fn().mockReturnValueOnce("CUSTOMRES1").mockReturnValueOnce("CUSTOMRES2");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode, mockNode2],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(window.showInformationMessage).toHaveBeenCalledWith(expect.stringContaining("Successfully"));
+    });
+
+    it("should show warning message for multiple nodes with customAction - partial failure", async () => {
+      const mockNode2 = {
+        ...mockNode,
+        getContainedResourceName: jest.fn(() => "TESTPROG2"),
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+
+      const getResourceName = jest.fn().mockReturnValueOnce("CUSTOMRES1").mockReturnValueOnce("CUSTOMRES2");
+
+      mockCustomAction.mockResolvedValueOnce({ response: { resultsummary: {}, records: [] } }).mockRejectedValueOnce(new Error("Failed"));
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode, mockNode2],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(window.showWarningMessage).toHaveBeenCalledWith(expect.stringContaining("1 of 2"));
+    });
+
+    it("should show warning message for multiple nodes with customAction - all failed", async () => {
+      const mockNode2 = {
+        ...mockNode,
+        getContainedResourceName: jest.fn(() => "TESTPROG2"),
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+
+      const getResourceName = jest.fn().mockReturnValueOnce("CUSTOMRES1").mockReturnValueOnce("CUSTOMRES2");
+
+      mockCustomAction.mockRejectedValue(new Error("Failed"));
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode, mockNode2],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(window.showWarningMessage).toHaveBeenCalledWith(expect.stringContaining("Failed to enable all 2"));
+    });
+
+    it("should not show summary message for single node with customAction", async () => {
+      const getResourceName = jest.fn(() => "CUSTOMRES");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        customAction: mockCustomAction,
+        getResourceName,
+      });
+
+      expect(window.showInformationMessage).not.toHaveBeenCalled();
+      expect(window.showWarningMessage).not.toHaveBeenCalled();
+    });
+
+    it("should use getResourceName when provided without customAction", async () => {
+      const getResourceName = jest.fn(() => "CUSTOMNAME");
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+        getResourceName,
+      });
+
+      expect(getResourceName).toHaveBeenCalledWith(mockNode);
+      expect(mockProgress.report).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining("1 of 1"),
+        })
+      );
+    });
+
+    it("should fall back to getContainedResourceName when getResourceName not provided", async () => {
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+      });
+
+      expect(mockNode.getContainedResourceName).toHaveBeenCalled();
+    });
   });
 
-  expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
-    name: "CUSTOMRES",
-    regionName: "TESTREGION",
-    cicsPlex: "TESTPLEX",
+  describe("error handling edge cases", () => {
+    it("should continue processing after error in standard action", async () => {
+      const mockNode2 = {
+        ...mockNode,
+        getContainedResourceName: jest.fn(() => "TESTPROG2"),
+      } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
+
+      (setResource as jest.Mock)
+        .mockRejectedValueOnce(new Error("First error"))
+        .mockResolvedValueOnce({ response: { resultsummary: {}, records: [] } });
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode, mockNode2],
+        tree: mockTree,
+      });
+
+      expect(setResource).toHaveBeenCalledTimes(2);
+      expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledTimes(1);
+      expect(evaluateTreeNodes).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle error without customAction properly", async () => {
+      (setResource as jest.Mock).mockRejectedValueOnce(new Error("Standard error"));
+
+      await actionTreeItem({
+        action: "ENABLE",
+        nodes: [mockNode],
+        tree: mockTree,
+      });
+
+      expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledWith(expect.any(Error));
+    });
   });
-  expect(setResource).not.toHaveBeenCalled();
-  expect(getResourceName).toHaveBeenCalledWith(mockNode);
-});
-
-it("should pass parameter to customAction", async () => {
-  const parameter = { name: "testParam", value: "testValue" };
-  const getResourceName = jest.fn(() => "CUSTOMRES");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-    parameter,
-  });
-
-  expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
-    name: "CUSTOMRES",
-    regionName: "TESTREGION",
-    cicsPlex: "TESTPLEX",
-    testParam: "testValue",
-  });
-});
-
-it("should use eyu_cicsname when regionName is undefined with customAction", async () => {
-  mockNode.regionName = undefined;
-  const getResourceName = jest.fn(() => "CUSTOMRES");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(mockCustomAction).toHaveBeenCalledWith(mockSession, {
-    name: "CUSTOMRES",
-    regionName: "TESTREGION",
-    cicsPlex: "TESTPLEX",
-  });
-});
-
-it("should report progress with custom message for customAction", async () => {
-  const getResourceName = jest.fn(() => "CUSTOMRES");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(mockProgress.report).toHaveBeenCalledWith(
-    expect.objectContaining({
-      message: expect.stringContaining("CUSTOMRES"),
-    })
-  );
-});
-
-it("should handle customAction errors and wrap them in CICSExtensionError", async () => {
-  const error = new Error("Custom action failed");
-  mockCustomAction.mockRejectedValueOnce(error);
-  const getResourceName = jest.fn(() => "CUSTOMRES");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalled();
-  expect(mockProgress.report).toHaveBeenCalledWith(
-    expect.objectContaining({
-      message: expect.stringContaining("Failed to enable"),
-    })
-  );
-});
-
-it("should show summary message for multiple nodes with customAction - all success", async () => {
-  const mockNode2 = {
-    ...mockNode,
-    getContainedResourceName: jest.fn(() => "TESTPROG2"),
-  } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
-
-  const getResourceName = jest.fn()
-    .mockReturnValueOnce("CUSTOMRES1")
-    .mockReturnValueOnce("CUSTOMRES2");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode, mockNode2],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(window.showInformationMessage).toHaveBeenCalledWith(
-    expect.stringContaining("Successfully")
-  );
-});
-
-it("should show warning message for multiple nodes with customAction - partial failure", async () => {
-  const mockNode2 = {
-    ...mockNode,
-    getContainedResourceName: jest.fn(() => "TESTPROG2"),
-  } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
-
-  const getResourceName = jest.fn()
-    .mockReturnValueOnce("CUSTOMRES1")
-    .mockReturnValueOnce("CUSTOMRES2");
-
-  mockCustomAction
-    .mockResolvedValueOnce({ response: { resultsummary: {}, records: [] } })
-    .mockRejectedValueOnce(new Error("Failed"));
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode, mockNode2],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(window.showWarningMessage).toHaveBeenCalledWith(
-    expect.stringContaining("1 of 2")
-  );
-});
-
-it("should show warning message for multiple nodes with customAction - all failed", async () => {
-  const mockNode2 = {
-    ...mockNode,
-    getContainedResourceName: jest.fn(() => "TESTPROG2"),
-  } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
-
-  const getResourceName = jest.fn()
-    .mockReturnValueOnce("CUSTOMRES1")
-    .mockReturnValueOnce("CUSTOMRES2");
-
-  mockCustomAction.mockRejectedValue(new Error("Failed"));
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode, mockNode2],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(window.showWarningMessage).toHaveBeenCalledWith(
-    expect.stringContaining("Failed to enable all 2")
-  );
-});
-
-it("should not show summary message for single node with customAction", async () => {
-  const getResourceName = jest.fn(() => "CUSTOMRES");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    customAction: mockCustomAction,
-    getResourceName,
-  });
-
-  expect(window.showInformationMessage).not.toHaveBeenCalled();
-  expect(window.showWarningMessage).not.toHaveBeenCalled();
-});
-
-it("should use getResourceName when provided without customAction", async () => {
-  const getResourceName = jest.fn(() => "CUSTOMNAME");
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-    getResourceName,
-  });
-
-  expect(getResourceName).toHaveBeenCalledWith(mockNode);
-  expect(mockProgress.report).toHaveBeenCalledWith(
-    expect.objectContaining({
-      message: expect.stringContaining("1 of 1"),
-    })
-  );
-});
-
-it("should fall back to getContainedResourceName when getResourceName not provided", async () => {
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-  });
-
-  expect(mockNode.getContainedResourceName).toHaveBeenCalled();
-});
-});
-
-describe("error handling edge cases", () => {
-it("should continue processing after error in standard action", async () => {
-  const mockNode2 = {
-    ...mockNode,
-    getContainedResourceName: jest.fn(() => "TESTPROG2"),
-  } as Partial<CICSResourceContainerNode<IResource>> as CICSResourceContainerNode<IResource>;
-
-  (setResource as jest.Mock)
-    .mockRejectedValueOnce(new Error("First error"))
-    .mockResolvedValueOnce({ response: { resultsummary: {}, records: [] } });
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode, mockNode2],
-    tree: mockTree,
-  });
-
-  expect(setResource).toHaveBeenCalledTimes(2);
-  expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledTimes(1);
-  expect(evaluateTreeNodes).toHaveBeenCalledTimes(1);
-});
-
-it("should handle error without customAction properly", async () => {
-  (setResource as jest.Mock).mockRejectedValueOnce(new Error("Standard error"));
-
-  await actionTreeItem({
-    action: "ENABLE",
-    nodes: [mockNode],
-    tree: mockTree,
-  });
-
-  expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledWith(expect.any(Error));
-});
-});
 });

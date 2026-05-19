@@ -9,22 +9,42 @@
  *
  */
 
-import { window, type ExtensionContext } from "vscode";
-import { Gui, MessageSeverity, type imperative } from "@zowe/zowe-explorer-api";
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
-import { Resource, ResourceContainer } from "../../../src/resources";
-import { ProgramMeta } from "../../../src/doc/meta/program.meta";
-import * as setCICSRegionCommand from "../../../src/commands/setCICSRegionCommand";
-import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
-import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
 import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { Gui, MessageSeverity, type imperative } from "@zowe/zowe-explorer-api";
+import { window, type ExtensionContext } from "vscode";
+import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
+import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
+import * as setCICSRegionCommand from "../../../src/commands/setCICSRegionCommand";
+import { ProgramMeta } from "../../../src/doc/meta/program.meta";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+
+// Import Resource before mocking to use the actual implementation
+import { Resource } from "../../../src/resources/Resource";
 
 jest.mock("vscode");
 jest.mock("@zowe/zowe-explorer-api");
-jest.mock("../../../src/resources");
+
+// Mock ResourceContainer but use actual Resource class
+jest.mock("../../../src/resources", () => {
+  const actual = jest.requireActual("../../../src/resources/Resource");
+  return {
+    Resource: actual.Resource,
+    ResourceContainer: jest.fn(),
+  };
+});
+
+// Get the mocked ResourceContainer for use in tests
+const { ResourceContainer } = jest.requireMock<{ ResourceContainer: jest.Mock }>("../../../src/resources");
 jest.mock("../../../src/commands/setCICSRegionCommand");
 jest.mock("../../../src/commands/inspectResourceCommandUtils");
+jest.mock("../../../src/utils/PersistentStorage", () => ({
+  __esModule: true,
+  default: {
+    appendRecentResource: jest.fn().mockResolvedValue(undefined),
+    getRecentResources: jest.fn().mockReturnValue([]),
+  },
+}));
 
 describe("compareResourceCommand", () => {
   let mockNode: Partial<CICSResourceContainerNode<IResource>>;
@@ -62,6 +82,7 @@ describe("compareResourceCommand", () => {
 
     mockResource = {
       attributes: {
+        program: "TESTPROG",
         name: "TESTPROG",
         eyu_cicsname: "TESTREGION",
       } as IResource,
@@ -80,18 +101,16 @@ describe("compareResourceCommand", () => {
 
     mockContext = {} as ExtensionContext;
 
-    (window.showErrorMessage as jest.Mock) = jest.fn();
-    (window.showInputBox as jest.Mock) = jest.fn();
-    (Gui.showMessage as jest.Mock) = jest.fn();
+    (window.showErrorMessage as jest.Mock).mockResolvedValue(undefined);
+    (window.showInputBox as jest.Mock).mockResolvedValue(undefined);
+    (Gui.showMessage as jest.Mock).mockResolvedValue(undefined);
   });
 
   describe("compareTreeNodeWithPrompts", () => {
     it("should show error when no node is provided", async () => {
       await compareTreeNodeWithPrompts(null as any, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource selected")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource selected"));
     });
 
     it("should show error when node has no meta", async () => {
@@ -102,9 +121,7 @@ describe("compareResourceCommand", () => {
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource information available to compare")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource information available to compare"));
     });
 
     it("should show error when node has no resource", async () => {
@@ -115,13 +132,11 @@ describe("compareResourceCommand", () => {
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource information available to compare")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource information available to compare"));
     });
 
     it("should handle user cancelling region selection", async () => {
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(null);
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(null);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -137,8 +152,8 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -154,10 +169,10 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
       let validateInput: ((value: string) => string | undefined) | undefined;
-      (window.showInputBox as jest.Mock) = jest.fn().mockImplementation((options) => {
+      (window.showInputBox as jest.Mock).mockImplementation((options) => {
         validateInput = options.validateInput;
         return Promise.resolve("TESTPROG2");
       });
@@ -180,14 +195,14 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -208,8 +223,8 @@ describe("compareResourceCommand", () => {
         resourceName: "DIFFERENT_TYPE",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
@@ -220,14 +235,13 @@ describe("compareResourceCommand", () => {
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(Gui.showMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Cannot compare CICS resources of different types"),
-        { severity: MessageSeverity.ERROR }
-      );
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("Cannot compare CICS resources of different types"), {
+        severity: MessageSeverity.ERROR,
+      });
     });
 
     it("should successfully compare two resources", async () => {
@@ -238,20 +252,20 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([
           {
             meta: programMeta,
-            resource: new Resource({ name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
+            resource: new Resource({ program: "TESTPROG2", name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
-      (inspectResourceCommandUtils.showInspectResource as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -274,24 +288,22 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockError = new Error("Test error");
-      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => {
+      (ResourceContainer as jest.Mock).mockImplementation(() => {
         throw mockError;
       });
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to compare resources")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("Failed to compare resources"));
     });
 
     it("should use eyu_cicsname when regionName is not available", async () => {
       mockNode.regionName = undefined;
-      
+
       const mockTargetRegion = {
         profile: mockProfile,
         session: mockSession,
@@ -299,20 +311,20 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([
           {
             meta: programMeta,
-            resource: new Resource({ name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
+            resource: new Resource({ program: "TESTPROG2", name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
-      (inspectResourceCommandUtils.showInspectResource as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
