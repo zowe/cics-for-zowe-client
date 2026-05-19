@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with backslash 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with backslash 1`] = `"The local file '%s' was closed successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with backslash 2`] = `
 {
@@ -16,7 +16,7 @@ exports[`LocalFileHandler - Action Type Detection Action detection via handler p
 }
 `;
 
-exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with forward slash 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with forward slash 1`] = `"The local file '%s' was closed successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect CLOSE action from handler path with forward slash 2`] = `
 {
@@ -32,7 +32,7 @@ exports[`LocalFileHandler - Action Type Detection Action detection via handler p
 }
 `;
 
-exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with backslash 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with backslash 1`] = `"The local file '%s' was opened successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with backslash 2`] = `
 {
@@ -48,7 +48,7 @@ exports[`LocalFileHandler - Action Type Detection Action detection via handler p
 }
 `;
 
-exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with forward slash 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with forward slash 1`] = `"The local file '%s' was opened successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via handler path should detect OPEN action from handler path with forward slash 2`] = `
 {
@@ -64,7 +64,7 @@ exports[`LocalFileHandler - Action Type Detection Action detection via handler p
 }
 `;
 
-exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect CLOSE action from positionals array 1`] = `"The CICSLocalFile '%s' was closed successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect CLOSE action from positionals array 1`] = `"The local file '%s' was closed successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect CLOSE action from positionals array 2`] = `
 {
@@ -80,7 +80,7 @@ exports[`LocalFileHandler - Action Type Detection Action detection via positiona
 }
 `;
 
-exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect OPEN action from positionals array 1`] = `"The CICSLocalFile '%s' was opened successfully."`;
+exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect OPEN action from positionals array 1`] = `"The local file '%s' was opened successfully."`;
 
 exports[`LocalFileHandler - Action Type Detection Action detection via positionals array should detect OPEN action from positionals array 2`] = `
 {

@@ -281,7 +281,7 @@ export default {
           BUSY: "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
         },
         MESSAGES: {
-          SUCCESS: "The CICSLocalFile '%s' was closed successfully.",
+          SUCCESS: "The local file '%s' was closed successfully.",
           PROGRESS: "Closing local file from CICS",
         },
         EXAMPLES: {
@@ -305,7 +305,7 @@ export default {
           CICSPLEX: "The name of the CICSPlex in which to open the local file",
         },
         MESSAGES: {
-          SUCCESS: "The CICSLocalFile '%s' was opened successfully.",
+          SUCCESS: "The local file '%s' was opened successfully.",
           PROGRESS: "Opening local file in CICS",
         },
         EXAMPLES: {
