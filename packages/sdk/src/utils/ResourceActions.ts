@@ -77,48 +77,4 @@ export async function performAction(
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
 
-/**
- * Enables a CICS resource
- * @param session - The CMCI session
- * @param resourceType - The CMCI resource type
- * @param params - The resource parameters
- * @param criteriaField - The resource selection criteria field
- * @returns The CMCI API response
- * @throws Error if enable is not supported for this resource type
- */
-export async function enableResource(
-  session: AbstractSession,
-  resourceType: string,
-  params: IResourceActionParms,
-  criteriaField: string
-): Promise<ICMCIApiResponse> {
-  throw new Error(
-    `Enable operation is not yet implemented for ${resourceType}. ` +
-    `This operation requires additional parameters and validation. ` +
-    `Please refer to the CICS documentation for the specific enable requirements.`
-  );
-}
-
-/**
- * Disables a CICS resource
- * @param session - The CMCI session
- * @param resourceType - The CMCI resource type
- * @param params - The resource parameters
- * @param criteriaField - The resource selection criteria field
- * @returns The CMCI API response
- * @throws Error if disable is not supported for this resource type
- */
-export async function disableResource(
-  session: AbstractSession,
-  resourceType: string,
-  params: IResourceActionParms,
-  criteriaField: string
-): Promise<ICMCIApiResponse> {
-  throw new Error(
-    `Disable operation is not yet implemented for ${resourceType}. ` +
-    `This operation requires additional parameters and validation. ` +
-    `Please refer to the CICS documentation for the specific disable requirements.`
-  );
-}
-
 
