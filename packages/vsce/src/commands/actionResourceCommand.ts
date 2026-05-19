@@ -18,6 +18,7 @@ import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
 import type { CICSResourceContainerNode } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
+import PersistentStorage from "../utils/PersistentStorage";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
 import { resourceActionVerbMap, setResource } from "./setResource";
@@ -73,6 +74,13 @@ export const actionTreeItem = async ({
             ? l10n.t("{0} {1} ({2} of {3})", resourceActionVerbMap[action], resourceName, i + 1, nodes.length)
             : l10n.t("{0} of {1}", i + 1, nodes.length),
           increment: (1 / nodes.length) * constants.PERCENTAGE_MAX,
+        });
+
+        // Record this resource as recently interacted with (before action, so it records even on failure)
+        await PersistentStorage.appendRecentResource({
+          resourceName: node.getContainedResourceName(),
+          resourceType: node.getContainedResource().meta.resourceName,
+          humanReadableType: node.getContainedResource().meta.humanReadableNameSingular,
         });
 
         try {

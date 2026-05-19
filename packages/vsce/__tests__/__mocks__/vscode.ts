@@ -23,6 +23,10 @@ const mock = createVSCodeMock(jest);
 
 module.exports = {
   ...mock,
+  QuickPickItemKind: {
+    Separator: -1,
+    Default: 0,
+  },
   extensions: {
     getExtension: jest.fn().mockReturnValue({
       packageJSON: {

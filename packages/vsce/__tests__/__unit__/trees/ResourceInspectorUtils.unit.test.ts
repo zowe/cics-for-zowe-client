@@ -25,20 +25,22 @@ jest.mock("../../../src/utils/PersistentStorage", () => ({
   default: {
     getCriteria: jest.fn(),
     setCriteria: jest.fn(),
+    appendRecentResource: jest.fn().mockResolvedValue(undefined),
+    getRecentResources: jest.fn().mockReturnValue([]),
   },
 }));
 
 import { IProgram, IResourceContext } from "@zowe/cics-for-zowe-explorer-api";
+import { Gui } from "@zowe/zowe-explorer-api";
 import { ExtensionContext, ProgressLocation } from "vscode";
 import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
 import { IContainedResource, ProgramMeta } from "../../../src/doc";
 import CICSResourceExtender from "../../../src/extending/CICSResourceExtender";
 import { Resource, ResourceContainer } from "../../../src/resources";
-import { IResourceInspectorResource } from "../../../src/webviews/common/vscode";
 import { handleActionCommand, handleRefreshCommand } from "../../../src/trees/ResourceInspectorUtils";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import { IResourceInspectorResource } from "../../../src/webviews/common/vscode";
 import { profile } from "../../__mocks__";
-import { Gui } from "@zowe/zowe-explorer-api";
 
 const vscode = require("vscode");
 
@@ -215,9 +217,7 @@ describe("ResourceInspectorUtils", () => {
         const updatedResource2 = createMockContainedResource("PROG2");
 
         (mockInstance.getResources as jest.Mock).mockReturnValue([resource1, resource2]);
-        mockResourceContainer.fetchNextPage
-          .mockResolvedValueOnce([updatedResource1])
-          .mockResolvedValueOnce([updatedResource2]);
+        mockResourceContainer.fetchNextPage.mockResolvedValueOnce([updatedResource1]).mockResolvedValueOnce([updatedResource2]);
 
         const resources = [resource1, resource2];
 
