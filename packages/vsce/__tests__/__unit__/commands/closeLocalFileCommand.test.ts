@@ -10,7 +10,7 @@
  */
 
 import { commands, window, type TreeView, EventEmitter } from "vscode";
-import { getCloseLocalFileCommand } from "../../../src/commands/closeLocalFileCommand";
+import { getCloseLocalFileCommand } from "../../../src/commands/LocalFileCommandHandler";
 import * as commandUtils from "../../../src/utils/commandUtils";
 import * as actionResourceCommand from "../../../src/commands/actionResourceCommand";
 import type { CICSTree } from "../../../src/trees/CICSTree";

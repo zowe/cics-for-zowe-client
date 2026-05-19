@@ -13,5 +13,6 @@ export * from "./constants";
 export * from "./core";
 export * from "./doc";
 export * from "./methods";
+export * from "./resources";
 export * from "./rest";
 export * from "./utils";

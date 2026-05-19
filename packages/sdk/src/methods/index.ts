@@ -11,7 +11,6 @@
 
 export * from "./add-to-list";
 export * from "./cache";
-export * from "./close";
 export * from "./define";
 export * from "./delete";
 export * from "./disable";
