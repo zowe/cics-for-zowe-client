@@ -12,7 +12,6 @@
 export interface IRecentResource {
   resourceName: string;
   resourceType: string;
-  humanReadableType: string;
 }
 
 // Made with Bob

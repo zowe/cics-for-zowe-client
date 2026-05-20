@@ -42,7 +42,6 @@ export const handleActionCommand = async (
     await PersistentStorage.appendRecentResource({
       resourceName: resource.name,
       resourceType: resource.meta.resourceName,
-      humanReadableType: resource.meta.humanReadableNameSingular,
     });
   }
 

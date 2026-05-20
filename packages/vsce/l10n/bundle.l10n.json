@@ -28,9 +28,7 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": [
-      "Log level"
-    ]
+    "comment": ["Log level"]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -257,7 +255,7 @@
   "Cannot compare CICS resources of different types.": "Cannot compare CICS resources of different types.",
   "File": "File",
   "Enter resource name...": "Enter resource name...",
-  "Recent CICS {0}s": "Recent CICS {0}s",
+  "Recent CICS {0}": "Recent CICS {0}",
   "Search for this name": "Search for this name",
   "Type a name to search": "Type a name to search",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",

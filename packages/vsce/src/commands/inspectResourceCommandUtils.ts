@@ -56,7 +56,6 @@ export async function showInspectResource(
     await PersistentStorage.appendRecentResource({
       resourceName: res.containedResource.meta.getName(res.containedResource.resource),
       resourceType: res.containedResource.meta.resourceName,
-      humanReadableType: res.containedResource.meta.humanReadableNameSingular,
     });
   }
 }
@@ -153,6 +152,7 @@ export async function inspectResource(context: ExtensionContext) {
       const resourceName = await selectResource(
         resourceTypes.name,
         resourceTypes.meta[0].resourceName,
+        resourceTypes.meta[0].humanReadableNamePlural,
         resourceTypes.meta[0].maximumPrimaryKeyLength
       );
 
@@ -245,7 +245,12 @@ async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta
 
   return undefined;
 }
-async function selectResource(resourceNameSingular: string, resourceType: string, maxNameLength?: number): Promise<string | undefined> {
+async function selectResource(
+  resourceNameSingular: string,
+  resourceType: string,
+  resourceNamePlural: string,
+  maxNameLength?: number
+): Promise<string | undefined> {
   const recentForType = PersistentStorage.getRecentResources().filter((r) => r.resourceType === resourceType);
 
   // No recent resources for this type — fall back to plain input box
@@ -254,7 +259,7 @@ async function selectResource(resourceNameSingular: string, resourceType: string
   }
 
   const ENTER_NAME_LABEL = l10n.t("Enter resource name...");
-  const recentSectionLabel = l10n.t("Recent CICS {0}s", recentForType[0].humanReadableType);
+  const recentSectionLabel = l10n.t("Recent CICS {0}", resourceNamePlural);
 
   const buildItems = (typedValue?: string): QuickPickItem[] => {
     const items: QuickPickItem[] = [];
