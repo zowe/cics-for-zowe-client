@@ -9,12 +9,16 @@
  *
  */
 
+import { workspace, WorkspaceConfiguration } from "vscode";
 import { CICSTree } from "../../../src/trees";
 import { CICSRegionTree } from "../../../src/trees/CICSRegionTree";
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
+import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import * as iconUtils from "../../../src/utils/iconUtils";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { profile } from "../../__mocks__";
+import { ProgramMeta, type IResourceMeta } from "../../../src/doc";
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
 
@@ -53,7 +57,18 @@ describe("Test suite for CICSRegionTree", () => {
     expect(regionTree.isActive).toBeFalsy();
   });
 
-  it("Should load region Tree when cicsstate is ACTIVE", () => {
+  it("Should load region Tree when cicsstate is undefined and cicsstatus is used", () => {
+    const regionWithStatus = {
+      cicsname: "cics",
+      cicsstatus: "ACTIVE",
+    };
+    regionTree = new CICSRegionTree("regionName", regionWithStatus, sessionTree, undefined, sessionTree);
+
+    expect(getIconByStatusSpy).toHaveBeenCalledWith("REGION", regionTree);
+    expect(regionTree.isActive).toBeTruthy();
+  });
+
+  it("Should load region Tree when cicsstate is undefined and cicsstatus is not ACTIVE", () => {
     regionTree = new CICSRegionTree("regionName", region_undefined, sessionTree, undefined, sessionTree);
 
     expect(getIconByStatusSpy).toHaveBeenCalledWith("REGION", regionTree);
@@ -87,5 +102,114 @@ describe("Test suite for CICSRegionTree", () => {
     const expected = result.map((c) => `${c.label}`).sort((a, b) => a.localeCompare(b));
 
     expect(actual).toEqual(expected);
+  });
+
+  it("Should initialize with parentPlex when provided", () => {
+    const plexTree = new CICSPlexTree("TESTPLEX", profile, sessionTree);
+    const regionWithPlex = new CICSRegionTree("regionName", region, sessionTree, plexTree, sessionTree);
+
+    expect(regionWithPlex.parentPlex).toBeDefined();
+    expect(regionWithPlex.parentPlex).toBe(plexTree);
+    expect(regionWithPlex.cicsplexName).toBe("TESTPLEX");
+  });
+
+  it("Should return contained resource name", () => {
+    const result = regionTree.getContainedResourceName();
+    expect(result).toBe("APPLID");
+  });
+
+  it("Should return session node", () => {
+    const result = regionTree.getSessionNode();
+    expect(result).toBe(sessionTree);
+  });
+
+  it("Should get container node for resource type", async () => {
+    await regionTree.getChildren();
+    const programContainer = regionTree.getContainerNodeForResourceType(ProgramMeta);
+    expect(programContainer).toBeDefined();
+    expect(programContainer?.resourceTypes).toContain(ProgramMeta);
+  });
+
+  it("Should return undefined when container node not found for resource type", async () => {
+    await regionTree.getChildren();
+    const mockMeta: IResourceMeta<IResource> = {
+      humanReadableNamePlural: "MockResource",
+      humanReadableNameSingular: "MockResource",
+      resourceName: "MOCKRESOURCE",
+      buildCriteria: jest.fn(),
+      getDefaultCriteria: jest.fn(),
+      getLabel: jest.fn(),
+      getContext: jest.fn(),
+      getIconName: jest.fn(),
+      getName: jest.fn(),
+      getHighlights: jest.fn(),
+      getCriteriaHistory: jest.fn(),
+      appendCriteriaHistory: jest.fn(),
+    };
+    const result = regionTree.getContainerNodeForResourceType(mockMeta);
+    expect(result).toBeUndefined();
+  });
+
+  it("Should respect workspace configuration for Transaction resources", async () => {
+    // The mock in vscode.ts sets Transaction to false
+    const children = await regionTree.getChildren();
+    expect(children).toBeDefined();
+    
+    // Transaction should not be in children because it's disabled in the mock
+    const transactionContainer = children?.find((c) => c.label === "Transactions");
+    expect(transactionContainer).toBeUndefined();
+  });
+
+  it("Should respect workspace configuration for LocalFile resources", async () => {
+    // The mock in vscode.ts sets LocalFile to false
+    const children = await regionTree.getChildren();
+    expect(children).toBeDefined();
+    
+    // Files should not be in children because LocalFile is disabled in the mock
+    const filesContainer = children?.find((c) => c.label === "Files");
+    expect(filesContainer).toBeUndefined();
+  });
+
+  it("Should build children with all resources enabled", async () => {
+    // Mock workspace config to return true for all resources
+    const mockConfig: Partial<WorkspaceConfiguration> = {
+      get: jest.fn((key: string, defaultValue?: boolean) => {
+        const configMap: Record<string, boolean> = {
+          "Program": true,
+          "Transaction": true,
+          "LocalFile": true,
+          "Task": true,
+          "Library": true,
+          "Pipeline": true,
+          "TCP/IPService": true,
+          "URIMap": true,
+          "WebService": true,
+          "JVMServer": true,
+          "Bundle": true,
+          "TSQueue": true,
+        };
+        return configMap[key] ?? defaultValue ?? true;
+      }),
+      has: jest.fn(),
+      inspect: jest.fn(),
+      update: jest.fn(),
+    };
+
+    const getConfigSpy = jest.spyOn(workspace, "getConfiguration").mockReturnValue(mockConfig as WorkspaceConfiguration);
+
+    const newRegionTree = new CICSRegionTree("regionName", region, sessionTree, undefined, sessionTree);
+    const children = await newRegionTree.getChildren();
+
+    expect(children).toBeDefined();
+    expect(children?.length).toBe(12); // All 12 resource types should be present
+    
+    // Verify Transaction and Files are included
+    const transactionContainer = children?.find((c) => c.label === "Transactions");
+    expect(transactionContainer).toBeDefined();
+    
+    const filesContainer = children?.find((c) => c.label === "Files");
+    expect(filesContainer).toBeDefined();
+
+    getConfigSpy.mockRestore();
   });
 });

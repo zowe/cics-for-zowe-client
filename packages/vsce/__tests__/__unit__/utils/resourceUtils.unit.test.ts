@@ -386,6 +386,78 @@ describe("runGetCache", () => {
     
     expect(getCacheMock).toHaveBeenCalledTimes(1);
   });
+
+  it("should retry on 401 error with token and succeed", async () => {
+    getCacheMock.mockReset();
+    
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    const mockResponse = { response: { records: {} } };
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    const getSessionSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession); // For buildNewSession
+    
+    getErrorCodeMock.mockReturnValue(401);
+    
+    getCacheMock
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      })
+      .mockResolvedValueOnce(mockResponse);
+    
+    const result = await runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" });
+    
+    expect(result).toEqual(mockResponse);
+    expect(getCacheMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("should throw error when retry also fails with 401", async () => {
+    getCacheMock.mockReset();
+    
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    const getSessionSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession); // For buildNewSession
+    
+    getErrorCodeMock.mockReturnValue(401);
+    
+    getCacheMock.mockImplementation(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" })
+    ).rejects.toThrow();
+    
+    expect(getCacheMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("should throw error on 401 when no token value", async () => {
+    getCacheMock.mockReset();
+    
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = undefined;
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+    
+    getCacheMock.mockImplementationOnce(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" })
+    ).rejects.toThrow();
+    
+    expect(getCacheMock).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("runPutResource", () => {
@@ -441,6 +513,104 @@ describe("runPutResource", () => {
     expect(putResourceMock).toHaveBeenCalledTimes(1);
   });
 
+  it("should retry on 401 error with token and succeed", async () => {
+    putResourceMock.mockReset();
+    
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    const mockResponse = { response: { resultsummary: {} } };
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    const getSessionSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession); // For buildNewSession
+    
+    getErrorCodeMock.mockReturnValue(401);
+    
+    putResourceMock
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      })
+      .mockResolvedValueOnce(mockResponse);
+    
+    const result = await runPutResource(
+      {
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        regionName: "MYREG",
+        cicsPlex: "MYPLEX",
+      },
+      requestBody
+    );
+    
+    expect(result).toEqual(mockResponse);
+    expect(putResourceMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("should throw error when retry also fails with 401", async () => {
+    putResourceMock.mockReset();
+    
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    const getSessionSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession); // For buildNewSession
+    
+    getErrorCodeMock.mockReturnValue(401);
+    
+    putResourceMock.mockImplementation(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+        },
+        requestBody
+      )
+    ).rejects.toThrow();
+    
+    expect(putResourceMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("should throw error on 401 when no token value", async () => {
+    putResourceMock.mockReset();
+    
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = undefined;
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+    
+    putResourceMock.mockImplementationOnce(() => {
+      throw errorToThrow;
+    });
+    
+    await expect(
+      runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+        },
+        requestBody
+      )
+    ).rejects.toThrow();
+    
+    expect(putResourceMock).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("pollForCompleteAction", () => {
