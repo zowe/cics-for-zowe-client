@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	WireMock Test Scenario: NOTPERMIT with Empty Records Element
+	
+	This file simulates a CICS CMCI response where the user has NO authorization
+	to view a specific resource type (e.g., PROGRAM).
+	
+	Error Details:
+	- api_response1: 1031 (NOTPERMIT) - User lacks permissions
+	- api_response2: 1345 (USRID) - User ID related authorization issue
+	- api_response1_alt: "NOTPERMIT"
+	- api_response2_alt: "USRID"
+	
+	Scenario:
+	The NOTPERMIT error is returned with an EMPTY <records> element (not missing).
+	This represents a scenario where the user tries to expand a resource type
+	(e.g., Programs tab) but has no authorization to view that resource type.
+	
+	Key Difference from Other Scenarios:
+	- MYPLEX3: NOTPERMIT with records present → SDK accepts, partialResults=true
+	- MYPLEX4: NOTPERMIT with NO <records> element → SDK throws error
+	- THIS: NOTPERMIT with EMPTY <records> element → SDK throws error
+	
+	Expected Behavior:
+	The SDK should throw an error because the records object is empty (no keys).
+	This is treated the same as having no records element at all.
+	
+	Related Code:
+	- packages/sdk/src/rest/CicsCmciRestClient.ts (verifyResponseCodes method)
+	- Object.keys(apiResponse.response.records).length > 0 check
+	
+	SDK Logic:
+	if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
+	  // This condition is NOT met when records is empty {}
+	  return apiResponse;
+	}
+	// Falls through to error handling
+	throw new ImperativeError(...);
+-->
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int https://host:12345/CICSSystemManagement/schema/CICSSystemManagement.xsd" version="3.0" connect_version="0630">
+	<resultsummary api_source="CICSPlex SM" api_function="GET" api_response1="1031" api_response2="1345" api_response1_alt="NOTPERMIT" api_response2_alt="USRID" recordcount="0" displayed_recordcount="0" />
+	<records>
+	</records>
+</response>
+
+<!-- Made with Bob -->

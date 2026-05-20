@@ -1,4 +1,28 @@
 <?xml version="1.0"?>
+<!--
+	WireMock Test Scenario: NOTPERMIT with Partial Authorization
+	
+	This file simulates a CICS CMCI response where the user has partial authorization.
+	
+	Error Details:
+	- api_response1: 1031 (NOTPERMIT) - User lacks full permissions
+	- api_response2: 1345 (USRID) - User ID related authorization issue
+	- api_response1_alt: "NOTPERMIT"
+	- api_response2_alt: "USRID"
+	
+	Scenario:
+	Despite the NOTPERMIT error, the response includes 5 managed region records.
+	This represents a partial authorization scenario where the user can see some
+	data but doesn't have full access permissions.
+	
+	Expected Behavior:
+	The SDK should accept this response as valid when records are present,
+	allowing the application to display the partial data to the user.
+	
+	Related Code:
+	- packages/sdk/src/rest/CicsCmciRestClient.ts (verifyResponseCodes method)
+	- packages/sdk/src/constants/CicsCmci.constants.ts (RESPONSE_1_CODES.NOTPERMIT)
+-->
 <response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+	WireMock Test Scenario: NOTPERMIT with Complete Authorization Failure
+	
+	This file simulates a CICS CMCI response where the user has NO authorization.
+	
+	Error Details:
+	- api_response1: 1031 (NOTPERMIT) - User lacks permissions
+	- api_response2: 1345 (USRID) - User ID related authorization issue
+	- api_response1_alt: "NOTPERMIT"
+	- api_response2_alt: "USRID"
+	
+	Scenario:
+	The NOTPERMIT error is returned with NO records in the response.
+	This represents a complete authorization failure where the user cannot see
+	any data due to insufficient permissions.
+	
+	Expected Behavior:
+	The SDK should reject this response and throw an error since no records
+	are present. This is different from the partial authorization scenario
+	where records are present despite the NOTPERMIT error.
+	
+	Comparison with Partial Authorization:
+	- MYPLEX3: NOTPERMIT with 5 records (partial auth) - SDK accepts
+	- MYPLEX4: NOTPERMIT with 0 records (no auth) - SDK rejects
+	
+	Related Code:
+	- packages/sdk/src/rest/CicsCmciRestClient.ts (verifyResponseCodes method)
+	- packages/sdk/src/constants/CicsCmci.constants.ts (RESPONSE_1_CODES.NOTPERMIT)
+	
+	SDK Logic:
+	// Accept NOTPERMIT (1031) if records are present (partial authorization)
+	if (apiResponse.response?.resultsummary?.api_response1 === "1031" && apiResponse.response?.records) {
+	  return apiResponse; // Accepted
+	}
+	// Otherwise, throw error (complete authorization failure)
+-->
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+	version="3.0" connect_version="0610">
+	<resultsummary api_source="CICSPlex SM" api_function="GET" api_response1="1031" api_response2="1345" api_response1_alt="NOTPERMIT" api_response2_alt="USRID"
+		recordcount="0" displayed_recordcount="0" />
+</response>
+

@@ -1,10 +1,21 @@
 <?xml version="1.0"?>
+<!--
+	WireMock Test File: CICS Plexes List
+	
+	This file contains the list of available CICS Plexes for testing.
+	
+	Test Plexes:
+	- MYPLEX1: Standard successful responses
+	- MYPLEX2: Standard successful responses
+	- MYPLEX3: NOTPERMIT with partial authorization (5 regions visible)
+	- MYPLEX4: NOTPERMIT with complete authorization failure (0 regions visible)
+-->
 <response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
 	version="3.0" connect_version="0610">
 	<resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
-		recordcount="3" displayed_recordcount="3" />
+		recordcount="4" displayed_recordcount="4" />
 	<records>
 		<cicscicsplex _keydata="C3C9C3E2C5E7F6F1C9E8C3E6C5D5C3D4" accesstype="LOCAL" botrsupd="1"
 			cmasname="MYCMAS1" mpstatus="YES" plexname="MYPLEX1" readrs="200" rspoolid="DFHRSTAT"
@@ -14,6 +25,9 @@
 			status="ACTIVE" sysid="MYCM" toprsupd="5" transitcmas="" transitcnt="0" updaters="15" />
 		<cicscicsplex _keydata="D4E8D7D3C5E7F3C4C1E3C1C2C1E2C5" accesstype="LOCAL" botrsupd="1"
 			cmasname="MYCMAS1" mpstatus="YES" plexname="MYPLEX3" readrs="200" rspoolid="DFHRSTAT"
+			status="ACTIVE" sysid="MYCM" toprsupd="5" transitcmas="" transitcnt="0" updaters="15" />
+		<cicscicsplex _keydata="D4E8D7D3C5E7F4D5D6C1E4E3C8C4C1" accesstype="LOCAL" botrsupd="1"
+			cmasname="MYCMAS1" mpstatus="YES" plexname="MYPLEX4" readrs="200" rspoolid="DFHRSTAT"
 			status="ACTIVE" sysid="MYCM" toprsupd="5" transitcmas="" transitcnt="0" updaters="15" />
 	</records>
 </response>

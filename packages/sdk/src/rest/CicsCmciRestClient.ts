@@ -208,15 +208,30 @@ export class CicsCmciRestClient extends AbstractRestClient {
       okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
-    // Also accept NOTPERMIT (1031) if records are present (partial authorization scenario)
-    if (apiResponse.response?.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT}` && apiResponse.response?.records) {
+    // If we have records, return them regardless of error codes
+    // This handles partial authorization scenarios (e.g., NOTPERMIT with some data)
+    // and other cases where partial results are available (e.g., CMAS down)
+    if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
+      // Check if there's an error code but we're returning data anyway
+      if (!okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+        // Set flag to indicate partial results
+        apiResponse.partialResults = true;
+        
+        this.log.warn(
+          `CMCI request returned error code ${apiResponse.response?.resultsummary?.api_response1} ` +
+          `(${apiResponse.response?.resultsummary?.api_response1_alt}) but also returned records. ` +
+          `Returning partial results.`
+        );
+      }
       return apiResponse;
     }
 
+    // If response code is OK, return it (even if no records)
     if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
       return apiResponse;
     }
 
+    // No records and error code - throw error
     if (requestOptions?.useCICSCmciRestError) {
       throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
     }

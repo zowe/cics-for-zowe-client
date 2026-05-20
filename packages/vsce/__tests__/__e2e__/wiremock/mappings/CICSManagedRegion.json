@@ -27,13 +27,28 @@
       }
     },
     {
+      "name": "Get Managed Regions for MYPLEX3 - NOTPERMIT with Partial Authorization",
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX3/"
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSManagedRegion/myplex3-records.xml",
+        "bodyFileName": "CICSManagedRegion/myplex3-notpermit-partial-auth-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Managed Regions for MYPLEX4 - NOTPERMIT with Complete Authorization Failure",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSManagedRegion/MYPLEX4/"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSManagedRegion/myplex4-notpermit-no-auth-records.xml",
         "headers": {
           "Content-Type": "text/xml"
         }

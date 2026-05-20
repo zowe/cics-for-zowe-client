@@ -248,5 +248,107 @@ describe("CicsCmciRestClient tests", () => {
       expect(postClientExpect).toHaveBeenCalledTimes(1);
       expect(response).toEqual(commonExpectedJson);
     });
+
+  describe("Error handling with partial results", () => {
+    // Test NOTPERMIT with records (partial authorization)
+    it("should return records when NOTPERMIT error occurs but records are present", async () => {
+      const notpermitWithRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' />" +
+        "<records><cicsmanagedregion name='MYREG1'/><cicsmanagedregion name='MYREG2'/></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitWithRecordsXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders);
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.records).toBeDefined();
+      expect(response.response.records.cicsmanagedregion).toBeDefined();
+      expect(response.response.resultsummary.api_response1).toBe("1031");
+      expect(response.partialResults).toBe(true); // Flag should be set
+    });
+
+    // Test NOTPERMIT without records (complete authorization failure)
+    it("should throw error when NOTPERMIT occurs with no records", async () => {
+      const notpermitNoRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitNoRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test other error codes with records (e.g., CMAS down scenario)
+    it("should return records when other error codes occur but records are present", async () => {
+      const errorWithRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1034' api_response2='0' api_response1_alt='NOTAVAILABLE' api_response2_alt='' />" +
+        "<records><program name='PROG1'/></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(errorWithRecordsXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders);
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.records).toBeDefined();
+      expect(response.response.records.program).toBeDefined();
+      expect(response.response.resultsummary.api_response1).toBe("1034");
+      expect(response.partialResults).toBe(true); // Flag should be set
+    });
+
+    // Test error without records still throws
+    it("should throw error when error code occurs with no records", async () => {
+      const errorNoRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1028' api_response2='0' api_response1_alt='INVALIDPARM' api_response2_alt='' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(errorNoRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test that OK response with no records still works (for failOnNoData=false)
+    it("should handle OK response with no records when failOnNoData=false", async () => {
+      const okNoRecordsXml = "<response>" + "<resultsummary api_response1='1024' api_response2='0' />" + "</response>";
+
+      restClientExpect.mockResolvedValueOnce(okNoRecordsXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.resultsummary.api_response1).toBe("1024");
+      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for OK responses
+    });
+
+    // Test NODATA response code with failOnNoData=false
+    it("should handle NODATA response when failOnNoData=false", async () => {
+      const nodataXml =
+        "<response>" +
+        "<resultsummary api_response1='1027' api_response2='0' api_response1_alt='NODATA' api_response2_alt='' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(nodataXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.resultsummary.api_response1).toBe("1027");
+      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for NODATA responses
+    });
+  });
+
+    // Test NOTPERMIT with empty records element (resource type not authorized)
+    it("should throw error when NOTPERMIT occurs with empty records element", async () => {
+      const notpermitEmptyRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' recordcount='0' displayed_recordcount='0' />" +
+        "<records></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitEmptyRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
   });
 });
