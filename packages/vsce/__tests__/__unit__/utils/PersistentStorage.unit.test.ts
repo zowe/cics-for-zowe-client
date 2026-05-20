@@ -20,10 +20,9 @@ describe("PersistentStorage - recentResources", () => {
     workspaceConfigurationUpdateMock.mockResolvedValue(undefined);
   });
 
-  const makeResource = (resourceName: string, resourceType: string, humanReadableType = "Program"): IRecentResource => ({
+  const makeResource = (resourceName: string, resourceType: string): IRecentResource => ({
     resourceName,
     resourceType,
-    humanReadableType,
   });
 
   describe("getRecentResources", () => {
@@ -83,10 +82,10 @@ describe("PersistentStorage - recentResources", () => {
     });
 
     it("does not deduplicate entries with the same name but different resourceType", async () => {
-      const existing = [makeResource("MYRES", "CICSProgram", "Program")];
+      const existing = [makeResource("MYRES", "CICSProgram")];
       workspaceConfigurationGetMock.mockReturnValue(existing);
 
-      await PersistentStorage.appendRecentResource(makeResource("MYRES", "CICSLocalTransaction", "Transaction"));
+      await PersistentStorage.appendRecentResource(makeResource("MYRES", "CICSLocalTransaction"));
 
       const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].recentResources as IRecentResource[];
       expect(saved.length).toBe(2);
@@ -120,7 +119,7 @@ describe("PersistentStorage - recentResources", () => {
         makeResource("PROG3", "CICSProgram"),
         makeResource("PROG4", "CICSProgram"),
         makeResource("PROG5", "CICSProgram"),
-        makeResource("TRAN1", "CICSLocalTransaction", "Transaction"),
+        makeResource("TRAN1", "CICSLocalTransaction"),
       ];
       workspaceConfigurationGetMock.mockReturnValue(existing);
 

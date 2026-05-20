@@ -89,12 +89,10 @@ async function compareResourceFromInspector(currentResource: IResourceInspectorR
     await PersistentStorage.appendRecentResource({
       resourceName: currentResource.name,
       resourceType: currentResource.meta.resourceName,
-      humanReadableType: currentResource.meta.humanReadableNameSingular,
     });
     await PersistentStorage.appendRecentResource({
       resourceName: secondResource.meta.getName(secondResource.resource),
       resourceType: secondResource.meta.resourceName,
-      humanReadableType: secondResource.meta.humanReadableNameSingular,
     });
 
     // Step 4: Validate both resources are same type
@@ -141,7 +139,7 @@ async function selectResourceNameForComparison(resourceMeta: IResourceMeta<IReso
   }
 
   const ENTER_NAME_LABEL = l10n.t("Enter resource name...");
-  const recentSectionLabel = l10n.t("Recent CICS {0}s", recentForType[0].humanReadableType);
+  const recentSectionLabel = l10n.t("Recent CICS {0}", resourceMeta.humanReadableNamePlural);
 
   const buildItems = (typedValue?: string): QuickPickItem[] => {
     const items: QuickPickItem[] = [];

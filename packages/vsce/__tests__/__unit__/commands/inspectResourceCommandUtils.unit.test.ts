@@ -96,10 +96,9 @@ const makeCICSRegion = () => ({
   session: {},
 });
 
-const makeRecentResource = (resourceName: string, resourceType: string, humanReadableType = "Program"): IRecentResource => ({
+const makeRecentResource = (resourceName: string, resourceType: string): IRecentResource => ({
   resourceName,
   resourceType,
-  humanReadableType,
 });
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -131,7 +130,6 @@ describe("inspectResourceCommandUtils", () => {
       expect(appendRecentResourceMock).toHaveBeenCalledWith(
         expect.objectContaining({
           resourceType: ProgramMeta.resourceName,
-          humanReadableType: ProgramMeta.humanReadableNameSingular,
         })
       );
     });
@@ -179,7 +177,7 @@ describe("inspectResourceCommandUtils", () => {
 
     it("shows QuickPick with Recent Resources section when recent resources exist for the selected type", async () => {
       getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
-      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName, ProgramMeta.humanReadableNameSingular)]);
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName)]);
 
       // First QuickPick: resource type selection
       const typeQuickPick = makeQuickPick();
@@ -200,10 +198,10 @@ describe("inspectResourceCommandUtils", () => {
       // createQuickPick called twice: once for type, once for resource name
       expect(createQuickPickMock).toHaveBeenCalledTimes(2);
 
-      // The name QuickPick items should include a "Recent CICS Program" separator
+      // The name QuickPick items should include a "Recent CICS Programs" separator
       const items = nameQuickPick.items as any[];
       const separatorItem = items.find(
-        (i) => i.label === `Recent CICS ${ProgramMeta.humanReadableNameSingular}s` && i.kind === QuickPickItemKind.Separator
+        (i) => i.label === `Recent CICS ${ProgramMeta.humanReadableNamePlural}` && i.kind === QuickPickItemKind.Separator
       );
       expect(separatorItem).toBeDefined();
 
@@ -216,7 +214,7 @@ describe("inspectResourceCommandUtils", () => {
     it("does not show recent resources of a different type in the QuickPick", async () => {
       getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
       // Only transaction recent resources stored
-      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYTRAN", "CICSLocalTransaction", "Transaction")]);
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYTRAN", "CICSLocalTransaction")]);
 
       // First QuickPick: resource type selection → Program
       const typeQuickPick = makeQuickPick();
@@ -239,7 +237,7 @@ describe("inspectResourceCommandUtils", () => {
 
     it("falls back to showInputBox when user selects 'Enter resource name...' sentinel item", async () => {
       getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
-      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName, ProgramMeta.humanReadableNameSingular)]);
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName)]);
 
       // First QuickPick: type selection
       const typeQuickPick = makeQuickPick();
@@ -264,7 +262,7 @@ describe("inspectResourceCommandUtils", () => {
 
     it("returns undefined and shows error when selected name exceeds max length", async () => {
       getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
-      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName, ProgramMeta.humanReadableNameSingular)]);
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName)]);
 
       // First QuickPick: type selection
       const typeQuickPick = makeQuickPick();
