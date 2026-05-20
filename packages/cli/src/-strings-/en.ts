@@ -291,6 +291,29 @@ export default {
       },
     },
   },
+  OPEN: {
+    SUMMARY: "Open resources in CICS",
+    DESCRIPTION: "Open resources (for example, local files) in CICS through IBM CMCI.",
+    RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Open a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to open. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to open the local file",
+          CICSPLEX: "The name of the CICSPlex in which to open the local file",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was opened successfully.",
+          PROGRESS: "Opening local file in CICS",
+        },
+        EXAMPLES: {
+          EX1: "Open a local file named TESTFILE in the region named MYREGION",
+        },
+      },
+    },
+  },
   DISABLE: {
     SUMMARY: "Disable resources from CICS",
     DESCRIPTION: "Disable resources (for example, urimaps) from CICS through IBM CMCI.",

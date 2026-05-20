@@ -1,0 +1,148 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
+import { Session } from "@zowe/imperative";
+import { CicsCmciConstants, CicsCmciRestClient, openLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "../../../src";
+
+describe("CMCI - Open local file", () => {
+  const localFile = "TESTFILE";
+  const region = "region";
+  const content = "ThisIsATest" as unknown as ICMCIApiResponse;
+
+  const openParms: ILocalFileParms = {
+    regionName: region,
+    name: localFile,
+  };
+
+  const dummySession = new Session({
+    user: "testuser",
+    password: "testpass",
+    hostname: "test.cics.host.com",
+    port: 1490,
+  });
+
+  let error: any;
+  let response: any;
+  let endPoint: any;
+  let requestBody: any;
+
+  describe("validation", () => {
+    beforeEach(() => {
+      response = undefined;
+      error = undefined;
+      openParms.regionName = region;
+      openParms.name = localFile;
+    });
+
+    it("should throw an error if no region name is specified", async () => {
+      (openParms as any).regionName = undefined;
+      try {
+        response = await openLocalFile(dummySession, openParms);
+      } catch (err) {
+        error = err;
+      }
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toContain("CICS region name is required");
+    });
+
+    it("should throw an error if no local file name is specified", async () => {
+      (openParms as any).name = undefined;
+      try {
+        response = await openLocalFile(dummySession, openParms);
+      } catch (err) {
+        error = err;
+      }
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toContain("CICS local file name is required");
+    });
+
+    it("should throw an error if file name exceeds maximum length", async () => {
+      openParms.name = "TOOLONGNAME"; // 11 characters, exceeds 8 char limit
+      try {
+        response = await openLocalFile(dummySession, openParms);
+      } catch (err) {
+        error = err;
+      }
+      expect(response).toBeUndefined();
+      expect(error).toBeDefined();
+      expect(error.message).toContain("exceeds maximum length");
+      expect(error.message).toContain("8 characters");
+    });
+  });
+
+  describe("success scenarios", () => {
+    const openSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
+
+    beforeEach(() => {
+      response = undefined;
+      error = undefined;
+      openSpy.mockClear();
+      openSpy.mockResolvedValue(content);
+      openParms.regionName = region;
+      openParms.name = localFile;
+    });
+
+    it("should be able to open a local file", async () => {
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
+        "/" +
+        region +
+        `?CRITERIA=(file%3D${openParms.name})`;
+      requestBody = {
+        request: {
+          action: {
+            $: {
+              name: "OPEN",
+            },
+          },
+        },
+      };
+
+      response = await openLocalFile(dummySession, openParms);
+      expect(response).toContain(content);
+      expect(openSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+    });
+
+    it("should be able to open a local file with cicsPlex", async () => {
+      openParms.cicsPlex = "PLEX1";
+      endPoint =
+        "/" +
+        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
+        "/" +
+        CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
+        "/" +
+        openParms.cicsPlex +
+        "/" +
+        region +
+        `?CRITERIA=(file%3D${openParms.name})`;
+      requestBody = {
+        request: {
+          action: {
+            $: {
+              name: "OPEN",
+            },
+          },
+        },
+      };
+
+      response = await openLocalFile(dummySession, openParms);
+      expect(response).toContain(content);
+      expect(openSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+    });
+  });
+});
+
+

@@ -918,7 +918,7 @@
     "postcss-preset-env": "^10.4.0",
     "tailwindcss": "^4.1.17",
     "webpack": "^5.103.0",
-    "webpack-dev-server": "^5.2.2",
+    "webpack-dev-server": "^5.2.4",
     "raw-loader": "^4.0.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

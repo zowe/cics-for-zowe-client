@@ -10,3 +10,4 @@
  */
 
 export * from "./Utils";
+export * from "./ResourceActions";
