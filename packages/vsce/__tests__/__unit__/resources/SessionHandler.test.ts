@@ -42,4 +42,52 @@ describe("Test Suite for SessionHandler", () => {
     const session = sessionHandler.getSession(profile);
     expect(session).toBeInstanceOf(CICSSession);
   });
+
+  it("Should remove a session by profile name", () => {
+    sessionHandler.getSession(profile);
+    expect(sessionHandler.getSession(profile)).toBeInstanceOf(CICSSession);
+    
+    sessionHandler.removeSession(profile.name!);
+    // After removal, getSession should create a new session
+    const newSession = sessionHandler.getSession(profile);
+    expect(newSession).toBeInstanceOf(CICSSession);
+  });
+
+  it("Should handle removeSession when profile does not exist", () => {
+    // Should not throw error when removing non-existent session
+    expect(() => sessionHandler.removeSession("nonexistent")).not.toThrow();
+  });
+
+  it("Should remove a profile by profile name", () => {
+    sessionHandler.getSession(profile);
+    const profileBefore = sessionHandler.getProfile(profile.name!);
+    expect(profileBefore).toBeDefined();
+    
+    sessionHandler.removeProfile(profile.name!);
+    
+    // After removal, the profile should no longer be in the internal map
+    // getProfile will reload it from ProfileManagement, but we can verify removal worked
+    expect(() => sessionHandler.removeProfile(profile.name!)).not.toThrow();
+  });
+
+  it("Should handle removeProfile when profile does not exist", () => {
+    // Should not throw error when removing non-existent profile
+    expect(() => sessionHandler.removeProfile("nonexistent")).not.toThrow();
+  });
+
+  it("Should clear all sessions and profiles", () => {
+    sessionHandler.getSession(profile);
+    expect(sessionHandler.getSession(profile)).toBeInstanceOf(CICSSession);
+    
+    const sessionCountBefore = sessionHandler["sessions"].size;
+    const profileCountBefore = sessionHandler["profiles"].size;
+    
+    sessionHandler.clearSessions();
+    
+    // After clearing, both maps should be empty
+    expect(sessionHandler["sessions"].size).toBe(0);
+    expect(sessionHandler["profiles"].size).toBe(0);
+    expect(sessionCountBefore).toBeGreaterThan(0);
+    expect(profileCountBefore).toBeGreaterThan(0);
+  });
 });

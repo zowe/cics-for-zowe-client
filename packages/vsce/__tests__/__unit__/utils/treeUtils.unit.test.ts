@@ -10,30 +10,12 @@
  */
 
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
-import { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
+import { CICSSession, ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { ProgramMeta } from "../../../src/doc";
-import { CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree } from "../../../src/trees";
-import PersistentStorage from "../../../src/utils/PersistentStorage";
-import { evaluateTreeNodes } from "../../../src/utils/treeUtils";
+import { CICSResourceContainerNode, CICSTree, CICSSessionTree, CICSRegionTree, CICSPlexTree } from "../../../src/trees";
+import { evaluateTreeNodes, findResourceNodeInTree } from "../../../src/utils/treeUtils";
 import { profile } from "../../__mocks__";
 
-jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(250);
-jest.spyOn(PersistentStorage, "getDefaultResourceFilter").mockReturnValue("Program=A*");
-jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
-
-const cicsTree = new CICSTree();
-const sessionTree = new CICSSessionTree(profile, cicsTree);
-const regionTree = new CICSRegionTree("REG", {}, sessionTree, undefined, sessionTree);
-const parentNode = new CICSResourceContainerNode(
-  "Programs",
-  {
-    parentNode: regionTree,
-    profile,
-    regionName: "REG",
-  },
-  undefined,
-  [ProgramMeta]
-);
 const prog: IProgram = {
   eyu_cicsname: "REG",
   library: "",
@@ -48,53 +30,331 @@ const prog: IProgram = {
 };
 
 describe("Tree Utils tests", () => {
-  let resourceNode: CICSResourceContainerNode<IProgram>;
+  describe("evaluateTreeNodes tests", () => {
+    let resourceNode: CICSResourceContainerNode<IProgram>;
+    let parentNode: CICSResourceContainerNode<IProgram>;
 
-  beforeEach(() => {
-    resourceNode = new CICSResourceContainerNode(
-      "APROG1",
-      {
-        parentNode,
-        profile,
+    beforeEach(() => {
+      parentNode = {
+        updateStoredItem: jest.fn(),
+      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+
+      resourceNode = {
+        getParent: jest.fn().mockReturnValue(parentNode),
+      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+    });
+
+    it("should do nothing if no record is returned", () => {
+      const apiResp: ICMCIApiResponse = {
+        response: {
+          records: [],
+          resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" },
+        },
+      };
+
+      evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
+
+      expect(parentNode.updateStoredItem).not.toHaveBeenCalled();
+    });
+
+    it("should update the record in the resource node", () => {
+      const updatedProgram = { ...prog, newcopycnt: 2 };
+      const apiResp: ICMCIApiResponse = {
+        response: {
+          records: {
+            cicsprogram: updatedProgram,
+          },
+          resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" },
+        },
+      };
+
+      evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
+
+      expect(parentNode.updateStoredItem).toHaveBeenCalledTimes(1);
+      expect(parentNode.updateStoredItem).toHaveBeenCalledWith({ meta: ProgramMeta, resource: { attributes: updatedProgram } });
+    });
+  });
+
+  describe("findResourceNodeInTree tests", () => {
+    it("should return undefined when session node is not found", () => {
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(undefined),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
         regionName: "REG",
-      },
-      {
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
         meta: ProgramMeta,
         resource: { attributes: prog },
-      },
-      [ProgramMeta]
-    );
+      };
 
-    jest.resetAllMocks();
-  });
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
 
-  it("should do nothing if no record is returned", () => {
-    const apiResp: ICMCIApiResponse = {
-      response: {
-        records: [],
-        resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" },
-      },
-    };
-    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "updateStoredItem");
-    evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
+    it("should return undefined when session node has no children", () => {
+      const mockSessionNode = {
+        children: [],
+      } as Partial<CICSSessionTree> as CICSSessionTree;
 
-    expect(updateItemSpy).not.toHaveBeenCalled();
-  });
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
 
-  it("should update the record in the resource node", () => {
-    const updatedProgram = { ...prog, newcopycnt: 2 };
-    const apiResp: ICMCIApiResponse = {
-      response: {
-        records: {
-          cicsprogram: updatedProgram,
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
         },
-        resultsummary: { api_response1: "", api_response2: "", displayed_recordcount: "0", recordcount: "0" },
-      },
-    };
-    const updateItemSpy = jest.spyOn(CICSResourceContainerNode.prototype, "updateStoredItem");
-    evaluateTreeNodes(resourceNode, apiResp, ProgramMeta);
+      } as Partial<CICSSession> as CICSSession;
 
-    expect(updateItemSpy).toHaveBeenCalledTimes(1);
-    expect(updateItemSpy).toHaveBeenCalledWith({ meta: ProgramMeta, resource: { attributes: updatedProgram } });
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "REG",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when region node is not found", () => {
+      const mockSessionNode = {
+        children: [] as (CICSPlexTree | CICSRegionTree)[],
+        getRegionNodeFromName: jest.fn().mockReturnValue(undefined),
+      } as Partial<CICSSessionTree> as CICSSessionTree;
+
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "NONEXISTENT",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when region node has no children", () => {
+      const mockRegionNode = {
+        children: [],
+      } as Partial<CICSRegionTree> as CICSRegionTree;
+
+      const mockSessionNode = {
+        children: [] as (CICSPlexTree | CICSRegionTree)[],
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as Partial<CICSSessionTree> as CICSSessionTree;
+
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "REG",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when parent node is not found", () => {
+      const mockRegionNode = {
+        children: [],
+        getContainerNodeForResourceType: jest.fn().mockReturnValue(undefined),
+      } as Partial<CICSRegionTree> as CICSRegionTree;
+
+      const mockSessionNode = {
+        children: [] as (CICSPlexTree | CICSRegionTree)[],
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as Partial<CICSSessionTree> as CICSSessionTree;
+
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "REG",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when parent node has no children", () => {
+      const mockParentNode = {
+        children: [],
+      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+
+      const mockRegionNode = {
+        children: [],
+        getContainerNodeForResourceType: jest.fn().mockReturnValue(mockParentNode),
+      } as Partial<CICSRegionTree> as CICSRegionTree;
+
+      const mockSessionNode = {
+        children: [] as (CICSPlexTree | CICSRegionTree)[],
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as Partial<CICSSessionTree> as CICSSessionTree;
+
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "REG",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBeUndefined();
+    });
+
+    it("should return the resource node when found", () => {
+      const mockResourceNode = {
+        label: "APROG",
+      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+
+      const mockParentNode = {
+        children: [mockResourceNode],
+        getChildNodeMatchingResourceName: jest.fn().mockReturnValue(mockResourceNode),
+      } as Partial<CICSResourceContainerNode<IProgram>> as CICSResourceContainerNode<IProgram>;
+
+      const mockRegionNode = {
+        children: [mockParentNode] as CICSResourceContainerNode<IProgram>[],
+        getContainerNodeForResourceType: jest.fn().mockReturnValue(mockParentNode),
+      } as Partial<CICSRegionTree> as CICSRegionTree;
+
+      const mockSessionNode = {
+        children: [mockRegionNode] as (CICSPlexTree | CICSRegionTree)[],
+        getRegionNodeFromName: jest.fn().mockReturnValue(mockRegionNode),
+      } as Partial<CICSSessionTree> as CICSSessionTree;
+
+      const mockCicsTree = {
+        getSessionNodeForProfile: jest.fn().mockReturnValue(mockSessionNode),
+      } as Partial<CICSTree> as CICSTree;
+
+      const mockSession = {
+        ISession: {
+          hostname: "test",
+          port: 1234,
+          user: "user",
+          password: "pass",
+          type: "basic",
+        },
+      } as Partial<CICSSession> as CICSSession;
+
+      const mockResourceContext = {
+        profile: profile,
+        regionName: "REG",
+        cicsplexName: undefined as string | undefined,
+        session: mockSession,
+      };
+
+      const mockResource = {
+        meta: ProgramMeta,
+        resource: { attributes: prog },
+      };
+
+      const result = findResourceNodeInTree(mockCicsTree, mockResourceContext, mockResource);
+      expect(result).toBe(mockResourceNode);
+      expect(mockParentNode.getChildNodeMatchingResourceName).toHaveBeenCalledWith(mockResource);
+    });
   });
 });
+
+

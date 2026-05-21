@@ -14,7 +14,7 @@ import type { IProfileLoaded } from "@zowe/imperative";
 import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
 
 describe("ICICSRegionWithSession", () => {
-  it("should define the interface structure", () => {
+  it("should define the interface structure with all required properties", () => {
     const mockRegionWithSession: ICICSRegionWithSession = {
       profile: {
         name: "testProfile",
@@ -32,14 +32,13 @@ describe("ICICSRegionWithSession", () => {
     expect(mockRegionWithSession.regionName).toBe("REGION1");
   });
 
-  it("should allow optional cicsPlexName", () => {
+  it("should allow cicsPlexName to be optional", () => {
     const mockRegionWithSession: ICICSRegionWithSession = {
       profile: {
         name: "testProfile",
         profile: {},
         type: "cics",
       } as IProfileLoaded,
-      cicsPlexName: undefined,
       session: {} as CICSSession,
       regionName: "REGION1",
     };
@@ -47,3 +46,4 @@ describe("ICICSRegionWithSession", () => {
     expect(mockRegionWithSession.cicsPlexName).toBeUndefined();
   });
 });
+

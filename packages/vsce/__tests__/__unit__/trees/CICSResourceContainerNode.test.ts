@@ -237,7 +237,7 @@ describe("CICSResourceContainerNode tests", () => {
     const updatedChildren = await containerNode.getChildren();
     expect(
       updatedChildren
-        .map((c) => (c as unknown as CICSResourceContainerNode<IProgram>).getContainedResource().resource.attributes.newcopycnt)
+        .map((c) => (c  as CICSResourceContainerNode<IProgram>).getContainedResource().resource.attributes.newcopycnt)
         .includes("700")
     ).toBeTruthy();
   });
@@ -487,5 +487,118 @@ describe("CICSResourceContainerNode tests", () => {
     const fetched = await containerNode.getChildren();
     expect(fetched).toHaveLength(2);
     expect(fetched.map((c) => c.description)).toEqual(["(MYREG)", "(MYREG)"]);
+  });
+
+  it("should load existing criteria from persistent storage", () => {
+    jest.spyOn(PersistentStorage, "getCriteria").mockReturnValueOnce("PROG1~~PROG2");
+    
+    const newContainerNode = new CICSResourceContainerNode(
+      "Programs",
+      {
+        profile,
+        regionName: "REG",
+        parentNode: regionTree,
+      },
+      undefined,
+      [ProgramMeta]
+    );
+
+    expect(newContainerNode.getFetcher()?.isCriteriaApplied()).toBeTruthy();
+    expect(newContainerNode.getFetcher()?.getCriteria(ProgramMeta)).toContain("PROG1");
+  });
+
+  it("should handle removeStoredItem", async () => {
+    await containerNode.getChildren();
+    const initialChildren = containerNode.children.length;
+    
+    const itemToRemove = {
+      meta: ProgramMeta,
+      resource: new Resource<IProgram>({
+        ...prog1,
+        library: "MYLIB",
+        librarydsn: "MYLIBDSN",
+        progtype: "PROGRAM",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ",
+      }),
+    };
+    
+    containerNode.removeStoredItem(itemToRemove);
+    
+    // Item should be removed from internal items array
+    expect(containerNode["items"].length).toBe(initialChildren - 1);
+  });
+
+  it("should handle getChildNodeMatchingResourceName", async () => {
+    await containerNode.getChildren();
+    
+    const resourceToFind = {
+      meta: ProgramMeta,
+      resource: new Resource<IProgram>({
+        ...prog1,
+        library: "MYLIB",
+        librarydsn: "MYLIBDSN",
+        progtype: "PROGRAM",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ",
+      }),
+    };
+    
+    const foundNode = containerNode.getChildNodeMatchingResourceName(resourceToFind);
+    
+    expect(foundNode).toBeDefined();
+    expect(foundNode?.getContainedResourceName()).toBe("PROG1");
+  });
+
+  it("should return undefined when getChildNodeMatchingResourceName finds no match", async () => {
+    await containerNode.getChildren();
+    
+    const nonExistentResource = {
+      meta: ProgramMeta,
+      resource: new Resource<IProgram>({
+        ...prog1,
+        program: "NONEXISTENT",
+        library: "MYLIB",
+        librarydsn: "MYLIBDSN",
+        progtype: "PROGRAM",
+        usecount: "0",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ",
+      }),
+    };
+    
+    const foundNode = containerNode.getChildNodeMatchingResourceName(nonExistentResource);
+    
+    expect(foundNode).toBeUndefined();
+  });
+
+  it("should build context value with FILTERED when criteria is applied", () => {
+    containerNode.setCriteria(["TEST*"]);
+    
+    expect(containerNode.contextValue).toContain(".FILTERED");
+  });
+
+  it("should refresh icon with containedResource", () => {
+    const containerWithResource = new CICSResourceContainerNode(
+      "Programs",
+      {
+        profile,
+        regionName: "REG",
+        parentNode: regionTree,
+      },
+      {
+        meta: ProgramMeta,
+        resource: currRes,
+      },
+      [ProgramMeta]
+    );
+
+    containerWithResource.refreshIcon(true);
+    expect(containerWithResource.iconPath).toBeDefined();
+    
+    containerWithResource.refreshIcon(false);
+    expect(containerWithResource.iconPath).toBeDefined();
   });
 });

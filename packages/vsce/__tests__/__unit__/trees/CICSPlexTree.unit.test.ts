@@ -16,8 +16,10 @@ import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import * as iconUtils from "../../../src/utils/iconUtils";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { getResourceMock, profile } from "../../__mocks__";
+import { workspace } from "vscode";
 
 jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
+jest.spyOn(PersistentStorage, "getLoadedCICSProfiles").mockReturnValue([]);
 const iconMock = jest.spyOn(iconUtils, "getIconFilePathFromName");
 
 describe("Test suite for CICSLocalFileTree", () => {
@@ -144,6 +146,112 @@ describe("Test suite for CICSLocalFileTree", () => {
         .sort((a, b) => a.localeCompare(b));
 
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe("Test suite for getChildren with refreshNode", () => {
+    it("Should return children when refreshNode is true", async () => {
+      plexTree.refreshNode = true;
+      const children = await plexTree.getChildren();
+      expect(plexTree.refreshNode).toBe(false);
+      expect(children).toBe(plexTree.children);
+    });
+
+    it("Should expand regions container when no region name in profile", async () => {
+      const profileWithoutRegion = {
+        ...profile,
+        profile: {
+          ...profile.profile,
+          regionName: undefined as string | undefined,
+        },
+      };
+      const plexTreeNoRegion = new CICSPlexTree("MYPLEX", profileWithoutRegion, sessionTree);
+      const children = await plexTreeNoRegion.getChildren();
+      expect(plexTreeNoRegion.regionsContainer).toBeDefined();
+      expect(plexTreeNoRegion.regionsContainer!.collapsibleState).toBe(2); // TreeItemCollapsibleState.Expanded
+      expect(children).toBe(plexTreeNoRegion.children);
+    });
+  });
+
+  describe("Test suite for addNewCombinedTrees with config disabled", () => {
+    it("Should not add Transaction tree when config is disabled", () => {
+      jest.spyOn(workspace, "getConfiguration").mockReturnValue({
+        get: jest.fn((key: string) => {
+          if (key === "Transaction") return false;
+          return true;
+        }),
+        has: jest.fn(),
+        inspect: jest.fn(),
+        update: jest.fn(),
+      } as ReturnType<typeof workspace.getConfiguration>);
+
+      const plexTreeNoTransaction = new CICSPlexTree("MYPLEX2", profile, sessionTree);
+      const transactionTree = plexTreeNoTransaction.children.find((child) => `${child.label}`.includes("Transaction"));
+      expect(transactionTree).toBeUndefined();
+    });
+
+    it("Should not add LocalFile tree when config is disabled", () => {
+      jest.spyOn(workspace, "getConfiguration").mockReturnValue({
+        get: jest.fn((key: string) => {
+          if (key === "LocalFile") return false;
+          return true;
+        }),
+        has: jest.fn(),
+        inspect: jest.fn(),
+        update: jest.fn(),
+      } as ReturnType<typeof workspace.getConfiguration>);
+
+      const plexTreeNoLocalFile = new CICSPlexTree("MYPLEX3", profile, sessionTree);
+      const localFileTree = plexTreeNoLocalFile.children.find((child) => `${child.label}`.includes("Files"));
+      expect(localFileTree).toBeUndefined();
+    });
+  });
+
+  describe("Test suite for getSession()", () => {
+    it("Should return session from parent", () => {
+      const session = plexTree.getSession();
+      expect(session).toBeDefined();
+      expect(session).toBe(sessionTree.getSession());
+    });
+  });
+
+  describe("Test suite for getSessionNode()", () => {
+    it("Should return session node (parent)", () => {
+      const sessionNode = plexTree.getSessionNode();
+      expect(sessionNode).toBe(sessionTree);
+      expect(sessionNode).toBe(plexTree.getParent());
+    });
+  });
+
+  describe("Test suite for getRegionNodeFromName()", () => {
+    it("Should return undefined when no regions container", () => {
+      plexTree.children = [];
+      const regionNode = plexTree.getRegionNodeFromName("MYREG");
+      expect(regionNode).toBeUndefined();
+    });
+
+    it("Should return undefined when regions container has no children", () => {
+      const regionsContainer = plexTree.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
+      regionsContainer.children = [];
+      const regionNode = plexTree.getRegionNodeFromName("MYREG");
+      expect(regionNode).toBeUndefined();
+    });
+
+    it("Should return region node when found", () => {
+      const regionsContainer = plexTree.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
+      const testRegion = new CICSRegionTree("TESTREG", { applid: "TESTREG", cicsstate: "ACTIVE" }, sessionTree, plexTree, plexTree);
+      regionsContainer.children = [testRegion];
+      const regionNode = plexTree.getRegionNodeFromName("TESTREG");
+      expect(regionNode).toBe(testRegion);
+      expect(regionNode?.getRegionName()).toBe("TESTREG");
+    });
+
+    it("Should return undefined when region name not found", () => {
+      const regionsContainer = plexTree.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
+      const testRegion = new CICSRegionTree("TESTREG", { applid: "TESTREG", cicsstate: "ACTIVE" }, sessionTree, plexTree, plexTree);
+      regionsContainer.children = [testRegion];
+      const regionNode = plexTree.getRegionNodeFromName("NONEXISTENT");
+      expect(regionNode).toBeUndefined();
     });
   });
 });

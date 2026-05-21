@@ -9,7 +9,8 @@
  *
  */
 
-import { l10n } from "vscode";
+import { l10n, type MessageItem } from "vscode";
+import type { ProfileInfo } from "@zowe/imperative";
 import constants from "../../../src/constants/CICS.defaults";
 import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
 import { CICSExtensionError } from "../../../src/errors/CICSExtensionError";
@@ -21,7 +22,7 @@ import { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContai
 import { CICSSessionTree } from "../../../src/trees/CICSSessionTree";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import * as iconUtils from "../../../src/utils/iconUtils";
-import { ProfileManagement } from "../../../src/utils/profileManagement";
+import { ProfileManagement, type InfoLoaded } from "../../../src/utils/profileManagement";
 import * as profileUtils from "../../../src/utils/profileUtils";
 import { profile } from "../../__mocks__";
 
@@ -80,7 +81,7 @@ describe("Test suite for CICSSessionTree", () => {
       getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
 
       // Mock the error handler to prevent actual UI interaction
-      handleCMCIRestErrorSpy.mockResolvedValueOnce("" as any);
+      handleCMCIRestErrorSpy.mockResolvedValueOnce("");
 
       const children = await sessionTree.getChildren();
 
@@ -91,16 +92,18 @@ describe("Test suite for CICSSessionTree", () => {
     });
 
     it("should handle unauthorized exception and prompt updateCredentials", async () => {
-      const mockPlexInfo = [{ plexname: "PLEX1", regions: [{ applid: "REGION1" }] }];
+      const mockPlexInfo: InfoLoaded[] = [{ plexname: "PLEX1", regions: [{ applid: "REGION1" }], group: false }];
 
       getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
-      handleCMCIRestErrorSpy.mockImplementation((error, actions) => {
-        return Promise.resolve(actions?.[0] as any);
+      // Mock implementation: return the first action from the array (simulating user clicking it)
+      // This is deterministic - we know it will return the "Update Credentials" action
+      handleCMCIRestErrorSpy.mockImplementationOnce((_error, actions) => {
+        return Promise.resolve(actions![0]);
       });
 
       const updateProfileSpy = jest.spyOn(profileUtils, "updateProfile");
       updateProfileSpy.mockResolvedValueOnce(updatedProfile);
-      getProfileInfoSpy.mockResolvedValueOnce(mockPlexInfo as any);
+      getProfileInfoSpy.mockResolvedValueOnce(mockPlexInfo);
 
       const children = await sessionTree.getChildren();
 
@@ -132,9 +135,12 @@ describe("Test suite for CICSSessionTree", () => {
       });
 
       getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
-      handleCMCIRestErrorSpy.mockImplementation((error, actions) => {
-        return Promise.resolve(actions?.[0] as any);
+      // First call: return the first action (Update Credentials button)
+      handleCMCIRestErrorSpy.mockImplementationOnce((_error, actions) => {
+        return Promise.resolve(actions![0]);
       });
+      // Second call: no actions array, return empty string
+      handleCMCIRestErrorSpy.mockResolvedValueOnce("");
 
       const updateProfileSpy = jest.spyOn(profileUtils, "updateProfile");
       updateProfileSpy.mockResolvedValueOnce(updatedProfile);
@@ -250,7 +256,7 @@ describe("Test suite for CICSSessionTree", () => {
 
     it("should handle null children in nodes", () => {
       const mockRegionTree = Object.create(CICSRegionTree.prototype);
-      mockRegionTree.children = null as any;
+      mockRegionTree.children = null;
 
       sessionTree.children = [mockRegionTree];
 
@@ -264,5 +270,237 @@ describe("Test suite for CICSSessionTree", () => {
       sessionTree.setAuthorized();
       expect(iconSpy).toHaveBeenCalledWith("profile");
     });
+  
+  describe("Test suite for reset", () => {
+    it("should reset the session tree", () => {
+      const mockFetcher = { reset: jest.fn() };
+      const mockResourceContainer = Object.create(CICSResourceContainerNode.prototype);
+      mockResourceContainer.getFetcher = jest.fn().mockReturnValue(mockFetcher);
+
+      const mockRegionTree = Object.create(CICSRegionTree.prototype);
+      mockRegionTree.children = [mockResourceContainer];
+
+      sessionTree.children = [mockRegionTree];
+      sessionTree.isUnauthorized = false;
+
+      sessionTree.reset();
+
+      expect(sessionTree.children).toEqual([]);
+      expect(sessionTree.isUnauthorized).toBeUndefined();
+      expect(mockFetcher.reset).toHaveBeenCalled();
+    });
+  });
+
+  describe("Test suite for getSession", () => {
+    it("should return the session from SessionHandler", () => {
+      const session = sessionTree.getSession();
+      expect(session).toBeDefined();
+    });
+  });
+
+  describe("Test suite for setProfile and getProfile", () => {
+    it("should set and get profile", () => {
+      const newProfile = { ...profile, name: "new-profile" };
+      sessionTree.setProfile(newProfile);
+      expect(sessionTree.getProfile()).toEqual(newProfile);
+    });
+  });
+
+  describe("Test suite for getParent", () => {
+    it("should return the parent CICSTree", () => {
+      expect(sessionTree.getParent()).toBe(cicsTree);
+    });
+  });
+
+  describe("Test suite for setIsExpanded", () => {
+    it("should set collapsible state to expanded", () => {
+      sessionTree.setIsExpanded(true);
+      expect(sessionTree.collapsibleState).toBe(2); // TreeItemCollapsibleState.Expanded
+    });
+
+    it("should set collapsible state to collapsed", () => {
+      sessionTree.setIsExpanded(false);
+      expect(sessionTree.collapsibleState).toBe(1); // TreeItemCollapsibleState.Collapsed
+    });
+  });
+
+  describe("Test suite for getRegionNodeFromName", () => {
+    it("should find region node without cicsplex", () => {
+      const mockRegionTree = Object.create(CICSRegionTree.prototype);
+      mockRegionTree.getRegionName = jest.fn().mockReturnValue("REGION1");
+
+      sessionTree.children = [mockRegionTree];
+
+      const result = sessionTree.getRegionNodeFromName("REGION1");
+      expect(result).toBe(mockRegionTree);
+    });
+
+    it("should find region node with cicsplex", () => {
+      const mockRegionTree = Object.create(CICSRegionTree.prototype);
+      mockRegionTree.getRegionName = jest.fn().mockReturnValue("REGION1");
+
+      const mockPlexTree = Object.create(CICSPlexTree.prototype);
+      mockPlexTree.plexName = "PLEX1";
+      mockPlexTree.children = [mockRegionTree];
+      mockPlexTree.getRegionNodeFromName = jest.fn().mockReturnValue(mockRegionTree);
+
+      sessionTree.children = [mockPlexTree];
+
+      const result = sessionTree.getRegionNodeFromName("REGION1", "PLEX1");
+      expect(result).toBe(mockRegionTree);
+      expect(mockPlexTree.getRegionNodeFromName).toHaveBeenCalledWith("REGION1");
+    });
+
+    it("should return undefined when region not found", () => {
+      sessionTree.children = [];
+      const result = sessionTree.getRegionNodeFromName("NONEXISTENT");
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when plex has no children", () => {
+      const mockPlexTree = Object.create(CICSPlexTree.prototype);
+      mockPlexTree.plexName = "PLEX1";
+      mockPlexTree.children = [];
+
+      sessionTree.children = [mockPlexTree];
+
+      const result = sessionTree.getRegionNodeFromName("REGION1", "PLEX1");
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("Test suite for getChildren edge cases", () => {
+    it("should return children when requiresIconUpdate is true", async () => {
+      const mockRegionTree = Object.create(CICSRegionTree.prototype);
+      sessionTree.children = [mockRegionTree];
+      sessionTree.requiresIconUpdate = true;
+
+      const children = await sessionTree.getChildren();
+
+      expect(children).toEqual([mockRegionTree]);
+      expect(sessionTree.requiresIconUpdate).toBe(false);
+    });
+
+    it("should return empty array when config does not exist", async () => {
+      const mockConfigInstance: Partial<ProfileInfo> = {
+        getTeamConfig: jest.fn().mockReturnValue({ exists: false }),
+      };
+      jest.spyOn(ProfileManagement, "getConfigInstance").mockResolvedValueOnce(mockConfigInstance as ProfileInfo);
+
+      const children = await sessionTree.getChildren();
+
+      expect(children).toEqual([]);
+    });
+
+    it("should handle non-401 error and set unauthorized", async () => {
+      const mockError = new CICSExtensionError({
+        baseError: new Error("Server error"),
+        statusCode: 500,
+        errorMessage: "Internal server error",
+        profileName: "testProfile",
+      });
+
+      getProfileInfoSpy.mockRejectedValueOnce(mockError);
+      handleCMCIRestErrorSpy.mockResolvedValueOnce("");
+
+      const children = await sessionTree.getChildren();
+
+      expect(sessionTree.getIsUnauthorized()).toBe(true);
+      expect(handleCMCIRestErrorSpy).toHaveBeenCalledWith(mockError);
+      expect(children).toEqual([]);
+    });
+
+    it("should create region tree when plexname is null", async () => {
+      const mockPlexInfo: InfoLoaded[] = [
+        {
+          plexname: null,
+          regions: [{ applid: "REGION1" }],
+          group: false,
+        },
+      ];
+
+      getProfileInfoSpy.mockResolvedValueOnce(mockPlexInfo);
+
+      const mockRegionData = {
+        response: {
+          records: {
+            cicsregion: [{ applid: "REGION1" }],
+          },
+        },
+      };
+
+      const runGetResourceSpy = jest.spyOn(require("../../../src/utils/resourceUtils"), "runGetResource");
+      runGetResourceSpy.mockResolvedValueOnce(mockRegionData);
+
+      const children = await sessionTree.getChildren();
+
+      expect(children.length).toBe(1);
+      expect(children[0]).toBeInstanceOf(CICSRegionTree);
+      expect(runGetResourceSpy).toHaveBeenCalled();
+    });
+
+    it("should set label for group plex", async () => {
+      const mockPlexInfo: InfoLoaded[] = [
+        {
+          plexname: "PLEX1",
+          regions: [],
+          group: true,
+        },
+      ];
+
+      const profileWithRegion = {
+        ...profile,
+        profile: { ...profile.profile, regionName: "REGION1" },
+      };
+
+      const sessionTreeWithRegion = new CICSSessionTree(profileWithRegion, cicsTree);
+      getProfileInfoSpy.mockResolvedValueOnce(mockPlexInfo);
+
+      const children = await sessionTreeWithRegion.getChildren();
+
+      expect(children.length).toBe(1);
+      expect(children[0]).toBeInstanceOf(CICSPlexTree);
+    });
+
+    it("should handle error during children creation and set unauthorized", async () => {
+      const mockPlexInfo: InfoLoaded[] = [
+        {
+          plexname: null,
+          regions: [{ applid: "REGION1" }],
+          group: false,
+        },
+      ];
+
+      getProfileInfoSpy.mockResolvedValueOnce(mockPlexInfo);
+
+      const runGetResourceSpy = jest.spyOn(require("../../../src/utils/resourceUtils"), "runGetResource");
+      runGetResourceSpy.mockRejectedValueOnce(new Error("Network error"));
+
+      const children = await sessionTree.getChildren();
+
+      expect(sessionTree.getIsUnauthorized()).toBe(true);
+      expect(sessionTree.collapsibleState).toBe(1); 
+      expect(children).toEqual([]);
+    });
+
+    it("should return empty array when updateProfile returns null", async () => {
+      getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
+      // First call: return the first action (Update Credentials button)
+      handleCMCIRestErrorSpy.mockImplementationOnce((_error, actions) => {
+        return Promise.resolve(actions![0]);
+      });
+      // Second call: after retry fails
+      handleCMCIRestErrorSpy.mockResolvedValueOnce("");
+
+      const updateProfileSpy = jest.spyOn(profileUtils, "updateProfile");
+      updateProfileSpy.mockResolvedValueOnce(profile);
+      getProfileInfoSpy.mockRejectedValueOnce(unauthorizedError);
+
+      const children = await sessionTree.getChildren();
+
+      expect(children).toEqual([]);
+      expect(updateProfileSpy).toHaveBeenCalled();
+    });
+  });
   });
 });
