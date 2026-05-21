@@ -1,0 +1,184 @@
+{
+  "mappings": [
+    {
+      "name": "Get Programs Summary for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSProgram/MYPLEX3/MYREG3\\?.*SUMMONLY.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYREG3/partial-auth-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Remove Cache for MYREG3 Programs",
+      "priority": 2,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3PROGTOKEN\\?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYREG3/partial-auth-remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Programs from Cache for MYREG3 - Partial Authorization",
+      "priority": 3,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3PROGTOKEN.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYREG3/partial-auth-cache-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Programs Records for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 4,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/CICSSystemManagement/CICSProgram/MYPLEX3/MYREG3"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYREG3/partial-auth-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Transactions Summary for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 5,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSLocalTransaction/MYPLEX3/MYREG3\\?.*SUMMONLY.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/MYREG3/partial-auth-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Remove Cache for MYREG3 Transactions",
+      "priority": 6,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3TRANTOKEN\\?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/MYREG3/partial-auth-remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Transactions from Cache for MYREG3 - Partial Authorization",
+      "priority": 7,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3TRANTOKEN.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/MYREG3/partial-auth-cache-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Transactions Records for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 8,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/CICSSystemManagement/CICSLocalTransaction/MYPLEX3/MYREG3"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/MYREG3/partial-auth-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Bundles Summary for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 9,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSBundle/MYPLEX3/MYREG3\\?.*SUMMONLY.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYREG3/partial-auth-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Remove Cache for MYREG3 Bundles",
+      "priority": 10,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3BUNDLETOKEN\\?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYREG3/partial-auth-remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Bundles from Cache for MYREG3 - Partial Authorization",
+      "priority": 11,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/CICSSystemManagement/CICSResultCache/MYREG3BUNDLETOKEN.*"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYREG3/partial-auth-cache-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "name": "Get Bundles Records for MYREG3 - NOTPERMIT with Partial Authorization",
+      "priority": 12,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/CICSSystemManagement/CICSBundle/MYPLEX3/MYREG3"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYREG3/partial-auth-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
