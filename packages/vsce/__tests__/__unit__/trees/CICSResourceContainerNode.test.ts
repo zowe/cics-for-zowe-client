@@ -601,4 +601,285 @@ describe("CICSResourceContainerNode tests", () => {
     containerWithResource.refreshIcon(false);
     expect(containerWithResource.iconPath).toBeDefined();
   });
+
+  describe("Partial Authorization UI Tests", () => {
+    let showWarningMessageSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      // Mock vscode.window.showWarningMessage
+      showWarningMessageSpy = jest.fn();
+      const vscode = require("vscode");
+      vscode.window.showWarningMessage = showWarningMessageSpy;
+    });
+
+    afterEach(() => {
+      showWarningMessageSpy.mockRestore();
+    });
+
+    it("should show warning message when partial results detected", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Partial authorization")
+      );
+      // When containedResource is undefined, it falls back to "resources"
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(
+        expect.stringContaining("resources")
+      );
+    });
+
+    it("should update icon to warning when partial results detected", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      await containerNode.getChildren();
+
+      // Icon is updated to warning ThemeIcon
+      expect(containerNode.iconPath).toBeDefined();
+      expect((containerNode.iconPath as any).id).toEqual("warning");
+    });
+
+    it("should append '(Partial Results)' to description", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta],
+        "My Description"
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      await containerNode.getChildren();
+
+      // Description includes both the default description and partial results indicator
+      expect(containerNode.description).toContain("(Partial Results)");
+      expect(containerNode.description).toContain("My Description");
+    });
+
+    it("should not show warning when no partial results", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: false,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: false,
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.description).not.toContain("(Partial Results)");
+    });
+
+    it("should show warning only once on first fetch", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      // First call
+      await containerNode.getChildren();
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+
+      // Second call (should not show warning again)
+      await containerNode.getChildren();
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should use resource type name in warning message", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        {
+          meta: ProgramMeta,
+          resource: currRes,
+        },
+        [ProgramMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(
+        expect.stringContaining(ProgramMeta.humanReadableNamePlural)
+      );
+    });
+
+    it("should handle partial results with pagination", async () => {
+      jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(5);
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "10",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "10",
+            displayed_recordcount: "5",
+          },
+          records: {
+            cicsprogram: [prog1, prog2, prog1, prog2, prog1],
+          },
+        },
+        partialResults: true,
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(containerNode.iconPath).toBeDefined();
+      expect((containerNode.iconPath as any).id).toEqual("warning");
+      expect(containerNode.description).toContain("(Partial Results)");
+      expect(containerNode.hasMore()).toBeTruthy();
+    });
+  });
 });
+
+// Made with Bob

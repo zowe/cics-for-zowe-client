@@ -24,6 +24,7 @@ export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
   private nextIndex: Map<IResourceMeta<IResource>, number> = new Map();
   private typeCriteria: Map<IResourceMeta<IResource>, string> = new Map();
+  private hasPartialResults: boolean = false;
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
@@ -87,7 +88,7 @@ export class ResourceContainer {
       return;
     }
     for (const meta of this.resourceTypes) {
-      const { response } = await runGetResource({
+      const apiResponse = await runGetResource({
         cicsPlex: this.context.cicsplexName,
         profileName: this.context.profileName,
         regionName: this.context.regionName,
@@ -103,9 +104,25 @@ export class ResourceContainer {
         },
       });
 
-      this.summaries.set(meta, response.resultsummary);
+      // Check for partial results in summary
+      if (apiResponse.partialResults) {
+        this.hasPartialResults = true;
+        CICSLogger.warn(
+          `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
+          `Some resources may be hidden due to security restrictions.`
+        );
+      }
+
+      this.summaries.set(meta, apiResponse.response.resultsummary);
       this.nextIndex.set(meta, 1);
     }
+  }
+
+  /**
+   * @returns Whether partial results were detected due to authorization restrictions
+   */
+  public hasPartialAuthorizationResults(): boolean {
+    return this.hasPartialResults;
   }
 
   /**
@@ -178,12 +195,23 @@ export class ResourceContainer {
       const summary = this.summaries.get(meta);
       const start = this.nextIndex.get(meta) ?? 1;
 
-      const { response } = await runGetCache({
+      const apiResponse = await runGetCache({
         profileName: this.context.profileName,
         cacheToken: summary.cachetoken,
         startIndex: start,
         count,
       });
+
+      // Check for partial results
+      if (apiResponse.partialResults) {
+        this.hasPartialResults = true;
+        CICSLogger.warn(
+          `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
+          `Some resources may be hidden due to security restrictions.`
+        );
+      }
+
+      const { response } = apiResponse;
 
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
@@ -290,6 +318,7 @@ export class ResourceContainer {
     }
     this.summaries.clear();
     this.nextIndex.clear();
+    this.hasPartialResults = false;
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {

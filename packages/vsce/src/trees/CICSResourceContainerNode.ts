@@ -11,7 +11,7 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
-import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { l10n, TreeItemCollapsibleState, type TreeItemLabel, window, ThemeIcon } from "vscode";
 import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { type Resource, ResourceContainer } from "../resources";
@@ -28,6 +28,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   private requireDescriptionUpdate: boolean = false;
 
   defaultDescription: string;
+  private hasPartialAuthResults: boolean = false;
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
@@ -100,6 +101,10 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   refreshIcon(folderOpen: boolean = false): void {
+    // Don't override warning icon when partial results are present
+    if (this.hasPartialAuthResults) {
+      return;
+    }
     this.iconPath = this.containedResource?.meta ? IconBuilder.resource(this.containedResource) : IconBuilder.folder(folderOpen);
   }
 
@@ -192,6 +197,20 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.items.length === 0) {
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
+      
+      // Check for partial authorization results
+      if (this.fetcher.hasPartialAuthorizationResults()) {
+        this.hasPartialAuthResults = true;
+        const resourceType = this.containedResource?.meta?.humanReadableNamePlural || "resources";
+        const message = l10n.t(
+          "Partial authorization: Some {0} could not be retrieved due to insufficient permissions. Only authorized {0} are displayed.",
+          resourceType
+        );
+        window.showWarningMessage(message);
+        
+        // Update the tree item to show warning icon
+        this.iconPath = new ThemeIcon("warning", undefined);
+      }
     }
 
     const children: (CICSResourceContainerNode<IResource> | ViewMore)[] = this.items.map(
@@ -246,6 +265,12 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     this.description = this.description.trim();
+    
+    // Append partial results indicator if applicable
+    if (this.hasPartialAuthResults) {
+      this.description += ` ${l10n.t("(Partial Results)")}`;
+      this.description = this.description.trim();
+    }
   }
 
   async fetchNextPage() {

@@ -614,4 +614,231 @@ describe("Resource Container", () => {
     // Verify we got LocalFile results, not Program results
     expect(results[0].meta).toBe(LocalFileMeta);
   });
+
+  describe("Partial Authorization Tests", () => {
+    it("should detect partial results from ensureSummaries", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true, // SDK sets this flag
+      });
+
+      await container.fetchNextPage();
+
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+    });
+
+    it("should detect partial results from cache", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true, // SDK sets this flag on cache response
+      });
+
+      await container.fetchNextPage();
+
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+    });
+
+    it("should not flag partial results when not present", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: false,
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: false,
+      });
+
+      await container.fetchNextPage();
+
+      expect(container.hasPartialAuthorizationResults()).toBeFalsy();
+    });
+
+    it("should maintain partial results flag across multiple fetches", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      // First fetch with partial results
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "4",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "4",
+            displayed_recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      await container.fetchNextPage();
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+
+      // Second fetch (pagination) - partial results should persist
+      getCacheMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "4",
+            displayed_recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await container.fetchNextPage();
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+    });
+
+    it("should reset partial results flag on container reset", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      await container.fetchNextPage();
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+
+      await container.reset();
+      expect(container.hasPartialAuthorizationResults()).toBeFalsy();
+    });
+
+    it("should handle multiple resource types with partial results", async () => {
+      container = new ResourceContainer([ProgramMeta, LocalFileMeta], {
+        profileName: profile.name!,
+        cicsplexName: "MYPLEX",
+        regionName: "MYREG",
+      });
+
+      // Programs with partial results
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        partialResults: true,
+      });
+
+      getCacheMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        partialResults: true,
+      });
+
+      // Local files without partial results
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN2",
+            recordcount: "1",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: {
+            recordcount: "1",
+          },
+          records: {
+            cicslocalfile: [locFile1],
+          },
+        },
+      });
+
+      await container.fetchNextPage();
+
+      // Should flag partial results if ANY resource type has partial results
+      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+    });
+  });
 });
+
+// Made with Bob
