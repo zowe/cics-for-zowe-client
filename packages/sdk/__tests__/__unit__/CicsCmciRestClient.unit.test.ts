@@ -337,7 +337,9 @@ describe("CicsCmciRestClient tests", () => {
     it("should throw error when NOTPERMIT occurs with empty records element", async () => {
       const notpermitEmptyRecordsXml =
         "<response>" +
-        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' recordcount='0' displayed_recordcount='0' />" +
+        "<resultsummary api_response1='1031' api_response2='1345' " +
+        "api_response1_alt='NOTPERMIT' api_response2_alt='USRID' " +
+        "recordcount='0' displayed_recordcount='0' />" +
         "<records></records>" +
         "</response>";
 
