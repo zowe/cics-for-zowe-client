@@ -208,13 +208,12 @@ export class CicsCmciRestClient extends AbstractRestClient {
       responseCode.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
+    // If we have records, return them regardless of error codes
     // This handles partial authorization scenarios (e.g., NOTPERMIT with some data)
     // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
     if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
       // Check if there's an error code but we're returning data anyway
-      const responseCode = apiResponse.response?.resultsummary?.api_response1;
-      if (responseCode === `${CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT}` ||
-          responseCode === `${CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE}`) {
+      if (!responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
         // Set flag to indicate partial results
         apiResponse.partialResults = true;
         
