@@ -309,10 +309,12 @@ export class ProfileManagement {
         cicsPlex: plexName,
       });
       const responseCode = parseInt(response.resultsummary?.api_response1 || "0");
-      // Handle OK (1024) or NOTPERMIT (1031) - both can return partial records
+      // Handle OK (1024) or NOTPERMIT (1031) responses. NOTPERMIT indicates partial authorization
+      // where the user can see some but not all regions. We accept this to show available regions
+      // rather than failing completely. Both response codes can return partial records.
       if (
         (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK ||
-         responseCode === 1031) &&
+         responseCode === CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT) &&
         response.records?.cicsmanagedregion
       ) {
         return toArray(response.records.cicsmanagedregion);

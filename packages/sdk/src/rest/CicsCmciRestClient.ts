@@ -203,9 +203,9 @@ export class CicsCmciRestClient extends AbstractRestClient {
    * @throws {ImperativeError} request did not get the expected codes
    */
   private static verifyResponseCodes(apiResponse: ICMCIApiResponse, requestOptions?: ICMCIRequestOptions): ICMCIApiResponse {
-    const okResponse1Codes = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
+    const responseCode = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
     if (requestOptions?.failOnNoData === false) {
-      okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
+      responseCode.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
     // If we have records, return them regardless of error codes
@@ -213,7 +213,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     // and other cases where partial results are available (e.g., CMAS down)
     if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
       // Check if there's an error code but we're returning data anyway
-      if (!okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+      if (apiResponse.response?.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT}`) {
         // Set flag to indicate partial results
         apiResponse.partialResults = true;
         
@@ -227,7 +227,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
     }
 
     // If response code is OK, return it (even if no records)
-    if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+    if (responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
       return apiResponse;
     }
 

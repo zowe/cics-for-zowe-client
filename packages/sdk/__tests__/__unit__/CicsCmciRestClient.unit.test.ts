@@ -295,7 +295,7 @@ describe("CicsCmciRestClient tests", () => {
       expect(response.response.records).toBeDefined();
       expect(response.response.records.program).toBeDefined();
       expect(response.response.resultsummary.api_response1).toBe("1034");
-      expect(response.partialResults).toBe(true); // Flag should be set
+      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for non-NOTPERMIT errors
     });
 
     // Test error without records still throws

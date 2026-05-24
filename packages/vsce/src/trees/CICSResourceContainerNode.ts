@@ -29,6 +29,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   defaultDescription: string;
   private hasPartialAuthResults: boolean = false;
+  private hasShownPartialAuthWarning: boolean = false;
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
@@ -199,8 +200,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.items.push(...fetched);
       
       // Check for partial authorization results
-      if (this.fetcher.hasPartialAuthorizationResults()) {
+      if (this.fetcher.hasPartialAuthorizationResults() && !this.hasShownPartialAuthWarning) {
         this.hasPartialAuthResults = true;
+        this.hasShownPartialAuthWarning = true;
         const resourceType = this.containedResource?.meta?.humanReadableNamePlural || "resources";
         const message = l10n.t(
           "Partial authorization: Some {0} could not be retrieved due to insufficient permissions. Only authorized {0} are displayed.",

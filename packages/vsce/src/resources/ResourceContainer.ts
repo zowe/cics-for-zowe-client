@@ -24,6 +24,11 @@ export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
   private nextIndex: Map<IResourceMeta<IResource>, number> = new Map();
   private typeCriteria: Map<IResourceMeta<IResource>, string> = new Map();
+  /**
+   * Tracks whether partial results were detected due to authorization restrictions.
+   * This flag is set during async fetch operations (ensureSummaries and fetchRecordsForAllocations).
+   * Note: Should only be checked after all async operations complete to avoid race conditions.
+   */
   private hasPartialResults: boolean = false;
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
@@ -42,6 +47,7 @@ export class ResourceContainer {
       this.typeCriteria.set(type, type.getDefaultCriteria(this.parentResource?.attributes));
     }
     this.criteriaApplied = false;
+    this.hasPartialResults = false;
   }
 
   setCriteria(criteria: string[]) {
@@ -105,13 +111,7 @@ export class ResourceContainer {
       });
 
       // Check for partial results in summary
-      if (apiResponse.partialResults) {
-        this.hasPartialResults = true;
-        CICSLogger.warn(
-          `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
-          `Some resources may be hidden due to security restrictions.`
-        );
-      }
+      this.handlePartialResults(meta, apiResponse);
 
       this.summaries.set(meta, apiResponse.response.resultsummary);
       this.nextIndex.set(meta, 1);
@@ -203,13 +203,7 @@ export class ResourceContainer {
       });
 
       // Check for partial results
-      if (apiResponse.partialResults) {
-        this.hasPartialResults = true;
-        CICSLogger.warn(
-          `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
-          `Some resources may be hidden due to security restrictions.`
-        );
-      }
+      this.handlePartialResults(meta, apiResponse);
 
       const { response } = apiResponse;
 
@@ -319,6 +313,20 @@ export class ResourceContainer {
     this.summaries.clear();
     this.nextIndex.clear();
     this.hasPartialResults = false;
+  }
+
+  /**
+   * Handles partial results detection and logging.
+   * Extracted to avoid code duplication.
+   */
+  private handlePartialResults(meta: IResourceMeta<IResource>, apiResponse: any) {
+    if (apiResponse.partialResults) {
+      this.hasPartialResults = true;
+      CICSLogger.warn(
+        `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
+        `Some resources may be hidden due to security restrictions.`
+      );
+    }
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {
