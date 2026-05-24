@@ -281,7 +281,7 @@ describe("CicsCmciRestClient tests", () => {
     });
 
     // Test other error codes with records (e.g., CMAS down scenario)
-    it("should return records when other error codes occur but records are present", async () => {
+    it("should throw error when other error codes occur even with records present", async () => {
       const errorWithRecordsXml =
         "<response>" +
         "<resultsummary api_response1='1034' api_response2='0' api_response1_alt='NOTAVAILABLE' api_response2_alt='' />" +
@@ -290,12 +290,7 @@ describe("CicsCmciRestClient tests", () => {
 
       restClientExpect.mockResolvedValueOnce(errorWithRecordsXml);
 
-      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders);
-      expect(restClientExpect).toHaveBeenCalledTimes(1);
-      expect(response.response.records).toBeDefined();
-      expect(response.response.records.program).toBeDefined();
-      expect(response.response.resultsummary.api_response1).toBe("1034");
-      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for non-NOTPERMIT errors
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
     });
 
     // Test error without records still throws
