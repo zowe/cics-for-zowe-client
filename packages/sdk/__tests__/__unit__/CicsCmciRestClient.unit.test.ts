@@ -285,7 +285,7 @@ describe("CicsCmciRestClient tests", () => {
       const errorWithRecordsXml =
         "<response>" +
         "<resultsummary api_response1='1034' api_response2='0' api_response1_alt='NOTAVAILABLE' api_response2_alt='' />" +
-        "<records><program name='PROG1'/></records>" +
+        "<records><program name='PROG1'/><program name='PROG2'/></records>" +
         "</response>";
 
       restClientExpect.mockResolvedValueOnce(errorWithRecordsXml);

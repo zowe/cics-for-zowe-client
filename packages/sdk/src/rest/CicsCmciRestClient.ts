@@ -212,19 +212,25 @@ export class CicsCmciRestClient extends AbstractRestClient {
     // This handles partial authorization scenarios (e.g., NOTPERMIT with some data)
     // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
     if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
-      // Check if there's an error code but we're returning data anyway
-      if (!responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
-        // Set flag to indicate partial results
-        apiResponse.partialResults = true;
-        
-        this.log.warn(
-          `CMCI request returned error code ${apiResponse.response?.resultsummary?.api_response1} ` +
-          `(${apiResponse.response?.resultsummary?.api_response1_alt}) but also returned records. ` +
-          `Returning partial results.`
-        );
-        return apiResponse;
-      }
+      // Check if at least one record array has elements
+      const hasRecords = Object.values(apiResponse.response.records).some(
+        (recordArray) => Array.isArray(recordArray) && recordArray.length > 0
+      );
       
+      if (hasRecords) {
+        // Check if there's an error code but we're returning data anyway
+        if (!responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
+          // Set flag to indicate partial results
+          apiResponse.partialResults = true;
+          
+          this.log.warn(
+            `CMCI request returned error code ${apiResponse.response?.resultsummary?.api_response1} ` +
+            `(${apiResponse.response?.resultsummary?.api_response1_alt}) but also returned records. ` +
+            `Returning partial results.`
+          );
+          return apiResponse;
+        }
+      }
     }
 
     // If response code is OK, return it (even if no records)
