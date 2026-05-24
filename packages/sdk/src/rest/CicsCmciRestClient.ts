@@ -222,8 +222,9 @@ export class CicsCmciRestClient extends AbstractRestClient {
           `(${apiResponse.response?.resultsummary?.api_response1_alt}) but also returned records. ` +
           `Returning partial results.`
         );
+        return apiResponse;
       }
-      return apiResponse;
+      
     }
 
     // If response code is OK, return it (even if no records)
