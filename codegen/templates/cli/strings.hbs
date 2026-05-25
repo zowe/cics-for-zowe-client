@@ -1,0 +1,30 @@
+  {{toUpperCase group}}: {
+    SUMMARY: "{{groupSummary}}",
+    DESCRIPTION: "{{groupDescription}}",
+    RESOURCES: {
+{{#each resources}}
+      {{toUpperCase (removePrefix name "CICS")}}: {
+        DESCRIPTION: "{{capitalize actionVerb}} a {{humanNameLower}} in CICS.",
+        POSITIONALS: {
+{{#each positionals}}
+          {{toUpperCase name}}: "{{description}}",
+{{/each}}
+        },
+        OPTIONS: {
+{{#each options}}
+          {{toUpperCase (camelCase name)}}: "{{description}}",
+{{/each}}
+        },
+        MESSAGES: {
+          SUCCESS: "{{messages.success}}",
+          PROGRESS: "{{messages.progress}}",
+        },
+        EXAMPLES: {
+{{#each examples}}
+          EX{{add @index 1}}: "{{description}}",
+{{/each}}
+        },
+      },
+{{/each}}
+    },
+  },

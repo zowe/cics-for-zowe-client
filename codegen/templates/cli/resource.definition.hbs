@@ -1,0 +1,68 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
+import type { ICommandDefinition } from "@zowe/imperative";
+{{#if hasConstantReference}}
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+{{/if}}
+
+import type i18nTypings from "../-strings-/en";
+
+// Does not use the import in anticipation of some internationalization work to be done later.
+const strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase group}}.RESOURCES.{{toUpperCase (removePrefix resourceName "CICS")}};
+
+/**
+ * {{humanName}} command definition for the {{toUpperCase group}} command group
+ */
+export const {{resourceName}}Definition: ICommandDefinition = {
+  name: "{{resourceName}}",
+  aliases: [{{#each aliases}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}],
+  description: strings.DESCRIPTION,
+  handler: __dirname + "/../common/{{cliHandler}}",
+  type: "command",
+  positionals: [
+{{#each positionals}}
+    {
+      name: "{{name}}",
+      description: strings.POSITIONALS.{{toUpperCase name}},
+      type: "{{type}}",
+      required: {{required}},
+    },
+{{/each}}
+  ],
+  options: [
+{{#each options}}
+    {
+      name: "{{name}}",
+      description: strings.OPTIONS.{{toUpperCase (camelCase name)}},
+      type: "{{type}}",
+{{#if defaultValue}}
+      defaultValue: "{{defaultValue}}",
+{{/if}}
+{{#if allowableValues}}
+      allowableValues: {
+        values: [...CicsCmciConstants.{{constantReference}}],
+        caseSensitive: {{caseSensitive}},
+      },
+{{/if}}
+    },
+{{/each}}
+  ],
+  profile: { optional: ["cics"] },
+  examples: [
+{{#each examples}}
+    {
+      description: strings.EXAMPLES.EX{{add @index 1}},
+      options: "{{options}}",
+    },
+{{/each}}
+  ],
+};

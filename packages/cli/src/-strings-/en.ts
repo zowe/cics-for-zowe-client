@@ -390,8 +390,25 @@ export default {
   },
   ENABLE: {
     SUMMARY: "Enable resources from CICS",
-    DESCRIPTION: "Enable resources (for example, urimaps) from CICS through IBM CMCI.",
+    DESCRIPTION: "Enable resources (for example, local files or urimaps) from CICS through IBM CMCI.",
     RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Enable a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to enable. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to enable the local file",
+          CICSPLEX: "The name of the CICSPlex in which to enable the local file",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was enabled successfully.",
+          PROGRESS: "Enabling local file in CICS",
+        },
+        EXAMPLES: {
+          EX1: "Enable a local file named TESTFILE in the region named MYREGION",
+        },
+      },
       URIMAP: {
         DESCRIPTION: "Enable a urimap from CICS.",
         POSITIONALS: {

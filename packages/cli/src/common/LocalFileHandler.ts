@@ -9,7 +9,7 @@
  *
  */
 
-import { closeLocalFile, openLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
+import { closeLocalFile, openLocalFile, enableLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../CicsBaseHandler";
 
@@ -18,10 +18,11 @@ import type i18nTypings from "../-strings-/en";
 // Does not use the import in anticipation of some internationalization work to be done later.
 const closeStrings = (require("../-strings-/en").default as typeof i18nTypings).CLOSE.RESOURCES.LOCALFILE;
 const openStrings = (require("../-strings-/en").default as typeof i18nTypings).OPEN.RESOURCES.LOCALFILE;
+const enableStrings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE.RESOURCES.LOCALFILE;
 
 /**
- * Unified command handler for opening and closing CICS local files via CMCI.
- * Determines the action (open/close) based on the command definition's parent.
+ * Unified command handler for opening, closing, and enabling CICS local files via CMCI.
+ * Determines the action (open/close/enable) based on the command definition's parent.
  * 
  * @export
  * @class LocalFileHandler
@@ -33,13 +34,15 @@ export default class LocalFileHandler extends CicsBaseHandler {
    * @param {IHandlerParameters} params - Command handler parameters
    * @returns {"CLOSE" | "OPEN"} The action type
    */
-  private getActionType(params: IHandlerParameters): "CLOSE" | "OPEN" {
+  private getActionType(params: IHandlerParameters): "CLOSE" | "OPEN" | "ENABLE" {
     // Check parent command name first (works in tests)
     const parentCommand = params.definition.parent?.name;
     if (parentCommand === "close") {
       return "CLOSE";
     } else if (parentCommand === "open") {
       return "OPEN";
+    } else if (parentCommand === "enable") {
+      return "ENABLE";
     }
     
     // Check positionals array which contains the command chain
@@ -48,14 +51,18 @@ export default class LocalFileHandler extends CicsBaseHandler {
       return "CLOSE";
     } else if (positionals.includes("open")) {
       return "OPEN";
+    } else if (positionals.includes("enable")) {
+      return "ENABLE";
     }
     
-    // Last resort: check if handler path contains close or open
+    // Last resort: check if handler path contains close, open, or enable
     const handlerPath = params.definition.handler || "";
     if (handlerPath.includes("/close/") || handlerPath.includes("\\close\\")) {
       return "CLOSE";
     } else if (handlerPath.includes("/open/") || handlerPath.includes("\\open\\")) {
       return "OPEN";
+    } else if (handlerPath.includes("/enable/") || handlerPath.includes("\\enable\\")) {
+      return "ENABLE";
     }
     
     // Should not reach here with proper command structure
@@ -67,8 +74,14 @@ export default class LocalFileHandler extends CicsBaseHandler {
    * @param {"CLOSE" | "OPEN"} action - The action type
    * @returns {object} The strings object for the action
    */
-  private getStrings(action: "CLOSE" | "OPEN") {
-    return action === "CLOSE" ? closeStrings : openStrings;
+  private getStrings(action: "CLOSE" | "OPEN" | "ENABLE") {
+    if (action === "CLOSE") {
+      return closeStrings;
+    } else if (action === "OPEN") {
+      return openStrings;
+    } else {
+      return enableStrings;
+    }
   }
 
   /**
@@ -102,9 +115,14 @@ export default class LocalFileHandler extends CicsBaseHandler {
     }
 
     // Call the appropriate SDK function based on action
-    const response = action === "CLOSE"
-      ? await closeLocalFile(session, sdkParams)
-      : await openLocalFile(session, sdkParams);
+    let response: ICMCIApiResponse;
+    if (action === "CLOSE") {
+      response = await closeLocalFile(session, sdkParams);
+    } else if (action === "OPEN") {
+      response = await openLocalFile(session, sdkParams);
+    } else {
+      response = await enableLocalFile(session, sdkParams);
+    }
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.fileName);
     return response;

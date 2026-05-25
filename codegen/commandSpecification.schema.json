@@ -1,0 +1,312 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CICS Command Specification",
+  "description": "Schema for defining CICS commands across CLI, SDK, and VSCE layers",
+  "type": "object",
+  "properties": {
+    "commands": {
+      "type": "array",
+      "description": "List of command groups (e.g., open, close, enable, disable)",
+      "items": {
+        "$ref": "#/definitions/CommandGroup"
+      }
+    }
+  },
+  "required": ["commands"],
+  "definitions": {
+    "CommandGroup": {
+      "type": "object",
+      "description": "A command group like 'open' or 'close'",
+      "properties": {
+        "group": {
+          "type": "string",
+          "description": "The command group name (e.g., 'open', 'close')"
+        },
+        "groupAliases": {
+          "type": "array",
+          "description": "Aliases for the command group",
+          "items": {
+            "type": "string"
+          }
+        },
+        "groupSummary": {
+          "type": "string",
+          "description": "Short summary of the command group"
+        },
+        "groupDescription": {
+          "type": "string",
+          "description": "Detailed description of the command group"
+        },
+        "resources": {
+          "type": "array",
+          "description": "Resources that support this command group",
+          "items": {
+            "$ref": "#/definitions/Resource"
+          }
+        }
+      },
+      "required": ["group", "groupSummary", "groupDescription", "resources"]
+    },
+    "Resource": {
+      "type": "object",
+      "description": "A CICS resource type (e.g., CICSLocalFile, CICSProgram)",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The resource name (e.g., 'CICSLocalFile')"
+        },
+        "aliases": {
+          "type": "array",
+          "description": "Aliases for the resource",
+          "items": {
+            "type": "string"
+          }
+        },
+        "humanName": {
+          "type": "string",
+          "description": "Human-readable name (e.g., 'Local File')"
+        },
+        "humanNameLower": {
+          "type": "string",
+          "description": "Lowercase human-readable name (e.g., 'local file')"
+        },
+        "sdkResourceType": {
+          "type": "string",
+          "description": "SDK constant for the resource type"
+        },
+        "parmsInterface": {
+          "type": "string",
+          "description": "TypeScript interface for parameters"
+        },
+        "criteriaField": {
+          "type": "string",
+          "description": "Field name for CMCI criteria"
+        },
+        "maxNameLength": {
+          "type": "integer",
+          "description": "Maximum length for resource names"
+        },
+        "actions": {
+          "type": "array",
+          "description": "Actions supported by this resource",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "required": ["name", "humanName", "sdkResourceType", "parmsInterface", "actions"]
+    },
+    "Action": {
+      "type": "object",
+      "description": "An action that can be performed on a resource",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Action name in uppercase (e.g., 'OPEN', 'CLOSE')"
+        },
+        "actionLower": {
+          "type": "string",
+          "description": "Action name in lowercase"
+        },
+        "actionVerb": {
+          "type": "string",
+          "description": "Present continuous form (e.g., 'opening', 'closing')"
+        },
+        "actionPastTense": {
+          "type": "string",
+          "description": "Past tense form (e.g., 'opened', 'closed')"
+        },
+        "sdkFunction": {
+          "type": "string",
+          "description": "SDK function name"
+        },
+        "cliHandler": {
+          "type": "string",
+          "description": "CLI handler class name"
+        },
+        "vsceCommandId": {
+          "type": "string",
+          "description": "VSCode command ID"
+        },
+        "positionals": {
+          "type": "array",
+          "description": "Positional CLI arguments",
+          "items": {
+            "$ref": "#/definitions/Positional"
+          }
+        },
+        "options": {
+          "type": "array",
+          "description": "CLI options",
+          "items": {
+            "$ref": "#/definitions/Option"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "description": "SDK action parameters",
+          "items": {
+            "$ref": "#/definitions/Parameter"
+          }
+        },
+        "vsceParameter": {
+          "$ref": "#/definitions/VsceParameter",
+          "description": "VSCode parameter configuration"
+        },
+        "messages": {
+          "$ref": "#/definitions/Messages",
+          "description": "Success and progress messages"
+        },
+        "examples": {
+          "type": "array",
+          "description": "CLI usage examples",
+          "items": {
+            "$ref": "#/definitions/Example"
+          }
+        }
+      },
+      "required": ["name", "sdkFunction", "positionals", "options", "messages", "examples"]
+    },
+    "Positional": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Positional argument name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the argument"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean"]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "sdkParamName": {
+          "type": "string",
+          "description": "Corresponding SDK parameter name"
+        }
+      },
+      "required": ["name", "description", "type", "required", "sdkParamName"]
+    },
+    "Option": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Option name (kebab-case)"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean"]
+        },
+        "defaultValue": {
+          "description": "Default value for the option"
+        },
+        "allowableValues": {
+          "type": "array",
+          "description": "List of allowed values",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caseSensitive": {
+          "type": "boolean",
+          "description": "Whether values are case-sensitive"
+        },
+        "sdkParamName": {
+          "type": "string",
+          "description": "Corresponding SDK parameter name"
+        },
+        "constantReference": {
+          "type": "string",
+          "description": "Reference to SDK constant for validation"
+        }
+      },
+      "required": ["name", "description", "type", "sdkParamName"]
+    },
+    "Parameter": {
+      "type": "object",
+      "description": "SDK action parameter",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Parameter name for CMCI"
+        },
+        "sdkParamField": {
+          "type": "string",
+          "description": "Field in SDK params object"
+        },
+        "transform": {
+          "type": "string",
+          "enum": ["toUpperCase", "toLowerCase", "trim"],
+          "description": "Transformation to apply"
+        },
+        "defaultValue": {
+          "type": "string",
+          "description": "Default value"
+        },
+        "validation": {
+          "type": "string",
+          "description": "Constant reference for validation"
+        }
+      },
+      "required": ["name", "sdkParamField"]
+    },
+    "VsceParameter": {
+      "type": "object",
+      "description": "VSCode parameter configuration",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Parameter name"
+        },
+        "prompt": {
+          "type": "string",
+          "description": "Prompt message for user"
+        },
+        "choices": {
+          "type": "object",
+          "description": "Map of display labels to values",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["name", "prompt", "choices"]
+    },
+    "Messages": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "string",
+          "description": "Success message template"
+        },
+        "progress": {
+          "type": "string",
+          "description": "Progress message"
+        }
+      },
+      "required": ["success", "progress"]
+    },
+    "Example": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "options": {
+          "type": "string",
+          "description": "Example command options"
+        }
+      },
+      "required": ["description", "options"]
+    }
+  }
+}
