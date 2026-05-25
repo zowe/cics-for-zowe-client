@@ -25,7 +25,8 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   activeFilter: string;
   private requireDescriptionUpdate: boolean = false;
-  private hasPartialAuth: boolean = false;
+  private hasLimitedResults: boolean = false;
+  private hasShownLimitedResultsWarning: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
@@ -63,7 +64,17 @@ export class CICSRegionsContainer extends TreeItem {
       },
       async () => {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
-        this.hasPartialAuth = regionInfo.hasPartialAuth;
+        this.hasLimitedResults = regionInfo.hasLimitedResults;
+        
+        // Show warning message for limited results
+        if (this.hasLimitedResults && !this.hasShownLimitedResultsWarning) {
+          this.hasShownLimitedResultsWarning = true;
+          const message = l10n.t(
+            "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+          );
+          window.showWarningMessage(message);
+        }
+        
         this.addRegionsUtility(regionInfo.regions);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
@@ -95,7 +106,17 @@ export class CICSRegionsContainer extends TreeItem {
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
     if (regionInfo) {
-      this.hasPartialAuth = regionInfo.hasPartialAuth;
+      this.hasLimitedResults = regionInfo.hasLimitedResults;
+      
+      // Show warning message for limited results
+      if (this.hasLimitedResults && !this.hasShownLimitedResultsWarning) {
+        this.hasShownLimitedResultsWarning = true;
+        const message = l10n.t(
+          "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+        );
+        window.showWarningMessage(message);
+      }
+      
       this.addRegionsUtility(regionInfo.regions);
       this.collapsibleState = TreeItemCollapsibleState.Expanded;
       this.refreshIcon(true);
@@ -173,8 +194,8 @@ export class CICSRegionsContainer extends TreeItem {
     }
     description += `[${activeCount}/${totalCount}]`;
     
-    // Add warning icon if partial authorization detected
-    if (this.hasPartialAuth) {
+    // Add warning icon if limited results detected
+    if (this.hasLimitedResults) {
       this.iconPath = new ThemeIcon("warning", undefined);
     }
     

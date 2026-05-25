@@ -16,13 +16,16 @@ This directory contains WireMock response files for testing CICS Managed Region 
 
 ### Error Scenarios
 
-#### Partial Authorization (MYPLEX3)
+#### Partial Authorization / Limited Results (MYPLEX3)
 
 - **`myplex3-notpermit-partial-auth-records.xml`** - NOTPERMIT with partial authorization
   - **Error Code**: `api_response1: 1031 (NOTPERMIT)`, `api_response2: 1345 (USRID)`
   - **Scenario**: User lacks full permissions but still receives partial data
   - **Records Returned**: 5 managed regions (MYREG3, MYREG4, MYREG5, MYREG6, MYREG7)
-  - **Expected Behavior**: SDK accepts this as valid when records are present
+  - **Expected Behavior**:
+    - SDK accepts this as valid when records are present
+    - Extension shows warning message: "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+    - Warning icon displayed on the Regions container
   - **Use Case**: Testing partial authorization scenarios where users can see some data despite permission restrictions
 
 #### Complete Authorization Failure (MYPLEX4)
@@ -44,13 +47,13 @@ This directory contains WireMock response files for testing CICS Managed Region 
 | Records Element | Present with data | Missing | Present but empty |
 | Records Returned | 5 regions | 0 regions | 0 (empty object) |
 | SDK Behavior | Accepts, sets `partialResults=true` | Rejects, throws error | Rejects, throws error |
-| User Experience | Can view partial data with warning | Cannot view any data | Cannot view resource type |
+| User Experience | Can view partial data with warning message & icon | Cannot view any data | Cannot view resource type |
 | Use Case | Partial authorization to some regions | No authorization to plexes | No authorization to resource type (e.g., PROGRAM) |
 
-### NOTPERMIT (1031) with Partial Authorization (MYPLEX3)
+### NOTPERMIT (1031) with Partial Authorization / Limited Results (MYPLEX3)
 
 **Background:**
-In CICS environments with complex security configurations, users may have partial authorization to view resources. This means they can see some data but don't have full access permissions.
+In CICS environments with complex security configurations, users may have partial authorization to view resources. This means they can see some data but don't have full access permissions. The response code will be non-OK (e.g., 1031 NOTPERMIT) but records are still returned.
 
 **Response Characteristics:**
 - `api_response1`: `1031` (NOTPERMIT)
@@ -85,27 +88,30 @@ if (apiResponse.response?.records && Object.keys(apiResponse.response.records).l
 }
 ```
 
-**Using the `partialResults` Flag:**
-Consumers of the SDK can check this flag to display warnings or different UI elements:
+**Extension Handling:**
+The extension detects limited results at the region level:
 
 ```typescript
-const response = await Get.resource(session, {
-  name: "CICSManagedRegion",
-  regionName: "MYPLEX3"
-});
+// In ProfileManagement.getRegionInfo()
+const responseCode = parseInt(response.resultsummary?.api_response1 || "0");
+const hasLimitedResults = responseCode !== CicsCmciConstants.RESPONSE_1_CODES.OK;
 
-if (response.partialResults) {
-  // Show warning to user: "Partial results returned due to insufficient permissions"
-  // Display data with warning indicator
-} else {
-  // Display data normally
+// In CICSRegionsContainer
+if (this.hasLimitedResults && !this.hasShownLimitedResultsWarning) {
+  this.hasShownLimitedResultsWarning = true;
+  const message = l10n.t(
+    "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+  );
+  window.showWarningMessage(message);
+  this.iconPath = new ThemeIcon("warning", undefined);
 }
 ```
 
 **Related Code:**
 - `packages/sdk/src/rest/CicsCmciRestClient.ts` - Response verification logic
 - `packages/sdk/src/constants/CicsCmci.constants.ts` - Response code constants
-- `packages/vsce/src/utils/profileManagement.ts` - Profile management and error handling
+- `packages/vsce/src/utils/profileManagement.ts` - Region info retrieval and limited results detection
+- `packages/vsce/src/trees/CICSRegionsContainer.ts` - UI handling for limited results
 
 ### NOTPERMIT (1031) with Complete Authorization Failure (MYPLEX4)
 
@@ -167,13 +173,16 @@ The mapping configuration is in `packages/vsce/__tests__/__e2e__/wiremock/mappin
 
 ## Testing These Scenarios
 
-### Test Partial Authorization (MYPLEX3)
+### Test Partial Authorization / Limited Results (MYPLEX3)
 
 1. Start WireMock with the test configuration
 2. Make a request to `/CICSSystemManagement/CICSManagedRegion/MYPLEX3/`
 3. Verify that:
    - The response contains 5 managed region records
    - The SDK accepts the response despite the NOTPERMIT error
+   - The extension detects limited results (response code != 1024)
+   - A warning message is displayed to the user
+   - A warning icon is shown on the Regions container
    - The application can display the partial data to the user
 
 ### Test Complete Authorization Failure (MYPLEX4)

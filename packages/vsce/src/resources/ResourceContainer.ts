@@ -119,9 +119,9 @@ export class ResourceContainer {
   }
 
   /**
-   * @returns Whether partial results were detected due to authorization restrictions
+   * @returns Whether limited results were detected due to authorization restrictions
    */
-  public hasPartialAuthorizationResults(): boolean {
+  public hasLimitedResults(): boolean {
     return this.hasPartialResults;
   }
 

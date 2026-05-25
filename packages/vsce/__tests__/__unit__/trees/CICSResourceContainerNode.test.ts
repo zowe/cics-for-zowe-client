@@ -683,7 +683,7 @@ describe("CICSResourceContainerNode tests", () => {
       expect((containerNode.iconPath as any).id).toEqual("warning");
     });
 
-    it("should append '(Partial Results)' to description", async () => {
+    it("should append '(Limited Results)' to description", async () => {
       containerNode = new CICSResourceContainerNode(
         "Programs",
         {
@@ -721,8 +721,8 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      // Description includes both the default description and partial results indicator
-      expect(containerNode.description).toContain("(Partial Results)");
+      // Description includes both the default description and limited results indicator
+      expect(containerNode.description).toContain("(Limited Results)");
       expect(containerNode.description).toContain("My Description");
     });
 
@@ -753,7 +753,7 @@ describe("CICSResourceContainerNode tests", () => {
       await containerNode.getChildren();
 
       expect(showWarningMessageSpy).not.toHaveBeenCalled();
-      expect(containerNode.description).not.toContain("(Partial Results)");
+      expect(containerNode.description).not.toContain("(Limited Results)");
     });
 
     it("should show warning only once on first fetch", async () => {
@@ -876,7 +876,7 @@ describe("CICSResourceContainerNode tests", () => {
       expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
       expect(containerNode.iconPath).toBeDefined();
       expect((containerNode.iconPath as any).id).toEqual("warning");
-      expect(containerNode.description).toContain("(Partial Results)");
+      expect(containerNode.description).toContain("(Limited Results)");
       expect(containerNode.hasMore()).toBeTruthy();
     });
   });

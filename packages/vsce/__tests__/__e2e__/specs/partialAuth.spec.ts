@@ -30,7 +30,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
-  test("should display (Partial Results) text for Programs with partial auth", async ({ page }) => {
+  test("should display (Limited Results) text for Programs with partial auth", async ({ page }) => {
     // Navigate to wiremock_localhost/MYPLEX3/MYREG3/Programs
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await page.waitForTimeout(500);
@@ -53,9 +53,9 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     await findAndClickTreeItem(page, "Programs");
     await page.waitForTimeout(2000);
 
-    // Verify "(Partial Results)" appears in the Programs node description
+    // Verify "(Limited Results)" appears in the Programs node description
     const programsNode = getTreeItem(page, "Programs", false);
-    await expect(programsNode).toContainText("(Partial Results)");
+    await expect(programsNode).toContainText("(Limited Results)");
 
     // Verify authorized programs are shown (PROG001, PROG002, PROG003)
     await expect(getTreeItem(page, "PROG001", false)).toBeVisible();
@@ -69,7 +69,7 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     });
   });
 
-  test("should display (Partial Results) text for Transactions with partial auth", async ({ page }) => {
+  test("should display (Limited Results) text for Transactions with partial auth", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await page.waitForTimeout(500);
     
@@ -88,9 +88,9 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     await findAndClickTreeItem(page, "Transactions");
     await page.waitForTimeout(2000);
 
-    // Verify "(Partial Results)" appears in description
+    // Verify "(Limited Results)" appears in description
     const transactionsNode = getTreeItem(page, "Transactions", false);
-    await expect(transactionsNode).toContainText("(Partial Results)");
+    await expect(transactionsNode).toContainText("(Limited Results)");
 
     // Verify authorized transactions are shown (TRN1, TRN2, TRN3, CEMT)
     await expect(getTreeItem(page, "TRN1", false)).toBeVisible();
@@ -104,7 +104,7 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     });
   });
 
-  test("should display (Partial Results) text for Bundles with partial auth", async ({ page }) => {
+  test("should display (Limited Results) text for Bundles with partial auth", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME, "left", false);
     await page.waitForTimeout(500);
     
@@ -123,9 +123,9 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     await findAndClickTreeItem(page, "Bundles", "left", false);
     await page.waitForTimeout(2000);
 
-    // Verify "(Partial Results)" appears in description
+    // Verify "(Limited Results)" appears in description
     const bundlesNode = getTreeItem(page, "Bundles", false);
-    await expect(bundlesNode).toContainText("(Partial Results)");
+    await expect(bundlesNode).toContainText("(Limited Results)");
 
     // Verify authorized bundles are shown (BUNDLE01, BUNDLE02)
     // Note: Bundles may have status appended like "BUNDLE02 (DISABLED)"
@@ -159,10 +159,10 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     await findAndClickTreeItem(page, "Programs", "left", false);
     await page.waitForTimeout(2000);
 
-    // Verify the description shows correct count and partial results indicator
+    // Verify the description shows correct count and limited results indicator
     const programsNode = getTreeItem(page, "Programs", false);
     await expect(programsNode).toContainText("[3 of 3]");
-    await expect(programsNode).toContainText("(Partial Results)");
+    await expect(programsNode).toContainText("(Limited Results)");
   });
 
   test("should show partial results for multiple resource types", async ({ page }) => {
@@ -182,19 +182,19 @@ test.describe("Partial Authorization Tests - MYPLEX3/MYREG3", () => {
     await findAndClickTreeItem(page, "MYREG3", "left", false);
     await page.waitForTimeout(500);
 
-    // Expand Programs and verify partial results
+    // Expand Programs and verify limited results
     await findAndClickTreeItem(page, "Programs", "left", false);
     await page.waitForTimeout(2000);
     const programsNode = getTreeItem(page, "Programs", false);
-    await expect(programsNode).toContainText("(Partial Results)");
+    await expect(programsNode).toContainText("(Limited Results)");
 
-    // Expand Transactions and verify partial results
+    // Expand Transactions and verify limited results
     await findAndClickTreeItem(page, "Transactions", "left", false);
     await page.waitForTimeout(2000);
     const transactionsNode = getTreeItem(page, "Transactions", false);
-    await expect(transactionsNode).toContainText("(Partial Results)");
+    await expect(transactionsNode).toContainText("(Limited Results)");
 
-    // Take screenshot showing multiple resource types with partial results
+    // Take screenshot showing multiple resource types with limited results
     await page.screenshot({
       fullPage: true,
       path: "./__tests__/screenshots/partial-auth/multiple-resources.png"
@@ -347,7 +347,7 @@ test.describe("Complete Authorization Failure Tests - MYPLEX4", () => {
       return;
     }
 
-    // Test MYPLEX3 - should show partial results
+    // Test MYPLEX3 - should show limited results
     await findAndClickTreeItem(page, "MYPLEX3", "left", false);
     await page.waitForTimeout(500);
     await findAndClickTreeItem(page, "MYREG3", "left", false);
@@ -356,7 +356,7 @@ test.describe("Complete Authorization Failure Tests - MYPLEX4", () => {
     await page.waitForTimeout(2000);
     
     const myplex3ProgramsNode = page.getByRole("treeitem", { name: /Programs/ });
-    await expect(myplex3ProgramsNode).toContainText("(Partial Results)");
+    await expect(myplex3ProgramsNode).toContainText("(Limited Results)");
     await expect(page.getByRole("treeitem", { name: /PROG001/ })).toBeVisible();
     
     // Collapse MYPLEX3

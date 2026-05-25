@@ -28,8 +28,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   private requireDescriptionUpdate: boolean = false;
 
   defaultDescription: string;
-  private hasPartialAuthResults: boolean = false;
-  private hasShownPartialAuthWarning: boolean = false;
+  private hasLimitedResults: boolean = false;
+  private hasShownLimitedResultsWarning: boolean = false;
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
@@ -102,8 +102,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   refreshIcon(folderOpen: boolean = false): void {
-    // Don't override warning icon when partial results are present
-    if (this.hasPartialAuthResults) {
+    // Don't override warning icon when limited results are present
+    if (this.hasLimitedResults) {
       return;
     }
     this.iconPath = this.containedResource?.meta ? IconBuilder.resource(this.containedResource) : IconBuilder.folder(folderOpen);
@@ -199,10 +199,10 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
       
-      // Check for partial authorization results
-      if (this.fetcher.hasPartialAuthorizationResults() && !this.hasShownPartialAuthWarning) {
-        this.hasPartialAuthResults = true;
-        this.hasShownPartialAuthWarning = true;
+      // Check for limited results
+      if (this.fetcher.hasLimitedResults() && !this.hasShownLimitedResultsWarning) {
+        this.hasLimitedResults = true;
+        this.hasShownLimitedResultsWarning = true;
         const message = l10n.t(
           "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
         );
@@ -266,9 +266,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
     this.description = this.description.trim();
     
-    // Append partial results indicator if applicable
-    if (this.hasPartialAuthResults) {
-      this.description += ` ${l10n.t("(Partial Results)")}`;
+    // Append limited results indicator if applicable
+    if (this.hasLimitedResults) {
+      this.description += ` ${l10n.t("(Limited Results)")}`;
       this.description = this.description.trim();
     }
   }

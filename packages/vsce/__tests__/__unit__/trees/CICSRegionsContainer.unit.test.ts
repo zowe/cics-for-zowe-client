@@ -87,7 +87,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for filterRegions", () => {
     it("should filter regions based on the pattern", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
 
       await regionsContainer.filterRegions("IYC*", cicsTree);
 
@@ -98,7 +98,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should reset filter to * and clear saved criteria", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
 
       await regionsContainer.filterRegions("*", cicsTree);
 
@@ -108,7 +108,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should show information message when no regions found", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: [], hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: [], hasLimitedResults: false });
 
       await regionsContainer.filterRegions("NOMATCH*", cicsTree);
 
@@ -116,7 +116,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should expand container after filtering", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
 
       await regionsContainer.filterRegions("cics*", cicsTree);
 
@@ -130,7 +130,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "TEST1", cicsstate: "ACTIVE" },
           { cicsname: "PROD1", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("CICS*, TEST*", cicsTree);
@@ -176,7 +176,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for loadRegionsInPlex", () => {
     it("Should load all regions of plex", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -242,7 +242,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should load regions in plex when activeFilter is * and no children", async () => {
-      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasPartialAuth: false });
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasLimitedResults: false });
       regionsContainer.children = [];
       // Mock the profile to not have regionName and cicsPlex to trigger loadRegionsInPlex
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
@@ -258,7 +258,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should load regions in plex when children length is 0", async () => {
       regionsContainer.activeFilter = "TEST*";
       regionsContainer.children = [];
-      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasPartialAuth: false });
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasLimitedResults: false });
       // Mock the profile to not have regionName and cicsPlex to trigger loadRegionsInPlex
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
         ...profile,
@@ -273,7 +273,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for updateDescription", () => {
     it("should count active and total regions correctly", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: inactiveRecord, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: inactiveRecord, hasLimitedResults: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -281,7 +281,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should include filter in description when filter is active", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
       regionsContainer.activeFilter = "TEST*";
 
       await regionsContainer.filterRegions("TEST*", cicsTree);
@@ -290,7 +290,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should not include filter in description when filter is *", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -304,7 +304,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "cics", cicsstate: null },
           { cicsname: "test2", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.loadRegionsInPlex();
@@ -362,7 +362,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "CICS2", cicsstate: "ACTIVE" },
           { cicsname: "TEST1", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("CICS*", cicsTree);
@@ -377,7 +377,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "BCICS", cicsstate: "ACTIVE" },
           { cicsname: "TEST1", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("*CICS", cicsTree);
@@ -392,7 +392,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "CICS2TEST", cicsstate: "ACTIVE" },
           { cicsname: "PROD1", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("CICS*TEST", cicsTree);
@@ -407,7 +407,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "XCICSY", cicsstate: "ACTIVE" },
           { cicsname: "TEST", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("*CICS*", cicsTree);
@@ -422,7 +422,7 @@ describe("Test suite for CICSRegionsContainer", () => {
           { cicsname: "TEST1", cicsstate: "ACTIVE" },
           { cicsname: "PROD1", cicsstate: "ACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       await regionsContainer.filterRegions("CICS* , TEST*", cicsTree);

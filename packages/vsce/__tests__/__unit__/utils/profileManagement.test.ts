@@ -785,7 +785,7 @@ describe("ProfileManagement", () => {
 
       const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
 
-      expect(result).toEqual({ regions: [], hasPartialAuth: false });
+      expect(result).toEqual({ regions: [], hasLimitedResults: false });
     });
 
     it("should throw error for other errors", async () => {

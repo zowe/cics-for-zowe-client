@@ -222,7 +222,7 @@ describe("setCICSRegionCommand", () => {
         .mockResolvedValueOnce({ label: "region1" });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
         regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
@@ -290,7 +290,7 @@ describe("setCICSRegionCommand", () => {
         .mockResolvedValueOnce(undefined);
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
         regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
 
       const result = await setCICSRegion();
@@ -371,7 +371,7 @@ describe("setCICSRegionCommand", () => {
           { cicsname: "region1", cicsstate: "ACTIVE" },
           { cicsname: "region2", cicsstate: "INACTIVE" },
         ],
-        hasPartialAuth: false,
+        hasLimitedResults: false,
       });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 

@@ -295,13 +295,13 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasPartialAuth: boolean }> {
+  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasLimitedResults: boolean }> {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasPartialAuth: boolean }> {
+  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasLimitedResults: boolean }> {
     try {
       const { response } = await runGetResource({
         profileName: profile.name,
@@ -309,21 +309,24 @@ export class ProfileManagement {
         cicsPlex: plexName,
       });
       const responseCode = parseInt(response.resultsummary?.api_response1 || "0");
-      // Handle OK (1024) or NOTPERMIT (1031) responses. NOTPERMIT indicates partial authorization
-      // where the user can see some but not all regions. We accept this to show available regions
-      // rather than failing completely. Both response codes can return partial records.
-      const hasPartialAuth = responseCode === CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT;
-      if (
-        (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK ||
-         responseCode === CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT) &&
-        response.records?.cicsmanagedregion
-      ) {
-        return { regions: toArray(response.records.cicsmanagedregion), hasPartialAuth };
+      
+      // If we have records, return them regardless of error codes
+      // This handles limited results scenarios (e.g., NOTPERMIT with some data)
+      // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
+      if (response.records?.cicsmanagedregion) {
+        // Check if response code is OK (1024)
+        const hasLimitedResults = responseCode !== CicsCmciConstants.RESPONSE_1_CODES.OK;
+        return { regions: toArray(response.records.cicsmanagedregion), hasLimitedResults };
+      }
+      
+      // If response code is OK but no records, return empty array
+      if (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK) {
+        return { regions: [], hasLimitedResults: false };
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
-          return { regions: [], hasPartialAuth: false };
+          return { regions: [], hasLimitedResults: false };
         }
       }
       throw new CICSExtensionError({ baseError: error, profileName: profile.name });

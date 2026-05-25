@@ -635,7 +635,7 @@ describe("Resource Container", () => {
 
       await container.fetchNextPage();
 
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+      expect(container.hasLimitedResults()).toBeTruthy();
     });
 
     it("should detect partial results from cache", async () => {
@@ -668,7 +668,7 @@ describe("Resource Container", () => {
 
       await container.fetchNextPage();
 
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+      expect(container.hasLimitedResults()).toBeTruthy();
     });
 
     it("should not flag partial results when not present", async () => {
@@ -702,7 +702,7 @@ describe("Resource Container", () => {
 
       await container.fetchNextPage();
 
-      expect(container.hasPartialAuthorizationResults()).toBeFalsy();
+      expect(container.hasLimitedResults()).toBeFalsy();
     });
 
     it("should maintain partial results flag across multiple fetches", async () => {
@@ -737,7 +737,7 @@ describe("Resource Container", () => {
       });
 
       await container.fetchNextPage();
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+      expect(container.hasLimitedResults()).toBeTruthy();
 
       // Second fetch (pagination) - partial results should persist
       getCacheMock.mockResolvedValueOnce({
@@ -753,7 +753,7 @@ describe("Resource Container", () => {
       });
 
       await container.fetchNextPage();
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+      expect(container.hasLimitedResults()).toBeTruthy();
     });
 
     it("should reset partial results flag on container reset", async () => {
@@ -774,10 +774,10 @@ describe("Resource Container", () => {
       });
 
       await container.fetchNextPage();
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
-
+      expect(container.hasLimitedResults()).toBeTruthy();
+      
       await container.reset();
-      expect(container.hasPartialAuthorizationResults()).toBeFalsy();
+      expect(container.hasLimitedResults()).toBeFalsy();
     });
 
     it("should handle multiple resource types with partial results", async () => {
@@ -836,7 +836,7 @@ describe("Resource Container", () => {
       await container.fetchNextPage();
 
       // Should flag partial results if ANY resource type has partial results
-      expect(container.hasPartialAuthorizationResults()).toBeTruthy();
+      expect(container.hasLimitedResults()).toBeTruthy();
     });
   });
 });
