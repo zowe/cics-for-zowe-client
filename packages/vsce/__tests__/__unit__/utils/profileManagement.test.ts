@@ -769,9 +769,9 @@ describe("ProfileManagement", () => {
 
       const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
 
-      expect(result).toHaveLength(2);
-      expect(result[0].name).toBe("REGION1");
-      expect(result[1].name).toBe("REGION2");
+      expect(result.regions).toHaveLength(2);
+      expect(result.regions[0].name).toBe("REGION1");
+      expect(result.regions[1].name).toBe("REGION2");
     });
 
     it("should return empty array when NOTAVAILABLE error occurs", async () => {
@@ -785,7 +785,7 @@ describe("ProfileManagement", () => {
 
       const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
 
-      expect(result).toEqual([]);
+      expect(result).toEqual({ regions: [], hasPartialAuth: false });
     });
 
     it("should throw error for other errors", async () => {
@@ -820,7 +820,7 @@ describe("ProfileManagement", () => {
 
       expect(mockPlex.getPlexName).toHaveBeenCalled();
       expect(mockPlex.getProfile).toHaveBeenCalled();
-      expect(result).toHaveLength(1);
+      expect(result.regions).toHaveLength(1);
     });
   });
 });

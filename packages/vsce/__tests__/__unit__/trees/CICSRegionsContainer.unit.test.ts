@@ -87,7 +87,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for filterRegions", () => {
     it("should filter regions based on the pattern", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
 
       await regionsContainer.filterRegions("IYC*", cicsTree);
 
@@ -98,7 +98,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should reset filter to * and clear saved criteria", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
 
       await regionsContainer.filterRegions("*", cicsTree);
 
@@ -108,7 +108,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should show information message when no regions found", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: [], hasPartialAuth: false });
 
       await regionsContainer.filterRegions("NOMATCH*", cicsTree);
 
@@ -116,7 +116,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should expand container after filtering", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
 
       await regionsContainer.filterRegions("cics*", cicsTree);
 
@@ -124,11 +124,14 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should filter regions with multiple patterns separated by comma", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "CICS1", cicsstate: "ACTIVE" },
-        { cicsname: "TEST1", cicsstate: "ACTIVE" },
-        { cicsname: "PROD1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "CICS1", cicsstate: "ACTIVE" },
+          { cicsname: "TEST1", cicsstate: "ACTIVE" },
+          { cicsname: "PROD1", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("CICS*, TEST*", cicsTree);
 
@@ -173,7 +176,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for loadRegionsInPlex", () => {
     it("Should load all regions of plex", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -239,7 +242,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should load regions in plex when activeFilter is * and no children", async () => {
-      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue(record);
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasPartialAuth: false });
       regionsContainer.children = [];
       // Mock the profile to not have regionName and cicsPlex to trigger loadRegionsInPlex
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
@@ -255,7 +258,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should load regions in plex when children length is 0", async () => {
       regionsContainer.activeFilter = "TEST*";
       regionsContainer.children = [];
-      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue(record);
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, hasPartialAuth: false });
       // Mock the profile to not have regionName and cicsPlex to trigger loadRegionsInPlex
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
         ...profile,
@@ -270,7 +273,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for updateDescription", () => {
     it("should count active and total regions correctly", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(inactiveRecord);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: inactiveRecord, hasPartialAuth: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -278,7 +281,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should include filter in description when filter is active", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
       regionsContainer.activeFilter = "TEST*";
 
       await regionsContainer.filterRegions("TEST*", cicsTree);
@@ -287,7 +290,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should not include filter in description when filter is *", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue(record);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasPartialAuth: false });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -296,10 +299,13 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should handle regions with null cicsstate", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "cics", cicsstate: null },
-        { cicsname: "test2", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "cics", cicsstate: null },
+          { cicsname: "test2", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.loadRegionsInPlex();
 
@@ -350,11 +356,14 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Test suite for pattern matching", () => {
     it("should match regions with wildcard at end", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "CICS1", cicsstate: "ACTIVE" },
-        { cicsname: "CICS2", cicsstate: "ACTIVE" },
-        { cicsname: "TEST1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "CICS1", cicsstate: "ACTIVE" },
+          { cicsname: "CICS2", cicsstate: "ACTIVE" },
+          { cicsname: "TEST1", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("CICS*", cicsTree);
 
@@ -362,11 +371,14 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should match regions with wildcard at start", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "ACICS", cicsstate: "ACTIVE" },
-        { cicsname: "BCICS", cicsstate: "ACTIVE" },
-        { cicsname: "TEST1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "ACICS", cicsstate: "ACTIVE" },
+          { cicsname: "BCICS", cicsstate: "ACTIVE" },
+          { cicsname: "TEST1", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("*CICS", cicsTree);
 
@@ -374,11 +386,14 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should match regions with wildcard in middle", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "CICS1TEST", cicsstate: "ACTIVE" },
-        { cicsname: "CICS2TEST", cicsstate: "ACTIVE" },
-        { cicsname: "PROD1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "CICS1TEST", cicsstate: "ACTIVE" },
+          { cicsname: "CICS2TEST", cicsstate: "ACTIVE" },
+          { cicsname: "PROD1", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("CICS*TEST", cicsTree);
 
@@ -386,11 +401,14 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should handle multiple wildcards in pattern", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "ACICSB", cicsstate: "ACTIVE" },
-        { cicsname: "XCICSY", cicsstate: "ACTIVE" },
-        { cicsname: "TEST", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "ACICSB", cicsstate: "ACTIVE" },
+          { cicsname: "XCICSY", cicsstate: "ACTIVE" },
+          { cicsname: "TEST", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("*CICS*", cicsTree);
 
@@ -398,11 +416,14 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should handle pattern with spaces around commas", async () => {
-      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "CICS1", cicsstate: "ACTIVE" },
-        { cicsname: "TEST1", cicsstate: "ACTIVE" },
-        { cicsname: "PROD1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "CICS1", cicsstate: "ACTIVE" },
+          { cicsname: "TEST1", cicsstate: "ACTIVE" },
+          { cicsname: "PROD1", cicsstate: "ACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
 
       await regionsContainer.filterRegions("CICS* , TEST*", cicsTree);
 

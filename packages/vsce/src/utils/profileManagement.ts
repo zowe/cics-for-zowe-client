@@ -295,13 +295,13 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasPartialAuth: boolean }> {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<any[]> {
+  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasPartialAuth: boolean }> {
     try {
       const { response } = await runGetResource({
         profileName: profile.name,
@@ -312,17 +312,18 @@ export class ProfileManagement {
       // Handle OK (1024) or NOTPERMIT (1031) responses. NOTPERMIT indicates partial authorization
       // where the user can see some but not all regions. We accept this to show available regions
       // rather than failing completely. Both response codes can return partial records.
+      const hasPartialAuth = responseCode === CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT;
       if (
         (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK ||
          responseCode === CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT) &&
         response.records?.cicsmanagedregion
       ) {
-        return toArray(response.records.cicsmanagedregion);
+        return { regions: toArray(response.records.cicsmanagedregion), hasPartialAuth };
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
-          return [];
+          return { regions: [], hasPartialAuth: false };
         }
       }
       throw new CICSExtensionError({ baseError: error, profileName: profile.name });

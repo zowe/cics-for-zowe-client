@@ -644,7 +644,7 @@ describe("CICSResourceContainerNode tests", () => {
 
       expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Partial authorization")
+        expect.stringContaining("Limited results")
       );
       // When containedResource is undefined, it falls back to "resources"
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
@@ -830,7 +830,7 @@ describe("CICSResourceContainerNode tests", () => {
       await containerNode.getChildren();
 
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
-        expect.stringContaining(ProgramMeta.humanReadableNamePlural)
+        expect.stringContaining("Limited results")
       );
     });
 

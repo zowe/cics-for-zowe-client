@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
+import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window, ThemeIcon } from "vscode";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -25,10 +25,11 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   activeFilter: string;
   private requireDescriptionUpdate: boolean = false;
+  private hasPartialAuth: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
-    public iconPath = getFolderIcon(false)
+    public iconPath: { light: string; dark: string } | ThemeIcon = getFolderIcon(false)
   ) {
     super(l10n.t("Regions"), TreeItemCollapsibleState.Collapsed);
     this.parent = parent;
@@ -62,7 +63,8 @@ export class CICSRegionsContainer extends TreeItem {
       },
       async () => {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
-        this.addRegionsUtility(regionInfo);
+        this.hasPartialAuth = regionInfo.hasPartialAuth;
+        this.addRegionsUtility(regionInfo.regions);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
         this.updateDescription();
@@ -93,7 +95,8 @@ export class CICSRegionsContainer extends TreeItem {
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
     if (regionInfo) {
-      this.addRegionsUtility(regionInfo);
+      this.hasPartialAuth = regionInfo.hasPartialAuth;
+      this.addRegionsUtility(regionInfo.regions);
       this.collapsibleState = TreeItemCollapsibleState.Expanded;
       this.refreshIcon(true);
       this.updateDescription();
@@ -169,6 +172,12 @@ export class CICSRegionsContainer extends TreeItem {
       description = `region=${this.activeFilter} `;
     }
     description += `[${activeCount}/${totalCount}]`;
+    
+    // Add warning icon if partial authorization detected
+    if (this.hasPartialAuth) {
+      this.iconPath = new ThemeIcon("warning", undefined);
+    }
+    
     this.description = description;
 
     this.requireDescriptionUpdate = true;

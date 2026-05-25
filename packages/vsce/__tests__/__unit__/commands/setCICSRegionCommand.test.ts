@@ -220,9 +220,10 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
+        hasPartialAuth: false,
+      });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
@@ -287,13 +288,14 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
+        hasPartialAuth: false,
+      });
 
       const result = await setCICSRegion();
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
 
     it("should handle cancelled region selection", async () => {
@@ -364,10 +366,13 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-        { cicsname: "region2", cicsstate: "INACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "region1", cicsstate: "ACTIVE" },
+          { cicsname: "region2", cicsstate: "INACTIVE" },
+        ],
+        hasPartialAuth: false,
+      });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
