@@ -106,11 +106,7 @@ export class CICSPlexTree extends TreeItem {
       return this.children;
     }
 
-    if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName()) {
-      await this.loadOnlyRegion();
-      return this.children;
-    }
-
+    // Always show the Regions container
     this.regionsContainer.collapsibleState = TreeItemCollapsibleState.Expanded;
     return this.children;
   }

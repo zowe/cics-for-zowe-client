@@ -83,7 +83,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
     treeDataProv._onDidChangeTreeData.fire(node.element);
   });
 
-  treeview.onDidCollapseElement((node) => {
+  treeview.onDidCollapseElement(async (node) => {
     const interestedContextValues = ["cicsregionscontainer."];
 
     if (interestedContextValues.some((item) => node.element.contextValue.includes(item))) {

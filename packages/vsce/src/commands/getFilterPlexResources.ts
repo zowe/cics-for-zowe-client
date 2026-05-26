@@ -25,24 +25,28 @@ import { getPatternFromFilter } from "../utils/filterUtils";
 export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterPlexResources", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: any;
-    if (node) {
-      chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSRegionsContainer) {
-      chosenNode = selection[selection.length - 1];
-    } else {
+    const chosenNode = node || selection[selection.length - 1];
+
+    if (!chosenNode || !(chosenNode instanceof CICSRegionsContainer)) {
       window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
+
     await treeview.reveal(chosenNode, { expand: true });
 
-    // Only filter regions
     const resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION);
+    const profile = chosenNode.getParent().getProfile().profile;
+    const profileRegionName = profile.cicsPlex && profile.regionName ? profile.regionName.toUpperCase() : undefined;
+
+    if (profileRegionName && !resourceHistory.includes(profileRegionName)) {
+      resourceHistory.unshift(profileRegionName);
+    }
+
     const pattern = await getPatternFromFilter("Region", resourceHistory);
 
     if (pattern) {
       await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, pattern);
-      chosenNode.filterRegions(pattern, tree);
+      await chosenNode.filterRegions(pattern);
       tree._onDidChangeTreeData.fire(chosenNode);
     }
   });
