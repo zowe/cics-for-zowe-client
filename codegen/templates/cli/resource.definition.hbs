@@ -14,19 +14,19 @@ import type { ICommandDefinition } from "@zowe/imperative";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 {{/if}}
 
-import type i18nTypings from "../-strings-/en";
+import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase group}}.RESOURCES.{{toUpperCase (removePrefix resourceName "CICS")}};
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).{{toUpperCase group}}.RESOURCES.{{toUpperCase (removePrefix resourceName "CICS")}};
 
 /**
  * {{humanName}} command definition for the {{toUpperCase group}} command group
  */
-export const {{resourceName}}Definition: ICommandDefinition = {
+export const LocalFileDefinition: ICommandDefinition = {
   name: "{{resourceName}}",
   aliases: [{{#each aliases}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}],
   description: strings.DESCRIPTION,
-  handler: __dirname + "/../common/{{cliHandler}}",
+  handler: __dirname + "/../../common/{{cliHandler}}",
   type: "command",
   positionals: [
 {{#each positionals}}

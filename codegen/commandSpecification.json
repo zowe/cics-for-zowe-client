@@ -9,6 +9,7 @@
       "resources": [
         {
           "name": "CICSLocalFile",
+          "sdkFileName": "LocalFile",
           "aliases": ["lf"],
           "humanName": "Local File",
           "humanNameLower": "local file",
@@ -72,6 +73,7 @@
       "resources": [
         {
           "name": "CICSLocalFile",
+          "sdkFileName": "LocalFile",
           "aliases": ["lf"],
           "humanName": "Local File",
           "humanNameLower": "local file",
@@ -166,6 +168,7 @@
       "resources": [
         {
           "name": "CICSLocalFile",
+          "sdkFileName": "LocalFile",
           "aliases": ["lf"],
           "humanName": "Local File",
           "humanNameLower": "local file",
@@ -214,6 +217,101 @@
                 {
                   "description": "Enable a local file named TESTFILE in the region named MYREGION",
                   "options": "TESTFILE --region-name MYREGION"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "disable",
+      "groupAliases": ["dsb"],
+      "groupSummary": "Disable resources in CICS",
+      "groupDescription": "Disable resources (for example, local files) in CICS through IBM CMCI.",
+      "resources": [
+        {
+          "name": "CICSLocalFile",
+          "sdkFileName": "LocalFile",
+          "aliases": ["lf"],
+          "humanName": "Local File",
+          "humanNameLower": "local file",
+          "sdkResourceType": "CICS_CMCI_LOCAL_FILE",
+          "parmsInterface": "ILocalFileParms",
+          "criteriaField": "file",
+          "maxNameLength": 8,
+          "actions": [
+            {
+              "name": "DISABLE",
+              "actionLower": "disable",
+              "actionVerb": "disabling",
+              "actionPastTense": "disabled",
+              "sdkFunction": "disableLocalFile",
+              "cliHandler": "LocalFileHandler",
+              "vsceCommandId": "cics-extension-for-zowe.disableLocalFile",
+              "vsceParameter": {
+                "name": "busy",
+                "prompt": "Choose one of the following for the file busy condition",
+                "choices": {
+                  "Wait": "WAIT",
+                  "No Wait": "NOWAIT",
+                  "Force": "FORCE"
+                }
+              },
+              "positionals": [
+                {
+                  "name": "fileName",
+                  "description": "The name of the local file to disable. The maximum length of the file name is eight characters.",
+                  "type": "string",
+                  "required": true,
+                  "sdkParamName": "name"
+                }
+              ],
+              "options": [
+                {
+                  "name": "region-name",
+                  "description": "The CICS region name in which to disable the local file",
+                  "type": "string",
+                  "sdkParamName": "regionName"
+                },
+                {
+                  "name": "cics-plex",
+                  "description": "The name of the CICSPlex in which to disable the local file",
+                  "type": "string",
+                  "sdkParamName": "cicsPlex"
+                },
+                {
+                  "name": "busy",
+                  "description": "The busy condition option for disabling the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+                  "type": "string",
+                  "defaultValue": "WAIT",
+                  "allowableValues": ["WAIT", "NOWAIT", "FORCE"],
+                  "caseSensitive": false,
+                  "sdkParamName": "busy",
+                  "constantReference": "CICS_LOCAL_FILE_BUSY_VALUES"
+                }
+              ],
+              "parameters": [
+                {
+                  "name": "BUSY",
+                  "sdkParamField": "busy",
+                  "transform": "toUpperCase",
+                  "defaultValue": "WAIT",
+                  "validation": "CICS_LOCAL_FILE_BUSY_VALUES"
+                }
+              ],
+              "messages": {
+                "success": "The local file '%s' was disabled successfully.",
+                "progress": "Disabling local file in CICS"
+              },
+              "examples": [
+                {
+                  "description": "Disable a local file named TESTFILE in the region named MYREGION",
+                  "options": "TESTFILE --region-name MYREGION"
+                },
+                {
+                  "description": "Disable a local file named TESTFILE in the region named MYREGION with BUSY=FORCE",
+                  "options": "TESTFILE --region-name MYREGION --busy FORCE"
                 }
               ]
             }

@@ -9,7 +9,7 @@
  *
  */
 
-import type { I{{resourceName}}, IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { I{{handlerFileName}}, IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { AbstractSession } from "@zowe/imperative";
 import {
 {{#each actions}}
@@ -17,10 +17,10 @@ import {
 {{/each}}
   type ICMCIApiResponse,
   type {{parmsInterface}},
-  type {{resourceName}}Action
+  type {{handlerFileName}}Action
 } from "@zowe/cics-for-zowe-sdk";
 import { type TreeView, commands, l10n, window } from "vscode";
-import { {{resourceName}}Meta } from "../doc";
+import { {{handlerFileName}}Meta } from "../doc";
 import type { CICSTree } from "../trees/CICSTree";
 import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { findSelectedNodes } from "../utils/commandUtils";
@@ -43,12 +43,12 @@ interface IActionParameter {
 /**
  * Configuration for a {{humanNameLower}} action
  */
-interface I{{resourceName}}ActionConfig {
+interface I{{handlerFileName}}ActionConfig {
   /** The command ID to register */
   commandId: string;
   
   /** The action type */
-  action: {{resourceName}}Action;
+  action: {{handlerFileName}}Action;
   
   /** Optional parameter configuration */
   parameter?: IActionParameter;
@@ -59,12 +59,12 @@ interface I{{resourceName}}ActionConfig {
  * This class encapsulates all command registrations and action handling
  * for {{humanNameLower}} operations ({{#each actions}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}, etc.).
  */
-export class {{resourceName}}CommandHandler {
+export class {{handlerFileName}}CommandHandler {
   private tree: CICSTree;
   private treeview: TreeView<CICSResourceContainerNode<IResource>>;
 
   /**
-   * Creates a new {{resourceName}}CommandHandler
+   * Creates a new {{handlerFileName}}CommandHandler
    * @param tree - The CICS tree to refresh after actions
    * @param treeview - The tree view containing selected nodes
    */
@@ -78,7 +78,7 @@ export class {{resourceName}}CommandHandler {
    * @param action - The action type
    * @returns The SDK function to call
    */
-  private getSdkFunction(action: {{resourceName}}Action): (session: AbstractSession, params: {{parmsInterface}}) => Promise<ICMCIApiResponse> {
+  private getSdkFunction(action: {{handlerFileName}}Action): (session: AbstractSession, params: {{parmsInterface}}) => Promise<ICMCIApiResponse> {
     switch (action) {
 {{#each actions}}
       case "{{name}}":
@@ -94,9 +94,9 @@ export class {{resourceName}}CommandHandler {
    * @param config - Configuration for the action
    * @returns Disposable command registration
    */
-  private createActionCommand(config: I{{resourceName}}ActionConfig) {
+  private createActionCommand(config: I{{handlerFileName}}ActionConfig) {
     return commands.registerCommand(config.commandId, async (clickedNode) => {
-      const nodes = findSelectedNodes(this.treeview, {{resourceName}}Meta, clickedNode);
+      const nodes = findSelectedNodes(this.treeview, {{handlerFileName}}Meta, clickedNode);
       if (!nodes || !nodes.length) {
         window.showErrorMessage(l10n.t("No CICS {{humanNameLower}} selected"));
         return;
@@ -127,7 +127,7 @@ export class {{resourceName}}CommandHandler {
         tree: this.tree,
         parameter: parameterValue,
         customAction: this.getSdkFunction(config.action),
-        getResourceName: (node) => (node as CICSResourceContainerNode<I{{resourceName}}>).getContainedResource().resource.attributes.{{criteriaField}},
+        getResourceName: (node) => (node as CICSResourceContainerNode<I{{handlerFileName}}>).getContainedResource().resource.attributes.{{criteriaField}},
       });
     });
   }
@@ -178,8 +178,8 @@ export class {{resourceName}}CommandHandler {
  * @param treeview - The tree view containing selected nodes
  * @returns Disposable command registration
  */
-export function get{{name}}{{../resourceName}}Command(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
-  const handler = new {{../resourceName}}CommandHandler(tree, treeview);
+export function get{{name}}{{../handlerFileName}}Command(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
+  const handler = new {{../handlerFileName}}CommandHandler(tree, treeview);
   return handler.register{{name}}Command();
 }
 

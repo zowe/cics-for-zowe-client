@@ -12,7 +12,15 @@
 import type { ICommandDefinition } from "@zowe/imperative";
 import { CicsSession } from "../CicsSession";
 {{#each resources}}
-import { {{name}}Definition } from "./{{../group}}{{name}}";
+{{#if sdkFileName}}
+{{#if (eq sdkFileName "LocalFile")}}
+import { LocalFileDefinition } from "./localfile/{{capitalize ../group}}{{sdkFileName}}";
+{{else}}
+import { LocalFileDefinition } from "./{{capitalize ../group}}{{sdkFileName}}";
+{{/if}}
+{{else}}
+import { LocalFileDefinition } from "./{{capitalize ../group}}{{removePrefix name "CICS"}}";
+{{/if}}
 {{/each}}
 
 import type i18nTypings from "../-strings-/en";
@@ -29,7 +37,7 @@ const definition: ICommandDefinition = {
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [{{#each resources}}{{name}}Definition{{#unless @last}}, {{/unless}}{{/each}}],
+  children: [{{#each resources}}LocalFileDefinition{{#unless @last}}, {{/unless}}{{/each}}],
   passOn: [
     {
       property: "options",

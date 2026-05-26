@@ -10,20 +10,20 @@
  */
 
 import type { ICommandDefinition } from "@zowe/imperative";
-import { CicsSession } from "../CicsSession";
-import { LocalFileDefinition } from "./localfile/EnableLocalFile";
+import { CicsSession } from "../../CicsSession";
+import { LocalFileDefinition } from "./OpenLocalFile";
 
-import type i18nTypings from "../-strings-/en";
+import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).OPEN;
 
 /**
- * Definition for the "enable" group of commands under the CICS plugin
+ * Definition for the "open" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
-  name: "enable",
-  aliases: ["enb"],
+  name: "open",
+  aliases: ["opn"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
