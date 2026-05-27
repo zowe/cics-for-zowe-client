@@ -52,6 +52,7 @@ This will **automatically write directly** to the packages:
 - `packages/cli/src/` - CLI command definitions
 - `packages/sdk/src/resources/` - SDK functions
 - `packages/vsce/src/commands/` - VSCE command handlers
+- `packages/cli/src/-strings-/en.ts` - Internationalization strings (auto-merged)
 
 ⚠️ **Important**: Commit your changes before running to easily revert if needed!
 
@@ -89,10 +90,27 @@ See [GENERATION_MODES.md](GENERATION_MODES.md) for details.
 
 Check the generated files. The generator creates:
 - CLI group definitions (e.g., `Enable.definition.ts`)
-- CLI resource commands (e.g., `EnableCICSLocalFile.ts`)
-- SDK functions (e.g., `enableLocalFile.ts`)
-- VSCE command handlers (e.g., `CICSLocalFileCommandHandler.ts`)
-- Internationalization strings (e.g., `enable.strings.ts`)
+- CLI resource commands (e.g., `EnableLocalFile.ts` in `localfile/` subdirectory)
+- SDK functions (e.g., `enableLocalFile()` in `LocalFile.ts`)
+- VSCE command handlers (e.g., methods in `LocalFileCommandHandler.ts`)
+- Internationalization strings (auto-merged into `en.ts`)
+
+## Key Features
+
+### Intelligent Merging
+- **SDK Functions**: Checks if a function already exists before adding it
+- **VSCE Methods**: Adds new command registration methods without duplicating
+- **Strings File**: Intelligently merges new resource strings into the main `en.ts` file
+- **Shared Handlers**: Generates shared handler files only if they don't exist
+
+### Unified Resource Files
+- Creates single resource files containing all actions (e.g., `LocalFile.ts` with open, close, enable, disable)
+- Reduces file proliferation and improves maintainability
+
+### Automatic String Management
+- Automatically updates the main `en.ts` strings file
+- Preserves existing strings
+- Maintains proper formatting and structure
 
 ## JSON Specification Format
 
@@ -110,6 +128,7 @@ The `commandSpecification.json` file defines all commands using this structure:
       "resources": [
         {
           "name": "CICSLocalFile",
+          "sdkFileName": "LocalFile",
           "aliases": ["lf"],
           "humanName": "Local File",
           "humanNameLower": "local file",
@@ -150,8 +169,10 @@ The `commandSpecification.json` file defines all commands using this structure:
 
 #### Resource Level
 - `name`: Resource type name (e.g., "CICSLocalFile")
+- `sdkFileName`: Name for the SDK resource file (e.g., "LocalFile" → `LocalFile.ts`)
 - `aliases`: Short aliases for the resource
 - `humanName`: Human-readable name for messages
+- `humanNameLower`: Lowercase version for messages
 - `sdkResourceType`: Constant name in SDK (e.g., "CICS_CMCI_LOCAL_FILE")
 - `parmsInterface`: TypeScript interface for parameters
 - `criteriaField`: Field name for CMCI criteria
@@ -170,6 +191,7 @@ The `commandSpecification.json` file defines all commands using this structure:
 - `positionals`: Required command-line arguments
 - `options`: Optional command-line flags
 - `parameters`: Additional CMCI parameters (e.g., BUSY for CLOSE)
+- `vsceParameter`: VS Code-specific parameter configuration (for prompts)
 
 #### Messages & Examples
 - `messages.success`: Success message template
@@ -182,89 +204,28 @@ The `commandSpecification.json` file defines all commands using this structure:
 
 1. **Edit `commandSpecification.json`**:
 
-```json
-{
-  "group": "disable",
-  "groupAliases": ["dis"],
-  "groupSummary": "Disable resources in CICS",
-  "groupDescription": "Disable resources (for example, local files) in CICS through IBM CMCI.",
-  "resources": [
-    {
-      "name": "CICSLocalFile",
-      "aliases": ["lf"],
-      "humanName": "Local File",
-      "humanNameLower": "local file",
-      "sdkResourceType": "CICS_CMCI_LOCAL_FILE",
-      "parmsInterface": "ILocalFileParms",
-      "criteriaField": "file",
-      "maxNameLength": 8,
-      "actions": [
-        {
-          "name": "DISABLE",
-          "actionLower": "disable",
-          "actionVerb": "disabling",
-          "actionPastTense": "disabled",
-          "sdkFunction": "disableLocalFile",
-          "cliHandler": "LocalFileHandler",
-          "vsceCommandId": "cics-extension-for-zowe.disableLocalFile",
-          "positionals": [
-            {
-              "name": "fileName",
-              "description": "The name of the local file to disable. The maximum length of the file name is eight characters.",
-              "type": "string",
-              "required": true,
-              "sdkParamName": "name"
-            }
-          ],
-          "options": [
-            {
-              "name": "region-name",
-              "description": "The CICS region name in which to disable the local file",
-              "type": "string",
-              "sdkParamName": "regionName"
-            },
-            {
-              "name": "cics-plex",
-              "description": "The name of the CICSPlex in which to disable the local file",
-              "type": "string",
-              "sdkParamName": "cicsPlex"
-            }
-          ],
-          "parameters": [],
-          "messages": {
-            "success": "The local file '%s' was disabled successfully.",
-            "progress": "Disabling local file in CICS"
-          },
-          "examples": [
-            {
-              "description": "Disable a local file named TESTFILE in the region named MYREGION",
-              "options": "TESTFILE --region-name MYREGION"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
+Add the disable command group to the `commands` array (see [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) for full example).
 
 2. **Run the generator**:
 
 ```bash
-npm run generate
+npm run generate:direct
 ```
 
 3. **Review generated files**:
-   - `generated/cli/disable/Disable.definition.ts`
-   - `generated/cli/disable/DisableCICSLocalFile.ts`
-   - `generated/cli/strings/disable.strings.ts`
-   - `generated/sdk/disableLocalFile.ts`
-   - `generated/vsce/CICSLocalFileCommandHandler.ts` (updated)
+   - `packages/cli/src/disable/Disable.definition.ts`
+   - `packages/cli/src/disable/localfile/DisableLocalFile.ts`
+   - `packages/sdk/src/resources/LocalFile.ts` (updated with `disableLocalFile()`)
+   - `packages/vsce/src/commands/LocalFileCommandHandler.ts` (updated)
+   - `packages/cli/src/-strings-/en.ts` (updated)
 
-4. **Copy to source directories**:
-   - Copy CLI files to `packages/cli/src/disable/`
-   - Copy SDK files to `packages/sdk/src/methods/disable/`
-   - Update VSCE command registration in `packages/vsce/src/extension.ts`
+4. **Complete manual integration**:
+   - Update SDK exports in `methods/disable/Disable.ts`
+   - Register command in CLI's `imperative.ts`
+   - Register command in VSCE's `extension.ts`
+   - Update VSCE's `package.json` with command definition
+
+See [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) for detailed step-by-step instructions.
 
 ## Template System
 
@@ -272,11 +233,12 @@ The generator uses Handlebars templates located in `templates/`:
 
 ### CLI Templates
 - `cli/group.definition.hbs` - Command group definition
+- `cli/group.definition.localfile.hbs` - LocalFile-specific group definition
 - `cli/resource.definition.hbs` - Resource command definition
-- `cli/strings.hbs` - Internationalization strings
+- `cli/handler.hbs` - Shared handler implementation
 
 ### SDK Templates
-- `sdk/resource.function.hbs` - SDK function implementation
+- `sdk/resource.function.hbs` - SDK function implementation (unified resource file)
 
 ### VSCE Templates
 - `vsce/command.handler.hbs` - VS Code command handler
@@ -286,11 +248,11 @@ The generator uses Handlebars templates located in `templates/`:
 The generator provides these helpers:
 - `toUpperCase` - Convert to uppercase
 - `toLowerCase` - Convert to lowercase
+- `capitalize` - Capitalize first letter
 - `camelCase` - Convert to camelCase
-- `pascalCase` - Convert to PascalCase
+- `removePrefix` - Remove prefix from string
+- `add` - Add two numbers
 - `eq` - Equality comparison
-- `or` - Logical OR
-- `and` - Logical AND
 
 ## Generated Code Structure
 
@@ -304,17 +266,17 @@ const definition: ICommandDefinition = {
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [CICSLocalFileDefinition],
+  children: [LocalFileDefinition],
   passOn: [...]
 };
 ```
 
-**Resource Command** (`EnableCICSLocalFile.ts`):
+**Resource Command** (`EnableLocalFile.ts`):
 ```typescript
-export const CICSLocalFileDefinition: ICommandDefinition = {
-  name: "CICSLocalFile",
+export const LocalFileDefinition: ICommandDefinition = {
+  name: "cics-local-file",
   aliases: ["lf"],
-  description: strings.DESCRIPTION,
+  description: strings.RESOURCES.LOCALFILE.DESCRIPTION,
   handler: __dirname + "/../common/LocalFileHandler",
   type: "command",
   positionals: [...],
@@ -324,50 +286,74 @@ export const CICSLocalFileDefinition: ICommandDefinition = {
 };
 ```
 
+**Shared Handler** (`LocalFileHandler.ts`):
+```typescript
+export default class LocalFileHandler implements ICommandHandler {
+  public async process(params: IHandlerParameters): Promise<void> {
+    const action = params.definition.name.toUpperCase();
+    // Route to appropriate SDK function based on action
+  }
+}
+```
+
 ### SDK Layer
 
-**Function** (`enableLocalFile.ts`):
+**Unified Resource File** (`LocalFile.ts`):
 ```typescript
+export async function openLocalFile(
+  session: AbstractSession,
+  parms: ILocalFileParms
+): Promise<ICMCIApiResponse> {
+  // Implementation
+}
+
+export async function closeLocalFile(
+  session: AbstractSession,
+  parms: ILocalFileParms
+): Promise<ICMCIApiResponse> {
+  // Implementation
+}
+
 export async function enableLocalFile(
   session: AbstractSession,
   parms: ILocalFileParms
 ): Promise<ICMCIApiResponse> {
-  // Validation
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Local File name");
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name");
-  
-  // Call generic performAction utility
-  return performAction(
-    session,
-    CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
-    "ENABLE",
-    { name: parms.name, regionName: parms.regionName, cicsPlex: parms.cicsPlex },
-    CicsCmciConstants.CICS_CMCI_LOCAL_FILE_CRITERIA_FIELD
-  );
+  // Implementation
+}
+
+export async function disableLocalFile(
+  session: AbstractSession,
+  parms: ILocalFileParms
+): Promise<ICMCIApiResponse> {
+  // Implementation
 }
 ```
 
 ### VSCE Layer
 
-**Command Handler** (`CICSLocalFileCommandHandler.ts`):
+**Command Handler** (`LocalFileCommandHandler.ts`):
 ```typescript
-export class CICSLocalFileCommandHandler {
-  private getSdkFunction(action: CICSLocalFileAction) {
+export class LocalFileCommandHandler {
+  private getSdkFunction(action: LocalFileAction) {
     switch (action) {
       case "OPEN": return openLocalFile;
       case "CLOSE": return closeLocalFile;
       case "ENABLE": return enableLocalFile;
+      case "DISABLE": return disableLocalFile;
       default: throw new Error(`Unsupported action: ${action}`);
     }
   }
   
-  public registerENABLECommand() {
-    return this.createActionCommand({
-      commandId: "cics-extension-for-zowe.enableLocalFile",
-      action: "ENABLE"
-    });
-  }
+  public registerOPENCommand() { /* ... */ }
+  public registerCLOSECommand() { /* ... */ }
+  public registerENABLECommand() { /* ... */ }
+  public registerDISABLECommand() { /* ... */ }
 }
+
+export function getOpenLocalFileCommand(...) { /* ... */ }
+export function getCloseLocalFileCommand(...) { /* ... */ }
+export function getEnableLocalFileCommand(...) { /* ... */ }
+export function getDisableLocalFileCommand(...) { /* ... */ }
 ```
 
 ## Validation
@@ -378,23 +364,23 @@ The JSON specification is validated against `commandSpecification.schema.json`. 
 - Enum values are valid
 - Structure is consistent
 
-To validate manually:
-```bash
-npm run validate
-```
-
 ## Best Practices
 
-1. **Keep open/close/enable specifications**: These serve as working examples and should not be deleted
+1. **Keep open/close/enable/disable specifications**: These serve as working examples and should not be deleted
 2. **Use consistent naming**: Follow the existing patterns for action names, function names, etc.
 3. **Test generated code**: Always review and test generated code before committing
-4. **Update schema**: If adding new fields, update `commandSpecification.schema.json`
-5. **Document changes**: Update this README when adding new features
+4. **Commit before generating**: Use direct mode with a clean git state for easy rollback
+5. **Review git diff**: Always check what changed after generation
+6. **Update schema**: If adding new fields, update `commandSpecification.schema.json`
+7. **Document changes**: Update this README when adding new features
 
 ## Troubleshooting
 
 ### Issue: Generated code has syntax errors
-**Solution**: Check your JSON specification for typos or missing fields. Run `npm run validate` to check schema compliance.
+**Solution**: Check your JSON specification for typos or missing fields. The schema validation should catch most issues.
+
+### Issue: "Function already exists" message
+**Solution**: This is expected! The generator detected an existing function and preserved it. This is a safety feature.
 
 ### Issue: Template not rendering correctly
 **Solution**: Check Handlebars syntax in templates. Ensure you're using the correct helper functions.
@@ -403,13 +389,19 @@ npm run validate
 **Solution**: Verify that template imports match the actual package structure. Update templates if package structure has changed.
 
 ### Issue: Command not appearing in CLI
-**Solution**: Ensure the command group is properly registered in the CLI's main definition file.
+**Solution**: Ensure the command group is properly registered in the CLI's `imperative.ts` file.
+
+### Issue: Strings not updating in Direct Mode
+**Solution**: Ensure the group section exists in `en.ts` with a RESOURCES object. The generator will skip if the structure is not found.
 
 ## File Structure
 
 ```
 codegen/
 ├── README.md                          # This file
+├── GENERATION_MODES.md                # Detailed mode comparison
+├── QUICK_START_GUIDE.md               # Step-by-step tutorial
+├── USAGE_GUIDE.md                     # Advanced usage patterns
 ├── package.json                       # Dependencies and scripts
 ├── tsconfig.json                      # TypeScript configuration
 ├── generate.ts                        # Main generator script
@@ -418,27 +410,41 @@ codegen/
 ├── templates/                         # Handlebars templates
 │   ├── cli/
 │   │   ├── group.definition.hbs
+│   │   ├── group.definition.localfile.hbs
 │   │   ├── resource.definition.hbs
-│   │   └── strings.hbs
+│   │   └── handler.hbs
 │   ├── sdk/
 │   │   └── resource.function.hbs
 │   └── vsce/
 │       └── command.handler.hbs
-└── generated/                         # Generated code output
+└── generated/                         # Generated code output (safe mode)
     ├── cli/
     ├── sdk/
     └── vsce/
 ```
 
+## Available Scripts
+
+- `npm run generate` - Generate code in safe mode (to `generated/` directory)
+- `npm run generate:direct` - Generate code directly into packages (recommended)
+- `npm run clean` - Remove the `generated/` directory
+
+## Documentation
+
+- **[GENERATION_MODES.md](GENERATION_MODES.md)** - Detailed comparison of safe vs direct mode
+- **[QUICK_START_GUIDE.md](QUICK_START_GUIDE.md)** - Step-by-step tutorial for adding a new command
+- **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - Advanced usage patterns and examples
+
 ## Contributing
 
 When contributing to the code generator:
 
-1. Test your changes with existing commands (open, close, enable)
+1. Test your changes with existing commands (open, close, enable, disable)
 2. Ensure generated code compiles without errors
 3. Update templates if adding new features
 4. Update this README with any new functionality
 5. Add examples for new features
+6. Update the JSON schema if adding new fields
 
 ## License
 

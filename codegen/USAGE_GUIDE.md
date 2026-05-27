@@ -1,6 +1,6 @@
 # Code Generator Usage Guide
 
-This guide provides step-by-step instructions for using the CICS Command Code Generator.
+This guide provides comprehensive instructions for using the CICS Command Code Generator, including advanced patterns and best practices.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
@@ -9,6 +9,7 @@ This guide provides step-by-step instructions for using the CICS Command Code Ge
 4. [Understanding the Output](#understanding-the-output)
 5. [Integration with Main Project](#integration-with-main-project)
 6. [Common Patterns](#common-patterns)
+7. [Advanced Features](#advanced-features)
 
 ## Prerequisites
 
@@ -16,6 +17,7 @@ This guide provides step-by-step instructions for using the CICS Command Code Ge
 - npm or yarn
 - Basic understanding of TypeScript
 - Familiarity with Zowe CLI, CICS SDK, and VS Code extensions
+- Git for version control
 
 ## Basic Usage
 
@@ -28,38 +30,36 @@ cd codegen
 npm install
 ```
 
-### 2. Generate Code
+### 2. Choose Your Generation Mode
 
-Run the generator:
+**Direct Mode (Recommended):**
+```bash
+npm run generate:direct
+```
+- Writes directly to packages
+- Automatically merges new code
+- Requires clean git state
 
+**Safe Mode (For Review):**
 ```bash
 npm run generate
 ```
+- Writes to `generated/` directory
+- Allows manual review before integration
+- Safer for learning
 
-This creates files in the `generated/` directory.
+See [GENERATION_MODES.md](GENERATION_MODES.md) for detailed comparison.
 
 ### 3. Review Output
 
-Check the generated files:
+**For Direct Mode:**
+```bash
+git diff
+```
 
+**For Safe Mode:**
 ```bash
 ls -R generated/
-```
-
-You should see:
-```
-generated/
-├── cli/
-│   ├── open/
-│   ├── close/
-│   ├── enable/
-│   └── strings/
-├── sdk/
-│   ├── openLocalFile.ts
-│   ├── closeLocalFile.ts
-│   └── enableLocalFile.ts
-└── vsce/
-    └── CICSLocalFileCommandHandler.ts
 ```
 
 ## Adding a New Command
@@ -73,12 +73,13 @@ Add a new command group after the existing ones:
 ```json
 {
   "group": "disable",
-  "groupAliases": ["dis"],
+  "groupAliases": ["dsb"],
   "groupSummary": "Disable resources in CICS",
   "groupDescription": "Disable resources (for example, local files) in CICS through IBM CMCI.",
   "resources": [
     {
       "name": "CICSLocalFile",
+      "sdkFileName": "LocalFile",
       "aliases": ["lf"],
       "humanName": "Local File",
       "humanNameLower": "local file",
@@ -139,38 +140,36 @@ Add a new command group after the existing ones:
 #### Step 2: Generate Code
 
 ```bash
-npm run generate
+npm run generate:direct
 ```
 
 #### Step 3: Review Generated Files
 
-Check the new files:
+Check the console output:
+```
+🚀 Starting comprehensive code generation...
 
-```bash
-# CLI files
-cat generated/cli/disable/Disable.definition.ts
-cat generated/cli/disable/DisableCICSLocalFile.ts
-cat generated/cli/strings/disable.strings.ts
+📦 Generating CLI layer...
+  ✓ cli/src/disable/Disable.definition.ts
+  ✓ cli/src/disable/localfile/DisableLocalFile.ts
+  ℹ️  cli/src/common/LocalFileHandler.ts already exists, skipping
+  ✓ Updated main strings file: -strings-/en.ts
+✅ CLI layer generated
 
-# SDK file
-cat generated/sdk/disableLocalFile.ts
+📦 Generating SDK layer...
+  ✓ sdk/src/resources/LocalFile.ts
+✅ SDK layer generated
 
-# VSCE handler (updated)
-cat generated/vsce/CICSLocalFileCommandHandler.ts
+📦 Generating VSCE layer...
+  ✓ vsce/src/commands/LocalFileCommandHandler.ts
+✅ VSCE layer generated
+
+🎉 Code generation complete!
 ```
 
-#### Step 4: Copy to Source Directories
+#### Step 4: Complete Manual Integration
 
-```bash
-# Copy CLI files
-cp generated/cli/disable/*.ts ../packages/cli/src/disable/
-cp generated/cli/strings/disable.strings.ts ../packages/cli/src/-strings-/
-
-# Copy SDK file
-cp generated/sdk/disableLocalFile.ts ../packages/sdk/src/methods/disable/
-
-# VSCE handler needs manual integration (see below)
-```
+See [Integration with Main Project](#integration-with-main-project) section below.
 
 ## Understanding the Output
 
@@ -182,105 +181,154 @@ cp generated/sdk/disableLocalFile.ts ../packages/sdk/src/methods/disable/
 - Configures CICS connection options
 - Sets up command hierarchy
 
-**Resource Command** (`DisableCICSLocalFile.ts`):
+**Resource Command** (`DisableLocalFile.ts`):
+- Located in `disable/localfile/` subdirectory
 - Defines the specific resource command
 - Specifies positional arguments and options
-- References the handler class
+- References the shared handler class
 - Includes usage examples
 
-**Strings** (`disable.strings.ts`):
-- Internationalization strings
-- Success/error messages
-- Help text and descriptions
+**Shared Handler** (`LocalFileHandler.ts`):
+- Located in `common/` directory
+- Handles multiple actions (OPEN, CLOSE, ENABLE, DISABLE)
+- Routes to appropriate SDK function based on action
+- Only generated if it doesn't already exist
+
+**Strings** (in `en.ts`):
+- Automatically merged into main strings file
+- Includes descriptions, options, messages, examples
+- Preserves existing strings
 
 ### SDK Layer Output
 
-**Function** (`disableLocalFile.ts`):
-- TypeScript function that calls CMCI API
+**Unified Resource File** (`LocalFile.ts`):
+- Contains all actions for the resource
+- TypeScript functions that call CMCI API
 - Parameter validation
 - Error handling
 - Uses generic `performAction` utility
+- New functions are intelligently merged
 
 ### VSCE Layer Output
 
-**Command Handler** (`CICSLocalFileCommandHandler.ts`):
+**Command Handler** (`LocalFileCommandHandler.ts`):
 - Class-based command handler
 - Integrates with VS Code tree view
 - Handles user interactions
 - Manages command registration
+- New methods are intelligently merged
 
 ## Integration with Main Project
 
 ### CLI Integration
 
-1. **Add to imperative.ts**:
+#### 1. Update Imperative Configuration
+
+Edit `packages/cli/src/imperative.ts`:
 
 ```typescript
 import DisableDefinition = require("./disable/Disable.definition");
 
 // In the definitions array:
-{
-  name: "disable",
-  type: "group",
-  description: DisableDefinition.description,
-  children: [DisableDefinition]
-}
+const config: IImperativeConfig = {
+  definitions: [
+    // ... existing definitions
+    {
+      name: "disable",
+      type: "group",
+      description: DisableDefinition.description,
+      children: [DisableDefinition]
+    }
+  ]
+};
 ```
 
-2. **Update strings index**:
+#### 2. Verify Strings
+
+The strings are automatically merged, but verify they look correct in `packages/cli/src/-strings-/en.ts`:
 
 ```typescript
-// In -strings-/en.ts
-import { DisableStrings } from "./disable.strings";
-
-export default {
-  // ... existing strings
-  DISABLE: DisableStrings,
-};
+DISABLE: {
+  SUMMARY: "Disable resources in CICS",
+  DESCRIPTION: "Disable resources (for example, local files) in CICS through IBM CMCI.",
+  RESOURCES: {
+    LOCALFILE: {
+      DESCRIPTION: "Disabling a local file in CICS.",
+      POSITIONALS: {
+        FILENAME: "The name of the local file to disable...",
+      },
+      OPTIONS: {
+        REGIONNAME: "The CICS region name...",
+        CICSPLEX: "The name of the CICSPlex...",
+      },
+      MESSAGES: {
+        SUCCESS: "The local file '%s' was disabled successfully.",
+        PROGRESS: "Disabling local file in CICS",
+      },
+      EXAMPLES: {
+        EX1: "Disable a local file named TESTFILE...",
+      },
+    },
+  },
+},
 ```
 
 ### SDK Integration
 
-1. **Export from methods/index.ts**:
+#### 1. Export from Methods Index
+
+Edit `packages/sdk/src/methods/disable/Disable.ts`:
 
 ```typescript
-export * from "./disable/Disable";
+// Re-export disableLocalFile from LocalFile resource
+export { disableLocalFile } from "../../resources/LocalFile";
 ```
 
-2. **Add to Disable.ts** (if creating new):
+#### 2. Verify Function in Resource File
+
+Check `packages/sdk/src/resources/LocalFile.ts` for the new function:
 
 ```typescript
-export { disableLocalFile } from "./disableLocalFile";
-```
-
-3. **Update constants** (if needed):
-
-```typescript
-// In constants/CicsCmci.constants.ts
-export const CICS_CMCI_LOCAL_FILE_MAX_LENGTH = 8;
-export const CICS_CMCI_LOCAL_FILE = "CICSLocalFile";
-export const CICS_CMCI_LOCAL_FILE_CRITERIA_FIELD = "file";
+export async function disableLocalFile(
+  session: AbstractSession,
+  parms: ILocalFileParms
+): Promise<ICMCIApiResponse> {
+  // Implementation automatically generated
+}
 ```
 
 ### VSCE Integration
 
-1. **Update extension.ts**:
+#### 1. Update Extension Registration
+
+Edit `packages/vsce/src/extension.ts`:
 
 ```typescript
-import { CICSLocalFileCommandHandler } from "./commands/CICSLocalFileCommandHandler";
+import { 
+  getOpenLocalFileCommand,
+  getCloseLocalFileCommand,
+  getEnableLocalFileCommand,
+  getDisableLocalFileCommand  // Add this
+} from "./commands/LocalFileCommandHandler";
 
 // In activate function:
-const localFileHandler = new CICSLocalFileCommandHandler(tree, treeview);
-context.subscriptions.push(
-  localFileHandler.registerOPENCommand(),
-  localFileHandler.registerCLOSECommand(),
-  localFileHandler.registerENABLECommand(),
-  localFileHandler.registerDISABLECommand() // Add this
-);
+export function activate(context: vscode.ExtensionContext) {
+  // ... existing code
+  
+  context.subscriptions.push(
+    getOpenLocalFileCommand(tree, treeview),
+    getCloseLocalFileCommand(tree, treeview),
+    getEnableLocalFileCommand(tree, treeview),
+    getDisableLocalFileCommand(tree, treeview)  // Add this
+  );
+}
 ```
 
-2. **Update package.json commands**:
+#### 2. Update package.json Commands
 
+Edit `packages/vsce/package.json`:
+
+Add to `contributes.commands`:
 ```json
 {
   "command": "cics-extension-for-zowe.disableLocalFile",
@@ -289,8 +337,7 @@ context.subscriptions.push(
 }
 ```
 
-3. **Update menus** (if needed):
-
+Add to `contributes.menus.view/item/context`:
 ```json
 {
   "command": "cics-extension-for-zowe.disableLocalFile",
@@ -308,37 +355,43 @@ For actions that need additional parameters (like CLOSE with BUSY):
 ```json
 {
   "name": "CLOSE",
-  "parameters": [
+  "options": [
     {
       "name": "busy",
-      "description": "Specifies the action to take if the file is busy",
+      "description": "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
       "type": "string",
-      "choices": ["WAIT", "NOWAIT", "FORCE"],
-      "sdkParamName": "busy"
+      "defaultValue": "WAIT",
+      "allowableValues": ["WAIT", "NOWAIT", "FORCE"],
+      "caseSensitive": false,
+      "sdkParamName": "busy",
+      "constantReference": "CICS_LOCAL_FILE_BUSY_VALUES"
     }
-  ]
+  ],
+  "parameters": [
+    {
+      "name": "BUSY",
+      "sdkParamField": "busy",
+      "transform": "toUpperCase",
+      "defaultValue": "WAIT",
+      "validation": "CICS_LOCAL_FILE_BUSY_VALUES"
+    }
+  ],
+  "vsceParameter": {
+    "name": "busy",
+    "prompt": "Choose one of the following for the file busy condition",
+    "choices": {
+      "Wait": "WAIT",
+      "No Wait": "NOWAIT",
+      "Force": "FORCE"
+    }
+  }
 }
 ```
 
-In VSCE handler:
-
-```typescript
-public registerCLOSECommand() {
-  return this.createActionCommand({
-    commandId: "cics-extension-for-zowe.closeLocalFile",
-    action: "CLOSE",
-    parameter: {
-      name: "busy",
-      prompt: l10n.t("Choose one of the following for the file busy condition"),
-      choices: {
-        [l10n.t("Wait")]: "WAIT",
-        [l10n.t("No Wait")]: "NOWAIT",
-        [l10n.t("Force")]: "FORCE",
-      },
-    },
-  });
-}
-```
+This generates:
+- CLI option with validation
+- SDK parameter handling
+- VSCE prompt with choices
 
 ### Adding Multiple Resources to a Group
 
@@ -348,12 +401,15 @@ public registerCLOSECommand() {
   "resources": [
     {
       "name": "CICSLocalFile",
+      "sdkFileName": "LocalFile",
       "actions": [...]
     },
     {
       "name": "CICSProgram",
+      "sdkFileName": "Program",
       "aliases": ["prog"],
       "humanName": "Program",
+      "humanNameLower": "program",
       "sdkResourceType": "CICS_CMCI_PROGRAM",
       "actions": [...]
     }
@@ -361,11 +417,14 @@ public registerCLOSECommand() {
 }
 ```
 
+This generates separate handlers and SDK files for each resource.
+
 ### Adding Multiple Actions to a Resource
 
 ```json
 {
   "name": "CICSLocalFile",
+  "sdkFileName": "LocalFile",
   "actions": [
     {
       "name": "ENABLE",
@@ -381,28 +440,125 @@ public registerCLOSECommand() {
 }
 ```
 
-## Validation
+All actions are added to the same unified SDK resource file.
 
-Before generating, validate your JSON:
+### Using Shared Handlers
 
-```bash
-npm run validate
+When multiple command groups use the same resource:
+
+```json
+// In open group
+{
+  "name": "CICSLocalFile",
+  "actions": [{ "cliHandler": "LocalFileHandler", ... }]
+}
+
+// In close group
+{
+  "name": "CICSLocalFile",
+  "actions": [{ "cliHandler": "LocalFileHandler", ... }]
+}
+
+// In enable group
+{
+  "name": "CICSLocalFile",
+  "actions": [{ "cliHandler": "LocalFileHandler", ... }]
+}
 ```
 
-This checks:
-- JSON syntax
-- Schema compliance
-- Required fields
-- Type correctness
+The generator creates a single shared handler in `cli/src/common/LocalFileHandler.ts`.
+
+## Advanced Features
+
+### Intelligent Function Merging
+
+When adding a new action to an existing resource:
+
+1. Generator checks if the function already exists in the SDK file
+2. If it exists, skips it with a message: `ℹ️ Function disableLocalFile already exists`
+3. If it doesn't exist, adds it to the file
+4. Preserves all existing functions and imports
+
+### Automatic String Management
+
+Direct mode automatically:
+1. Finds the group section in `en.ts`
+2. Locates the RESOURCES object
+3. Checks if the resource already exists
+4. If not, adds the new resource strings
+5. Updates the group description to include the new resource type
+6. Preserves all existing strings and formatting
+
+### Template Customization
+
+You can customize templates in `templates/` directory:
+
+**Example: Modifying CLI Handler Template**
+
+Edit `templates/cli/handler.hbs`:
+```handlebars
+import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { {{parmsInterface}} } from "@zowe/cics-for-zowe-sdk";
+{{#each actions}}
+import { {{sdkFunction}} } from "@zowe/cics-for-zowe-sdk";
+{{/each}}
+
+export default class {{handlerName}} implements ICommandHandler {
+  public async process(params: IHandlerParameters): Promise<void> {
+    // Your custom logic here
+  }
+}
+```
+
+### Schema Validation
+
+The generator validates your JSON against the schema. Common validation errors:
+
+- Missing required fields
+- Invalid enum values
+- Incorrect types
+- Malformed structure
+
+Run validation manually:
+```bash
+# The generator validates automatically, but you can check the schema
+cat commandSpecification.schema.json
+```
+
+## Validation
+
+Before generating, the specification is automatically validated. Common issues:
+
+### Missing Required Fields
+```
+Error: Missing required field 'sdkFunction' in action
+```
+**Solution**: Add all required fields to your action definition.
+
+### Invalid Enum Values
+```
+Error: Invalid value for 'type'. Must be one of: string, number, boolean
+```
+**Solution**: Use only allowed values from the schema.
+
+### Incorrect Structure
+```
+Error: 'commands' must be an array
+```
+**Solution**: Ensure your JSON structure matches the schema.
 
 ## Tips and Best Practices
 
 1. **Start with existing examples**: Copy and modify open/close/enable commands
 2. **Use consistent naming**: Follow the established patterns
 3. **Test incrementally**: Generate and test one command at a time
-4. **Keep backups**: Save working configurations before major changes
+4. **Keep backups**: Commit before generating in direct mode
 5. **Document custom changes**: If you modify templates, document why
 6. **Version control**: Commit specification changes separately from generated code
+7. **Review console output**: The generator provides helpful messages
+8. **Check git diff**: Always review what changed after generation
+9. **Use sdkFileName**: Specify `sdkFileName` to control the SDK resource file name
+10. **Leverage shared handlers**: Use the same handler name for related actions
 
 ## Troubleshooting
 
@@ -420,36 +576,65 @@ This checks:
 - Verify import paths in templates
 - Check that referenced types exist
 - Ensure SDK constants are defined
+- Run `npm install` to update dependencies
 
 ### Problem: Command doesn't appear in CLI
 
 **Solution**:
-- Verify command is registered in imperative.ts
+- Verify command is registered in `imperative.ts`
 - Check that strings are exported
 - Ensure handler path is correct
+- Rebuild the CLI package
 
 ### Problem: VS Code command not working
 
 **Solution**:
-- Check command ID matches package.json
-- Verify handler is registered in extension.ts
+- Check command ID matches `package.json`
+- Verify handler is registered in `extension.ts`
 - Ensure tree view context is correct
+- Check the `when` clause in menus
+
+### Problem: Strings not updating in Direct Mode
+
+**Solution**:
+- Ensure the group section exists in `en.ts`
+- Check that RESOURCES object exists
+- Verify the structure matches expected format
+- The generator will skip if structure is not found
+
+### Problem: Function already exists message
+
+**Solution**: This is expected! The generator preserves existing functions. If you want to regenerate:
+1. Delete the function from the file
+2. Run the generator again
+
+### Problem: Need to undo Direct Mode changes
+
+**Solution**:
+```bash
+git reset --hard HEAD  # Revert all changes
+# or
+git checkout -- path/to/file  # Revert specific file
+```
 
 ## Next Steps
 
 After generating code:
 
 1. Review all generated files
-2. Run TypeScript compiler to check for errors
-3. Run unit tests
-4. Test commands manually
-5. Update documentation
-6. Create pull request
+2. Complete manual integration steps
+3. Run TypeScript compiler to check for errors
+4. Run unit tests
+5. Test commands manually
+6. Update user-facing documentation
+7. Create pull request
 
 ## Support
 
 For issues or questions:
-- Check the main README.md
+- Check the main [README.md](README.md)
+- Review [GENERATION_MODES.md](GENERATION_MODES.md)
+- See [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md)
 - Review existing command implementations
 - Consult the JSON schema
-- Ask the team for guidance
+- Check console output for helpful messages
