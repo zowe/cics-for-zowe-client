@@ -295,13 +295,18 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
+  public static async getRegionInfoInPlex(
+    plex: CICSPlexTree
+  ): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
+  public static async getRegionInfo(
+    plexName: string,
+    profile: imperative.IProfileLoaded
+  ): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     try {
       const apiResponse = await runGetResource({
         profileName: profile.name,

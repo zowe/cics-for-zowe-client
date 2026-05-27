@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window, ThemeIcon } from "vscode";
+import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window, type ThemeIcon } from "vscode";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import PersistentStorage from "../utils/PersistentStorage";
