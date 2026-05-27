@@ -220,14 +220,33 @@ export class CicsCmciRestClient extends AbstractRestClient {
       if (hasRecords) {
         // Check if there's an error code but we're returning data anyway
         if (!responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
-          // Set flag to indicate partial results
-          apiResponse.partialResults = true;
+          // Set flag to indicate incomplete results
+          apiResponse.incompleteResults = true;
           
-          this.log.warn(
-            `CMCI request returned error code ${apiResponse.response?.resultsummary?.api_response1} ` +
-            `(${apiResponse.response?.resultsummary?.api_response1_alt}) but also returned records. ` +
-            `Returning partial results.`
-          );
+          // Build error details from response codes
+          const errorCode1 = apiResponse.response?.resultsummary?.api_response1;
+          const errorCode1Alt = apiResponse.response?.resultsummary?.api_response1_alt;
+          const errorCode2 = apiResponse.response?.resultsummary?.api_response2;
+          const errorCode2Alt = apiResponse.response?.resultsummary?.api_response2_alt;
+          
+          let errorMessage = `⚠️ WARNING: CMCI request returned error code ${errorCode1}`;
+          
+          if (errorCode1Alt) {
+            errorMessage += ` (${errorCode1Alt})`;
+          }
+          
+          if (errorCode2Alt) {
+            errorMessage += ` - ${errorCode2Alt}`;
+          } else if (errorCode2) {
+            errorMessage += ` - Response2: ${errorCode2}`;
+          }
+          
+          errorMessage += ` but also returned records. Returning incomplete results.`;
+          
+          // Store the error message in the API response for consumers
+          apiResponse.incompleteResultsMessage = errorMessage;
+          
+          this.log.warn(errorMessage);
           return apiResponse;
         }
       }

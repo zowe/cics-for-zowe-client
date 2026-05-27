@@ -139,6 +139,29 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(regionsContainer.children[0].getRegionName()).toBe("CICS1");
       expect(regionsContainer.children[1].getRegionName()).toBe("TEST1");
     });
+
+    it("should show warning message when incomplete results are detected during filtering", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        hasLimitedResults: true,
+        incompleteResultsMessage: "⚠️ WARNING: CMCI request returned error code 1038 (NOTPERMIT) - Response2: 1 but also returned records. Returning incomplete results."
+      });
+      (window.showWarningMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.filterRegions("cics*", cicsTree);
+
+      expect(window.showWarningMessage).toHaveBeenCalledWith(
+        expect.stringContaining("⚠️ WARNING: CMCI request returned error code")
+      );
+    });
+
+    it("should show warning icon when incomplete results are detected during filtering", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: true });
+
+      await regionsContainer.filterRegions("cics*", cicsTree);
+
+      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ id: "warning" }));
+    });
   });
 
   describe("Test suite for loadRegionsInCICSGroup", () => {
@@ -199,6 +222,43 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should show warning message when incomplete results are detected", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        hasLimitedResults: true,
+        incompleteResultsMessage: "⚠️ WARNING: CMCI request returned error code 1038 (NOTPERMIT) - Response2: 1 but also returned records. Returning incomplete results."
+      });
+      (window.showWarningMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(window.showWarningMessage).toHaveBeenCalledWith(
+        expect.stringContaining("⚠️ WARNING: CMCI request returned error code")
+      );
+    });
+
+    it("should show warning icon when incomplete results are detected", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: true });
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ id: "warning" }));
+    });
+
+    it("should use fallback message when incompleteResultsMessage is not provided", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        hasLimitedResults: true
+      });
+      (window.showWarningMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(window.showWarningMessage).toHaveBeenCalledWith(
+        expect.stringContaining("Incomplete results. Some resources couldn't be retrieved due to insufficient permissions.")
+      );
     });
   });
 

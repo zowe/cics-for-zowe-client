@@ -625,7 +625,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -637,14 +637,14 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await containerNode.getChildren();
 
       expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Limited results")
+        expect.stringContaining("Incomplete results")
       );
       // When containedResource is undefined, it falls back to "resources"
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
@@ -661,7 +661,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -673,7 +673,7 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await containerNode.getChildren();
@@ -683,7 +683,7 @@ describe("CICSResourceContainerNode tests", () => {
       expect((containerNode.iconPath as any).id).toEqual("warning");
     });
 
-    it("should append '(Limited Results)' to description", async () => {
+    it("should append '(Incomplete Results)' to description", async () => {
       containerNode = new CICSResourceContainerNode(
         "Programs",
         {
@@ -704,7 +704,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -716,13 +716,13 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await containerNode.getChildren();
 
-      // Description includes both the default description and limited results indicator
-      expect(containerNode.description).toContain("(Limited Results)");
+      // Description includes both the default description and incomplete results indicator
+      expect(containerNode.description).toContain("(Incomplete Results)");
       expect(containerNode.description).toContain("My Description");
     });
 
@@ -735,7 +735,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: false,
+        incompleteResults: false,
       });
 
       getCacheMock.mockResolvedValue({
@@ -747,13 +747,13 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: false,
+        incompleteResults: false,
       });
 
       await containerNode.getChildren();
 
       expect(showWarningMessageSpy).not.toHaveBeenCalled();
-      expect(containerNode.description).not.toContain("(Limited Results)");
+      expect(containerNode.description).not.toContain("(Incomplete Results)");
     });
 
     it("should show warning only once on first fetch", async () => {
@@ -765,7 +765,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -777,7 +777,7 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       // First call
@@ -812,7 +812,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -824,13 +824,13 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await containerNode.getChildren();
 
       expect(showWarningMessageSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Limited results")
+        expect.stringContaining("Incomplete results")
       );
     });
 
@@ -855,7 +855,7 @@ describe("CICSResourceContainerNode tests", () => {
             recordcount: "10",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValue({
@@ -868,7 +868,7 @@ describe("CICSResourceContainerNode tests", () => {
             cicsprogram: [prog1, prog2, prog1, prog2, prog1],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await containerNode.getChildren();
@@ -876,7 +876,7 @@ describe("CICSResourceContainerNode tests", () => {
       expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
       expect(containerNode.iconPath).toBeDefined();
       expect((containerNode.iconPath as any).id).toEqual("warning");
-      expect(containerNode.description).toContain("(Limited Results)");
+      expect(containerNode.description).toContain("(Incomplete Results)");
       expect(containerNode.hasMore()).toBeTruthy();
     });
   });

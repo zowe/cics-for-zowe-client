@@ -45,5 +45,12 @@ export interface ICMCIApiResponse {
    *
    * This flag is set by the SDK and is not part of the CMCI API response.
    */
-  partialResults?: boolean;
+  incompleteResults?: boolean;
+  /**
+   * Detailed error message describing the partial results condition.
+   * This message includes the CMCI error codes and descriptions.
+   *
+   * This field is set by the SDK and is not part of the CMCI API response.
+   */
+  incompleteResultsMessage?: string;
 }

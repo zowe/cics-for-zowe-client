@@ -28,8 +28,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   private requireDescriptionUpdate: boolean = false;
 
   defaultDescription: string;
-  private hasLimitedResults: boolean = false;
-  private hasShownLimitedResultsWarning: boolean = false;
+  private hasIncompleteResults: boolean = false;
+  private hasShownIncompleteResultsWarning: boolean = false;
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
@@ -102,8 +102,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   refreshIcon(folderOpen: boolean = false): void {
-    // Don't override warning icon when limited results are present
-    if (this.hasLimitedResults) {
+    // Don't override warning icon when incomplete results are present
+    if (this.hasIncompleteResults) {
       return;
     }
     this.iconPath = this.containedResource?.meta ? IconBuilder.resource(this.containedResource) : IconBuilder.folder(folderOpen);
@@ -199,12 +199,15 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
       
-      // Check for limited results
-      if (this.fetcher.hasLimitedResults() && !this.hasShownLimitedResultsWarning) {
-        this.hasLimitedResults = true;
-        this.hasShownLimitedResultsWarning = true;
-        const message = l10n.t(
-          "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+      // Check for incomplete results
+      if (this.fetcher.hasLimitedResults() && !this.hasShownIncompleteResultsWarning) {
+        this.hasIncompleteResults = true;
+        this.hasShownIncompleteResultsWarning = true;
+        
+        // Use the detailed error message from the SDK if available
+        const detailedMessage = this.fetcher.getPartialResultsErrorMessage();
+        const message = detailedMessage || l10n.t(
+          "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
         );
         window.showWarningMessage(message);
         
@@ -266,9 +269,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
     this.description = this.description.trim();
     
-    // Append limited results indicator if applicable
-    if (this.hasLimitedResults) {
-      this.description += ` ${l10n.t("(Limited Results)")}`;
+    // Append incomplete results indicator if applicable
+    if (this.hasIncompleteResults) {
+      this.description += ` ${l10n.t("(Incomplete Results)")}`;
       this.description = this.description.trim();
     }
   }

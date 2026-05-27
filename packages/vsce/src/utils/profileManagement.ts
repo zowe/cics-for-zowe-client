@@ -295,28 +295,32 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasLimitedResults: boolean }> {
+  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasLimitedResults: boolean }> {
+  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     try {
-      const { response } = await runGetResource({
+      const apiResponse = await runGetResource({
         profileName: profile.name,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
         cicsPlex: plexName,
       });
-      const responseCode = parseInt(response.resultsummary?.api_response1 || "0");
+      const responseCode = parseInt(apiResponse.response.resultsummary?.api_response1 || "0");
       
       // If we have records, return them regardless of error codes
-      // This handles limited results scenarios (e.g., NOTPERMIT with some data)
+      // This handles incomplete results scenarios (e.g., NOTPERMIT with some data)
       // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
-      if (response.records?.cicsmanagedregion) {
+      if (apiResponse.response.records?.cicsmanagedregion) {
         // Check if response code is OK (1024)
         const hasLimitedResults = responseCode !== CicsCmciConstants.RESPONSE_1_CODES.OK;
-        return { regions: toArray(response.records.cicsmanagedregion), hasLimitedResults };
+        return {
+          regions: toArray(apiResponse.response.records.cicsmanagedregion),
+          hasLimitedResults,
+          incompleteResultsMessage: apiResponse.incompleteResultsMessage
+        };
       }
       
       // If response code is OK but no records, return empty array

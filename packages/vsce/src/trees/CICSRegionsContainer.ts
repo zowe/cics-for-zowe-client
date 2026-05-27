@@ -25,8 +25,7 @@ export class CICSRegionsContainer extends TreeItem {
   parent: CICSPlexTree;
   activeFilter: string;
   private requireDescriptionUpdate: boolean = false;
-  private hasLimitedResults: boolean = false;
-  private hasShownLimitedResultsWarning: boolean = false;
+  private hasIncompleteResults: boolean = false;
 
   constructor(
     parent: CICSPlexTree,
@@ -64,13 +63,13 @@ export class CICSRegionsContainer extends TreeItem {
       },
       async () => {
         const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
-        this.hasLimitedResults = regionInfo.hasLimitedResults;
+        this.hasIncompleteResults = regionInfo.hasLimitedResults;
         
-        // Show warning message for limited results
-        if (this.hasLimitedResults && !this.hasShownLimitedResultsWarning) {
-          this.hasShownLimitedResultsWarning = true;
-          const message = l10n.t(
-            "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+        // Show warning message for incomplete results
+        if (this.hasIncompleteResults) {
+          // Use the detailed error message from the SDK if available
+          const message = regionInfo.incompleteResultsMessage || l10n.t(
+            "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
           );
           window.showWarningMessage(message);
         }
@@ -106,13 +105,13 @@ export class CICSRegionsContainer extends TreeItem {
     const parentPlex = this.getParent();
     const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
     if (regionInfo) {
-      this.hasLimitedResults = regionInfo.hasLimitedResults;
+      this.hasIncompleteResults = regionInfo.hasLimitedResults;
       
-      // Show warning message for limited results
-      if (this.hasLimitedResults && !this.hasShownLimitedResultsWarning) {
-        this.hasShownLimitedResultsWarning = true;
-        const message = l10n.t(
-          "Limited results. Some resources couldn't be retrieved due to insufficient permissions."
+      // Show warning message for incomplete results
+      if (this.hasIncompleteResults) {
+        // Use the detailed error message from the SDK if available
+        const message = regionInfo.incompleteResultsMessage || l10n.t(
+          "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
         );
         window.showWarningMessage(message);
       }
@@ -194,8 +193,8 @@ export class CICSRegionsContainer extends TreeItem {
     }
     description += `[${activeCount}/${totalCount}]`;
     
-    // Add warning icon if limited results detected
-    if (this.hasLimitedResults) {
+    // Add warning icon if incomplete results detected
+    if (this.hasIncompleteResults) {
       this.iconPath = new ThemeIcon("warning", undefined);
     }
     

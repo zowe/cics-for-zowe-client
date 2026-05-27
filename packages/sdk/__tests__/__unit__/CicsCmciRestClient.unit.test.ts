@@ -265,7 +265,7 @@ describe("CicsCmciRestClient tests", () => {
       expect(response.response.records).toBeDefined();
       expect(response.response.records.cicsmanagedregion).toBeDefined();
       expect(response.response.resultsummary.api_response1).toBe("1031");
-      expect(response.partialResults).toBe(true); // Flag should be set
+      expect(response.incompleteResults).toBe(true); // Flag should be set
     });
 
     // Test NOTPERMIT without records (complete authorization failure)
@@ -295,7 +295,7 @@ describe("CicsCmciRestClient tests", () => {
       expect(response.response.records).toBeDefined();
       expect(response.response.records.program).toBeDefined();
       expect(response.response.resultsummary.api_response1).toBe("1034");
-      expect(response.partialResults).toBe(true); // Flag should be set
+      expect(response.incompleteResults).toBe(true); // Flag should be set
     });
 
     // Test error without records still throws
@@ -319,7 +319,7 @@ describe("CicsCmciRestClient tests", () => {
       const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
       expect(restClientExpect).toHaveBeenCalledTimes(1);
       expect(response.response.resultsummary.api_response1).toBe("1024");
-      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for OK responses
+      expect(response.incompleteResults).toBeUndefined(); // Flag should NOT be set for OK responses
     });
 
     // Test NODATA response code with failOnNoData=false
@@ -334,7 +334,7 @@ describe("CicsCmciRestClient tests", () => {
       const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
       expect(restClientExpect).toHaveBeenCalledTimes(1);
       expect(response.response.resultsummary.api_response1).toBe("1027");
-      expect(response.partialResults).toBeUndefined(); // Flag should NOT be set for NODATA responses
+      expect(response.incompleteResults).toBeUndefined(); // Flag should NOT be set for NODATA responses
     });
   });
 

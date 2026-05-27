@@ -630,7 +630,7 @@ describe("Resource Container", () => {
             recordcount: "2",
           },
         },
-        partialResults: true, // SDK sets this flag
+        incompleteResults: true, // SDK sets this flag
       });
 
       await container.fetchNextPage();
@@ -663,7 +663,7 @@ describe("Resource Container", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true, // SDK sets this flag on cache response
+        incompleteResults: true, // SDK sets this flag on cache response
       });
 
       await container.fetchNextPage();
@@ -685,7 +685,7 @@ describe("Resource Container", () => {
             recordcount: "2",
           },
         },
-        partialResults: false,
+        incompleteResults: false,
       });
 
       getCacheMock.mockResolvedValue({
@@ -697,7 +697,7 @@ describe("Resource Container", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: false,
+        incompleteResults: false,
       });
 
       await container.fetchNextPage();
@@ -720,7 +720,7 @@ describe("Resource Container", () => {
             recordcount: "4",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValueOnce({
@@ -733,7 +733,7 @@ describe("Resource Container", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await container.fetchNextPage();
@@ -770,7 +770,7 @@ describe("Resource Container", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       await container.fetchNextPage();
@@ -796,7 +796,7 @@ describe("Resource Container", () => {
             recordcount: "2",
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       getCacheMock.mockResolvedValueOnce({
@@ -808,7 +808,7 @@ describe("Resource Container", () => {
             cicsprogram: [prog1, prog2],
           },
         },
-        partialResults: true,
+        incompleteResults: true,
       });
 
       // Local files without partial results

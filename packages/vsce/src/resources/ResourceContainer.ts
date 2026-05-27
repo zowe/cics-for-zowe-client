@@ -25,11 +25,15 @@ export class ResourceContainer {
   private nextIndex: Map<IResourceMeta<IResource>, number> = new Map();
   private typeCriteria: Map<IResourceMeta<IResource>, string> = new Map();
   /**
-   * Tracks whether partial results were detected due to authorization restrictions.
+   * Tracks whether incomplete results were detected due to authorization restrictions.
    * This flag is set during async fetch operations (ensureSummaries and fetchRecordsForAllocations).
    * Note: Should only be checked after all async operations complete to avoid race conditions.
    */
-  private hasPartialResults: boolean = false;
+  private hasIncompleteResults: boolean = false;
+  /**
+   * Stores the detailed error message from the CMCI response when incomplete results are detected.
+   */
+  private incompleteResultsErrorMessage: string = null;
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
@@ -47,7 +51,8 @@ export class ResourceContainer {
       this.typeCriteria.set(type, type.getDefaultCriteria(this.parentResource?.attributes));
     }
     this.criteriaApplied = false;
-    this.hasPartialResults = false;
+    this.hasIncompleteResults = false;
+    this.incompleteResultsErrorMessage = null;
   }
 
   setCriteria(criteria: string[]) {
@@ -110,8 +115,8 @@ export class ResourceContainer {
         },
       });
 
-      // Check for partial results in summary
-      this.handlePartialResults(meta, apiResponse);
+      // Check for incomplete results in summary
+      this.handleIncompleteResults(meta, apiResponse);
 
       this.summaries.set(meta, apiResponse.response.resultsummary);
       this.nextIndex.set(meta, 1);
@@ -119,10 +124,17 @@ export class ResourceContainer {
   }
 
   /**
-   * @returns Whether limited results were detected due to authorization restrictions
+   * @returns Whether incomplete results were detected due to authorization restrictions
    */
   public hasLimitedResults(): boolean {
-    return this.hasPartialResults;
+    return this.hasIncompleteResults;
+  }
+
+  /**
+   * @returns The detailed error message from the CMCI response when incomplete results are detected
+   */
+  public getPartialResultsErrorMessage(): string {
+    return this.incompleteResultsErrorMessage;
   }
 
   /**
@@ -202,8 +214,8 @@ export class ResourceContainer {
         count,
       });
 
-      // Check for partial results
-      this.handlePartialResults(meta, apiResponse);
+      // Check for incomplete results
+      this.handleIncompleteResults(meta, apiResponse);
 
       const { response } = apiResponse;
 
@@ -312,18 +324,23 @@ export class ResourceContainer {
     }
     this.summaries.clear();
     this.nextIndex.clear();
-    this.hasPartialResults = false;
+    this.hasIncompleteResults = false;
+    this.incompleteResultsErrorMessage = null;
   }
 
   /**
-   * Handles partial results detection and logging.
+   * Handles incomplete results detection and logging.
    * Extracted to avoid code duplication.
    */
-  private handlePartialResults(meta: IResourceMeta<IResource>, apiResponse: any) {
-    if (apiResponse.partialResults) {
-      this.hasPartialResults = true;
+  private handleIncompleteResults(meta: IResourceMeta<IResource>, apiResponse: any) {
+    if (apiResponse.incompleteResults) {
+      this.hasIncompleteResults = true;
+      // Store the detailed error message from the SDK
+      if (apiResponse.incompleteResultsMessage) {
+        this.incompleteResultsErrorMessage = apiResponse.incompleteResultsMessage;
+      }
       CICSLogger.warn(
-        `Partial authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
+        `Incomplete authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
         `Some resources may be hidden due to security restrictions.`
       );
     }
