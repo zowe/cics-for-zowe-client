@@ -340,8 +340,7 @@ export class ResourceContainer {
         this.incompleteResultsErrorMessage = apiResponse.incompleteResultsMessage;
       }
       CICSLogger.warn(
-        `Incomplete authorization detected for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName}. ` +
-        `Some resources may be hidden due to security restrictions.`
+        `Returning incomplete results for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName} `
       );
     }
   }

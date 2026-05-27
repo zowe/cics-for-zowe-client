@@ -160,7 +160,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.filterRegions("cics*", cicsTree);
 
-      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ id: "warning" }));
+      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
     });
   });
 
@@ -244,7 +244,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.loadRegionsInPlex();
 
-      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ id: "warning" }));
+      expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
     });
 
     it("should use fallback message when incompleteResultsMessage is not provided", async () => {
@@ -257,7 +257,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(window.showWarningMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Incomplete results. Some resources couldn't be retrieved due to insufficient permissions.")
+        expect.stringContaining("Incomplete results. Some resources couldn't be retrieved.")
       );
     });
   });

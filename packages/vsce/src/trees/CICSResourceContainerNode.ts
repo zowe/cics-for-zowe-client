@@ -102,10 +102,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   refreshIcon(folderOpen: boolean = false): void {
-    // Don't override warning icon when incomplete results are present
-    if (this.hasIncompleteResults) {
-      return;
-    }
     this.iconPath = this.containedResource?.meta ? IconBuilder.resource(this.containedResource) : IconBuilder.folder(folderOpen);
   }
 
@@ -207,12 +203,9 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
         // Use the detailed error message from the SDK if available
         const detailedMessage = this.fetcher.getPartialResultsErrorMessage();
         const message = detailedMessage || l10n.t(
-          "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
+          "Incomplete results. Some resources couldn't be retrieved."
         );
         window.showWarningMessage(message);
-        
-        // Update the tree item to show warning icon
-        this.iconPath = new ThemeIcon("warning", undefined);
       }
     }
 
@@ -269,11 +262,6 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
     this.description = this.description.trim();
     
-    // Append incomplete results indicator if applicable
-    if (this.hasIncompleteResults) {
-      this.description += ` ${l10n.t("(Incomplete Results)")}`;
-      this.description = this.description.trim();
-    }
   }
 
   async fetchNextPage() {

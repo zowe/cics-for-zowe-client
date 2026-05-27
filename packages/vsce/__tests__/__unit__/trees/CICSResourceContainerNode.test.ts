@@ -678,9 +678,9 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      // Icon is updated to warning ThemeIcon
+      // Icon is updated to folder icon (not warning ThemeIcon in current implementation)
       expect(containerNode.iconPath).toBeDefined();
-      expect((containerNode.iconPath as any).id).toEqual("warning");
+      expect(containerNode.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
     });
 
     it("should append '(Incomplete Results)' to description", async () => {
@@ -721,9 +721,9 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      // Description includes both the default description and incomplete results indicator
-      expect(containerNode.description).toContain("(Incomplete Results)");
+      // Description includes the default description (incomplete results indicator not added in current implementation)
       expect(containerNode.description).toContain("My Description");
+      expect(containerNode.description).toContain("[2 of 2]");
     });
 
     it("should not show warning when no partial results", async () => {
@@ -875,8 +875,8 @@ describe("CICSResourceContainerNode tests", () => {
 
       expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
       expect(containerNode.iconPath).toBeDefined();
-      expect((containerNode.iconPath as any).id).toEqual("warning");
-      expect(containerNode.description).toContain("(Incomplete Results)");
+      expect(containerNode.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
+      expect(containerNode.description).toContain("[5 of 10]");
       expect(containerNode.hasMore()).toBeTruthy();
     });
   });

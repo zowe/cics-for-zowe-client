@@ -69,7 +69,7 @@ export class CICSRegionsContainer extends TreeItem {
         if (this.hasIncompleteResults) {
           // Use the detailed error message from the SDK if available
           const message = regionInfo.incompleteResultsMessage || l10n.t(
-            "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
+            "Incomplete results. Some resources couldn't be retrieved."
           );
           window.showWarningMessage(message);
         }
@@ -111,7 +111,7 @@ export class CICSRegionsContainer extends TreeItem {
       if (this.hasIncompleteResults) {
         // Use the detailed error message from the SDK if available
         const message = regionInfo.incompleteResultsMessage || l10n.t(
-          "Incomplete results. Some resources couldn't be retrieved due to insufficient permissions."
+          "Incomplete results. Some resources couldn't be retrieved."
         );
         window.showWarningMessage(message);
       }
@@ -192,11 +192,6 @@ export class CICSRegionsContainer extends TreeItem {
       description = `region=${this.activeFilter} `;
     }
     description += `[${activeCount}/${totalCount}]`;
-    
-    // Add warning icon if incomplete results detected
-    if (this.hasIncompleteResults) {
-      this.iconPath = new ThemeIcon("warning", undefined);
-    }
     
     this.description = description;
 
