@@ -1,0 +1,126 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
+
+import { {{#each actions}}{{sdkFunction}}{{#unless @last}}, {{/unless}}{{/each}}, type ICMCIApiResponse, type {{parmsInterface}} } from "@zowe/cics-for-zowe-sdk";
+import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { CicsBaseHandler } from "../CicsBaseHandler";
+
+import type i18nTypings from "../-strings-/en";
+
+// Does not use the import in anticipation of some internationalization work to be done later.
+{{#each actions}}
+const {{actionLower}}Strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase actionLower}}.RESOURCES.{{toUpperCase (removePrefix ../resourceName "CICS")}};
+{{/each}}
+
+/**
+ * Unified command handler for {{#each actions}}{{actionVerb}}{{#unless @last}}, {{/unless}}{{/each}} CICS {{humanNameLower}}s via CMCI.
+ * Determines the action ({{#each actions}}{{actionLower}}{{#unless @last}}/{{/unless}}{{/each}}) based on the command definition's parent.
+ * 
+ * @export
+ * @class {{handlerName}}
+ * @extends {CicsBaseHandler}
+ */
+export default class {{handlerName}} extends CicsBaseHandler {
+  /**
+   * Determines the action type based on the command chain
+   * @param {IHandlerParameters} params - Command handler parameters
+   * @returns The action type
+   */
+  private getActionType(params: IHandlerParameters): {{#each actions}}"{{toUpperCase name}}"{{#unless @last}} | {{/unless}}{{/each}} {
+    // Check parent command name first (works in tests)
+    const parentCommand = params.definition.parent?.name;
+{{#each actions}}
+    {{#if @first}}if{{else}}else if{{/if}} (parentCommand === "{{actionLower}}") {
+      return "{{toUpperCase name}}";
+    }{{#if @last}} {{/if}}
+{{/each}}
+    
+    // Check positionals array which contains the command chain
+    const positionals = params.positionals || [];
+{{#each actions}}
+    {{#if @first}}if{{else}}else if{{/if}} (positionals.includes("{{actionLower}}")) {
+      return "{{toUpperCase name}}";
+    }{{#if @last}} {{/if}}
+{{/each}}
+    
+    // Last resort: check if handler path contains {{#each actions}}{{actionLower}}{{#unless @last}}, {{/unless}}{{/each}}
+    const handlerPath = params.definition.handler || "";
+{{#each actions}}
+    {{#if @first}}if{{else}}else if{{/if}} (handlerPath.includes("/{{actionLower}}/") || handlerPath.includes("\\{{actionLower}}\\")) {
+      return "{{toUpperCase name}}";
+    }{{#if @last}} {{/if}}
+{{/each}}
+    
+    // Should not reach here with proper command structure
+    throw new Error("Unable to determine action type from command context");
+  }
+
+  /**
+   * Gets the appropriate strings based on action type
+   * @param action - The action type
+   * @returns {object} The strings object for the action
+   */
+  private getStrings(action: {{#each actions}}"{{toUpperCase name}}"{{#unless @last}} | {{/unless}}{{/each}}) {
+{{#each actions}}
+    {{#if @first}}if{{else}}else if{{/if}} (action === "{{toUpperCase name}}") {
+      return {{actionLower}}Strings;
+    }{{#if @last}} else {
+      return {{actionLower}}Strings;
+    }{{/if}}
+{{/each}}
+  }
+
+  /**
+   * Process the command to {{#each actions}}{{actionLower}}{{#unless @last}}, {{/unless}}{{/each}} a CICS {{humanNameLower}}
+   * @param {IHandlerParameters} params - Command handler parameters
+   * @param {AbstractSession} session - The session to use for the CMCI request
+   * @returns {Promise<ICMCIApiResponse>} The CMCI API response
+   * @throws {ImperativeError} Various errors from validation or CMCI request failures
+   */
+  public async processWithSession(params: IHandlerParameters, session: AbstractSession): Promise<ICMCIApiResponse> {
+    const action = this.getActionType(params);
+    const strings = this.getStrings(action);
+    
+    const status: ITaskWithStatus = {
+      statusMessage: strings.MESSAGES.PROGRESS,
+      percentComplete: 0,
+      stageName: TaskStage.IN_PROGRESS,
+    };
+    params.response.progress.startBar({ task: status });
+
+    // Build parameters for the SDK call
+    const sdkParams: {{parmsInterface}} = {
+      name: params.arguments.fileName,
+      regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex,
+    };
+
+{{#if hasCloseAction}}
+    // Add busy parameter only for CLOSE action
+    if (action === "CLOSE" && params.arguments.busy) {
+      sdkParams.busy = params.arguments.busy;
+    }
+
+{{/if}}
+    // Call the appropriate SDK function based on action
+    let response: ICMCIApiResponse;
+{{#each actions}}
+    {{#if @first}}if{{else}}else if{{/if}} (action === "{{toUpperCase name}}") {
+      response = await {{sdkFunction}}(session, sdkParams);
+    }{{#if @last}} else {
+      response = await {{sdkFunction}}(session, sdkParams);
+    }{{/if}}
+{{/each}}
+
+    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.fileName);
+    return response;
+  }
+}

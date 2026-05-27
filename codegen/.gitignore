@@ -1,0 +1,15 @@
+# Generated files (if using safe mode)
+generated/
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Made with Bob

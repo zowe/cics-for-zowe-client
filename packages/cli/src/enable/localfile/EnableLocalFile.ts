@@ -11,19 +11,19 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 
-import type i18nTypings from "../-strings-/en";
+import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).OPEN.RESOURCES.LOCALFILE;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).ENABLE.RESOURCES.LOCALFILE;
 
 /**
- * Local file command definition for the OPEN command group
+ * Local File command definition for the ENABLE command group
  */
 export const LocalFileDefinition: ICommandDefinition = {
   name: "CICSLocalFile",
   aliases: ["lf"],
   description: strings.DESCRIPTION,
-  handler: __dirname + "/../common/LocalFileHandler",
+  handler: __dirname + "/../../common/LocalFileHandler",
   type: "command",
   positionals: [
     {

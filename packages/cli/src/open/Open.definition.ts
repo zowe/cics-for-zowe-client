@@ -11,7 +11,7 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 import { CicsSession } from "../CicsSession";
-import { LocalFileDefinition } from "./OpenLocalFile";
+import { LocalFileDefinition } from "./localfile/OpenLocalFile";
 
 import type i18nTypings from "../-strings-/en";
 
@@ -39,5 +39,3 @@ const definition: ICommandDefinition = {
 };
 
 export = definition;
-
-

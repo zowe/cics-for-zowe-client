@@ -10,24 +10,24 @@
  */
 
 import type { ICommandDefinition } from "@zowe/imperative";
-import { UrimapDefinition } from "./urimap/Urimap.definition";
+import { CicsSession } from "../CicsSession";
+import { LocalFileDefinition } from "./localfile/EnableLocalFile";
 
 import type i18nTypings from "../-strings-/en";
-import { CicsSession } from "../CicsSession";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE;
 
 /**
- * Definition for the "Enable" group of commands under the CICS plugin
+ * Definition for the "enable" group of commands under the CICS plugin
  */
 const definition: ICommandDefinition = {
   name: "enable",
-  aliases: ["en"],
+  aliases: ["enb"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [UrimapDefinition],
+  children: [LocalFileDefinition],
   passOn: [
     {
       property: "options",
@@ -37,4 +37,5 @@ const definition: ICommandDefinition = {
     },
   ],
 };
+
 export = definition;

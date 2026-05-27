@@ -170,28 +170,36 @@ export class LocalFileCommandHandler {
   }
 
   /**
-   * Registers the ENABLE local file command (future implementation)
+   * Registers the ENABLE local file command
    * @returns Disposable command registration
    */
   public registerEnableCommand() {
     return this.createActionCommand({
       commandId: "cics-extension-for-zowe.enableLocalFile",
       action: "ENABLE",
-      // TODO: Add parameter configuration based on CICS ENABLE requirements (e.g., status options)
+      // No parameter needed for enable
     });
   }
-
   /**
-   * Registers the DISABLE local file command (future implementation)
+   * Registers the DISABLE local file command
    * @returns Disposable command registration
    */
   public registerDisableCommand() {
     return this.createActionCommand({
       commandId: "cics-extension-for-zowe.disableLocalFile",
       action: "DISABLE",
-      // TODO: Add parameter configuration based on CICS DISABLE requirements (e.g., force options)
+      parameter: {
+        name: "busy",
+        prompt: l10n.t("Choose one of the following for the file busy condition"),
+        choices: {
+          [l10n.t("Wait")]: "WAIT",
+          [l10n.t("No Wait")]: "NOWAIT",
+          [l10n.t("Force")]: "FORCE",
+        },
+      },
     });
   }
+
 
   /**
    * Registers all local file commands at once
@@ -201,9 +209,8 @@ export class LocalFileCommandHandler {
     return [
       this.registerCloseCommand(),
       this.registerOpenCommand(),
-      // Uncomment when ready to implement:
-      // this.registerEnableCommand(),
-      // this.registerDisableCommand(),
+      this.registerEnableCommand(),
+      this.registerDisableCommand()
     ];
   }
 }
@@ -228,4 +235,26 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<CICS
 export function getOpenLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
   const handler = new LocalFileCommandHandler(tree, treeview);
   return handler.registerOpenCommand();
+}
+
+/**
+ * Registers the command to enable CICS local files from the VS Code tree view
+ * @param tree - The CICS tree to refresh after enabling
+ * @param treeview - The tree view containing selected nodes
+ * @returns Disposable command registration
+ */
+export function getEnableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
+  const handler = new LocalFileCommandHandler(tree, treeview);
+  return handler.registerEnableCommand();
+}
+
+/**
+ * Registers the command to disable CICS local files from the VS Code tree view
+ * @param tree - The CICS tree to refresh after disabling
+ * @param treeview - The tree view containing selected nodes
+ * @returns Disposable command registration
+ */
+export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<CICSResourceContainerNode<IResource>>) {
+  const handler = new LocalFileCommandHandler(tree, treeview);
+  return handler.registerDisableCommand();
 }
