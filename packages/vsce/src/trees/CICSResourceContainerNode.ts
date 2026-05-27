@@ -11,7 +11,7 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
-import { l10n, TreeItemCollapsibleState, type TreeItemLabel, window, ThemeIcon } from "vscode";
+import { l10n, TreeItemCollapsibleState, type TreeItemLabel, window } from "vscode";
 import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { type Resource, ResourceContainer } from "../resources";
