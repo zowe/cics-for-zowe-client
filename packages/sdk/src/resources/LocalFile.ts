@@ -164,9 +164,11 @@ export async function enableLocalFile(session: AbstractSession, parms: ILocalFil
  * @param {string} parms.name - the name of the local file to disable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
+ * @param {string} [parms.busy] - busy condition option: "WAIT", "NOWAIT", or "FORCE" (case-insensitive, optional, default: "WAIT")
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
  * @throws {ImperativeError} CICS local file name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
+ * @throws {ImperativeError} Invalid BUSY parameter value
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
 export async function disableLocalFile(session: AbstractSession, parms: ILocalFileParms): Promise<ICMCIApiResponse> {
@@ -186,7 +188,18 @@ export async function disableLocalFile(session: AbstractSession, parms: ILocalFi
     JSON.stringify(parms)
   );
 
-  // Use generic performAction utility (no additional parameters needed for DISABLE)
+  // Get busy parameter value
+  const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";
+
+  // Validate busy parameter
+  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyValue)) {
+    const allowedValuesStr = CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ");
+    throw new ImperativeError({
+      msg: `Invalid BUSY parameter value: "${busyValue}". Must be one of: ${allowedValuesStr}`,
+    });
+  }
+
+  // Use generic performAction utility
   return performAction(
     session,
     CicsCmciConstants.CICS_CMCI_LOCAL_FILE,
@@ -196,6 +209,7 @@ export async function disableLocalFile(session: AbstractSession, parms: ILocalFi
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LOCAL_FILE_CRITERIA_FIELD
+    CicsCmciConstants.CICS_LOCAL_FILE_CRITERIA_FIELD,
+    { name: "BUSY", value: busyValue }
   );
 }

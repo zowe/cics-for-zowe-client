@@ -165,12 +165,11 @@ export class CommandGenerator {
         resource => resource.sdkFileName && resource.sdkFileName.toLowerCase() === 'localfile'
       );
 
-      // Generate group definition
-      // If the group has LocalFile resources, place the group definition in the localfile subdirectory
+      // Generate group definition at the root of the command group directory
+      const groupFileName = `${commandGroup.group.charAt(0).toUpperCase() + commandGroup.group.slice(1)}.definition.ts`;
+      const groupFilePath = path.join(cliOutputDir, commandGroup.group, groupFileName);
+      
       if (hasLocalFileResource) {
-        const groupFileName = `${commandGroup.group.charAt(0).toUpperCase() + commandGroup.group.slice(1)}.definition.ts`;
-        const groupFilePath = path.join(cliOutputDir, commandGroup.group, 'localfile', groupFileName);
-        
         this.generateFromTemplate(
           "cli/group.definition.localfile.hbs",
           groupFilePath,
@@ -179,7 +178,7 @@ export class CommandGenerator {
       } else {
         this.generateFromTemplate(
           "cli/group.definition.hbs",
-          path.join(cliOutputDir, commandGroup.group, `${commandGroup.group.charAt(0).toUpperCase() + commandGroup.group.slice(1)}.definition.ts`),
+          groupFilePath,
           commandGroup
         );
       }
@@ -527,7 +526,7 @@ export class CommandGenerator {
    */
   private buildSDKFunction(resource: Resource, action: Action): string {
     const lines: string[] = [];
-    const isClose = action.name === "CLOSE";
+    const hasBusyParameter = action.name === "CLOSE" || action.name === "DISABLE";
     
     lines.push(`/**`);
     lines.push(` * ${action.actionVerb.charAt(0).toUpperCase() + action.actionVerb.slice(1)} a ${resource.humanNameLower} in CICS`);
@@ -536,13 +535,13 @@ export class CommandGenerator {
     lines.push(` * @param {string} parms.name - the name of the ${resource.humanNameLower} to ${action.actionLower} (1-${resource.maxNameLength} characters)`);
     lines.push(` * @param {string} parms.regionName - the CICS region name`);
     lines.push(` * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)`);
-    if (isClose) {
+    if (hasBusyParameter) {
       lines.push(` * @param {string} [parms.busy] - busy condition option: "WAIT", "NOWAIT", or "FORCE" (case-insensitive, optional, default: "WAIT")`);
     }
     lines.push(` * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response`);
     lines.push(` * @throws {ImperativeError} CICS ${resource.humanNameLower} name not defined, blank, or exceeds maximum length`);
     lines.push(` * @throws {ImperativeError} CICS region name not defined or blank`);
-    if (isClose) {
+    if (hasBusyParameter) {
       lines.push(` * @throws {ImperativeError} Invalid BUSY parameter value`);
     }
     lines.push(` * @throws {ImperativeError} CicsCmciRestClient request fails`);
@@ -560,7 +559,7 @@ export class CommandGenerator {
     lines.push(`  }`);
     lines.push(``);
     
-    if (isClose) {
+    if (hasBusyParameter) {
       lines.push(`  Logger.getAppLogger().debug(`);
       lines.push(`    \`Attempting to ${action.actionLower} a ${resource.humanNameLower} with the following parameters:\\n%s\`,`);
       lines.push(`    JSON.stringify(parms)`);
@@ -570,8 +569,8 @@ export class CommandGenerator {
       lines.push(`  const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";`);
       lines.push(``);
       lines.push(`  // Validate busy parameter`);
-      lines.push(`  if (!CicsCmciConstants.${resource.sdkResourceType}_BUSY_VALUES.includes(busyValue)) {`);
-      lines.push(`    const allowedValuesStr = CicsCmciConstants.${resource.sdkResourceType}_BUSY_VALUES.join(", ");`);
+      lines.push(`  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyValue)) {`);
+      lines.push(`    const allowedValuesStr = CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ");`);
       lines.push(`    throw new ImperativeError({`);
       lines.push(`      msg: \`Invalid BUSY parameter value: "\${busyValue}". Must be one of: \${allowedValuesStr}\`,`);
       lines.push(`    });`);
@@ -587,7 +586,7 @@ export class CommandGenerator {
       lines.push(`      regionName: parms.regionName,`);
       lines.push(`      cicsPlex: parms.cicsPlex,`);
       lines.push(`    },`);
-      lines.push(`    CicsCmciConstants.${resource.sdkResourceType}_CRITERIA_FIELD,`);
+      lines.push(`    CicsCmciConstants.CICS_LOCAL_FILE_CRITERIA_FIELD,`);
       lines.push(`    { name: "BUSY", value: busyValue }`);
       lines.push(`  );`);
     } else {

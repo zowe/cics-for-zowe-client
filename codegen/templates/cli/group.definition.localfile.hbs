@@ -10,19 +10,19 @@
  */
 
 import type { ICommandDefinition } from "@zowe/imperative";
-import { CicsSession } from "../../CicsSession";
+import { CicsSession } from "../CicsSession";
 {{#each resources}}
 {{#if sdkFileName}}
-import { LocalFileDefinition } from "./{{capitalize ../group}}{{sdkFileName}}";
+import { LocalFileDefinition } from "./localfile/{{capitalize ../group}}{{sdkFileName}}";
 {{else}}
-import { LocalFileDefinition } from "./{{capitalize ../group}}{{removePrefix name "CICS"}}";
+import { LocalFileDefinition } from "./localfile/{{capitalize ../group}}{{removePrefix name "CICS"}}";
 {{/if}}
 {{/each}}
 
-import type i18nTypings from "../../-strings-/en";
+import type i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).{{toUpperCase group}};
+const strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase group}};
 
 /**
  * Definition for the "{{group}}" group of commands under the CICS plugin

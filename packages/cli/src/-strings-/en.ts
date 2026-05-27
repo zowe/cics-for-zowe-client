@@ -326,6 +326,7 @@ export default {
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to disable the local file",
           CICSPLEX: "The name of the CICSPlex in which to disable the local file",
+          BUSY: "Specifies the action to take when the local file is busy. Valid values are WAIT or FORCE. WAIT waits for the file to become available. FORCE forces the disable operation.",
         },
         MESSAGES: {
           SUCCESS: "The local file '%s' was disabled successfully.",
@@ -333,6 +334,7 @@ export default {
         },
         EXAMPLES: {
           EX1: "Disable a local file named TESTFILE in the region named MYREGION",
+          EX2: "Disable a local file named TESTFILE in the region named MYREGION with FORCE option when busy",
         },
       },
       URIMAP: {
