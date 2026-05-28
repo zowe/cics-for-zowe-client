@@ -11,11 +11,12 @@
 
 import type { IResource, IResourceContext, ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { type ExtensionContext, ProgressLocation, commands, l10n, window } from "vscode";
+import { ProgressLocation, commands, l10n, window, type ExtensionContext } from "vscode";
 import { showInspectResource } from "../commands/inspectResourceCommandUtils";
-import { type IContainedResource, getMetas } from "../doc";
+import { getMetas, type IContainedResource } from "../doc";
 import CICSResourceExtender from "../extending/CICSResourceExtender";
 import { Resource, ResourceContainer } from "../resources";
+import PersistentStorage from "../utils/PersistentStorage";
 import type { IResourceInspectorResource } from "../webviews/common/vscode";
 import { CICSResourceContainerNode } from "./CICSResourceContainerNode";
 import type { ResourceInspectorViewProvider } from "./ResourceInspectorViewProvider";
@@ -34,6 +35,14 @@ export const handleActionCommand = async (
   const action = CICSResourceExtender.getAction(actionId);
   if (!action) {
     return;
+  }
+
+  // Record each resource as recently interacted with (before action, so it records even on failure)
+  for (const resource of resources) {
+    await PersistentStorage.appendRecentResource({
+      resourceName: resource.name,
+      resourceType: resource.meta.resourceName,
+    });
   }
 
   if (typeof action.action === "string") {

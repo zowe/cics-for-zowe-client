@@ -9,151 +9,128 @@
  *
  */
 
-import { ConfigurationTarget } from "vscode";
-import { ILastUsedRegion } from "../../../src/doc/commands/ILastUsedRegion";
+import type { IRecentResource } from "../../../src/doc/commands/IRecentResource";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { workspaceConfigurationGetMock, workspaceConfigurationUpdateMock } from "../../__mocks__";
 
-const lastUsedRegion: ILastUsedRegion = {
-  cicsPlexName: "MYPLEX",
-  profileName: "MYPROFILE",
-  regionName: "MYREG",
-};
-
-describe("PersistentStorage test suite", () => {
+describe("PersistentStorage - recentResources", () => {
   beforeEach(() => {
     workspaceConfigurationGetMock.mockReset();
     workspaceConfigurationUpdateMock.mockReset();
+    workspaceConfigurationUpdateMock.mockResolvedValue(undefined);
   });
 
-  it("should get lastUsedRegion", () => {
-    workspaceConfigurationGetMock.mockReturnValue(lastUsedRegion);
-    const region = PersistentStorage.getLastUsedRegion();
-
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("lastUsedRegion", { cicsPlexName: null, profileName: null, regionName: null });
-    expect(region).toEqual(lastUsedRegion);
+  const makeResource = (resourceName: string, resourceType: string): IRecentResource => ({
+    resourceName,
+    resourceType,
   });
 
-  it("should set lastUsedRegion", async () => {
-    await PersistentStorage.setLastUsedRegion(lastUsedRegion);
+  describe("getRecentResources", () => {
+    it("returns empty array when nothing is stored", () => {
+      workspaceConfigurationGetMock.mockReturnValue([]);
+      expect(PersistentStorage.getRecentResources()).toEqual([]);
+    });
 
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
-      "zowe.cics.persistent",
-      expect.objectContaining({ lastUsedRegion }),
-      ConfigurationTarget.Global
-    );
+    it("returns stored recent resources", () => {
+      const stored = [makeResource("MYPROG", "CICSProgram")];
+      workspaceConfigurationGetMock.mockReturnValue(stored);
+      expect(PersistentStorage.getRecentResources()).toEqual(stored);
+    });
   });
 
-  it("should get search history", () => {
-    workspaceConfigurationGetMock.mockReturnValue(["prog1", "prog2"]);
-    const history = PersistentStorage.getSearchHistory("CICSProgram");
+  describe("appendRecentResource", () => {
+    it("prepends a new entry to an empty list", async () => {
+      workspaceConfigurationGetMock.mockReturnValue([]);
+      const resource = makeResource("MYPROG", "CICSProgram");
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("programSearchHistory", []);
-    expect(history).toHaveLength(2);
-    expect(history[0]).toEqual("prog1");
-    expect(history[1]).toEqual("prog2");
-  });
+      await PersistentStorage.appendRecentResource(resource);
 
-  it("should get search history for resource not in map", () => {
-    const history = PersistentStorage.getSearchHistory("MADEUPTHING");
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          recentResources: [resource],
+        }),
+        expect.anything()
+      );
+    });
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith(undefined, []);
-    expect(history).toBeUndefined();
-  });
+    it("prepends a new entry to an existing list", async () => {
+      const existing = makeResource("OLDPROG", "CICSProgram");
+      workspaceConfigurationGetMock.mockReturnValue([existing]);
+      const newResource = makeResource("NEWPROG", "CICSProgram");
 
-  it("should append search history", async () => {
-    workspaceConfigurationGetMock.mockReturnValue(["1", "2"]);
-    await PersistentStorage.appendSearchHistory("CICSLocalFile", "MYSRCH*");
+      await PersistentStorage.appendRecentResource(newResource);
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("localFileSearchHistory", []);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
-      "zowe.cics.persistent",
-      expect.objectContaining({ localFileSearchHistory: ["MYSRCH*", "1", "2"] }),
-      ConfigurationTarget.Global
-    );
-  });
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          recentResources: [newResource, existing],
+        }),
+        expect.anything()
+      );
+    });
 
-  it("should append search history when 10 items are already there", async () => {
-    workspaceConfigurationGetMock.mockReturnValue(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]);
-    await PersistentStorage.appendSearchHistory("CICSLocalFile", "MYSRCH*");
+    it("moves an existing entry (same name + type) to the front instead of duplicating", async () => {
+      const existing = [makeResource("MYPROG", "CICSProgram"), makeResource("OTHERPROG", "CICSProgram")];
+      workspaceConfigurationGetMock.mockReturnValue(existing);
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("localFileSearchHistory", []);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
-      "zowe.cics.persistent",
-      expect.objectContaining({ localFileSearchHistory: ["MYSRCH*", "1", "2", "3", "4", "5", "6", "7", "8", "9"] }),
-      ConfigurationTarget.Global
-    );
-  });
+      await PersistentStorage.appendRecentResource(makeResource("MYPROG", "CICSProgram"));
 
-  it("should get loaded cics profiles", () => {
-    workspaceConfigurationGetMock.mockReturnValue(["prof1", "prof2"]);
-    const profiles = PersistentStorage.getLoadedCICSProfiles();
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].recentResources as IRecentResource[];
+      expect(saved[0].resourceName).toBe("MYPROG");
+      expect(saved.filter((r) => r.resourceName === "MYPROG").length).toBe(1);
+    });
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("loadedCICSProfile", []);
-    expect(profiles).toHaveLength(2);
-    expect(profiles[0]).toEqual("prof1");
-    expect(profiles[1]).toEqual("prof2");
-  });
+    it("does not deduplicate entries with the same name but different resourceType", async () => {
+      const existing = [makeResource("MYRES", "CICSProgram")];
+      workspaceConfigurationGetMock.mockReturnValue(existing);
 
-  it("should append to loaded cics profile", async () => {
-    workspaceConfigurationGetMock.mockReturnValue(["prof1"]);
-    await PersistentStorage.appendLoadedCICSProfile("NEW PROF");
+      await PersistentStorage.appendRecentResource(makeResource("MYRES", "CICSLocalTransaction"));
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("loadedCICSProfile", []);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
-      "zowe.cics.persistent",
-      expect.objectContaining({ loadedCICSProfile: ["NEW PROF", "prof1"] }),
-      ConfigurationTarget.Global
-    );
-  });
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].recentResources as IRecentResource[];
+      expect(saved.length).toBe(2);
+      expect(saved[0].resourceType).toBe("CICSLocalTransaction");
+      expect(saved[1].resourceType).toBe("CICSProgram");
+    });
 
-  it("should remove a loaded cics profile", async () => {
-    workspaceConfigurationGetMock.mockReturnValue(["prof1", "prof2"]);
-    await PersistentStorage.removeLoadedCICSProfile("prof1");
+    it("caps entries per type at 5, dropping the oldest of that type", async () => {
+      const existing: IRecentResource[] = [
+        makeResource("PROG1", "CICSProgram"),
+        makeResource("PROG2", "CICSProgram"),
+        makeResource("PROG3", "CICSProgram"),
+        makeResource("PROG4", "CICSProgram"),
+        makeResource("PROG5", "CICSProgram"),
+      ];
+      workspaceConfigurationGetMock.mockReturnValue(existing);
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("loadedCICSProfile", []);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
-      "zowe.cics.persistent",
-      expect.objectContaining({ loadedCICSProfile: ["prof2"] }),
-      ConfigurationTarget.Global
-    );
-  });
+      await PersistentStorage.appendRecentResource(makeResource("PROG6", "CICSProgram"));
 
-  it("should get default filter", () => {
-    workspaceConfigurationGetMock.mockReturnValue("MY DEFAULT FILTER STORED IN SETTINGS");
-    const defFilter = PersistentStorage.getDefaultResourceFilter("CICSPipeline");
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("zowe.cics.CICSPipeline.filter", "(NAME=*)");
-    expect(defFilter).toEqual("MY DEFAULT FILTER STORED IN SETTINGS");
-  });
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].recentResources as IRecentResource[];
+      const programEntries = saved.filter((r) => r.resourceType === "CICSProgram");
+      expect(programEntries.length).toBe(5);
+      expect(programEntries[0].resourceName).toBe("PROG6");
+      expect(programEntries.find((r) => r.resourceName === "PROG5")).toBeUndefined();
+    });
 
-  it("should get default filter with custom key", () => {
-    workspaceConfigurationGetMock.mockReturnValue("MY DEFAULT FILTER STORED IN SETTINGS");
-    const defFilter = PersistentStorage.getDefaultResourceFilter("CICSPipeline", "CUSTOMKEY");
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("zowe.cics.CUSTOMKEY.filter", "(NAME=*)");
-    expect(defFilter).toEqual("MY DEFAULT FILTER STORED IN SETTINGS");
-  });
+    it("capping one type does not affect entries of other types", async () => {
+      const existing: IRecentResource[] = [
+        makeResource("PROG1", "CICSProgram"),
+        makeResource("PROG2", "CICSProgram"),
+        makeResource("PROG3", "CICSProgram"),
+        makeResource("PROG4", "CICSProgram"),
+        makeResource("PROG5", "CICSProgram"),
+        makeResource("TRAN1", "CICSLocalTransaction"),
+      ];
+      workspaceConfigurationGetMock.mockReturnValue(existing);
 
-  it("should get number of resources to fetch", () => {
-    workspaceConfigurationGetMock.mockReturnValue(5);
-    const numToFetch = PersistentStorage.getNumberOfResourcesToFetch();
+      await PersistentStorage.appendRecentResource(makeResource("PROG6", "CICSProgram"));
 
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledTimes(1);
-    expect(workspaceConfigurationGetMock).toHaveBeenCalledWith("zowe.cics.resourcePageCount", 250);
-    expect(numToFetch).toEqual(5);
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].recentResources as IRecentResource[];
+      const transactionEntries = saved.filter((r) => r.resourceType === "CICSLocalTransaction");
+      expect(transactionEntries.length).toBe(1);
+      expect(transactionEntries[0].resourceName).toBe("TRAN1");
+    });
   });
 });
+
+// Made with Bob

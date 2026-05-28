@@ -11,13 +11,14 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { type ExtensionContext, type InputBoxOptions, l10n, window } from "vscode";
+import { QuickPickItemKind, l10n, window, type ExtensionContext, type InputBoxOptions, type QuickPickItem } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import type { IContainedResource, IResourceMeta } from "../doc";
 import { Resource, ResourceContainer } from "../resources";
 import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { CICSLogger } from "../utils/CICSLogger";
+import PersistentStorage from "../utils/PersistentStorage";
 import type { IResourceInspectorResource } from "../webviews/common/vscode";
 import { showInspectResource } from "./inspectResourceCommandUtils";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
@@ -84,6 +85,16 @@ async function compareResourceFromInspector(currentResource: IResourceInspectorR
       return; // Error already shown
     }
 
+    // Record both resources as recently compared
+    await PersistentStorage.appendRecentResource({
+      resourceName: currentResource.name,
+      resourceType: currentResource.meta.resourceName,
+    });
+    await PersistentStorage.appendRecentResource({
+      resourceName: secondResource.meta.getName(secondResource.resource),
+      resourceType: secondResource.meta.resourceName,
+    });
+
     // Step 4: Validate both resources are same type
     if (currentResource.meta.resourceName !== secondResource.meta.resourceName) {
       await Gui.showMessage(l10n.t("Cannot compare CICS resources of different types."), { severity: MessageSeverity.ERROR });
@@ -117,6 +128,70 @@ async function compareResourceFromInspector(currentResource: IResourceInspectorR
 }
 
 async function selectResourceNameForComparison(resourceMeta: IResourceMeta<IResource>, currentResourceName: string): Promise<string | undefined> {
+  // Filter out the current resource from recent resources
+  const recentForType = PersistentStorage.getRecentResources().filter(
+    (r) => r.resourceType === resourceMeta.resourceName && r.resourceName !== currentResourceName
+  );
+
+  // No recent resources for this type — fall back to plain input box
+  if (recentForType.length === 0) {
+    return selectResourceNameByInputBox(resourceMeta, currentResourceName);
+  }
+
+  const ENTER_NAME_LABEL = l10n.t("Enter resource name...");
+  const recentSectionLabel = l10n.t("Recent CICS {0}", resourceMeta.humanReadableNamePlural);
+
+  const buildItems = (typedValue?: string): QuickPickItem[] => {
+    const items: QuickPickItem[] = [];
+
+    if (typedValue && typedValue.trim().length > 0) {
+      items.push({ label: typedValue.trim(), description: l10n.t("Search for this name") });
+      items.push({ label: "", kind: QuickPickItemKind.Separator });
+    }
+
+    items.push({ label: recentSectionLabel, kind: QuickPickItemKind.Separator });
+    for (const r of recentForType) {
+      items.push({ label: r.resourceName });
+    }
+    items.push({ label: "", kind: QuickPickItemKind.Separator });
+    items.push({ label: ENTER_NAME_LABEL, description: l10n.t("Type a name to search") });
+
+    return items;
+  };
+
+  const quickPick = Gui.createQuickPick();
+  quickPick.placeholder = l10n.t("Enter {0} name to compare with", resourceMeta.humanReadableNameSingular);
+  quickPick.ignoreFocusOut = true;
+  quickPick.items = buildItems();
+
+  quickPick.onDidChangeValue((value) => {
+    quickPick.items = buildItems(value);
+  });
+
+  quickPick.show();
+  const choice = await Gui.resolveQuickPick(quickPick);
+  quickPick.hide();
+
+  if (!choice) {
+    return undefined;
+  }
+
+  // Sentinel item — fall back to input box
+  if (choice.label === ENTER_NAME_LABEL) {
+    return selectResourceNameByInputBox(resourceMeta, currentResourceName);
+  }
+
+  const name = choice.label.trim();
+  const maxLength = resourceMeta.maximumPrimaryKeyLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
+  if (name.length > maxLength) {
+    window.showErrorMessage(CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`));
+    return undefined;
+  }
+
+  return name || undefined;
+}
+
+async function selectResourceNameByInputBox(resourceMeta: IResourceMeta<IResource>, currentResourceName: string): Promise<string | undefined> {
   const options: InputBoxOptions = {
     prompt: l10n.t("Enter {0} name to compare with", resourceMeta.humanReadableNameSingular),
     value: currentResourceName,

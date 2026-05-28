@@ -10,9 +10,10 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { ConfigurationTarget, type ExtensionContext, workspace } from "vscode";
+import { ConfigurationTarget, workspace, type ExtensionContext } from "vscode";
 import constants from "../constants/CICS.defaults";
 import type { ILastUsedRegion } from "../doc/commands/ILastUsedRegion";
+import type { IRecentResource } from "../doc/commands/IRecentResource";
 
 class SPersistentStorage {
   private static _instance: SPersistentStorage;
@@ -56,6 +57,8 @@ class SPersistentStorage {
   private LAST_USED_REGION_KEY = "lastUsedRegion";
   private LOADED_CICS_PROFILES_KEY = "loadedCICSProfile";
   private RESOURCE_PAGE_COUNT_KEY = "zowe.cics.resourcePageCount";
+  private RECENT_RESOURCES_KEY = "recentResources";
+  private RECENT_RESOURCES_MAX_PER_TYPE = 5;
 
   private searchHistoryKeyMap: Map<string, string>;
 
@@ -65,6 +68,30 @@ class SPersistentStorage {
 
   async setLastUsedRegion(lastUsedRegion: ILastUsedRegion): Promise<void> {
     await this.updateSettingsObject(this.LAST_USED_REGION_KEY, lastUsedRegion);
+  }
+
+  getRecentResources(): IRecentResource[] {
+    return workspace.getConfiguration(this.schema).get(this.RECENT_RESOURCES_KEY, []);
+  }
+
+  async appendRecentResource(resource: IRecentResource): Promise<void> {
+    const current = this.getRecentResources();
+
+    // Remove duplicate entry for same name + type (will be re-added at front)
+    const withoutDuplicate = current.filter((r) => !(r.resourceName === resource.resourceName && r.resourceType === resource.resourceType));
+
+    // Prepend the new entry
+    withoutDuplicate.unshift(resource);
+
+    // Cap entries per type at RECENT_RESOURCES_MAX_PER_TYPE
+    const countPerType = new Map<string, number>();
+    const capped = withoutDuplicate.filter((r) => {
+      const count = (countPerType.get(r.resourceType) ?? 0) + 1;
+      countPerType.set(r.resourceType, count);
+      return count <= this.RECENT_RESOURCES_MAX_PER_TYPE;
+    });
+
+    await this.updateSettingsObject(this.RECENT_RESOURCES_KEY, capped);
   }
 
   getSearchHistory(resourceType: string): string[] {
