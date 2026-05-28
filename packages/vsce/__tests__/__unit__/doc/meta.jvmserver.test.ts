@@ -34,9 +34,15 @@ describe("JVMServer Meta", () => {
       changeusrid: "ADMIN01",
     });
   });
-  it("should return icon name", () => {
+  it("should return icon name when enabled", () => {
     const iconName = JVMServerMeta.getIconName(jvmserverMock);
     expect(iconName).toEqual(`jvm-server`);
+  });
+
+  it("should return icon name with disabled suffix when disabled", () => {
+    jvmserverMock.attributes.enablestatus = "DISABLED";
+    const iconName = JVMServerMeta.getIconName(jvmserverMock);
+    expect(iconName).toEqual(`jvm-server-disabled`);
   });
   it("should build criteria", () => {
     const crit = JVMServerMeta.buildCriteria(["a", "b"]);
@@ -78,5 +84,37 @@ describe("JVMServer Meta", () => {
     await JVMServerMeta.appendCriteriaHistory(criteria);
     let history = JVMServerMeta.getCriteriaHistory();
     expect(history).toEqual(["JVM1"]);
+  });
+
+  it("should get default criteria", () => {
+    const defaultCriteria = JVMServerMeta.getDefaultCriteria();
+    expect(defaultCriteria).toBeDefined();
+  });
+
+  it("should get highlights", () => {
+    const highlights = JVMServerMeta.getHighlights(jvmserverMock);
+    expect(highlights).toBeDefined();
+    expect(highlights.length).toBe(8);
+    expect(highlights[0].key).toContain("Status");
+    expect(highlights[0].value).toBe("ENABLED");
+    expect(highlights[1].key).toContain("Profile");
+    expect(highlights[1].value).toBe("DFHJVMPR");
+    expect(highlights[2].key).toContain("Java Home");
+    expect(highlights[2].value).toBe("/usr/lpp/java/J8.0_64");
+    expect(highlights[3].key).toContain("Thread Limit");
+    expect(highlights[3].value).toBe("15");
+    expect(highlights[4].key).toContain("Log");
+    expect(highlights[4].value).toBe("STDOUT");
+    expect(highlights[5].key).toContain("Define Time");
+    expect(highlights[5].value).toBe("2026-01-19T02:20:55.000000+00:00");
+    expect(highlights[6].key).toContain("Change Time");
+    expect(highlights[6].value).toBe("2026-01-20T10:30:00.000000+00:00");
+    expect(highlights[7].key).toContain("Change User ID");
+    expect(highlights[7].value).toBe("ADMIN01");
+  });
+
+  it("should have childType defined", () => {
+    expect(JVMServerMeta.childType).toBeDefined();
+    expect(Array.isArray(JVMServerMeta.childType)).toBe(true);
   });
 });

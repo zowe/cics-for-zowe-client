@@ -2,6 +2,7 @@
   "name": "@zowe/cics_monorepo",
   "private": true,
   "version": "6.21.0",
+  "packageManager": "^npm@10.9.2",
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
@@ -57,7 +58,7 @@
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.4.0",
-    "turbo": "^1.12.4",
+    "turbo": "^2.9.14",
     "typedoc": "^0.28.17",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.56.0",

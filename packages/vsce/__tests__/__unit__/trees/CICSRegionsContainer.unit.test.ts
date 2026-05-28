@@ -212,8 +212,30 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should load regions in CICS group when profile has regionName and cicsPlex and groupName", async () => {
-      // Skip this test as it requires complex session setup
-      // The code path is covered by other tests
+      // Mock profile with regionName and cicsPlex
+      const profileWithRegionAndPlex = {
+        ...profile,
+        profile: {
+          ...profile.profile,
+          regionName: "TESTREGION",
+          cicsPlex: "TESTPLEX"
+        }
+      } as imperative.IProfileLoaded;
+      
+      jest.spyOn(plexTree, 'getProfile').mockReturnValue(profileWithRegionAndPlex);
+      jest.spyOn(plexTree, 'getGroupName').mockReturnValue("TESTGROUP");
+      
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+
+      const children = await regionsContainer.getChildren();
+
+      expect(children).toBeDefined();
+      expect(getResourceMock).toHaveBeenCalled();
     });
 
     it("should load regions in plex when activeFilter is * and no children", async () => {

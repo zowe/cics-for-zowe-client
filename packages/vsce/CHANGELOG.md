@@ -7,8 +7,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 - Enhancement: Added Recent Resources QuickPick for Inspect and Compare Resource commands. Shows last 5 resources per type with free-text entry support. [#649](https://github.com/zowe/cics-for-zowe-client/issues/649)
  - Enhancement: Adds hyperlinks to appropriate attributes in RI highlights. [#621](https://github.com/zowe/cics-for-zowe-client/issues/621)
  - BugFix: Render USS paths with a trailing slash (e.g. `JAVA_HOME=/usr/lpp/java/J8.0_64/`) as hyperlinks in the Resource Inspector. [#638](https://github.com/zowe/cics-for-zowe-client/issues/638)
- - Enhancement: Adds close and open local file commands to the VSCode extension. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
- - Enhancement: Use SDK-provided `LocalFileAction` type for local file operations instead of local type definition.
+ - Enhancement: Use SDK-provided methods to close and open local files. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
  - BugFix: Enable NewCopy on programs under a Library Data set. [#642](https://github.com/zowe/cics-for-zowe-client/issues/642)
 
 ## `3.21.0`
