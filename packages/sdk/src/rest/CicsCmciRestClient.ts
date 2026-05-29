@@ -223,25 +223,9 @@ export class CicsCmciRestClient extends AbstractRestClient {
           // Set flag to indicate incomplete results
           apiResponse.incompleteResults = true;
           
-          // Build error details from response codes
-          const errorCode1 = apiResponse.response?.resultsummary?.api_response1;
-          const errorCode1Alt = apiResponse.response?.resultsummary?.api_response1_alt;
-          const errorCode2 = apiResponse.response?.resultsummary?.api_response2;
-          const errorCode2Alt = apiResponse.response?.resultsummary?.api_response2_alt;
-          
-          let errorMessage = `⚠️ WARNING: CMCI request returned error code ${errorCode1}`;
-          
-          if (errorCode1Alt) {
-            errorMessage += ` (${errorCode1Alt})`;
-          }
-          
-          if (errorCode2Alt) {
-            errorMessage += ` - ${errorCode2Alt}`;
-          } else if (errorCode2) {
-            errorMessage += ` - Response2: ${errorCode2}`;
-          }
-          
-          errorMessage += ` but also returned records. Returning incomplete results.`;
+          // Use existing error mechanism to generate formatted error message
+          const error = new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
+          const errorMessage = error.getFormattedErrorMessage();
           
           // Store the error message in the API response for consumers
           apiResponse.incompleteResultsMessage = errorMessage;
