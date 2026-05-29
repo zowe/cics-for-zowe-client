@@ -795,6 +795,21 @@ describe("ProfileManagement", () => {
 
       await expect(ProfileManagement.getRegionInfo("TESTPLEX", mockProfile)).rejects.toThrow(CICSExtensionError);
     });
+
+    it("should return empty array when response code is OK but no records exist", async () => {
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: `${CicsCmciConstants.RESPONSE_1_CODES.OK}`,
+          },
+          records: {},
+        },
+      });
+
+      const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+
+      expect(result).toEqual({ regions: [], hasLimitedResults: false });
+    });
   });
 
   describe("getRegionInfoInPlex", () => {

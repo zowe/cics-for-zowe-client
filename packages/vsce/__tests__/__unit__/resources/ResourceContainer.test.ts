@@ -838,6 +838,69 @@ describe("Resource Container", () => {
       // Should flag partial results if ANY resource type has partial results
       expect(container.hasLimitedResults()).toBeTruthy();
     });
+
+    it("should store incompleteResultsErrorMessage from ensureSummaries when provided", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      const errorMessage = "User not authorized to access some resources";
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+        incompleteResults: true,
+        incompleteResultsMessage: errorMessage,
+      });
+
+      await container.fetchNextPage();
+
+      expect(container.hasLimitedResults()).toBeTruthy();
+      // Verify the error message was stored (accessing private property for testing)
+      expect((container as any).incompleteResultsErrorMessage).toBe(errorMessage);
+    });
+
+    it("should store incompleteResultsErrorMessage from cache when provided", async () => {
+      container = new ResourceContainer([ProgramMeta], {
+        profileName: profile.name!,
+        regionName: "MYREG",
+      });
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      const errorMessage = "Authorization failure for CICSPROGRAM resources";
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+        incompleteResults: true,
+        incompleteResultsMessage: errorMessage,
+      });
+
+      await container.fetchNextPage();
+
+      expect(container.hasLimitedResults()).toBeTruthy();
+      // Verify the error message was stored
+      expect((container as any).incompleteResultsErrorMessage).toBe(errorMessage);
+    });
   });
 });
 
