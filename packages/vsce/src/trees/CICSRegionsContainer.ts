@@ -9,8 +9,10 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window, type ThemeIcon } from "vscode";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -62,7 +64,82 @@ export class CICSRegionsContainer extends TreeItem {
         cancellable: true,
       },
       async () => {
-        const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
+        try {
+          const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
+          this.hasIncompleteResults = regionInfo.hasLimitedResults;
+          
+          // Show warning message for incomplete results
+          if (this.hasIncompleteResults) {
+            // Use the detailed error message from the SDK if available
+            const message = regionInfo.incompleteResultsMessage || l10n.t(
+              "Incomplete results. Some resources couldn't be retrieved."
+            );
+            window.showWarningMessage(message);
+          }
+          
+          this.addRegionsUtility(regionInfo.regions);
+          this.collapsibleState = TreeItemCollapsibleState.Expanded;
+          this.refreshIcon(true);
+          this.updateDescription();
+          if (!this.children.length) {
+            window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
+          }
+        } catch (error) {
+          // Handle error and display formatted message to user
+          let errorMessage: string;
+          if (error instanceof CICSExtensionError && error.cicsExtensionError.baseError instanceof CicsCmciRestError) {
+            // Use the simple formatted error message from CicsCmciRestError
+            errorMessage = error.cicsExtensionError.baseError.getFormattedErrorMessage();
+          } else if (error instanceof CICSExtensionError) {
+            errorMessage = error.cicsExtensionError.errorMessage;
+          } else {
+            errorMessage = l10n.t("Failed to filter regions: {0}", String(error));
+          }
+          window.showErrorMessage(errorMessage);
+          // Return empty children so tree doesn't break
+          this.children = [];
+        }
+      }
+    );
+  }
+
+  public async loadRegionsInCICSGroup(_tree: CICSTree) {
+    const parentPlex = this.getParent();
+    const plexProfile = parentPlex.getProfile();
+    try {
+      const regionsObtained = await runGetResource({
+        profileName: plexProfile.name,
+        resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
+        cicsPlex: plexProfile.profile.cicsPlex,
+        regionName: plexProfile.profile.regionName,
+      });
+      const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
+      this.addRegionsUtility(regionsArray);
+      this.collapsibleState = TreeItemCollapsibleState.Expanded;
+      this.refreshIcon(true);
+      this.updateDescription();
+    } catch (error) {
+      // Handle error and display formatted message to user
+      let errorMessage: string;
+      if (error instanceof CICSExtensionError && error.cicsExtensionError.baseError instanceof CicsCmciRestError) {
+        // Use the simple formatted error message from CicsCmciRestError
+        errorMessage = error.cicsExtensionError.baseError.getFormattedErrorMessage();
+      } else if (error instanceof CICSExtensionError) {
+        errorMessage = error.cicsExtensionError.errorMessage;
+      } else {
+        errorMessage = l10n.t("Failed to load regions in CICS group: {0}", String(error));
+      }
+      window.showErrorMessage(errorMessage);
+      // Return empty children so tree doesn't break
+      this.children = [];
+    }
+  }
+
+  public async loadRegionsInPlex() {
+    const parentPlex = this.getParent();
+    try {
+      const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
+      if (regionInfo) {
         this.hasIncompleteResults = regionInfo.hasLimitedResults;
         
         // Show warning message for incomplete results
@@ -78,48 +155,21 @@ export class CICSRegionsContainer extends TreeItem {
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
         this.updateDescription();
-        if (!this.children.length) {
-          window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
-        }
       }
-    );
-  }
-
-  public async loadRegionsInCICSGroup(_tree: CICSTree) {
-    const parentPlex = this.getParent();
-    const plexProfile = parentPlex.getProfile();
-    const regionsObtained = await runGetResource({
-      profileName: plexProfile.name,
-      resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
-      cicsPlex: plexProfile.profile.cicsPlex,
-      regionName: plexProfile.profile.regionName,
-    });
-    const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
-    this.addRegionsUtility(regionsArray);
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
-    this.refreshIcon(true);
-    this.updateDescription();
-  }
-
-  public async loadRegionsInPlex() {
-    const parentPlex = this.getParent();
-    const regionInfo = await ProfileManagement.getRegionInfoInPlex(parentPlex);
-    if (regionInfo) {
-      this.hasIncompleteResults = regionInfo.hasLimitedResults;
-      
-      // Show warning message for incomplete results
-      if (this.hasIncompleteResults) {
-        // Use the detailed error message from the SDK if available
-        const message = regionInfo.incompleteResultsMessage || l10n.t(
-          "Incomplete results. Some resources couldn't be retrieved."
-        );
-        window.showWarningMessage(message);
+    } catch (error) {
+      // Handle error and display formatted message to user
+      let errorMessage: string;
+      if (error instanceof CICSExtensionError && error.cicsExtensionError.baseError instanceof CicsCmciRestError) {
+        // Use the simple formatted error message from CicsCmciRestError
+        errorMessage = error.cicsExtensionError.baseError.getFormattedErrorMessage();
+      } else if (error instanceof CICSExtensionError) {
+        errorMessage = error.cicsExtensionError.errorMessage;
+      } else {
+        errorMessage = l10n.t("Failed to load regions: {0}", String(error));
       }
-      
-      this.addRegionsUtility(regionInfo.regions);
-      this.collapsibleState = TreeItemCollapsibleState.Expanded;
-      this.refreshIcon(true);
-      this.updateDescription();
+      window.showErrorMessage(errorMessage);
+      // Return empty children so tree doesn't break
+      this.children = [];
     }
   }
   public refreshIcon(folderOpen: boolean = false): void {

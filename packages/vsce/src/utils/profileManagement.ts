@@ -338,7 +338,21 @@ export class ProfileManagement {
           return { regions: [], hasLimitedResults: false };
         }
       }
-      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
+      
+      let errorMessage: string;
+      if (error instanceof CicsCmciRestError) {
+        errorMessage = error.getFormattedErrorMessage();
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
+      }
+      
+      throw new CICSExtensionError({
+        baseError: error as Error,
+        profileName: profile.name,
+        errorMessage: errorMessage
+      });
     }
   }
 }
