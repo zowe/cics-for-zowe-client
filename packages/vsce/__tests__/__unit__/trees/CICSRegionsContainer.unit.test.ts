@@ -19,6 +19,8 @@ import PersistentStorage from "../../../src/utils/PersistentStorage";
 import { ProfileManagement } from "../../../src/utils/profileManagement";
 import { getResourceMock, profile } from "../../__mocks__";
 import { imperative } from "@zowe/zowe-explorer-api";
+import { CICSExtensionError } from "../../../src/errors/CICSExtensionError";
+import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 
 jest.mock("vscode");
 jest.mock("../../../src/utils/profileManagement");
@@ -155,6 +157,67 @@ describe("Test suite for CICSRegionsContainer", () => {
       );
     });
 
+    it("should handle CICSExtensionError with CicsCmciRestError base error during filtering", async () => {
+      const mockApiResponse = {
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2: "1345",
+            api_response2_alt: "USRID"
+          },
+          records: {},
+          errors: {}
+        }
+      };
+      const cicsCmciRestError = new CicsCmciRestError("CMCI request failed", mockApiResponse as any);
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: cicsCmciRestError,
+        profileName: "test-profile"
+      });
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.filterRegions("TEST*", cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("CMCI request returned error")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle CICSExtensionError without CicsCmciRestError base error during filtering", async () => {
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: new Error("Generic error"),
+        profileName: "test-profile"
+      });
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.filterRegions("TEST*", cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("The request on profile test-profile failed")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle generic error during filtering", async () => {
+      const genericError = new Error("Network error");
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(genericError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.filterRegions("TEST*", cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to filter regions")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
     it("should show warning icon when incomplete results are detected during filtering", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasLimitedResults: true });
 
@@ -194,6 +257,67 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       expect(regionsContainer.children.length).toBe(1);
       expect(regionsContainer.children[0].getRegionName()).toBe("SINGLE");
+    });
+
+    it("should handle CICSExtensionError with CicsCmciRestError base error", async () => {
+      const mockApiResponse = {
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2: "1345",
+            api_response2_alt: "USRID"
+          },
+          records: {},
+          errors: {}
+        }
+      };
+      const cicsCmciRestError = new CicsCmciRestError("CMCI request failed", mockApiResponse as any);
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: cicsCmciRestError,
+        profileName: "test-profile"
+      });
+
+      getResourceMock.mockRejectedValueOnce(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("NOTPERMIT")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle CICSExtensionError without CicsCmciRestError base error", async () => {
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: new Error("Generic error"),
+        profileName: "test-profile"
+      });
+
+      getResourceMock.mockRejectedValueOnce(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("The request on profile test-profile failed")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle generic error", async () => {
+      const genericError = new Error("Network error");
+
+      getResourceMock.mockRejectedValueOnce(genericError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("Network error")
+      );
+      expect(regionsContainer.children.length).toBe(0);
     });
   });
 
@@ -259,6 +383,67 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(window.showWarningMessage).toHaveBeenCalledWith(
         expect.stringContaining("Incomplete results. Some resources couldn't be retrieved.")
       );
+    });
+
+    it("should handle CICSExtensionError with CicsCmciRestError base error", async () => {
+      const mockApiResponse = {
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2: "1345",
+            api_response2_alt: "USRID"
+          },
+          records: {},
+          errors: {}
+        }
+      };
+      const cicsCmciRestError = new CicsCmciRestError("CMCI request failed", mockApiResponse as any);
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: cicsCmciRestError,
+        profileName: "test-profile"
+      });
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("CMCI request returned error")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle CICSExtensionError without CicsCmciRestError base error", async () => {
+      const cicsExtensionError = new CICSExtensionError({
+        baseError: new Error("Generic error"),
+        profileName: "test-profile"
+      });
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(cicsExtensionError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("The request on profile test-profile failed")
+      );
+      expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should handle generic error", async () => {
+      const genericError = new Error("Network error");
+
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(genericError);
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to load regions")
+      );
+      expect(regionsContainer.children.length).toBe(0);
     });
   });
 
