@@ -11,7 +11,6 @@
 
 import { CicsCmciConstants, CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window, type ThemeIcon } from "vscode";
-import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
