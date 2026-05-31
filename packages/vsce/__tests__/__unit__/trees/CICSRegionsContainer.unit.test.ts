@@ -266,13 +266,18 @@ describe("Test suite for CICSRegionsContainer", () => {
             api_response1: "1031",
             api_response1_alt: "NOTPERMIT",
             api_response2: "1345",
-            api_response2_alt: "USRID"
+            api_response2_alt: "USRID",
+            api_function: ""
           },
           records: {},
           errors: {}
         }
       };
       const cicsCmciRestError = new CicsCmciRestError("CMCI request failed", mockApiResponse as any);
+      
+      // Create a spy on the getFormattedErrorMessage method BEFORE creating CICSExtensionError
+      const getFormattedErrorMessageSpy = jest.spyOn(cicsCmciRestError, 'getFormattedErrorMessage');
+      
       const cicsExtensionError = new CICSExtensionError({
         baseError: cicsCmciRestError,
         profileName: "test-profile"
@@ -283,8 +288,9 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.loadRegionsInCICSGroup(cicsTree);
 
+      expect(getFormattedErrorMessageSpy).toHaveBeenCalled();
       expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("NOTPERMIT")
+        "CMCI request returned error (NOTPERMIT) - USRID."
       );
       expect(regionsContainer.children.length).toBe(0);
     });
@@ -307,7 +313,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
 
     it("should handle generic error", async () => {
-      const genericError = new Error("Network error");
+      const genericError = new TypeError("Cannot read property 'records' of undefined");
 
       getResourceMock.mockRejectedValueOnce(genericError);
       (window.showErrorMessage as jest.Mock) = jest.fn();
@@ -315,7 +321,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInCICSGroup(cicsTree);
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Network error")
+        expect.stringContaining("Failed to load regions in CICS group:")
       );
       expect(regionsContainer.children.length).toBe(0);
     });
