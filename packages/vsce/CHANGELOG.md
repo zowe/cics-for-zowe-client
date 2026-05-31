@@ -8,6 +8,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
  - BugFix: Render USS paths with a trailing slash (e.g. `JAVA_HOME=/usr/lpp/java/J8.0_64/`) as hyperlinks in the Resource Inspector. [#638](https://github.com/zowe/cics-for-zowe-client/issues/638)
  - Enhancement: Use SDK-provided methods to close and open local files. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
  - BugFix: Enable NewCopy on programs under a Library Data set. [#642](https://github.com/zowe/cics-for-zowe-client/issues/642)
+ - BugFix: CICSPlex profile and resources displays authorized resources with partial records and show informative error response. [#617](https://github.com/zowe/cics-for-zowe-client/issues/617)
 
 ## `3.21.0`
 

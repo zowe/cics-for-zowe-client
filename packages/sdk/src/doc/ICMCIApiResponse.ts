@@ -38,4 +38,19 @@ export interface ICMCIApiResponse {
      */
     errors?: ICMCIResponseErrors;
   };
+  /**
+   * Flag indicating that records were returned despite an error response code.
+   * When true, the response contains partial results (e.g., partial authorization,
+   * CMAS down, etc.) and consumers should display a warning to the user.
+   *
+   * This flag is set by the SDK and is not part of the CMCI API response.
+   */
+  incompleteResults?: boolean;
+  /**
+   * Detailed error message describing the partial results condition.
+   * This message includes the CMCI error codes and descriptions.
+   *
+   * This field is set by the SDK and is not part of the CMCI API response.
+   */
+  incompleteResultsMessage?: string;
 }

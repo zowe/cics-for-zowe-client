@@ -268,6 +268,11 @@ export const CicsCmciConstants = {
     INVALIDPARM: 1028,
 
     /**
+     * CMCI RESP 1 Code for NOTPERMIT
+     */
+    NOTPERMIT: 1031,
+
+    /**
      * CMCI RESP 1 Code for NOTAVAILABLE
      */
     NOTAVAILABLE: 1034,

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int" xmlns:ns2="http://www.ibm.com/xmlns/prod/cics/esa/api">
+  <resultsummary api_response1="1031" api_response1_alt="NOTPERMIT" api_response2="0" recordcount="0" displayed_recordcount="0"/>
+  <feedback>
+    <error>
+      <eyuda_code>1031</eyuda_code>
+      <eyuda_message>NOTPERMIT</eyuda_message>
+      <eyuda_reason>The user is not authorized to access any transactions in this region.</eyuda_reason>
+    </error>
+  </feedback>
+</response>

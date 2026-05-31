@@ -295,29 +295,64 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+  public static async getRegionInfoInPlex(
+    plex: CICSPlexTree
+  ): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
   /**
    * Return all the regions in a given plex
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<any[]> {
+  public static async getRegionInfo(
+    plexName: string,
+    profile: imperative.IProfileLoaded
+  ): Promise<{ regions: any[]; hasLimitedResults: boolean; incompleteResultsMessage?: string }> {
     try {
-      const { response } = await runGetResource({
+      const apiResponse = await runGetResource({
         profileName: profile.name,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
         cicsPlex: plexName,
       });
-      if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
-        return toArray(response.records.cicsmanagedregion);
+      const responseCode = parseInt(apiResponse.response.resultsummary?.api_response1 || "0");
+      
+      // If we have records, return them regardless of error codes
+      // This handles incomplete results scenarios (e.g., NOTPERMIT with some data)
+      // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
+      if (apiResponse.response.records?.cicsmanagedregion) {
+        // Check if response code is OK (1024)
+        const hasLimitedResults = responseCode !== CicsCmciConstants.RESPONSE_1_CODES.OK;
+        return {
+          regions: toArray(apiResponse.response.records.cicsmanagedregion),
+          hasLimitedResults,
+          incompleteResultsMessage: apiResponse.incompleteResultsMessage
+        };
+      }
+      
+      // If response code is OK but no records, return empty array
+      if (responseCode === CicsCmciConstants.RESPONSE_1_CODES.OK) {
+        return { regions: [], hasLimitedResults: false };
       }
     } catch (error) {
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
-          return [];
+          return { regions: [], hasLimitedResults: false };
         }
       }
-      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
+      
+      let errorMessage: string;
+      if (error instanceof CicsCmciRestError) {
+        errorMessage = error.getFormattedErrorMessage();
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
+      }
+      
+      throw new CICSExtensionError({
+        baseError: error as Error,
+        profileName: profile.name,
+        errorMessage: errorMessage
+      });
     }
   }
 }

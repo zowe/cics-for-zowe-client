@@ -46,4 +46,24 @@ export class CicsCmciRestError extends ImperativeError {
     this.FEEDBACKRESP_ALT = this.errors?.feedback?.resp_alt;
     this.EIBFN_ALT = this.errors?.feedback?.eibfn_alt;
   }
+
+  /**
+   * Generate a formatted error message with all error details
+   * @returns {string} Formatted error message including response codes and descriptions
+   */
+  getFormattedErrorMessage(): string {
+    let errorMessage = `CMCI request returned error`;
+    
+    if (this.RESPONSE_1_ALT) {
+      errorMessage += ` (${this.RESPONSE_1_ALT})`;
+    }
+    
+    if (this.RESPONSE_2_ALT) {
+      errorMessage += ` - ${this.RESPONSE_2_ALT}`;
+    }
+    
+    errorMessage += `.`;
+    
+    return errorMessage;
+  }
 }

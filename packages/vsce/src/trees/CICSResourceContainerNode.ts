@@ -11,7 +11,7 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import type { imperative } from "@zowe/zowe-explorer-api";
-import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { l10n, TreeItemCollapsibleState, type TreeItemLabel, window } from "vscode";
 import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
 import { type Resource, ResourceContainer } from "../resources";
@@ -28,6 +28,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   private requireDescriptionUpdate: boolean = false;
 
   defaultDescription: string;
+  private hasIncompleteResults: boolean = false;
+  private hasShownIncompleteResultsWarning: boolean = false;
 
   private items: IContainedResource<IResource>[] = [];
   private fetcher?: ResourceContainer;
@@ -192,6 +194,19 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.items.length === 0) {
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
+      
+      // Check for incomplete results
+      if (this.fetcher.hasLimitedResults() && !this.hasShownIncompleteResultsWarning) {
+        this.hasIncompleteResults = true;
+        this.hasShownIncompleteResultsWarning = true;
+        
+        // Use the detailed error message from the SDK if available
+        const detailedMessage = this.fetcher.getPartialResultsErrorMessage();
+        const message = detailedMessage || l10n.t(
+          "Incomplete results. Some resources couldn't be retrieved."
+        );
+        window.showWarningMessage(message);
+      }
     }
 
     const children: (CICSResourceContainerNode<IResource> | ViewMore)[] = this.items.map(
@@ -246,6 +261,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
 
     this.description = this.description.trim();
+    
   }
 
   async fetchNextPage() {

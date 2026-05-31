@@ -203,15 +203,45 @@ export class CicsCmciRestClient extends AbstractRestClient {
    * @throws {ImperativeError} request did not get the expected codes
    */
   private static verifyResponseCodes(apiResponse: ICMCIApiResponse, requestOptions?: ICMCIRequestOptions): ICMCIApiResponse {
-    const okResponse1Codes = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
+    const responseCode = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
     if (requestOptions?.failOnNoData === false) {
-      okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
+      responseCode.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
-    if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+    // If we have records, return them regardless of error codes
+    // This handles partial authorization scenarios (e.g., NOTPERMIT with some data)
+    // and other cases where partial results are available (e.g., CMAS down, NOTAVAILABLE)
+    if (apiResponse.response?.records && Object.keys(apiResponse.response.records).length > 0) {
+      // Check if at least one record array has elements
+      const hasRecords = Object.values(apiResponse.response.records).some(
+        (recordArray) => Array.isArray(recordArray) && recordArray.length > 0
+      );
+      
+      if (hasRecords) {
+        // Check if there's an error code but we're returning data anyway
+        if (!responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
+          // Set flag to indicate incomplete results
+          apiResponse.incompleteResults = true;
+          
+          // Use existing error mechanism to generate formatted error message
+          const error = new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
+          const errorMessage = error.getFormattedErrorMessage();
+          
+          // Store the error message in the API response for consumers
+          apiResponse.incompleteResultsMessage = errorMessage;
+          
+          this.log.warn(errorMessage);
+          return apiResponse;
+        }
+      }
+    }
+
+    // If response code is OK, return it (even if no records)
+    if (responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
       return apiResponse;
     }
 
+    // No records and error code - throw error
     if (requestOptions?.useCICSCmciRestError) {
       throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
     }

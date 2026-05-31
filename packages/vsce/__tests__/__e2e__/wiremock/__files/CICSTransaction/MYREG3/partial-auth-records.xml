@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+	WireMock Test Scenario: Transactions with Partial Authorization (MYREG3)
+	
+	Error Details:
+	- api_response1: 1031 (NOTPERMIT)
+	- api_response2: 1345 (USRID)
+	
+	Scenario:
+	User has partial authorization to view transactions in MYREG3.
+	Can see 4 transactions but not all due to security restrictions.
+-->
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="3.0" connect_version="0610">
+	<resultsummary api_source="CICSPlex SM" api_function="GET" 
+		api_response1="1031" api_response2="1345" 
+		api_response1_alt="NOTPERMIT" api_response2_alt="USRID"
+		recordcount="4" displayed_recordcount="4" />
+	<records>
+		<cicslocaltransaction tranid="TRN1" transaction="TRN1" 
+			status="ENABLED" taskcount="25" program="PROG001" 
+			cicsname="MYREG3" />
+		<cicslocaltransaction tranid="TRN2" transaction="TRN2" 
+			status="ENABLED" taskcount="10" program="PROG002" 
+			cicsname="MYREG3" />
+		<cicslocaltransaction tranid="TRN3" transaction="TRN3" 
+			status="DISABLED" taskcount="0" program="PROG003" 
+			cicsname="MYREG3" />
+		<cicslocaltransaction tranid="CEMT" transaction="CEMT" 
+			status="ENABLED" taskcount="5" program="DFHEMTP" 
+			cicsname="MYREG3" />
+	</records>
+</response>

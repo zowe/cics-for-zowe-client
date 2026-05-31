@@ -24,6 +24,16 @@ export class ResourceContainer {
   private summaries: Map<IResourceMeta<IResource>, ICMCIResponseResultSummary> = new Map();
   private nextIndex: Map<IResourceMeta<IResource>, number> = new Map();
   private typeCriteria: Map<IResourceMeta<IResource>, string> = new Map();
+  /**
+   * Tracks whether incomplete results were detected due to authorization restrictions.
+   * This flag is set during async fetch operations (ensureSummaries and fetchRecordsForAllocations).
+   * Note: Should only be checked after all async operations complete to avoid race conditions.
+   */
+  private hasIncompleteResults: boolean = false;
+  /**
+   * Stores the detailed error message from the CMCI response when incomplete results are detected.
+   */
+  private incompleteResultsErrorMessage: string = null;
 
   private pageSize: number = PersistentStorage.getNumberOfResourcesToFetch();
   private criteriaApplied: boolean;
@@ -41,6 +51,8 @@ export class ResourceContainer {
       this.typeCriteria.set(type, type.getDefaultCriteria(this.parentResource?.attributes));
     }
     this.criteriaApplied = false;
+    this.hasIncompleteResults = false;
+    this.incompleteResultsErrorMessage = null;
   }
 
   setCriteria(criteria: string[]) {
@@ -87,7 +99,7 @@ export class ResourceContainer {
       return;
     }
     for (const meta of this.resourceTypes) {
-      const { response } = await runGetResource({
+      const apiResponse = await runGetResource({
         cicsPlex: this.context.cicsplexName,
         profileName: this.context.profileName,
         regionName: this.context.regionName,
@@ -103,9 +115,26 @@ export class ResourceContainer {
         },
       });
 
-      this.summaries.set(meta, response.resultsummary);
+      // Check for incomplete results in summary
+      this.handleIncompleteResults(meta, apiResponse);
+
+      this.summaries.set(meta, apiResponse.response.resultsummary);
       this.nextIndex.set(meta, 1);
     }
+  }
+
+  /**
+   * @returns Whether incomplete results were detected due to authorization restrictions
+   */
+  public hasLimitedResults(): boolean {
+    return this.hasIncompleteResults;
+  }
+
+  /**
+   * @returns The detailed error message from the CMCI response when incomplete results are detected
+   */
+  public getPartialResultsErrorMessage(): string {
+    return this.incompleteResultsErrorMessage;
   }
 
   /**
@@ -178,12 +207,17 @@ export class ResourceContainer {
       const summary = this.summaries.get(meta);
       const start = this.nextIndex.get(meta) ?? 1;
 
-      const { response } = await runGetCache({
+      const apiResponse = await runGetCache({
         profileName: this.context.profileName,
         cacheToken: summary.cachetoken,
         startIndex: start,
         count,
       });
+
+      // Check for incomplete results
+      this.handleIncompleteResults(meta, apiResponse);
+
+      const { response } = apiResponse;
 
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
@@ -290,6 +324,25 @@ export class ResourceContainer {
     }
     this.summaries.clear();
     this.nextIndex.clear();
+    this.hasIncompleteResults = false;
+    this.incompleteResultsErrorMessage = null;
+  }
+
+  /**
+   * Handles incomplete results detection and logging.
+   * Extracted to avoid code duplication.
+   */
+  private handleIncompleteResults(meta: IResourceMeta<IResource>, apiResponse: any) {
+    if (apiResponse.incompleteResults) {
+      this.hasIncompleteResults = true;
+      // Store the detailed error message from the SDK
+      if (apiResponse.incompleteResultsMessage) {
+        this.incompleteResultsErrorMessage = apiResponse.incompleteResultsMessage;
+      }
+      CICSLogger.warn(
+        `Returning incomplete results for ${meta.resourceName} in ${this.context.regionName || this.context.cicsplexName} `
+      );
+    }
   }
 
   reduceSummary(meta: IResourceMeta<IResource>, count: number) {

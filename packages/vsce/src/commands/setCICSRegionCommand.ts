@@ -114,21 +114,21 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
       // This will be called when ESC is pressed or quickPick.hide() is called
       isCancelled = true;
     });
-    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
+    const regionInfoResult = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
     if (isCancelled) {
       return;
     }
 
     // Check if regionInfo is null or undefined
-    if (regionInfo?.length > 0) {
+    if (regionInfoResult?.regions?.length > 0) {
       CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
-      regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
+      const activeRegions = regionInfoResult.regions.filter((reg: any) => reg.cicsstate === "ACTIVE");
       choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
-        ...regionInfo.map((region) => ({ label: region.cicsname })),
+        ...activeRegions.map((region: any) => ({ label: region.cicsname })),
       ]);
       regionQuickPick.hide();
       if (!choice) {
-        return;
+        return null;
       }
 
       regionName = choice.label;
