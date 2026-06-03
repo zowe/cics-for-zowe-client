@@ -83,12 +83,12 @@ test.describe("Library tests", () => {
       expect(await isTreeItemExpanded(dsTree)).toBe(true);
 
       const zosmfProfile = getTreeItem(page, constants.ZOSMF_PROFILE_NAME, false);
-      await expect(zosmfProfile).toBeVisible({ timeout: 5000 });
+      await expect(zosmfProfile).toBeVisible({ timeout: 500 });
 
       await page.waitForTimeout(500);
       expect(await isTreeItemExpanded(zosmfProfile)).toBe(true);
 
-      await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME, false).last()).toBeVisible({ timeout: 5000 });
+      await expect(getTreeItem(page, constants.LIBRARY_DS_1_NAME, false).last()).toBeVisible({ timeout: 500 });
     });
   });
 });
