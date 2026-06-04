@@ -9,22 +9,23 @@
  *
  */
 
+import { Gui } from "@zowe/zowe-explorer-api";
+import { commands, window, type ExtensionContext } from "vscode";
 import {
   getInspectableResourceTypes,
-  showInspectResource,
-  inspectResourceByNode,
-  inspectResourceByName,
-  inspectResource,
   inspectRegionByName,
   inspectRegionByNode,
+  inspectResource,
+  inspectResourceByName,
+  inspectResourceByNode,
+  showInspectResource,
 } from "../../../src/commands/inspectResourceCommandUtils";
-import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
-import { commands, window, type ExtensionContext } from "vscode";
-import { Gui } from "@zowe/zowe-explorer-api";
 import { getLastUsedRegion } from "../../../src/commands/setCICSRegionCommand";
+import { LocalFileMeta, ManagedRegionMeta, ProgramMeta, RegionMeta } from "../../../src/doc";
 import { ResourceContainer } from "../../../src/resources";
+import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
-import { ProgramMeta, RegionMeta, ManagedRegionMeta, LocalFileMeta } from "../../../src/doc";
+import { setLastUsedRegion } from "../../../src/utils/lastUsedRegionUtils";
 
 jest.mock("vscode");
 jest.mock("@zowe/zowe-explorer-api");
@@ -32,6 +33,7 @@ jest.mock("../../../src/commands/setCICSRegionCommand");
 jest.mock("../../../src/resources");
 jest.mock("../../../src/trees/ResourceInspectorViewProvider");
 jest.mock("../../../src/utils/CICSLogger");
+jest.mock("../../../src/utils/lastUsedRegionUtils");
 
 describe("inspectResourceCommandUtils", () => {
   let mockContext: Partial<ExtensionContext>;
@@ -108,11 +110,7 @@ describe("inspectResourceCommandUtils", () => {
       // @ts-expect-error - Mock context for testing
       await showInspectResource(mockContext, mockResources);
 
-      expect(commands.executeCommand).toHaveBeenCalledWith(
-        "setContext",
-        "cics-extension-for-zowe.showResourceInspector",
-        true
-      );
+      expect(commands.executeCommand).toHaveBeenCalledWith("setContext", "cics-extension-for-zowe.showResourceInspector", true);
       expect(commands.executeCommand).toHaveBeenCalledWith("resource-inspector.focus");
       expect(mockSetResources).toHaveBeenCalledWith(mockResources);
     });
@@ -162,6 +160,7 @@ describe("inspectResourceCommandUtils", () => {
 
       expect(mockFetchNextPage).toHaveBeenCalled();
       expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
     it("should handle when resource is not found", async () => {
@@ -234,6 +233,7 @@ describe("inspectResourceCommandUtils", () => {
 
       expect(mockFetchNextPage).toHaveBeenCalled();
       expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
     it("should handle invalid resource type", async () => {
@@ -288,6 +288,7 @@ describe("inspectResourceCommandUtils", () => {
       await inspectResourceByName(mockContext, "TESTFILE", "CICSLocalFile");
 
       expect(mockFetchNextPage).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
     it("should return early if no region selected", async () => {
@@ -348,6 +349,7 @@ describe("inspectResourceCommandUtils", () => {
       await inspectResource(mockContext);
 
       expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
     it("should return early if no region selected", async () => {

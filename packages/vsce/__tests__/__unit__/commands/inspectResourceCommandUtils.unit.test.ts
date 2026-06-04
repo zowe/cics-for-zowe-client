@@ -16,6 +16,11 @@ jest.mock("../../../src/commands/setCICSRegionCommand", () => ({
   getLastUsedRegion: getLastUsedRegionMock,
 }));
 
+const setLastUsedRegionMock = jest.fn();
+jest.mock("../../../src/utils/lastUsedRegionUtils", () => ({
+  setLastUsedRegion: setLastUsedRegionMock,
+}));
+
 const appendRecentResourceMock = jest.fn().mockResolvedValue(undefined);
 const getRecentResourcesMock = jest.fn().mockReturnValue([]);
 jest.mock("../../../src/utils/PersistentStorage", () => ({
@@ -109,6 +114,7 @@ describe("inspectResourceCommandUtils", () => {
     appendRecentResourceMock.mockResolvedValue(undefined);
     getRecentResourcesMock.mockReturnValue([]);
     setResourcesMock.mockResolvedValue(undefined);
+    setLastUsedRegionMock.mockReturnValue(undefined);
     vscodeExecuteCommandMock.mockResolvedValue(undefined);
     showErrorMessageMock.mockResolvedValue(undefined);
   });

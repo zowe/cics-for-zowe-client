@@ -38,6 +38,7 @@ import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNo
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
+import { setLastUsedRegion } from "../utils/lastUsedRegionUtils";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
 export async function showInspectResource(
@@ -75,6 +76,9 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   );
 
   if (upToDateResource) {
+    // Save the region as the last used region for future "Inspect CICS Resource" commands
+    setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
     await showInspectResource(context, [
       { containedResource: upToDateResource, ctx: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
     ]);
@@ -111,6 +115,9 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
     if (upToDateResource) {
+      // Save the region as the last used region for future "Inspect CICS Resource" commands
+      setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
       await showInspectResource(context, [
         { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
       ]);
@@ -165,6 +172,9 @@ export async function inspectResource(context: ExtensionContext) {
 
         const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
+          // Save the region as the last used region (reconfirm it's still the active one)
+          setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
           await showInspectResource(context, [
             { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
           ]);
