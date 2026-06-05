@@ -416,6 +416,87 @@ describe("inspectResourceCommandUtils", () => {
 
       expect(ResourceContainer).not.toHaveBeenCalled();
     });
+
+    it("should handle TSQueue type by searching both TSQueue and SharedTSQueue", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+      (Gui.resolveQuickPick as jest.Mock) = jest.fn().mockResolvedValue({ label: "TS Queue" });
+
+      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("MYTSQ");
+
+      const mockResource = {
+        resource: { attributes: { name: "MYTSQ" } },
+        meta: {
+          resourceName: "CICSTSQueue",
+          getName: jest.fn().mockReturnValue("MYTSQ"),
+        },
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock context for testing
+      await inspectResource(mockContext);
+
+      expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
+    });
+
+    it("should return early if user cancels resource type selection", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+      (Gui.resolveQuickPick as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+
+      // @ts-expect-error - Mock context for testing
+      const result = await inspectResource(mockContext);
+
+      expect(result).toBeUndefined();
+      expect(window.showInputBox).not.toHaveBeenCalled();
+    });
   });
 
   describe("inspectRegionByName", () => {

@@ -284,6 +284,98 @@ describe("inspectResourceCommandUtils", () => {
 
       expect(showErrorMessageMock).toHaveBeenCalled();
     });
+
+    it("should show typed value in QuickPick when user types in search box", async () => {
+      getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName)]);
+
+      // First QuickPick: type selection
+      const typeQuickPick = makeQuickPick();
+      createQuickPickMock.mockReturnValueOnce(typeQuickPick);
+      resolveQuickPickMock.mockResolvedValueOnce({ label: "Program" });
+
+      // Second QuickPick: resource name selection with typing
+      const nameQuickPick = makeQuickPick();
+      createQuickPickMock.mockReturnValueOnce(nameQuickPick);
+
+      // Simulate user typing "NEWPROG" in the search box
+      nameQuickPick._triggerChangeValue("NEWPROG");
+
+      // User selects the typed value
+      resolveQuickPickMock.mockResolvedValueOnce({ label: "NEWPROG", description: "Search for this name" });
+
+      const { ResourceContainer } = require("../../../src/resources");
+      jest.spyOn(ResourceContainer.prototype, "fetchNextPage").mockResolvedValue([]);
+
+      await inspectResource({} as any);
+
+      // Verify that onDidChangeValue was called
+      expect(nameQuickPick.onDidChangeValue).toHaveBeenCalled();
+
+      // Verify items were updated with the typed value
+      const itemsAfterTyping = nameQuickPick.items;
+      expect(itemsAfterTyping.length).toBeGreaterThan(0);
+    });
+
+    it("should handle user canceling resource name QuickPick", async () => {
+      getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
+      getRecentResourcesMock.mockReturnValue([makeRecentResource("MYPROG", ProgramMeta.resourceName)]);
+
+      // First QuickPick: type selection
+      const typeQuickPick = makeQuickPick();
+      createQuickPickMock.mockReturnValueOnce(typeQuickPick);
+      resolveQuickPickMock.mockResolvedValueOnce({ label: "Program" });
+
+      // Second QuickPick: user cancels (returns undefined)
+      const nameQuickPick = makeQuickPick();
+      createQuickPickMock.mockReturnValueOnce(nameQuickPick);
+      resolveQuickPickMock.mockResolvedValueOnce(undefined);
+
+      const { ResourceContainer } = require("../../../src/resources");
+      const fetchSpy = jest.spyOn(ResourceContainer.prototype, "fetchNextPage").mockResolvedValue([]);
+
+      const result = await inspectResource({} as any);
+
+      expect(result).toBeUndefined();
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it("should validate input length in selectResourceByInputBox", async () => {
+      getLastUsedRegionMock.mockResolvedValue(makeCICSRegion());
+      getRecentResourcesMock.mockReturnValue([]);
+
+      // First QuickPick: type selection
+      const typeQuickPick = makeQuickPick();
+      createQuickPickMock.mockReturnValueOnce(typeQuickPick);
+      resolveQuickPickMock.mockResolvedValueOnce({ label: "Program" });
+
+      // Mock showInputBox with validation
+      const { window } = require("vscode");
+      let validateInputFn: ((value: string) => string | undefined) | undefined;
+      window.showInputBox = jest.fn().mockImplementation((options) => {
+        validateInputFn = options.validateInput;
+        return Promise.resolve("MYPROG");
+      });
+
+      const { ResourceContainer } = require("../../../src/resources");
+      jest.spyOn(ResourceContainer.prototype, "fetchNextPage").mockResolvedValue([]);
+
+      await inspectResource({} as any);
+
+      // Test the validation function
+      expect(validateInputFn).toBeDefined();
+      if (validateInputFn) {
+        // Valid name (8 chars or less)
+        expect(validateInputFn("MYPROG")).toBeUndefined();
+        expect(validateInputFn("PROG")).toBeUndefined();
+        expect(validateInputFn("12345678")).toBeUndefined();
+
+        // Invalid name (too long - more than 8 chars)
+        const errorMessage = validateInputFn("TOOLONGNAME");
+        expect(errorMessage).toBeDefined();
+        expect(errorMessage).toContain("8");
+      }
+    });
   });
 });
 
