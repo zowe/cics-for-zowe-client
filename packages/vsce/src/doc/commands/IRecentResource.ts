@@ -13,5 +13,3 @@ export interface IRecentResource {
   resourceName: string;
   resourceType: string;
 }
-
-// Made with Bob

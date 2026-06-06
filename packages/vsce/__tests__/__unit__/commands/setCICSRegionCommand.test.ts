@@ -10,8 +10,8 @@
  */
 
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { commands, QuickPickItem } from "vscode";
-import { setCICSRegionCommand, getLastUsedRegion, setCICSRegion } from "../../../src/commands/setCICSRegionCommand";
+import { QuickPickItem, commands } from "vscode";
+import { getLastUsedRegion, setCICSRegion, setCICSRegionCommand } from "../../../src/commands/setCICSRegionCommand";
 import { SessionHandler } from "../../../src/resources";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 import * as regionUtils from "../../../src/utils/lastUsedRegionUtils";
@@ -28,6 +28,7 @@ describe("setCICSRegionCommand", () => {
   let mockQuickPick: {
     show: jest.Mock;
     hide: jest.Mock;
+    dispose: jest.Mock;
     onDidHide: jest.Mock;
     placeholder: string;
     busy: boolean;
@@ -51,6 +52,7 @@ describe("setCICSRegionCommand", () => {
     mockQuickPick = {
       show: jest.fn(),
       hide: jest.fn(),
+      dispose: jest.fn(),
       onDidHide: jest.fn(),
       placeholder: "",
       busy: false,
@@ -88,10 +90,7 @@ describe("setCICSRegionCommand", () => {
 
       setCICSRegionCommand();
 
-      expect(mockRegisterCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.setCICSRegion",
-        expect.any(Function)
-      );
+      expect(mockRegisterCommand).toHaveBeenCalledWith("cics-extension-for-zowe.setCICSRegion", expect.any(Function));
     });
   });
 
@@ -217,7 +216,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
@@ -237,9 +237,9 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([
-        { plexname: null, group: false, regions: [{ applid: "region1" }] },
-      ]);
+      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest
+        .fn()
+        .mockResolvedValue([{ plexname: null, group: false, regions: [{ applid: "region1" }] }]);
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
@@ -250,7 +250,8 @@ describe("setCICSRegionCommand", () => {
 
     it("should handle plexInfo with plexes", async () => {
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "plex1" })
         .mockResolvedValueOnce({ label: "region1" });
@@ -273,9 +274,7 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([
-        { plexname: "test", group: true },
-      ]);
+      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([{ plexname: "test", group: true }]);
 
       await setCICSRegion();
 
@@ -286,7 +285,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
@@ -303,10 +303,11 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
-      
+
       let hideCallback: (() => void) | undefined;
       mockQuickPick.onDidHide = jest.fn((cb: () => void) => {
         hideCallback = cb;
@@ -333,10 +334,7 @@ describe("setCICSRegionCommand", () => {
 
       await setCICSRegion();
 
-      expect(Gui.showMessage).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({ severity: MessageSeverity.ERROR })
-      );
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ severity: MessageSeverity.ERROR }));
     });
 
     it("should handle cancelled plex selection", async () => {
@@ -344,7 +342,7 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      
+
       let hideCallback: (() => void) | undefined;
       mockQuickPick.onDidHide = jest.fn((cb: () => void) => {
         hideCallback = cb;
@@ -364,7 +362,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
