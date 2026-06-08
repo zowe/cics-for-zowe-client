@@ -27,6 +27,8 @@ export function setCICSRegionCommand() {
 }
 
 export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | undefined> {
+  const otherLabel = l10n.t("Other CICS Region");
+
   if (await regionUtils.isCICSProfileValidInSettings()) {
     const { profileName, regionName, cicsPlexName } = await regionUtils.getLastUsedRegion();
     const lastUsedRegionLabel =
@@ -34,7 +36,6 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
         l10n.t("Region: {0} | CICSplex : {1} | Profile: {2}", regionName, cicsPlexName, profileName)
       : l10n.t("Region: {0} | Profile: {1}", regionName, profileName);
 
-    const otherLabel = l10n.t("Other CICS Region");
     const items = [{ label: lastUsedRegionLabel, description: l10n.t("Last used region") }, { label: otherLabel }];
 
     const quickPick = Gui.createQuickPick();
@@ -54,6 +55,17 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
       return setCICSRegion();
     }
   } else {
+    // No valid last used region, show QuickPick with only "Other CICS Region" option
+    const items = [{ label: otherLabel }];
+    const quickPick = Gui.createQuickPick();
+    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items]);
+    quickPick.hide();
+    quickPick.dispose();
+
+    if (!choice) {
+      return;
+    }
+
     CICSLogger.info("Setting new region");
     return setCICSRegion();
   }

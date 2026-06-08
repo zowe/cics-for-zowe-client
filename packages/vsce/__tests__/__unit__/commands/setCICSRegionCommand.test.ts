@@ -165,13 +165,14 @@ describe("setCICSRegionCommand", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should call setCICSRegion when profile is not valid", async () => {
+    it("should show QuickPick with 'Other CICS Region' when profile is not valid", async () => {
       (regionUtils.isCICSProfileValidInSettings as jest.Mock) = jest.fn().mockResolvedValue(false);
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue([]);
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockResolvedValue(undefined);
 
       await getLastUsedRegion();
 
-      expect(CICSLogger.info).toHaveBeenCalledWith("Setting new region");
+      expect(regionUtils.getChoiceFromQuickPick).toHaveBeenCalledWith(mockQuickPick, "Select Region", [{ label: "Other CICS Region" }]);
     });
   });
 
