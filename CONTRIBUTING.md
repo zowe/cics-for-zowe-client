@@ -74,7 +74,7 @@ To build the project locally, follow these steps:
    npm run test:e2e
    ```
 
-6. If any e2e tests fail, see more details by using the playwright show-report tool. From the e2e-test job in GitHub Actions, find the "Archive E2E screenshots, Wiremock log, and Playwright test report" step. This step's logs contain a link to the artifact download URL. Download and unzip the artifact zip.
+6. If any e2e tests fail, see more details by using the playwright show-report tool. If the tests failed in CI, you can download the data and replay what happened. From the e2e-test job in GitHub Actions, find the "Archive E2E screenshots, Wiremock log, and Playwright test report" step. This step's logs contain a link to the artifact download URL. Download and unzip the artifact zip.
 
    Next run playwright's show-report. This opens a web browser that allows you to navigate through the e2e test results and examine any failures:
 
@@ -91,6 +91,27 @@ The built packages will be placed in the [`dist` directory](dist):
 
 - **SDK, CLI package, and vsce-api packages**: npm tarballs
 - **VSCE package**: .vsix file for VS Code extension installation
+
+### Testing if you don't have a CICS install
+
+Our tests use wiremock to fake up a CICS region and test against. You can test against these using our set of test:e2e scripts (search in [packages/vsce/package.json](https://github.com/zowe/cics-for-zowe-client/blob/main/packages/vsce/package.json)).
+
+You need a docker setup locally - on the Mac, we use colima.
+
+Start colima if necessary:
+```
+colima start
+```
+From within `packages/vsce`...
+Tear down any existing running e2e tests:
+```
+npm run test:e2e:teardown
+```
+Run the tests interactively - this will pop up a playwright window where you can play each e2e test:
+```
+npm run test:e2e:dev:interactive
+```
+You can also open a browser to http://localhost:1234/ - this will let you use VS Code against the wiremock CICSplex. It's a bit limited but is a useful way to test out the e2e test framework yourself.
 
 ## How to Contribute
 
