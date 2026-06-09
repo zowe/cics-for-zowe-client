@@ -133,4 +133,147 @@ describe("PersistentStorage - recentResources", () => {
   });
 });
 
+describe("PersistentStorage - searchHistory", () => {
+  beforeEach(() => {
+    workspaceConfigurationGetMock.mockReset();
+    workspaceConfigurationUpdateMock.mockReset();
+    workspaceConfigurationUpdateMock.mockResolvedValue(undefined);
+  });
+
+  describe("appendSearchHistory", () => {
+    it("should pop the oldest entry when history exceeds max length", async () => {
+      const existingHistory = Array.from({ length: 10 }, (_, i) => `SEARCH${i + 1}`);
+      workspaceConfigurationGetMock.mockReturnValue(existingHistory);
+
+      await PersistentStorage.appendSearchHistory("CICSProgram", "NEWSEARCH");
+
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1];
+      const historyKey = Object.keys(saved).find((k) => k.includes("SearchHistory"));
+      expect(historyKey).toBeDefined();
+      if (historyKey) {
+        expect(saved[historyKey].length).toBe(10);
+        expect(saved[historyKey][0]).toBe("NEWSEARCH");
+        expect(saved[historyKey]).not.toContain("SEARCH10");
+      }
+    });
+  });
+});
+
+describe("PersistentStorage - loadedCICSProfiles", () => {
+  beforeEach(() => {
+    workspaceConfigurationGetMock.mockReset();
+    workspaceConfigurationUpdateMock.mockReset();
+    workspaceConfigurationUpdateMock.mockResolvedValue(undefined);
+  });
+
+  describe("appendLoadedCICSProfile", () => {
+    it("should prepend a new profile to an empty list", async () => {
+      workspaceConfigurationGetMock.mockReturnValue([]);
+
+      await PersistentStorage.appendLoadedCICSProfile("MYPROFILE");
+
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          loadedCICSProfile: ["MYPROFILE"],
+        }),
+        expect.anything()
+      );
+    });
+
+    it("should prepend a new profile to an existing list", async () => {
+      workspaceConfigurationGetMock.mockReturnValue(["OLDPROFILE"]);
+
+      await PersistentStorage.appendLoadedCICSProfile("NEWPROFILE");
+
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          loadedCICSProfile: ["NEWPROFILE", "OLDPROFILE"],
+        }),
+        expect.anything()
+      );
+    });
+
+    it("should move an existing profile to the front instead of duplicating", async () => {
+      workspaceConfigurationGetMock.mockReturnValue(["PROFILE1", "PROFILE2", "PROFILE3"]);
+
+      await PersistentStorage.appendLoadedCICSProfile("PROFILE2");
+
+      const saved = workspaceConfigurationUpdateMock.mock.calls[0][1].loadedCICSProfile as string[];
+      expect(saved[0]).toBe("PROFILE2");
+      expect(saved.filter((p) => p === "PROFILE2").length).toBe(1);
+      expect(saved.length).toBe(3);
+    });
+  });
+
+  describe("removeLoadedCICSProfile", () => {
+    it("should remove a profile from the list", async () => {
+      workspaceConfigurationGetMock.mockReturnValue(["PROFILE1", "PROFILE2", "PROFILE3"]);
+
+      await PersistentStorage.removeLoadedCICSProfile("PROFILE2");
+
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          loadedCICSProfile: ["PROFILE1", "PROFILE3"],
+        }),
+        expect.anything()
+      );
+    });
+
+    it("should handle removing a profile that doesn't exist", async () => {
+      workspaceConfigurationGetMock.mockReturnValue(["PROFILE1", "PROFILE2"]);
+
+      await PersistentStorage.removeLoadedCICSProfile("NONEXISTENT");
+
+      expect(workspaceConfigurationUpdateMock).toHaveBeenCalledWith(
+        "zowe.cics.persistent",
+        expect.objectContaining({
+          loadedCICSProfile: ["PROFILE1", "PROFILE2"],
+        }),
+        expect.anything()
+      );
+    });
+  });
+});
+
+describe("PersistentStorage - criteria", () => {
+  let mockContext: any;
+
+  beforeEach(() => {
+    mockContext = {
+      workspaceState: {
+        update: jest.fn().mockResolvedValue(undefined),
+        get: jest.fn(),
+        keys: jest.fn().mockReturnValue([]),
+      },
+    };
+    PersistentStorage.setContext(mockContext);
+  });
+
+  describe("getCriteriaKeysForSession", () => {
+    it("should return keys that start with the profile name", () => {
+      mockContext.workspaceState.keys.mockReturnValue([
+        "MYPROFILE-resource1",
+        "MYPROFILE-resource2",
+        "OTHERPROFILE-resource1",
+        "ANOTHERPROFILE-resource1",
+      ]);
+
+      const keys = PersistentStorage.getCriteriaKeysForSession("MYPROFILE");
+
+      expect(keys).toEqual(["MYPROFILE-resource1", "MYPROFILE-resource2"]);
+    });
+
+    it("should return empty array when no matching keys exist", () => {
+      mockContext.workspaceState.keys.mockReturnValue(["OTHERPROFILE-resource1", "ANOTHERPROFILE-resource1"]);
+
+      const keys = PersistentStorage.getCriteriaKeysForSession("MYPROFILE");
+
+      expect(keys).toEqual([]);
+    });
+  });
+});
+
 // Made with Bob
