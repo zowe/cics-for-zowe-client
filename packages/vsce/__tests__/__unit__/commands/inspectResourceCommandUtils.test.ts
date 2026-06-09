@@ -163,6 +163,48 @@ describe("inspectResourceCommandUtils", () => {
       expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
+    it("should use eyu_cicsname when regionName is undefined", async () => {
+      const mockNode = {
+        getProfile: jest.fn().mockReturnValue(mockProfile),
+        getSession: jest.fn().mockReturnValue(mockSession),
+        cicsplexName: "PLEX1",
+        regionName: undefined as string | undefined,
+        getContainedResource: jest.fn().mockReturnValue({
+          resource: { attributes: { eyu_cicsname: "FALLBACK_REGION", name: "TESTPROG" } },
+          meta: ProgramMeta,
+        }),
+        getContainedResourceName: jest.fn().mockReturnValue("TESTPROG"),
+        getParent: jest.fn().mockReturnValue(null),
+      };
+
+      const mockResource = {
+        resource: { attributes: { name: "TESTPROG" } },
+        meta: ProgramMeta,
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock objects for testing
+      await inspectResourceByNode(mockContext, mockNode);
+
+      expect(mockFetchNextPage).toHaveBeenCalled();
+      expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("FALLBACK_REGION", mockProfile.name, "PLEX1");
+    });
+
     it("should handle when resource is not found", async () => {
       const mockNode = {
         getProfile: jest.fn().mockReturnValue(mockProfile),
@@ -286,6 +328,46 @@ describe("inspectResourceCommandUtils", () => {
 
       // @ts-expect-error - Mock context for testing
       await inspectResourceByName(mockContext, "TESTFILE", "CICSLocalFile");
+
+      expect(mockFetchNextPage).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
+    });
+
+    it("should handle TSQueue type", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      const mockResource = {
+        resource: { attributes: { name: "MYTSQ" } },
+        meta: {
+          resourceName: "CICSTSQueue",
+          getName: jest.fn().mockReturnValue("MYTSQ"),
+        },
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock context for testing
+      await inspectResourceByName(mockContext, "MYTSQ", "CICSTSQueue");
 
       expect(mockFetchNextPage).toHaveBeenCalled();
       expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
@@ -470,6 +552,297 @@ describe("inspectResourceCommandUtils", () => {
       expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
     });
 
+    it("should handle recent resources with typed value in quick pick", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      // Mock PersistentStorage to return recent resources
+      const mockGetRecentResources = jest.fn().mockReturnValue([
+        { resourceName: "OLDPROG1", resourceType: "CICSProgram" },
+        { resourceName: "OLDPROG2", resourceType: "CICSProgram" },
+      ]);
+      jest.spyOn(require("../../../src/utils/PersistentStorage").default, "getRecentResources").mockImplementation(mockGetRecentResources);
+
+      let onDidChangeValueCallback: ((value: string) => void) | undefined;
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn((callback) => {
+          onDidChangeValueCallback = callback;
+        }),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type selection, second call for resource name with recent resources
+      (Gui.resolveQuickPick as jest.Mock) = jest
+        .fn()
+        .mockResolvedValueOnce({ label: "Program" }) // Select Program resource type
+        .mockImplementation(async (qp) => {
+          // Simulate user typing "NEWPROG" which triggers onDidChangeValue
+          if (onDidChangeValueCallback) {
+            onDidChangeValueCallback("NEWPROG");
+          }
+          // Return the typed value as the selection
+          return { label: "NEWPROG", description: "Search for this name" };
+        });
+
+      const mockResource = {
+        resource: { attributes: { name: "NEWPROG" } },
+        meta: ProgramMeta,
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock context for testing
+      await inspectResource(mockContext);
+
+      expect(mockQuickPick.onDidChangeValue).toHaveBeenCalled();
+      expect(mockSetResources).toHaveBeenCalled();
+      expect(jest.mocked(setLastUsedRegion)).toHaveBeenCalledWith("REGION1", mockProfile.name, "PLEX1");
+    });
+
+    it("should handle user canceling resource name selection", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type selection, second call returns undefined (user canceled)
+      (Gui.resolveQuickPick as jest.Mock) = jest.fn().mockResolvedValueOnce({ label: "Program" }).mockResolvedValueOnce(undefined);
+
+      // @ts-expect-error - Mock context for testing
+      const result = await inspectResource(mockContext);
+
+      expect(result).toBeUndefined();
+      expect(ResourceContainer).not.toHaveBeenCalled();
+    });
+
+    it("should handle selecting 'Enter name manually' option", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      // Mock PersistentStorage to return recent resources so the quick pick is shown
+      const mockGetRecentResources = jest.fn().mockReturnValue([{ resourceName: "OLDPROG1", resourceType: "CICSProgram" }]);
+      jest.spyOn(require("../../../src/utils/PersistentStorage").default, "getRecentResources").mockImplementation(mockGetRecentResources);
+
+      let onDidChangeValueCallback: ((value: string) => void) | undefined;
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn((callback) => {
+          onDidChangeValueCallback = callback;
+        }),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type, second call returns "Enter resource name..." (the sentinel)
+      (Gui.resolveQuickPick as jest.Mock) = jest
+        .fn()
+        .mockResolvedValueOnce({ label: "Program" })
+        .mockResolvedValueOnce({ label: "Enter resource name..." });
+
+      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG");
+
+      const mockResource = {
+        resource: { attributes: { program: "TESTPROG" } },
+        meta: ProgramMeta,
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock context for testing
+      await inspectResource(mockContext);
+
+      expect(window.showInputBox).toHaveBeenCalled();
+      expect(mockSetResources).toHaveBeenCalled();
+    });
+
+    it("should handle resource name exceeding max length in quick pick", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type, second call returns a name that's too long
+      const tooLongName = "A".repeat(9); // Exceeds 8 character limit for programs
+      (Gui.resolveQuickPick as jest.Mock) = jest.fn().mockResolvedValueOnce({ label: "Program" }).mockResolvedValueOnce({ label: tooLongName });
+
+      (window.showErrorMessage as jest.Mock) = jest.fn();
+
+      // @ts-expect-error - Mock context for testing
+      const result = await inspectResource(mockContext);
+
+      expect(result).toBeUndefined();
+      expect(window.showErrorMessage).toHaveBeenCalled();
+      expect(ResourceContainer).not.toHaveBeenCalled();
+    });
+
+    it("should validate input length in input box", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      // Mock PersistentStorage to return recent resources so the quick pick is shown
+      const mockGetRecentResources = jest.fn().mockReturnValue([{ resourceName: "OLDPROG1", resourceType: "CICSProgram" }]);
+      jest.spyOn(require("../../../src/utils/PersistentStorage").default, "getRecentResources").mockImplementation(mockGetRecentResources);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type, second call returns "Enter resource name..." (the sentinel)
+      (Gui.resolveQuickPick as jest.Mock) = jest
+        .fn()
+        .mockResolvedValueOnce({ label: "Program" })
+        .mockResolvedValueOnce({ label: "Enter resource name..." });
+
+      let validateInputCallback: ((value: string) => string | undefined) | undefined;
+      (window.showInputBox as jest.Mock) = jest.fn().mockImplementation((options) => {
+        validateInputCallback = options.validateInput;
+        return Promise.resolve(undefined); // User cancels
+      });
+
+      // @ts-expect-error - Mock context for testing
+      await inspectResource(mockContext);
+
+      expect(window.showInputBox).toHaveBeenCalled();
+
+      // Test the validation function
+      if (validateInputCallback) {
+        const tooLongName = "A".repeat(9); // Exceeds 8 character limit
+        const validationError = validateInputCallback(tooLongName);
+        expect(validationError).toBeDefined();
+        expect(validationError).toContain("8");
+
+        const validName = "TESTPROG";
+        const noError = validateInputCallback(validName);
+        expect(noError).toBeUndefined();
+      }
+    });
+
+    it("should handle empty resource name selection", async () => {
+      const mockRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        regionName: "REGION1",
+        cicsPlexName: "PLEX1",
+      };
+
+      (getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockRegion);
+
+      // Mock PersistentStorage to return recent resources
+      const mockGetRecentResources = jest.fn().mockReturnValue([{ resourceName: "OLDPROG1", resourceType: "CICSProgram" }]);
+      jest.spyOn(require("../../../src/utils/PersistentStorage").default, "getRecentResources").mockImplementation(mockGetRecentResources);
+
+      const mockQuickPick = {
+        items: [] as any[],
+        placeholder: "",
+        ignoreFocusOut: true,
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      (Gui.createQuickPick as jest.Mock) = jest.fn().mockReturnValue(mockQuickPick);
+
+      // First call for resource type selection, second call returns empty string (trimmed to empty)
+      (Gui.resolveQuickPick as jest.Mock) = jest.fn().mockResolvedValueOnce({ label: "Program" }).mockResolvedValueOnce({ label: "   " }); // Whitespace that trims to empty
+
+      // @ts-expect-error - Mock context for testing
+      const result = await inspectResource(mockContext);
+
+      expect(result).toBeUndefined();
+      expect(ResourceContainer).not.toHaveBeenCalled();
+    });
+
     it("should return early if user cancels resource type selection", async () => {
       const mockRegion = {
         profile: mockProfile,
@@ -612,6 +985,42 @@ describe("inspectResourceCommandUtils", () => {
       const mockResource = {
         resource: { attributes: { applid: "REGION1" } },
         meta: RegionMeta,
+      };
+
+      const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
+      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => ({
+        setCriteria: jest.fn(),
+        fetchNextPage: mockFetchNextPage,
+      }));
+
+      (window.withProgress as jest.Mock) = jest.fn().mockImplementation((options, callback) => {
+        return callback({}, { onCancellationRequested: jest.fn() });
+      });
+
+      const mockSetResources = jest.fn().mockResolvedValue(undefined);
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+        setResources: mockSetResources,
+      });
+
+      // @ts-expect-error - Mock objects for testing
+      await inspectRegionByNode(mockContext, mockNode);
+
+      expect(mockFetchNextPage).toHaveBeenCalled();
+      expect(mockSetResources).toHaveBeenCalled();
+    });
+
+    it("should handle when regionName and getContainedResourceName are undefined", async () => {
+      const mockNode = {
+        getProfile: jest.fn().mockReturnValue(mockProfile),
+        getSession: jest.fn().mockReturnValue(mockSession),
+        cicsplexName: "PLEX1",
+        regionName: undefined as string | undefined,
+        getContainedResourceName: jest.fn().mockReturnValue(undefined),
+      };
+
+      const mockResource = {
+        resource: { attributes: { applid: "REGION1" } },
+        meta: ManagedRegionMeta,
       };
 
       const mockFetchNextPage = jest.fn().mockResolvedValue([mockResource]);
