@@ -273,6 +273,15 @@
         "category": "Zowe Explorer for IBM CICS TS"
       },
       {
+        "command": "cics-extension-for-zowe.viewInTable",
+        "title": "%cics.viewInTable.title%",
+        "category": "Zowe Explorer for IBM CICS TS",
+        "icon": {
+          "light": "resources/imgs/table-view-dark.svg",
+          "dark": "resources/imgs/table-view-light.svg"
+        }
+      },
+      {
         "command": "cics-extension-for-zowe.inquireTransaction",
         "title": "%cics.inquireTransaction.title%",
         "category": "Zowe Explorer for IBM CICS TS"
@@ -339,6 +348,10 @@
         },
         {
           "command": "cics-extension-for-zowe.compareTreeResourceTo",
+          "when": "never"
+        },
+        {
+          "command": "cics-extension-for-zowe.viewInTable",
           "when": "never"
         },
         {
@@ -527,6 +540,16 @@
         {
           "when": "view == cics-view && viewItem =~ /^CICSResourceNode.CICS.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.compareTreeResourceTo",
+          "group": "1.CICSResourceNode.inquire"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.viewInTable",
+          "group": "inline"
+        },
+        {
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.*/ && !listMultiSelection",
+          "command": "cics-extension-for-zowe.viewInTable",
           "group": "1.CICSResourceNode.inquire"
         },
         {

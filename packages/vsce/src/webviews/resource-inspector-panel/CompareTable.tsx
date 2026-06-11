@@ -13,6 +13,7 @@ import { type JSX, useCallback, useMemo, useState } from "react";
 import { RefreshButton } from "../common/RefreshButton";
 import Table from "../common/Table";
 import { useTheme } from "../common/ThemeContext";
+import { getZebraClass, getHeaderBgClass } from "../common/tableUtils";
 
 interface ICompareTableProps {
   headers: (string | JSX.Element)[];
@@ -44,7 +45,7 @@ const CompareTable = ({ headers, rows, onRefresh, className = "", refreshTabInde
     return (
       <>
         {filteredHiddenRows.length > 0 && (
-          <tr className="sticky z-50 top-10 bg-(--vscode-editor-background) h-8 shadow-[0_0.5px_0_0_var(--vscode-disabledForeground)]">
+          <tr className={`sticky z-50 top-10 ${getHeaderBgClass(isDark)} h-8 shadow-[0_0.5px_0_0_var(--vscode-disabledForeground)]`}>
             <td colSpan={headers.length + 1}>
               <div className="flex justify-end items-center h-8 w-full px-4">
                 <button
@@ -60,7 +61,7 @@ const CompareTable = ({ headers, rows, onRefresh, className = "", refreshTabInde
         )}
 
         {showHiddenRows && filteredHiddenRows.map((row, idx: number) => (
-          <tr key={`tr-hidden-${idx}`} className={`zebra-${isDark ? "dark" : "light"} h-8`}>
+          <tr key={`tr-hidden-${idx}`} className={`${getZebraClass(isDark)} h-8`}>
             {row.map((txt, idx2) => (
               <td key={`td-${idx2}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">{txt}</td>
             ))}

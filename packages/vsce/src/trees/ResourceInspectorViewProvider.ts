@@ -258,8 +258,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
       }
     } catch (error) {
-      CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, errorMessage));
     }
   }
 
@@ -278,8 +279,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     }
       await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
     } catch (error) {
-      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, errorMessage));
     }
   }
 
@@ -298,8 +300,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       }
       await findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
     } catch (error) {
-      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, errorMessage));
     }
   }
 }

@@ -255,6 +255,8 @@
   "Multiple CICS resources selected. Resource '{0}' will be inspected.": "Multiple CICS resources selected. Resource '{0}' will be inspected.",
   "No resource is currently open in the Resource Inspector": "No resource is currently open in the Resource Inspector",
   "Cannot compare CICS resources of different types.": "Cannot compare CICS resources of different types.",
+  "No resources found.": "No resources found.",
+  "No filter applied.": "No filter applied.",
   "File": "File",
   "CICS Transaction resources are not visible. Enable them from your VS Code settings.": "CICS Transaction resources are not visible. Enable them from your VS Code settings.",
   "No CICS Task selected": "No CICS Task selected",
