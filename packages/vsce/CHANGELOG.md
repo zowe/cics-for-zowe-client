@@ -9,6 +9,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
  - Enhancement: Use SDK-provided methods to close and open local files. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
  - BugFix: Enable NewCopy on programs under a Library Data set. [#642](https://github.com/zowe/cics-for-zowe-client/issues/642)
  - Enhancement: Show any CICS records retrieved when a request errors. [#617](https://github.com/zowe/cics-for-zowe-client/issues/617)
+ - Enhancement: Removed unused code for enable and disable file operation. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
 
 ## `3.21.0`
 
