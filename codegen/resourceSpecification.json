@@ -1,0 +1,74 @@
+{
+  "$schema": "./resourceSpecification.schema.json",
+  "resources": {
+    "CICSLocalFile": {
+      "identifier": {
+        "aliases": ["lf"],
+        "humanNameSingular": "Local File",
+        "humanNamePlural": "Local Files",
+        "primaryKey": "file",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE",
+        {
+          "identifier": {
+            "name": "OPEN",
+            "aliases": ["opn"],
+            "group": "open",
+            "description": "Open a resource in CICS",
+            "verb": "opening",
+            "verbPastTense": "opened"
+          },
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "CLOSE",
+            "aliases": ["cls"],
+            "group": "close",
+            "description": "Close a resource in CICS",
+            "verb": "closing",
+            "verbPastTense": "closed"
+          },
+          "options": ["BUSY"]
+        }
+      ]
+    }
+  },
+  "actions": {
+    "ENABLE": {
+      "identifier": {
+        "name": "ENABLE",
+        "aliases": ["enb"],
+        "group": "enable",
+        "description": "Enable a resource in CICS",
+        "verb": "enabling",
+        "verbPastTense": "enabled"
+      },
+      "options": []
+    },
+    "DISABLE": {
+      "identifier": {
+        "name": "DISABLE",
+        "aliases": ["dis"],
+        "group": "disable",
+        "description": "Disable a resource in CICS",
+        "verb": "disabling",
+        "verbPastTense": "disabled"
+      },
+      "options": ["BUSY"]
+    }
+  },
+  "options": {
+    "BUSY": {
+      "name": "busy",
+      "type": "string",
+      "defaultValue": "WAIT",
+      "allowableValues": ["WAIT", "NOWAIT", "FORCE"],
+      "caseSensitive": false,
+      "description": "The busy condition option. Valid values: WAIT, NOWAIT, FORCE."
+    }
+  }
+}

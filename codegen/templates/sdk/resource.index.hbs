@@ -16,4 +16,6 @@
 // To modify this file, update the templates in codegen/templates/
 // ============================================================================
 
-export * from "./LocalFile";
+{{#each resources}}
+export * from "./{{sdkFileName}}";
+{{/each}}
