@@ -235,46 +235,6 @@ describe("LocalFileCommandHandler", () => {
     });
   });
 
-  describe("registerEnableCommand", () => {
-    it("should register the enable command", () => {
-      setupCommandTest();
-      handler.registerEnableCommand();
-      expect(commands.registerCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.enableLocalFile",
-        expect.any(Function)
-      );
-    });
-
-    it("should throw error when enable action is called (not yet implemented)", async () => {
-      const getCallback = setupCommandTest();
-      handler.registerEnableCommand();
-      await getCallback()(mockNodes[0]);
-
-      const callArgs = (actionResourceCommand.actionTreeItem as jest.Mock).mock.calls[0][0];
-      await expect(callArgs.customAction()).rejects.toThrow("ENABLE action not yet implemented. This feature requires SDK support for enabling local files.");
-    });
-  });
-
-  describe("registerDisableCommand", () => {
-    it("should register the disable command", () => {
-      setupCommandTest();
-      handler.registerDisableCommand();
-      expect(commands.registerCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.disableLocalFile",
-        expect.any(Function)
-      );
-    });
-
-    it("should throw error when disable action is called (not yet implemented)", async () => {
-      const getCallback = setupCommandTest();
-      handler.registerDisableCommand();
-      await getCallback()(mockNodes[0]);
-
-      const callArgs = (actionResourceCommand.actionTreeItem as jest.Mock).mock.calls[0][0];
-      await expect(callArgs.customAction()).rejects.toThrow("DISABLE action not yet implemented. This feature requires SDK support for disabling local files.");
-    });
-  });
-
   describe("registerAllCommands", () => {
     it("should register close and open commands", () => {
       const disposables = handler.registerAllCommands();
