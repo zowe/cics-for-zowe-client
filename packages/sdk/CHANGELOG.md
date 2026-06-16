@@ -7,6 +7,8 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 - Enhancement: Exposes openlocalFile and closeLocalFile methods. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
 - Enhancement: Return results as well as errors, where some data is successfully retrieved. [#617](https://github.com/zowe/cics-for-zowe-client/issues/617)
 
+- Enhancement: Code generation using handlebars for open and close local files. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
+
 ## `6.18.0`
 
 - Update dependencies. [#567](https://github.com/zowe/cics-for-zowe-client/pull/567)
