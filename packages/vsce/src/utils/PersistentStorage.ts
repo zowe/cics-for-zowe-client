@@ -58,7 +58,9 @@ class SPersistentStorage {
   private LOADED_CICS_PROFILES_KEY = "loadedCICSProfile";
   private RESOURCE_PAGE_COUNT_KEY = "zowe.cics.resourcePageCount";
   private RECENT_RESOURCES_KEY = "recentResources";
-  private RECENT_RESOURCES_MAX_PER_TYPE = 5;
+  // eslint-disable-next-line no-magic-numbers
+  private static readonly MAX_RECENT_RESOURCES_PER_TYPE = 5;
+  private RECENT_RESOURCES_MAX_PER_TYPE = SPersistentStorage.MAX_RECENT_RESOURCES_PER_TYPE;
 
   private searchHistoryKeyMap: Map<string, string>;
 

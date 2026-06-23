@@ -9,18 +9,15 @@
  *
  */
 
-import { type ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { Session } from "@zowe/imperative";
+import { TestEnvironment, runCliScript, type ITestEnvironment } from "@zowe/cli-test-utils";
 import type { ITestPropertiesSchema } from "../../../__src__/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let regionName: string;
-let session: Session;
 let host: string;
 let port: number;
 let user: string;
 let password: string;
-let ru: boolean;
 
 describe("CICS refresh program command", () => {
   beforeAll(async () => {
@@ -34,17 +31,6 @@ describe("CICS refresh program command", () => {
     port = TEST_ENVIRONMENT.systemTestProperties.cics.port;
     user = TEST_ENVIRONMENT.systemTestProperties.cics.user;
     password = TEST_ENVIRONMENT.systemTestProperties.cics.password;
-    ru = TEST_ENVIRONMENT.systemTestProperties.cics.rejectUnauthorized || false;
-
-    session = new Session({
-      user,
-      password,
-      hostname: host,
-      port,
-      type: "basic",
-      rejectUnauthorized: ru,
-      protocol: (TEST_ENVIRONMENT.systemTestProperties.cics.protocol as any) || "https",
-    });
   });
 
   afterAll(async () => {
