@@ -139,7 +139,6 @@ async function loadResourcesWithProgress(
     },
     async (progress, token) => {
       token.onCancellationRequested(() => {});
-
       const resources = await loadResources(resourceTypes, resourceName, resourceContext, parentResource);
       if (!resources) {
         return;

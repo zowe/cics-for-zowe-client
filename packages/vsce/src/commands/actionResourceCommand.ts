@@ -68,7 +68,6 @@ export const actionTreeItem = async ({
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const resourceName = getResourceName ? getResourceName(node) : node.getContainedResourceName();
-
         progress.report({
           message:
             customAction ?
