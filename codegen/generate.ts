@@ -77,11 +77,13 @@ interface DerivedResource {
   // Generated properties
   sdkFileName: string;
   sdkResourceType: string;
+  resourceTypeUpper: string;
   parmsInterface: string;
   criteriaField: string;
   criteriaFieldConstant: string;
   maxLengthConstant?: string;
   busyValuesConstant?: string;
+  hasBusyOption: boolean;
   humanNameLower: string;
   humanName: string;
   maxNameLength?: number;
@@ -213,6 +215,44 @@ export class ResourceGenerator {
     );
     console.log(`  ✓ sdk/src/resources/index.ts`);
 
+    // Generate Parms interfaces in doc directory
+    const docOutputDir = path.join(this.outputDir, "sdk", "src", "doc");
+    this.ensureDir(docOutputDir);
+    
+    for (const resource of derivedResources) {
+      const parmsFileName = `I${resource.sdkFileName}Parms.ts`;
+      const parmsFilePath = path.join(docOutputDir, parmsFileName);
+      
+      this.generateFromTemplate(
+        "sdk/parms.interface.hbs",
+        parmsFilePath,
+        resource
+      );
+      
+      console.log(`  ✓ sdk/src/doc/${parmsFileName}`);
+    }
+
+    // Generate doc/index.ts
+    const docIndexPath = path.join(docOutputDir, "index.ts");
+    this.generateFromTemplate(
+      "sdk/doc.index.hbs",
+      docIndexPath,
+      { resources: derivedResources }
+    );
+    console.log(`  ✓ sdk/src/doc/index.ts`);
+
+    // Generate CicsCmci.constants.ts
+    const constantsDir = path.join(this.outputDir, "sdk", "src", "constants");
+    this.ensureDir(constantsDir);
+    
+    const constantsPath = path.join(constantsDir, "CicsCmci.constants.ts");
+    this.generateFromTemplate(
+      "sdk/constants.hbs",
+      constantsPath,
+      { resources: derivedResources }
+    );
+    console.log(`  ✓ sdk/src/constants/CicsCmci.constants.ts`);
+
     // Generate ResourceActions.ts utility file
     const utilsDir = path.join(this.outputDir, "sdk", "src", "utils");
     this.ensureDir(utilsDir);
@@ -251,11 +291,6 @@ export class ResourceGenerator {
     
     for (const resource of derivedResources) {
       for (const action of resource.actions) {
-        // Skip ENABLE and DISABLE for now
-        if (action.name === "ENABLE" || action.name === "DISABLE") {
-          continue;
-        }
-
         const context = {
           ...resource,
           ...action,
@@ -319,9 +354,10 @@ export class ResourceGenerator {
     const sdkResourceType = `CICS_CMCI_${resourceTypeUpper}`;
     const parmsInterface = `I${sdkFileName}Parms`;
     const criteriaField = resource.identifier.primaryKey.toLowerCase(); // lowercase for tests (original behavior)
-    const criteriaFieldConstant = `${sdkResourceType}_CRITERIA_FIELD`;
-    const maxLengthConstant = resource.identifier.maxPrimaryKeyLength 
-      ? `${sdkResourceType}_MAX_LENGTH` 
+    // For criteria field and busy values, use CICS_ prefix without _CMCI_
+    const criteriaFieldConstant = `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
+    const maxLengthConstant = resource.identifier.maxPrimaryKeyLength
+      ? `CICS_${resourceTypeUpper}_MAX_LENGTH`
       : undefined;
     
     // Check if any action uses BUSY option
@@ -333,7 +369,7 @@ export class ResourceGenerator {
         return action.options?.includes("BUSY");
       }
     });
-    const busyValuesConstant = usesBusyOption ? `${sdkResourceType}_BUSY_VALUES` : undefined;
+    const busyValuesConstant = usesBusyOption ? `CICS_${resourceTypeUpper}_BUSY_VALUES` : undefined;
 
     // Derive actions
     const derivedActions = resource.actions.map(action =>
@@ -356,11 +392,13 @@ export class ResourceGenerator {
       identifier: resource.identifier,
       sdkFileName,
       sdkResourceType,
+      resourceTypeUpper,
       parmsInterface,
       criteriaField,
       criteriaFieldConstant,
       maxLengthConstant,
       busyValuesConstant,
+      hasBusyOption: usesBusyOption,
       humanNameLower: resource.identifier.humanNameSingular.toLowerCase(),
       humanName: resource.identifier.humanNameSingular,
       maxNameLength: resource.identifier.maxPrimaryKeyLength,

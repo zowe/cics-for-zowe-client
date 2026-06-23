@@ -22,8 +22,6 @@ import type { ICMCIApiResponse, {{parmsInterface}} } from "../doc";
 import { performAction } from "../utils/ResourceActions";
 
 {{#each actions}}
-{{#unless (eq name "ENABLE")}}
-{{#unless (eq name "DISABLE")}}
 /**
  * {{capitalize actionVerb}} a {{../humanNameLower}} in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
@@ -47,12 +45,14 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parm
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS {{../humanName}} name", "CICS {{../humanNameLower}} name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  // Validate file name length (CICS resource names are limited to {{../maxNameLength}} characters)
-  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
+  // Validate {{../humanNameLower}} name length (CICS resource names are limited to {{../maxNameLength}} characters)
+{{#if ../maxNameLength}}
+  if (parms.name.length > {{../maxNameLength}}) {
     throw new ImperativeError({
-      msg: `CICS {{../humanNameLower}} name "${parms.name}" exceeds maximum length of ${CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH} characters`,
+      msg: `CICS {{../humanNameLower}} name "${parms.name}" exceeds maximum length of {{../maxNameLength}} characters`,
     });
   }
+{{/if}}
 
   Logger.getAppLogger().debug(
     `Attempting to {{actionLower}} a {{../humanNameLower}} with the following parameters:\n%s`,
@@ -64,8 +64,8 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parm
   const {{camelCase parameters.[0].name}}Value = parms.{{parameters.[0].sdkParamField}} ? parms.{{parameters.[0].sdkParamField}}.trim().toUpperCase() : "{{parameters.[0].defaultValue}}";
 
   // Validate {{parameters.[0].sdkParamField}} parameter
-  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes({{camelCase parameters.[0].name}}Value)) {
-    const allowedValuesStr = CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ");
+  if (!CicsCmciConstants.{{../busyValuesConstant}}.includes({{camelCase parameters.[0].name}}Value)) {
+    const allowedValuesStr = CicsCmciConstants.{{../busyValuesConstant}}.join(", ");
     throw new ImperativeError({
       msg: `Invalid {{parameters.[0].name}} parameter value: "${ {{camelCase parameters.[0].name}}Value}". Must be one of: ${allowedValuesStr}`,
     });
@@ -81,7 +81,7 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parm
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LOCAL_FILE_CRITERIA_FIELD,
+    CicsCmciConstants.{{../criteriaFieldConstant}},
     { name: "{{parameters.[0].name}}", value: {{camelCase parameters.[0].name}}Value }
   );
 {{else}}
@@ -95,11 +95,9 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parm
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LOCAL_FILE_CRITERIA_FIELD
+    CicsCmciConstants.{{../criteriaFieldConstant}}
   );
 {{/if}}
 }
 
-{{/unless}}
-{{/unless}}
 {{/each}}

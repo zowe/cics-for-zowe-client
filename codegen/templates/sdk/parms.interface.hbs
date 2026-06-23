@@ -19,18 +19,22 @@
 import type { IResourceParms } from "./IResourceParms";
 
 /**
- * Interface for CICS local file parameters
+ * Interface for CICS {{humanNameLower}} parameters
  * @export
- * @interface ILocalFileParms
+ * @interface {{parmsInterface}}
  * @extends {IResourceParms}
  */
-export interface ILocalFileParms extends IResourceParms {
+export interface {{parmsInterface}} extends IResourceParms {
+{{#if hasBusyOption}}
   /**
-   * The busy condition option for closing the local file
+   * The busy condition option for closing the {{humanNameLower}}
    * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
    * Value will be automatically converted to uppercase
    * @type {string}
-   * @memberof ILocalFileParms
+   * @memberof {{parmsInterface}}
    */
   busy?: string;
+{{else}}
+  // No additional parameters needed for {{humanName}} resource
+{{/if}}
 }

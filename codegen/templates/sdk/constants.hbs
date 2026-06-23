@@ -195,41 +195,34 @@ export const CicsCmciConstants = {
    * The CICS CMCI local file
    */
   CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
+{{#each resources}}
 
   /**
-   * The criteria field name for local file resources
+   * The criteria field name for {{humanNameLower}} resources
    */
-  CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
+  {{criteriaFieldConstant}}: "{{criteriaField}}",
+{{#if maxLengthConstant}}
 
   /**
-   * Maximum length for CICS local file names
+   * Maximum length for CICS {{humanNameLower}} names
    */
-  CICS_LOCAL_FILE_MAX_LENGTH: 8,
+  {{maxLengthConstant}}: {{maxNameLength}},
+{{/if}}
+{{#if busyValuesConstant}}
 
   /**
-   * Valid BUSY parameter values for closing local files
+   * Valid BUSY parameter values for closing {{humanNameLower}}s
    */
-  CICS_LOCAL_FILE_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
+  {{busyValuesConstant}}: ["WAIT", "NOWAIT", "FORCE"],
+{{/if}}
+{{#if actions}}
 
   /**
-   * Valid action types for local file operations
+   * Valid action types for {{humanNameLower}} operations
    */
-  CICS_LOCAL_FILE_ACTIONS: ["CLOSE", "DISABLE", "ENABLE", "OPEN"],
-
-  /**
-   * The criteria field name for library resources
-   */
-  CICS_LIBRARY_CRITERIA_FIELD: "library",
-
-  /**
-   * Maximum length for CICS library names
-   */
-  CICS_LIBRARY_MAX_LENGTH: 8,
-
-  /**
-   * Valid action types for library operations
-   */
-  CICS_LIBRARY_ACTIONS: ["DISABLE", "ENABLE"],
+  CICS_{{resourceTypeUpper}}_ACTIONS: [{{#each actions}}"{{name}}"{{#unless @last}}, {{/unless}}{{/each}}],
+{{/if}}
+{{/each}}
 
   /**
    * The CICS CMCI remote file
@@ -295,11 +288,6 @@ export const CicsCmciConstants = {
     INVALIDPARM: 1028,
 
     /**
-     * CMCI RESP 1 Code for NOTPERMIT
-     */
-    NOTPERMIT: 1031,
-
-    /**
      * CMCI RESP 1 Code for NOTAVAILABLE
      */
     NOTAVAILABLE: 1034,
@@ -313,19 +301,13 @@ export const CicsCmciConstants = {
    * Default Resp Code
    */
   DEFAULT_RESP_CODE: "0000",
-
-  /**
-   * Resource type constant for GET operations documentation
-   */
-  DOC_RESOURCE_TYPE_GET: "get",
 };
+{{#each resources}}
+{{#if actions}}
 
 /**
- * Valid local file action types
+ * Valid {{humanNameLower}} action types
  */
-export type LocalFileAction = "CLOSE" | "DISABLE" | "ENABLE" | "OPEN";
-
-/**
- * Valid library action types
- */
-export type LibraryAction = "DISABLE" | "ENABLE";
+export type {{sdkFileName}}Action = {{#each actions}}"{{name}}"{{#unless @last}} | {{/unless}}{{/each}};
+{{/if}}
+{{/each}}
