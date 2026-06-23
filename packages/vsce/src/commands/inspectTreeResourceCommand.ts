@@ -106,7 +106,8 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
               regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
             },
           };
-        })
+        }),
+        "compare"
       );
     }
 
@@ -157,7 +158,8 @@ export function getInspectMultipleResourcesCommand(context: ExtensionContext) {
             regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
           },
         };
-      })
+      }),
+      "table"
     );
   });
 }

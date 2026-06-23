@@ -36,6 +36,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private webviewView?: WebviewView;
   private resources: IResourceInspectorResource[];
+  private viewMode: "inspect" | "compare" | "table" = "inspect";
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -97,7 +98,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResources(resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]) {
+  public async setResources(
+    resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[],
+    viewMode: "inspect" | "compare" | "table" = "inspect"
+  ) {
     const riResources: IResourceInspectorResource[] = [];
     for (const res of resources) {
       const actions = await this.getActionsForResource(res);
@@ -111,6 +115,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       });
     }
     this.resources = riResources;
+    this.viewMode = viewMode;
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
@@ -163,6 +168,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
       shouldRenderDatasetLinks: shouldRenderZoweExplorerLinks,
+      viewMode: this.viewMode,
     };
 
     await this.webviewView.webview.postMessage(message);

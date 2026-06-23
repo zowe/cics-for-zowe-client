@@ -108,7 +108,7 @@ function ResourceTable<T extends Record<string, any>>({
                 {/* First column - sticky left */}
                 <td
                   className={
-                    `pl-2 pr-2 max-w-48 sticky left-0 overflow-hidden text-ellipsis whitespace-nowrap ${getRowBgClass(rowIndex, isDark)} z-10`
+                    `pl-4 pr-2 max-w-48 sticky left-0 overflow-hidden text-ellipsis whitespace-nowrap ${getRowBgClass(rowIndex, isDark)} z-10`
                   }
                   style={{
                     boxShadow: 'inset -3px 0 3px -3px rgba(0,0,0,0.15)'
@@ -122,7 +122,7 @@ function ResourceTable<T extends Record<string, any>>({
                 {columns.slice(1).map((col) => (
                   <td
                     key={String(col.key)}
-                    className="pl-2 pr-2 max-w-48 overflow-hidden text-ellipsis whitespace-nowrap z-1"
+                    className="pl-4 pr-2 max-w-48 overflow-hidden text-ellipsis whitespace-nowrap z-1"
                     title={String(row[col.key])}
                   >
                     {String(row[col.key])}
@@ -232,7 +232,7 @@ const MultiResourceView = ({ resources }: { resources: IResourceInspectorResourc
     
   }, [resources]);
 
-  if (!resources || resources.length < 2) {
+  if (!resources || resources.length === 0) {
     return null;
   }
 
