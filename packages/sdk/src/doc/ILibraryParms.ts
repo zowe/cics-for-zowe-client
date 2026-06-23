@@ -19,18 +19,11 @@
 import type { IResourceParms } from "./IResourceParms";
 
 /**
- * Interface for CICS local file parameters
+ * Interface for CICS library parameters
  * @export
- * @interface ILocalFileParms
+ * @interface ILibraryParms
  * @extends {IResourceParms}
  */
-export interface ILocalFileParms extends IResourceParms {
-  /**
-   * The busy condition option for closing the local file
-   * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
-   * Value will be automatically converted to uppercase
-   * @type {string}
-   * @memberof ILocalFileParms
-   */
-  busy?: string;
+export interface ILibraryParms extends IResourceParms {
+  // No additional parameters needed for Library resource
 }

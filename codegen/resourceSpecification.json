@@ -35,6 +35,39 @@
           "options": ["BUSY"]
         }
       ]
+    },
+    "CICSLibrary": {
+      "identifier": {
+        "aliases": ["lib"],
+        "humanNameSingular": "Library",
+        "humanNamePlural": "Libraries",
+        "primaryKey": "library",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        {
+          "identifier": {
+            "name": "ENABLE",
+            "aliases": ["enb"],
+            "group": "enable",
+            "description": "Enable a resource in CICS",
+            "verb": "enabling",
+            "verbPastTense": "enabled"
+          },
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "DISABLE",
+            "aliases": ["dis"],
+            "group": "disable",
+            "description": "Disable a resource in CICS",
+            "verb": "disabling",
+            "verbPastTense": "disabled"
+          },
+          "options": []
+        }
+      ]
     }
   },
   "actions": {
