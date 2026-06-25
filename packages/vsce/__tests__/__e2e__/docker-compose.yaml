@@ -9,7 +9,7 @@ services:
     entrypoint: ["/docker-entrypoint.sh", "--verbose"]
 
   code-server:
-    image: lscr.io/linuxserver/code-server:latest
+    image: lscr.io/linuxserver/code-server:4.124.2
     ports:
       - 1234:8443
     container_name: code-server
