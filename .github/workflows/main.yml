@@ -31,10 +31,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -48,7 +48,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease/script@v1
+      uses: zowe-actions/octorelease/script@e0672bf28f74f36219713afe75915ea2dc7bf85b # v1
       with:
         config-dir: .github
         script: npmUpdate
@@ -63,13 +63,13 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: packages/*/__tests__/__results__/
 
     - name: Upload Results to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
       with:
         env_vars: OS,NODE
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -95,10 +95,10 @@ jobs:
           sudo chmod -R 777 $GITHUB_WORKSPACE
 
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Use Node.js 22.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22.x
 
@@ -139,7 +139,7 @@ jobs:
 
       - name: Archive E2E screenshots, Wiremock log, and Playwright test report
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: e2eLogs
           path: |
@@ -160,14 +160,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       with:
         fetch-depth: 0
         persist-credentials: false
         ref: ${{ github.ref }}
 
     - name: Use Node.js LTS
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: lts/*
 
@@ -175,7 +175,7 @@ jobs:
       run: npm ci
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease/script@v1
+      uses: zowe-actions/octorelease/script@e0672bf28f74f36219713afe75915ea2dc7bf85b # v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
@@ -206,7 +206,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@v1
+    - uses: zowe-actions/octorelease@e0672bf28f74f36219713afe75915ea2dc7bf85b # v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
