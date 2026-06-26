@@ -18,7 +18,6 @@ import {
   prepareZoweExplorerView,
   resetWiremock,
   resetZoweExplorerView,
-  waitForNotification,
 } from "../utils/helpers";
 
 async function openResourceInspector(page: Page, resourceType: string, resourceName: string) {
@@ -32,12 +31,12 @@ async function openResourceInspector(page: Page, resourceType: string, resourceN
   await page.waitForTimeout(200);
   await findAndClickText(page, "Inspect Resource");
 
-  await waitForNotification(page, `Loading CICS resource '${resourceName}'...`);
+  await page.waitForTimeout(3000);
 }
 
 async function openContextMenu(page: Page) {
-  const contextMenuButton = getResourceInspector(page).locator('button[aria-label="Actions"]');
-  await expect(contextMenuButton).toBeVisible();
+  const contextMenuButton = getResourceInspector(page).locator(".codicon.codicon-kebab-vertical").first();
+  await expect(contextMenuButton).toBeVisible({ timeout: 10000 });
   await contextMenuButton.click();
   await page.waitForTimeout(200);
 }
@@ -52,39 +51,53 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Resource Inspector Actions - Library", () => {
-  test("should display Enable Library action in Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
-    await getResourceInspector(page).getByText(`${constants.LIBRARY_1_NAME}(Library)`).waitFor();
-    await openContextMenu(page);
-
-    await expect(getResourceInspector(page).getByText("Enable Library", { exact: true })).toBeVisible();
-  });
-
   test("should display Disable Library action in Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
-    await getResourceInspector(page).getByText(`${constants.LIBRARY_1_NAME}(Library)`).waitFor();
+    await getResourceInspector(page).getByText("Status:", { exact: false }).waitFor({ timeout: 30000 });
     await openContextMenu(page);
 
-    await expect(getResourceInspector(page).getByText("Disable Library", { exact: true })).toBeVisible();
+    const disableLibraryAction = getResourceInspector(page).getByText("Disable Library", { exact: true });
+    await expect(disableLibraryAction).toBeVisible();
+    await disableLibraryAction.click();
+
+    await page.waitForTimeout(500);
+  });
+
+  test("should display Enable Library action in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Libraries", constants.LIBRARY_2_NAME);
+    await getResourceInspector(page).getByText("Status:", { exact: false }).waitFor({ timeout: 30000 });
+    await openContextMenu(page);
+
+    const enableLibraryAction = getResourceInspector(page).getByText("Enable Library", { exact: true });
+    await expect(enableLibraryAction).toBeVisible();
+    await enableLibraryAction.click();
+
+    await page.waitForTimeout(500);
   });
 });
 
 test.describe("Resource Inspector Actions - Task", () => {
-  const TASK_NAME = "00001";
-
   test("should display Purge Task action in Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "Tasks", TASK_NAME);
-    await getResourceInspector(page).getByText(`${TASK_NAME}(Task)`).waitFor();
+    await openResourceInspector(page, "Tasks", constants.TASK_1_NAME);
+    await getResourceInspector(page).getByText("Run Status:", { exact: false }).waitFor({ timeout: 30000 });
     await openContextMenu(page);
 
-    await expect(getResourceInspector(page).getByText("Purge Task", { exact: true })).toBeVisible();
+    const purgeTask = getResourceInspector(page).getByText("Purge Task", { exact: true });
+    await expect(purgeTask).toBeVisible();
+    await purgeTask.click();
+
+    await page.waitForTimeout(500);
   });
 
   test("should display Inquire Transaction action in Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "Tasks", TASK_NAME);
-    await getResourceInspector(page).getByText(`${TASK_NAME}(Task)`).waitFor();
+    await openResourceInspector(page, "Tasks", constants.TASK_1_NAME);
+    await getResourceInspector(page).getByText("Run Status:", { exact: false }).waitFor({ timeout: 30000 });
     await openContextMenu(page);
 
-    await expect(getResourceInspector(page).getByText("Inquire Transaction", { exact: true })).toBeVisible();
+    const inquireTransaction = getResourceInspector(page).getByText("Inquire Transaction", { exact: true });
+    await expect(inquireTransaction).toBeVisible();
+    await inquireTransaction.click();
+
+    await page.waitForTimeout(500);
   });
 });

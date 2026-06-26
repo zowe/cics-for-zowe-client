@@ -1,0 +1,82 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSTask/MYPLEX1/MYREG1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00TASKSTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/00TASKSTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSTask/MYPLEX1/MYREG1?CRITERIA=(TASK%3D00001)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/MYTASK1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYTASK1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/MYTASK1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYTASK1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/MYTASK1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
