@@ -90,9 +90,13 @@ describe("Test suite for CICSExtensionError", () => {
       profileName: "myprof",
     });
 
-    expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
-      "The request failed on profile myprof for resources: MyProg. Response details: API_FUNCTION: GET, RESP: 1038 (NODATA), RESP2: 1038 (TABLEERROR)."
-    );
+    // Updated to match new detailed error format with profile name and resource name
+    const errorMessage = trimLineBreaks(sut.cicsExtensionError.errorMessage);
+    expect(errorMessage).toContain("The request failed on profile myprof for resources: MyProg");
+    expect(errorMessage).toContain("API_FUNCTION: GET");
+    expect(errorMessage).toContain("RESP: 1038 (NODATA)");
+    expect(errorMessage).toContain("RESP2: 1038 (TABLEERROR)");
+    expect(errorMessage).toContain("Please refer to the [IBM documentation]");
   });
 
   it("should return error message when error is instance of RestClientError", () => {
@@ -128,5 +132,121 @@ describe("Test suite for CICSExtensionError", () => {
     expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toBe(
       "The request on profile myprof failed. Error message: The request could not be completed due to an error, Cause: NullPointerException"
     );
+  });
+
+  it("should return error message when error is instance of RestClientError with errorCode", () => {
+    baseErrorMock = new imperative.RestClientError({
+      httpStatus: 500,
+      msg: "Internal server error",
+      source: "http",
+      resource: "localhost:8080/api/",
+      errorCode: "500",
+    });
+
+    sut = new CICSExtensionError({
+      baseError: baseErrorMock,
+      profileName: "myprof",
+    });
+
+    expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toContain("Status code: 500");
+    expect(trimLineBreaks(sut.cicsExtensionError.errorMessage)).toContain("localhost:8080/api/");
+  });
+
+  it("should handle CICSExtensionError as baseError", () => {
+    // First create an inner error with specific properties
+    const innerBaseError = new Error("Inner error");
+    const innerError = new CICSExtensionError({
+      baseError: innerBaseError,
+      profileName: "innerprof",
+    });
+    
+    // Manually set the properties that would be set by parseError
+    innerError.cicsExtensionError.errorMessage = "Inner error message";
+    innerError.cicsExtensionError.statusCode = 404;
+    innerError.cicsExtensionError.resp1Code = 16;
+    innerError.cicsExtensionError.resp2Code = 6;
+    innerError.cicsExtensionError.stackTrace = "Inner stack trace";
+
+    // Now create outer error with inner error as base
+    sut = new CICSExtensionError({
+      baseError: innerError,
+      profileName: "outerprof",
+    });
+
+    // The outer error should copy properties from inner error
+    expect(sut.cicsExtensionError.errorMessage).toBe("Inner error message");
+    expect(sut.cicsExtensionError.statusCode).toBe(404);
+    expect(sut.cicsExtensionError.resp1Code).toBe(16);
+    expect(sut.cicsExtensionError.resp2Code).toBe(6);
+    expect(sut.cicsExtensionError.stackTrace).toBe("Inner stack trace");
+  });
+
+  describe("formatDetailedErrorMessage", () => {
+    it("should format message with profile name and resource name", () => {
+      const resultSummary = {
+        api_function: "GET",
+        api_response1: "1031",
+        api_response1_alt: "NOTPERMIT",
+        api_response2: "0",
+        api_response2_alt: "USRID",
+        recordcount: "5",
+        displayed_recordcount: "5"
+      };
+
+      const message = CICSExtensionError.formatDetailedErrorMessage(
+        resultSummary,
+        "MYPROF",
+        "PROG1"
+      );
+
+      expect(message).toContain("The request failed on profile MYPROF");
+      expect(message).toContain("for resources: PROG1");
+      expect(message).toContain("API_FUNCTION: GET");
+      expect(message).toContain("RESP: 1031 (NOTPERMIT)");
+      expect(message).toContain("RESP2: 0 (USRID)");
+    });
+
+    it("should format message with profile name only", () => {
+      const resultSummary = {
+        api_function: "GET",
+        api_response1: "1031",
+        api_response1_alt: "NOTPERMIT",
+        api_response2: "0",
+        api_response2_alt: "USRID",
+        recordcount: "5",
+        displayed_recordcount: "5"
+      };
+
+      const message = CICSExtensionError.formatDetailedErrorMessage(
+        resultSummary,
+        "MYPROF"
+      );
+
+      expect(message).toContain("The request failed on profile MYPROF");
+      expect(message).not.toContain("for resources:");
+      expect(message).toContain("API_FUNCTION: GET");
+      expect(message).toContain("RESP: 1031 (NOTPERMIT)");
+      expect(message).toContain("RESP2: 0 (USRID)");
+    });
+
+    it("should format message without profile name", () => {
+      const resultSummary = {
+        api_function: "GET",
+        api_response1: "1031",
+        api_response1_alt: "NOTPERMIT",
+        api_response2: "0",
+        api_response2_alt: "USRID",
+        recordcount: "5",
+        displayed_recordcount: "5"
+      };
+
+      const message = CICSExtensionError.formatDetailedErrorMessage(resultSummary);
+
+      expect(message).toContain("The request failed");
+      expect(message).not.toContain("on profile");
+      expect(message).toContain("API_FUNCTION: GET");
+      expect(message).toContain("RESP: 1031 (NOTPERMIT)");
+      expect(message).toContain("RESP2: 0 (USRID)");
+    });
   });
 });

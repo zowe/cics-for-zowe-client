@@ -14,6 +14,7 @@ import type { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { l10n } from "vscode";
 import type { IContainedResource, IResourceMeta } from "../doc";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
+import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { CICSLogger } from "../utils/CICSLogger";
 import PersistentStorage from "../utils/PersistentStorage";
 import { toArray } from "../utils/commandUtils";
@@ -109,6 +110,23 @@ export class ResourceContainer {
   }
 
   /**
+   * Get the summary for a specific resource type
+   * @param meta The resource metadata to get the summary for
+   * @returns The result summary containing error information and metadata, or undefined if not available
+   */
+  public getSummary(meta: IResourceMeta<IResource>): ICMCIResponseResultSummary | undefined {
+    return this.summaries.get(meta);
+  }
+
+  /**
+   * Get all resource types managed by this container
+   * @returns Array of resource metadata
+   */
+  public getResourceTypes(): IResourceMeta<IResource>[] {
+    return this.resourceTypes;
+  }
+
+  /**
    * @returns How many of each resource type are remaining to fetch
    */
   private getAvailableResourceTypes(): { meta: IResourceMeta<IResource>; remaining: number }[] {
@@ -185,6 +203,12 @@ export class ResourceContainer {
         count,
       });
 
+      // Update summary with cache response if it contains an error
+      // This handles cases where summary is OK but cache fetch has errors (e.g., partial authorization)
+      if (response.resultsummary) {
+        this.summaries.set(meta, response.resultsummary);
+      }
+
       // Invalidate cache if we've retrieved everything
       if (parseInt(summary.recordcount) < start + count) {
         await runGetCache(
@@ -228,7 +252,11 @@ export class ResourceContainer {
       }
       allocations = this.calculateAllocations(available, this.pageSize);
     } catch (error) {
-      CICSErrorHandler.handleCMCIRestError(error);
+      const wrappedError = new CICSExtensionError({
+        baseError: error as Error,
+        profileName: this.context.profileName,
+      });
+      CICSErrorHandler.handleCMCIRestError(wrappedError);
     }
     return this.fetchRecordsForAllocations(allocations);
   }

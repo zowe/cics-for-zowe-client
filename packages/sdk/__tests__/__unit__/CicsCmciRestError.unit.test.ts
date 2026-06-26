@@ -360,4 +360,5 @@ describe("CicsCmciRestError tests", () => {
       expect(error.FEEDBACK_ACTION).toBeUndefined();
     });
   });
+
 });

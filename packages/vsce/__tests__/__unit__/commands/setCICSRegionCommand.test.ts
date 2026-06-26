@@ -220,9 +220,10 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
+        hasLimitedResults: false,
+      });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
@@ -256,9 +257,10 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([
         { plexname: "plex1", group: false },
       ]);
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
+        hasLimitedResults: false,
+      });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
@@ -287,9 +289,10 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [{ cicsname: "region1", cicsstate: "ACTIVE" }],
+        hasLimitedResults: false,
+      });
 
       const result = await setCICSRegion();
 
@@ -354,7 +357,7 @@ describe("setCICSRegionCommand", () => {
 
       const result = await setCICSRegion();
 
-      expect(result).toBeNull();
+      expect(result).toBeUndefined();
     });
 
     it("should filter inactive regions", async () => {
@@ -364,10 +367,13 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
-      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue([
-        { cicsname: "region1", cicsstate: "ACTIVE" },
-        { cicsname: "region2", cicsstate: "INACTIVE" },
-      ]);
+      (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: [
+          { cicsname: "region1", cicsstate: "ACTIVE" },
+          { cicsname: "region2", cicsstate: "INACTIVE" },
+        ],
+        hasLimitedResults: false,
+      });
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();

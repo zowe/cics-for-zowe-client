@@ -268,6 +268,11 @@ export const CicsCmciConstants = {
     INVALIDPARM: 1028,
 
     /**
+     * CMCI RESP 1 Code for NOTPERMIT
+     */
+    NOTPERMIT: 1031,
+
+    /**
      * CMCI RESP 1 Code for NOTAVAILABLE
      */
     NOTAVAILABLE: 1034,
@@ -281,6 +286,11 @@ export const CicsCmciConstants = {
    * Default Resp Code
    */
   DEFAULT_RESP_CODE: "0000",
+
+  /**
+   * Resource type constant for GET operations documentation
+   */
+  DOC_RESOURCE_TYPE_GET: "get",
 };
 
 /**

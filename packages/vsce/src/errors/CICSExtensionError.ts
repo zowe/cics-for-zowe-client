@@ -13,6 +13,7 @@ import { CicsCmciRestError } from "@zowe/cics-for-zowe-sdk";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { l10n } from "vscode";
 import { getEIBFNameFromMetas } from "../utils/errorUtils";
+import { CICSErrorHandler } from "./CICSErrorHandler";
 import type { ICICSExtensionError } from "./ICICSExtensionError";
 
 export class CICSExtensionError extends Error {
@@ -21,6 +22,45 @@ export class CICSExtensionError extends Error {
     super();
     this.cicsExtensionError = error;
     this.parseError();
+  }
+
+  /**
+   * Format a detailed error message from result summary
+   * @param resultSummary - The CMCI result summary object
+   * @param profileName - Optional profile name to include in the message
+   * @param resourceName - Optional resource name to include in the message
+   * @returns Formatted error message with response details
+   */
+  static formatDetailedErrorMessage(
+    resultSummary: any,
+    profileName?: string,
+    resourceName?: string
+  ): string {
+    if (profileName) {
+      return l10n.t(
+        `The request failed on profile {0}` +
+          (resourceName ? ` for resources: {1}. ` : `. `) +
+          `Response details: API_FUNCTION: {2}, ` +
+          `RESP: {3} ({4}), ` +
+          `RESP2: {5} ({6}).`,
+        profileName,
+        resourceName,
+        resultSummary.api_function,
+        resultSummary.api_response1,
+        resultSummary.api_response1_alt,
+        resultSummary.api_response2,
+        resultSummary.api_response2_alt
+      );
+    }
+    
+    return l10n.t(
+      `The request failed. Response details: API_FUNCTION: {0}, RESP: {1} ({2}), RESP2: {3} ({4}).`,
+      resultSummary.api_function,
+      resultSummary.api_response1,
+      resultSummary.api_response1_alt,
+      resultSummary.api_response2,
+      resultSummary.api_response2_alt
+    );
   }
 
   parseError() {
@@ -51,24 +91,15 @@ export class CICSExtensionError extends Error {
             feedback.resp2
           );
       } else {
-        //setting resourceType to GET for generating doc url
+        // Use api_function as resourceType for generating appropriate documentation URL
         this.cicsExtensionError.resourceType = api_function;
-        this.cicsExtensionError.errorMessage =
+        const baseErrorMessage =
           errorMessage ||
-          l10n.t(
-            `The request failed on profile {0}` +
-              (resourceName ? ` for resources: {1}. ` : `. `) +
-              `Response details: API_FUNCTION: {2}, ` +
-              `RESP: {3} ({4}), ` +
-              `RESP2: {5} ({6}).`,
-            profileName,
-            resourceName,
-            api_function,
-            resultSummary.api_response1,
-            resultSummary.api_response1_alt,
-            resultSummary.api_response2,
-            resultSummary.api_response2_alt
-          );
+          CICSExtensionError.formatDetailedErrorMessage(resultSummary, profileName, resourceName);
+        this.cicsExtensionError.errorMessage = CICSErrorHandler.formatMessageWithDocLink(
+          baseErrorMessage,
+          api_function
+        );
       }
     } else if (error instanceof imperative.RestClientError) {
       const errorCode = error.mDetails.errorCode || error.errorCode;

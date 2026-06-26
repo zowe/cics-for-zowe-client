@@ -9,6 +9,7 @@
  *
  */
 
+import type { ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { getMetas } from "../doc";
 import { URLConstants } from "../errors/urlConstants";
 
@@ -48,3 +49,44 @@ function getResourceTypeAndHelpTopic(resourceType: string): { eibfnName: string;
     anchor: meta.anchorFragmentForSet,
   };
 }
+
+
+/**
+ * Helper function to check if a records object contains any actual records
+ * @param records - The records object to check
+ * @returns true if records exist and contain data, false otherwise
+ */
+export function hasRecordsWithData(records: any): boolean {
+  if (!records || typeof records !== 'object') {
+    return false;
+  }
+  return Object.keys(records).length > 0 &&
+    Object.values(records).some((recordArray) => Array.isArray(recordArray) && recordArray.length > 0);
+}
+
+/**
+ * Only converts if the error has both resultSummary and non-empty incomplete records.
+ * @param error - The error object (CicsCmciRestError). Returns null if error is null/undefined.
+ * @returns ICMCIApiResponse with incomplete records, or null if error doesn't have incomplete records
+ */
+export function convertErrorToIncompleteResponse(error: any): ICMCIApiResponse | null {
+  // Check for valid error with resultSummary and non-empty records
+  if (!error?.resultSummary || !error?.records) {
+    return null;
+  }
+  
+  // Validate that records actually contains data
+  if (!hasRecordsWithData(error.records)) {
+    return null;
+  }
+  
+  return {
+    response: {
+      resultsummary: error.resultSummary,
+      records: error.records,
+      errors: error.errors
+    }
+  };
+}
+
+

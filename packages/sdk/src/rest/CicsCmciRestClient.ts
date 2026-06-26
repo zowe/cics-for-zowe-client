@@ -200,18 +200,20 @@ export class CicsCmciRestClient extends AbstractRestClient {
    * Check that we got the expected response codes from the API after a request
    * @param {ICMCIApiResponse} apiResponse - the parsed response
    * @returns {ICMCIApiResponse} - the response if it was correct
-   * @throws {ImperativeError} request did not get the expected codes
+   * @throws {ImperativeError} if the request failed. The error might include records that were retrieved.
    */
   private static verifyResponseCodes(apiResponse: ICMCIApiResponse, requestOptions?: ICMCIRequestOptions): ICMCIApiResponse {
-    const okResponse1Codes = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
+    const responseCode = [`${CicsCmciConstants.RESPONSE_1_CODES.OK}`];
     if (requestOptions?.failOnNoData === false) {
-      okResponse1Codes.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
+      responseCode.push(`${CicsCmciConstants.RESPONSE_1_CODES.NODATA}`);
     }
 
-    if (okResponse1Codes.includes(apiResponse.response?.resultsummary?.api_response1)) {
+    // If response code is OK or NODATA (when allowed), return it
+    if (responseCode.includes(apiResponse.response?.resultsummary?.api_response1)) {
       return apiResponse;
     }
 
+    // Error code present - throw error (error will include any records retrieved))
     if (requestOptions?.useCICSCmciRestError) {
       throw new CicsCmciRestError(CicsCmciMessages.cmciRequestFailed.message, apiResponse);
     }

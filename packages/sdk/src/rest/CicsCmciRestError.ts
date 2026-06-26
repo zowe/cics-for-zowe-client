@@ -17,6 +17,7 @@ import type { ICMCIResponseErrors } from "../doc/ICMCIResponseErrors";
 export class CicsCmciRestError extends ImperativeError {
   resultSummary: ICMCIResponseResultSummary;
   errors: ICMCIResponseErrors;
+  records?: Record<string, object | object[]>;
 
   RESPONSE_1: number;
   RESPONSE_2: number;
@@ -32,6 +33,7 @@ export class CicsCmciRestError extends ImperativeError {
     super({ msg });
     this.resultSummary = response.response.resultsummary;
     this.errors = response.response.errors;
+    this.records = response.response.records;
     this.parseResultSummary();
   }
 
@@ -46,4 +48,5 @@ export class CicsCmciRestError extends ImperativeError {
     this.FEEDBACKRESP_ALT = this.errors?.feedback?.resp_alt;
     this.EIBFN_ALT = this.errors?.feedback?.eibfn_alt;
   }
+
 }
