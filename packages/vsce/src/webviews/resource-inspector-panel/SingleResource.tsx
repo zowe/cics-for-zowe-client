@@ -18,6 +18,7 @@ import { type IResourceInspectorIconPath, type IResourceInspectorResource, postV
 import { Breadcrumb } from "./Breadcrumb";
 import { ContextMenu } from "./Contextmenu";
 import { renderHyperlinkableValue } from "./utils/hyperlinkUtils";
+import { getHeaderBgClass } from "../common/tableUtils";
 
 const SingleResource = ({
   resources,
@@ -58,9 +59,7 @@ const SingleResource = ({
   return (
     <>
       <div
-        className={`sticky top-2 w-full bg-(--vscode-editor-background) ${
-          isDark ? "bg-lighter" : "bg-darker"
-        } z-50 px-2 h-8 flex items-center justify-between`}
+        className={`sticky top-2 w-full ${getHeaderBgClass(isDark)} z-50 px-2 h-8 flex items-center justify-between`}
       >
         <Breadcrumb
           cicsplexName={resources[0].context.cicsplexName}

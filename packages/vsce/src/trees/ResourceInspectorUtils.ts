@@ -55,7 +55,26 @@ const executeCommandAction = async (commandName: string, resources: IResourceIns
 };
 
 const createResourceNode = (resource: IResourceInspectorResource): CICSResourceContainerNode<IResource> => {
-  const meta = getMetas().find((m) => m.resourceName === resource.meta.resourceName);
+  if (!resource?.meta?.resourceName || !resource.resource) {
+    throw new Error("Invalid resource: missing required properties");
+  }
+  
+  // The meta from the webview is a serialized object without methods
+  // We need to look it up from getMetas() to get the full meta with all methods
+  const resourceName = resource.meta.resourceName;
+  
+  // Find meta in top-level metas or child types (e.g., customProgramMeta for programs inside library datasets)
+  const meta = getMetas().find((m) => m.resourceName === resourceName)
+    ?? getMetas().flatMap((m) => m.childType ?? []).find((c) => c.resourceName === resourceName);
+
+  if (!meta) {
+    throw new Error(`Could not find meta for resource type: ${resourceName}`);
+  }
+
+  const containedResource: IContainedResource<IResource> = {
+    meta,
+    resource: new Resource(resource.resource),
+  };
 
   return new CICSResourceContainerNode<IResource>(
     "Resource Inspector Node",
@@ -65,10 +84,7 @@ const createResourceNode = (resource: IResourceInspectorResource): CICSResourceC
       cicsplexName: resource.context.cicsplexName,
       regionName: resource.context.regionName,
     },
-    {
-      meta,
-      resource: new Resource(resource.resource),
-    }
+    containedResource
   );
 };
 

@@ -12,7 +12,7 @@
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { type ExtensionContext, type TreeView, commands, l10n, window } from "vscode";
-import type { CICSResourceContainerNode } from "../trees";
+import { CICSResourceContainerNode, TextTreeItem } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { compareTreeNodeWithPrompts } from "./compareResourceCommand";
 import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
@@ -52,7 +52,13 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
   return commands.registerCommand("cics-extension-for-zowe.compareTreeResources", async (node: CICSResourceContainerNode<IResource>) => {
     const treeNodes: CICSResourceContainerNode<IResource>[] = [...new Set(treeview.selection)];
 
-    if (treeNodes.length === 0 && !node) {
+    // If a node parameter is explicitly provided but there's no multi-selection,
+    // use it directly (e.g., from Resource Inspector actions)
+    if (node && treeNodes.length <= 1) {
+      return compareTreeNodeWithPrompts(node, context);
+    }
+
+    if (treeNodes.length === 0) {
       const resourceInspector = ResourceInspectorViewProvider.getInstance(context);
       const currentResources = resourceInspector.getResources();
 
@@ -100,16 +106,13 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
               regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
             },
           };
-        })
+        }),
+        "compare"
       );
     }
 
     if (treeNodes.length > 2) {
       return;
-    }
-
-    if(node){
-      return compareTreeNodeWithPrompts(node, context);
     }
   });
 }
@@ -119,5 +122,44 @@ export function getCompareResourceToCommand() {
     // This command is just an alias for compareTreeResources with a different title
     // It's used for single-selection context menu and inspector actions
     return commands.executeCommand("cics-extension-for-zowe.compareTreeResources", node);
+  });
+}
+
+export function getInspectMultipleResourcesCommand(context: ExtensionContext) {
+  return commands.registerCommand("cics-extension-for-zowe.viewInTable", async (node: CICSResourceContainerNode<IResource>) => {
+
+    if (!node.children || node.children.length === 0) {
+      await node.getChildren();
+    }
+
+    if (node.children.length === 0) {
+      return Gui.showMessage(l10n.t("No resources found."));
+    }
+    
+    if (node.children.length === 1 && node.children[0] instanceof TextTreeItem) {
+      return Gui.showMessage(l10n.t("No filter applied."));
+    }
+
+    const filteredChildren = node.children.filter((n) => n instanceof CICSResourceContainerNode);
+    
+    if (filteredChildren.length === 0) {
+      return Gui.showMessage(l10n.t("No resources found."));
+    }
+
+    return showInspectResource(
+      context,
+      filteredChildren.map((n: CICSResourceContainerNode<IResource>) => {
+        return {
+          containedResource: n.getContainedResource(),
+          ctx: {
+            session: n.getSession(),
+            profile: n.getProfile(),
+            cicsplexName: n.cicsplexName,
+            regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
+          },
+        };
+      }),
+      "table"
+    );
   });
 }
