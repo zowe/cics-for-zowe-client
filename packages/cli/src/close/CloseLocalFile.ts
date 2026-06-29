@@ -51,7 +51,7 @@ export const LocalFileDefinition: ICommandDefinition = {
       type: "string",
       defaultValue: "WAIT",
       allowableValues: {
-        values: [...CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES],
+        values: [...CicsCmciConstants.CICS_BUSY_VALUES],
         caseSensitive: false,
       },
     },

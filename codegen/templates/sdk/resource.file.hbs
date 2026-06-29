@@ -64,8 +64,8 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parm
   const {{camelCase parameters.[0].name}}Value = parms.{{parameters.[0].sdkParamField}} ? parms.{{parameters.[0].sdkParamField}}.trim().toUpperCase() : "{{parameters.[0].defaultValue}}";
 
   // Validate {{parameters.[0].sdkParamField}} parameter
-  if (!CicsCmciConstants.{{../busyValuesConstant}}.includes({{camelCase parameters.[0].name}}Value)) {
-    const allowedValuesStr = CicsCmciConstants.{{../busyValuesConstant}}.join(", ");
+  if (!CicsCmciConstants.CICS_BUSY_VALUES.includes({{camelCase parameters.[0].name}}Value)) {
+    const allowedValuesStr = CicsCmciConstants.CICS_BUSY_VALUES.join(", ");
     throw new ImperativeError({
       msg: `Invalid {{parameters.[0].name}} parameter value: "${ {{camelCase parameters.[0].name}}Value}". Must be one of: ${allowedValuesStr}`,
     });
