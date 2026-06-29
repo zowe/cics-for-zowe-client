@@ -25,7 +25,7 @@ import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
 import type { CICSResourceContainerNode } from "../trees";
 import { CICSLogger } from "./CICSLogger";
-import { getErrorCode } from "./errorUtils";
+import { convertErrorToIncompleteResponse, getErrorCode } from "./errorUtils";
 
 interface IReqParams {
   criteria?: string;
@@ -75,18 +75,43 @@ export async function runGetResource({ profileName, resourceName, regionName, ci
       buildUserAgentHeader(),
     ]);
   } catch (error) {
+    // Check if error contains incomplete results - if so, convert to successful response with incomplete data
+    const incompleteResponse = convertErrorToIncompleteResponse(error);
+    if (incompleteResponse) {
+      return incompleteResponse;
+    }
+    
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) != constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession?.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({
+        baseError: error as Error | Record<string, unknown>,
+        profileName,
+        resourceName: getResourceNameFromCriteria(params?.criteria)
+      });
     }
   }
 
   CICSLogger.debug("Retrying as validation of the LTPA token failed because the token has expired.");
   const newSession = buildNewSession(profile);
   try {
-    return getResource(newSession, buildResourceParms(resourceName, regionName, cicsPlex, params), buildRequestOptions(), [buildUserAgentHeader()]);
+    return getResource(
+      newSession,
+      buildResourceParms(resourceName, regionName, cicsPlex, params),
+      buildRequestOptions(),
+      [buildUserAgentHeader()]
+    );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    // Check if error contains incomplete results - if so, convert to successful response with incomplete data
+    const incompleteResponse = convertErrorToIncompleteResponse(error);
+    if (incompleteResponse) {
+      return incompleteResponse;
+    }
+    
+    throw new CICSExtensionError({
+      baseError: error as Error | Record<string, unknown>,
+      profileName,
+      resourceName: getResourceNameFromCriteria(params?.criteria)
+    });
   }
 }
 
@@ -115,9 +140,15 @@ export async function runGetCache(
       buildUserAgentHeader(),
     ]);
   } catch (error) {
+    // Check if error contains incomplete results - if so, convert to successful response with incomplete data
+    const incompleteResponse = convertErrorToIncompleteResponse(error);
+    if (incompleteResponse) {
+      return incompleteResponse;
+    }
+    
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, profileName });
+      throw new CICSExtensionError({ baseError: error as Error | Record<string, unknown>, profileName });
     }
   }
 
@@ -132,7 +163,13 @@ export async function runGetCache(
       [buildUserAgentHeader()]
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, profileName });
+    // Check if error contains incomplete results - if so, convert to successful response with incomplete data
+    const incompleteResponse = convertErrorToIncompleteResponse(error);
+    if (incompleteResponse) {
+      return incompleteResponse;
+    }
+    
+    throw new CICSExtensionError({ baseError: error as Error | Record<string, unknown>, profileName });
   }
 }
 
@@ -171,7 +208,11 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
   } catch (error) {
     // Make sure the error is not caused by the ltpa token expiring
     if (getErrorCode(error) !== constants.HTTP_ERROR_UNAUTHORIZED || !session.ISession.tokenValue) {
-      throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
+      throw new CICSExtensionError({
+        baseError: error as Error | Record<string, unknown>,
+        profileName,
+        resourceName: getResourceNameFromCriteria(params?.criteria)
+      });
     }
   }
 
@@ -187,7 +228,11 @@ export async function runPutResource({ profileName, resourceName, regionName, ci
       buildRequestOptions()
     );
   } catch (error) {
-    throw new CICSExtensionError({ baseError: error, profileName, resourceName: getResourceNameFromCriteria(params?.criteria) });
+    throw new CICSExtensionError({
+      baseError: error as Error | Record<string, unknown>,
+      profileName,
+      resourceName: getResourceNameFromCriteria(params?.criteria)
+    });
   }
 }
 

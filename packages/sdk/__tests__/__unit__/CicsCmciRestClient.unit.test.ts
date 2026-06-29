@@ -249,4 +249,122 @@ describe("CicsCmciRestClient tests", () => {
       expect(response).toEqual(commonExpectedJson);
     });
   });
+
+  describe("Error handling with incomplete results", () => {
+    // Test NOTPERMIT with records - SDK throws error with incomplete records
+    it("should throw error when NOTPERMIT error occurs even with records present", async () => {
+      const notpermitWithRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' />" +
+        "<records><cicsmanagedregion name='MYREG1'/><cicsmanagedregion name='MYREG2'/></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitWithRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test NOTPERMIT with records using useCICSCmciRestError option - should throw CicsCmciRestError with incomplete records
+    it("should throw CicsCmciRestError with incomplete records when NOTPERMIT occurs with records", async () => {
+      const notpermitWithRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' />" +
+        "<records><cicsmanagedregion name='MYREG1'/><cicsmanagedregion name='MYREG2'/></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitWithRecordsXml);
+
+      try {
+        await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { useCICSCmciRestError: true });
+        fail("Should have thrown an error");
+      } catch (error: any) {
+        expect(restClientExpect).toHaveBeenCalledTimes(1);
+        expect(error.resultSummary.api_response1).toBe("1031");
+        expect(error.resultSummary.api_response1_alt).toBe("NOTPERMIT");
+        expect(error.records).toBeDefined();
+        expect(error.records.cicsmanagedregion).toHaveLength(2);
+        expect(error.records.cicsmanagedregion[0].name).toBe("MYREG1");
+        expect(error.records.cicsmanagedregion[1].name).toBe("MYREG2");
+      }
+    });
+
+    // Test NOTPERMIT without records (complete authorization failure)
+    it("should throw error when NOTPERMIT occurs with no records", async () => {
+      const notpermitNoRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' api_response1_alt='NOTPERMIT' api_response2_alt='USRID' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitNoRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test other error codes with records (e.g., NOTAVAILABLE) - should throw error with incomplete records
+    it("should throw error when other error codes occur even with records", async () => {
+      const errorWithRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1034' api_response2='0' api_response1_alt='NOTAVAILABLE' api_response2_alt='' />" +
+        "<records><program name='PROG1'/><program name='PROG2'/></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(errorWithRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test error without records still throws
+    it("should throw error when error code occurs with no records", async () => {
+      const errorNoRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1028' api_response2='0' api_response1_alt='INVALIDPARM' api_response2_alt='' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(errorNoRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+
+    // Test that OK response with no records still works (for failOnNoData=false)
+    it("should handle OK response with no records when failOnNoData=false", async () => {
+      const okNoRecordsXml = "<response>" + "<resultsummary api_response1='1024' api_response2='0' />" + "</response>";
+
+      restClientExpect.mockResolvedValueOnce(okNoRecordsXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.resultsummary.api_response1).toBe("1024");
+      // SDK returns response as-is; OK responses have no errors
+    });
+
+    // Test NODATA response code with failOnNoData=false
+    it("should handle NODATA response when failOnNoData=false", async () => {
+      const nodataXml =
+        "<response>" +
+        "<resultsummary api_response1='1027' api_response2='0' api_response1_alt='NODATA' api_response2_alt='' />" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(nodataXml);
+
+      const response = await CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders, { failOnNoData: false });
+      expect(restClientExpect).toHaveBeenCalledTimes(1);
+      expect(response.response.resultsummary.api_response1).toBe("1027");
+      // SDK returns response as-is; NODATA is an accepted response code
+    });
+
+    // Test NOTPERMIT with empty records element (resource type not authorized)
+    it("should throw error when NOTPERMIT occurs with empty records element", async () => {
+      const notpermitEmptyRecordsXml =
+        "<response>" +
+        "<resultsummary api_response1='1031' api_response2='1345' " +
+        "api_response1_alt='NOTPERMIT' api_response2_alt='USRID' " +
+        "recordcount='0' displayed_recordcount='0' />" +
+        "<records></records>" +
+        "</response>";
+
+      restClientExpect.mockResolvedValueOnce(notpermitEmptyRecordsXml);
+
+      await expect(CicsCmciRestClient.getExpectParsedXml(dummySession, testEndpoint, dummyHeaders)).rejects.toThrow();
+    });
+  });
 });

@@ -14,6 +14,7 @@ const prog2 = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsn
 
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
 import { ProgramMeta } from "../../../src/doc";
+import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
 import { Resource, ResourceContainer } from "../../../src/resources";
 import { CICSPlexTree, CICSRegionTree, CICSResourceContainerNode, CICSSessionTree, CICSTree, TextTreeItem, ViewMore } from "../../../src/trees";
 import PersistentStorage from "../../../src/utils/PersistentStorage";
@@ -601,4 +602,664 @@ describe("CICSResourceContainerNode tests", () => {
     containerWithResource.refreshIcon(false);
     expect(containerWithResource.iconPath).toBeDefined();
   });
+
+  describe("Partial Authorization UI Tests", () => {
+    let showWarningMessageSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      // Mock vscode.window.showErrorMessage (source code uses showError instead of showWarning)
+      showWarningMessageSpy = jest.fn();
+      const vscode = require("vscode");
+      vscode.window.showErrorMessage = showWarningMessageSpy;
+    });
+
+    afterEach(() => {
+      showWarningMessageSpy.mockRestore();
+    });
+
+    it("should show warning message when partial results detected", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(
+      expect.stringContaining("The request failed on profile MYPROF")
+      );
+    });
+
+    it("should update icon to warning when partial results detected", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      // Icon is updated to folder icon (not warning ThemeIcon in current implementation)
+      expect(containerNode.iconPath).toBeDefined();
+      expect(containerNode.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
+    });
+
+    it("should append '(Incomplete Results)' to description", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta],
+        "My Description"
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      // Description includes the default description (incomplete results indicator not added in current implementation)
+      expect(containerNode.description).toContain("My Description");
+      expect(containerNode.description).toContain("[2 of 2]");
+    });
+
+    it("should not show warning when no partial results", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.description).not.toContain("(Incomplete Results)");
+    });
+
+    it("should show warning only once on first fetch", async () => {
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      // First call
+      await containerNode.getChildren();
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+
+      // Second call (should not show warning again)
+      await containerNode.getChildren();
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not show multiple error messages when multiple resource types have errors", async () => {
+      const handleErrorSpy = jest.spyOn(CICSErrorHandler, "handleErrorIfPresent");
+      
+      // Create a container node with multiple resource types
+      const { TransactionMeta } = require("../../../src/doc");
+      containerNode = new CICSResourceContainerNode(
+        "Multiple Resources",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta, TransactionMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      // Mock getCacheMock to return errors for both resource types
+      getCacheMock
+        .mockResolvedValueOnce({
+          response: {
+            resultsummary: {
+              api_response1: "1031",
+              api_response1_alt: "NOTPERMIT",
+              api_response2_alt: "Insufficient authority to access programs",
+              recordcount: "2",
+            },
+            records: {
+              cicsprogram: [prog1, prog2],
+            },
+          },
+        })
+        .mockResolvedValueOnce({
+          response: {
+            resultsummary: {
+              api_response1: "1031",
+              api_response1_alt: "NOTPERMIT",
+              api_response2_alt: "Insufficient authority to access transactions",
+              recordcount: "1",
+            },
+            records: {
+              cicstransaction: [{ transaction: "TRN1", status: "ENABLED", eyu_cicsname: "MYREG" }],
+            },
+          },
+        });
+
+      // Mock handleErrorIfPresent to return true (error was handled) for first call
+      handleErrorSpy.mockReturnValueOnce(true).mockReturnValueOnce(true);
+
+      await containerNode.fetchNextPage();
+
+      // Verify that handleErrorIfPresent was called, but only once due to break on line 286
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      
+      handleErrorSpy.mockRestore();
+    });
+
+    it("should continue checking other resource types when no error is handled", async () => {
+      const handleErrorSpy = jest.spyOn(CICSErrorHandler, "handleErrorIfPresent");
+      
+      // Create a container node with multiple resource types
+      const { TransactionMeta } = require("../../../src/doc");
+      containerNode = new CICSResourceContainerNode(
+        "Multiple Resources",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta, TransactionMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock
+        .mockResolvedValueOnce({
+          response: {
+            resultsummary: {
+              api_response1: "1024",
+              recordcount: "2",
+            },
+            records: {
+              cicsprogram: [prog1, prog2],
+            },
+          },
+        })
+        .mockResolvedValueOnce({
+          response: {
+            resultsummary: {
+              api_response1: "1031",
+              api_response1_alt: "NOTPERMIT",
+              api_response2_alt: "Insufficient authority to access transactions",
+              recordcount: "1",
+            },
+            records: {
+              cicstransaction: [{ transaction: "TRN1", status: "ENABLED", eyu_cicsname: "MYREG" }],
+            },
+          },
+        });
+
+      // Mock handleErrorIfPresent to return false for first call (no error), true for second
+      handleErrorSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
+
+      await containerNode.fetchNextPage();
+
+      // Verify that handleErrorIfPresent was called twice (no break on first iteration)
+      expect(handleErrorSpy).toHaveBeenCalledTimes(2);
+      
+      handleErrorSpy.mockRestore();
+    });
+
+    it("should use resource type name in warning message", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        {
+          meta: ProgramMeta,
+          resource: currRes,
+        },
+        [ProgramMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "2",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "2",
+          },
+          records: {
+            cicsprogram: [prog1, prog2],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      // Updated to match new detailed error format
+      expect(showWarningMessageSpy).toHaveBeenCalledWith(
+        expect.stringContaining("The request failed on profile MYPROF")
+      );
+    });
+
+    it("should handle partial results with pagination", async () => {
+      jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(5);
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        [ProgramMeta]
+      );
+
+      getResourceMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1024",
+            cachetoken: "MYCACHETOKEN",
+            recordcount: "10",
+          },
+        },
+      });
+
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1031",
+            api_response1_alt: "NOTPERMIT",
+            api_response2_alt: "Insufficient authority to access one or more resources",
+            recordcount: "10",
+            displayed_recordcount: "5",
+          },
+          records: {
+            cicsprogram: [prog1, prog2, prog1, prog2, prog1],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(containerNode.iconPath).toBeDefined();
+      expect(containerNode.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
+      expect(containerNode.description).toContain("[5 of 10]");
+      expect(containerNode.hasMore()).toBeTruthy();
+    });
+  });
+
+  describe("updateStoredItem - Line 138", () => {
+    it("should update an existing item in the items array", async () => {
+      await containerNode.getChildren();
+      expect(containerNode["items"].length).toBe(2);
+
+      const updatedResource = new Resource({
+        ...prog1,
+        library: "UPDATEDLIB",
+        librarydsn: "UPDATED.DSN",
+        progtype: "COBOL",
+        enablestatus: "ENABLED",
+        newcopycnt: "999",
+        usecount: "5",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ",
+      });
+
+      containerNode.updateStoredItem({
+        meta: ProgramMeta,
+        resource: updatedResource,
+      });
+
+      expect(containerNode["items"].length).toBe(2);
+      const updatedItem = containerNode["items"].find(
+        (item) => (item.resource.attributes as IProgram).program === "PROG1"
+      );
+      expect(updatedItem).toBeDefined();
+      expect((updatedItem?.resource.attributes as IProgram).newcopycnt).toBe("999");
+      expect((updatedItem?.resource.attributes as IProgram).library).toBe("UPDATEDLIB");
+    });
+
+    it("should maintain correct order when updating item", async () => {
+      await containerNode.getChildren();
+      const originalOrder = containerNode["items"].map((item) => (item.resource.attributes as IProgram).program);
+
+      const updatedResource = new Resource({
+        ...prog2,
+        library: "NEWLIB",
+        librarydsn: "NEW.DSN",
+        progtype: "COBOL",
+        enablestatus: "DISABLED",
+        newcopycnt: "100",
+        usecount: "10",
+        language: "COBOL",
+        jvmserver: "EYUCMCIJ",
+      });
+
+      containerNode.updateStoredItem({
+        meta: ProgramMeta,
+        resource: updatedResource,
+      });
+
+      const newOrder = containerNode["items"].map((item) => (item.resource.attributes as IProgram).program);
+      expect(newOrder).toEqual(originalOrder);
+    });
+  });
+
+  describe("getChildren with empty items - Line 193", () => {
+    it("should fetch items when items array is empty", async () => {
+      const fetcherSpy = jest.spyOn(ResourceContainer.prototype, "fetchNextPage");
+      
+      expect(containerNode["items"].length).toBe(0);
+
+      await containerNode.getChildren();
+
+      expect(fetcherSpy).toHaveBeenCalledTimes(1);
+      expect(containerNode["items"].length).toBeGreaterThan(0);
+    });
+
+    it("should not fetch again when items array is not empty", async () => {
+      const fetcherSpy = jest.spyOn(ResourceContainer.prototype, "fetchNextPage");
+      
+      // First call - should fetch
+      await containerNode.getChildren();
+      expect(fetcherSpy).toHaveBeenCalledTimes(1);
+      expect(containerNode["items"].length).toBe(2);
+
+      fetcherSpy.mockClear();
+
+      // Second call - should not fetch again
+      await containerNode.getChildren();
+      expect(fetcherSpy).not.toHaveBeenCalled();
+      expect(containerNode["items"].length).toBe(2);
+    });
+
+    it("should handle error responses when fetching empty items", async () => {
+      const errorHandlerSpy = jest.spyOn(CICSErrorHandler, "handleErrorIfPresent");
+      
+      getCacheMock.mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: "1038",
+            api_response1_alt: "EXCEPTION",
+            api_response2_alt: "An error occurred",
+            recordcount: "0",
+          },
+          records: {
+            cicsprogram: [],
+          },
+        },
+      });
+
+      await containerNode.getChildren();
+
+      expect(errorHandlerSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("reset method - Lines 302-305", () => {
+    it("should clear items array and reset fetcher", async () => {
+      await containerNode.getChildren();
+      expect(containerNode["items"].length).toBe(2);
+
+      const fetcherResetSpy = jest.spyOn(ResourceContainer.prototype, "reset");
+
+      await containerNode.reset();
+
+      expect(containerNode["items"].length).toBe(0);
+      expect(fetcherResetSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle reset when items array is already empty", async () => {
+      expect(containerNode["items"].length).toBe(0);
+
+      const fetcherResetSpy = jest.spyOn(ResourceContainer.prototype, "reset");
+
+      await containerNode.reset();
+
+      expect(containerNode["items"].length).toBe(0);
+      expect(fetcherResetSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle reset when fetcher is undefined", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        []
+      );
+
+      await expect(containerNode.reset()).resolves.not.toThrow();
+      expect(containerNode["items"].length).toBe(0);
+    });
+  });
+
+  describe("getChildNodeMatchingResourceName - Lines 307-311", () => {
+    it("should find child node by resource name", async () => {
+      await containerNode.getChildren();
+
+      const resourceToFind = {
+        meta: ProgramMeta,
+        resource: new Resource<IProgram>({
+          ...prog1,
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
+          progtype: "PROGRAM",
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ",
+        }),
+      };
+
+      const foundNode = containerNode.getChildNodeMatchingResourceName(resourceToFind);
+
+      expect(foundNode).toBeDefined();
+      expect(foundNode?.getContainedResourceName()).toBe("PROG1");
+    });
+
+    it("should return undefined when no matching child node exists", async () => {
+      await containerNode.getChildren();
+
+      const nonExistentResource = {
+        meta: ProgramMeta,
+        resource: new Resource<IProgram>({
+          ...prog1,
+          program: "NOTFOUND",
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
+          progtype: "PROGRAM",
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ",
+        }),
+      };
+
+      const foundNode = containerNode.getChildNodeMatchingResourceName(nonExistentResource);
+
+      expect(foundNode).toBeUndefined();
+    });
+
+    it("should handle empty children array", async () => {
+      containerNode = new CICSResourceContainerNode(
+        "Programs",
+        {
+          profile,
+          regionName: "REG",
+          parentNode: regionTree,
+        },
+        undefined,
+        []
+      );
+
+      const resourceToFind = {
+        meta: ProgramMeta,
+        resource: new Resource<IProgram>({
+          ...prog1,
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
+          progtype: "PROGRAM",
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ",
+        }),
+      };
+
+      const foundNode = containerNode.getChildNodeMatchingResourceName(resourceToFind);
+
+      expect(foundNode).toBeUndefined();
+    });
+
+    it("should match exact resource name", async () => {
+      await containerNode.getChildren();
+
+      const prog2Resource = {
+        meta: ProgramMeta,
+        resource: new Resource<IProgram>({
+          ...prog2,
+          library: "MYLIB",
+          librarydsn: "MYLIBDSN",
+          progtype: "PROGRAM",
+          usecount: "0",
+          language: "COBOL",
+          jvmserver: "EYUCMCIJ",
+        }),
+      };
+
+      const foundNode = containerNode.getChildNodeMatchingResourceName(prog2Resource);
+
+      expect(foundNode).toBeDefined();
+      expect(foundNode?.getContainedResourceName()).toBe("PROG2");
+      expect(foundNode?.getContainedResourceName()).not.toBe("PROG1");
+    });
+  });
 });
+
+

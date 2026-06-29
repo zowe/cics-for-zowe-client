@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+	WireMock Test Scenario: Programs Cache Records with Partial Authorization (MYREG3)
+	
+	This file simulates fetching cached program records with partial authorization.
+	Returns NOTPERMIT error but includes 3 program records that user can see.
+-->
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="3.0" connect_version="0610">
+	<resultsummary api_response1="1031" api_response2="1345"
+		api_response1_alt="NOTPERMIT" api_response2_alt="USRID"
+		recordcount="3" displayed_recordcount="3" />
+	<records>
+		<cicsprogram name="PROG001" program="PROG001" status="ENABLED"
+			usecount="5" length="12345" language="COBOL"
+			cicsname="MYREG3" />
+		<cicsprogram name="PROG002" program="PROG002" status="ENABLED"
+			usecount="12" length="23456" language="COBOL"
+			cicsname="MYREG3" />
+		<cicsprogram name="PROG003" program="PROG003" status="DISABLED"
+			usecount="0" length="34567" language="PLI"
+			cicsname="MYREG3" />
+	</records>
+</response>

@@ -295,29 +295,55 @@ export class ProfileManagement {
     }
   }
 
-  public static async getRegionInfoInPlex(plex: CICSPlexTree): Promise<any[]> {
+  public static async getRegionInfoInPlex(plex: CICSPlexTree) {
     return ProfileManagement.getRegionInfo(plex.getPlexName(), plex.getProfile());
   }
+  
   /**
-   * Return all the regions in a given plex
+   * Return all the regions in a given plex along with the API response
    */
-  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded): Promise<any[]> {
+  public static async getRegionInfo(plexName: string, profile: imperative.IProfileLoaded) {
     try {
-      const { response } = await runGetResource({
+      const apiResponse = await runGetResource({
         profileName: profile.name,
         resourceName: CicsCmciConstants.CICS_CMCI_MANAGED_REGION,
         cicsPlex: plexName,
       });
-      if (response.resultsummary?.api_response1 === `${CicsCmciConstants.RESPONSE_1_CODES.OK}` && response.records?.cicsmanagedregion) {
-        return toArray(response.records.cicsmanagedregion);
-      }
+      
+      // Return regions and the full response (which contains incomplete results info)
+      const regions = apiResponse.response.records?.cicsmanagedregion
+        ? toArray(apiResponse.response.records.cicsmanagedregion)
+        : [];
+      
+      return {
+        regions,
+        apiResponse
+      };
     } catch (error) {
+      // Handle NOTAVAILABLE error - return empty regions
       if (error instanceof CICSExtensionError) {
         if (error.cicsExtensionError.resp1Code === CicsCmciConstants.RESPONSE_1_CODES.NOTAVAILABLE) {
-          return [];
+          return { regions: [], apiResponse: null };
         }
+        // Re-throw CICSExtensionError without wrapping to preserve original error context
+        throw error;
       }
-      throw new CICSExtensionError({ baseError: error, profileName: profile.name });
+      
+      // Wrap other errors in CICSExtensionError with appropriate message
+      let errorMessage: string | undefined;
+      if (error instanceof CicsCmciRestError) {
+        errorMessage = CICSExtensionError.formatDetailedErrorMessage(error.resultSummary, profile.name);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
+      }
+      
+      throw new CICSExtensionError({
+        baseError: error as Error | Record<string, unknown>,
+        profileName: profile.name,
+        errorMessage: errorMessage
+      });
     }
   }
 }

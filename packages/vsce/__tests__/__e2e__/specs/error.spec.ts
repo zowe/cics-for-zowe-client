@@ -221,7 +221,7 @@ test.describe("Error scenarios", () => {
 });
 
 async function verifyAndClickOnDocLink(notification: Locator, page: Page) {
-  const docLink = notification.getByRole("link", { name: "IBM documentation", exact: false });
+  const docLink = notification.getByRole("link", { name: "IBM documentation", exact: false }).first();
   await expect(docLink).toBeVisible();
   await docLink.click();
 

@@ -14,6 +14,7 @@ import type { imperative } from "@zowe/zowe-explorer-api";
 import { l10n, TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import { type CICSPlexTree, type CICSSessionTree, TextTreeItem } from ".";
 import type { ICICSTreeNode, IContainedResource, IResourceMeta } from "../doc";
+import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { type Resource, ResourceContainer } from "../resources";
 import IconBuilder from "../utils/IconBuilder";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -192,6 +193,15 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.items.length === 0) {
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
+      
+      // Check for errors in the API responses for each resource type
+      const resourceTypes = this.fetcher.getResourceTypes();
+      for (const meta of resourceTypes) {
+        const summary = this.fetcher.getSummary(meta);
+        if (summary && CICSErrorHandler.handleErrorIfPresent(summary, "get", this.getProfileName())) {
+          break; // Only show one error message
+        }
+      }
     }
 
     const children: (CICSResourceContainerNode<IResource> | ViewMore)[] = this.items.map(
@@ -254,6 +264,15 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     }
     const fetched = await this.fetcher.fetchNextPage();
     this.items.push(...fetched);
+
+    // Check for errors in the API responses for each resource type
+    const resourceTypes = this.fetcher.getResourceTypes();
+    for (const meta of resourceTypes) {
+      const summary = this.fetcher.getSummary(meta);
+      if (summary && CICSErrorHandler.handleErrorIfPresent(summary, "get", this.getProfileName())) {
+        break; // Only show one error message
+      }
+    }
 
     this.updateDescription();
   }

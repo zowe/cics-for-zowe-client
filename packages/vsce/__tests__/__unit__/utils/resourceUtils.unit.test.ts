@@ -141,6 +141,32 @@ describe("Resource Util Helper methods", () => {
     const logString = buildRequestLoggerString("profilename", "PUT", "MYRES", { regionName: "MYREG" }, requestBody);
     expect(logString).toEqual('profilename: PUT MYRES, REGIONNAME[MYREG], REQUESTBODY[{"request":{"action":{"$":{"name":"DISABLE"}}}}]');
   });
+
+  it("should build a request string with falsy values in options", () => {
+    const logString = buildRequestLoggerString("profilename", "GET", "MYRES", {
+      zero: 0,
+      emptyString: "",
+      falseBool: false,
+      nullValue: null,
+      undefinedValue: undefined
+    });
+    // Only truthy values should be included
+    expect(logString).toEqual("profilename: GET MYRES");
+  });
+
+  it("should build resource params with undefined regionName and cicsPlex", () => {
+    const parms = buildResourceParms("MYRES", undefined, undefined, {});
+    expect(parms).toEqual({
+      name: "MYRES",
+    });
+  });
+
+  it("should build resource params with null regionName and cicsPlex", () => {
+    const parms = buildResourceParms("MYRES", null as any, null as any, {});
+    expect(parms).toEqual({
+      name: "MYRES",
+    });
+  });
 });
 
 describe("Resource Util requesters", () => {
@@ -307,6 +333,25 @@ describe("Resource Util requesters", () => {
     expect(getResourceMock).toHaveBeenCalledTimes(1);
   });
 
+  it("should handle error with params undefined", async () => {
+    getResourceMock.mockReset();
+
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBeUndefined();
+    }
+  });
+
   it("should handle error when retry succeeds after 401", async () => {
     getResourceMock.mockReset();
 
@@ -333,6 +378,71 @@ describe("Resource Util requesters", () => {
     expect(result).toEqual(successResponse);
     expect(getResourceMock).toHaveBeenCalledTimes(2);
   });
+
+  it("should call AuthOrder.makingRequestForToken when session has no token", async () => {
+    getResourceMock.mockReset();
+    getResourceMock.mockResolvedValue(successResponse);
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = undefined;
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+
+    await runGetResource({
+      profileName: "MYPROF",
+      resourceName: "MYRES",
+    });
+
+    expect(authOrderSpy).toHaveBeenCalledTimes(1);
+    expect(authOrderSpy).toHaveBeenCalledWith(fakeCICSSession.ISession);
+  });
+
+  it("should convert error to incomplete response on retry in runGetResource", async () => {
+    getResourceMock.mockReset();
+
+    const convertErrorSpy = jest.spyOn(errorUtils, "convertErrorToIncompleteResponse");
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+
+    const mockIncompleteResponse = {
+      response: {
+        resultsummary: {
+          api_response1: "1031",
+          api_response2: "",
+          recordcount: "1",
+          displayed_recordcount: "1",
+        },
+        records: {
+          cicsprogram: [{ program: "PROG1" }],
+        },
+      },
+    };
+
+    getErrorCodeMock.mockReturnValue(401);
+    // First call returns null (no incomplete response), second call returns incomplete response
+    convertErrorSpy.mockReturnValueOnce(null).mockReturnValueOnce(mockIncompleteResponse);
+
+    getResourceMock
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      })
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      });
+
+    const result = await runGetResource({
+      profileName: "MYPROF",
+      resourceName: "MYRES",
+    });
+
+    expect(result).toBeDefined();
+    expect(result).toEqual(mockIncompleteResponse);
+    expect(convertErrorSpy).toHaveBeenCalledTimes(2);
+  });
+
 });
 
 describe("runGetCache", () => {
@@ -457,6 +567,67 @@ describe("runGetCache", () => {
     ).rejects.toThrow();
     
     expect(getCacheMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call AuthOrder.makingRequestForToken when session has no token", async () => {
+    getCacheMock.mockReset();
+    const mockResponse = { response: { records: {} } };
+    getCacheMock.mockResolvedValue(mockResponse);
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = undefined;
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+
+    await runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" });
+
+    expect(authOrderSpy).toHaveBeenCalledTimes(1);
+    expect(authOrderSpy).toHaveBeenCalledWith(fakeCICSSession.ISession);
+  });
+
+  it("should convert error to incomplete response on retry in runGetCache", async () => {
+    getCacheMock.mockReset();
+
+    const convertErrorSpy = jest.spyOn(errorUtils, "convertErrorToIncompleteResponse");
+    const getErrorCodeMock = jest.spyOn(errorUtils, "getErrorCode");
+    const errorToThrow = new RestClientError({ msg: "", source: "http", errorCode: "401" });
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = '""';
+    const getSessionSpy = jest.spyOn(SessionHandler.prototype, "getSession");
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+    getSessionSpy.mockReturnValueOnce(fakeCICSSession);
+
+    const mockIncompleteResponse = {
+      response: {
+        resultsummary: {
+          api_response1: "1031",
+          api_response2: "",
+          recordcount: "1",
+          displayed_recordcount: "1",
+        },
+        records: {
+          cicsprogram: [{ program: "PROG1" }],
+        },
+      },
+    };
+
+    getErrorCodeMock.mockReturnValue(401);
+    // First call returns null (no incomplete response), second call returns incomplete response
+    convertErrorSpy.mockReturnValueOnce(null).mockReturnValueOnce(mockIncompleteResponse);
+
+    getCacheMock
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      })
+      .mockImplementationOnce(() => {
+        throw errorToThrow;
+      });
+
+    const result = await runGetCache({ profileName: "MYPROF", cacheToken: "TOKEN123" });
+
+    expect(result).toBeDefined();
+    expect(result).toEqual(mockIncompleteResponse);
+    expect(convertErrorSpy).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -611,6 +782,55 @@ describe("runPutResource", () => {
     
     expect(putResourceMock).toHaveBeenCalledTimes(1);
   });
+
+  it("should call AuthOrder.makingRequestForToken when session has no token", async () => {
+    putResourceMock.mockReset();
+    const mockResponse = { response: { resultsummary: {} } };
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    putResourceMock.mockResolvedValue(mockResponse);
+
+    const fakeCICSSession = new CICSSession(profile.profile!);
+    fakeCICSSession.ISession.tokenValue = undefined;
+    jest.spyOn(SessionHandler.prototype, "getSession").mockReturnValueOnce(fakeCICSSession);
+
+    await runPutResource(
+      {
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        regionName: "MYREG",
+        cicsPlex: "MYPLEX",
+      },
+      requestBody
+    );
+
+    expect(authOrderSpy).toHaveBeenCalledTimes(1);
+    expect(authOrderSpy).toHaveBeenCalledWith(fakeCICSSession.ISession);
+  });
+
+  it("should handle error with params undefined in runPutResource", async () => {
+    putResourceMock.mockReset();
+
+    const errorToThrow = new Error("Test error");
+    const requestBody = { request: { action: { $: { name: "ENABLE" } } } };
+    putResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runPutResource(
+        {
+          profileName: "MYPROF",
+          resourceName: "MYRES",
+          regionName: "MYREG",
+          cicsPlex: "MYPLEX",
+        },
+        requestBody
+      );
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError).toBeDefined();
+      expect(error.cicsExtensionError.resourceName).toBeUndefined();
+    }
+  });
 });
 
 describe("pollForCompleteAction", () => {
@@ -700,6 +920,108 @@ describe("pollForCompleteAction", () => {
 
     expect(criteriaMetCallback).toHaveBeenCalled();
   });
+
+  it("should stop polling after max retries and call callback with last response", async () => {
+    const mockNode = {
+      getProfile: () => profile,
+      getContainedResource: () => ({
+        meta: {
+          resourceName: "MYRES",
+          getName: () => "TESTPROG",
+          buildCriteria: () => "PROGRAM=TESTPROG",
+        },
+        resource: {},
+      }),
+      cicsplexName: "MYPLEX",
+      regionName: "MYREG",
+    };
+
+    // Mock criteria to never be met
+    const isCompletionCriteriaMet = jest.fn().mockReturnValue(false);
+    const criteriaMetCallback = jest.fn();
+
+    // Mock setTimeout to execute immediately
+    jest.spyOn(global, 'setTimeout').mockImplementation((callback: any) => {
+      callback();
+      return 0 as any;
+    });
+
+    await pollForCompleteAction(mockNode, isCompletionCriteriaMet, criteriaMetCallback);
+
+    // Should poll exactly POLL_FOR_ACTION_DEFAULT_RETRIES times (default is 10)
+    expect(getResourceMock).toHaveBeenCalledTimes(10);
+    expect(isCompletionCriteriaMet).toHaveBeenCalledTimes(10);
+    // Callback should still be called with the last response
+    expect(criteriaMetCallback).toHaveBeenCalled();
+    expect(criteriaMetCallback).toHaveBeenCalledWith(successResponse);
+
+    // Restore setTimeout
+    jest.restoreAllMocks();
+  });
+});
+
+describe("convertErrorToIncompleteResponse handling", () => {
+  beforeEach(() => {
+    getResourceMock.mockReset();
+  });
+
+  it("should convert error with incomplete records to successful response in runGetResource", async () => {
+    const mockError = {
+      resultSummary: {
+        api_response1: "1031",
+        api_response1_alt: "NOTPERMIT",
+        api_response2: "0",
+        api_response2_alt: "USRID",
+        recordcount: "2",
+      },
+      records: {
+        cicsprogram: [{ program: "PROG1" }, { program: "PROG2" }],
+      },
+      errors: { feedback: { resp: "16" } },
+    };
+
+    getResourceMock.mockRejectedValue(mockError);
+
+    const result = await runGetResource({
+      profileName: "MYPROF",
+      resourceName: "MYRES",
+    });
+
+    expect(result).toBeDefined();
+    expect(result.response.resultsummary).toEqual(mockError.resultSummary);
+    expect(result.response.records).toEqual(mockError.records);
+    expect(result.response.errors).toEqual(mockError.errors);
+  });
+
+  it("should convert error with incomplete records to successful response in runGetCache", async () => {
+    const { runGetCache } = require("../../../src/utils/resourceUtils");
+    const { getCacheMock } = require("../../__mocks__");
+    
+    getCacheMock.mockReset();
+
+    const mockError = {
+      resultSummary: {
+        api_response1: "1031",
+        api_response1_alt: "NOTPERMIT",
+        recordcount: "1",
+      },
+      records: {
+        cicsprogram: [{ program: "PROG1" }],
+      },
+    };
+
+    getCacheMock.mockRejectedValue(mockError);
+
+    const result = await runGetCache({
+      profileName: "MYPROF",
+      cacheToken: "TOKEN123",
+    });
+
+    expect(result).toBeDefined();
+    expect(result.response.resultsummary).toEqual(mockError.resultSummary);
+    expect(result.response.records).toEqual(mockError.records);
+  });
+
 });
 
 describe("getResourceNameFromCriteria error handling", () => {
@@ -837,6 +1159,48 @@ describe("getResourceNameFromCriteria error handling", () => {
       expectedNames.forEach(name => {
         expect(error.cicsExtensionError.resourceName).toContain(name);
       });
+    }
+  });
+
+  it("should handle malformed criteria without equals sign", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError).toBeDefined();
+      // Should handle gracefully when no "=" is found - returns empty string
+      expect(error.cicsExtensionError.resourceName).toBe("");
+    }
+  });
+
+  it("should handle criteria with empty parts after split", async () => {
+    const errorToThrow = new Error("Test error");
+    getResourceMock.mockRejectedValue(errorToThrow);
+
+    try {
+      await runGetResource({
+        profileName: "MYPROF",
+        resourceName: "MYRES",
+        params: {
+          criteria: "PROGRAM= OR PROGRAM=",
+        },
+      });
+      fail("Should have thrown an error");
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.cicsExtensionError).toBeDefined();
+      // Should filter out empty parts - returns empty string when all parts are empty
+      expect(error.cicsExtensionError.resourceName).toBe("");
     }
   });
 });

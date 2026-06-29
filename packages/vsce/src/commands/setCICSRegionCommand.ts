@@ -12,6 +12,7 @@
 import type { IProfileLoaded } from "@zowe/imperative";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
+import type { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
@@ -56,7 +57,7 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
   }
 }
 
-export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefined {
+export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefined> {
   const quickPick = Gui.createQuickPick();
   const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {
@@ -114,21 +115,21 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
       // This will be called when ESC is pressed or quickPick.hide() is called
       isCancelled = true;
     });
-    let regionInfo = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
+    const regionInfoResult = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
     if (isCancelled) {
       return;
     }
 
     // Check if regionInfo is null or undefined
-    if (regionInfo?.length > 0) {
+    if (regionInfoResult?.regions?.length > 0) {
       CICSLogger.info("Fetching regions for CICSplex: " + cicsPlexName);
-      regionInfo = regionInfo.filter((reg) => reg.cicsstate === "ACTIVE");
+      const activeRegions = regionInfoResult.regions.filter((reg: IManagedRegion) => reg.cicsstate === "ACTIVE");
       choice = await regionUtils.getChoiceFromQuickPick(regionQuickPick, l10n.t("Select CICS Region"), [
-        ...regionInfo.map((region) => ({ label: region.cicsname })),
+        ...activeRegions.map((region: IManagedRegion) => ({ label: region.cicsname })),
       ]);
       regionQuickPick.hide();
       if (!choice) {
-        return;
+        return undefined;
       }
 
       regionName = choice.label;
@@ -141,7 +142,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession> | undefin
 
   //Cancel if no region is selected
   if (!regionName) {
-    return null;
+    return undefined;
   }
 
   regionUtils.setLastUsedRegion(regionName, profile.name, cicsPlexName);

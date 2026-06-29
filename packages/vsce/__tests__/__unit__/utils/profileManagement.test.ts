@@ -52,19 +52,22 @@ describe("ProfileManagement", () => {
       expect(ProfileManagement.apiDoesExist()).toBe(true);
     });
 
-    /**
-     * LIMITATION: This test cannot properly verify the false case due to static class initialization.
-     * ProfileManagement uses static initialization (line 23-24 in profileManagement.ts) which happens
-     * when the module is first imported. Once initialized, the static properties cannot be reset
-     * between tests without reloading the entire module.
-     *
-     * FUTURE IMPROVEMENT: Consider refactoring ProfileManagement to use dependency injection
-     * or a singleton pattern with a reset method to improve testability.
-     */
-    it("should return true even when mock returns null (static initialization limitation)", () => {
-      (ZoweVsCodeExtension.getZoweExplorerApi as jest.Mock) = jest.fn().mockReturnValue(null);
-      // This will still return true because the static property was already initialized
-      expect(ProfileManagement.apiDoesExist()).toBe(true);
+    it("should return false when API does not exist", () => {
+      // Override the private static property to null
+      Object.defineProperty(ProfileManagement, 'zoweExplorerAPI', {
+        value: null,
+        writable: true,
+        configurable: true,
+      });
+      
+      expect(ProfileManagement.apiDoesExist()).toBe(false);
+      
+      // Restore the API for other tests
+      Object.defineProperty(ProfileManagement, 'zoweExplorerAPI', {
+        value: mockZoweAPI,
+        writable: true,
+        configurable: true,
+      });
     });
   });
 
@@ -287,6 +290,7 @@ describe("ProfileManagement", () => {
 
       await expect(ProfileManagement.regionIsGroup(mockProfile)).rejects.toThrow(CICSExtensionError);
     });
+
   });
 
   describe("isPlex", () => {
@@ -661,6 +665,29 @@ describe("ProfileManagement", () => {
 
       await expect(ProfileManagement.noneProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
     });
+
+    it("should throw error when region retrieval fails in non-plex scenario", async () => {
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn()
+        .mockResolvedValueOnce({
+          response: {
+            resultsummary: {
+              api_response1: "1026",
+            },
+          },
+        })
+        .mockRejectedValueOnce(new Error("Region retrieval error"));
+
+      await expect(ProfileManagement.noneProvided(mockProfile)).rejects.toThrow(CICSExtensionError);
+      
+      try {
+        await ProfileManagement.noneProvided(mockProfile);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CICSExtensionError);
+        if (error instanceof CICSExtensionError) {
+          expect(error.cicsExtensionError.profileName).toBe("testProfile");
+        }
+      }
+    });
   });
 
   describe("getPlexInfo", () => {
@@ -769,9 +796,9 @@ describe("ProfileManagement", () => {
 
       const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
 
-      expect(result).toHaveLength(2);
-      expect(result[0].name).toBe("REGION1");
-      expect(result[1].name).toBe("REGION2");
+      expect(result.regions).toHaveLength(2);
+      expect(result.regions[0].name).toBe("REGION1");
+      expect(result.regions[1].name).toBe("REGION2");
     });
 
     it("should return empty array when NOTAVAILABLE error occurs", async () => {
@@ -785,15 +812,123 @@ describe("ProfileManagement", () => {
 
       const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
 
-      expect(result).toEqual([]);
+      expect(result).toEqual({ regions: [], apiResponse: null });
     });
 
-    it("should throw error for other errors", async () => {
+    it("should throw CICSExtensionError with formatted message when CicsCmciRestError occurs", async () => {
+      const { CicsCmciRestError } = require("@zowe/cics-for-zowe-sdk");
+      
+      const mockCmciError = new CicsCmciRestError("CMCI Error", {
+        response: {
+          resultsummary: {
+            api_response1: "1038",
+            api_response1_alt: "NOTPERMIT",
+            api_response2: "1361",
+            api_response2_alt: "USRID",
+            api_function: "GET",
+          },
+          records: {},
+          errors: {},
+        },
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockCmciError);
+
+      await expect(ProfileManagement.getRegionInfo("TESTPLEX", mockProfile)).rejects.toThrow(CICSExtensionError);
+      
+      try {
+        await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CICSExtensionError);
+        if (error instanceof CICSExtensionError) {
+          expect(error.cicsExtensionError.errorMessage).toContain("The request failed on profile testProfile");
+          expect(error.cicsExtensionError.errorMessage).toContain("RESP: 1038 (NOTPERMIT)");
+          expect(error.cicsExtensionError.errorMessage).toContain("RESP2: 1361 (USRID)");
+        }
+      }
+    });
+
+    it("should throw CICSExtensionError with error message when regular Error occurs", async () => {
       const mockError = new Error("Server error");
 
       (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockError);
 
       await expect(ProfileManagement.getRegionInfo("TESTPLEX", mockProfile)).rejects.toThrow(CICSExtensionError);
+      
+      try {
+        await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CICSExtensionError);
+        if (error instanceof CICSExtensionError) {
+          // CICSExtensionError.parseError() wraps the message with profile info
+          expect(error.cicsExtensionError.errorMessage).toContain("Server error");
+          expect(error.cicsExtensionError.errorMessage).toContain("testProfile");
+        }
+      }
+    });
+
+    it("should throw CICSExtensionError with string conversion when non-Error object is thrown", async () => {
+      const mockNonError = { code: "UNKNOWN", details: "Something went wrong" };
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(mockNonError);
+
+      await expect(ProfileManagement.getRegionInfo("TESTPLEX", mockProfile)).rejects.toThrow(CICSExtensionError);
+      
+      try {
+        await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CICSExtensionError);
+        if (error instanceof CICSExtensionError) {
+          // When a non-Error object is thrown, it gets converted to Error with empty message
+          // CICSExtensionError.parseError() then wraps it with profile info
+          expect(error.cicsExtensionError.errorMessage).toContain("testProfile");
+        }
+      }
+    });
+
+    it("should return empty array when response code is OK but no records exist", async () => {
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockResolvedValue({
+        response: {
+          resultsummary: {
+            api_response1: `${CicsCmciConstants.RESPONSE_1_CODES.OK}`,
+          },
+          records: {},
+        },
+      });
+
+      const result = await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+
+      expect(result).toEqual({
+        regions: [],
+        apiResponse: {
+          response: {
+            resultsummary: {
+              api_response1: `${CicsCmciConstants.RESPONSE_1_CODES.OK}`,
+            },
+            records: {},
+          },
+        }
+      });
+    });
+
+    it("should re-throw CICSExtensionError without wrapping when it's already a CICSExtensionError", async () => {
+      const originalError = new CICSExtensionError({
+        baseError: new Error("Original error"),
+        profileName: "testProfile",
+        resp1Code: CicsCmciConstants.RESPONSE_1_CODES.INVALIDPARM,
+      });
+
+      (resourceUtils.runGetResource as jest.Mock) = jest.fn().mockRejectedValue(originalError);
+
+      await expect(ProfileManagement.getRegionInfo("TESTPLEX", mockProfile)).rejects.toThrow(originalError);
+      
+      try {
+        await ProfileManagement.getRegionInfo("TESTPLEX", mockProfile);
+      } catch (error) {
+        // Verify it's the exact same error object, not wrapped
+        expect(error).toBe(originalError);
+        expect(error).toBeInstanceOf(CICSExtensionError);
+      }
     });
   });
 
@@ -820,7 +955,7 @@ describe("ProfileManagement", () => {
 
       expect(mockPlex.getPlexName).toHaveBeenCalled();
       expect(mockPlex.getProfile).toHaveBeenCalled();
-      expect(result).toHaveLength(1);
+      expect(result.regions).toHaveLength(1);
     });
   });
 });
