@@ -543,7 +543,19 @@ export class ResourceGenerator {
     const output = template(context);
     
     this.ensureDir(path.dirname(outputPath));
-    fs.writeFileSync(outputPath, output, "utf-8");
+    
+    // Only write if content has changed
+    let shouldWrite = true;
+    if (fs.existsSync(outputPath)) {
+      const existingContent = fs.readFileSync(outputPath, "utf-8");
+      if (existingContent === output) {
+        shouldWrite = false;
+      }
+    }
+    
+    if (shouldWrite) {
+      fs.writeFileSync(outputPath, output, "utf-8");
+    }
   }
 
   /**

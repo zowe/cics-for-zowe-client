@@ -17,7 +17,13 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, closeLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "../../../src";
+import {
+  CicsCmciConstants,
+  CicsCmciRestClient,
+  closeLocalFile,
+  type ICMCIApiResponse,
+  type ILocalFileParms,
+} from "../../../src";
 
 describe("CMCI - Close local file", () => {
   const localFile = "TESTFILE";
