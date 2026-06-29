@@ -56,8 +56,8 @@ export async function closeLocalFile(session: AbstractSession, parms: ILocalFile
   const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";
 
   // Validate busy parameter
-  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyValue)) {
-    const allowedValuesStr = CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ");
+  if (!CicsCmciConstants.CICS_BUSY_VALUES.includes(busyValue)) {
+    const allowedValuesStr = CicsCmciConstants.CICS_BUSY_VALUES.join(", ");
     throw new ImperativeError({
       msg: `Invalid BUSY parameter value: "${ busyValue}". Must be one of: ${allowedValuesStr}`,
     });
@@ -113,8 +113,8 @@ export async function disableLocalFile(session: AbstractSession, parms: ILocalFi
   const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";
 
   // Validate busy parameter
-  if (!CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.includes(busyValue)) {
-    const allowedValuesStr = CicsCmciConstants.CICS_LOCAL_FILE_BUSY_VALUES.join(", ");
+  if (!CicsCmciConstants.CICS_BUSY_VALUES.includes(busyValue)) {
+    const allowedValuesStr = CicsCmciConstants.CICS_BUSY_VALUES.join(", ");
     throw new ImperativeError({
       msg: `Invalid BUSY parameter value: "${ busyValue}". Must be one of: ${allowedValuesStr}`,
     });

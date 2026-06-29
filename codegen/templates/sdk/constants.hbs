@@ -195,6 +195,11 @@ export const CicsCmciConstants = {
    * The CICS CMCI local file
    */
   CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
+
+  /**
+   * Valid BUSY parameter values for resource operations
+   */
+  CICS_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 {{#each resources}}
 
   /**
@@ -207,13 +212,6 @@ export const CicsCmciConstants = {
    * Maximum length for CICS {{humanNameLower}} names
    */
   {{maxLengthConstant}}: {{maxNameLength}},
-{{/if}}
-{{#if busyValuesConstant}}
-
-  /**
-   * Valid BUSY parameter values for closing {{humanNameLower}}s
-   */
-  {{busyValuesConstant}}: ["WAIT", "NOWAIT", "FORCE"],
 {{/if}}
 {{#if actions}}
 

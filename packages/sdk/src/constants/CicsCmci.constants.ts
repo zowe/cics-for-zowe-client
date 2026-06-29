@@ -197,6 +197,11 @@ export const CicsCmciConstants = {
   CICS_CMCI_LOCAL_FILE: "CICSLocalFile",
 
   /**
+   * Valid BUSY parameter values for resource operations
+   */
+  CICS_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
+
+  /**
    * The criteria field name for local file resources
    */
   CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
@@ -205,11 +210,6 @@ export const CicsCmciConstants = {
    * Maximum length for CICS local file names
    */
   CICS_LOCAL_FILE_MAX_LENGTH: 8,
-
-  /**
-   * Valid BUSY parameter values for closing local files
-   */
-  CICS_LOCAL_FILE_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 
   /**
    * Valid action types for local file operations
