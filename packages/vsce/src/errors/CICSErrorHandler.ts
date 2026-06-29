@@ -143,6 +143,9 @@ export class CICSErrorHandler {
   ): void {
     const message = CICSExtensionError.formatDetailedErrorMessage(resultsummary, profileName);
     const formattedMessage = this.formatMessageWithDocLink(message, resourceType);
+    
+    CICSLogger.error(formattedMessage);
+    
     window.showErrorMessage(formattedMessage);
   }
 
