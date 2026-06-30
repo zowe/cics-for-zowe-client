@@ -21,14 +21,16 @@ jest.mock("../../../src/trees/CICSRegionsContainer");
 
 describe("clearPlexFilterCommand", () => {
   let mockTree: Partial<CICSTree>;
-  let mockNode: { filterRegions: jest.Mock };
-  let commandCallback: (node: { filterRegions: jest.Mock }) => Promise<void>;
+  let mockNode: { filterRegions: jest.Mock; clearFilter: jest.Mock; activeFilter: string };
+  let commandCallback: (node: { filterRegions: jest.Mock; clearFilter: jest.Mock; activeFilter: string }) => Promise<void>;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     mockNode = {
       filterRegions: jest.fn(),
+      clearFilter: jest.fn(),
+      activeFilter: "*",
     };
 
     const mockEventEmitter = new EventEmitter<CICSResourceContainerNode<IResource> | undefined>();
@@ -52,11 +54,12 @@ describe("clearPlexFilterCommand", () => {
     );
   });
 
-  it("should call filterRegions with '*' and tree", async () => {
+  it("should call filterRegions with '*' and fire tree change event", async () => {
     getClearPlexFilterCommand(mockTree as CICSTree);
     await commandCallback(mockNode);
 
-    expect(mockNode.filterRegions).toHaveBeenCalledWith("*", mockTree);
+    expect(mockNode.filterRegions).toHaveBeenCalledWith("*");
+    expect(mockTree._onDidChangeTreeData.fire).toHaveBeenCalledWith(mockNode);
   });
 });
 

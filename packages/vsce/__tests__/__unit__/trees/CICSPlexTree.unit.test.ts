@@ -85,7 +85,7 @@ describe("Test suite for CICSLocalFileTree", () => {
           },
         },
       });
-      expect((await plexTree.getChildren())?.length).toEqual(1);
+      expect((await plexTree.getChildren())?.length).toEqual(11);
     });
   });
 
@@ -131,6 +131,60 @@ describe("Test suite for CICSLocalFileTree", () => {
       plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree, "MYGRP");
 
       expect(plexTree.getGroupName()).toEqual("MYGRP");
+    });
+  
+    describe("Test suite for region filter persistence", () => {
+      it("should save region filter to savedRegionFilter property", () => {
+        plexTree.saveRegionFilter("TEST*");
+        expect(plexTree.savedRegionFilter).toBe("TEST*");
+      });
+
+      it("should call parent saveRegionFilterForPlex when saving filter", () => {
+        const saveFilterSpy = jest.spyOn(sessionTree, "saveRegionFilterForPlex");
+        plexTree.saveRegionFilter("CICS*");
+        expect(saveFilterSpy).toHaveBeenCalledWith("MYPLEX", "CICS*");
+      });
+
+      it("should save wildcard filter", () => {
+        const saveFilterSpy = jest.spyOn(sessionTree, "saveRegionFilterForPlex");
+        plexTree.saveRegionFilter("*");
+        expect(plexTree.savedRegionFilter).toBe("*");
+        expect(saveFilterSpy).toHaveBeenCalledWith("MYPLEX", "*");
+      });
+
+      it("should save comma-separated filter patterns", () => {
+        plexTree.saveRegionFilter("CICS*,TEST*,PROD*");
+        expect(plexTree.savedRegionFilter).toBe("CICS*,TEST*,PROD*");
+      });
+
+      it("should get saved region filter", () => {
+        plexTree.savedRegionFilter = "SAVED*";
+        expect(plexTree.getSavedRegionFilter()).toBe("SAVED*");
+      });
+
+      it("should return undefined when no filter is saved", () => {
+        plexTree.savedRegionFilter = undefined;
+        expect(plexTree.getSavedRegionFilter()).toBeUndefined();
+      });
+
+      it("should restore saved filter from session tree on construction", () => {
+        jest.spyOn(sessionTree, "getRegionFilterForPlex").mockReturnValue("RESTORED*");
+        const newPlexTree = new CICSPlexTree("TESTPLEX", profile, sessionTree);
+        expect(newPlexTree.savedRegionFilter).toBe("RESTORED*");
+      });
+
+      it("should not set savedRegionFilter when session tree has no saved filter", () => {
+        jest.spyOn(sessionTree, "getRegionFilterForPlex").mockReturnValue(undefined);
+        const newPlexTree = new CICSPlexTree("TESTPLEX", profile, sessionTree);
+        expect(newPlexTree.savedRegionFilter).toBeUndefined();
+      });
+
+      it("should pass saved filter to regions container on construction", () => {
+        jest.spyOn(sessionTree, "getRegionFilterForPlex").mockReturnValue("INIT*");
+        const newPlexTree = new CICSPlexTree("TESTPLEX", profile, sessionTree);
+        const regionsContainer = newPlexTree.children.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer;
+        expect(regionsContainer.activeFilter).toBe("INIT*");
+      });
     });
   });
 

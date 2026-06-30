@@ -11,7 +11,7 @@
 
 import { Gui } from "@zowe/zowe-explorer-api";
 import { QuickPick, QuickPickItem } from "vscode";
-import { buildQuickPick, FilterDescriptor, getPatternFromFilter, toEscapedCriteriaString } from "../../../src/utils/filterUtils";
+import { buildQuickPick, FilterDescriptor, getPatternFromFilter, toEscapedCriteriaString, showEditQuickpick } from "../../../src/utils/filterUtils";
 
 // Helper function to create a mock QuickPick
 const createMockQuickPick = (value: string, selectedItems: QuickPickItem[] = []) => {
@@ -111,6 +111,23 @@ describe("Filter Utils tests", () => {
     expect(quickpick.items[1]).toEqual({ label: "prev2" });
     expect(quickpick.placeholder).toContain("Select a filter or type to create a new one (use commas to separate multiple values)");
 
+  });
+
+  it("should add description to profile region name in history", () => {
+    const quickpick = buildQuickPick("MYRES", ["prev1", "MYREG", "prev2"], "MYREG");
+
+    expect(quickpick.items).toHaveLength(3);
+    expect(quickpick.items[0]).toEqual({ label: "prev1" });
+    expect(quickpick.items[1]).toEqual({ label: "MYREG", description: "Zowe CICS profile" });
+    expect(quickpick.items[2]).toEqual({ label: "prev2" });
+  });
+
+  it("should not add description when profileRegionName is not in history", () => {
+    const quickpick = buildQuickPick("MYRES", ["prev1", "prev2"], "NOTINLIST");
+
+    expect(quickpick.items).toHaveLength(2);
+    expect(quickpick.items[0]).toEqual({ label: "prev1" });
+    expect(quickpick.items[1]).toEqual({ label: "prev2" });
   });
 
   it("should get pattern when user types exact match", async () => {
@@ -259,6 +276,54 @@ describe("Filter Utils tests", () => {
     });
     
     const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    expect(pattern).toBeUndefined();
+  });
+
+  it("should use edited input when user presses Enter without selecting an item in showEditQuickpick", async () => {
+    const mockEditQuickPick = {
+      show: jest.fn(),
+      hide: jest.fn(),
+      value: "prev1",
+      selectedItems: [] as QuickPickItem[],
+      onDidAccept: jest.fn(),
+      onDidHide: jest.fn(),
+    };
+
+    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockEditQuickPick as Partial<QuickPick<QuickPickItem>> as QuickPick<QuickPickItem>);
+
+    mockEditQuickPick.show.mockImplementation(() => {
+      mockEditQuickPick.value = "EDITED*";
+      const acceptHandler = mockEditQuickPick.onDidAccept.mock.calls[0]?.[0];
+      if (acceptHandler) {
+        setTimeout(() => acceptHandler(), 0);
+      }
+    });
+
+    const pattern = await showEditQuickpick("prev1");
+    expect(pattern).toEqual("EDITED*");
+  });
+
+  it("should return undefined when user clears input and presses Enter in showEditQuickpick", async () => {
+    const mockEditQuickPick = {
+      show: jest.fn(),
+      hide: jest.fn(),
+      value: "prev1",
+      selectedItems: [] as QuickPickItem[],
+      onDidAccept: jest.fn(),
+      onDidHide: jest.fn(),
+    };
+
+    jest.spyOn(Gui, "createQuickPick").mockReturnValue(mockEditQuickPick as Partial<QuickPick<QuickPickItem>> as QuickPick<QuickPickItem>);
+
+    mockEditQuickPick.show.mockImplementation(() => {
+      mockEditQuickPick.value = "";
+      const acceptHandler = mockEditQuickPick.onDidAccept.mock.calls[0]?.[0];
+      if (acceptHandler) {
+        setTimeout(() => acceptHandler(), 0);
+      }
+    });
+
+    const pattern = await showEditQuickpick("prev1");
     expect(pattern).toBeUndefined();
   });
 });

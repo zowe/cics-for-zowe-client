@@ -48,6 +48,8 @@ describe("Test suite for getFilterPlexResources command", () => {
       getProfile: () => profile,
       getPlexName: () => "MYPLEX",
       getParent: () => ({ getProfile: () => profile }),
+      getGroupName: (): string | undefined => undefined,
+      saveRegionFilter: jest.fn(),
     }) as any;
 
   beforeEach(() => {
@@ -84,8 +86,8 @@ describe("Test suite for getFilterPlexResources command", () => {
     await command(undefined);
 
     expect(mockTreeView.reveal).toHaveBeenCalledWith(regionsContainer, { expand: true });
-    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", []);
-    expect(filterRegionsSpy).toHaveBeenCalledWith("TEST1", mockTree);
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", ["MYREG"], false, "MYREG");
+    expect(filterRegionsSpy).toHaveBeenCalledWith("TEST1");
     expect(mockTree._onDidChangeTreeData.fire).toHaveBeenCalledWith(regionsContainer);
   });
 
@@ -102,5 +104,80 @@ describe("Test suite for getFilterPlexResources command", () => {
 
     expect(filterRegionsSpy).not.toHaveBeenCalled();
     expect(mockTree._onDidChangeTreeData.fire).not.toHaveBeenCalled();
+  });
+
+  test("Should prioritize profile region name in filter history", async () => {
+    const mockHistory = ["REGION1", "REGION2", "MYREG", "REGION3"];
+    jest.spyOn(PersistentStorage, "getSearchHistory").mockReturnValue(mockHistory);
+    getPatternFromFilterSpy.mockResolvedValueOnce("MYREG");
+
+    const regionsContainer = new CICSRegionsContainer(createMockPlexTree());
+    mockTreeView = { selection: [regionsContainer], reveal: jest.fn() };
+
+    const command = getFilterPlexResources(mockTree, mockTreeView) as any;
+    await command(undefined);
+
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", ["MYREG", "REGION1", "REGION2", "REGION3"], false, "MYREG");
+  });
+
+  test("Should pass profile region name to getPatternFromFilter", async () => {
+    getPatternFromFilterSpy.mockResolvedValueOnce("TEST*");
+
+    const regionsContainer = new CICSRegionsContainer(createMockPlexTree());
+    mockTreeView = { selection: [regionsContainer], reveal: jest.fn() };
+
+    const command = getFilterPlexResources(mockTree, mockTreeView) as any;
+    await command(undefined);
+
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array), false, "MYREG");
+  });
+
+  test("Should handle profile without region name", async () => {
+    const mockPlexWithoutRegion = {
+      profile: { ...profile, profile: { ...profile.profile, regionName: undefined as any } },
+      getProfile: () => ({ ...profile, profile: { ...profile.profile, regionName: undefined as any } }),
+      getPlexName: () => "MYPLEX",
+      getParent: () => ({ getProfile: () => profile }),
+      getGroupName: (): string | undefined => undefined,
+      saveRegionFilter: jest.fn(),
+    } as any;
+
+    getPatternFromFilterSpy.mockResolvedValueOnce("TEST*");
+
+    const regionsContainer = new CICSRegionsContainer(mockPlexWithoutRegion);
+    mockTreeView = { selection: [regionsContainer], reveal: jest.fn() };
+
+    const command = getFilterPlexResources(mockTree, mockTreeView) as any;
+    await command(undefined);
+
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array), false, undefined);
+  });
+
+  test("Should save filter to persistent storage after filtering", async () => {
+    const appendSearchHistorySpy = jest.spyOn(PersistentStorage, "appendSearchHistory");
+    getPatternFromFilterSpy.mockResolvedValueOnce("TEST*");
+
+    const regionsContainer = new CICSRegionsContainer(createMockPlexTree());
+    mockTreeView = { selection: [regionsContainer], reveal: jest.fn() };
+
+    const command = getFilterPlexResources(mockTree, mockTreeView) as any;
+    await command(undefined);
+
+    expect(appendSearchHistorySpy).toHaveBeenCalledWith("CICSManagedRegion", "TEST*");
+  });
+
+  test("Should not save filter when user cancels", async () => {
+    const appendSearchHistorySpy = jest.spyOn(PersistentStorage, "appendSearchHistory");
+    getPatternFromFilterSpy.mockResolvedValueOnce(undefined);
+
+    const regionsContainer = new CICSRegionsContainer(createMockPlexTree());
+    const filterRegionsSpy = jest.spyOn(regionsContainer, "filterRegions");
+    mockTreeView = { selection: [regionsContainer], reveal: jest.fn() };
+
+    const command = getFilterPlexResources(mockTree, mockTreeView) as any;
+    await command(undefined);
+
+    expect(filterRegionsSpy).not.toHaveBeenCalled();
+    expect(appendSearchHistorySpy).not.toHaveBeenCalled();
   });
 });

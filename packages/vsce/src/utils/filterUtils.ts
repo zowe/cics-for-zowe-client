@@ -25,9 +25,18 @@ export class FilterDescriptor implements QuickPickItem {
   }
 }
 
-export const buildQuickPick = (resName: string, history: string[]) => {
+export const buildQuickPick = (resName: string, history: string[], profileRegionName?: string) => {
   const quickpick = Gui.createQuickPick();
-  quickpick.items = history.map((loadedFilter) => ({ label: loadedFilter }));
+  quickpick.items = history.map((loadedFilter) => {
+    // Add description to any item that matches the profile region name
+    if (profileRegionName && loadedFilter === profileRegionName) {
+      return {
+        label: loadedFilter,
+        description: l10n.t("Zowe CICS profile"),
+      };
+    }
+    return { label: loadedFilter };
+  });
   quickpick.placeholder = l10n.t("Select a filter or type to create a new one (use commas to separate multiple values)");
   quickpick.ignoreFocusOut = true;
   return quickpick;
@@ -122,29 +131,34 @@ export function inputMatchesChoice(userInput: string, choiceLabel: string, caseS
   return normalizedInput === normalizedChoice;
 }
 
-export async function getPatternFromFilter(resourceName: string, resourceHistory: string[], filterCaseSensitive: boolean = false) {
-  const quickpick = buildQuickPick(resourceName, resourceHistory);
-  
+export async function getPatternFromFilter(
+  resourceName: string,
+  resourceHistory: string[],
+  filterCaseSensitive: boolean = false,
+  profileRegionName?: string
+) {
+  const quickpick = buildQuickPick(resourceName, resourceHistory, profileRegionName);
+
   return new Promise<string | undefined>((resolve) => {
     let wasAccepted = false;
-    
+
     // Track when user accepts (Enter key or item selection)
     quickpick.onDidAccept(() => {
       wasAccepted = true;
       const selectedItem = quickpick.selectedItems[0];
-  const userInput = quickpick.value;
-      
-  quickpick.hide();
+      const userInput = quickpick.value;
+
+      quickpick.hide();
 
       // If an item was selected from the list
       if (selectedItem) {
-    // If user typed text that matches the selected item exactly, apply immediately
+        // If user typed text that matches the selected item exactly, apply immediately
         if (userInput && inputMatchesChoice(userInput, selectedItem.label, filterCaseSensitive)) {
           const normalized = normalizePattern(userInput, filterCaseSensitive);
           resolve(normalized);
-    } else {
-      // User either clicked directly or typed to filter then clicked a different item
-      // Show edit quickpick to allow confirmation or editing
+        } else {
+          // User either clicked directly or typed to filter then clicked a different item
+          // Show edit quickpick to allow confirmation or editing
           showEditQuickpick(selectedItem.label).then((pattern) => {
             resolve(pattern ? normalizePattern(pattern, filterCaseSensitive) : undefined);
           });
@@ -154,7 +168,7 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
         resolve(userInput ? normalizePattern(userInput, filterCaseSensitive) : undefined);
       }
     });
-    
+
     // Track when user dismisses (Escape key or clicking outside)
     quickpick.onDidHide(() => {
       if (!wasAccepted) {
@@ -162,7 +176,7 @@ export async function getPatternFromFilter(resourceName: string, resourceHistory
         resolve(undefined);
       }
     });
-    
+
     quickpick.show();
   });
 }

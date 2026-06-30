@@ -32,6 +32,7 @@ export class CICSSessionTree extends TreeItem {
   children: (CICSPlexTree | CICSRegionTree)[];
   isUnauthorized: boolean | undefined;
   requiresIconUpdate: boolean = false;
+  private plexRegionFilters: Map<string, string> = new Map();
 
   constructor(
     private profile: IProfileLoaded,
@@ -42,6 +43,14 @@ export class CICSSessionTree extends TreeItem {
     this.createSessionFromProfile();
     this.initialize();
     this.children = [];
+  }
+
+  public saveRegionFilterForPlex(plexName: string, filter: string) {
+    this.plexRegionFilters.set(plexName, filter);
+  }
+
+  public getRegionFilterForPlex(plexName: string): string | undefined {
+    return this.plexRegionFilters.get(plexName);
   }
 
   private initialize() {

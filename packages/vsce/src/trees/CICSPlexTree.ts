@@ -47,6 +47,7 @@ export class CICSPlexTree extends TreeItem {
   groupName: string | undefined;
   regionsContainer: CICSRegionsContainer | undefined;
   refreshNode: boolean = false;
+  savedRegionFilter: string | undefined;
 
   constructor(plexName: string, profile: imperative.IProfileLoaded, sessionTree: CICSSessionTree, group?: string) {
     super(plexName, TreeItemCollapsibleState.Collapsed);
@@ -58,6 +59,11 @@ export class CICSPlexTree extends TreeItem {
     this.activeFilter = undefined;
     this.groupName = group;
     this.iconPath = group ? getIconFilePathFromName("cics-system-group") : getIconFilePathFromName("cics-plex");
+    // Restore saved filter from session tree before creating regions container
+    const savedFilter = sessionTree.getRegionFilterForPlex(plexName);
+    if (savedFilter) {
+      this.savedRegionFilter = savedFilter;
+    }
     this.addNewCombinedTrees();
     this.addRegionContainer();
   }
@@ -103,11 +109,6 @@ export class CICSPlexTree extends TreeItem {
   public async getChildren() {
     if (this.refreshNode) {
       this.refreshNode = false;
-      return this.children;
-    }
-
-    if (this.profile.profile.regionName && this.profile.profile.cicsPlex && !this.getGroupName()) {
-      await this.loadOnlyRegion();
       return this.children;
     }
 
@@ -184,9 +185,19 @@ export class CICSPlexTree extends TreeItem {
   }
 
   public addRegionContainer() {
-    const regionContainer = new CICSRegionsContainer(this);
+    const regionContainer = new CICSRegionsContainer(this, this.savedRegionFilter);
     this.children.unshift(regionContainer);
     this.regionsContainer = regionContainer;
+  }
+
+  public saveRegionFilter(filter: string) {
+    this.savedRegionFilter = filter;
+    // Save to session tree so it persists across plex tree rebuilds
+    this.parent.saveRegionFilterForPlex(this.getPlexName(), filter);
+  }
+
+  public getSavedRegionFilter(): string | undefined {
+    return this.savedRegionFilter;
   }
 
   public getGroupName() {
