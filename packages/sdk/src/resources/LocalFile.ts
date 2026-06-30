@@ -9,7 +9,7 @@
  *
  */
 
-import { ImperativeError, ImperativeExpect, Logger, type AbstractSession } from "@zowe/imperative";
+import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
 import type { ICMCIApiResponse, ILocalFileParms } from "../doc";
 import { performAction } from "../utils/ResourceActions";
@@ -40,7 +40,10 @@ export async function closeLocalFile(session: AbstractSession, parms: ILocalFile
     });
   }
 
-  Logger.getAppLogger().debug(`Attempting to close a local file with the following parameters:\n%s`, JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    `Attempting to close a local file with the following parameters:\n%s`,
+    JSON.stringify(parms)
+  );
 
   // Get busy parameter value
   const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";
@@ -92,7 +95,10 @@ export async function openLocalFile(session: AbstractSession, parms: ILocalFileP
     });
   }
 
-  Logger.getAppLogger().debug(`Attempting to open a local file with the following parameters:\n%s`, JSON.stringify(parms));
+  Logger.getAppLogger().debug(
+    `Attempting to open a local file with the following parameters:\n%s`,
+    JSON.stringify(parms)
+  );
 
   // Use generic performAction utility (no additional parameters needed for OPEN)
   return performAction(
@@ -115,7 +121,7 @@ export async function openLocalFile(session: AbstractSession, parms: ILocalFileP
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
  * @throws {ImperativeError} Feature not yet implemented
  */
-export async function enableLocalFile(_session: AbstractSession, _parms: ILocalFileParms): Promise<ICMCIApiResponse> {
+export async function enableLocalFile(session: AbstractSession, parms: ILocalFileParms): Promise<ICMCIApiResponse> {
   throw new ImperativeError({
     msg: "ENABLE action not yet implemented. This feature requires SDK support for enabling local files.",
   });
@@ -128,8 +134,10 @@ export async function enableLocalFile(_session: AbstractSession, _parms: ILocalF
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
  * @throws {ImperativeError} Feature not yet implemented
  */
-export async function disableLocalFile(_session: AbstractSession, _parms: ILocalFileParms): Promise<ICMCIApiResponse> {
+export async function disableLocalFile(session: AbstractSession, parms: ILocalFileParms): Promise<ICMCIApiResponse> {
   throw new ImperativeError({
     msg: "DISABLE action not yet implemented. This feature requires SDK support for disabling local files.",
   });
 }
+
+
