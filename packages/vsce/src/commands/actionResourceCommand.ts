@@ -124,11 +124,9 @@ export const actionTreeItem = async ({
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
-
           successCount++;
         } catch (error) {
           errors.push({ node, error });
-
           if (customAction) {
             const wrappedError = new CICSExtensionError({
               baseError: error,
@@ -136,7 +134,6 @@ export const actionTreeItem = async ({
               profileName: node.getProfileName(),
             });
             CICSErrorHandler.handleCMCIRestError(wrappedError);
-
             progress.report({
               message: l10n.t("Failed to {0} {1} ({2} of {3})", action.toLowerCase(), resourceName, i + 1, nodes.length),
             });
@@ -145,7 +142,6 @@ export const actionTreeItem = async ({
           }
         }
       }
-
       nodesToRefresh.forEach((v) => {
         tree.refresh(v);
       });

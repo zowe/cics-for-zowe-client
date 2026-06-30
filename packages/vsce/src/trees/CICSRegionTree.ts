@@ -14,6 +14,8 @@ import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import { l10n, TreeItemCollapsibleState, workspace } from "vscode";
 import {
   BundleMeta,
+  type ICICSTreeNode,
+  type IResourceMeta,
   JVMServerMeta,
   LibraryMeta,
   LocalFileMeta,
@@ -27,8 +29,6 @@ import {
   TSQueueMeta,
   URIMapMeta,
   WebServiceMeta,
-  type ICICSTreeNode,
-  type IResourceMeta,
 } from "../doc";
 import { getIconByStatus } from "../utils/iconUtils";
 import type { CICSPlexTree } from "./CICSPlexTree";

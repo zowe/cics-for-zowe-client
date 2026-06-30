@@ -9,10 +9,10 @@
  *
  */
 
+import type { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { IProfileLoaded } from "@zowe/imperative";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
-import type { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
