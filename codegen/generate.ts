@@ -90,6 +90,9 @@ interface DerivedResource {
   
   // Resolved actions
   actions: DerivedAction[];
+  
+  // Aggregated options from all actions (for Parms interface)
+  allOptions: DerivedOption[];
 }
 
 interface DerivedAction {
@@ -387,6 +390,18 @@ export class ResourceGenerator {
       return a.name.localeCompare(b.name);
     });
 
+    // Collect all unique options from all actions for the Parms interface
+    const allOptionsMap = new Map<string, DerivedOption>();
+    for (const action of derivedActions) {
+      for (const option of action.options) {
+        // Use option name as key to ensure uniqueness
+        if (!allOptionsMap.has(option.name)) {
+          allOptionsMap.set(option.name, option);
+        }
+      }
+    }
+    const allOptions = Array.from(allOptionsMap.values());
+
     return {
       name: resourceName,
       identifier: resource.identifier,
@@ -403,6 +418,7 @@ export class ResourceGenerator {
       humanName: resource.identifier.humanNameSingular,
       maxNameLength: resource.identifier.maxPrimaryKeyLength,
       actions: derivedActions,
+      allOptions,
     };
   }
 
@@ -543,19 +559,7 @@ export class ResourceGenerator {
     const output = template(context);
     
     this.ensureDir(path.dirname(outputPath));
-    
-    // Only write if content has changed
-    let shouldWrite = true;
-    if (fs.existsSync(outputPath)) {
-      const existingContent = fs.readFileSync(outputPath, "utf-8");
-      if (existingContent === output) {
-        shouldWrite = false;
-      }
-    }
-    
-    if (shouldWrite) {
-      fs.writeFileSync(outputPath, output, "utf-8");
-    }
+    fs.writeFileSync(outputPath, output, "utf-8");
   }
 
   /**

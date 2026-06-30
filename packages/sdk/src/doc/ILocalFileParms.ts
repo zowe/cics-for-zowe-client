@@ -26,10 +26,11 @@ import type { IResourceParms } from "./IResourceParms";
  */
 export interface ILocalFileParms extends IResourceParms {
   /**
-   * The busy condition option for closing the local file
+   * The busy condition option. Valid values: WAIT, NOWAIT, FORCE.
    * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
+   * Default: "WAIT"
    * Value will be automatically converted to uppercase
-   * @type {string}
+   * @type { string }
    * @memberof ILocalFileParms
    */
   busy?: string;
