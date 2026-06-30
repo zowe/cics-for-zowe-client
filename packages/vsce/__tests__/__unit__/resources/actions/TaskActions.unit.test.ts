@@ -91,8 +91,6 @@ describe("Task Actions", () => {
     it("should be visible for any task (no visibleWhen condition)", () => {
       const actions = getTaskActions();
       const purgeAction = actions.find((a) => a.id === "CICS.CICSTask.PURGE")!;
-
-      // If visibleWhen is undefined, action is always visible
       if (purgeAction.visibleWhen) {
         const isVisible = purgeAction.visibleWhen(mockTask, mockResourceContext);
         expect(isVisible).toBe(true);
@@ -135,8 +133,6 @@ describe("Task Actions", () => {
     it("should be visible for any task (no visibleWhen condition)", () => {
       const actions = getTaskActions();
       const inquireAction = actions.find((a) => a.id === "CICS.CICSTask.INQUIRE_TRANSACTION")!;
-
-      // If visibleWhen is undefined, action is always visible
       if (inquireAction.visibleWhen) {
         const isVisible = inquireAction.visibleWhen(mockTask, mockResourceContext);
         expect(isVisible).toBe(true);
@@ -179,8 +175,6 @@ describe("Task Actions", () => {
     it("should be visible for any task (no visibleWhen condition)", () => {
       const actions = getTaskActions();
       const compareAction = actions.find((a) => a.id === "CICS.CICSTask.COMPARE_TO")!;
-
-      // If visibleWhen is undefined, action is always visible
       if (compareAction.visibleWhen) {
         const isVisible = compareAction.visibleWhen(mockTask, mockResourceContext);
         expect(isVisible).toBe(true);
