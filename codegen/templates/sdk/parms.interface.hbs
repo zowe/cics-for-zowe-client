@@ -25,15 +25,24 @@ import type { IResourceParms } from "./IResourceParms";
  * @extends {IResourceParms}
  */
 export interface {{parmsInterface}} extends IResourceParms {
-{{#if hasBusyOption}}
+{{#if allOptions.length}}
+{{#each allOptions}}
   /**
-   * The busy condition option for closing the {{humanNameLower}}
-   * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
+   * {{#if description}}{{description}}{{else}}The {{name}} option{{/if}}
+{{#if allowableValues}}
+   * Valid values: {{#each allowableValues}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}{{#unless caseSensitive}} (case-insensitive){{/unless}}
+{{/if}}
+{{#if defaultValue}}
+   * Default: "{{defaultValue}}"
+{{/if}}
+{{#unless caseSensitive}}
    * Value will be automatically converted to uppercase
-   * @type {string}
-   * @memberof {{parmsInterface}}
+{{/unless}}
+   * @type { {{type}} }
+   * @memberof {{../parmsInterface}}
    */
-  busy?: string;
+  {{sdkParamName}}?: {{type}};
+{{/each}}
 {{else}}
   // No additional parameters needed for {{humanName}} resource
 {{/if}}
