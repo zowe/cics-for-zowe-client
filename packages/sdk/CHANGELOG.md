@@ -4,6 +4,7 @@ All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented 
 
 ## `6.22.0`
 
+- Enhancement: Added Recent Resources QuickPick for Inspect and Compare Resource commands. [#649](https://github.com/zowe/cics-for-zowe-client/issues/649)
 - Enhancement: Exposes openlocalFile and closeLocalFile methods. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
 - Enhancement: Return results as well as errors, where some data is successfully retrieved. [#617](https://github.com/zowe/cics-for-zowe-client/issues/617)
 
