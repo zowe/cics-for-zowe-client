@@ -110,8 +110,6 @@ describe("Library Actions", () => {
     it("should have default refreshResourceInspector behavior", () => {
       const actions = getLibraryActions();
       const enableAction = actions.find((a) => a.id === "CICS.CICSLibrary.ENABLE")!;
-
-      // If not explicitly set to false, it should be undefined or true (default behavior)
       expect(enableAction.refreshResourceInspector).not.toBe(false);
     });
   });
@@ -172,7 +170,6 @@ describe("Library Actions", () => {
       const actions = getLibraryActions();
       const disableAction = actions.find((a) => a.id === "CICS.CICSLibrary.DISABLE")!;
 
-      // If not explicitly set to false, it should be undefined or true (default behavior)
       expect(disableAction.refreshResourceInspector).not.toBe(false);
     });
   });
@@ -212,7 +209,6 @@ describe("Library Actions", () => {
       const actions = getLibraryActions();
       const compareAction = actions.find((a) => a.id === "CICS.CICSLibrary.COMPARE_TO")!;
 
-      // If visibleWhen is undefined, action is always visible
       if (compareAction.visibleWhen) {
         const isVisible = compareAction.visibleWhen(library, mockResourceContext);
         expect(isVisible).toBe(true);
@@ -346,10 +342,7 @@ describe("Library Actions", () => {
       const enableAction = actions.find((a) => a.id === "CICS.CICSLibrary.ENABLE")!;
 
       const isVisible = enableAction.visibleWhen!(library, mockResourceContext);
-      // Should be visible because "enabled" !== "ENABLED" (case-sensitive)
       expect(isVisible).toBe(true);
     });
   });
 });
-
-// Made with Bob
