@@ -283,10 +283,10 @@
   "No CICS resource information available to compare": "No CICS resource information available to compare",
   "Failed to compare resources: {0}": "Failed to compare resources: {0}",
   "Enter {0} name to compare with": "Enter {0} name to compare with",
-  "Successfully {0} {1} resource(s)": "Successfully {0} {1} resource(s)",
-  "Failed to {0} all {1} resource(s)": "Failed to {0} all {1} resource(s)",
-  "{0} {1} of {2} resource(s). {3} failed.": "{0} {1} of {2} resource(s). {3} failed.",
   "{0} {1} ({2} of {3})": "{0} {1} ({2} of {3})",
   "Failed to {0} {1} ({2} of {3})": "Failed to {0} {1} ({2} of {3})",
+  "Failed to {0} all {1} resource(s)": "Failed to {0} all {1} resource(s)",
+  "{0} {1} of {2} resource(s). {3} failed.": "{0} {1} of {2} resource(s). {3} failed.",
+  "Successfully {0} {1} resource(s)": "Successfully {0} {1} resource(s)",
   "No CICS local file selected": "No CICS local file selected"
 }

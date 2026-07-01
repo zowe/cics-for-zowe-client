@@ -15,11 +15,6 @@
  *
  * @param pattern - Filter pattern (e.g., "CICS*", "CICS1,TEST*", or "*")
  * @returns Regular expression string for matching
- *
- * @example
- * patternToRegex("CICS*") // Returns "(^CICS(.*))"
- * patternToRegex("CICS*,TEST*") // Returns "(^CICS(.*))|(^TEST(.*))"
- * patternToRegex("*") // Returns "(^(.*))"
  */
 export function patternToRegex(pattern: string): string {
   const patternList = pattern.split(",");
@@ -42,10 +37,6 @@ export function patternToRegex(pattern: string): string {
  *
  * @param pattern - Filter pattern (e.g., "CICS*", "CICS1,TEST*", or "*")
  * @returns RegExp object for filtering, or null if pattern is "*" (match all)
- *
- * @example
- * createFilterRegex("CICS*") // Returns RegExp for matching CICS*
- * createFilterRegex("*") // Returns null (match all)
  */
 export function createFilterRegex(pattern: string): RegExp | null {
   if (!pattern || pattern === "*") {

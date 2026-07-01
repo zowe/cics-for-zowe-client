@@ -122,8 +122,8 @@ export function inputMatchesChoice(userInput: string, choiceLabel: string, caseS
   return normalizedInput === normalizedChoice;
 }
 
-export async function getPatternFromFilter(resourceName: string, resourceItems: QuickPickItem[], filterCaseSensitive: boolean = false) {
-  const quickpick = buildQuickPick(resourceName, resourceItems);
+export async function getPatternFromFilter(resourceName: string, historyItems: QuickPickItem[], filterCaseSensitive: boolean = false) {
+  const quickpick = buildQuickPick(resourceName, historyItems);
 
   return new Promise<string | undefined>((resolve) => {
     let wasAccepted = false;
