@@ -103,18 +103,20 @@ describe("toEscapedCriteriaString", () => {
 describe("Filter Utils tests", () => {
 
   it("should return quickpick object with history items", () => {
-
-    const quickpick = buildQuickPick("MYRES", ["prev1", "prev2"]);
+    const quickpick = buildQuickPick("MYRES", [{ label: "prev1" }, { label: "prev2" }]);
 
     expect(quickpick.items).toHaveLength(2);
     expect(quickpick.items[0]).toEqual({ label: "prev1" });
     expect(quickpick.items[1]).toEqual({ label: "prev2" });
     expect(quickpick.placeholder).toContain("Select a filter or type to create a new one (use commas to separate multiple values)");
-
   });
 
-  it("should add description to profile region name in history", () => {
-    const quickpick = buildQuickPick("MYRES", ["prev1", "MYREG", "prev2"], "MYREG");
+  it("should preserve QuickPickItem descriptions passed by caller", () => {
+    const quickpick = buildQuickPick("MYRES", [
+      { label: "prev1" },
+      { label: "MYREG", description: "Zowe CICS profile" },
+      { label: "prev2" },
+    ]);
 
     expect(quickpick.items).toHaveLength(3);
     expect(quickpick.items[0]).toEqual({ label: "prev1" });
@@ -122,32 +124,24 @@ describe("Filter Utils tests", () => {
     expect(quickpick.items[2]).toEqual({ label: "prev2" });
   });
 
-  it("should not add description when profileRegionName is not in history", () => {
-    const quickpick = buildQuickPick("MYRES", ["prev1", "prev2"], "NOTINLIST");
-
-    expect(quickpick.items).toHaveLength(2);
-    expect(quickpick.items[0]).toEqual({ label: "prev1" });
-    expect(quickpick.items[1]).toEqual({ label: "prev2" });
-  });
-
   it("should get pattern when user types exact match", async () => {
     setupSingleQuickPick("NEWPATTERN", { label: "NEWPATTERN" });
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toEqual("NEWPATTERN");
   });
 
   it("should get pattern when user types without selecting", async () => {
     setupSingleQuickPick("TYPED*", undefined);
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toEqual("TYPED*");
   });
 
   it("should return undefined when no selection and no input", async () => {
     setupSingleQuickPick("", undefined);
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toBeUndefined();
   });
 
@@ -159,7 +153,7 @@ describe("Filter Utils tests", () => {
       { label: "prev1", description: "Press Enter to use this filter" }
     );
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toEqual("PREV1");
     expect(mockEditQuickPick.show).toHaveBeenCalled();
   });
@@ -172,7 +166,7 @@ describe("Filter Utils tests", () => {
       { label: "prev1", description: "Press Enter to use this filter" }
     );
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toEqual("PREV1");
     expect(mockEditQuickPick.show).toHaveBeenCalled();
   });
@@ -205,7 +199,6 @@ describe("Filter Utils tests", () => {
     expect(pattern).toEqual("PAT1*,PAT2*");
   });
 
-
   it("should show input box when 'Edit filter' option is selected", async () => {
     setupDualQuickPick(
       "",
@@ -215,7 +208,7 @@ describe("Filter Utils tests", () => {
     );
     jest.spyOn(Gui, "showInputBox").mockResolvedValueOnce("INPUTBOX*");
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toEqual("INPUTBOX*");
     expect(Gui.showInputBox).toHaveBeenCalled();
   });
@@ -229,7 +222,7 @@ describe("Filter Utils tests", () => {
     );
     jest.spyOn(Gui, "showInputBox").mockResolvedValueOnce("");
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toBeUndefined();
   });
 
@@ -245,7 +238,7 @@ describe("Filter Utils tests", () => {
       }
     });
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toBeUndefined();
   });
 
@@ -275,7 +268,7 @@ describe("Filter Utils tests", () => {
       }
     });
     
-    const pattern = await getPatternFromFilter("MYRES", ["prev1"], false);
+    const pattern = await getPatternFromFilter("MYRES", [{ label: "prev1" }], false);
     expect(pattern).toBeUndefined();
   });
 

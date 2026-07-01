@@ -196,10 +196,6 @@ export class CICSPlexTree extends TreeItem {
     this.parent.saveRegionFilterForPlex(this.getPlexName(), filter);
   }
 
-  public getSavedRegionFilter(): string | undefined {
-    return this.savedRegionFilter;
-  }
-
   public getGroupName() {
     return this.groupName;
   }

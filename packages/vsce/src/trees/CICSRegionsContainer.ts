@@ -25,9 +25,7 @@ export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
   parent: CICSPlexTree;
   activeFilter: string;
-  private originalConfigFilter: string;
   private requireDescriptionUpdate = false;
-  private isRefreshing = false;
 
   /**
    * Creates a new CICSRegionsContainer
@@ -45,13 +43,11 @@ export class CICSRegionsContainer extends TreeItem {
     this.children = [];
 
     const profile = parent.getProfile().profile;
-    // For region groups
     if (parent.getGroupName()) {
-      this.originalConfigFilter = "*";
       this.activeFilter = "*";
     } else {
-      this.originalConfigFilter = profile.cicsPlex && profile.regionName ? profile.regionName : "*";
-      this.activeFilter = savedFilter || this.originalConfigFilter;
+      const configFilter = profile.cicsPlex && profile.regionName ? profile.regionName : "*";
+      this.activeFilter = savedFilter || configFilter;
     }
     this.updateLabelAndContext();
   }
@@ -70,7 +66,6 @@ export class CICSRegionsContainer extends TreeItem {
     // Save the filter to the parent plex so it persists across tree rebuilds
     this.parent.saveRegionFilter(pattern);
     this.updateLabelAndContext();
-    this.isRefreshing = true;
 
     await window.withProgress(
       {
@@ -84,7 +79,7 @@ export class CICSRegionsContainer extends TreeItem {
           const { regions, apiResponse } = regionInfo;
 
           if (apiResponse) {
-            CICSErrorHandler.handleErrorIfPresent(apiResponse, "get", this.parent.getProfile().name);
+            CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, this.parent.getProfile().name);
           }
 
           this.addRegionsUtility(regions);
@@ -96,6 +91,8 @@ export class CICSRegionsContainer extends TreeItem {
           }
         } catch (error) {
           this.children = [];
+          this.collapsibleState = TreeItemCollapsibleState.Collapsed;
+          this.refreshIcon(false);
           CICSErrorHandler.handleCMCIRestError(
             new CICSExtensionError({
               baseError: error as Error | Record<string, unknown>,
@@ -122,7 +119,7 @@ export class CICSRegionsContainer extends TreeItem {
         cicsPlex: plexProfile.profile.cicsPlex,
         regionName: plexProfile.profile.regionName,
       });
-      CICSErrorHandler.handleErrorIfPresent(regionsObtained, "get", plexProfile.name);
+      CICSErrorHandler.handleErrorIfPresent(regionsObtained, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, plexProfile.name);
 
       const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
       this.addRegionsUtility(regionsArray);
@@ -131,6 +128,8 @@ export class CICSRegionsContainer extends TreeItem {
       this.updateDescription();
     } catch (error) {
       this.children = [];
+      this.collapsibleState = TreeItemCollapsibleState.Collapsed;
+      this.refreshIcon(false);
       if (error instanceof CICSExtensionError) {
         CICSErrorHandler.handleCMCIRestError(error);
       } else {
@@ -153,7 +152,7 @@ export class CICSRegionsContainer extends TreeItem {
 
       const { regions, apiResponse } = regionInfo;
       if (apiResponse) {
-        CICSErrorHandler.handleErrorIfPresent(apiResponse, "get", parentPlex.getProfile().name);
+        CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, parentPlex.getProfile().name);
       }
 
       if (regions) {
@@ -164,12 +163,14 @@ export class CICSRegionsContainer extends TreeItem {
       }
     } catch (error) {
       this.children = [];
+      this.collapsibleState = TreeItemCollapsibleState.Collapsed;
+      this.refreshIcon(false);
       CICSErrorHandler.handleCMCIRestError(
         new CICSExtensionError({
           baseError: error as Error | Record<string, unknown>,
           profileName: this.parent.getProfile().name,
           resourceName: "regions",
-          errorMessage: l10n.t("Failed to load regions in plex"),
+          errorMessage: l10n.t("Failed to load regions in CICSplex"),
         })
       );
     }
@@ -204,10 +205,6 @@ export class CICSRegionsContainer extends TreeItem {
     if (this.requireDescriptionUpdate) {
       this.requireDescriptionUpdate = false;
       return this.children;
-    }
-
-    if (this.isRefreshing) {
-      this.isRefreshing = false;
     }
 
     const parentPlex = this.parent;
@@ -269,15 +266,6 @@ export class CICSRegionsContainer extends TreeItem {
    */
   public clearChildren() {
     this.children = [];
-  }
-
-  /**
-   * Clears the filter to show all regions
-   */
-  public clearFilter() {
-    this.activeFilter = "*";
-    // Save the cleared filter state to the parent plex
-    this.parent.saveRegionFilter("*");
   }
 
   public getSession() {

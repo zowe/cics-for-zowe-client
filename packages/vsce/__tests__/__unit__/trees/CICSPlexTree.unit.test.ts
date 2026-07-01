@@ -159,12 +159,12 @@ describe("Test suite for CICSLocalFileTree", () => {
 
       it("should get saved region filter", () => {
         plexTree.savedRegionFilter = "SAVED*";
-        expect(plexTree.getSavedRegionFilter()).toBe("SAVED*");
+        expect(plexTree.savedRegionFilter).toBe("SAVED*");
       });
 
       it("should return undefined when no filter is saved", () => {
         plexTree.savedRegionFilter = undefined;
-        expect(plexTree.getSavedRegionFilter()).toBeUndefined();
+        expect(plexTree.savedRegionFilter).toBeUndefined();
       });
 
       it("should restore saved filter from session tree on construction", () => {

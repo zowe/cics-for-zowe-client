@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, l10n, window, type TreeView } from "vscode";
+import { commands, l10n, type QuickPickItem, window, type TreeView } from "vscode";
 import { CICSRegionsContainer } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -38,15 +38,16 @@ export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) 
     const profile = chosenNode.getParent().getProfile().profile;
     const profileRegionName = profile.cicsPlex && profile.regionName ? profile.regionName.toUpperCase() : undefined;
 
-    // Always move profile region to the front of the list if it exists
-    let historyToUse = resourceHistory;
+    // Build QuickPickItems
+    let historyItems: QuickPickItem[];
     if (profileRegionName) {
-      const filteredHistory = resourceHistory.filter((item) => item !== profileRegionName);
-      filteredHistory.unshift(profileRegionName);
-      historyToUse = filteredHistory;
+      const otherItems = resourceHistory.filter((item) => item !== profileRegionName).map((item) => ({ label: item }));
+      historyItems = [{ label: profileRegionName, description: l10n.t("Zowe CICS profile") }, ...otherItems];
+    } else {
+      historyItems = resourceHistory.map((item) => ({ label: item }));
     }
 
-    const pattern = await getPatternFromFilter("Region", historyToUse, false, profileRegionName);
+    const pattern = await getPatternFromFilter("Region", historyItems);
 
     if (pattern) {
       await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, pattern);

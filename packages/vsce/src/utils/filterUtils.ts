@@ -25,18 +25,9 @@ export class FilterDescriptor implements QuickPickItem {
   }
 }
 
-export const buildQuickPick = (resName: string, history: string[], profileRegionName?: string) => {
+export const buildQuickPick = (resName: string, items: QuickPickItem[]) => {
   const quickpick = Gui.createQuickPick();
-  quickpick.items = history.map((loadedFilter) => {
-    // Add description to any item that matches the profile region name
-    if (profileRegionName && loadedFilter === profileRegionName) {
-      return {
-        label: loadedFilter,
-        description: l10n.t("Zowe CICS profile"),
-      };
-    }
-    return { label: loadedFilter };
-  });
+  quickpick.items = items;
   quickpick.placeholder = l10n.t("Select a filter or type to create a new one (use commas to separate multiple values)");
   quickpick.ignoreFocusOut = true;
   return quickpick;
@@ -70,22 +61,22 @@ export async function showEditQuickpick(choiceLabel: string): Promise<string | u
       
   editQuickpick.hide();
   
-      if (selectedItem) {
-        // User selected an item from the list
-        if (selectedItem.label === choiceLabel) {
-          // Selected first option - use the input value (may have been edited)
-          resolve(editInput);
-        } else {
-          // Selected "Edit filter" - show input box
-          Gui.showInputBox({
-            prompt: l10n.t("Edit filter"),
-            value: choiceLabel
-          }).then(resolve);
-  }
+    if (selectedItem) {
+      // User selected an item from the list
+      if (selectedItem.label === choiceLabel) {
+        // Selected first option - use the input value (may have been edited)
+        resolve(editInput);
       } else {
-        // User pressed Enter without selecting an item - use the edited input (or undefined if empty)
-        resolve(editInput || undefined);
+        // Selected "Edit filter" - show input box
+        Gui.showInputBox({
+          prompt: l10n.t("Edit filter"),
+          value: choiceLabel,
+        }).then(resolve);
       }
+    } else {
+      // User pressed Enter without selecting an item - use the edited input (or undefined if empty)
+      resolve(editInput || undefined);
+    }
     });
     
     editQuickpick.onDidHide(() => {
@@ -131,13 +122,8 @@ export function inputMatchesChoice(userInput: string, choiceLabel: string, caseS
   return normalizedInput === normalizedChoice;
 }
 
-export async function getPatternFromFilter(
-  resourceName: string,
-  resourceHistory: string[],
-  filterCaseSensitive: boolean = false,
-  profileRegionName?: string
-) {
-  const quickpick = buildQuickPick(resourceName, resourceHistory, profileRegionName);
+export async function getPatternFromFilter(resourceName: string, resourceItems: QuickPickItem[], filterCaseSensitive: boolean = false) {
+  const quickpick = buildQuickPick(resourceName, resourceItems);
 
   return new Promise<string | undefined>((resolve) => {
     let wasAccepted = false;

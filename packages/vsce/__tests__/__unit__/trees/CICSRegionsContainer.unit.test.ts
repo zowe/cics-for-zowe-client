@@ -495,17 +495,6 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(regionsContainer["requireDescriptionUpdate"]).toBe(false);
     });
 
-    it("should reset isRefreshing flag when getChildren is called", async () => {
-      regionsContainer["isRefreshing"] = true;
-      const mockRegionTree = { getRegionName: () => "TEST" } as Partial<CICSRegionTree> as CICSRegionTree;
-      regionsContainer.children = [mockRegionTree];
-      regionsContainer.activeFilter = "*";
-
-      await regionsContainer.getChildren();
-
-      expect(regionsContainer["isRefreshing"]).toBe(false);
-    });
-
     it("should load regions in CICS group when profile has regionName and cicsPlex and groupName", async () => {
       // Mock profile with regionName and cicsPlex
       const profileWithRegionAndPlex = {
@@ -761,31 +750,4 @@ describe("Test suite for CICSRegionsContainer", () => {
     });
   });
 
-  describe("Test suite for clearFilter", () => {
-    it("should clear filter and set activeFilter to *", () => {
-      regionsContainer.activeFilter = "TEST*";
-      regionsContainer.clearFilter();
-      expect(regionsContainer.activeFilter).toBe("*");
-    });
-
-    it("should call saveRegionFilter on parent plex with *", () => {
-      regionsContainer.activeFilter = "CICS*";
-      regionsContainer.clearFilter();
-      expect(plexTree.saveRegionFilter).toHaveBeenCalledWith("*");
-    });
-
-    it("should clear filter when already at *", () => {
-      regionsContainer.activeFilter = "*";
-      regionsContainer.clearFilter();
-      expect(regionsContainer.activeFilter).toBe("*");
-      expect(plexTree.saveRegionFilter).toHaveBeenCalledWith("*");
-    });
-
-    it("should clear filter and persist state", () => {
-      regionsContainer.activeFilter = "PROD*,TEST*";
-      regionsContainer.clearFilter();
-      expect(regionsContainer.activeFilter).toBe("*");
-      expect(plexTree.saveRegionFilter).toHaveBeenCalledWith("*");
-    });
-  });
 });

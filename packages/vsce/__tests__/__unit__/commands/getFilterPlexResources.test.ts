@@ -86,7 +86,7 @@ describe("Test suite for getFilterPlexResources command", () => {
     await command(undefined);
 
     expect(mockTreeView.reveal).toHaveBeenCalledWith(regionsContainer, { expand: true });
-    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", ["MYREG"], false, "MYREG");
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", [{ label: "MYREG", description: "Zowe CICS profile" }]);
     expect(filterRegionsSpy).toHaveBeenCalledWith("TEST1");
     expect(mockTree._onDidChangeTreeData.fire).toHaveBeenCalledWith(regionsContainer);
   });
@@ -117,7 +117,12 @@ describe("Test suite for getFilterPlexResources command", () => {
     const command = getFilterPlexResources(mockTree, mockTreeView) as any;
     await command(undefined);
 
-    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", ["MYREG", "REGION1", "REGION2", "REGION3"], false, "MYREG");
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", [
+      { label: "MYREG", description: "Zowe CICS profile" },
+      { label: "REGION1" },
+      { label: "REGION2" },
+      { label: "REGION3" },
+    ]);
   });
 
   test("Should pass profile region name to getPatternFromFilter", async () => {
@@ -129,7 +134,7 @@ describe("Test suite for getFilterPlexResources command", () => {
     const command = getFilterPlexResources(mockTree, mockTreeView) as any;
     await command(undefined);
 
-    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array), false, "MYREG");
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array));
   });
 
   test("Should handle profile without region name", async () => {
@@ -150,7 +155,7 @@ describe("Test suite for getFilterPlexResources command", () => {
     const command = getFilterPlexResources(mockTree, mockTreeView) as any;
     await command(undefined);
 
-    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array), false, undefined);
+    expect(getPatternFromFilterSpy).toHaveBeenCalledWith("Region", expect.any(Array));
   });
 
   test("Should save filter to persistent storage after filtering", async () => {
