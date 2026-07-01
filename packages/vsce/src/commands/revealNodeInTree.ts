@@ -9,11 +9,11 @@
  *
  */
 
-import { type TreeView, l10n } from "vscode";
+import { l10n, type TreeView } from "vscode";
 import type { IResourceMeta } from "../doc";
 import { CICSPlexTree, CICSRegionTree } from "../trees";
-import type { CICSTree } from "../trees/CICSTree";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
+import type { CICSTree } from "../trees/CICSTree";
 
 /**
  * Reveals resources in the CICS tree by navigating to the appropriate region and filtering.
@@ -55,18 +55,16 @@ export async function revealResourceInTree(
   let regionNode: CICSRegionTree | undefined;
 
   if (cicsplexName) {
-    const plexNode = sessionNode.children?.find(
-      (child) => child instanceof CICSPlexTree && child.plexName === cicsplexName
-    ) as CICSPlexTree | undefined;
+    const plexNode = sessionNode.children?.find((child) => child instanceof CICSPlexTree && child.plexName === cicsplexName) as
+      | CICSPlexTree
+      | undefined;
 
     if (plexNode) {
       await plexNode.getChildren();
       await treeview.reveal(plexNode, { expand: true, select: false, focus: false });
 
       //  Wait for regionsContainer to be expanded
-      const regionsContainer = plexNode.children?.find(
-        (child) => child instanceof CICSRegionsContainer
-      ) as CICSRegionsContainer | undefined;
+      const regionsContainer = plexNode.children?.find((child) => child instanceof CICSRegionsContainer) as CICSRegionsContainer | undefined;
 
       if (regionsContainer) {
         await regionsContainer.getChildren();
@@ -76,9 +74,9 @@ export async function revealResourceInTree(
     }
   } else {
     // Direct region under session
-    regionNode = sessionNode.children?.find(
-      (child) => child instanceof CICSRegionTree && child.getRegionName() === regionName
-    ) as CICSRegionTree | undefined;
+    regionNode = sessionNode.children?.find((child) => child instanceof CICSRegionTree && child.getRegionName() === regionName) as
+      | CICSRegionTree
+      | undefined;
   }
 
   //  Find region and expand
@@ -92,11 +90,7 @@ export async function revealResourceInTree(
   const resourceContainer = regionNode.getContainerNodeForResourceType(resourceMeta);
   if (!resourceContainer) {
     throw new Error(
-      l10n.t(
-        "{0} resources not found in region '{1}'. They may be disabled in settings.",
-        resourceMeta.humanReadableNamePlural,
-        regionName
-      )
+      l10n.t("{0} resources not found in region '{1}'. They may be disabled in settings.", resourceMeta.humanReadableNamePlural, regionName)
     );
   }
 
@@ -107,7 +101,6 @@ export async function revealResourceInTree(
 
   tree.refresh(resourceContainer);
   await treeview.reveal(resourceContainer, { expand: true, select: false, focus: false });
-
 }
 
 /**
@@ -135,15 +128,7 @@ export async function revealChildResourcesInTree(
   childCriteriaMap: Map<string, string[]>
 ): Promise<void> {
   // First reveal the parent resources
-  await revealResourceInTree(
-    tree,
-    treeview,
-    profileName,
-    cicsplexName,
-    regionName,
-    parentMeta,
-    parentCriteria
-  );
+  await revealResourceInTree(tree, treeview, profileName, cicsplexName, regionName, parentMeta, parentCriteria);
 
   // Find the region node to access parent container
   const regionNode = await findRegionNode(tree, profileName, cicsplexName, regionName);
@@ -173,38 +158,28 @@ async function findRegionNode(
     return findRegionInPlex(sessionNode, cicsplexName, regionName);
   }
 
-  return sessionNode.children?.find(
-    (child: any) => child instanceof CICSRegionTree && child.getRegionName() === regionName
-  ) as CICSRegionTree | undefined;
+  return sessionNode.children?.find((child: any) => child instanceof CICSRegionTree && child.getRegionName() === regionName) as
+    | CICSRegionTree
+    | undefined;
 }
 
 /**
  * Helper function to find region within a CICSplex
  */
-function findRegionInPlex(
-  sessionNode: any,
-  cicsplexName: string,
-  regionName: string
-): CICSRegionTree | undefined {
-  const plexNode = sessionNode.children?.find(
-    (child: any) => child instanceof CICSPlexTree && child.plexName === cicsplexName
-  );
+function findRegionInPlex(sessionNode: any, cicsplexName: string, regionName: string): CICSRegionTree | undefined {
+  const plexNode = sessionNode.children?.find((child: any) => child instanceof CICSPlexTree && child.plexName === cicsplexName);
 
   if (!plexNode) {
     return undefined;
   }
 
-  const regionsContainer = plexNode.children?.find(
-    (child: any) => child instanceof CICSRegionsContainer
-  );
+  const regionsContainer = plexNode.children?.find((child: any) => child instanceof CICSRegionsContainer);
 
-  if (!regionsContainer || !('children' in regionsContainer)) {
+  if (!regionsContainer || !("children" in regionsContainer)) {
     return undefined;
   }
 
-  return (regionsContainer as any).children?.find(
-    (r: any) => r.getRegionName && r.getRegionName() === regionName
-  );
+  return (regionsContainer as any).children?.find((r: any) => r.getRegionName && r.getRegionName() === regionName);
 }
 
 /**

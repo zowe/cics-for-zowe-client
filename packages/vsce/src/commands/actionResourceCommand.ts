@@ -18,6 +18,7 @@ import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { SessionHandler } from "../resources";
 import type { CICSResourceContainerNode } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
+import PersistentStorage from "../utils/PersistentStorage";
 import { pollForCompleteAction } from "../utils/resourceUtils";
 import { evaluateTreeNodes } from "../utils/treeUtils";
 import { resourceActionVerbMap, setResource } from "./setResource";
@@ -67,12 +68,18 @@ export const actionTreeItem = async ({
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const resourceName = getResourceName ? getResourceName(node) : node.getContainedResourceName();
-        
         progress.report({
-          message: customAction
-            ? l10n.t("{0} {1} ({2} of {3})", resourceActionVerbMap[action], resourceName, i + 1, nodes.length)
+          message:
+            customAction ?
+              l10n.t("{0} {1} ({2} of {3})", resourceActionVerbMap[action], resourceName, i + 1, nodes.length)
             : l10n.t("{0} of {1}", i + 1, nodes.length),
           increment: (1 / nodes.length) * constants.PERCENTAGE_MAX,
+        });
+
+        // Record this resource as recently interacted with (before action, so it records even on failure)
+        await PersistentStorage.appendRecentResource({
+          resourceName: node.getContainedResourceName(),
+          resourceType: node.getContainedResource().meta.resourceName,
         });
 
         try {
@@ -117,11 +124,9 @@ export const actionTreeItem = async ({
           } else {
             evaluateTreeNodes(node, response, node.getContainedResource().meta);
           }
-          
           successCount++;
         } catch (error) {
           errors.push({ node, error });
-          
           if (customAction) {
             const wrappedError = new CICSExtensionError({
               baseError: error,
@@ -129,7 +134,6 @@ export const actionTreeItem = async ({
               profileName: node.getProfileName(),
             });
             CICSErrorHandler.handleCMCIRestError(wrappedError);
-            
             progress.report({
               message: l10n.t("Failed to {0} {1} ({2} of {3})", action.toLowerCase(), resourceName, i + 1, nodes.length),
             });
@@ -138,7 +142,6 @@ export const actionTreeItem = async ({
           }
         }
       }
-      
       nodesToRefresh.forEach((v) => {
         tree.refresh(v);
       });
@@ -147,9 +150,9 @@ export const actionTreeItem = async ({
       if (customAction && nodes.length > 1) {
         if (errors.length > 0) {
           const errorMessage =
-            errors.length === nodes.length
-              ? l10n.t("Failed to {0} all {1} resource(s)", action.toLowerCase(), nodes.length)
-              : l10n.t("{0} {1} of {2} resource(s). {3} failed.", resourceActionVerbMap[action], successCount, nodes.length, errors.length);
+            errors.length === nodes.length ?
+              l10n.t("Failed to {0} all {1} resource(s)", action.toLowerCase(), nodes.length)
+            : l10n.t("{0} {1} of {2} resource(s). {3} failed.", resourceActionVerbMap[action], successCount, nodes.length, errors.length);
           window.showWarningMessage(errorMessage);
         } else {
           window.showInformationMessage(l10n.t("Successfully {0} {1} resource(s)", action.toLowerCase(), successCount));

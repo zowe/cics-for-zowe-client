@@ -10,19 +10,17 @@
  */
 
 import {
+  ResourceTypes,
+  SupportedResourceTypes,
   type IResource,
   type IResourceContext,
   type IResourceProfileNameInfo,
-  ResourceTypes,
-  SupportedResourceTypes
 } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { type ExtensionContext, type InputBoxOptions, ProgressLocation, type QuickPickItem, commands, l10n, window } from "vscode";
+import { ProgressLocation, QuickPickItemKind, commands, l10n, window, type ExtensionContext, type InputBoxOptions, type QuickPickItem } from "vscode";
 import constants from "../constants/CICS.defaults";
 import { CICSMessages } from "../constants/CICS.messages";
 import {
-  type IContainedResource,
-  type IResourceMeta,
   LocalFileMeta,
   ManagedRegionMeta,
   RegionMeta,
@@ -30,18 +28,22 @@ import {
   SharedTSQueueMeta,
   TSQueueMeta,
   getMetas,
+  type IContainedResource,
+  type IResourceMeta,
 } from "../doc";
 import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
-import { type Resource, ResourceContainer } from "../resources";
+import { ResourceContainer, type Resource } from "../resources";
 import type { CICSRegionTree } from "../trees";
 import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
 import { CICSLogger } from "../utils/CICSLogger";
+import PersistentStorage from "../utils/PersistentStorage";
+import { setLastUsedRegion } from "../utils/lastUsedRegionUtils";
 import { getLastUsedRegion } from "./setCICSRegionCommand";
 
 export async function showInspectResource(
   context: ExtensionContext,
-  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext; }[]
+  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]
 ) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
@@ -49,6 +51,14 @@ export async function showInspectResource(
   commands.executeCommand("resource-inspector.focus");
 
   await ResourceInspectorViewProvider.getInstance(context).setResources(resources);
+
+  // Record each resource in recent history
+  for (const res of resources) {
+    await PersistentStorage.appendRecentResource({
+      resourceName: res.containedResource.meta.getName(res.containedResource.resource),
+      resourceType: res.containedResource.meta.resourceName,
+    });
+  }
 }
 
 export async function inspectResourceByNode(context: ExtensionContext, node: CICSResourceContainerNode<IResource>) {
@@ -66,6 +76,9 @@ export async function inspectResourceByNode(context: ExtensionContext, node: CIC
   );
 
   if (upToDateResource) {
+    // Save the region as the last used region for future "Inspect CICS Resource" commands
+    setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
     await showInspectResource(context, [
       { containedResource: upToDateResource, ctx: { ...resourceContext, profile: node.getProfile(), session: node.getSession() } },
     ]);
@@ -102,6 +115,9 @@ export async function inspectResourceByName(context: ExtensionContext, resourceN
 
     const upToDateResource = await loadResourcesWithProgress(type, resourceName, resourceContext);
     if (upToDateResource) {
+      // Save the region as the last used region for future "Inspect CICS Resource" commands
+      setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
       await showInspectResource(context, [
         { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
       ]);
@@ -122,8 +138,7 @@ async function loadResourcesWithProgress(
       cancellable: false,
     },
     async (progress, token) => {
-      token.onCancellationRequested(() => { });
-
+      token.onCancellationRequested(() => {});
       const resources = await loadResources(resourceTypes, resourceName, resourceContext, parentResource);
       if (!resources) {
         return;
@@ -140,7 +155,12 @@ export async function inspectResource(context: ExtensionContext) {
   if (cicsRegion) {
     const resourceTypes = await selectResourceType();
     if (resourceTypes) {
-      const resourceName = await selectResource(resourceTypes.name, resourceTypes.meta[0].maximumPrimaryKeyLength);
+      const resourceName = await selectResource(
+        resourceTypes.name,
+        resourceTypes.meta[0].resourceName,
+        resourceTypes.meta[0].humanReadableNamePlural,
+        resourceTypes.meta[0].maximumPrimaryKeyLength
+      );
 
       if (resourceName) {
         const resourceContext: IResourceProfileNameInfo = {
@@ -151,6 +171,9 @@ export async function inspectResource(context: ExtensionContext) {
 
         const upToDateResource = await loadResourcesWithProgress(resourceTypes.meta, resourceName, resourceContext);
         if (upToDateResource) {
+          // Save the region as the last used region (reconfirm it's still the active one)
+          setLastUsedRegion(resourceContext.regionName, resourceContext.profileName, resourceContext.cicsplexName);
+
           await showInspectResource(context, [
             { containedResource: upToDateResource, ctx: { ...resourceContext, profile: cicsRegion.profile, session: cicsRegion.session } },
           ]);
@@ -217,7 +240,7 @@ export function getInspectableResourceTypes(): Map<string, IResourceMeta<IResour
   return resourceTypeMap;
 }
 
-async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[]; }> {
+async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta<IResource>[] }> {
   const resourceTypeMap = getInspectableResourceTypes();
 
   const choice = await getChoiceFromQuickPick(CICSMessages.CICSSelectResourceType.message, Array.from(resourceTypeMap.keys()).sort());
@@ -231,7 +254,73 @@ async function selectResourceType(): Promise<{ name: string; meta: IResourceMeta
 
   return undefined;
 }
-async function selectResource(resourceNameSingular: string, maxNameLength?: number): Promise<string | undefined> {
+async function selectResource(
+  resourceNameSingular: string,
+  resourceType: string,
+  resourceNamePlural: string,
+  maxNameLength?: number
+): Promise<string | undefined> {
+  const recentForType = PersistentStorage.getRecentResources().filter((r) => r.resourceType === resourceType);
+
+  // No recent resources for this type — fall back to plain input box
+  if (recentForType.length === 0) {
+    return selectResourceByInputBox(resourceNameSingular, maxNameLength);
+  }
+
+  const ENTER_NAME_LABEL = l10n.t("Enter resource name...");
+  const recentSectionLabel = l10n.t("Recent CICS {0}", resourceNamePlural);
+
+  const buildItems = (typedValue?: string): QuickPickItem[] => {
+    const items: QuickPickItem[] = [];
+
+    if (typedValue && typedValue.trim().length > 0) {
+      items.push({ label: typedValue.trim(), description: l10n.t("Search for this name") });
+      items.push({ label: "", kind: QuickPickItemKind.Separator });
+    }
+
+    items.push({ label: recentSectionLabel, kind: QuickPickItemKind.Separator });
+    for (const r of recentForType) {
+      items.push({ label: r.resourceName });
+    }
+    items.push({ label: "", kind: QuickPickItemKind.Separator });
+    items.push({ label: ENTER_NAME_LABEL, description: l10n.t("Type a name to search") });
+
+    return items;
+  };
+
+  const quickPick = Gui.createQuickPick();
+  quickPick.placeholder = CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceNameSingular);
+  quickPick.ignoreFocusOut = true;
+  quickPick.items = buildItems();
+
+  quickPick.onDidChangeValue((value) => {
+    quickPick.items = buildItems(value);
+  });
+
+  quickPick.show();
+  const choice = await Gui.resolveQuickPick(quickPick);
+  quickPick.hide();
+
+  if (!choice) {
+    return undefined;
+  }
+
+  // Sentinel item — fall back to input box
+  if (choice.label === ENTER_NAME_LABEL) {
+    return selectResourceByInputBox(resourceNameSingular, maxNameLength);
+  }
+
+  const name = choice.label.trim();
+  const maxLength = maxNameLength ?? constants.MAX_RESOURCE_NAME_LENGTH;
+  if (name.length > maxLength) {
+    window.showErrorMessage(CICSMessages.CICSInvalidResourceNameLength.message.replace("%length%", `${maxLength}`));
+    return undefined;
+  }
+
+  return name || undefined;
+}
+
+async function selectResourceByInputBox(resourceNameSingular: string, maxNameLength?: number): Promise<string | undefined> {
   const options: InputBoxOptions = {
     prompt: CICSMessages.CICSEnterResourceName.message.replace("%resource-human-readable%", resourceNameSingular),
 

@@ -11,16 +11,16 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { type ExtensionContext, type TreeView, commands, window } from "vscode";
+import { commands, window, type ExtensionContext, type TreeView } from "vscode";
+import * as compareResourceCommand from "../../../src/commands/compareResourceCommand";
+import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
 import {
-  getInspectTreeResourceCommand,
-  getCompareResourcesCommand,
   getCompareResourceToCommand,
+  getCompareResourcesCommand,
+  getInspectTreeResourceCommand,
 } from "../../../src/commands/inspectTreeResourceCommand";
 import type { CICSResourceContainerNode } from "../../../src/trees";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
-import * as compareResourceCommand from "../../../src/commands/compareResourceCommand";
-import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
 
 jest.mock("vscode");
 jest.mock("@zowe/zowe-explorer-api");
@@ -89,10 +89,7 @@ describe("inspectTreeResourceCommand", () => {
     it("should register the command", () => {
       getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
 
-      expect(commands.registerCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.inspectTreeResource",
-        expect.any(Function)
-      );
+      expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.inspectTreeResource", expect.any(Function));
     });
 
     it("should inspect resource when node is provided", async () => {
@@ -158,7 +155,11 @@ describe("inspectTreeResourceCommand", () => {
       const mockNode2 = { ...mockNode };
       const mockNode3 = { ...mockNode };
       // Need at least 3 nodes: after pop(), there should be > 1 left
-      mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>, mockNode3 as CICSResourceContainerNode<IResource>];
+      mockTreeView.selection = [
+        mockNode as CICSResourceContainerNode<IResource>,
+        mockNode2 as CICSResourceContainerNode<IResource>,
+        mockNode3 as CICSResourceContainerNode<IResource>,
+      ];
       getInspectTreeResourceCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
@@ -173,10 +174,7 @@ describe("inspectTreeResourceCommand", () => {
     it("should register the command", () => {
       getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
 
-      expect(commands.registerCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.compareTreeResources",
-        expect.any(Function)
-      );
+      expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.compareTreeResources", expect.any(Function));
     });
 
     it("should use inspector resource when no selection and no node", async () => {
@@ -202,6 +200,12 @@ describe("inspectTreeResourceCommand", () => {
       await commandHandler(undefined);
 
       expect(compareResourceCommand.compareTreeNodeWithPrompts).toHaveBeenCalled();
+
+      // Verify the inspectorAsNode structure by calling getContainedResource
+      const callArgs = (compareResourceCommand.compareTreeNodeWithPrompts as jest.Mock).mock.calls[0][0];
+      const containedResource = callArgs.getContainedResource();
+      expect(containedResource.meta).toBe(mockMeta);
+      expect(containedResource.resource.attributes).toBe(mockResource.attributes);
     });
 
     it("should show error when no resources in inspector", async () => {
@@ -253,16 +257,17 @@ describe("inspectTreeResourceCommand", () => {
 
       await commandHandler(undefined);
 
-      expect(Gui.showMessage).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({ severity: MessageSeverity.ERROR })
-      );
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ severity: MessageSeverity.ERROR }));
     });
 
     it("should return early when more than 2 nodes selected", async () => {
       const mockNode2 = { ...mockNode };
       const mockNode3 = { ...mockNode };
-      mockTreeView.selection = [mockNode as CICSResourceContainerNode<IResource>, mockNode2 as CICSResourceContainerNode<IResource>, mockNode3 as CICSResourceContainerNode<IResource>];
+      mockTreeView.selection = [
+        mockNode as CICSResourceContainerNode<IResource>,
+        mockNode2 as CICSResourceContainerNode<IResource>,
+        mockNode3 as CICSResourceContainerNode<IResource>,
+      ];
       getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
@@ -302,10 +307,7 @@ describe("inspectTreeResourceCommand", () => {
     it("should register the command", () => {
       getCompareResourceToCommand();
 
-      expect(commands.registerCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.compareTreeResourceTo",
-        expect.any(Function)
-      );
+      expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.compareTreeResourceTo", expect.any(Function));
     });
 
     it("should execute compareTreeResources command", async () => {
@@ -314,10 +316,7 @@ describe("inspectTreeResourceCommand", () => {
 
       await commandHandler(mockNode);
 
-      expect(commands.executeCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.compareTreeResources",
-        mockNode
-      );
+      expect(commands.executeCommand).toHaveBeenCalledWith("cics-extension-for-zowe.compareTreeResources", mockNode);
     });
   });
 });

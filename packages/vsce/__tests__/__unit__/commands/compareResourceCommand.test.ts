@@ -9,22 +9,78 @@
  *
  */
 
-import { window, type ExtensionContext } from "vscode";
-import { Gui, MessageSeverity, type imperative } from "@zowe/zowe-explorer-api";
-import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
-import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
-import { Resource, ResourceContainer } from "../../../src/resources";
-import { ProgramMeta } from "../../../src/doc/meta/program.meta";
-import * as setCICSRegionCommand from "../../../src/commands/setCICSRegionCommand";
-import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
-import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
-import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+// ─── Mocks (must be before imports) ──────────────────────────────────────────
 
 jest.mock("vscode");
-jest.mock("@zowe/zowe-explorer-api");
-jest.mock("../../../src/resources");
+
+const createQuickPickMock = jest.fn();
+const resolveQuickPickMock = jest.fn();
+const showMessageMock = jest.fn();
+
+jest.mock("@zowe/zowe-explorer-api", () => ({
+  Gui: {
+    createQuickPick: createQuickPickMock,
+    resolveQuickPick: resolveQuickPickMock,
+    showMessage: showMessageMock,
+  },
+  MessageSeverity: {
+    ERROR: "ERROR",
+    INFO: "INFO",
+    WARNING: "WARNING",
+  },
+  ZoweVsCodeExtension: {
+    getZoweExplorerApi: jest.fn().mockReturnValue({
+      getExplorerExtenderApi: jest.fn().mockReturnValue({
+        getProfilesCache: jest.fn().mockReturnValue({}),
+      }),
+    }),
+  },
+}));
+
+// Mock ResourceContainer but use actual Resource class
+jest.mock("../../../src/resources", () => {
+  const actual = jest.requireActual("../../../src/resources/Resource");
+  return {
+    Resource: actual.Resource,
+    ResourceContainer: jest.fn(),
+  };
+});
+
+const mockGetRecentResources = jest.fn().mockReturnValue([]);
+const mockAppendRecentResource = jest.fn().mockResolvedValue(undefined);
+
+jest.mock("../../../src/utils/PersistentStorage", () => ({
+  __esModule: true,
+  default: {
+    get appendRecentResource() {
+      return mockAppendRecentResource;
+    },
+    get getRecentResources() {
+      return mockGetRecentResources;
+    },
+  },
+}));
+
 jest.mock("../../../src/commands/setCICSRegionCommand");
 jest.mock("../../../src/commands/inspectResourceCommandUtils");
+
+// ─── Imports ──────────────────────────────────────────────────────────────────
+
+import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
+import type { CICSSession } from "@zowe/cics-for-zowe-sdk";
+import { Gui, MessageSeverity, type imperative } from "@zowe/zowe-explorer-api";
+import { window, type ExtensionContext } from "vscode";
+import { compareTreeNodeWithPrompts } from "../../../src/commands/compareResourceCommand";
+import * as inspectResourceCommandUtils from "../../../src/commands/inspectResourceCommandUtils";
+import * as setCICSRegionCommand from "../../../src/commands/setCICSRegionCommand";
+import { ProgramMeta } from "../../../src/doc/meta/program.meta";
+import type { CICSResourceContainerNode } from "../../../src/trees/CICSResourceContainerNode";
+
+// Import Resource before mocking to use the actual implementation
+import { Resource } from "../../../src/resources/Resource";
+
+// Get the mocked ResourceContainer for use in tests
+const { ResourceContainer } = jest.requireMock<{ ResourceContainer: jest.Mock }>("../../../src/resources");
 
 describe("compareResourceCommand", () => {
   let mockNode: Partial<CICSResourceContainerNode<IResource>>;
@@ -62,6 +118,7 @@ describe("compareResourceCommand", () => {
 
     mockResource = {
       attributes: {
+        program: "TESTPROG",
         name: "TESTPROG",
         eyu_cicsname: "TESTREGION",
       } as IResource,
@@ -80,18 +137,18 @@ describe("compareResourceCommand", () => {
 
     mockContext = {} as ExtensionContext;
 
-    (window.showErrorMessage as jest.Mock) = jest.fn();
-    (window.showInputBox as jest.Mock) = jest.fn();
-    (Gui.showMessage as jest.Mock) = jest.fn();
+    (window.showErrorMessage as jest.Mock).mockResolvedValue(undefined);
+    (window.showInputBox as jest.Mock).mockResolvedValue(undefined);
+    createQuickPickMock.mockClear();
+    resolveQuickPickMock.mockClear();
+    showMessageMock.mockClear();
   });
 
   describe("compareTreeNodeWithPrompts", () => {
     it("should show error when no node is provided", async () => {
       await compareTreeNodeWithPrompts(null as any, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource selected")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource selected"));
     });
 
     it("should show error when node has no meta", async () => {
@@ -102,9 +159,7 @@ describe("compareResourceCommand", () => {
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource information available to compare")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource information available to compare"));
     });
 
     it("should show error when node has no resource", async () => {
@@ -115,13 +170,11 @@ describe("compareResourceCommand", () => {
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("No CICS resource information available to compare")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("No CICS resource information available to compare"));
     });
 
     it("should handle user cancelling region selection", async () => {
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(null);
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(null);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -137,8 +190,8 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -154,10 +207,10 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
       let validateInput: ((value: string) => string | undefined) | undefined;
-      (window.showInputBox as jest.Mock) = jest.fn().mockImplementation((options) => {
+      (window.showInputBox as jest.Mock).mockImplementation((options) => {
         validateInput = options.validateInput;
         return Promise.resolve("TESTPROG2");
       });
@@ -180,14 +233,14 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -208,8 +261,8 @@ describe("compareResourceCommand", () => {
         resourceName: "DIFFERENT_TYPE",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
@@ -220,14 +273,13 @@ describe("compareResourceCommand", () => {
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(Gui.showMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Cannot compare CICS resources of different types"),
-        { severity: MessageSeverity.ERROR }
-      );
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("Cannot compare CICS resources of different types"), {
+        severity: MessageSeverity.ERROR,
+      });
     });
 
     it("should successfully compare two resources", async () => {
@@ -238,20 +290,20 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([
           {
             meta: programMeta,
-            resource: new Resource({ name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
+            resource: new Resource({ program: "TESTPROG2", name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
-      (inspectResourceCommandUtils.showInspectResource as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
@@ -274,24 +326,22 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockError = new Error("Test error");
-      (ResourceContainer as jest.Mock) = jest.fn().mockImplementation(() => {
+      (ResourceContainer as jest.Mock).mockImplementation(() => {
         throw mockError;
       });
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
-      expect(window.showErrorMessage).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to compare resources")
-      );
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("Failed to compare resources"));
     });
 
     it("should use eyu_cicsname when regionName is not available", async () => {
       mockNode.regionName = undefined;
-      
+
       const mockTargetRegion = {
         profile: mockProfile,
         session: mockSession,
@@ -299,24 +349,233 @@ describe("compareResourceCommand", () => {
         regionName: "TESTREGION2",
       };
 
-      (setCICSRegionCommand.getLastUsedRegion as jest.Mock) = jest.fn().mockResolvedValue(mockTargetRegion);
-      (window.showInputBox as jest.Mock) = jest.fn().mockResolvedValue("TESTPROG2");
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+      (window.showInputBox as jest.Mock).mockResolvedValue("TESTPROG2");
 
       const mockResourceContainer = {
         setCriteria: jest.fn(),
         fetchNextPage: jest.fn().mockResolvedValue([
           {
             meta: programMeta,
-            resource: new Resource({ name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
+            resource: new Resource({ program: "TESTPROG2", name: "TESTPROG2", eyu_cicsname: "TESTREGION2" }),
           },
         ]),
       };
-      (ResourceContainer as jest.Mock) = jest.fn().mockReturnValue(mockResourceContainer);
-      (inspectResourceCommandUtils.showInspectResource as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
 
       await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
 
       expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalled();
+    });
+
+    it("should show QuickPick with recent resources when available", async () => {
+      const mockTargetRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        cicsPlexName: "TESTPLEX2",
+        regionName: "TESTREGION2",
+      };
+
+      // Mock recent resources
+      mockGetRecentResources.mockReturnValue([
+        { resourceName: "PROG1", resourceType: "CICSProgram" },
+        { resourceName: "PROG2", resourceType: "CICSProgram" },
+        { resourceName: "TESTPROG", resourceType: "CICSProgram" }, // Current resource - should be filtered out
+      ]);
+
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
+      const mockQuickPick = {
+        placeholder: "",
+        ignoreFocusOut: false,
+        items: [] as any[],
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      createQuickPickMock.mockReturnValue(mockQuickPick);
+      resolveQuickPickMock.mockResolvedValue({ label: "PROG1" });
+
+      const mockResourceContainer = {
+        setCriteria: jest.fn(),
+        fetchNextPage: jest.fn().mockResolvedValue([
+          {
+            meta: programMeta,
+            resource: new Resource({ program: "PROG1", name: "PROG1", eyu_cicsname: "TESTREGION2" }),
+          },
+        ]),
+      };
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
+
+      await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
+
+      expect(createQuickPickMock).toHaveBeenCalled();
+      expect(mockQuickPick.onDidChangeValue).toHaveBeenCalled();
+      expect(mockQuickPick.show).toHaveBeenCalled();
+      expect(resolveQuickPickMock).toHaveBeenCalledWith(mockQuickPick);
+    });
+
+    it("should update QuickPick items when user types in search box", async () => {
+      const mockTargetRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        cicsPlexName: "TESTPLEX2",
+        regionName: "TESTREGION2",
+      };
+
+      mockGetRecentResources.mockReturnValue([
+        { resourceName: "PROG1", resourceType: "CICSProgram" },
+        { resourceName: "PROG2", resourceType: "CICSProgram" },
+      ]);
+
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
+      let onDidChangeValueCallback: ((value: string) => void) | undefined;
+      const mockQuickPick = {
+        placeholder: "",
+        ignoreFocusOut: false,
+        items: [] as any[],
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn((callback) => {
+          onDidChangeValueCallback = callback;
+        }),
+      };
+
+      createQuickPickMock.mockReturnValue(mockQuickPick);
+      resolveQuickPickMock.mockResolvedValue({ label: "NEWPROG" });
+
+      const mockResourceContainer = {
+        setCriteria: jest.fn(),
+        fetchNextPage: jest.fn().mockResolvedValue([
+          {
+            meta: programMeta,
+            resource: new Resource({ program: "NEWPROG", name: "NEWPROG", eyu_cicsname: "TESTREGION2" }),
+          },
+        ]),
+      };
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
+
+      await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
+
+      // Trigger the onDidChangeValue callback
+      expect(onDidChangeValueCallback).toBeDefined();
+      onDidChangeValueCallback?.("NEWPROG");
+
+      // Verify items were updated with typed value
+      expect(mockQuickPick.items).toEqual(
+        expect.arrayContaining([expect.objectContaining({ label: "NEWPROG", description: expect.stringContaining("Search for this name") })])
+      );
+    });
+
+    it("should fallback to input box when 'Enter resource name...' is selected", async () => {
+      const mockTargetRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        cicsPlexName: "TESTPLEX2",
+        regionName: "TESTREGION2",
+      };
+
+      mockGetRecentResources.mockReturnValue([{ resourceName: "PROG1", resourceType: "CICSProgram" }]);
+
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
+      const mockQuickPick = {
+        placeholder: "",
+        ignoreFocusOut: false,
+        items: [] as any[],
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      createQuickPickMock.mockReturnValue(mockQuickPick);
+      // User selects "Enter resource name..." option
+      resolveQuickPickMock.mockResolvedValue({ label: "Enter resource name...", description: "Type a name to search" });
+      (window.showInputBox as jest.Mock).mockResolvedValue("INPUTPROG");
+
+      const mockResourceContainer = {
+        setCriteria: jest.fn(),
+        fetchNextPage: jest.fn().mockResolvedValue([
+          {
+            meta: programMeta,
+            resource: new Resource({ program: "INPUTPROG", name: "INPUTPROG", eyu_cicsname: "TESTREGION2" }),
+          },
+        ]),
+      };
+      (ResourceContainer as jest.Mock).mockReturnValue(mockResourceContainer);
+      (inspectResourceCommandUtils.showInspectResource as jest.Mock).mockResolvedValue(undefined);
+
+      await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
+
+      expect(window.showInputBox).toHaveBeenCalled();
+      expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalled();
+    });
+
+    it("should validate resource name length in QuickPick selection", async () => {
+      const mockTargetRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        cicsPlexName: "TESTPLEX2",
+        regionName: "TESTREGION2",
+      };
+
+      mockGetRecentResources.mockReturnValue([{ resourceName: "PROG1", resourceType: "CICSProgram" }]);
+
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
+      const mockQuickPick = {
+        placeholder: "",
+        ignoreFocusOut: false,
+        items: [] as any[],
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      createQuickPickMock.mockReturnValue(mockQuickPick);
+      // User selects a name that's too long
+      const tooLongName = "A".repeat(100);
+      resolveQuickPickMock.mockResolvedValue({ label: tooLongName });
+
+      await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining("length"));
+      expect(ResourceContainer).not.toHaveBeenCalled();
+    });
+
+    it("should handle user canceling QuickPick selection", async () => {
+      const mockTargetRegion = {
+        profile: mockProfile,
+        session: mockSession,
+        cicsPlexName: "TESTPLEX2",
+        regionName: "TESTREGION2",
+      };
+
+      mockGetRecentResources.mockReturnValue([{ resourceName: "PROG1", resourceType: "CICSProgram" }]);
+
+      (setCICSRegionCommand.getLastUsedRegion as jest.Mock).mockResolvedValue(mockTargetRegion);
+
+      const mockQuickPick = {
+        placeholder: "",
+        ignoreFocusOut: false,
+        items: [] as any[],
+        show: jest.fn(),
+        hide: jest.fn(),
+        onDidChangeValue: jest.fn(),
+      };
+
+      createQuickPickMock.mockReturnValue(mockQuickPick);
+      resolveQuickPickMock.mockResolvedValue(undefined);
+
+      await compareTreeNodeWithPrompts(mockNode as CICSResourceContainerNode<IResource>, mockContext);
+
+      expect(ResourceContainer).not.toHaveBeenCalled();
+      expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
     });
   });
 });

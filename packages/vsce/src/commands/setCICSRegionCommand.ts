@@ -9,16 +9,16 @@
  *
  */
 
+import type { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { IProfileLoaded } from "@zowe/imperative";
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { commands, l10n } from "vscode";
-import type { IManagedRegion } from "@zowe/cics-for-zowe-explorer-api";
 import type { ICICSRegionWithSession } from "../doc/commands/ICICSRegionWithSession";
 import { SessionHandler } from "../resources";
 import { CICSLogger } from "../utils/CICSLogger";
 import { FilterDescriptor } from "../utils/filterUtils";
 import * as regionUtils from "../utils/lastUsedRegionUtils";
-import { type InfoLoaded, ProfileManagement } from "../utils/profileManagement";
+import { ProfileManagement, type InfoLoaded } from "../utils/profileManagement";
 
 export function setCICSRegionCommand() {
   return commands.registerCommand("cics-extension-for-zowe.setCICSRegion", async () => {
@@ -27,7 +27,8 @@ export function setCICSRegionCommand() {
 }
 
 export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | undefined> {
-  const quickPick = Gui.createQuickPick();
+  const otherLabel = l10n.t("Other CICS Region");
+
   if (await regionUtils.isCICSProfileValidInSettings()) {
     const { profileName, regionName, cicsPlexName } = await regionUtils.getLastUsedRegion();
     const lastUsedRegionLabel =
@@ -35,10 +36,12 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
         l10n.t("Region: {0} | CICSplex : {1} | Profile: {2}", regionName, cicsPlexName, profileName)
       : l10n.t("Region: {0} | Profile: {1}", regionName, profileName);
 
-    const otherLabel = l10n.t("Other CICS Region");
     const items = [{ label: lastUsedRegionLabel, description: l10n.t("Last used region") }, { label: otherLabel }];
+
+    const quickPick = Gui.createQuickPick();
     const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items]);
     quickPick.hide();
+    quickPick.dispose();
 
     if (!choice) {
       return;
@@ -52,6 +55,17 @@ export async function getLastUsedRegion(): Promise<ICICSRegionWithSession | unde
       return setCICSRegion();
     }
   } else {
+    // No valid last used region, show QuickPick with only "Other CICS Region" option
+    const items = [{ label: otherLabel }];
+    const quickPick = Gui.createQuickPick();
+    const choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Region"), [...items]);
+    quickPick.hide();
+    quickPick.dispose();
+
+    if (!choice) {
+      return;
+    }
+
     CICSLogger.info("Setting new region");
     return setCICSRegion();
   }
@@ -61,6 +75,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
   const quickPick = Gui.createQuickPick();
   const profileNames = await regionUtils.getAllCICSProfiles();
   if (profileNames.length === 0) {
+    quickPick.dispose();
     Gui.infoMessage(l10n.t("No CICS profiles found. Please configure a valid CICS profile"));
     return;
   }
@@ -73,6 +88,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
   let choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select Profile"), [...cicsProfiles]);
   quickPick.hide();
   if (!choice) {
+    quickPick.dispose();
     return;
   }
 
@@ -95,6 +111,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
       choice = await regionUtils.getChoiceFromQuickPick(quickPick, l10n.t("Select CICSplex"), [...plexNames.map((name) => ({ label: name }))]);
       quickPick.hide();
       if (!choice) {
+        quickPick.dispose();
         return;
       }
 
@@ -104,6 +121,10 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
       Gui.showMessage(l10n.t("No Regions or CICSplexes found in the selected profile."));
     }
   }
+
+  // Dispose the profile selection quickPick before creating a new one
+  quickPick.dispose();
+
   if (isPlex) {
     const regionQuickPick = Gui.createQuickPick();
     regionQuickPick.placeholder = l10n.t("Select CICS Region");
@@ -117,6 +138,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
     });
     const regionInfoResult = await ProfileManagement.getRegionInfo(cicsPlexName, profile);
     if (isCancelled) {
+      regionQuickPick.dispose();
       return;
     }
 
@@ -128,6 +150,7 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
         ...activeRegions.map((region: IManagedRegion) => ({ label: region.cicsname })),
       ]);
       regionQuickPick.hide();
+      regionQuickPick.dispose();
       if (!choice) {
         return undefined;
       }
@@ -136,7 +159,8 @@ export async function setCICSRegion(): Promise<ICICSRegionWithSession | undefine
       CICSLogger.info(`region set to ${regionName} for profile ${profileName.label} and plex ${cicsPlexName || "NA"}`);
     } else {
       regionQuickPick.hide();
-       Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName), { severity: MessageSeverity.ERROR });
+      regionQuickPick.dispose();
+      Gui.showMessage(l10n.t("No Active Regions found in {0}", cicsPlexName), { severity: MessageSeverity.ERROR });
     }
   }
 

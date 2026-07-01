@@ -10,8 +10,8 @@
  */
 
 import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
-import { commands, QuickPickItem } from "vscode";
-import { setCICSRegionCommand, getLastUsedRegion, setCICSRegion } from "../../../src/commands/setCICSRegionCommand";
+import { QuickPickItem, commands } from "vscode";
+import { getLastUsedRegion, setCICSRegion, setCICSRegionCommand } from "../../../src/commands/setCICSRegionCommand";
 import { SessionHandler } from "../../../src/resources";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 import * as regionUtils from "../../../src/utils/lastUsedRegionUtils";
@@ -28,6 +28,7 @@ describe("setCICSRegionCommand", () => {
   let mockQuickPick: {
     show: jest.Mock;
     hide: jest.Mock;
+    dispose: jest.Mock;
     onDidHide: jest.Mock;
     placeholder: string;
     busy: boolean;
@@ -51,6 +52,7 @@ describe("setCICSRegionCommand", () => {
     mockQuickPick = {
       show: jest.fn(),
       hide: jest.fn(),
+      dispose: jest.fn(),
       onDidHide: jest.fn(),
       placeholder: "",
       busy: false,
@@ -88,10 +90,24 @@ describe("setCICSRegionCommand", () => {
 
       setCICSRegionCommand();
 
-      expect(mockRegisterCommand).toHaveBeenCalledWith(
-        "cics-extension-for-zowe.setCICSRegion",
-        expect.any(Function)
-      );
+      expect(mockRegisterCommand).toHaveBeenCalledWith("cics-extension-for-zowe.setCICSRegion", expect.any(Function));
+    });
+
+    it("should execute the registered command callback", async () => {
+      (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue([]);
+
+      let registeredCallback: (() => Promise<void>) | undefined;
+      const mockRegisterCommand = jest.fn((commandId, callback) => {
+        registeredCallback = callback;
+      });
+      (commands.registerCommand as jest.Mock) = mockRegisterCommand;
+
+      setCICSRegionCommand();
+
+      expect(registeredCallback).toBeDefined();
+      await registeredCallback!();
+
+      expect(Gui.infoMessage).toHaveBeenCalled();
     });
   });
 
@@ -166,13 +182,26 @@ describe("setCICSRegionCommand", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should call setCICSRegion when profile is not valid", async () => {
+    it("should show QuickPick with 'Other CICS Region' when profile is not valid", async () => {
       (regionUtils.isCICSProfileValidInSettings as jest.Mock) = jest.fn().mockResolvedValue(false);
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue([]);
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockResolvedValue(undefined);
+
+      await getLastUsedRegion();
+
+      expect(regionUtils.getChoiceFromQuickPick).toHaveBeenCalledWith(mockQuickPick, "Select Region", [{ label: "Other CICS Region" }]);
+    });
+
+    it("should call setCICSRegion when 'Other CICS Region' is selected and profile is not valid", async () => {
+      (regionUtils.isCICSProfileValidInSettings as jest.Mock) = jest.fn().mockResolvedValue(false);
+      (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue([]);
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockResolvedValue({ label: "Other CICS Region" });
+      (CICSLogger.info as jest.Mock) = jest.fn();
 
       await getLastUsedRegion();
 
       expect(CICSLogger.info).toHaveBeenCalledWith("Setting new region");
+      expect(Gui.infoMessage).toHaveBeenCalled();
     });
   });
 
@@ -217,7 +246,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
@@ -237,20 +267,23 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([
-        { plexname: null, group: false, regions: [{ applid: "region1" }] },
-      ]);
+      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest
+        .fn()
+        .mockResolvedValue([{ plexname: null, group: false, regions: [{ applid: "region1" }] }]);
       (regionUtils.setLastUsedRegion as jest.Mock) = jest.fn();
+      (CICSLogger.info as jest.Mock) = jest.fn();
 
       const result = await setCICSRegion();
 
       expect(result).toBeDefined();
       expect(result?.regionName).toBe("region1");
+      expect(CICSLogger.info).toHaveBeenCalledWith("Region set to region1 for profile testProfile");
     });
 
     it("should handle plexInfo with plexes", async () => {
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "plex1" })
         .mockResolvedValueOnce({ label: "region1" });
@@ -268,14 +301,26 @@ describe("setCICSRegionCommand", () => {
       expect(result).toBeDefined();
     });
 
+    it("should return undefined when plex selection is cancelled", async () => {
+      (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
+        .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
+        .mockResolvedValueOnce(undefined); // Cancel plex selection
+      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([{ plexname: "plex1", group: false }]);
+
+      const result = await setCICSRegion();
+
+      expect(result).toBeUndefined();
+      expect(mockQuickPick.dispose).toHaveBeenCalled();
+    });
+
     it("should show message when no regions or plexes found", async () => {
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([
-        { plexname: "test", group: true },
-      ]);
+      (regionUtils.getPlexInfoFromProfile as jest.Mock) = jest.fn().mockResolvedValue([{ plexname: "test", group: true }]);
 
       await setCICSRegion();
 
@@ -286,7 +331,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
@@ -303,10 +349,11 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce(undefined);
-      
+
       let hideCallback: (() => void) | undefined;
       mockQuickPick.onDidHide = jest.fn((cb: () => void) => {
         hideCallback = cb;
@@ -333,10 +380,7 @@ describe("setCICSRegionCommand", () => {
 
       await setCICSRegion();
 
-      expect(Gui.showMessage).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({ severity: MessageSeverity.ERROR })
-      );
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ severity: MessageSeverity.ERROR }));
     });
 
     it("should handle cancelled plex selection", async () => {
@@ -344,7 +388,7 @@ describe("setCICSRegionCommand", () => {
       (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn().mockImplementation((qp, placeholder, items) => {
         return Promise.resolve(items[0]);
       });
-      
+
       let hideCallback: (() => void) | undefined;
       mockQuickPick.onDidHide = jest.fn((cb: () => void) => {
         hideCallback = cb;
@@ -364,7 +408,8 @@ describe("setCICSRegionCommand", () => {
       mockProfile.profile.cicsPlex = "testPlex";
 
       (regionUtils.getAllCICSProfiles as jest.Mock) = jest.fn().mockResolvedValue(["testProfile"]);
-      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest.fn()
+      (regionUtils.getChoiceFromQuickPick as jest.Mock) = jest
+        .fn()
         .mockImplementationOnce((qp, placeholder, items) => Promise.resolve(items[0]))
         .mockResolvedValueOnce({ label: "region1" });
       (ProfileManagement.getRegionInfo as jest.Mock) = jest.fn().mockResolvedValue({
