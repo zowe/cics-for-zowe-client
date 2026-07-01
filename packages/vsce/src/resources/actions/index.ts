@@ -10,6 +10,8 @@
  */
 
 import { type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { getJVMEndpointActions } from "./JVMEndpointActions";
+import { getJVMServerActions } from "./JVMServerActions";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
@@ -22,6 +24,8 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSProgram, getProgramActions());
   map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
   map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
+  map.set(ResourceTypes.CICSJVMServer, getJVMServerActions());
+  map.set(ResourceTypes.CICSJVMEndpoint, getJVMEndpointActions());
   map.set(ResourceTypes.CICSTSQueue, getTSQueueActions());
   map.set(ResourceTypes.CICSSharedTSQueue, getSharedTSQueueActions());
   map.set(ResourceTypes.CICSManagedRegion, getManagedRegionActions());
@@ -30,6 +34,8 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   return map;
 }
 
+export * from "./JVMEndpointActions";
+export * from "./JVMServerActions";
 export * from "./LocalFileActions";
 export * from "./ProgramActions";
 export * from "./TSQueueActions";
