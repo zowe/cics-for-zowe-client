@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import * as https from "https";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
 import { CICSLocalFileTreeItem } from "../trees/treeItems/CICSLocalFileTreeItem";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
@@ -52,8 +51,6 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
             });
             const currentNode = allSelectedNodes[parseInt(index)];
 
-            https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
             try {
               await closeLocalFile(
                 currentNode.parentRegion.parentSession.session,
@@ -64,12 +61,10 @@ export function getCloseLocalFileCommand(tree: CICSTree, treeview: TreeView<any>
                 },
                 busyDecision
               );
-              https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
                 parentRegions.push(currentNode.parentRegion);
               }
             } catch (error) {
-              https.globalAgent.options.rejectUnauthorized = undefined;
               // @ts-ignore
               if (error.mMessage) {
                 // @ts-ignore

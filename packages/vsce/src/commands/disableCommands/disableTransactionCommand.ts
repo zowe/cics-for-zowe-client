@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import * as https from "https";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes, splitCmciErrorMessage } from "../../utils/commandUtils";
 import { CICSTransactionTreeItem } from "../../trees/treeItems/CICSTransactionTreeItem";
@@ -45,20 +44,16 @@ export function getDisableTransactionCommand(tree: CICSTree, treeview: TreeView<
           });
           const currentNode = allSelectedNodes[parseInt(index)];
 
-          https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
           try {
             await disableTransaction(currentNode.parentRegion.parentSession.session, {
               name: currentNode.transaction.tranid,
               regionName: currentNode.parentRegion.label,
               cicsPlex: currentNode.parentRegion.parentPlex ? currentNode.parentRegion.parentPlex.getPlexName() : undefined,
             });
-            https.globalAgent.options.rejectUnauthorized = undefined;
             if (!parentRegions.includes(currentNode.parentRegion)) {
               parentRegions.push(currentNode.parentRegion);
             }
           } catch (error) {
-            https.globalAgent.options.rejectUnauthorized = undefined;
             // @ts-ignore
             if (error.mMessage) {
               // @ts-ignore

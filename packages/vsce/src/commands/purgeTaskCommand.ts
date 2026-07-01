@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSTree } from "../trees/CICSTree";
-import * as https from "https";
 import { findSelectedNodes, splitCmciErrorMessage } from "../utils/commandUtils";
 import { CICSTaskTreeItem } from "../trees/treeItems/CICSTaskTreeItem";
 import { CICSRegionsContainer } from "../trees/CICSRegionsContainer";
@@ -55,8 +54,6 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
             });
             const currentNode = allSelectedNodes[parseInt(index)];
 
-            https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
             try {
               await purgeTask(
                 currentNode.parentRegion.parentSession.session,
@@ -67,12 +64,10 @@ export function getPurgeTaskCommand(tree: CICSTree, treeview: TreeView<any>) {
                 },
                 purgeType
               );
-              https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
                 parentRegions.push(currentNode.parentRegion);
               }
             } catch (error) {
-              https.globalAgent.options.rejectUnauthorized = undefined;
               // @ts-ignore
               if (error.mMessage) {
                 // @ts-ignore

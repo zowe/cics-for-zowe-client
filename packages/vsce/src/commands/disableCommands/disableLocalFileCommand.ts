@@ -14,7 +14,6 @@ import { imperative } from "@zowe/zowe-explorer-api";
 import { commands, ProgressLocation, TreeView, window } from "vscode";
 import { CICSRegionTree } from "../../trees/CICSRegionTree";
 import { CICSTree } from "../../trees/CICSTree";
-import * as https from "https";
 import { CICSRegionsContainer } from "../../trees/CICSRegionsContainer";
 import { findSelectedNodes } from "../../utils/commandUtils";
 import { CICSLocalFileTreeItem } from "../../trees/treeItems/CICSLocalFileTreeItem";
@@ -52,8 +51,6 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
             });
             const currentNode = allSelectedNodes[parseInt(index)];
 
-            https.globalAgent.options.rejectUnauthorized = currentNode.parentRegion.parentSession.session.ISession.rejectUnauthorized;
-
             try {
               await disableLocalFile(
                 currentNode.parentRegion.parentSession.session,
@@ -64,12 +61,10 @@ export function getDisableLocalFileCommand(tree: CICSTree, treeview: TreeView<an
                 },
                 busyDecision
               );
-              https.globalAgent.options.rejectUnauthorized = undefined;
               if (!parentRegions.includes(currentNode.parentRegion)) {
                 parentRegions.push(currentNode.parentRegion);
               }
             } catch (error) {
-              https.globalAgent.options.rejectUnauthorized = undefined;
               window.showErrorMessage(
                 `Something went wrong when performing a DISABLE - ${JSON.stringify(error, Object.getOwnPropertyNames(error)).replace(
                   /(\\n\t|\\n|\\t)/gm,

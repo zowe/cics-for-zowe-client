@@ -13,7 +13,6 @@ import { TreeItemCollapsibleState, TreeItem, window } from "vscode";
 import { CICSRegionTree } from "../CICSRegionTree";
 import { getIconPathInResources } from "../../utils/profileUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { CICSProgramTreeItem } from "./CICSProgramTreeItem";
 import { toEscapedCriteriaString } from "../../utils/filterUtils";
 
@@ -58,15 +57,12 @@ export class CICSLibraryDatasets extends TreeItem {
 
     this.children = [];
     try {
-      https.globalAgent.options.rejectUnauthorized = this.parentRegion.parentSession.session.ISession.rejectUnauthorized;
       const datasetResponse = await getResource(this.parentRegion.parentSession.session, {
         name: "CICSProgram",
         regionName: this.parentRegion.getRegionName(),
         cicsPlex: this.parentRegion.parentPlex ? this.parentRegion.parentPlex.getPlexName() : undefined,
         criteria: criteria,
       });
-      https.globalAgent.options.rejectUnauthorized = undefined;
-
       const programsArray = Array.isArray(datasetResponse.response.records.cicsprogram)
         ? datasetResponse.response.records.cicsprogram
         : [datasetResponse.response.records.cicsprogram];
@@ -76,7 +72,6 @@ export class CICSLibraryDatasets extends TreeItem {
         this.addProgram(newProgramItem);
       }
     } catch (error) {
-      https.globalAgent.options.rejectUnauthorized = undefined;
       if (error.mMessage!.includes("exceeded a resource limit")) {
         window.showErrorMessage(`Resource Limit Exceeded - Set a program filter to narrow search`);
       } else if (this.children.length === 0) {

@@ -14,7 +14,6 @@ import { CICSRegionTree } from "./CICSRegionTree";
 import { imperative } from "@zowe/zowe-explorer-api";
 import { CICSSessionTree } from "./CICSSessionTree";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 import { CICSCombinedProgramTree } from "./CICSCombinedTrees/CICSCombinedProgramTree";
 import { CICSCombinedTransactionsTree } from "./CICSCombinedTrees/CICSCombinedTransactionTree";
 import { CICSCombinedLocalFileTree } from "./CICSCombinedTrees/CICSCombinedLocalFileTree";
@@ -71,14 +70,12 @@ export class CICSPlexTree extends TreeItem {
    */
   public async loadOnlyRegion() {
     const plexProfile = this.getProfile();
-    https.globalAgent.options.rejectUnauthorized = plexProfile.profile.rejectUnauthorized;
     const session = this.getParent().getSession();
     const regionsObtained = await getResource(session, {
       name: "CICSRegion",
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
-    https.globalAgent.options.rejectUnauthorized = undefined;
     const newRegionTree = new CICSRegionTree(
       plexProfile.profile.regionName,
       regionsObtained.response.records.cicsregion,

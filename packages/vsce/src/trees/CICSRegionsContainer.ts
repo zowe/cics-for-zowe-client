@@ -16,7 +16,6 @@ import { CICSTree } from "./CICSTree";
 import { ProfileManagement } from "../utils/profileManagement";
 import { getIconPathInResources } from "../utils/profileUtils";
 import { getResource } from "@zowe/cics-for-zowe-sdk";
-import * as https from "https";
 
 export class CICSRegionsContainer extends TreeItem {
   children: CICSRegionTree[];
@@ -61,14 +60,12 @@ export class CICSRegionsContainer extends TreeItem {
   public async loadRegionsInCICSGroup(tree: CICSTree) {
     const parentPlex = this.getParent();
     const plexProfile = parentPlex.getProfile();
-    https.globalAgent.options.rejectUnauthorized = plexProfile.profile.rejectUnauthorized;
     const session = parentPlex.getParent().getSession();
     const regionsObtained = await getResource(session, {
       name: "CICSManagedRegion",
       cicsPlex: plexProfile.profile.cicsPlex,
       regionName: plexProfile.profile.regionName,
     });
-    https.globalAgent.options.rejectUnauthorized = undefined;
     this.clearChildren();
     const regionsArray = Array.isArray(regionsObtained.response.records.cicsmanagedregion)
       ? regionsObtained.response.records.cicsmanagedregion
