@@ -13,6 +13,7 @@ import type { ResourceTypes } from "../resources";
 import type { IResourceContext } from "./IResourceContext";
 import type {
   IBundle,
+  IJVMEndpoint,
   IJVMServer,
   ILibrary,
   ILocalFile,
@@ -42,6 +43,7 @@ export interface ResourceTypeMap {
   [ResourceTypes.CICSPipeline]: IPipeline;
   [ResourceTypes.CICSWebService]: IWebService;
   [ResourceTypes.CICSJVMServer]: IJVMServer;
+  [ResourceTypes.CICSJVMEndpoint]: IJVMEndpoint;
   [ResourceTypes.CICSBundle]: IBundle;
   [ResourceTypes.CICSTSQueue]: ITSQueue;
   [ResourceTypes.CICSSharedTSQueue]: ISharedTSQueue;
