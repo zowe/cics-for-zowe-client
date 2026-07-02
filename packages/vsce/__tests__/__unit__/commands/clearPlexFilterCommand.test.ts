@@ -52,11 +52,13 @@ describe("clearPlexFilterCommand", () => {
     );
   });
 
-  it("should call filterRegions with '*' and tree", async () => {
+  it("should call filterRegions with '*' and fire tree change event", async () => {
     getClearPlexFilterCommand(mockTree as CICSTree);
     await commandCallback(mockNode);
 
-    expect(mockNode.filterRegions).toHaveBeenCalledWith("*", mockTree);
+    expect(mockNode.filterRegions).toHaveBeenCalledWith("*");
+    expect(mockNode.filterRegions).toHaveBeenCalledTimes(1);
+    expect(mockTree._onDidChangeTreeData.fire).toHaveBeenCalledWith(mockNode);
   });
 });
 

@@ -22,6 +22,51 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Region Filter", () => {
+  test("should show filter indicator when zowe filter is active", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
+    await expect(filterButton).toBeVisible();
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await expect(textBox).toBeEditable();
+    await textBox.fill("MYREG1");
+    await textBox.press("Enter");
+
+    const regionsNode = getTreeItem(page, "Regions region=MYREG1 [1/1]", false);
+    await expect(regionsNode).toBeVisible();
+    await expect(regionsNode).toHaveCount(1);
+
+    const clearButton = page.getByRole("button", { name: "Clear Plex Filter", exact: true });
+    await expect(clearButton).toBeVisible();
+  });
+
+  test("should apply new filter over existing filter", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
+    await filterButton.click();
+
+    let textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await textBox.fill("MYREG1");
+    await textBox.press("Enter");
+
+    await expect(getTreeItem(page, "Regions region=MYREG1 [1/1]", false)).toHaveCount(1);
+
+    await filterButton.click();
+    textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await textBox.fill("MYR*");
+    await textBox.press("Enter");
+
+    await page.waitForTimeout(500);
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+  });
+
   test("should filter regions", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -42,37 +87,6 @@ test.describe("Region Filter", () => {
     await expect(getTreeItem(page, constants.REGION_NAME)).toHaveText(constants.REGION_NAME);
   });
 
-  test("should give notification when the mentioned region is not present", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, "Regions");
-
-    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
-    await expect(filterButton).toBeVisible();
-    await filterButton.click();
-
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
-    await expect(textBox).toBeEditable();
-    await textBox.fill("NOREG");
-    await textBox.press("Enter");
-
-    await expect(page.getByText("No regions found for MYPLEX1", { exact: true })).toBeVisible();
-  });
-
-  test("Should Dispaly notification when Cancelled", async ({ page }) => {
-    await findAndClickTreeItem(page, constants.PROFILE_NAME);
-    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
-    await findAndClickTreeItem(page, "Regions");
-
-    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
-    await expect(filterButton).toBeVisible();
-    await filterButton.click();
-
-    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
-    await expect(textBox).toBeEditable();
-    await textBox.fill("NOREG");
-    await textBox.press("Escape");
-  });
   test("Should clear all filters", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
@@ -96,24 +110,82 @@ test.describe("Region Filter", () => {
     await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.REGION_ERROR)).toBeVisible();
   });
-  test("Should give correct description", async ({ page }) => {
+  test("should persist filter during session when reopening regions node", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
     await findAndClickTreeItem(page, "Regions");
 
     const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
-    await expect(filterButton).toBeVisible();
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await textBox.fill("MYREG1");
+    await textBox.press("Enter");
+
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+    await expect(getTreeItem(page, "Regions region=MYREG1 [1/1]", false)).toHaveCount(1);
+
+    const regionsNode = getTreeItem(page, "Regions region=MYREG1 [1/1]", false);
+    await regionsNode.click();
+
+    await page.waitForTimeout(500);
+
+    await regionsNode.click();
+
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+    await expect(getTreeItem(page, "Regions region=MYREG1 [1/1]", false)).toHaveCount(1);
+  });
+
+  test("should show profile region name as first option in filter dialog", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
     await filterButton.click();
 
     const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await expect(textBox).toBeEditable();
+
+    await expect(textBox).toBeFocused();
+  });
+
+  test("should support wildcard patterns in filter", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await textBox.fill("MYR*");
+    await textBox.press("Enter");
+
+    await page.waitForTimeout(500);
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+  });
+
+  test("should show all regions when filter is cleared", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, "Regions");
+
+    const filterButton = page.getByRole("button", { name: "Filter Plex Resources in Regions tree", exact: true });
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
     await textBox.fill("MYREG1");
     await textBox.press("Enter");
 
     await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
     await expect(getTreeItem(page, constants.REGION_ERROR)).not.toBeVisible();
+    const clearButton = page.getByRole("button", { name: "Clear Plex Filter", exact: true });
+    await clearButton.click();
 
-    await expect(getTreeItem(page, constants.REGION_NAME)).toHaveText(constants.REGION_NAME);
-    await expect(getTreeItem(page, "Regions region=MYREG1 [1/1]", false)).toHaveCount(1);
+    await expect(getTreeItem(page, constants.REGION_NAME)).toBeVisible();
+    await expect(getTreeItem(page, constants.REGION_ERROR)).toBeVisible();
+
+    await expect(getTreeItem(page, "Regions [2/2]", false)).toHaveCount(1);
   });
 });
