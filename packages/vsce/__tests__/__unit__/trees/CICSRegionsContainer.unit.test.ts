@@ -260,6 +260,21 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(regionsContainer.children.length).toBe(0);
     });
 
+    it("should rethrow non-CICSExtensionError errors from loadRegionsInCICSGroup", async () => {
+      const nonCICSError = new Error("Unexpected error");
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn(() => {
+        throw nonCICSError;
+      });
+
+      await expect(regionsContainer.loadRegionsInCICSGroup()).rejects.toThrow("Unexpected error");
+    });
+
     it("should show warning message when incomplete results are detected in loadRegionsInCICSGroup", async () => {
       getResourceMock.mockResolvedValueOnce({
         response: {
@@ -361,6 +376,18 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should do nothing when regionInfo is truthy but regions is falsy", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: undefined,
+        apiResponse: null,
+      });
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.children.length).toBe(0);
+      expect(regionsContainer.collapsibleState).not.toBe(2);
     });
 
     it("should show warning message when incomplete results are detected", async () => {
