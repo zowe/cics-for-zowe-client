@@ -10,9 +10,11 @@
  */
 
 import { type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { getLibraryActions } from "./LibraryActions";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getProgramActions } from "./ProgramActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
+import { getTaskActions } from "./TaskActions";
 import { getTransactionActions } from "./TransactionActions";
 import { getManagedRegionActions } from "./ManagedRegionActions";
 import { getRegionActions } from "./RegionActions";
@@ -22,16 +24,20 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSProgram, getProgramActions());
   map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
   map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
+  map.set(ResourceTypes.CICSLibrary, getLibraryActions());
   map.set(ResourceTypes.CICSTSQueue, getTSQueueActions());
   map.set(ResourceTypes.CICSSharedTSQueue, getSharedTSQueueActions());
+  map.set(ResourceTypes.CICSTask, getTaskActions());
   map.set(ResourceTypes.CICSManagedRegion, getManagedRegionActions());
   map.set(ResourceTypes.CICSRegion, getRegionActions());
 
   return map;
 }
 
+export * from "./LibraryActions";
 export * from "./LocalFileActions";
 export * from "./ProgramActions";
+export * from "./TaskActions";
 export * from "./TSQueueActions";
 export * from "./TransactionActions";
 export * from "./ManagedRegionActions";
