@@ -17,4 +17,6 @@
 // ============================================================================
 
 export * from "./LocalFile";
+export * from "./Program";
+export * from "./URIMap";
 export * from "./Library";

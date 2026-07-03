@@ -20,19 +20,19 @@ import { Session } from "@zowe/imperative";
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  enableURIMap,
+  enableProgram,
   type ICMCIApiResponse,
-  type IURIMapParms,
+  type IProgramParms,
 } from "../../../src";
 
-describe("CMCI - Enable urimap", () => {
-  const urimap = "TESTFILE";
+describe("CMCI - Enable program", () => {
+  const program = "TESTFILE";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const enableParms: IURIMapParms = {
+  const enableParms: IProgramParms = {
     regionName: region,
-    name: urimap,
+    name: program,
   };
 
   const dummySession = new Session({
@@ -52,13 +52,13 @@ describe("CMCI - Enable urimap", () => {
       response = undefined;
       error = undefined;
       enableParms.regionName = region;
-      enableParms.name = urimap;
+      enableParms.name = program;
     });
 
     it("should throw an error if no region name is specified", async () => {
       (enableParms as any).regionName = undefined;
       try {
-        response = await enableURIMap(dummySession, enableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
@@ -67,22 +67,22 @@ describe("CMCI - Enable urimap", () => {
       expect(error.message).toContain("CICS region name is required");
     });
 
-    it("should throw an error if no urimap name is specified", async () => {
+    it("should throw an error if no program name is specified", async () => {
       (enableParms as any).name = undefined;
       try {
-        response = await enableURIMap(dummySession, enableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS urimap name is required");
+      expect(error.message).toContain("CICS program name is required");
     });
 
-    it("should throw an error if urimap name exceeds maximum length", async () => {
+    it("should throw an error if program name exceeds maximum length", async () => {
       enableParms.name = "TOOLONGNAME";
       try {
-        response = await enableURIMap(dummySession, enableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
@@ -102,18 +102,18 @@ describe("CMCI - Enable urimap", () => {
       enableSpy.mockClear();
       enableSpy.mockResolvedValue(content);
       enableParms.regionName = region;
-      enableParms.name = urimap;
+      enableParms.name = program;
     });
 
-    it("should be able to enable a urimap", async () => {
+    it("should be able to enable a program", async () => {
       endPoint =
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
         "/" +
-        CicsCmciConstants.CICS_URIMAP +
+        CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(urimap%3D${ enableParms.name})`;
+        `?CRITERIA=(program%3D${ enableParms.name})`;
       requestBody = {
         request: {
           action: {
@@ -124,7 +124,7 @@ describe("CMCI - Enable urimap", () => {
         },
       };
 
-      response = await enableURIMap(dummySession, enableParms);
+      response = await enableProgram(dummySession, enableParms);
       expect(response).toContain(content);
       expect(enableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });

@@ -121,7 +121,8 @@ The specification is organized hierarchically:
   "resources": {
     "ResourceName": {
       "identifier": { /* metadata */ },
-      "actions": [ /* action references or inline definitions */ ]
+      "actions": [ /* action references or inline definitions */ ],
+      "additionalOptions": [ /* optional: extra options for Parms interface */ ]
     }
   },
   "actions": {
@@ -140,6 +141,7 @@ The specification is organized hierarchically:
 - Resources are the primary organizing unit
 - Actions and options can be shared across resources
 - Inline definitions allow resource-specific customization
+- `additionalOptions` enables backward compatibility and resource-specific properties
 - Metadata drives code generation (no manual derivation needed)
 
 ### 2. JSON Schema Validator
@@ -177,6 +179,32 @@ class ResourceGenerator {
   private generateFromTemplate(template, output, context): void
   private ensureDir(path): void
 }
+```
+
+**Special Constant Handling**
+
+The generator includes special case logic for resources that need to reuse existing constants:
+
+- **URIMap**: Uses `CICS_URIMAP` instead of generating `CICS_CMCI_U_R_I_MAP`
+- **LocalFile**: Skips constant generation, uses existing `CICS_CMCI_LOCAL_FILE`
+- **Library**: Skips constant generation, uses existing `CICS_CMCI_LIBRARY`
+
+This is implemented in `deriveResource()` method:
+```typescript
+const sdkResourceType = sdkFileName === "URIMap"
+  ? "CICS_URIMAP"
+  : `CICS_CMCI_${resourceTypeUpper}`;
+```
+
+And in the constants template with conditional generation:
+```handlebars
+{{#unless (eq sdkFileName "URIMap")}}
+{{#unless (eq sdkFileName "LocalFile")}}
+{{#unless (eq sdkFileName "Library")}}
+  // Generate constant
+{{/unless}}
+{{/unless}}
+{{/unless}}
 ```
 
 ### 4. Templates (Handlebars)
@@ -821,6 +849,40 @@ User          Generator       Specification    Templates       FileSystem
        }
      }
    }
+   ```
+
+3. **Use additionalOptions for Resource-Specific Properties**
+   
+   The `additionalOptions` field allows adding properties to a resource's Parms interface without associating them with specific actions. This is useful for:
+   - Backward compatibility with existing code
+   - Resource-specific properties used by other operations
+   - Properties that don't fit into the action-option model
+   
+   **Example**: Adding a `csdGroup` property to Program resource:
+   ```json
+   {
+     "resources": {
+       "CICSProgram": {
+         "identifier": {
+           "aliases": ["prog"],
+           "humanNameSingular": "Program",
+           "primaryKey": "program"
+         },
+         "actions": ["ENABLE", "DISABLE"],
+         "additionalOptions": ["CSDGROUP"]
+       }
+     },
+     "options": {
+       "CSDGROUP": {
+         "name": "csdGroup",
+         "type": "string",
+         "description": "The CICS CSD Group for program definition operations."
+       }
+     }
+   }
+   ```
+   
+   This generates `IProgramParms` with both `busy` (from DISABLE action) and `csdGroup` (from additionalOptions) properties, allowing the interface to be used by both enable/disable operations and program definition operations.
    ```
 
 ### Adding New Templates

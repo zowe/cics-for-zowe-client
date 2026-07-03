@@ -20,19 +20,19 @@ import { Session } from "@zowe/imperative";
 import {
   CicsCmciConstants,
   CicsCmciRestClient,
-  disableURIMap,
+  disableProgram,
   type ICMCIApiResponse,
-  type IURIMapParms,
+  type IProgramParms,
 } from "../../../src";
 
-describe("CMCI - Disable urimap", () => {
-  const urimap = "TESTFILE";
+describe("CMCI - Disable program", () => {
+  const program = "TESTFILE";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const disableParms: IURIMapParms = {
+  const disableParms: IProgramParms = {
     regionName: region,
-    name: urimap,
+    name: program,
   };
 
   const dummySession = new Session({
@@ -52,14 +52,14 @@ describe("CMCI - Disable urimap", () => {
       response = undefined;
       error = undefined;
       disableParms.regionName = region;
-      disableParms.name = urimap;
+      disableParms.name = program;
       disableParms.busy = undefined;
     });
 
     it("should throw an error if no region name is specified", async () => {
       (disableParms as any).regionName = undefined;
       try {
-        response = await disableURIMap(dummySession, disableParms);
+        response = await disableProgram(dummySession, disableParms);
       } catch (err) {
         error = err;
       }
@@ -68,22 +68,22 @@ describe("CMCI - Disable urimap", () => {
       expect(error.message).toContain("CICS region name is required");
     });
 
-    it("should throw an error if no urimap name is specified", async () => {
+    it("should throw an error if no program name is specified", async () => {
       (disableParms as any).name = undefined;
       try {
-        response = await disableURIMap(dummySession, disableParms);
+        response = await disableProgram(dummySession, disableParms);
       } catch (err) {
         error = err;
       }
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS urimap name is required");
+      expect(error.message).toContain("CICS program name is required");
     });
 
     it("should throw an error if invalid BUSY parameter is specified", async () => {
       disableParms.busy = "INVALID";
       try {
-        response = await disableURIMap(dummySession, disableParms);
+        response = await disableProgram(dummySession, disableParms);
       } catch (err) {
         error = err;
       }
@@ -92,10 +92,10 @@ describe("CMCI - Disable urimap", () => {
       expect(error.message).toContain("Invalid BUSY parameter value");
     });
 
-    it("should throw an error if urimap name exceeds maximum length", async () => {
+    it("should throw an error if program name exceeds maximum length", async () => {
       disableParms.name = "TOOLONGNAME";
       try {
-        response = await disableURIMap(dummySession, disableParms);
+        response = await disableProgram(dummySession, disableParms);
       } catch (err) {
         error = err;
       }
@@ -115,19 +115,19 @@ describe("CMCI - Disable urimap", () => {
       disableSpy.mockClear();
       disableSpy.mockResolvedValue(content);
       disableParms.regionName = region;
-      disableParms.name = urimap;
+      disableParms.name = program;
       disableParms.busy = undefined;
     });
 
-    it("should be able to disable a urimap without BUSY parameter", async () => {
+    it("should be able to disable a program without BUSY parameter", async () => {
       endPoint =
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
         "/" +
-        CicsCmciConstants.CICS_URIMAP +
+        CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(urimap%3D${ disableParms.name})`;
+        `?CRITERIA=(program%3D${ disableParms.name})`;
       requestBody = {
         request: {
           action: {
@@ -144,7 +144,7 @@ describe("CMCI - Disable urimap", () => {
         },
       };
 
-      response = await disableURIMap(dummySession, disableParms);
+      response = await disableProgram(dummySession, disableParms);
       expect(response).toContain(content);
       expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });
@@ -156,10 +156,10 @@ describe("CMCI - Disable urimap", () => {
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
         "/" +
-        CicsCmciConstants.CICS_URIMAP +
+        CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(urimap%3D${ urimap })`;
+        `?CRITERIA=(program%3D${ program })`;
       requestBody = {
         request: {
           action: {
@@ -176,7 +176,7 @@ describe("CMCI - Disable urimap", () => {
         },
       };
 
-      response = await disableURIMap(dummySession, disableParms);
+      response = await disableProgram(dummySession, disableParms);
       expect(response).toContain(content);
       expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });

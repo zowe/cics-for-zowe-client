@@ -89,8 +89,81 @@ Enable with: `npm run generate -- --tests-only`
 1. Add resource definition to `resourceSpecification.json` under `resources` section
 2. Specify resource identifier (name, aliases, primary key, etc.)
 3. List actions for the resource (can reference shared actions or define inline)
-4. Run `npm run generate`
-5. Generated files appear automatically in the SDK package
+4. (Optional) Add `additionalOptions` to include extra properties in the Parms interface
+5. (Optional) If reusing existing constants, update generator to handle special cases
+6. Run `npm run generate`
+7. Generated files appear automatically in the SDK package
+
+**Example 1**: Adding a Program resource with ENABLE/DISABLE actions and a csdGroup option:
+
+```json
+{
+  "resources": {
+    "CICSProgram": {
+      "identifier": {
+        "aliases": ["prog"],
+        "humanNameSingular": "Program",
+        "humanNamePlural": "Programs",
+        "primaryKey": "program",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE"
+      ],
+      "additionalOptions": ["CSDGROUP"]
+    }
+  },
+  "options": {
+    "CSDGROUP": {
+      "name": "csdGroup",
+      "type": "string",
+      "description": "The CICS CSD Group for program definition operations."
+    }
+  }
+}
+```
+
+This generates:
+- `packages/sdk/src/resources/Program.ts` with `enableProgram()` and `disableProgram()` functions
+- `packages/sdk/src/doc/IProgramParms.ts` with `busy` and `csdGroup` properties
+- Unit tests for both operations
+
+**Example 2**: Adding a URIMap resource with many additional options for backward compatibility:
+
+```json
+{
+  "resources": {
+    "CICSURIMap": {
+      "identifier": {
+        "aliases": ["urimap"],
+        "humanNameSingular": "URIMap",
+        "humanNamePlural": "URIMaps",
+        "primaryKey": "urimap",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE"
+      ],
+      "additionalOptions": [
+        "CSDGROUP", "PATH", "HOST", "SCHEME",
+        "PROGRAMNAME", "PIPELINENAME", "CERTIFICATE",
+        "AUTHENTICATE", "DESCRIPTION", "TRANSACTIONNAME",
+        "WEBSERVICENAME", "ENABLEATTR", "TCPIPSERVICE"
+      ]
+    }
+  }
+}
+```
+
+**Note**: For URIMap, the generator has special handling to use the existing `CICS_URIMAP` constant instead of generating `CICS_CMCI_U_R_I_MAP`. This is configured in `generate.ts` with a special case for resources that need to reuse existing constants.
+
+This generates:
+- `packages/sdk/src/resources/URIMap.ts` with `enableURIMap()` and `disableURIMap()` functions
+- `packages/sdk/src/doc/IURIMapParms.ts` with all 14 properties (busy + 13 additional options)
+- Uses existing `CICS_URIMAP` constant from the codebase
+- Unit tests for both operations
 
 ### Adding a New Action
 

@@ -201,6 +201,19 @@ export const CicsCmciConstants = {
    */
   CICS_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 {{#each resources}}
+{{#unless (eq sdkFileName "Library")}}
+{{#unless (eq sdkFileName "LocalFile")}}
+{{#unless (eq sdkFileName "URIMap")}}
+
+  /**
+   * The CICS CMCI {{humanNameLower}}
+   */
+  {{sdkResourceType}}: "CICS{{sdkFileName}}",
+{{/unless}}
+{{/unless}}
+{{/unless}}
+{{/each}}
+{{#each resources}}
 
   /**
    * The criteria field name for {{humanNameLower}} resources

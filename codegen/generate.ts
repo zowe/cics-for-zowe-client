@@ -57,6 +57,7 @@ interface ActionDefinition {
 interface Resource {
   identifier: ResourceIdentifier;
   actions: (string | ActionReference)[];
+  additionalOptions?: string[];
 }
 
 interface ResourceSpecification {
@@ -350,15 +351,27 @@ export class ResourceGenerator {
     // Generate constants - convert camelCase/PascalCase to SCREAMING_SNAKE_CASE
     // Remove CICS prefix first, then convert
     const nameWithoutCICS = resourceName.replace(/^CICS/, "");
-    const resourceTypeUpper = nameWithoutCICS
-      .replace(/([A-Z])/g, "_$1")
-      .toUpperCase()
-      .replace(/^_/, "");
-    const sdkResourceType = `CICS_CMCI_${resourceTypeUpper}`;
+    
+    // Special case for URIMap to use URI_MAP instead of U_R_I_MAP
+    let resourceTypeUpper: string;
+    if (sdkFileName === "URIMap") {
+      resourceTypeUpper = "URI_MAP";
+    } else {
+      resourceTypeUpper = nameWithoutCICS
+        .replace(/([A-Z])/g, "_$1")
+        .toUpperCase()
+        .replace(/^_/, "");
+    }
+    
+    // Special case for URIMap to use existing CICS_URIMAP constant
+    const sdkResourceType = sdkFileName === "URIMap" ? "CICS_URIMAP" : `CICS_CMCI_${resourceTypeUpper}`;
+    
     const parmsInterface = `I${sdkFileName}Parms`;
     const criteriaField = resource.identifier.primaryKey.toLowerCase(); // lowercase for tests (original behavior)
+    
     // For criteria field and busy values, use CICS_ prefix without _CMCI_
-    const criteriaFieldConstant = `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
+    // Special case for URIMap
+    const criteriaFieldConstant = sdkFileName === "URIMap" ? "CICS_URIMAP_CRITERIA_FIELD" : `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
     const maxLengthConstant = resource.identifier.maxPrimaryKeyLength
       ? `CICS_${resourceTypeUpper}_MAX_LENGTH`
       : undefined;
@@ -400,6 +413,26 @@ export class ResourceGenerator {
         }
       }
     }
+    
+    // Add additional options from resource definition
+    if (resource.additionalOptions) {
+      for (const optionRef of resource.additionalOptions) {
+        if (this.spec.options?.[optionRef]) {
+          const optionDef = this.spec.options[optionRef];
+          const derivedOption: DerivedOption = {
+            ...optionDef,
+            sdkParamName: optionDef.name,
+            constantReference: optionDef.allowableValues
+              ? `CICS_CMCI_${resourceTypeUpper}_${optionDef.name.toUpperCase()}_VALUES`
+              : undefined,
+          };
+          if (!allOptionsMap.has(optionDef.name)) {
+            allOptionsMap.set(optionDef.name, derivedOption);
+          }
+        }
+      }
+    }
+    
     const allOptions = Array.from(allOptionsMap.values());
 
     return {

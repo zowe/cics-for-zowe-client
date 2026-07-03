@@ -202,6 +202,11 @@ export const CicsCmciConstants = {
   CICS_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 
   /**
+   * The CICS CMCI program
+   */
+  CICS_CMCI_PROGRAM: "CICSProgram",
+
+  /**
    * The criteria field name for local file resources
    */
   CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
@@ -215,6 +220,36 @@ export const CicsCmciConstants = {
    * Valid action types for local file operations
    */
   CICS_LOCAL_FILE_ACTIONS: ["CLOSE", "DISABLE", "ENABLE", "OPEN"],
+
+  /**
+   * The criteria field name for program resources
+   */
+  CICS_PROGRAM_CRITERIA_FIELD: "program",
+
+  /**
+   * Maximum length for CICS program names
+   */
+  CICS_PROGRAM_MAX_LENGTH: 8,
+
+  /**
+   * Valid action types for program operations
+   */
+  CICS_PROGRAM_ACTIONS: ["DISABLE", "ENABLE"],
+
+  /**
+   * The criteria field name for urimap resources
+   */
+  CICS_URIMAP_CRITERIA_FIELD: "urimap",
+
+  /**
+   * Maximum length for CICS urimap names
+   */
+  CICS_URI_MAP_MAX_LENGTH: 8,
+
+  /**
+   * Valid action types for urimap operations
+   */
+  CICS_URI_MAP_ACTIONS: ["DISABLE", "ENABLE"],
 
   /**
    * The criteria field name for library resources
@@ -324,6 +359,16 @@ export const CicsCmciConstants = {
  * Valid local file action types
  */
 export type LocalFileAction = "CLOSE" | "DISABLE" | "ENABLE" | "OPEN";
+
+/**
+ * Valid program action types
+ */
+export type ProgramAction = "DISABLE" | "ENABLE";
+
+/**
+ * Valid urimap action types
+ */
+export type URIMapAction = "DISABLE" | "ENABLE";
 
 /**
  * Valid library action types

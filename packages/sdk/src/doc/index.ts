@@ -26,6 +26,8 @@ export * from "./ICSDGroupParms";
 export * from "./ICacheParms";
 export * from "./IGetResourceUriOptions";
 export * from "./ILocalFileParms";
+export * from "./IProgramParms";
+export * from "./IURIMapParms";
 export * from "./ILibraryParms";
 export * from "./IProgramParms";
 export * from "./IResourceParms";
