@@ -262,6 +262,76 @@ describe("Test suite for CICSSessionTree", () => {
 
       expect(() => sessionTree.resetAllResourceContainers()).not.toThrow();
     });
+  
+    describe("Test suite for region filter persistence", () => {
+      it("should save region filter for a plex", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX1", "TEST*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX1")).toBe("TEST*");
+      });
+
+      it("should get region filter for a plex", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX2", "CICS*");
+        const filter = sessionTree.getRegionFilterForPlex("PLEX2");
+        expect(filter).toBe("CICS*");
+      });
+
+      it("should return undefined for plex with no saved filter", () => {
+        const filter = sessionTree.getRegionFilterForPlex("NONEXISTENT");
+        expect(filter).toBeUndefined();
+      });
+
+      it("should save wildcard filter for a plex", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX3", "*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX3")).toBe("*");
+      });
+
+      it("should save comma-separated filter patterns for a plex", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX4", "CICS*,TEST*,PROD*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX4")).toBe("CICS*,TEST*,PROD*");
+      });
+
+      it("should overwrite existing filter for a plex", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX5", "OLD*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX5")).toBe("OLD*");
+
+        sessionTree.saveRegionFilterForPlex("PLEX5", "NEW*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX5")).toBe("NEW*");
+      });
+
+      it("should maintain separate filters for different plexes", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX_A", "FILTER_A*");
+        sessionTree.saveRegionFilterForPlex("PLEX_B", "FILTER_B*");
+        sessionTree.saveRegionFilterForPlex("PLEX_C", "FILTER_C*");
+
+        expect(sessionTree.getRegionFilterForPlex("PLEX_A")).toBe("FILTER_A*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX_B")).toBe("FILTER_B*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX_C")).toBe("FILTER_C*");
+      });
+
+      it("should persist filters across multiple save operations", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX6", "FIRST*");
+        sessionTree.saveRegionFilterForPlex("PLEX7", "SECOND*");
+
+        expect(sessionTree.getRegionFilterForPlex("PLEX6")).toBe("FIRST*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX7")).toBe("SECOND*");
+
+        sessionTree.saveRegionFilterForPlex("PLEX8", "THIRD*");
+
+        expect(sessionTree.getRegionFilterForPlex("PLEX6")).toBe("FIRST*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX7")).toBe("SECOND*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX8")).toBe("THIRD*");
+      });
+
+      it("should handle empty string as filter", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX9", "");
+        expect(sessionTree.getRegionFilterForPlex("PLEX9")).toBe("");
+      });
+
+      it("should handle special characters in plex name", () => {
+        sessionTree.saveRegionFilterForPlex("PLEX-WITH-DASH", "FILTER*");
+        expect(sessionTree.getRegionFilterForPlex("PLEX-WITH-DASH")).toBe("FILTER*");
+      });
+    });
   });
   describe("Test suite for icon decorations", () => {
     it("Should change from no-entry to green tick icon when connection succeeds", () => {

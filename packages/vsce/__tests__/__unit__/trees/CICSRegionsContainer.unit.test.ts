@@ -65,6 +65,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     cicsTree = new CICSTree();
     sessionTree = new CICSSessionTree(profile, cicsTree);
     plexTree = new CICSPlexTree("MYPLEX", profile, sessionTree);
+    jest.spyOn(plexTree, "saveRegionFilter").mockImplementation(() => {});
     regionsContainer = new CICSRegionsContainer(plexTree);
     
     (window.withProgress as jest.Mock) = jest.fn().mockImplementation(async (options, callback) => {
@@ -75,14 +76,13 @@ describe("Test suite for CICSRegionsContainer", () => {
 
   describe("Constructor", () => {
     it("should initialize with default filter when no saved filter exists", () => {
-      expect(regionsContainer.activeFilter).toBe("*");
+      expect(regionsContainer.activeFilter).toBe("MYREG");
       expect(regionsContainer.label).toBe("Regions");
-      expect(regionsContainer.contextValue).toBe("cicsregionscontainer.");
+      expect(regionsContainer.contextValue).toBe("cicsregionscontainer.FILTERED");
     });
 
     it("should initialize with saved filter when it exists", () => {
-      jest.spyOn(PersistentStorage, "getCriteria").mockReturnValueOnce("TEST*");
-      const newContainer = new CICSRegionsContainer(plexTree);
+      const newContainer = new CICSRegionsContainer(plexTree, "TEST*");
       expect(newContainer.activeFilter).toBe("TEST*");
       expect(newContainer.contextValue).toBe("cicsregionscontainer.FILTERED");
     });
@@ -92,28 +92,28 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should filter regions based on the pattern", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
 
-      await regionsContainer.filterRegions("IYC*", cicsTree);
+      await regionsContainer.filterRegions("IYC*");
 
       expect(regionsContainer.activeFilter).toBe("IYC*");
       expect(regionsContainer.label).toEqual("Regions");
       expect(regionsContainer.contextValue).toBe("cicsregionscontainer.FILTERED");
-      expect(PersistentStorage.setCriteria).toHaveBeenCalled();
+      expect(plexTree.saveRegionFilter).toHaveBeenCalledWith("IYC*");
     });
 
     it("should reset filter to * and clear saved criteria", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
 
-      await regionsContainer.filterRegions("*", cicsTree);
+      await regionsContainer.filterRegions("*");
 
       expect(regionsContainer.activeFilter).toBe("*");
       expect(regionsContainer.contextValue).toBe("cicsregionscontainer.");
-      expect(PersistentStorage.setCriteria).toHaveBeenCalledWith(expect.any(String), undefined);
+      expect(plexTree.saveRegionFilter).toHaveBeenCalledWith("*");
     });
 
     it("should show information message when no regions found", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: [], hasIncompleteResults: false });
 
-      await regionsContainer.filterRegions("NOMATCH*", cicsTree);
+      await regionsContainer.filterRegions("NOMATCH*");
 
       expect(window.showInformationMessage).toHaveBeenCalledWith(expect.stringContaining("No regions found"));
     });
@@ -121,7 +121,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should expand container after filtering", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasIncompleteResults: false });
 
-      await regionsContainer.filterRegions("cics*", cicsTree);
+      await regionsContainer.filterRegions("cics*");
 
       expect(regionsContainer.collapsibleState).toBe(2); // TreeItemCollapsibleState.Expanded
     });
@@ -136,7 +136,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("CICS*, TEST*", cicsTree);
+      await regionsContainer.filterRegions("CICS*, TEST*");
 
       expect(regionsContainer.children.length).toBe(2);
       expect(regionsContainer.children[0].getRegionName()).toBe("CICS1");
@@ -175,7 +175,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         return false;
       });
 
-      await regionsContainer.filterRegions("cics*", cicsTree);
+      await regionsContainer.filterRegions("cics*");
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
         expect.stringContaining("⚠️ WARNING: CMCI request returned error code")
@@ -188,7 +188,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(genericError);
       (CICSErrorHandler.handleCMCIRestError as jest.Mock) = jest.fn();
 
-      await regionsContainer.filterRegions("TEST*", cicsTree);
+      await regionsContainer.filterRegions("TEST*");
 
       expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledWith(
         expect.any(CICSExtensionError)
@@ -205,7 +205,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         apiResponse: { incompleteResults: true }
       });
 
-      await regionsContainer.filterRegions("cics*", cicsTree);
+      await regionsContainer.filterRegions("cics*");
 
       expect(regionsContainer.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
     });
@@ -222,7 +222,7 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       regionsContainer.activeFilter = "cics";
 
-      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+      await regionsContainer.loadRegionsInCICSGroup();
 
       expect(regionsContainer.label).toBe("Regions");
       expect(regionsContainer.description).toBe("region=cics [1/1]");
@@ -237,7 +237,8 @@ describe("Test suite for CICSRegionsContainer", () => {
         },
       });
 
-      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInCICSGroup();
 
       expect(regionsContainer.children.length).toBe(1);
       expect(regionsContainer.children[0].getRegionName()).toBe("SINGLE");
@@ -249,7 +250,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       getResourceMock.mockRejectedValueOnce(genericError);
       (CICSErrorHandler.handleCMCIRestError as jest.Mock) = jest.fn();
 
-      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+      await regionsContainer.loadRegionsInCICSGroup();
 
       expect(CICSErrorHandler.handleCMCIRestError).toHaveBeenCalledWith(
         expect.any(CICSExtensionError)
@@ -257,6 +258,21 @@ describe("Test suite for CICSRegionsContainer", () => {
       const callArg = (CICSErrorHandler.handleCMCIRestError as jest.Mock).mock.calls[0][0];
       expect(callArg.cicsExtensionError.profileName).toBe("MYPROF");
       expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should rethrow non-CICSExtensionError errors from loadRegionsInCICSGroup", async () => {
+      const nonCICSError = new Error("Unexpected error");
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn(() => {
+        throw nonCICSError;
+      });
+
+      await expect(regionsContainer.loadRegionsInCICSGroup()).rejects.toThrow("Unexpected error");
     });
 
     it("should show warning message when incomplete results are detected in loadRegionsInCICSGroup", async () => {
@@ -284,7 +300,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         return false;
       });
 
-      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+      await regionsContainer.loadRegionsInCICSGroup();
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
         expect.stringContaining("⚠️ WARNING: CMCI request returned error code")
@@ -322,7 +338,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         return false;
       });
 
-      await regionsContainer.loadRegionsInCICSGroup(cicsTree);
+      await regionsContainer.loadRegionsInCICSGroup();
 
       expect(window.showErrorMessage).toHaveBeenCalledWith(
         expect.stringContaining("⚠️ WARNING: CMCI request returned error code")
@@ -338,6 +354,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("Should load all regions of plex", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasIncompleteResults: false });
 
+      regionsContainer.activeFilter = "*";
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.label).toBe("Regions");
@@ -359,6 +376,18 @@ describe("Test suite for CICSRegionsContainer", () => {
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.children.length).toBe(0);
+    });
+
+    it("should do nothing when regionInfo is truthy but regions is falsy", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: undefined,
+        apiResponse: null,
+      });
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.children.length).toBe(0);
+      expect(regionsContainer.collapsibleState).not.toBe(2);
     });
 
     it("should show warning message when incomplete results are detected", async () => {
@@ -500,13 +529,13 @@ describe("Test suite for CICSRegionsContainer", () => {
         profile: {
           ...profile.profile,
           regionName: "TESTREGION",
-          cicsPlex: "TESTPLEX"
-        }
+          cicsPlex: "TESTPLEX",
+        },
       } as imperative.IProfileLoaded;
-      
-      jest.spyOn(plexTree, 'getProfile').mockReturnValue(profileWithRegionAndPlex);
-      jest.spyOn(plexTree, 'getGroupName').mockReturnValue("TESTGROUP");
-      
+
+      jest.spyOn(plexTree, "getProfile").mockReturnValue(profileWithRegionAndPlex);
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue("TESTGROUP");
+
       getResourceMock.mockResolvedValueOnce({
         response: {
           resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
@@ -523,11 +552,32 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should load regions in plex when activeFilter is * and no children", async () => {
       const getRegionInfoSpy = jest.spyOn(ProfileManagement, 'getRegionInfoInPlex').mockResolvedValue({ regions: record, apiResponse: null });
       regionsContainer.children = [];
-      // Mock the profile to not have regionName and cicsPlex to trigger loadRegionsInPlex
       jest.spyOn(plexTree, 'getProfile').mockReturnValue({
         ...profile,
         profile: { ...profile.profile, regionName: undefined, cicsPlex: undefined }
       } as imperative.IProfileLoaded);
+
+      await regionsContainer.getChildren();
+
+      expect(getRegionInfoSpy).toHaveBeenCalled();
+    });
+
+    it("should load regions in plex when profile has regionName and cicsPlex but no groupName and shouldLoadRegions is true", async () => {
+      const profileWithRegionAndPlex = {
+        ...profile,
+        profile: {
+          ...profile.profile,
+          regionName: "TESTREGION",
+          cicsPlex: "TESTPLEX",
+        },
+      } as imperative.IProfileLoaded;
+
+      jest.spyOn(plexTree, "getProfile").mockReturnValue(profileWithRegionAndPlex);
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue(undefined);
+
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, "getRegionInfoInPlex").mockResolvedValue({ regions: record, apiResponse: null });
+      regionsContainer.children = [];
+      regionsContainer.activeFilter = "TEST*";
 
       await regionsContainer.getChildren();
 
@@ -554,6 +604,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should count active and total regions correctly", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: inactiveRecord, hasIncompleteResults: false });
 
+      regionsContainer.activeFilter = "*";
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.description).toBe("[1/2]");
@@ -563,7 +614,7 @@ describe("Test suite for CICSRegionsContainer", () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasIncompleteResults: false });
       regionsContainer.activeFilter = "TEST*";
 
-      await regionsContainer.filterRegions("TEST*", cicsTree);
+      await regionsContainer.filterRegions("TEST*");
 
       expect(regionsContainer.description).toContain("region=TEST*");
     });
@@ -571,6 +622,7 @@ describe("Test suite for CICSRegionsContainer", () => {
     it("should not include filter in description when filter is *", async () => {
       (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, hasIncompleteResults: false });
 
+      regionsContainer.activeFilter = "*";
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.description).not.toContain("region=");
@@ -586,6 +638,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
+      regionsContainer.activeFilter = "*";
       await regionsContainer.loadRegionsInPlex();
 
       expect(regionsContainer.description).toBe("[1/2]");
@@ -644,7 +697,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("CICS*", cicsTree);
+      await regionsContainer.filterRegions("CICS*");
 
       expect(regionsContainer.children.length).toBe(2);
     });
@@ -659,7 +712,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("*CICS", cicsTree);
+      await regionsContainer.filterRegions("*CICS");
 
       expect(regionsContainer.children.length).toBe(2);
     });
@@ -674,7 +727,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("CICS*TEST", cicsTree);
+      await regionsContainer.filterRegions("CICS*TEST");
 
       expect(regionsContainer.children.length).toBe(2);
     });
@@ -689,7 +742,7 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("*CICS*", cicsTree);
+      await regionsContainer.filterRegions("*CICS*");
 
       expect(regionsContainer.children.length).toBe(2);
     });
@@ -704,18 +757,9 @@ describe("Test suite for CICSRegionsContainer", () => {
         hasIncompleteResults: false,
       });
 
-      await regionsContainer.filterRegions("CICS* , TEST*", cicsTree);
+      await regionsContainer.filterRegions("CICS* , TEST*");
 
       expect(regionsContainer.children.length).toBe(2);
-    });
-  });
-
-  describe("Test suite for buildFilterStorageKey", () => {
-    it("should build correct storage key", () => {
-      const key = regionsContainer["buildFilterStorageKey"]();
-      expect(key).toContain(profile.name);
-      expect(key).toContain("MYPLEX");
-      expect(key).toContain("regions-filter");
     });
   });
 
@@ -732,4 +776,5 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(regionsContainer.contextValue).toBe("cicsregionscontainer.");
     });
   });
+
 });

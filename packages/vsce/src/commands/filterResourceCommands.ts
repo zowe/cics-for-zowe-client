@@ -20,7 +20,7 @@ export function getFilterResourcesCommand(tree: CICSTree, treeview: TreeView<ICI
   return commands.registerCommand("cics-extension-for-zowe.filterResources", async (node: CICSResourceContainerNode<IResource>) => {
     const pattern = await getPatternFromFilter(
       node.resourceTypes[0].humanReadableNamePlural,
-      node.resourceTypes[0].getCriteriaHistory(),
+      node.resourceTypes[0].getCriteriaHistory().map((item) => ({ label: item })),
       node.resourceTypes[0].filterCaseSensitive
     );
 

@@ -10,7 +10,7 @@
  */
 
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
-import { commands, l10n, window, type TreeView } from "vscode";
+import { commands, l10n, type QuickPickItem, window, type TreeView } from "vscode";
 import { CICSRegionsContainer } from "../trees";
 import type { CICSTree } from "../trees/CICSTree";
 import PersistentStorage from "../utils/PersistentStorage";
@@ -25,24 +25,33 @@ import { getPatternFromFilter } from "../utils/filterUtils";
 export function getFilterPlexResources(tree: CICSTree, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.filterPlexResources", async (node) => {
     const selection = treeview.selection;
-    let chosenNode: any;
-    if (node) {
-      chosenNode = node;
-    } else if (selection[selection.length - 1] && selection[selection.length - 1] instanceof CICSRegionsContainer) {
-      chosenNode = selection[selection.length - 1];
-    } else {
+    const chosenNode = node || selection[selection.length - 1];
+
+    if (!chosenNode || !(chosenNode instanceof CICSRegionsContainer)) {
       window.showErrorMessage(l10n.t("No 'Regions' node selected"));
       return;
     }
+
     await treeview.reveal(chosenNode, { expand: true });
 
-    // Only filter regions
     const resourceHistory = PersistentStorage.getSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION);
-    const pattern = await getPatternFromFilter("Region", resourceHistory);
+    const profile = chosenNode.getParent().getProfile().profile;
+    const profileRegionName = profile.cicsPlex && profile.regionName ? profile.regionName.toUpperCase() : undefined;
+
+    // Build QuickPickItems
+    let historyItems: QuickPickItem[];
+    if (profileRegionName) {
+      const otherItems = resourceHistory.filter((item) => item !== profileRegionName).map((item) => ({ label: item }));
+      historyItems = [{ label: profileRegionName, description: l10n.t("Zowe CICS profile") }, ...otherItems];
+    } else {
+      historyItems = resourceHistory.map((item) => ({ label: item }));
+    }
+
+    const pattern = await getPatternFromFilter("Region", historyItems);
 
     if (pattern) {
       await PersistentStorage.appendSearchHistory(CicsCmciConstants.CICS_CMCI_MANAGED_REGION, pattern);
-      chosenNode.filterRegions(pattern, tree);
+      await chosenNode.filterRegions(pattern);
       tree._onDidChangeTreeData.fire(chosenNode);
     }
   });

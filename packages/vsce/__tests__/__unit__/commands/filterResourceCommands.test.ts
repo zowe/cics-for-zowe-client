@@ -88,7 +88,7 @@ describe("Filter Resource Commands", () => {
 
       expect(getPatternFromFilter).toHaveBeenCalledWith(
         "Programs",
-        ["PROG*", "CUST*"],
+        [{ label: "PROG*" }, { label: "CUST*" }],
         false
       );
       expect(resourceNode.resourceTypes[0].appendCriteriaHistory).toHaveBeenCalledWith(mockPattern);
@@ -172,7 +172,7 @@ describe("Filter Resource Commands", () => {
 
       expect(getPatternFromFilter).toHaveBeenCalledWith(
         "Programs",
-        ["PROG*", "CUST*"],
+        [{ label: "PROG*" }, { label: "CUST*" }],
         true
       );
     });
