@@ -28,7 +28,6 @@ export * from "./IGetResourceUriOptions";
 export * from "./ILocalFileParms";
 export * from "./IProgramParms";
 export * from "./IURIMapParms";
-export * from "./ILibraryParms";
 export * from "./IProgramParms";
 export * from "./IResourceParms";
 export * from "./IResourceQueryParms";

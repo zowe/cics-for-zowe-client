@@ -22,7 +22,7 @@ import {
   CicsCmciRestClient,
   {{sdkFunction}},
   type ICMCIApiResponse,
-  type {{parmsInterface}},
+  {{#if allOptions.length}}type {{parmsInterface}},{{else}}type IResourceParms,{{/if}}
 } from "../../../src";
 
 describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
@@ -30,7 +30,7 @@ describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const {{actionLower}}Parms: {{parmsInterface}} = {
+  const {{actionLower}}Parms: {{#if allOptions.length}}{{parmsInterface}}{{else}}IResourceParms{{/if}} = {
     regionName: region,
     name: {{camelCase humanNameLower}},
   };

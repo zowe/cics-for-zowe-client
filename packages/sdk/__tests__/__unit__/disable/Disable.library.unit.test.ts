@@ -22,7 +22,7 @@ import {
   CicsCmciRestClient,
   disableLibrary,
   type ICMCIApiResponse,
-  type ILibraryParms,
+  type IResourceParms,
 } from "../../../src";
 
 describe("CMCI - Disable library", () => {
@@ -30,7 +30,7 @@ describe("CMCI - Disable library", () => {
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const disableParms: ILibraryParms = {
+  const disableParms: IResourceParms = {
     regionName: region,
     name: library,
   };

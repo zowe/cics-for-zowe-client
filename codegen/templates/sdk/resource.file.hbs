@@ -18,14 +18,18 @@
 
 import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
+{{#if allOptions.length}}
 import type { ICMCIApiResponse, {{parmsInterface}} } from "../doc";
+{{else}}
+import type { ICMCIApiResponse, IResourceParms } from "../doc";
+{{/if}}
 import { performAction } from "../utils/ResourceActions";
 
 {{#each actions}}
 /**
  * {{capitalize actionVerb}} a {{../humanNameLower}} in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { {{../parmsInterface}} } parms - parameters for {{actionVerb}} the {{../humanNameLower}}
+ * @param { {{#if ../allOptions.length}}{{../parmsInterface}}{{else}}IResourceParms{{/if}} } parms - parameters for {{actionVerb}} the {{../humanNameLower}}
  * @param {string} parms.name - the name of the {{../humanNameLower}} to {{actionLower}} (1-{{../maxNameLength}} characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
@@ -40,7 +44,7 @@ import { performAction } from "../utils/ResourceActions";
 {{/if}}
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function {{sdkFunction}}(session: AbstractSession, parms: {{../parmsInterface}}): Promise<ICMCIApiResponse> {
+export async function {{sdkFunction}}(session: AbstractSession, parms: {{#if ../allOptions.length}}{{../parmsInterface}}{{else}}IResourceParms{{/if}}): Promise<ICMCIApiResponse> {
   // Validate required parameters
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS {{../humanName}} name", "CICS {{../humanNameLower}} name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");

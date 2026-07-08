@@ -22,7 +22,7 @@ import {
   CicsCmciRestClient,
   enableLibrary,
   type ICMCIApiResponse,
-  type ILibraryParms,
+  type IResourceParms,
 } from "../../../src";
 
 describe("CMCI - Enable library", () => {
@@ -30,7 +30,7 @@ describe("CMCI - Enable library", () => {
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const enableParms: ILibraryParms = {
+  const enableParms: IResourceParms = {
     regionName: region,
     name: library,
   };

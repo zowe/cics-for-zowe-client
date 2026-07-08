@@ -26,7 +26,9 @@ export * from "./ICSDGroupParms";
 export * from "./ICacheParms";
 export * from "./IGetResourceUriOptions";
 {{#each resources}}
+{{#if allOptions.length}}
 export * from "./I{{sdkFileName}}Parms";
+{{/if}}
 {{/each}}
 export * from "./IProgramParms";
 export * from "./IResourceParms";

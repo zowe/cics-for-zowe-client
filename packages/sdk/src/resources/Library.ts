@@ -18,13 +18,13 @@
 
 import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
-import type { ICMCIApiResponse, ILibraryParms } from "../doc";
+import type { ICMCIApiResponse, IResourceParms } from "../doc";
 import { performAction } from "../utils/ResourceActions";
 
 /**
  * Disabling a library in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { ILibraryParms } parms - parameters for disabling the library
+ * @param { IResourceParms } parms - parameters for disabling the library
  * @param {string} parms.name - the name of the library to disable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
@@ -33,7 +33,7 @@ import { performAction } from "../utils/ResourceActions";
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function disableLibrary(session: AbstractSession, parms: ILibraryParms): Promise<ICMCIApiResponse> {
+export async function disableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
@@ -67,7 +67,7 @@ export async function disableLibrary(session: AbstractSession, parms: ILibraryPa
 /**
  * Enabling a library in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { ILibraryParms } parms - parameters for enabling the library
+ * @param { IResourceParms } parms - parameters for enabling the library
  * @param {string} parms.name - the name of the library to enable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
@@ -76,7 +76,7 @@ export async function disableLibrary(session: AbstractSession, parms: ILibraryPa
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function enableLibrary(session: AbstractSession, parms: ILibraryParms): Promise<ICMCIApiResponse> {
+export async function enableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
   ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");

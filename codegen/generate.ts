@@ -224,6 +224,12 @@ export class ResourceGenerator {
     this.ensureDir(docOutputDir);
     
     for (const resource of derivedResources) {
+      // Skip generating a parms file for resources with no additional options;
+      // those resources use IResourceParms directly.
+      if (resource.allOptions.length === 0) {
+        continue;
+      }
+
       const parmsFileName = `I${resource.sdkFileName}Parms.ts`;
       const parmsFilePath = path.join(docOutputDir, parmsFileName);
       
