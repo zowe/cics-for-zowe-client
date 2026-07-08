@@ -83,6 +83,7 @@ describe("inspectTreeResourceCommand", () => {
     (inspectResourceCommandUtils.inspectResourceByNode as jest.Mock) = jest.fn();
     (inspectResourceCommandUtils.showInspectResource as jest.Mock) = jest.fn();
     (compareResourceCommand.compareTreeNodeWithPrompts as jest.Mock) = jest.fn();
+    (compareResourceCommand.compareResourceFromInspector as jest.Mock) = jest.fn();
   });
 
   describe("getInspectTreeResourceCommand", () => {
@@ -178,19 +179,21 @@ describe("inspectTreeResourceCommand", () => {
     });
 
     it("should use inspector resource when no selection and no node", async () => {
+      const mockRIResource = {
+        meta: mockMeta,
+        resource: mockResource.attributes,
+        context: {
+          profile: { name: "testProfile" },
+          session: { session: "mockSession" },
+          cicsplexName: "PLEX1",
+          regionName: "REGION1",
+        },
+        highlights: [] as { key: string; value: string }[],
+        actions: [] as { id: string; name: string }[],
+        name: "TEST",
+      };
       const mockInspector = {
-        getResources: jest.fn().mockReturnValue([
-          {
-            meta: mockMeta,
-            resource: mockResource.attributes,
-            context: {
-              profile: { name: "testProfile" },
-              session: { session: "mockSession" },
-              cicsplexName: "PLEX1",
-              regionName: "REGION1",
-            },
-          },
-        ]),
+        getResources: jest.fn().mockReturnValue([mockRIResource]),
       };
       (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
 
@@ -199,13 +202,8 @@ describe("inspectTreeResourceCommand", () => {
 
       await commandHandler(undefined);
 
-      expect(compareResourceCommand.compareTreeNodeWithPrompts).toHaveBeenCalled();
-
-      // Verify the inspectorAsNode structure by calling getContainedResource
-      const callArgs = (compareResourceCommand.compareTreeNodeWithPrompts as jest.Mock).mock.calls[0][0];
-      const containedResource = callArgs.getContainedResource();
-      expect(containedResource.meta).toBe(mockMeta);
-      expect(containedResource.resource.attributes).toBe(mockResource.attributes);
+      expect(compareResourceCommand.compareResourceFromInspector).toHaveBeenCalledWith(mockRIResource, mockContext);
+      expect(compareResourceCommand.compareTreeNodeWithPrompts).not.toHaveBeenCalled();
     });
 
     it("should show error when no resources in inspector", async () => {
@@ -220,6 +218,21 @@ describe("inspectTreeResourceCommand", () => {
       await commandHandler(undefined);
 
       expect(window.showErrorMessage).toHaveBeenCalled();
+    });
+
+    it("should show error when inspector resource", async () => {
+      const mockInspector = {
+        getResources: jest.fn().mockReturnValue([{ meta: null, resource: mockResource.attributes }]),
+      };
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
+
+      getCompareResourcesCommand(mockContext, mockTreeView as TreeView<CICSResourceContainerNode<IResource>>);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(undefined);
+
+      expect(window.showErrorMessage).toHaveBeenCalledWith(expect.any(String));
+      expect(compareResourceCommand.compareResourceFromInspector).not.toHaveBeenCalled();
     });
 
     it("should compare single selected node", async () => {
@@ -305,18 +318,85 @@ describe("inspectTreeResourceCommand", () => {
 
   describe("getCompareResourceToCommand", () => {
     it("should register the command", () => {
-      getCompareResourceToCommand();
+      getCompareResourceToCommand(mockContext);
 
       expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.compareTreeResourceTo", expect.any(Function));
     });
 
-    it("should execute compareTreeResources command", async () => {
-      getCompareResourceToCommand();
+    it("should call compareTreeNodeWithPrompts directly when node is provided", async () => {
+      getCompareResourceToCommand(mockContext);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(mockNode);
 
-      expect(commands.executeCommand).toHaveBeenCalledWith("cics-extension-for-zowe.compareTreeResources", mockNode);
+      expect(compareResourceCommand.compareTreeNodeWithPrompts).toHaveBeenCalledWith(mockNode, mockContext);
+      expect(commands.executeCommand).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to RI resource when no node is provided and pass it directly", async () => {
+      const mockRIResource = {
+        meta: mockMeta,
+        resource: mockResource.attributes,
+        context: {
+          profile: { name: "testProfile" },
+          session: { session: "mockSession" },
+          cicsplexName: "PLEX1",
+          regionName: "REGION1",
+        },
+        highlights: [] as { key: string; value: string }[],
+        actions: [] as { id: string; name: string }[],
+        name: "TEST",
+      };
+      const mockInspector = {
+        getResources: jest.fn().mockReturnValue([mockRIResource]),
+      };
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
+
+      getCompareResourceToCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(undefined);
+
+      // RI resource is passed directly — no adapter, no compareTreeNodeWithPrompts
+      expect(compareResourceCommand.compareResourceFromInspector).toHaveBeenCalledWith(mockRIResource, mockContext);
+      expect(compareResourceCommand.compareTreeNodeWithPrompts).not.toHaveBeenCalled();
+    });
+
+    it("should show error when no node and RI resource has null meta", async () => {
+      const mockInspector = {
+        getResources: jest.fn().mockReturnValue([
+          {
+            meta: null,
+            resource: mockResource.attributes,
+            context: { profile: { name: "testProfile" }, cicsplexName: "PLEX1", regionName: "REGION1" },
+          },
+        ]),
+      };
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
+
+      getCompareResourceToCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(undefined);
+
+      expect(window.showErrorMessage).toHaveBeenCalled();
+      expect(compareResourceCommand.compareResourceFromInspector).not.toHaveBeenCalled();
+    });
+
+    it("should show error when no node and no RI resource", async () => {
+      const mockInspector = {
+        getResources: jest.fn().mockReturnValue([]),
+      };
+      (ResourceInspectorViewProvider.getInstance as jest.Mock) = jest.fn().mockReturnValue(mockInspector);
+
+      getCompareResourceToCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(undefined);
+
+      expect(window.showErrorMessage).toHaveBeenCalled();
+      expect(compareResourceCommand.compareTreeNodeWithPrompts).not.toHaveBeenCalled();
+      expect(compareResourceCommand.compareResourceFromInspector).not.toHaveBeenCalled();
     });
   });
 });

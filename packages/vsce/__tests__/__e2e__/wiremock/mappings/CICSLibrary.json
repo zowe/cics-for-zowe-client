@@ -95,6 +95,102 @@
           "Content-Type": "text/xml"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYLIB1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYLIB1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB2)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request><action name=\"ENABLE\"/> </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB2/enable-response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB2/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYLIB2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB2/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYLIB2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/MYLIB2/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
     }
   ]
 }

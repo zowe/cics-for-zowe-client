@@ -23,6 +23,8 @@ export const constants = {
   PROGRAM_1_NAME: "MYPROG1",
   PROGRAM_2_NAME: "MYPROG2",
   LIBRARY_1_NAME: "MYLIB1",
+  LIBRARY_2_NAME: "MYLIB2 (Disabled)",
+  TASK_1_NAME: "00001 - CEMT (Running)",
   LIBRARY_DS_1_NAME: "MYLIB.DS1",
   LIBRARY_DS_2_NAME: "MYLIBDS1",
   JVM_SERVER_1_NAME: "MYJVM1",
@@ -49,12 +51,14 @@ export const constants = {
   Message: Rest API failure with HTTP(S) status 404`,
   LIBRARY_DISABLE_ERROR_MESSAGE: `Failed to DISABLE LIBRARY DFHRPL on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
-  NO_CONNECTION_ERROR_MESSAGE: "Failed to send request on profile test-login. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.",
+  NO_CONNECTION_ERROR_MESSAGE:
+    "Failed to send request on profile test-login. Response details - URL: /CICSSystemManagement/CICSCICSPlex/?SUMMONLY&NODISCARD, Message: Failed to send an HTTP request.",
   PROGRAM_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
   Please refer to the IBM documentation for additional details`,
   PROGRAM2_DISABLE_ERROR_MESSAGE: `Failed to DISABLE PROGRAM MYPROG2 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 1.
   Please refer to the IBM documentation for additional details`,
-  PROGRAM_NOT_FOUND_ERROR_MESSAGE: "The request failed on profile wiremock_localhost for resources: PROG3, PROG4. Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for additional details",
+  PROGRAM_NOT_FOUND_ERROR_MESSAGE:
+    "The request failed on profile wiremock_localhost for resources: PROG3, PROG4. Response details: API_FUNCTION: GET, RESP: 1041 (INVALIDATA), RESP2: 1299 (CRITERIA). Please refer to the IBM documentation for additional details",
 };
 
 export const getTree = (page: Page, exactText: string) => {

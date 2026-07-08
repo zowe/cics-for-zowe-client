@@ -14,7 +14,7 @@ import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { type ExtensionContext, type TreeView, commands, l10n, window } from "vscode";
 import type { CICSResourceContainerNode } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
-import { compareTreeNodeWithPrompts } from "./compareResourceCommand";
+import { compareResourceFromInspector, compareTreeNodeWithPrompts } from "./compareResourceCommand";
 import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
@@ -27,7 +27,6 @@ export function getInspectTreeResourceCommand(context: ExtensionContext, treevie
         return;
       }
 
-      // Gets last selected element
       targetNode = treeview.selection.pop();
       const targetNodeMeta = targetNode.getContainedResource().meta;
       const targetNodeResource = targetNode.getContainedResource().resource;
@@ -61,22 +60,12 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
         return;
       }
 
-      // Use the first resource from inspector as the base for comparison
-      const currentResource = currentResources[0];
-
-      // Convert inspector resource to tree node format for comparison
-      const inspectorAsNode: CICSResourceContainerNode<IResource> = {
-        getContainedResource: () => ({
-          meta: currentResource.meta,
-          resource: { attributes: currentResource.resource } as any,
-        }),
-        getProfile: () => currentResource.context.profile,
-        getSession: () => currentResource.context.session,
-        cicsplexName: currentResource.context.cicsplexName,
-        regionName: currentResource.context.regionName,
-      } as any;
-
-      return compareTreeNodeWithPrompts(inspectorAsNode, context);
+      const current = currentResources[0];
+      if (!current?.meta) {
+        await window.showErrorMessage(l10n.t("No CICS resource information available to compare"));
+        return;
+      }
+      return compareResourceFromInspector(current, context);
     }
 
     if (treeNodes.length === 1) {
@@ -108,16 +97,30 @@ export function getCompareResourcesCommand(context: ExtensionContext, treeview: 
       return;
     }
 
-    if(node){
+    if (node) {
       return compareTreeNodeWithPrompts(node, context);
     }
   });
 }
 
-export function getCompareResourceToCommand() {
+export function getCompareResourceToCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.compareTreeResourceTo", async (node: CICSResourceContainerNode<IResource>) => {
-    // This command is just an alias for compareTreeResources with a different title
-    // It's used for single-selection context menu and inspector actions
-    return commands.executeCommand("cics-extension-for-zowe.compareTreeResources", node);
+    if (node) {
+      return compareTreeNodeWithPrompts(node, context);
+    }
+
+    const resourceInspector = ResourceInspectorViewProvider.getInstance(context);
+    const currentResources = resourceInspector.getResources();
+    if (!currentResources || currentResources.length === 0) {
+      await window.showErrorMessage(l10n.t("No CICS resource selected"));
+      return;
+    }
+
+    const currentResource = currentResources[0];
+    if (!currentResource?.meta) {
+      await window.showErrorMessage(l10n.t("No CICS resource information available to compare"));
+      return;
+    }
+    return compareResourceFromInspector(currentResource, context);
   });
 }
