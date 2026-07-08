@@ -17,7 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, enableURIMap, ICMCIApiResponse, IURIMapParms } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableURIMap, type ICMCIApiResponse, type IURIMapParms } from "../../../src";
 
 describe("CMCI - Enable urimap", () => {
   const urimap = "TESTFILE";

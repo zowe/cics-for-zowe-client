@@ -17,7 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, disableLibrary, ICMCIApiResponse, IResourceParms } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, disableLibrary, type ICMCIApiResponse, type IResourceParms } from "../../../src";
 
 describe("CMCI - Disable library", () => {
   const library = "TESTFILE";

@@ -17,7 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, {{sdkFunction}}, ICMCIApiResponse, {{#if allOptions.length}}{{parmsInterface}}{{else}}IResourceParms{{/if}} } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, {{sdkFunction}}, type ICMCIApiResponse, {{#if allOptions.length}}type {{parmsInterface}}{{else}}type IResourceParms{{/if}} } from "../../../src";
 
 describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
   const {{camelCase humanNameLower}} = "TESTFILE";

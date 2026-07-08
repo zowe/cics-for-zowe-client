@@ -39,9 +39,9 @@ export async function disableProgram(session: AbstractSession, parms: IProgramPa
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate program name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS program name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS program name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -82,9 +82,9 @@ export async function enableProgram(session: AbstractSession, parms: IProgramPar
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate program name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS program name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS program name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH + ` characters`,
     });
   }
 

@@ -39,9 +39,9 @@ export async function disableURIMap(session: AbstractSession, parms: IURIMapParm
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate urimap name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS urimap name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS urimap name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -82,9 +82,9 @@ export async function enableURIMap(session: AbstractSession, parms: IURIMapParms
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate urimap name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS urimap name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS urimap name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH + ` characters`,
     });
   }
 

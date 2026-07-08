@@ -39,9 +39,9 @@ export async function disableLibrary(session: AbstractSession, parms: IResourceP
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -82,9 +82,9 @@ export async function enableLibrary(session: AbstractSession, parms: IResourcePa
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
     });
   }
 

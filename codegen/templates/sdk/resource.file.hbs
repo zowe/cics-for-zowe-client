@@ -50,10 +50,10 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{#if ../
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate {{../humanNameLower}} name length (CICS resource names are limited to {{../maxNameLength}} characters)
-{{#if ../maxNameLength}}
-  if (parms.name.length > {{../maxNameLength}}) {
+{{#if ../maxLengthConstant}}
+  if (parms.name.length > CicsCmciConstants.{{../maxLengthConstant}}) {
     throw new ImperativeError({
-      msg: `CICS {{../humanNameLower}} name "${parms.name}" exceeds maximum length of {{../maxNameLength}} characters`,
+      msg: `CICS {{../humanNameLower}} name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.{{../maxLengthConstant}} + ` characters`,
     });
   }
 {{/if}}
