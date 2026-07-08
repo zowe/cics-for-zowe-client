@@ -17,13 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  enableProgram,
-  type ICMCIApiResponse,
-  type IProgramParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableProgram, ICMCIApiResponse, IProgramParms } from "../../../src";
 
 describe("CMCI - Enable program", () => {
   const program = "TESTFILE";

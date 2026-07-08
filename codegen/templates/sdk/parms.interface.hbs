@@ -35,9 +35,9 @@ export interface {{parmsInterface}} extends IResourceParms {
 {{#if defaultValue}}
    * Default: "{{defaultValue}}"
 {{/if}}
-{{#unless caseSensitive}}
+{{#if (eq caseSensitive false)}}
    * Value will be automatically converted to uppercase
-{{/unless}}
+{{/if}}
    * @type { {{type}} }
    * @memberof {{../parmsInterface}}
    */

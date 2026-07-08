@@ -17,13 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  enableLibrary,
-  type ICMCIApiResponse,
-  type IResourceParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableLibrary, ICMCIApiResponse, IResourceParms } from "../../../src";
 
 describe("CMCI - Enable library", () => {
   const library = "TESTFILE";
@@ -113,7 +107,7 @@ describe("CMCI - Enable library", () => {
         CicsCmciConstants.CICS_CMCI_LIBRARY +
         "/" +
         region +
-        `?CRITERIA=(library%3D${ enableParms.name})`;
+        `?CRITERIA=(NAME%3D${ enableParms.name})`;
       requestBody = {
         request: {
           action: {

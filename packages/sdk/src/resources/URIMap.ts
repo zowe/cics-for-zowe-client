@@ -60,7 +60,7 @@ export async function disableURIMap(session: AbstractSession, parms: IURIMapParm
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_URIMAP_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD
   );
 }
 
@@ -103,7 +103,7 @@ export async function enableURIMap(session: AbstractSession, parms: IURIMapParms
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_URIMAP_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD
   );
 }
 

@@ -27,7 +27,6 @@ import type { IResourceParms } from "./IResourceParms";
 export interface IProgramParms extends IResourceParms {
   /**
    * The CICS CSD Group for resource definition operations.
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IProgramParms
    */

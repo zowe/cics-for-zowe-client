@@ -87,6 +87,7 @@ interface DerivedResource {
   hasBusyOption: boolean;
   humanNameLower: string;
   humanName: string;
+  testFileSlug: string;
   maxNameLength?: number;
   
   // Resolved actions
@@ -179,8 +180,9 @@ export class ResourceGenerator {
   public generateAll(): void {
     console.log("🚀 Starting resource-focused code generation...\n");
 
-    this.generateSDK();
-    this.generateTests();
+    const derivedResources = this.deriveResources();
+    this.generateSDK(derivedResources);
+    this.generateTests(derivedResources);
 
     console.log("\n🎉 Code generation complete!");
   }
@@ -188,14 +190,12 @@ export class ResourceGenerator {
   /**
    * Generate SDK code
    */
-  private generateSDK(): void {
+  private generateSDK(derivedResources: DerivedResource[]): void {
     console.log("📦 Generating SDK layer...");
     
     const sdkOutputDir = path.join(this.outputDir, "sdk", "src", "resources");
     this.ensureDir(sdkOutputDir);
 
-    // Process each resource
-    const derivedResources = this.deriveResources();
     
     for (const resource of derivedResources) {
       const fileName = `${resource.sdkFileName}.ts`;
@@ -290,15 +290,13 @@ export class ResourceGenerator {
   /**
    * Generate unit tests
    */
-  private generateTests(): void {
+  private generateTests(derivedResources: DerivedResource[]): void {
     console.log("📦 Generating SDK unit tests...");
     this.generatedTestFiles = [];
     
     const sdkTestOutputDir = path.join(this.outputDir, "sdk", "__tests__", "__unit__");
     this.ensureDir(sdkTestOutputDir);
 
-    const derivedResources = this.deriveResources();
-    
     for (const resource of derivedResources) {
       for (const action of resource.actions) {
         const context = {
@@ -308,9 +306,7 @@ export class ResourceGenerator {
           hasRegionName: true,
           hasValidation: action.hasValidation,
           hasParameters: action.hasParameters,
-          testFileName: `${action.identifier.group.charAt(0).toUpperCase() + action.identifier.group.slice(1)}.${
-            resource.sdkFileName.charAt(0).toLowerCase() + resource.sdkFileName.slice(1)
-          }.unit.test.ts`,
+          testFileName: `${action.identifier.group.charAt(0).toUpperCase() + action.identifier.group.slice(1)}.${resource.testFileSlug}.unit.test.ts`,
         };
 
         const outputPath = path.join(
@@ -373,11 +369,11 @@ export class ResourceGenerator {
     const sdkResourceType = sdkFileName === "URIMap" ? "CICS_URIMAP" : `CICS_CMCI_${resourceTypeUpper}`;
     
     const parmsInterface = `I${sdkFileName}Parms`;
-    const criteriaField = resource.identifier.primaryKey.toLowerCase(); // lowercase for tests (original behavior)
-    
-    // For criteria field and busy values, use CICS_ prefix without _CMCI_
-    // Special case for URIMap
-    const criteriaFieldConstant = sdkFileName === "URIMap" ? "CICS_URIMAP_CRITERIA_FIELD" : `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
+    // primaryKey is used as-is in criteria (IBM docs key field name, e.g. "file", "program", "NAME")
+    const criteriaField = resource.identifier.primaryKey;
+
+    // Use resourceTypeUpper consistently for all criteria field constants
+    const criteriaFieldConstant = `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
     const maxLengthConstant = resource.identifier.maxPrimaryKeyLength
       ? `CICS_${resourceTypeUpper}_MAX_LENGTH`
       : undefined;
@@ -455,6 +451,10 @@ export class ResourceGenerator {
       hasBusyOption: usesBusyOption,
       humanNameLower: resource.identifier.humanNameSingular.toLowerCase(),
       humanName: resource.identifier.humanNameSingular,
+      testFileSlug: resource.identifier.humanNameSingular.includes(" ")
+        ? resource.identifier.humanNameSingular.replace(/\s+/g, "").charAt(0).toLowerCase() +
+          resource.identifier.humanNameSingular.replace(/\s+/g, "").slice(1)
+        : resource.identifier.humanNameSingular.toLowerCase(),
       maxNameLength: resource.identifier.maxPrimaryKeyLength,
       actions: derivedActions,
       allOptions,

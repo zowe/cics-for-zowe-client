@@ -58,7 +58,7 @@ export const CicsCmciConstants = {
   /**
    * Alias for CICS_LIBRARY_RESOURCE (used by codegen)
    */
-  CICS_CMCI_LIBRARY: "CICSLibrary",
+  CICS_CMCI_LIBRARY: "CICSLIBRARY",
 
   /**
    * Specifies the required part of the REST interface URI to access library dataset resources
@@ -239,7 +239,7 @@ export const CicsCmciConstants = {
   /**
    * The criteria field name for urimap resources
    */
-  CICS_URIMAP_CRITERIA_FIELD: "urimap",
+  CICS_URI_MAP_CRITERIA_FIELD: "NAME",
 
   /**
    * Maximum length for CICS urimap names
@@ -254,7 +254,7 @@ export const CicsCmciConstants = {
   /**
    * The criteria field name for library resources
    */
-  CICS_LIBRARY_CRITERIA_FIELD: "library",
+  CICS_LIBRARY_CRITERIA_FIELD: "NAME",
 
   /**
    * Maximum length for CICS library names

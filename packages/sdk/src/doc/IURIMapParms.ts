@@ -27,91 +27,78 @@ import type { IResourceParms } from "./IResourceParms";
 export interface IURIMapParms extends IResourceParms {
   /**
    * The CICS CSD Group for resource definition operations.
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   csdGroup?: string;
   /**
    * Path component of URI to which the map applies (up to 255 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   path?: string;
   /**
    * Host component of URI to which the map applies (up to 116 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   host?: string;
   /**
    * Scheme component of URI to which the map applies (http or https).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   scheme?: string;
   /**
    * Application program that will process the request (server URIMaps only, up to 8 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   programName?: string;
   /**
    * Pipeline that will process the request (pipeline URIMaps only, up to 8 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   pipelineName?: string;
   /**
    * Certificate that will be used to negotiate an SSL handshake (client URIMaps only).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   certificate?: string;
   /**
    * Authentication and identification scheme to be used for URIMAPs (client URIMaps only, NO or BASIC).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   authenticate?: string;
   /**
    * Description text for the resource.
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   description?: string;
   /**
    * Transaction resource associated with the URIMap (pipeline URIMaps only, up to 4 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   transactionName?: string;
   /**
    * Web service resource associated with the URIMap (pipeline URIMaps only, up to 32 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */
   webserviceName?: string;
   /**
    * Enable attribute of the resource.
-   * Value will be automatically converted to uppercase
    * @type { boolean }
    * @memberof IURIMapParms
    */
   enable?: boolean;
   /**
    * The TCPIPSERVICE to which a URIMAP applies (server and pipeline URIMAPs only, up to 8 characters).
-   * Value will be automatically converted to uppercase
    * @type { string }
    * @memberof IURIMapParms
    */

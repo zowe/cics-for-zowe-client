@@ -65,7 +65,7 @@
         "aliases": ["urimap"],
         "humanNameSingular": "URIMap",
         "humanNamePlural": "URIMaps",
-        "primaryKey": "urimap",
+        "primaryKey": "NAME",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
@@ -79,7 +79,7 @@
         "aliases": ["lib"],
         "humanNameSingular": "Library",
         "humanNamePlural": "Libraries",
-        "primaryKey": "library",
+        "primaryKey": "NAME",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
