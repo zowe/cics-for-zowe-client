@@ -57,14 +57,14 @@ export const handleActionCommand = async (
 };
 
 const executeCommandAction = async (commandName: string, resources: IResourceInspectorResource[]) => {
-  for (const resource of resources) {
-    const node = createResourceNode(resource);
-    await commands.executeCommand(commandName, node);
-  }
+  const node = createResourceNode(resources[0]);
+  await commands.executeCommand(commandName, node);
 };
 
 const createResourceNode = (resource: IResourceInspectorResource): CICSResourceContainerNode<IResource> => {
-  const meta = getMetas().find((m) => m.resourceName === resource.meta.resourceName);
+  const meta = resource.meta?.resourceName
+    ? getMetas().find((m) => m.resourceName === resource.meta.resourceName)
+    : undefined;
 
   return new CICSResourceContainerNode<IResource>(
     "Resource Inspector Node",
@@ -111,7 +111,9 @@ const fetchUpdatedResources = async (resources: IResourceInspectorResource[]): P
   const updatedResources: IResourceWithContext[] = [];
 
   for (const resource of resources) {
-    const meta = getMetas().find((m) => m.resourceName === resource.meta.resourceName);
+    const meta = resource.meta?.resourceName
+    ? getMetas().find((m) => m.resourceName === resource.meta.resourceName)
+    : undefined;
     const resourceContainer = new ResourceContainer([meta], {
       profileName: resource.context.profile.name,
       cicsplexName: resource.context.cicsplexName,

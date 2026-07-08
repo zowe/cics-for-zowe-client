@@ -24,6 +24,51 @@
     {
       "scenarioName": "Enable Disable Library",
       "requiredScenarioState": "mylib1-disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/disable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "mylib1-disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0DISABLELIBTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/disable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "mylib1-disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0DISABLELIBTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/disable/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "mylib1-disabled",
       "newScenarioState": "myprog1-enabled",
       "request": {
         "method": "PUT",
@@ -37,6 +82,51 @@
       "response": {
         "status": 200,
         "bodyFileName": "CICSLibrary/enable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "myprog1-enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/enable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "myprog1-enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0ENABLEDLIBTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/enable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Library",
+      "requiredScenarioState": "myprog1-enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0ENABLEDLIBTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibrary/enable/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
