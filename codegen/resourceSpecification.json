@@ -11,7 +11,17 @@
       },
       "actions": [
         "ENABLE",
-        "DISABLE",
+        {
+          "identifier": {
+            "name": "DISABLE",
+            "aliases": ["dis"],
+            "group": "disable",
+            "description": "Disable a resource in CICS",
+            "verb": "disabling",
+            "verbPastTense": "disabled"
+          },
+          "options": ["BUSY"]
+        },
         {
           "identifier": {
             "name": "OPEN",
@@ -99,7 +109,7 @@
         "verb": "disabling",
         "verbPastTense": "disabled"
       },
-      "options": ["BUSY"]
+      "options": []
     }
   },
   "options": {

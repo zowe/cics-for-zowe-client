@@ -25,13 +25,5 @@ import type { IResourceParms } from "./IResourceParms";
  * @extends {IResourceParms}
  */
 export interface ILibraryParms extends IResourceParms {
-  /**
-   * The busy condition option. Valid values: WAIT, NOWAIT, FORCE.
-   * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
-   * Default: "WAIT"
-   * Value will be automatically converted to uppercase
-   * @type { string }
-   * @memberof ILibraryParms
-   */
-  busy?: string;
+  // No additional parameters needed for Library resource
 }

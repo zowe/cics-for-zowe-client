@@ -53,7 +53,6 @@ describe("CMCI - Disable urimap", () => {
       error = undefined;
       disableParms.regionName = region;
       disableParms.name = urimap;
-      disableParms.busy = undefined;
     });
 
     it("should throw an error if no region name is specified", async () => {
@@ -80,18 +79,6 @@ describe("CMCI - Disable urimap", () => {
       expect(error.message).toContain("CICS urimap name is required");
     });
 
-    it("should throw an error if invalid BUSY parameter is specified", async () => {
-      disableParms.busy = "INVALID";
-      try {
-        response = await disableURIMap(dummySession, disableParms);
-      } catch (err) {
-        error = err;
-      }
-      expect(response).toBeUndefined();
-      expect(error).toBeDefined();
-      expect(error.message).toContain("Invalid BUSY parameter value");
-    });
-
     it("should throw an error if urimap name exceeds maximum length", async () => {
       disableParms.name = "TOOLONGNAME";
       try {
@@ -116,10 +103,9 @@ describe("CMCI - Disable urimap", () => {
       disableSpy.mockResolvedValue(content);
       disableParms.regionName = region;
       disableParms.name = urimap;
-      disableParms.busy = undefined;
     });
 
-    it("should be able to disable a urimap without BUSY parameter", async () => {
+    it("should be able to disable a urimap", async () => {
       endPoint =
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
@@ -133,44 +119,6 @@ describe("CMCI - Disable urimap", () => {
           action: {
             $: {
               name: "DISABLE",
-            },
-            parameter: {
-              $: {
-                name: "BUSY",
-                value: "WAIT",
-              },
-            },
-          },
-        },
-      };
-
-      response = await disableURIMap(dummySession, disableParms);
-      expect(response).toContain(content);
-      expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
-    });
-
-    it("should use provided BUSY parameter", async () => {
-      disableParms.busy = "WAIT";
-      disableParms.cicsPlex = undefined;
-      endPoint =
-        "/" +
-        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" +
-        CicsCmciConstants.CICS_URIMAP +
-        "/" +
-        region +
-        `?CRITERIA=(urimap%3D${ urimap })`;
-      requestBody = {
-        request: {
-          action: {
-            $: {
-              name: "DISABLE",
-            },
-            parameter: {
-              $: {
-                name: "BUSY",
-                value: "WAIT",
-              },
             },
           },
         },

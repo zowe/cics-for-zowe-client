@@ -26,15 +26,6 @@ import type { IResourceParms } from "./IResourceParms";
  */
 export interface IProgramParms extends IResourceParms {
   /**
-   * The busy condition option. Valid values: WAIT, NOWAIT, FORCE.
-   * Valid values: "WAIT", "NOWAIT", "FORCE" (case-insensitive)
-   * Default: "WAIT"
-   * Value will be automatically converted to uppercase
-   * @type { string }
-   * @memberof IProgramParms
-   */
-  busy?: string;
-  /**
    * The CICS CSD Group for resource definition operations.
    * Value will be automatically converted to uppercase
    * @type { string }

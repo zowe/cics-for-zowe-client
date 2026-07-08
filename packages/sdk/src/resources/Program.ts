@@ -28,11 +28,9 @@ import { performAction } from "../utils/ResourceActions";
  * @param {string} parms.name - the name of the program to disable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
- * @param {string} [parms.busy] - busy condition option: "WAIT", "NOWAIT", or "FORCE" (case-insensitive, optional, default: "WAIT")
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
  * @throws {ImperativeError} CICS program name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
- * @throws {ImperativeError} Invalid BUSY parameter value
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
 export async function disableProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
@@ -52,18 +50,7 @@ export async function disableProgram(session: AbstractSession, parms: IProgramPa
     JSON.stringify(parms)
   );
 
-  // Get busy parameter value
-  const busyValue = parms.busy ? parms.busy.trim().toUpperCase() : "WAIT";
-
-  // Validate busy parameter
-  if (!CicsCmciConstants.CICS_BUSY_VALUES.includes(busyValue)) {
-    const allowedValuesStr = CicsCmciConstants.CICS_BUSY_VALUES.join(", ");
-    throw new ImperativeError({
-      msg: `Invalid BUSY parameter value: "${ busyValue}". Must be one of: ${allowedValuesStr}`,
-    });
-  }
-
-  // Use generic performAction utility
+  // Use generic performAction utility (no additional parameters needed for DISABLE)
   return performAction(
     session,
     CicsCmciConstants.CICS_CMCI_PROGRAM,
@@ -73,8 +60,7 @@ export async function disableProgram(session: AbstractSession, parms: IProgramPa
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_PROGRAM_CRITERIA_FIELD,
-    { name: "BUSY", value: busyValue }
+    CicsCmciConstants.CICS_PROGRAM_CRITERIA_FIELD
   );
 }
 

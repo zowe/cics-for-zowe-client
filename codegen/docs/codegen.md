@@ -161,8 +161,35 @@ This generates:
 
 This generates:
 - `packages/sdk/src/resources/URIMap.ts` with `enableURIMap()` and `disableURIMap()` functions
-- `packages/sdk/src/doc/IURIMapParms.ts` with all 14 properties (busy + 13 additional options)
+- `packages/sdk/src/doc/IURIMapParms.ts` with all properties needed for both Enable/Disable and Define operations
 - Uses existing `CICS_URIMAP` constant from the codebase
+
+#### Understanding Resource vs Definition in CICS
+
+**Important Distinction**: CICS has two separate concepts that are often confused:
+
+1. **Definitions** (e.g., URIMPDEF) - Stored in CSD (CICS System Definition)
+   - Have a CSDGROUP attribute (which CSD group they belong to)
+   - Used by Define operations (CREATE, CSDINSTALL, etc.)
+   - Example: `defineUrimapServer()` creates a URIMap definition in CSD
+
+2. **Installed Resources** (e.g., URIMAP) - Running in CICS region
+   - Do NOT have a CSDGROUP attribute
+   - Used by runtime operations (ENABLE, DISABLE, INQUIRE, etc.)
+   - Example: `enableURIMap()` enables an installed URIMap resource
+
+**Why additionalOptions includes CSDGROUP and other attributes:**
+
+The codebase uses a **shared Parms interface** pattern where a single interface (e.g., `IURIMapParms`) is used by multiple operations:
+
+- **Define operations** need: CSDGROUP, PATH, HOST, SCHEME, etc.
+- **Enable/Disable operations** only use: name, regionName, cicsPlex
+
+This design choice maintains backward compatibility with existing Define functions while allowing the codegen to generate Enable/Disable operations. The Enable/Disable functions simply ignore the extra parameters they don't need.
+
+**IBM Documentation References:**
+- [URIMAP Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimap-resource-table) - Installed resources (ENABLE/DISABLE)
+- [URIMPDEF Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimpdef-resource-table) - Definitions (CSDGROUP, Define operations)
 - Unit tests for both operations
 
 ### Adding a New Action

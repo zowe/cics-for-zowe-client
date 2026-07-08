@@ -53,7 +53,6 @@ describe("CMCI - Disable library", () => {
       error = undefined;
       disableParms.regionName = region;
       disableParms.name = library;
-      disableParms.busy = undefined;
     });
 
     it("should throw an error if no region name is specified", async () => {
@@ -80,18 +79,6 @@ describe("CMCI - Disable library", () => {
       expect(error.message).toContain("CICS library name is required");
     });
 
-    it("should throw an error if invalid BUSY parameter is specified", async () => {
-      disableParms.busy = "INVALID";
-      try {
-        response = await disableLibrary(dummySession, disableParms);
-      } catch (err) {
-        error = err;
-      }
-      expect(response).toBeUndefined();
-      expect(error).toBeDefined();
-      expect(error.message).toContain("Invalid BUSY parameter value");
-    });
-
     it("should throw an error if library name exceeds maximum length", async () => {
       disableParms.name = "TOOLONGNAME";
       try {
@@ -116,10 +103,9 @@ describe("CMCI - Disable library", () => {
       disableSpy.mockResolvedValue(content);
       disableParms.regionName = region;
       disableParms.name = library;
-      disableParms.busy = undefined;
     });
 
-    it("should be able to disable a library without BUSY parameter", async () => {
+    it("should be able to disable a library", async () => {
       endPoint =
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
@@ -133,44 +119,6 @@ describe("CMCI - Disable library", () => {
           action: {
             $: {
               name: "DISABLE",
-            },
-            parameter: {
-              $: {
-                name: "BUSY",
-                value: "WAIT",
-              },
-            },
-          },
-        },
-      };
-
-      response = await disableLibrary(dummySession, disableParms);
-      expect(response).toContain(content);
-      expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
-    });
-
-    it("should use provided BUSY parameter", async () => {
-      disableParms.busy = "WAIT";
-      disableParms.cicsPlex = undefined;
-      endPoint =
-        "/" +
-        CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
-        "/" +
-        CicsCmciConstants.CICS_CMCI_LIBRARY +
-        "/" +
-        region +
-        `?CRITERIA=(library%3D${ library })`;
-      requestBody = {
-        request: {
-          action: {
-            $: {
-              name: "DISABLE",
-            },
-            parameter: {
-              $: {
-                name: "BUSY",
-                value: "WAIT",
-              },
             },
           },
         },
