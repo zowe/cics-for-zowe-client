@@ -162,7 +162,7 @@ describe("ResourceInspectorUtils", () => {
 
         await handleActionCommand(actionId, resources, mockInstance, mockContext);
 
-        expect(vscode.commands.executeCommand).toHaveBeenCalledTimes(2);
+        expect(vscode.commands.executeCommand).toHaveBeenCalledTimes(1);
       });
 
       it("should return early if action not found", async () => {

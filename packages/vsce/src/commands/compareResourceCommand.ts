@@ -60,7 +60,7 @@ export async function compareTreeNodeWithPrompts(node: CICSResourceContainerNode
   await compareResourceFromInspector(currentResource, context);
 }
 
-async function compareResourceFromInspector(currentResource: IResourceInspectorResource, context: ExtensionContext) {
+export async function compareResourceFromInspector(currentResource: IResourceInspectorResource, context: ExtensionContext) {
   try {
     // Step 1: Select region for comparison using the existing getLastUsedRegion functionality
     const targetRegion = await getLastUsedRegion();

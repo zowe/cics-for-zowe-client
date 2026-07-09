@@ -1,0 +1,40 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Purge Task",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "task-purged",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSTask/MYPLEX1/MYREG1?CRITERIA=(TASK%3D'00001')",
+        "bodyPatterns": [
+          {
+            "matchesXPath": "//*[local-name()='action'][@name='PURGE']"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/purge/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Purge Task",
+      "requiredScenarioState": "task-purged",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSTask/MYPLEX1/MYREG1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTask/purged/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
