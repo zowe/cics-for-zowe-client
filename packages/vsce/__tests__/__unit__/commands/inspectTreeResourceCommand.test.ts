@@ -357,8 +357,7 @@ describe("inspectTreeResourceCommand", () => {
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(undefined);
-
-      // RI resource is passed directly — no adapter, no compareTreeNodeWithPrompts
+      // RI resource is passed directly – no adapter, no compareTreeNodeWithPrompts
       expect(compareResourceCommand.compareResourceFromInspector).toHaveBeenCalledWith(mockRIResource, mockContext);
       expect(compareResourceCommand.compareTreeNodeWithPrompts).not.toHaveBeenCalled();
     });

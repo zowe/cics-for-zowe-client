@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<response xmlns="http://www.ibm.com/xmlns/prod/CICS/smw2int"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ibm.com/xmlns/prod/CICS/smw2int http://my-localhost:8080/CICSSystemManagement/schema/CICSSystemManagement.xsd"
+  version="3.0" connect_version="0610">
+  <resultsummary api_response1="1024" api_response2="0" api_response1_alt="OK" api_response2_alt=""
+    recordcount="1" displayed_recordcount="1" cachetoken="JVMTOKEN2" />
+  <records>
+    <cicsjvmserver _keydata="C5E8E4C3D4C3C9D2" basdefinever="0" changeagent="SYSTEM"
+      changeagrel="0740" changetime="2026-02-02T02:11:00.000000+00:00" changeusrid="EXPAUTO"
+      clscachefree="180829452" clscachesize="268434896" clssstrgallc="297433920" clssstrgused="69403240"
+      codecachallc="268435456" codecachused="27008528" currentheap="146349496"
+      datacachallc="16777216" datacachused="10486336" definesource="SYSTEM"
+      definetime="2026-02-02T02:11:00.000000+00:00" enablestatus="DISABLED" eyu_cicsname="MYREG1"
+      eyu_cicsrel="E740" eyu_reserved="0" gcpolicy="-Xgcpolicy:gencon" initheap="134217728"
+      installagent="CREATESPI" installtime="2026-02-02T02:11:00.000000+00:00" installusrid="EXPAUTO"
+      javahome="/java/J8.0_64" jvmprofile="MYPLEX1" lerunopts="DFHAXRO" log="//DD:JVMLOG"
+      maxheap="2147483648" name="MYJVM2" occupancy="146349496" peakheap="146361784" pid="50858546"
+      profile="/u/expauto/jvmprofs/MYREG1/MYJVM2.jvmprofile"
+      profiledir="/u/expauto/jvmprofs/MYREG1" threadlimit="15"
+      stderr="//DD:JVMERR" stdout="//DD:JVMOUT" trace="//DD:JVMTRACE" workdir="/u/expauto" />
+  </records>
+</response>

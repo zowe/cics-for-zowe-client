@@ -42,11 +42,102 @@
     {
       "request": {
         "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMSERVER%3D'MYJVM2')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVM2/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/ERRORS?CRITERIA=(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
         "status": 200,
         "bodyFileName": "CICSJVMEndpoint/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMENDPOINT%3D'MYJVMENDPOINT1')%20AND%20(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMEP1ENABLED/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMEP1ENABLED?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSJVMEndpoint/MYPLEX1/MYREG1?CRITERIA=(JVMENDPOINT%3D'MYJVMENDPOINT2')%20AND%20(JVMSERVER%3D'MYJVM1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT2/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMEP2DISABLED/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT2/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/JVMEP2DISABLED?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSJVMEndpoint/MYJVMENDPOINT2/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }

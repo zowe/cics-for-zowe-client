@@ -36,6 +36,22 @@ async function openResourceInspector(page: Page, resourceType: string, resourceN
   await waitForNotification(page, `Loading CICS resource '${notificationName ?? resourceName}'...`);
 }
 
+async function openJVMEndpointResourceInspector(page: Page, jvmEndpointName: string) {
+  await findAndClickTreeItem(page, constants.PROFILE_NAME);
+  await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+  await findAndClickTreeItem(page, constants.REGION_NAME);
+  await findAndClickTreeItem(page, "JVM Servers");
+  await findAndClickTreeItem(page, constants.JVM_SERVER_1_NAME);
+
+  await findAndClickTreeItem(page, jvmEndpointName);
+  await findAndClickTreeItem(page, jvmEndpointName, "right", false);
+  await page.waitForTimeout(200);
+  await findAndClickText(page, "Inspect Resource");
+
+  const endpointResourceName = jvmEndpointName.split(" ")[0]; // strip the port suffix e.g. "MYJVMENDPOINT1 (9080)" → "MYJVMENDPOINT1"
+  await waitForNotification(page, `Loading CICS resource '${endpointResourceName}'...`);
+}
+
 async function openContextMenu(page: Page) {
   const contextMenuButton = getResourceInspector(page).locator(".codicon.codicon-kebab-vertical").first();
   await expect(contextMenuButton).toBeVisible({ timeout: 10000 });
@@ -119,6 +135,54 @@ test.describe("Resource Inspector Actions - Task", () => {
 
   test("should show Compare to option for task in Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "Tasks", constants.TASK_1_NAME, "00001");
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+  });
+});
+
+test.describe("Resource Inspector Actions - JVM Server", () => {
+  test("should show Enable and Disable actions for an enabled JVM Server in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "JVM Servers", constants.JVM_SERVER_1_NAME);
+
+    await openContextMenu(page);
+
+    // MYJVM1 is ENABLED — Disable should be visible, Enable should not
+    await expect(getResourceInspector(page).getByText("Disable JVM Server", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Enable JVM Server", { exact: true })).not.toBeVisible();
+  });
+
+  test("should show Compare to option for JVM Server in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "JVM Servers", constants.JVM_SERVER_1_NAME);
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+  });
+});
+
+test.describe("Resource Inspector Actions - JVM Endpoint", () => {
+  test("should show Disable but not Enable for an ENABLED JVM Endpoint in Resource Inspector", async ({ page }) => {
+    await openJVMEndpointResourceInspector(page, constants.JVM_ENDPOINT_1_NAME);
+
+    await openContextMenu(page);
+
+    // MYJVMENDPOINT1 is ENABLED — Disable should be visible, Enable should not
+    await expect(getResourceInspector(page).getByText("Disable JVM Endpoint", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Enable JVM Endpoint", { exact: true })).not.toBeVisible();
+  });
+
+  test("should show Enable but not Disable for a DISABLED JVM Endpoint in Resource Inspector", async ({ page }) => {
+    await openJVMEndpointResourceInspector(page, constants.JVM_ENDPOINT_2_NAME);
+
+    await openContextMenu(page);
+
+    // MYJVMENDPOINT2 is DISABLED — Enable should be visible, Disable should not
+    await expect(getResourceInspector(page).getByText("Enable JVM Endpoint", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Disable JVM Endpoint", { exact: true })).not.toBeVisible();
+  });
+
+  test("should show Compare to option for JVM Endpoint in Resource Inspector", async ({ page }) => {
+    await openJVMEndpointResourceInspector(page, constants.JVM_ENDPOINT_1_NAME);
 
     await openContextMenu(page);
     await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();

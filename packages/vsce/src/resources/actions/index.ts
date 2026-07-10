@@ -9,15 +9,17 @@
  *
  */
 
-import { type ResourceAction, type ResourceTypeMap, ResourceTypes } from "@zowe/cics-for-zowe-explorer-api";
+import { ResourceTypes, type ResourceAction, type ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { getJVMEndpointActions } from "./JVMEndpointActions";
+import { getJVMServerActions } from "./JVMServerActions";
 import { getLibraryActions } from "./LibraryActions";
 import { getLocalFileActions } from "./LocalFileActions";
+import { getManagedRegionActions } from "./ManagedRegionActions";
 import { getProgramActions } from "./ProgramActions";
+import { getRegionActions } from "./RegionActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
 import { getTaskActions } from "./TaskActions";
 import { getTransactionActions } from "./TransactionActions";
-import { getManagedRegionActions } from "./ManagedRegionActions";
-import { getRegionActions } from "./RegionActions";
 
 export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
   const map = new Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>();
@@ -25,6 +27,8 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
   map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
   map.set(ResourceTypes.CICSLibrary, getLibraryActions());
+  map.set(ResourceTypes.CICSJVMServer, getJVMServerActions());
+  map.set(ResourceTypes.CICSJVMEndpoint, getJVMEndpointActions());
   map.set(ResourceTypes.CICSTSQueue, getTSQueueActions());
   map.set(ResourceTypes.CICSSharedTSQueue, getSharedTSQueueActions());
   map.set(ResourceTypes.CICSTask, getTaskActions());
@@ -34,11 +38,13 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   return map;
 }
 
+export * from "./JVMEndpointActions";
+export * from "./JVMServerActions";
 export * from "./LibraryActions";
 export * from "./LocalFileActions";
-export * from "./ProgramActions";
-export * from "./TaskActions";
-export * from "./TSQueueActions";
-export * from "./TransactionActions";
 export * from "./ManagedRegionActions";
+export * from "./ProgramActions";
 export * from "./RegionActions";
+export * from "./TSQueueActions";
+export * from "./TaskActions";
+export * from "./TransactionActions";
