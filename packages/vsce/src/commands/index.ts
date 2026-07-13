@@ -88,5 +88,6 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInspectTreeRegionCommand(context),
     getInspectRegionCommand(context),
     showLibraryDatasetCommand(treeview),
+    //here we add all actions
   ];
 };
