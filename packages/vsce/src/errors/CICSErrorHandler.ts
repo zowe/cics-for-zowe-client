@@ -119,9 +119,6 @@ export class CICSErrorHandler {
     profileName?: string
   ): boolean {
     const isNotOk = resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.OK);
-    // Use the server-reported count — the actual record objects are not available
-    // when only a summary is passed in (unlike handleApiResponseError which has
-    // the full records structure and can call hasRecordsWithData).
     const hasRecords = resultsummary.recordcount !== undefined && parseInt(resultsummary.recordcount) > 0;
 
     if (isNotOk && hasRecords) {
