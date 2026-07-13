@@ -10,6 +10,7 @@
  */
 
 import { ExtensionContext, window } from "vscode";
+import { MarkdownString } from "vscode";
 import { CICSSessionTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
@@ -774,6 +775,96 @@ describe("Test suite for CICSRegionsContainer", () => {
       regionsContainer.activeFilter = "*";
       regionsContainer["updateLabelAndContext"]();
       expect(regionsContainer.contextValue).toBe("cicsregionscontainer.");
+    });
+  });
+
+  describe("Test suite for incomplete results tooltip", () => {
+    const notpermitApiResponse = {
+      response: {
+        resultsummary: {
+          api_response1: "1031",
+          api_response2: "1345",
+          api_response1_alt: "NOTPERMIT",
+          api_response2_alt: "USRID",
+          recordcount: "5",
+        },
+        records: { cicsmanagedregion: record },
+      },
+    };
+
+    it("should set NOTPERMIT tooltip when filterRegions returns partial-auth response", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: notpermitApiResponse,
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn().mockReturnValue(
+        Object.assign(new MarkdownString(), { value: "Retrieving these resources resulted in an error:\n\n**NOTPERMIT (1031) / USRID (1345)**\n\nVisit [IBM docs](https://example.com) for resp code details" })
+      );
+
+      await regionsContainer.filterRegions("*");
+
+      expect(regionsContainer.tooltip).toBeInstanceOf(MarkdownString);
+      const tooltipValue = (regionsContainer.tooltip as MarkdownString).value;
+      expect(tooltipValue).toContain("NOTPERMIT");
+      expect(tooltipValue).toContain("1031");
+      expect(String(regionsContainer.description)).toContain("ⓘ");
+    });
+
+    it("should clear tooltip on clean filterRegions (no error)", async () => {
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+
+      await regionsContainer.filterRegions("*");
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+      expect(String(regionsContainer.description)).not.toContain("ⓘ");
+    });
+
+    it("should set NOTPERMIT tooltip when loadRegionsInPlex returns partial-auth response", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: notpermitApiResponse,
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn().mockReturnValue(
+        Object.assign(new MarkdownString(), { value: "Retrieving these resources resulted in an error:\n\n**NOTPERMIT (1031) / USRID (1345)**" })
+      );
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeInstanceOf(MarkdownString);
+    });
+
+    it("should clear tooltip on clean loadRegionsInPlex (no error)", async () => {
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should clear tooltip (no popup) when filterRegions throws a fatal error", async () => {
+      const networkError = new Error("Network error");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(networkError);
+
+      await regionsContainer.filterRegions("TEST*");
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should clear tooltip when loadRegionsInPlex throws a fatal error", async () => {
+      const networkError = new Error("Network error");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(networkError);
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
     });
   });
 

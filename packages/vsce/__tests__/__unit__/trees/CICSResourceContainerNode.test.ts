@@ -13,6 +13,7 @@ const prog1 = { program: "PROG1", status: "ENABLED", newcopycnt: "0", eyu_cicsna
 const prog2 = { program: "PROG2", status: "DISABLED", newcopycnt: "2", eyu_cicsname: "MYREG" };
 
 import { IProgram } from "@zowe/cics-for-zowe-explorer-api";
+import { MarkdownString } from "vscode";
 import { ProgramMeta } from "../../../src/doc";
 import { CICSErrorHandler } from "../../../src/errors/CICSErrorHandler";
 import { Resource, ResourceContainer } from "../../../src/resources";
@@ -1258,6 +1259,42 @@ describe("CICSResourceContainerNode tests", () => {
       expect(foundNode).toBeDefined();
       expect(foundNode?.getContainedResourceName()).toBe("PROG2");
       expect(foundNode?.getContainedResourceName()).not.toBe("PROG1");
+    });
+  });
+
+  describe("Incomplete results tooltip", () => {
+    it("should set tooltip and ⓘ badge when API returns error with partial records", async () => {
+      const fakeTooltip = { value: "Retrieving these resources resulted in an error:\n\nNOTPERMIT (1031) / USRID (1345)\n\nVisit [IBM docs](https://example.com) for resp code details" };
+      jest.spyOn(CICSErrorHandler, "handleErrorIfPresent").mockReturnValue(true);
+      jest.spyOn(CICSErrorHandler, "buildIncompleteResultsTooltip").mockReturnValue(fakeTooltip as any);
+
+      await containerNode.getChildren();
+
+      expect(containerNode.tooltip).toBe(fakeTooltip);
+      expect(String(containerNode.description)).toContain("ⓘ");
+    });
+
+    it("should not set tooltip or badge when API response is successful", async () => {
+      // Pre-seed a stale tooltip to verify it is actively cleared on a clean load.
+      containerNode.tooltip = new MarkdownString("stale tooltip");
+      jest.spyOn(CICSErrorHandler, "handleErrorIfPresent").mockReturnValue(false);
+
+      await containerNode.getChildren();
+
+      expect(containerNode.tooltip).toBeUndefined();
+      expect(String(containerNode.description)).not.toContain("ⓘ");
+    });
+
+    it("should set tooltip from buildIncompleteResultsTooltip during fetchNextPage", async () => {
+      const fakeTooltip = { value: "Retrieving these resources resulted in an error:\n\nNOTPERMIT (1031) / USRID (1345)" };
+      jest.spyOn(CICSErrorHandler, "handleErrorIfPresent").mockReturnValue(true);
+      jest.spyOn(CICSErrorHandler, "buildIncompleteResultsTooltip").mockReturnValue(fakeTooltip as any);
+
+      await containerNode.getChildren();
+      containerNode["items"] = [];
+      await containerNode.fetchNextPage();
+
+      expect(containerNode.tooltip).toBe(fakeTooltip);
     });
   });
 });

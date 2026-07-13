@@ -515,6 +515,64 @@ describe("CICSErrorHandler", () => {
       expect(errorMessage).toContain("MYPROF");
     });
   });
+
+  describe("buildIncompleteResultsTooltip", () => {
+    // Use the vscode mock's MarkdownString (same module path jest resolves to)
+    const MS = require("vscode").MarkdownString as typeof import("vscode").MarkdownString;
+
+    it("should build tooltip with NOTPERMIT resp codes and IBM docs link", () => {
+      mockGenerateDocumentationURL.mockReturnValue(Uri.parse("https://www.ibm.com/docs/en/test"));
+
+      const summary = {
+        api_response1: "1031",
+        api_response2: "1345",
+        api_response1_alt: "NOTPERMIT",
+        api_response2_alt: "USRID",
+        recordcount: "5",
+      } as any;
+
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
+
+      expect(tooltip).toBeInstanceOf(MS);
+      const value = tooltip!.value;
+      expect(value).toContain("Retrieving these resources resulted in an error:");
+      expect(value).toContain("NOTPERMIT (1031) / USRID (1345)");
+      expect(value).toContain("IBM docs");
+    });
+
+    it("should return undefined when summary has OK response code", () => {
+      const summary = {
+        api_response1: "1024",
+        api_response2: "0",
+        api_response1_alt: "OK",
+        api_response2_alt: "",
+      } as any;
+
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
+      expect(tooltip).toBeUndefined();
+    });
+
+    it("should return undefined for null summary", () => {
+      expect(CICSErrorHandler.buildIncompleteResultsTooltip(null as any)).toBeUndefined();
+    });
+
+    it("should fall back to numeric codes when alt text is missing", () => {
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+
+      const summary = {
+        api_response1: "1031",
+        api_response2: "1345",
+        recordcount: "5",
+      } as any;
+
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
+      expect(tooltip).toBeInstanceOf(MS);
+      expect(tooltip!.value).toContain("1031");
+      expect(tooltip!.value).toContain("1345");
+    });
+  });
+
+
 });
 
 

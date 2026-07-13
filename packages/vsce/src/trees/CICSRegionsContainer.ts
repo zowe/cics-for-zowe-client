@@ -9,7 +9,7 @@
  *
  */
 
-import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import { CicsCmciConstants, type ICMCIApiResponse } from "@zowe/cics-for-zowe-sdk";
 import { l10n, ProgressLocation, TreeItem, TreeItemCollapsibleState, window } from "vscode";
 import { toArray } from "../utils/commandUtils";
 import { getFolderIcon } from "../utils/iconUtils";
@@ -58,6 +58,25 @@ export class CICSRegionsContainer extends TreeItem {
   }
 
   /**
+   * Applies the incomplete-results tooltip and $(info) badge from an API response.
+   * Used when the CMCI request returns records but also a NOTPERMIT/error code.
+   */
+  private applyIncompleteResultsState(apiResponse: ICMCIApiResponse): void {
+    const summary = apiResponse?.response?.resultsummary;
+    const tooltip = summary ? CICSErrorHandler.buildIncompleteResultsTooltip(summary) : undefined;
+    if (tooltip) {
+      this.tooltip = tooltip;
+    }
+  }
+
+  /**
+   * Clears informational tooltip and badge from this container.
+   */
+  private clearIncompleteResultsState(): void {
+    this.tooltip = undefined;
+  }
+
+  /**
    * Filters regions based on a pattern (supports wildcards and comma-separated patterns)
    * @param pattern - Filter pattern (e.g., "CICS*", "CICS1,TEST*", or "*" for all)
    */
@@ -78,29 +97,32 @@ export class CICSRegionsContainer extends TreeItem {
           const regionInfo = await ProfileManagement.getRegionInfoInPlex(this.parent);
           const { regions, apiResponse } = regionInfo;
 
-          if (apiResponse) {
-            CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, this.parent.getProfile().name);
-          }
-
           this.addRegionsUtility(regions);
           this.collapsibleState = TreeItemCollapsibleState.Expanded;
           this.refreshIcon(true);
+
+          if (apiResponse && CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, this.parent.getProfile().name)) {
+            this.applyIncompleteResultsState(apiResponse);
+          } else {
+            this.clearIncompleteResultsState();
+          }
+
           this.updateDescription();
           if (!this.children.length) {
             window.showInformationMessage(l10n.t("No regions found for {0}", this.parent.getPlexName()));
           }
         } catch (error) {
+          const extensionError = new CICSExtensionError({
+            baseError: error as Error | Record<string, unknown>,
+            profileName: this.parent.getProfile().name,
+            resourceName: "regions",
+            errorMessage: l10n.t("Failed to filter regions"),
+          });
           this.children = [];
           this.collapsibleState = TreeItemCollapsibleState.Collapsed;
           this.refreshIcon(false);
-          CICSErrorHandler.handleCMCIRestError(
-            new CICSExtensionError({
-              baseError: error as Error | Record<string, unknown>,
-              profileName: this.parent.getProfile().name,
-              resourceName: "regions",
-              errorMessage: l10n.t("Failed to filter regions"),
-            })
-          );
+          this.clearIncompleteResultsState();
+          CICSErrorHandler.handleCMCIRestError(extensionError);
         }
       }
     );
@@ -119,17 +141,23 @@ export class CICSRegionsContainer extends TreeItem {
         cicsPlex: plexProfile.profile.cicsPlex,
         regionName: plexProfile.profile.regionName,
       });
-      CICSErrorHandler.handleErrorIfPresent(regionsObtained, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, plexProfile.name);
-
       const regionsArray = toArray(regionsObtained.response.records.cicsmanagedregion);
       this.addRegionsUtility(regionsArray);
       this.collapsibleState = TreeItemCollapsibleState.Expanded;
       this.refreshIcon(true);
+
+      if (CICSErrorHandler.handleErrorIfPresent(regionsObtained, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, plexProfile.name)) {
+        this.applyIncompleteResultsState(regionsObtained);
+      } else {
+        this.clearIncompleteResultsState();
+      }
+
       this.updateDescription();
     } catch (error) {
       this.children = [];
       this.collapsibleState = TreeItemCollapsibleState.Collapsed;
       this.refreshIcon(false);
+      this.clearIncompleteResultsState();
       if (error instanceof CICSExtensionError) {
         CICSErrorHandler.handleCMCIRestError(error);
       } else {
@@ -151,28 +179,32 @@ export class CICSRegionsContainer extends TreeItem {
       }
 
       const { regions, apiResponse } = regionInfo;
-      if (apiResponse) {
-        CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, parentPlex.getProfile().name);
-      }
 
       if (regions) {
         this.addRegionsUtility(regions);
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
+
+        if (apiResponse && CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, parentPlex.getProfile().name)) {
+          this.applyIncompleteResultsState(apiResponse);
+        } else {
+          this.clearIncompleteResultsState();
+        }
+
         this.updateDescription();
       }
     } catch (error) {
+      const extensionError = new CICSExtensionError({
+        baseError: error as Error | Record<string, unknown>,
+        profileName: this.parent.getProfile().name,
+        resourceName: "regions",
+        errorMessage: l10n.t("Failed to load regions in CICSplex"),
+      });
       this.children = [];
       this.collapsibleState = TreeItemCollapsibleState.Collapsed;
       this.refreshIcon(false);
-      CICSErrorHandler.handleCMCIRestError(
-        new CICSExtensionError({
-          baseError: error as Error | Record<string, unknown>,
-          profileName: this.parent.getProfile().name,
-          resourceName: "regions",
-          errorMessage: l10n.t("Failed to load regions in CICSplex"),
-        })
-      );
+      this.clearIncompleteResultsState();
+      CICSErrorHandler.handleCMCIRestError(extensionError);
     }
   }
   /**
@@ -239,6 +271,9 @@ export class CICSRegionsContainer extends TreeItem {
       description = `region=${this.activeFilter} `;
     }
     description += `[${activeCount}/${totalCount}]`;
+    if (this.tooltip) {
+      description += ` ⓘ`;
+    }
     this.description = description;
 
     this.requireDescriptionUpdate = true;

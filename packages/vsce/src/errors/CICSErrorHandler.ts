@@ -11,7 +11,7 @@
 
 import { CicsCmciConstants, type ICMCIApiResponse, type ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
 import { Gui } from "@zowe/zowe-explorer-api";
-import { l10n, window, type MessageItem } from "vscode";
+import { l10n, MarkdownString, window, type MessageItem } from "vscode";
 import { CICSLogger } from "../utils/CICSLogger";
 import { hasRecordsWithData } from "../utils/errorUtils";
 import { generateDocumentationURL } from "../utils/urlUtils";
@@ -119,14 +119,16 @@ export class CICSErrorHandler {
     profileName?: string
   ): boolean {
     const isNotOk = resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.OK);
-    // Only show error if we have records (error with partial results)
-    const hasRecords = resultsummary.recordcount && parseInt(resultsummary.recordcount) > 0;
-    
+    // Use the server-reported count — the actual record objects are not available
+    // when only a summary is passed in (unlike handleApiResponseError which has
+    // the full records structure and can call hasRecordsWithData).
+    const hasRecords = resultsummary.recordcount !== undefined && parseInt(resultsummary.recordcount) > 0;
+
     if (isNotOk && hasRecords) {
       this.showErrorWithDocLink(resultsummary, resourceType, profileName);
       return true;
     }
-    
+
     return false;
   }
 
@@ -147,6 +149,37 @@ export class CICSErrorHandler {
     CICSLogger.error(formattedMessage);
     
     window.showErrorMessage(formattedMessage);
+  }
+
+  /**
+   * Builds a MarkdownString tooltip matching the design:
+   *   "Retrieving these resources resulted in an error:"
+   *   "NOTPERMIT (1031) / USRID (1345)"
+   *   "Visit [IBM docs](url) for resp code details"
+   *
+   * @param resultsummary - The CMCI result summary with resp codes
+   * @returns MarkdownString tooltip, or undefined if no error in summary
+   */
+  static buildIncompleteResultsTooltip(resultsummary: ICMCIResponseResultSummary): MarkdownString | undefined {
+    if (!resultsummary || resultsummary.api_response1 === String(CicsCmciConstants.RESPONSE_1_CODES.OK)) {
+      return undefined;
+    }
+
+    const resp1Alt = resultsummary.api_response1_alt ?? resultsummary.api_response1;
+    const resp1 = resultsummary.api_response1;
+    const resp2Alt = resultsummary.api_response2_alt ?? resultsummary.api_response2;
+    const resp2 = resultsummary.api_response2;
+
+    const docUrl = generateDocumentationURL(CicsCmciConstants.DOC_RESOURCE_TYPE_GET)?.toString();
+
+    const tooltip = new MarkdownString();
+    tooltip.isTrusted = true;
+    tooltip.appendMarkdown(`${l10n.t("Retrieving these resources resulted in an error:")}\n\n`);
+    tooltip.appendMarkdown(`${resp1Alt} (${resp1}) / ${resp2Alt} (${resp2})\n\n`);
+    if (docUrl) {
+      tooltip.appendMarkdown(`${l10n.t("Visit")} [${l10n.t("IBM docs")}](${docUrl}) ${l10n.t("for resp code details")}`);
+    }
+    return tooltip;
   }
 
   handleExtensionError() {}
