@@ -9,7 +9,6 @@
  *
  */
 
-// testng codeQL
 import { commands } from "vscode";
 
 export function getToggleResourceSettingCommand() {

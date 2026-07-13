@@ -17,56 +17,32 @@ const baseConfig: Config = {
   displayName: "CICS for Zowe Client",
   clearMocks: true,
   collectCoverage: true,
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!**/__tests__/**",
-    "!**/index.ts",
-    "!**/main.ts"
-  ],
+  collectCoverageFrom: ["src/**/*.ts", "!**/__tests__/**", "!**/index.ts", "!**/main.ts"],
   coverageDirectory: "__tests__/__results__/unit/coverage",
-  coveragePathIgnorePatterns: [
-    "<rootDir>/__tests__/__e2e__"
-  ],
+  coveragePathIgnorePatterns: ["<rootDir>/__tests__/__e2e__"],
   coverageProvider: "v8",
-  coverageReporters: [
-    "json",
-    "lcov",
-    "text",
-    "cobertura"
-  ],
-  moduleFileExtensions: [
-    "ts",
-    "tsx",
-    "js",
-    "json"
-  ],
-  modulePathIgnorePatterns: [
-    "__tests__/__snapshots__/"
-  ],
+  coverageReporters: ["json", "lcov", "text", "cobertura"],
+  moduleFileExtensions: ["ts", "tsx", "js", "json"],
+  modulePathIgnorePatterns: ["__tests__/__snapshots__/", "<rootDir>/packages/.*/lib/"],
   reporters: [
     "default",
-    ["jest-junit", {
-      outputFile: "__tests__/__results__/unit/junit.xml",
-      ancestorSeparator: " > ",
-      classNameTemplate: "unit.{classname}",
-      title: "{title}"
-    }],
+    [
+      "jest-junit",
+      {
+        outputFile: "__tests__/__results__/unit/junit.xml",
+        ancestorSeparator: " > ",
+        classNameTemplate: "unit.{classname}",
+        title: "{title}",
+      },
+    ],
   ],
   testEnvironment: "node",
-  testPathIgnorePatterns: [
-    "<rootDir>/__tests__/__results__",
-    ".*/__system__/.*",
-    "<rootDir>/__tests__/__e2e__"
-  ],
+  testPathIgnorePatterns: ["<rootDir>/__tests__/__results__", ".*/__system__/.*", "<rootDir>/__tests__/__e2e__"],
   testRegex: "(test|spec)\\.ts$",
   transform: {
-    ".(ts|tsx)": "ts-jest"
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
-  transformIgnorePatterns: [
-    "^.+\\.cjs$",
-    "^.+\\.js$",
-    "^.+\\.json$"
-  ],
+  transformIgnorePatterns: ["^.+\\.cjs$", "^.+\\.js$", "^.+\\.json$"],
 };
 
 module.exports = baseConfig;
