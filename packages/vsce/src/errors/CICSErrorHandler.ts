@@ -142,15 +142,13 @@ export class CICSErrorHandler {
   ): void {
     const message = CICSExtensionError.formatDetailedErrorMessage(resultsummary, profileName);
     const formattedMessage = this.formatMessageWithDocLink(message, resourceType);
-    
     CICSLogger.error(formattedMessage);
-    
     window.showErrorMessage(formattedMessage);
   }
 
   /**
    * Builds a MarkdownString tooltip matching the design:
-   *   "Retrieving these resources resulted in an error:"
+   * "Retrieving these resources resulted in an error:"
    * @param resultsummary - The CMCI result summary with resp codes
    * @returns MarkdownString tooltip, or undefined if no error in summary
    */
@@ -188,9 +186,7 @@ export class CICSErrorHandler {
     action?: MessageItem[];
   }): Thenable<string | MessageItem> {
     const logMessage = additionalInfo ? `${this.trimLineBreaks(errorMessage)}\n${additionalInfo}` : this.trimLineBreaks(errorMessage);
-
     CICSLogger.error(logMessage);
-
     return Gui.errorMessage(errorMessage, { items: action || [] });
   }
 
