@@ -101,7 +101,8 @@ export class CICSRegionsContainer extends TreeItem {
           this.collapsibleState = TreeItemCollapsibleState.Expanded;
           this.refreshIcon(true);
 
-          if (apiResponse && CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, this.parent.getProfile().name)) {
+          if (apiResponse &&
+            CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, this.parent.getProfile().name)) {
             this.applyIncompleteResultsState(apiResponse);
           } else {
             this.clearIncompleteResultsState();
@@ -185,7 +186,8 @@ export class CICSRegionsContainer extends TreeItem {
         this.collapsibleState = TreeItemCollapsibleState.Expanded;
         this.refreshIcon(true);
 
-        if (apiResponse && CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, parentPlex.getProfile().name)) {
+        if (apiResponse &&
+          CICSErrorHandler.handleErrorIfPresent(apiResponse, CicsCmciConstants.DOC_RESOURCE_TYPE_GET, parentPlex.getProfile().name)) {
           this.applyIncompleteResultsState(apiResponse);
         } else {
           this.clearIncompleteResultsState();

@@ -151,9 +151,6 @@ export class CICSErrorHandler {
   /**
    * Builds a MarkdownString tooltip matching the design:
    *   "Retrieving these resources resulted in an error:"
-   *   "NOTPERMIT (1031) / USRID (1345)"
-   *   "Visit [IBM docs](url) for resp code details"
-   *
    * @param resultsummary - The CMCI result summary with resp codes
    * @returns MarkdownString tooltip, or undefined if no error in summary
    */

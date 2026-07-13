@@ -45,8 +45,6 @@ describe("Test suite for CICSRegionTree", () => {
   let configSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    // Ensure workspace.getConfiguration is always mocked so tests that call
-    // mockRestore() on their own spy don't break subsequent beforeEach calls.
     configSpy = jest.spyOn(workspace, "getConfiguration").mockImplementation((schema?: string) => {
       if (schema === "zowe.cics.resources") {
         const resMap = new Map<string, boolean>([
