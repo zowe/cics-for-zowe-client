@@ -31,7 +31,7 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).ENABL
  */
 const definition: ICommandDefinition = {
   name: "enable",
-  aliases: ["en"],
+  aliases: ["enb"],
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
