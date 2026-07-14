@@ -24,14 +24,16 @@ import { CicsSession } from "../CicsSession";
 import type i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).DISABLE;
+const strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase actionGroup}};
 
 /**
- * Definition for the "disable" group of commands under the CICS Plugin
+ * Definition for the "{{actionGroup}}" group of commands under the CICS Plugin
  */
 const definition: ICommandDefinition = {
-  name: "disable",
-  aliases: ["dis"],
+  name: "{{actionGroup}}",
+{{#if aliases.length}}
+  aliases: {{{json aliases}}},
+{{/if}}
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",

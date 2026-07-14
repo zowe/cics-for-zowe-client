@@ -16,23 +16,22 @@
 // Any manual changes will be overwritten when the generator runs.
 // ============================================================================
 
-import { closeLocalFile, disableLocalFile, enableLocalFile, openLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
+import { {{#each actions}}{{sdkFunction}}{{#unless @last}}, {{/unless}}{{/each}}, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../CicsBaseHandler";
 
 import type i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const closeStrings = (require("../-strings-/en").default as typeof i18nTypings).CLOSE.RESOURCES.LOCALFILE;
-const disableStrings = (require("../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.LOCALFILE;
-const enableStrings = (require("../-strings-/en").default as typeof i18nTypings).ENABLE.RESOURCES.LOCALFILE;
-const openStrings = (require("../-strings-/en").default as typeof i18nTypings).OPEN.RESOURCES.LOCALFILE;
+{{#each actions}}
+const {{actionLower}}Strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase identifier.group}}.RESOURCES.LOCALFILE;
+{{/each}}
 
-type LocalFileAction = "CLOSE" | "DISABLE" | "ENABLE" | "OPEN";
+type LocalFileAction = {{#each actions}}"{{name}}"{{#unless @last}} | {{/unless}}{{/each}};
 
 /**
  * Unified command handler for CICS local file operations via CMCI.
- * Determines the action (close/disable/enable/open) based on the command definition's parent.
+ * Determines the action ({{#each actions}}{{actionLower}}{{#unless @last}}/{{/unless}}{{/each}}) based on the command definition's parent.
  *
  * @export
  * @class LocalFileHandler
@@ -47,24 +46,21 @@ export default class LocalFileHandler extends CicsBaseHandler {
   private getActionType(params: IHandlerParameters): LocalFileAction {
     // Check parent command name first (works in tests)
     const parentCommand = params.definition.parent?.name;
-    if (parentCommand === "close") { return "CLOSE"; }
-    if (parentCommand === "disable") { return "DISABLE"; }
-    if (parentCommand === "enable") { return "ENABLE"; }
-    if (parentCommand === "open") { return "OPEN"; }
+{{#each actions}}
+    if (parentCommand === "{{identifier.group}}") { return "{{name}}"; }
+{{/each}}
 
     // Check positionals array which contains the command chain
     const positionals = params.positionals || [];
-    if (positionals.includes("close")) { return "CLOSE"; }
-    if (positionals.includes("disable")) { return "DISABLE"; }
-    if (positionals.includes("enable")) { return "ENABLE"; }
-    if (positionals.includes("open")) { return "OPEN"; }
+{{#each actions}}
+    if (positionals.includes("{{identifier.group}}")) { return "{{name}}"; }
+{{/each}}
 
     // Last resort: check if handler path contains the action segment
     const handlerPath = params.definition.handler || "";
-    if (handlerPath.includes("/close/") || handlerPath.includes("\close\\")) { return "CLOSE"; }
-    if (handlerPath.includes("/disable/") || handlerPath.includes("\disable\\")) { return "DISABLE"; }
-    if (handlerPath.includes("/enable/") || handlerPath.includes("\enable\\")) { return "ENABLE"; }
-    if (handlerPath.includes("/open/") || handlerPath.includes("\open\\")) { return "OPEN"; }
+{{#each actions}}
+    if (handlerPath.includes("/{{identifier.group}}/") || handlerPath.includes("\\{{identifier.group}}\\")) { return "{{name}}"; }
+{{/each}}
 
     // Should not reach here with proper command structure
     throw new Error("Unable to determine action type from command context");
@@ -77,10 +73,9 @@ export default class LocalFileHandler extends CicsBaseHandler {
    */
   private getStrings(action: LocalFileAction) {
     switch (action) {
-      case "CLOSE": return closeStrings;
-      case "DISABLE": return disableStrings;
-      case "ENABLE": return enableStrings;
-      case "OPEN": return openStrings;
+{{#each actions}}
+      case "{{name}}": return {{actionLower}}Strings;
+{{/each}}
     }
   }
 
@@ -110,7 +105,7 @@ export default class LocalFileHandler extends CicsBaseHandler {
     };
 
     // Add busy parameter only for actions that support it
-    const busyActions: LocalFileAction[] = ["CLOSE", "DISABLE"];
+    const busyActions: LocalFileAction[] = [{{#each busyActionNames}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}];
     if (busyActions.includes(action) && params.arguments.busy) {
       sdkParams.busy = params.arguments.busy;
     }
@@ -118,10 +113,9 @@ export default class LocalFileHandler extends CicsBaseHandler {
     // Call the appropriate SDK function based on action
     let response: ICMCIApiResponse;
     switch (action) {
-      case "CLOSE": response = await closeLocalFile(session, sdkParams); break;
-      case "DISABLE": response = await disableLocalFile(session, sdkParams); break;
-      case "ENABLE": response = await enableLocalFile(session, sdkParams); break;
-      case "OPEN": response = await openLocalFile(session, sdkParams); break;
+{{#each actions}}
+      case "{{name}}": response = await {{sdkFunction}}(session, sdkParams); break;
+{{/each}}
     }
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.fileName);

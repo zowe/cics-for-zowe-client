@@ -1,11 +1,11 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cics enable urimap should not have changed 1`] = `
+exports[`cics enable local file should not have changed 1`] = `
 {
   "aliases": [
-    "en",
+    "enb",
   ],
-  "description": "Enable resources (for example, urimaps) from CICS through IBM CMCI.",
+  "description": "Enable resources (for example, local files) in CICS through IBM CMCI.",
   "name": "enable",
   "passOn": [
     {
@@ -84,7 +84,7 @@ exports[`cics enable urimap should not have changed 1`] = `
       ],
     },
   ],
-  "summary": "Enable resources from CICS",
+  "summary": "Enable resources in CICS",
   "type": "group",
 }
 `;

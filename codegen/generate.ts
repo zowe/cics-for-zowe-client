@@ -174,6 +174,7 @@ Handlebars.registerHelper("removePrefix", (str: string, prefix: string) => {
 Handlebars.registerHelper("add", (a: number, b: number) => a + b);
 Handlebars.registerHelper("eq", (a: unknown, b: unknown) => a === b);
 Handlebars.registerHelper("dollarBrace", () => "${");
+Handlebars.registerHelper("json", (value: unknown) => JSON.stringify(value));
 
 // ============================================================================
 // Resource-Focused Generator Class
@@ -201,6 +202,7 @@ export class ResourceGenerator {
     const derivedResources = this.deriveResources();
     this.generateSDK(derivedResources);
     this.generateTests(derivedResources);
+    this.generateCLI(derivedResources);
 
     console.log("\n🎉 Code generation complete!");
   }
@@ -303,6 +305,130 @@ export class ResourceGenerator {
     console.log(`  ✓ sdk/src/utils/index.ts`);
 
     console.log("✅ SDK layer generated");
+  }
+
+  /**
+   * Generate CLI command definitions, the shared LocalFileHandler, the full
+   * i18n strings file, and unit tests for resources that use the shared
+   * LocalFileHandler pattern (currently CICSLocalFile actions).
+   *
+   * Generated output:
+   *   - packages/cli/src/common/LocalFileHandler.ts
+   *   - packages/cli/src/-strings-/en.ts
+   *   - For each codegen-owned action group (enable, disable):
+   *     - packages/cli/src/<group>/localFile/LocalFile.definition.ts
+   *     - packages/cli/src/<group>/<Group>.definition.ts
+   *     - packages/cli/__tests__/__unit__/<group>/localFile/LocalFile.handler.unit.test.ts
+   *     - packages/cli/__tests__/__unit__/<group>/<Group>.definition.unit.test.ts
+   */
+  private generateCLI(derivedResources: DerivedResource[]): void {
+    console.log("📦 Generating CLI layer...");
+
+    // Only CICSLocalFile uses the shared LocalFileHandler pattern
+    const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
+    if (!localFileResource) {
+      console.log("  ⚠️  CICSLocalFile not found in spec, skipping CLI generation");
+      return;
+    }
+
+    const cliSrcDir = path.join(this.outputDir, "cli", "src");
+    const cliTestDir = path.join(this.outputDir, "cli", "__tests__", "__unit__");
+
+    // 1. Generate the shared LocalFileHandler (covers all 4 actions)
+    const busyActionNames = localFileResource.actions
+      .filter(a => a.options.some(o => o.name === "busy"))
+      .map(a => a.name);
+    const handlerContext = { actions: localFileResource.actions, busyActionNames };
+    this.generateFromTemplate(
+      "cli/localfile.handler.hbs",
+      path.join(cliSrcDir, "common", "LocalFileHandler.ts"),
+      handlerContext
+    );
+    console.log("  ✓ cli/src/common/LocalFileHandler.ts");
+
+    // 2. Generate the full en.ts i18n strings file
+    this.generateFromTemplate(
+      "cli/en.ts.hbs",
+      path.join(cliSrcDir, "-strings-", "en.ts"),
+      {}
+    );
+    console.log("  ✓ cli/src/-strings-/en.ts");
+
+    // Groups whose enable/disable group definition files are owned by codegen.
+    // open/close are manually maintained and must not be overwritten.
+    const GROUPS_OWNED_BY_CODEGEN = new Set(["enable", "disable"]);
+
+    for (const action of localFileResource.actions) {
+      const group = action.identifier.group;
+      if (!GROUPS_OWNED_BY_CODEGEN.has(group)) { continue; }
+
+      const hasBusyOption = action.options.some(o => o.name === "busy");
+      const aliases = action.identifier.aliases ?? [];
+      const context = {
+        ...localFileResource,
+        ...action,
+        actionGroup: group,
+        actionPastTense: action.actionPastTense,
+        hasBusyOption,
+        aliases,
+        sdkFunction: action.sdkFunction,
+        // LocalFile + Urimap = 2 children in the group definition
+        resourcesCount: 2,
+      };
+
+      // 3. LocalFile definition
+      const defDir = path.join(cliSrcDir, group, "localFile");
+      this.ensureDir(defDir);
+      this.generateFromTemplate(
+        "cli/localfile.definition.hbs",
+        path.join(defDir, "LocalFile.definition.ts"),
+        context
+      );
+      console.log(`  ✓ cli/src/${group}/localFile/LocalFile.definition.ts`);
+
+      // 4. Group definition (top-level <Group>.definition.ts)
+      this.generateFromTemplate(
+        "cli/group.definition.hbs",
+        path.join(cliSrcDir, group, `${this.capitalize(group)}.definition.ts`),
+        context
+      );
+      console.log(`  ✓ cli/src/${group}/${this.capitalize(group)}.definition.ts`);
+
+      // 5. CLI unit test – handler
+      const testHandlerDir = path.join(cliTestDir, group, "localFile");
+      this.ensureDir(testHandlerDir);
+      this.generateFromTemplate(
+        "tests/cli.localfile.handler.unit.test.hbs",
+        path.join(testHandlerDir, "LocalFile.handler.unit.test.ts"),
+        context
+      );
+      console.log(`  ✓ cli/__tests__/__unit__/${group}/localFile/LocalFile.handler.unit.test.ts`);
+
+      // 6. CLI unit test – group definition
+      const testGroupDir = path.join(cliTestDir, group);
+      this.ensureDir(testGroupDir);
+      this.generateFromTemplate(
+        "tests/cli.group.definition.unit.test.hbs",
+        path.join(testGroupDir, `${this.capitalize(group)}.definition.unit.test.ts`),
+        context
+      );
+      console.log(`  ✓ cli/__tests__/__unit__/${group}/${this.capitalize(group)}.definition.unit.test.ts`);
+    }
+
+    console.log("✅ CLI layer generated");
+  }
+
+  /** Capitalise the first letter of a string */
+  private capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /** Render a template and return the result as a string without writing to disk */
+  private renderTemplate(templatePath: string, context: unknown): string {
+    const fullTemplatePath = path.join(this.templateDir, templatePath);
+    const templateContent = fs.readFileSync(fullTemplatePath, "utf-8");
+    const template = Handlebars.compile(templateContent);
+    return template(context);
   }
 
   /**
