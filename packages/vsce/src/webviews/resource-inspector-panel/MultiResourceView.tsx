@@ -137,12 +137,10 @@ function ResourceTable<T extends Record<string, any>>({
                   }}
                 >
                   <div className="flex items-center justify-center">
-                    {getRowActions && getRowActions(row, rowIndex).length > 0 && (
-                      <ContextMenu
-                        tabIndex={rowIndex + 1}
-                        data={getRowActions(row, rowIndex)}
-                      />
-                    )}
+                    {(() => {
+                      const actions = getRowActions ? getRowActions(row, rowIndex) : [];
+                      return actions.length > 0 && <ContextMenu tabIndex={rowIndex + 1} data={actions} />;
+                    })()}
                   </div>
                 </td>
               </tr>
