@@ -81,6 +81,84 @@
     {
       "request": {
         "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG3)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG3/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG3TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG3/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG3TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG3/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/MYREG1?CRITERIA=(PROGRAM%3DMYPROG4)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG4/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG4TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG4/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0000MYPROG4TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSProgram/MYPROG4/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/CICSSystemManagement/CICSProgram/MYPLEX1/ERRORS?CRITERIA=(NOT%20(PROGRAM%3DCEE*%20OR%20PROGRAM%3DDFH*%20OR%20PROGRAM%3DCJ*%20OR%20PROGRAM%3DEYU*%20OR%20PROGRAM%3DCSQ*%20OR%20PROGRAM%3DCEL*%20OR%20PROGRAM%3DIGZ*))&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {
