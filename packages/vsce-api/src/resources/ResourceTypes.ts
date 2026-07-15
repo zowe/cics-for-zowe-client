@@ -21,6 +21,7 @@ export enum ResourceTypes {
   CICSPipeline = "CICSPipeline",
   CICSWebService = "CICSWebService",
   CICSJVMServer = "CICSJVMServer",
+  CICSJVMEndpoint = "CICSJVMEndpoint",
   CICSBundle = "CICSBundle",
   CICSTSQueue = "CICSTSQueue",
   CICSSharedTSQueue = "CICSSharedTSQueue",

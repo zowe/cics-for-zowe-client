@@ -618,13 +618,14 @@ describe("Interfaces", () => {
         [ResourceTypes.CICSPipeline]: {} as IPipeline,
         [ResourceTypes.CICSWebService]: {} as IWebService,
         [ResourceTypes.CICSJVMServer]: {} as IJVMServer,
+        [ResourceTypes.CICSJVMEndpoint]: {} as IJVMEndpoint,
         [ResourceTypes.CICSBundle]: {} as IBundle,
         [ResourceTypes.CICSTSQueue]: {} as ITSQueue,
         [ResourceTypes.CICSSharedTSQueue]: {} as ISharedTSQueue,
         [ResourceTypes.CICSManagedRegion]: {} as IManagedRegion,
         [ResourceTypes.CICSRegion]: {} as IRegion,
       };
-      const expectedResourceTypeCount = 16;
+      const expectedResourceTypeCount = 17;
       expect(typeMap).toBeDefined();
       expect(Object.keys(typeMap).length).toBe(expectedResourceTypeCount);
     });

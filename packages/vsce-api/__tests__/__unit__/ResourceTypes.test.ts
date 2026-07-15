@@ -25,6 +25,7 @@ describe("ResourceType tests", () => {
       "CICSPipeline",
       "CICSWebService",
       "CICSJVMServer",
+      "CICSJVMEndpoint",
       "CICSBundle",
       "CICSTSQueue",
       "CICSSharedTSQueue",
