@@ -17,9 +17,10 @@ import * as inspectResourceCommandUtils from "../../../src/commands/inspectResou
 import {
   getCompareResourceToCommand,
   getCompareResourcesCommand,
+  getInspectMultipleResourcesCommand,
   getInspectTreeResourceCommand,
 } from "../../../src/commands/inspectTreeResourceCommand";
-import type { CICSResourceContainerNode } from "../../../src/trees";
+import { CICSResourceContainerNode, TextTreeItem } from "../../../src/trees";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
 
 jest.mock("vscode");
@@ -397,6 +398,110 @@ describe("inspectTreeResourceCommand", () => {
       expect(window.showErrorMessage).toHaveBeenCalled();
       expect(compareResourceCommand.compareTreeNodeWithPrompts).not.toHaveBeenCalled();
       expect(compareResourceCommand.compareResourceFromInspector).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getInspectMultipleResourcesCommand", () => {
+    let mockContainerNode: Partial<CICSResourceContainerNode<IResource>>;
+
+    beforeEach(() => {
+      mockContainerNode = {
+        children: [],
+        getChildren: jest.fn().mockResolvedValue([]),
+        getContainedResource: jest.fn().mockReturnValue({
+          meta: mockMeta,
+          resource: mockResource,
+        }),
+        getProfile: jest.fn().mockReturnValue({ name: "testProfile" }),
+        getSession: jest.fn().mockReturnValue({ session: "mockSession" }),
+        cicsplexName: "PLEX1",
+        regionName: "REGION1",
+      };
+    });
+
+    it("should register the command", () => {
+      getInspectMultipleResourcesCommand(mockContext);
+
+      expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.viewInTable", expect.any(Function));
+    });
+
+    it("should call getChildren when node has no children and then show message when still empty", async () => {
+      mockContainerNode.children = [];
+      mockContainerNode.getChildren = jest.fn().mockResolvedValue([]);
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(mockContainerNode.getChildren).toHaveBeenCalled();
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("No resources found"));
+      expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
+    });
+
+    it("should show 'No filter applied' when sole child is a TextTreeItem", async () => {
+      const textItem = new TextTreeItem("No filter applied", "noFilter");
+      mockContainerNode.children = [textItem] as any;
+      mockContainerNode.getChildren = jest.fn();
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("No filter applied"));
+      expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
+    });
+
+    it("should show 'No resources found' when all children are non-resource nodes", async () => {
+      const textItem = new TextTreeItem("Some text", "info");
+      const textItem2 = new TextTreeItem("Other text", "info");
+      mockContainerNode.children = [textItem, textItem2] as any;
+      mockContainerNode.getChildren = jest.fn();
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("No resources found"));
+      expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
+    });
+
+    it("should call showInspectResource with table mode when valid resource children exist", async () => {
+      // Must pass instanceof CICSResourceContainerNode — set prototype on the mock objects
+      const child1 = Object.assign(Object.create(CICSResourceContainerNode.prototype), mockNode);
+      const child2 = Object.assign(Object.create(CICSResourceContainerNode.prototype), mockNode);
+      mockContainerNode.children = [child1, child2];
+      mockContainerNode.getChildren = jest.fn();
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(
+        mockContext,
+        expect.any(Array),
+        "table"
+      );
+    });
+
+    it("should fall back to eyu_cicsname when regionName is undefined", async () => {
+      const child = Object.assign(Object.create(CICSResourceContainerNode.prototype), {
+        ...mockNode,
+        regionName: undefined,
+      });
+      mockContainerNode.children = [child];
+      mockContainerNode.getChildren = jest.fn();
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      const callArgs = (inspectResourceCommandUtils.showInspectResource as jest.Mock).mock.calls[0][1];
+      expect(callArgs[0].ctx.regionName).toBe("REGION1"); // falls back to eyu_cicsname
     });
   });
 });

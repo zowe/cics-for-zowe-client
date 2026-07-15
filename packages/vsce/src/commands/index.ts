@@ -27,7 +27,12 @@ import { getInquireTransactionCommand } from "./inquireTransaction";
 import { getInspectRegionCommand } from "./inspectRegionCommand";
 import { getInspectResourceCommand } from "./inspectResourceCommand";
 import { getInspectTreeRegionCommand } from "./inspectTreeRegionCommand";
-import { getCompareResourceToCommand, getCompareResourcesCommand, getInspectTreeResourceCommand } from "./inspectTreeResourceCommand";
+import { 
+  getCompareResourcesCommand,
+  getCompareResourceToCommand,
+  getInspectMultipleResourcesCommand,
+  getInspectTreeResourceCommand 
+} from "./inspectTreeResourceCommand";
 import { getManageSessionCommand } from "./manageSessionCommand";
 import { getNewCopyCommand } from "./newCopyCommand";
 import { getPhaseInCommand } from "./phaseInCommand";
@@ -76,6 +81,7 @@ export const getCommands = (treeDataProv: CICSTree, treeview: TreeView<any>, con
     getInspectTreeResourceCommand(context, treeview),
     getCompareResourcesCommand(context, treeview),
     getCompareResourceToCommand(context),
+    getInspectMultipleResourcesCommand(context),
     getToggleResourceSettingCommand(),
     setCICSRegionCommand(),
     showLibraryCommand(treeDataProv, treeview),

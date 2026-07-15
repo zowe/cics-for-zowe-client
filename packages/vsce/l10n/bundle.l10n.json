@@ -263,6 +263,8 @@
   "No resource is currently open in the Resource Inspector": "No resource is currently open in the Resource Inspector",
   "No CICS resource information available to compare": "No CICS resource information available to compare",
   "Cannot compare CICS resources of different types.": "Cannot compare CICS resources of different types.",
+  "No resources found.": "No resources found.",
+  "No filter applied.": "No filter applied.",
   "File": "File",
   "Enter resource name...": "Enter resource name...",
   "Recent CICS {0}": "Recent CICS {0}",

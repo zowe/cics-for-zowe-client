@@ -314,7 +314,8 @@ describe("compareResourceCommand", () => {
             containedResource: expect.any(Object),
             ctx: expect.any(Object),
           }),
-        ])
+        ]),
+        "compare"
       );
     });
 

@@ -43,15 +43,15 @@ import { getLastUsedRegion } from "./setCICSRegionCommand";
 
 export async function showInspectResource(
   context: ExtensionContext,
-  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]
+  resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext; }[],
+  viewMode?: "inspect" | "compare" | "table"
 ) {
   // Makes the "CICS Resource Inspector" tab visible in the panel
   commands.executeCommand("setContext", "cics-extension-for-zowe.showResourceInspector", true);
   // Focuses on the tab in the panel - previous command not working for me??
   commands.executeCommand("resource-inspector.focus");
 
-  await ResourceInspectorViewProvider.getInstance(context).setResources(resources);
-
+  await ResourceInspectorViewProvider.getInstance(context).setResources(resources, viewMode);
   // Record each resource in recent history
   for (const res of resources) {
     await PersistentStorage.appendRecentResource({

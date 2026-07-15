@@ -2,9 +2,11 @@
 
 html {
   height: 100%;
+  background-color: var(--vscode-editor-background);
 }
 body {
   height: 100%;
+  background-color: var(--vscode-editor-background);
 }
 
 #webviewRoot {
