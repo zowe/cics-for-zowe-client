@@ -330,6 +330,44 @@ describe("ResourceInspectorUtils", () => {
       });
     });
 
+    describe("createResourceNode error branches", () => {
+      it("should throw when resource is missing meta.resourceName", async () => {
+        const mockAction = { action: "test.command", refreshResourceInspector: false };
+        (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
+
+        const badResource = createMockResource("PROG1");
+        (badResource.meta as any).resourceName = undefined;
+
+        await expect(
+          handleActionCommand("testAction", [badResource], mockInstance, mockContext)
+        ).rejects.toThrow("Invalid resource: missing required properties");
+      });
+
+      it("should throw when resource.resource is missing", async () => {
+        const mockAction = { action: "test.command", refreshResourceInspector: false };
+        (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
+
+        const badResource = createMockResource("PROG1");
+        (badResource as any).resource = undefined;
+
+        await expect(
+          handleActionCommand("testAction", [badResource], mockInstance, mockContext)
+        ).rejects.toThrow("Invalid resource: missing required properties");
+      });
+
+      it("should throw when no meta found for resource type", async () => {
+        const mockAction = { action: "test.command", refreshResourceInspector: false };
+        (CICSResourceExtender.getAction as jest.Mock).mockReturnValue(mockAction);
+
+        // getMetas() is mocked to return [ProgramMeta], so any other resourceName won't match
+        const badResource = createMockResource("PROG1", "CICSUnknownType");
+
+        await expect(
+          handleActionCommand("testAction", [badResource], mockInstance, mockContext)
+        ).rejects.toThrow("Could not find meta for resource type: CICSUnknownType");
+      });
+    });
+
     describe("edge cases", () => {
       it("should handle empty resources array", async () => {
         const resources: IResourceInspectorResource[] = [];
