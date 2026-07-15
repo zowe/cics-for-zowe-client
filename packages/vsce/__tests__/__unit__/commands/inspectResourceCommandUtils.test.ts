@@ -112,7 +112,7 @@ describe("inspectResourceCommandUtils", () => {
 
       expect(commands.executeCommand).toHaveBeenCalledWith("setContext", "cics-extension-for-zowe.showResourceInspector", true);
       expect(commands.executeCommand).toHaveBeenCalledWith("resource-inspector.focus");
-      expect(mockSetResources).toHaveBeenCalledWith(mockResources);
+      expect(mockSetResources).toHaveBeenCalledWith(mockResources, undefined);
     });
   });
 
