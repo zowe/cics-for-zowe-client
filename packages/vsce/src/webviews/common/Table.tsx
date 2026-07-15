@@ -11,6 +11,14 @@
 
 import { createContext, type JSX, useContext, useEffect, useState } from "react";
 import { useTheme } from "./ThemeContext";
+import { 
+  getZebraClass, 
+  getHeaderBgClass, 
+  TABLE_CELL_CLASSES, 
+  STICKY_HEADER_Z_INDEX, 
+  getSearchInputBgClass, 
+  STICKY_LEVEL_INCREMENT 
+} from "./tableUtils";
 
 interface ITableProps {
   headers: (string | JSX.Element)[];
@@ -21,8 +29,6 @@ interface ITableProps {
   customRows?: (filterValue: string) => JSX.Element;
   searchTabIndex?: number;
 }
-
-const STICKY_LEVEL_INCREMENT = 8;
 
 const TableSearchContext = createContext<{ filterValue: string; setFilterValue: (s: string) => void }>({
   filterValue: "",
@@ -47,10 +53,10 @@ const Table = ({ headers, rows, stickyLevel = 0, className = "", headerActions, 
     <table className={`${className} border-collapse border-spacing-4 w-full text-xs`}>
       <thead>
         <tr
-          className={`text-left bg-(--vscode-editor-background) ${isDark ? "bg-lighter" : "bg-darker"} h-8 sticky top-${
+          className={`text-left ${getHeaderBgClass(isDark)} h-8 sticky top-${
             stickyLevel * STICKY_LEVEL_INCREMENT + 2
           }`}
-          style={{ zIndex: 60 }}
+          style={{ zIndex: STICKY_HEADER_Z_INDEX }}
         >
           {headers.map((hder, idx: number) => {
             return (
@@ -86,9 +92,9 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number }) => {
   return (
     <div className="relative flex items-center">
       <input
-        className={`w-36 md:w-42 lg:w-64 ${
-          isDark ? "bg-darker" : "bg-lighter"
-        } pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
+        className={`w-36 md:w-42 lg:w-64 ${getSearchInputBgClass(
+          isDark
+        )} pl-2 pr-6 h-6 placeholder:text-(--vscode-disabledForeground) font-normal`}
         placeholder="Keyword search..."
         value={filterValue}
         onChange={(e) => setFilterValue(e.target.value)}
@@ -102,9 +108,9 @@ const TableSearchInput = ({ tabIndex }: { tabIndex?: number }) => {
 const TableRow = ({ row }: { row: (string | JSX.Element)[]; idx: number }) => {
   const { isDark } = useTheme();
   return (
-    <tr className={`h-8 zebra-${isDark ? "dark" : "light"}`}>
+    <tr className={`h-8 ${getZebraClass(isDark)}`}>
       {row.map((txt, idx) => (
-        <td key={`td-${idx}`} title={txt.toString()} className="pl-4 wrap-anywhere min-w-48">
+        <td key={`td-${idx}`} title={txt.toString()} className={TABLE_CELL_CLASSES}>
           {txt}
         </td>
       ))}

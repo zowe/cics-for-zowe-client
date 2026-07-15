@@ -119,7 +119,7 @@ export async function compareResourceFromInspector(currentResource: IResourceIns
           regionName: targetRegion.regionName,
         },
       },
-    ]);
+    ], "compare");
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     CICSLogger.error(`Error comparing resources: ${errorMessage}`);

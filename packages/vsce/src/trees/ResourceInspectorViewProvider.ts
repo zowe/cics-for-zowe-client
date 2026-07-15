@@ -36,6 +36,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
 
   private webviewView?: WebviewView;
   private resources: IResourceInspectorResource[];
+  private viewMode: "inspect" | "compare" | "table" = "inspect";
 
   private constructor(
     private readonly extensionUri: Uri,
@@ -97,7 +98,10 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
    * Updates the resource to dispaly on the webview.
    * Checks if webview has told us it's ready. If not, data will be sent when it's ready (recieve init command).
    */
-  public async setResources(resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[]) {
+  public async setResources(
+    resources: { containedResource: IContainedResource<IResource>; ctx: IResourceContext }[],
+    viewMode: "inspect" | "compare" | "table" = "inspect"
+  ) {
     const riResources: IResourceInspectorResource[] = [];
     for (const res of resources) {
       const actions = await this.getActionsForResource(res);
@@ -111,6 +115,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       });
     }
     this.resources = riResources;
+    this.viewMode = viewMode;
 
     if (this.webviewReady) {
       await this.sendResourceDataToWebView();
@@ -163,6 +168,7 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       humanReadableNamePlural: containedResource.meta.humanReadableNamePlural,
       humanReadableNameSingular: containedResource.meta.humanReadableNameSingular,
       shouldRenderDatasetLinks: shouldRenderZoweExplorerLinks,
+      viewMode: this.viewMode,
     };
 
     await this.webviewView.webview.postMessage(message);
@@ -258,8 +264,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
         window.showErrorMessage(l10n.t("Could not find any record for region {0} to show logs.", regionName));
       }
     } catch (error) {
-      CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing logs for hyperlink. Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show logs for region {0}: {1}", regionName, errorMessage));
     }
   }
 
@@ -278,8 +285,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
     }
       await findProfileAndShowDataSet(cicsProfile, datasetName, regionName);
     } catch (error) {
-      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing dataset for hyperlink. Dataset: ${datasetName}, Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show dataset {0}: {1}", datasetName, errorMessage));
     }
   }
 
@@ -298,8 +306,9 @@ export class ResourceInspectorViewProvider implements WebviewViewProvider {
       }
       await findProfileAndShowUssFile(cicsProfile, ussPath, regionName);
     } catch (error) {
-      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${error.message}`);
-      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, error.message));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      CICSLogger.error(`Error showing USS file for hyperlink. USS Path: ${ussPath}, Region: ${regionName}, Error: ${errorMessage}`);
+      window.showErrorMessage(l10n.t("Failed to show USS file {0}: {1}", ussPath, errorMessage));
     }
   }
 }

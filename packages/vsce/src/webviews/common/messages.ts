@@ -33,4 +33,5 @@ export type ExtensionToWebviewMessage = {
   humanReadableNamePlural: string;
   humanReadableNameSingular: string;
   shouldRenderDatasetLinks: boolean;
+  viewMode?: "inspect" | "compare" | "table";
 };
