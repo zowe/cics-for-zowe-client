@@ -54,11 +54,6 @@ export const CicsCmciConstants = {
    * Specifies the required part of the REST interface URI to access library resources
    */
   CICS_LIBRARY_RESOURCE: "CICSLibrary",
-  
-  /**
-   * Alias for CICS_LIBRARY_RESOURCE (used by codegen)
-   */
-  CICS_CMCI_LIBRARY: "CICSLIBRARY",
 
   /**
    * Specifies the required part of the REST interface URI to access library dataset resources
@@ -99,11 +94,6 @@ export const CicsCmciConstants = {
    * Specifies the required part of the REST interface URI to access JVM server resources
    */
   CICS_JVMSERVER_RESOURCE: "CICSJVMServer",
-
-  /*
-   * Specifies the required part of the REST interface URI to access URIMaps
-   */
-  CICS_URIMAP: "CICSURIMap",
 
   /*
    * Specifies the required part of the REST interface URI to access Region Groups
@@ -205,6 +195,16 @@ export const CicsCmciConstants = {
    * The CICS CMCI program
    */
   CICS_CMCI_PROGRAM: "CICSProgram",
+
+  /**
+   * The CICS CMCI urimap
+   */
+  CICS_URIMAP: "CICSURIMap",
+
+  /**
+   * The CICS CMCI library
+   */
+  CICS_CMCI_LIBRARY: "CICSLibrary",
 
   /**
    * The criteria field name for local file resources

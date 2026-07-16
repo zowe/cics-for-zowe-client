@@ -157,12 +157,10 @@ This generates:
 }
 ```
 
-**Note**: For URIMap, the generator has special handling to use the existing `CICS_URIMAP` constant instead of generating `CICS_CMCI_U_R_I_MAP`. This is configured in `generate.ts` with a special case for resources that need to reuse existing constants.
-
 This generates:
 - `packages/sdk/src/resources/URIMap.ts` with `enableURIMap()` and `disableURIMap()` functions
 - `packages/sdk/src/doc/IURIMapParms.ts` with all properties needed for both Enable/Disable and Define operations
-- Uses existing `CICS_URIMAP` constant from the codebase
+- Uses the `CICS_URIMAP` constant (controlled via `constantName: "CICS_URIMAP"` in the spec)
 
 #### Understanding Resource vs Definition in CICS
 

@@ -107,7 +107,7 @@ describe("CMCI - Enable urimap", () => {
         CicsCmciConstants.CICS_URIMAP +
         "/" +
         region +
-        `?CRITERIA=(NAME%3D${ enableParms.name})`;
+        `?CRITERIA=(NAME%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {

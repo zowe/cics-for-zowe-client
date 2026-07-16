@@ -135,7 +135,7 @@ describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
         CicsCmciConstants.{{sdkResourceType}} +
         "/" +
         region +
-        `?CRITERIA=({{criteriaField}}%3D${ {{actionLower}}Parms.name})`;
+        `?CRITERIA=({{criteriaField}}%3D{{dollarBrace}}{{actionLower}}Parms.name})`;
       requestBody = {
         request: {
           action: {

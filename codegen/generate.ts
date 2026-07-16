@@ -24,6 +24,8 @@ interface ResourceIdentifier {
   humanNamePlural?: string;
   primaryKey: string;
   maxPrimaryKeyLength?: number;
+  snakeKey?: string;
+  constantName?: string;
 }
 
 interface ActionIdentifier {
@@ -156,6 +158,7 @@ Handlebars.registerHelper("removePrefix", (str: string, prefix: string) => {
 });
 Handlebars.registerHelper("add", (a: number, b: number) => a + b);
 Handlebars.registerHelper("eq", (a: unknown, b: unknown) => a === b);
+Handlebars.registerHelper("dollarBrace", () => "${");
 
 // ============================================================================
 // Resource-Focused Generator Class
@@ -350,23 +353,16 @@ export class ResourceGenerator {
     // Generate SDK file name (remove CICS prefix if present)
     const sdkFileName = resourceName.replace(/^CICS/, "");
     
-    // Generate constants - convert camelCase/PascalCase to SCREAMING_SNAKE_CASE
-    // Remove CICS prefix first, then convert
+    // Generate constants - convert camelCase/PascalCase to SCREAMING_SNAKE_CASE.
+    // snakeKey in the spec overrides the regex for resources with non-trivial capitalisation
+    // (e.g. CICSURIMap → URI_MAP rather than the naive U_R_I_M_A_P).
     const nameWithoutCICS = resourceName.replace(/^CICS/, "");
-    
-    // Special case for URIMap to use URI_MAP instead of U_R_I_MAP
-    let resourceTypeUpper: string;
-    if (sdkFileName === "URIMap") {
-      resourceTypeUpper = "URI_MAP";
-    } else {
-      resourceTypeUpper = nameWithoutCICS
-        .replace(/([A-Z])/g, "_$1")
-        .toUpperCase()
-        .replace(/^_/, "");
-    }
-    
-    // Special case for URIMap to use existing CICS_URIMAP constant
-    const sdkResourceType = sdkFileName === "URIMap" ? "CICS_URIMAP" : `CICS_CMCI_${resourceTypeUpper}`;
+    const resourceTypeUpper = resource.identifier.snakeKey
+      ?? nameWithoutCICS.replace(/([A-Z])/g, "_$1").toUpperCase().replace(/^_/, "");
+
+    // constantName allows the spec to override the full constant name (e.g. "CICS_URIMAP")
+    // when the resource predates the CICS_CMCI_ naming convention.
+    const sdkResourceType = resource.identifier.constantName ?? `CICS_CMCI_${resourceTypeUpper}`;
     
     const parmsInterface = `I${sdkFileName}Parms`;
     // primaryKey is used as-is in criteria (IBM docs key field name, e.g. "file", "program", "NAME")

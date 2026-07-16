@@ -107,7 +107,7 @@ describe("CMCI - Disable library", () => {
         CicsCmciConstants.CICS_CMCI_LIBRARY +
         "/" +
         region +
-        `?CRITERIA=(NAME%3D${ disableParms.name})`;
+        `?CRITERIA=(NAME%3D${disableParms.name})`;
       requestBody = {
         request: {
           action: {

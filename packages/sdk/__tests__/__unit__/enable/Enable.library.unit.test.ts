@@ -107,7 +107,7 @@ describe("CMCI - Enable library", () => {
         CicsCmciConstants.CICS_CMCI_LIBRARY +
         "/" +
         region +
-        `?CRITERIA=(NAME%3D${ enableParms.name})`;
+        `?CRITERIA=(NAME%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {

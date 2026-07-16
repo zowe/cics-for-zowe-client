@@ -183,28 +183,20 @@ class ResourceGenerator {
 
 **Special Constant Handling**
 
-The generator includes special case logic for resources that need to reuse existing constants:
+The generator skips constant generation for `LocalFile` since it uses the existing hardcoded `CICS_CMCI_LOCAL_FILE` constant (with a different naming convention). All other resources, including `Library` and `URIMap`, have their `CICS_CMCI_<X>` constants generated from the spec.
 
-- **URIMap**: Uses `CICS_URIMAP` instead of generating `CICS_CMCI_U_R_I_MAP`
-- **LocalFile**: Skips constant generation, uses existing `CICS_CMCI_LOCAL_FILE`
-- **Library**: Skips constant generation, uses existing `CICS_CMCI_LIBRARY`
+Two optional `identifier` fields control constant naming for non-trivial resources:
 
-This is implemented in `deriveResource()` method:
-```typescript
-const sdkResourceType = sdkFileName === "URIMap"
-  ? "CICS_URIMAP"
-  : `CICS_CMCI_${resourceTypeUpper}`;
-```
+- **`snakeKey`** — overrides the SCREAMING_SNAKE suffix used for criteria/maxLength/actions constants. Needed when the naive regex would produce a wrong result (e.g. `CICSURIMap` → `U_R_I_M_A_P` without it, `URI_MAP` with it).
+- **`constantName`** — overrides the full resource-type constant name. Use when the resource predates the `CICS_CMCI_` naming convention and must keep a legacy name (e.g. `CICS_URIMAP`).
 
-And in the constants template with conditional generation:
-```handlebars
-{{#unless (eq sdkFileName "URIMap")}}
-{{#unless (eq sdkFileName "LocalFile")}}
-{{#unless (eq sdkFileName "Library")}}
-  // Generate constant
-{{/unless}}
-{{/unless}}
-{{/unless}}
+```json
+"CICSURIMap": {
+  "identifier": {
+    "snakeKey": "URI_MAP",
+    "constantName": "CICS_URIMAP"
+  }
+}
 ```
 
 ### 4. Templates (Handlebars)

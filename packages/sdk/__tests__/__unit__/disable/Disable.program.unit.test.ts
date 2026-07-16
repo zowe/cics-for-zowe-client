@@ -107,7 +107,7 @@ describe("CMCI - Disable program", () => {
         CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(program%3D${ disableParms.name})`;
+        `?CRITERIA=(program%3D${disableParms.name})`;
       requestBody = {
         request: {
           action: {

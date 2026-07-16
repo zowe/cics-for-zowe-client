@@ -121,7 +121,7 @@ describe("CMCI - Disable local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(file%3D${ disableParms.name})`;
+        `?CRITERIA=(file%3D${disableParms.name})`;
       requestBody = {
         request: {
           action: {

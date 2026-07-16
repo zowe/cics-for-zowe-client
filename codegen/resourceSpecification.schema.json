@@ -79,6 +79,14 @@
         "maxPrimaryKeyLength": {
           "type": "integer",
           "description": "Maximum length for the primary key/resource name"
+        },
+        "snakeKey": {
+          "type": "string",
+          "description": "Override for the SCREAMING_SNAKE_CASE constant suffix (e.g., 'URI_MAP'). Only needed when the automatic PascalCase→SNAKE_CASE conversion would produce an incorrect result."
+        },
+        "constantName": {
+          "type": "string",
+          "description": "Override for the full generated constant name (e.g., 'CICS_URIMAP'). Use when the resource predates the CICS_CMCI_ naming convention and must keep a legacy name."
         }
       },
       "required": ["humanNameSingular", "primaryKey"]
