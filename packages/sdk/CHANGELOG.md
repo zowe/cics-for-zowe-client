@@ -2,6 +2,10 @@
 
 All notable changes to the IBM® CICS® Plug-in for Zowe CLI will be documented in this file.
 
+## `6.23.0`
+
+- BugFix: `putExpectParsedXml` and `postExpectParsedXml` now automatically set `Content-Type: application/xml` and `Content-Length` headers when a request body is present, ensuring PUT/POST actions (e.g. NEWCOPY) are not silently discarded by standards-compliant HTTP servers. [#700](https://github.com/zowe/cics-for-zowe-client/issues/700)
+
 ## `6.22.0`
 
 - Enhancement: Exposes openlocalFile and closeLocalFile methods. [#241](https://github.com/zowe/cics-for-zowe-client/issues/241)
