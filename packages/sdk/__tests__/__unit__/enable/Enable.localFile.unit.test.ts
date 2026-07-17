@@ -107,7 +107,7 @@ describe("CMCI - Enable local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(FILE%3D${enableParms.name})`;
+        `?CRITERIA=(file%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {

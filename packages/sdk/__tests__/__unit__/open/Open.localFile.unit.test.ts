@@ -107,7 +107,7 @@ describe("CMCI - Open local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(FILE%3D${openParms.name})`;
+        `?CRITERIA=(file%3D${openParms.name})`;
       requestBody = {
         request: {
           action: {

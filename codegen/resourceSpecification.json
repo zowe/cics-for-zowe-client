@@ -6,7 +6,7 @@
         "aliases": ["lf"],
         "humanNameSingular": "Local File",
         "humanNamePlural": "Local Files",
-        "primaryKey": "FILE",
+        "primaryKey": "file",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
