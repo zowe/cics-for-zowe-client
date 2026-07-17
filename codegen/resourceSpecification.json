@@ -6,7 +6,7 @@
         "aliases": ["lf"],
         "humanNameSingular": "Local File",
         "humanNamePlural": "Local Files",
-        "primaryKey": "file",
+        "primaryKey": "FILE",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
@@ -51,7 +51,7 @@
         "aliases": ["prog"],
         "humanNameSingular": "Program",
         "humanNamePlural": "Programs",
-        "primaryKey": "program",
+        "primaryKey": "PROGRAM",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
@@ -71,8 +71,36 @@
         "constantName": "CICS_URIMAP"
       },
       "actions": [
-        "ENABLE",
-        "DISABLE"
+        {
+          "identifier": {
+            "name": "ENABLE",
+            "aliases": ["enb"],
+            "group": "enable",
+            "description": "Enable a resource in CICS",
+            "verb": "enabling",
+            "verbPastTense": "enabled"
+          },
+          "options": [],
+          "updateAttribute": {
+            "field": "ENABLESTATUS",
+            "value": "ENABLED"
+          }
+        },
+        {
+          "identifier": {
+            "name": "DISABLE",
+            "aliases": ["dis"],
+            "group": "disable",
+            "description": "Disable a resource in CICS",
+            "verb": "disabling",
+            "verbPastTense": "disabled"
+          },
+          "options": [],
+          "updateAttribute": {
+            "field": "ENABLESTATUS",
+            "value": "DISABLED"
+          }
+        }
       ],
       "additionalOptions": ["CSDGROUP", "PATH", "HOST", "SCHEME", "PROGRAMNAME", "PIPELINENAME", "CERTIFICATE", "AUTHENTICATE", "DESCRIPTION", "TRANSACTIONNAME", "WEBSERVICENAME", "ENABLEATTR", "TCPIPSERVICE"]
     },

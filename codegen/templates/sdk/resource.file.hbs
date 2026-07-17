@@ -23,7 +23,7 @@ import type { ICMCIApiResponse, {{parmsInterface}} } from "../doc";
 {{else}}
 import type { ICMCIApiResponse, IResourceParms } from "../doc";
 {{/if}}
-import { performAction } from "../utils/ResourceActions";
+import { performAction{{#if hasAttributeUpdate}}, performAttributeUpdate{{/if}} } from "../utils/ResourceActions";
 
 {{#each actions}}
 /**
@@ -63,7 +63,21 @@ export async function {{sdkFunction}}(session: AbstractSession, parms: {{#if ../
     JSON.stringify(parms)
   );
 
-{{#if parameters}}
+{{#if useAttributeUpdate}}
+  // Use attribute-update style (sets {{attributeField}}={{attributeValue}} rather than invoking a CMCI action command)
+  return performAttributeUpdate(
+    session,
+    CicsCmciConstants.{{../sdkResourceType}},
+    {
+      name: parms.name,
+      regionName: parms.regionName,
+      cicsPlex: parms.cicsPlex,
+    },
+    CicsCmciConstants.{{../criteriaFieldConstant}},
+    "{{attributeField}}",
+    "{{attributeValue}}"
+  );
+{{else if parameters}}
   // Get {{parameters.[0].sdkParamField}} parameter value
   const {{camelCase parameters.[0].name}}Value = parms.{{parameters.[0].sdkParamField}} ? parms.{{parameters.[0].sdkParamField}}.trim().toUpperCase() : "{{parameters.[0].defaultValue}}";
 

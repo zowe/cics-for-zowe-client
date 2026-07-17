@@ -19,7 +19,7 @@
 import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
 import type { ICMCIApiResponse, IURIMapParms } from "../doc";
-import { performAction } from "../utils/ResourceActions";
+import { performAction, performAttributeUpdate } from "../utils/ResourceActions";
 
 /**
  * Disabling a urimap in CICS
@@ -50,17 +50,18 @@ export async function disableURIMap(session: AbstractSession, parms: IURIMapParm
     JSON.stringify(parms)
   );
 
-  // Use generic performAction utility (no additional parameters needed for DISABLE)
-  return performAction(
+  // Use attribute-update style (sets ENABLESTATUS=DISABLED rather than invoking a CMCI action command)
+  return performAttributeUpdate(
     session,
     CicsCmciConstants.CICS_URIMAP,
-    "DISABLE",
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD,
+    "ENABLESTATUS",
+    "DISABLED"
   );
 }
 
@@ -93,17 +94,18 @@ export async function enableURIMap(session: AbstractSession, parms: IURIMapParms
     JSON.stringify(parms)
   );
 
-  // Use generic performAction utility (no additional parameters needed for ENABLE)
-  return performAction(
+  // Use attribute-update style (sets ENABLESTATUS=ENABLED rather than invoking a CMCI action command)
+  return performAttributeUpdate(
     session,
     CicsCmciConstants.CICS_URIMAP,
-    "ENABLE",
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD,
+    "ENABLESTATUS",
+    "ENABLED"
   );
 }
 

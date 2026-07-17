@@ -121,7 +121,7 @@ describe("CMCI - Close local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(file%3D${closeParms.name})`;
+        `?CRITERIA=(FILE%3D${closeParms.name})`;
       requestBody = {
         request: {
           action: {
@@ -153,7 +153,7 @@ describe("CMCI - Close local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(file%3D${ localFile })`;
+        `?CRITERIA=(FILE%3D${ localFile })`;
       requestBody = {
         request: {
           action: {

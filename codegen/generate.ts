@@ -46,14 +46,21 @@ interface OptionDefinition {
   description?: string;
 }
 
+interface UpdateAttribute {
+  field: string;
+  value: string;
+}
+
 interface ActionReference {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
+  updateAttribute?: UpdateAttribute;
 }
 
 interface ActionDefinition {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
+  updateAttribute?: UpdateAttribute;
 }
 
 interface Resource {
@@ -97,6 +104,9 @@ interface DerivedResource {
   
   // Aggregated options from all actions (for Parms interface)
   allOptions: DerivedOption[];
+
+  // True if any action on this resource uses attribute-update style
+  hasAttributeUpdate: boolean;
 }
 
 interface DerivedAction {
@@ -119,6 +129,11 @@ interface DerivedAction {
   // Metadata
   hasParameters: boolean;
   hasValidation: boolean;
+
+  // Attribute-update style (e.g. URIMap ENABLE/DISABLE sets ENABLESTATUS rather than calling a CMCI action)
+  useAttributeUpdate: boolean;
+  attributeField?: string;
+  attributeValue?: string;
 }
 
 interface DerivedOption {
@@ -454,6 +469,7 @@ export class ResourceGenerator {
       maxNameLength: resource.identifier.maxPrimaryKeyLength,
       actions: derivedActions,
       allOptions,
+      hasAttributeUpdate: derivedActions.some(a => a.useAttributeUpdate),
     };
   }
 
@@ -491,6 +507,8 @@ export class ResourceGenerator {
     const derivedOptions = this.deriveOptions(actionDef.options || [], resourceName);
     const derivedParameters = this.deriveParameters(actionDef.options || [], resourceName);
 
+    const updateAttribute = actionDef.updateAttribute;
+
     return {
       name: identifier.name,
       identifier,
@@ -504,6 +522,9 @@ export class ResourceGenerator {
       parameters: derivedParameters,
       hasParameters: derivedParameters.length > 0,
       hasValidation: derivedParameters.some(p => p.validation),
+      useAttributeUpdate: !!updateAttribute,
+      attributeField: updateAttribute?.field,
+      attributeValue: updateAttribute?.value,
     };
   }
 

@@ -107,7 +107,7 @@ describe("CMCI - Enable program", () => {
         CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(program%3D${enableParms.name})`;
+        `?CRITERIA=(PROGRAM%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {

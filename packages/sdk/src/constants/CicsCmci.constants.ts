@@ -209,7 +209,7 @@ export const CicsCmciConstants = {
   /**
    * The criteria field name for local file resources
    */
-  CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
+  CICS_LOCAL_FILE_CRITERIA_FIELD: "FILE",
 
   /**
    * Maximum length for CICS local file names
@@ -224,7 +224,7 @@ export const CicsCmciConstants = {
   /**
    * The criteria field name for program resources
    */
-  CICS_PROGRAM_CRITERIA_FIELD: "program",
+  CICS_PROGRAM_CRITERIA_FIELD: "PROGRAM",
 
   /**
    * Maximum length for CICS program names

@@ -110,9 +110,11 @@ describe("CMCI - Enable urimap", () => {
         `?CRITERIA=(NAME%3D${enableParms.name})`;
       requestBody = {
         request: {
-          action: {
-            $: {
-              name: "ENABLE",
+          update: {
+            attributes: {
+              $: {
+                ENABLESTATUS: "ENABLED",
+              },
             },
           },
         },
