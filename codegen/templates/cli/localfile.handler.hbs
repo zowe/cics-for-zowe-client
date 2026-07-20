@@ -16,7 +16,11 @@
 // Any manual changes will be overwritten when the generator runs.
 // ============================================================================
 
-import { {{#each actions}}{{sdkFunction}}{{#unless @last}}, {{/unless}}{{/each}}, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
+import {
+  {{#each actions}}{{sdkFunction}},
+  {{/each}}type ICMCIApiResponse,
+  type ILocalFileParms,
+} from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../CicsBaseHandler";
 
@@ -44,27 +48,27 @@ export default class LocalFileHandler extends CicsBaseHandler {
    * @returns {LocalFileAction} The action type
    */
   private getActionType(params: IHandlerParameters): LocalFileAction {
-    // Check parent command name first (works in tests)
-    const parentCommand = params.definition.parent?.name;
+     const actionMap: Record<string, LocalFileAction> = {
 {{#each actions}}
-    if (parentCommand === "{{identifier.group}}") { return "{{name}}"; }
+       "{{identifier.group}}": "{{name}}",
 {{/each}}
+     };
+     const parentCommand = params.definition.parent?.name ?? "";
+     if (actionMap[parentCommand]) { return actionMap[parentCommand]; }
 
-    // Check positionals array which contains the command chain
-    const positionals = params.positionals || [];
-{{#each actions}}
-    if (positionals.includes("{{identifier.group}}")) { return "{{name}}"; }
-{{/each}}
+     const positionals = params.positionals || [];
+     const positionalMatch = positionals.find((p: string) => actionMap[p]);
+     if (positionalMatch) { return actionMap[positionalMatch]; }
 
-    // Last resort: check if handler path contains the action segment
-    const handlerPath = params.definition.handler || "";
-{{#each actions}}
-    if (handlerPath.includes("/{{identifier.group}}/") || handlerPath.includes("\\{{identifier.group}}\\")) { return "{{name}}"; }
-{{/each}}
+     const handlerPath = params.definition.handler ?? "";
+     const pathMatch = Object.keys(actionMap).find(
+       (key) => handlerPath.includes(`/${key}/`) || handlerPath.includes(`\\${key}\\`)
+     );
+     if (pathMatch) { return actionMap[pathMatch]; }
 
-    // Should not reach here with proper command structure
-    throw new Error("Unable to determine action type from command context");
-  }
+     // Should not reach here with proper command structure
+     throw new Error("Unable to determine action type from command context");
+   }
 
   /**
    * Gets the appropriate strings based on action type
