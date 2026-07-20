@@ -1,0 +1,121 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSURIMap/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAPTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAPTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSURIMap/MYPLEX1/MYREG1?CRITERIA=(name%3DURI1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAP1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAP1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSURIMap/MYPLEX1/MYREG1?CRITERIA=(name%3DURI2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP2/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAP2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP2/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/URIMAP2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSURIMap/MYURIMAP2/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}
