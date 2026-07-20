@@ -79,9 +79,32 @@
         "maxPrimaryKeyLength": {
           "type": "integer",
           "description": "Maximum length for the primary key/resource name"
+        },
+        "snakeKey": {
+          "type": "string",
+          "description": "Override for the SCREAMING_SNAKE_CASE constant suffix (e.g., 'URI_MAP'). Only needed when the automatic PascalCase→SNAKE_CASE conversion would produce an incorrect result."
+        },
+        "constantName": {
+          "type": "string",
+          "description": "Override for the full generated constant name (e.g., 'CICS_URIMAP'). Use when the resource predates the CICS_CMCI_ naming convention and must keep a legacy name."
         }
       },
       "required": ["humanNameSingular", "primaryKey"]
+    },
+    "UpdateAttribute": {
+      "type": "object",
+      "description": "Describes an attribute-update style action (e.g. URIMap ENABLE/DISABLE which sets ENABLESTATUS rather than invoking a CMCI action command)",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The CMCI attribute name to update (e.g. 'ENABLESTATUS')"
+        },
+        "value": {
+          "type": "string",
+          "description": "The value to set the attribute to (e.g. 'ENABLED', 'DISABLED')"
+        }
+      },
+      "required": ["field", "value"]
     },
     "ActionReference": {
       "type": "object",
@@ -104,6 +127,9 @@
               }
             ]
           }
+        },
+        "updateAttribute": {
+          "$ref": "#/definitions/UpdateAttribute"
         }
       },
       "required": ["identifier"]
@@ -128,6 +154,9 @@
               }
             ]
           }
+        },
+        "updateAttribute": {
+          "$ref": "#/definitions/UpdateAttribute"
         }
       },
       "required": ["identifier"]

@@ -84,3 +84,46 @@ export async function performAction(
   return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
 }
 
+/**
+ * Performs an attribute-update action on a CICS resource (e.g. setting ENABLESTATUS on a URIMap).
+ * This is used by resources whose enable/disable operations set an attribute rather than
+ * invoking a named CMCI action command.
+ * @param session - The CMCI session
+ * @param resourceType - The CMCI resource type (e.g., "CICSURIMap")
+ * @param params - The resource parameters
+ * @param criteriaField - The resource selection criteria field (e.g., "NAME")
+ * @param attributeField - The CMCI attribute name to update (e.g., "ENABLESTATUS")
+ * @param attributeValue - The value to set (e.g., "ENABLED", "DISABLED")
+ * @returns The CMCI API response
+ */
+export async function performAttributeUpdate(
+  session: AbstractSession,
+  resourceType: string,
+  params: IResourceActionParms,
+  criteriaField: string,
+  attributeField: string,
+  attributeValue: string
+): Promise<ICMCIApiResponse> {
+  const options: IGetResourceUriOptions = {
+    cicsPlex: params.cicsPlex,
+    regionName: params.regionName,
+    criteria: `${criteriaField}=${params.name}`,
+  };
+
+  const cmciResource = Utils.getResourceUri(resourceType, options);
+
+  const requestBody: any = {
+    request: {
+      update: {
+        attributes: {
+          $: {
+            [attributeField]: attributeValue,
+          },
+        },
+      },
+    },
+  };
+
+  return CicsCmciRestClient.putExpectParsedXml(session, cmciResource, [], requestBody);
+}
+

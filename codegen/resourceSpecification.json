@@ -11,7 +11,17 @@
       },
       "actions": [
         "ENABLE",
-        "DISABLE",
+        {
+          "identifier": {
+            "name": "DISABLE",
+            "aliases": ["dis"],
+            "group": "disable",
+            "description": "Disable a resource in CICS",
+            "verb": "disabling",
+            "verbPastTense": "disabled"
+          },
+          "options": ["BUSY"]
+        },
         {
           "identifier": {
             "name": "OPEN",
@@ -36,12 +46,70 @@
         }
       ]
     },
+    "CICSProgram": {
+      "identifier": {
+        "aliases": ["prog"],
+        "humanNameSingular": "Program",
+        "humanNamePlural": "Programs",
+        "primaryKey": "PROGRAM",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE"
+      ],
+      "additionalOptions": ["CSDGROUP"]
+    },
+    "CICSURIMap": {
+      "identifier": {
+        "aliases": ["urimap"],
+        "humanNameSingular": "URIMap",
+        "humanNamePlural": "URIMaps",
+        "primaryKey": "NAME",
+        "maxPrimaryKeyLength": 8,
+        "snakeKey": "URI_MAP",
+        "constantName": "CICS_URIMAP"
+      },
+      "actions": [
+        {
+          "identifier": {
+            "name": "ENABLE",
+            "aliases": ["enb"],
+            "group": "enable",
+            "description": "Enable a resource in CICS",
+            "verb": "enabling",
+            "verbPastTense": "enabled"
+          },
+          "options": [],
+          "updateAttribute": {
+            "field": "ENABLESTATUS",
+            "value": "ENABLED"
+          }
+        },
+        {
+          "identifier": {
+            "name": "DISABLE",
+            "aliases": ["dis"],
+            "group": "disable",
+            "description": "Disable a resource in CICS",
+            "verb": "disabling",
+            "verbPastTense": "disabled"
+          },
+          "options": [],
+          "updateAttribute": {
+            "field": "ENABLESTATUS",
+            "value": "DISABLED"
+          }
+        }
+      ],
+      "additionalOptions": ["CSDGROUP", "PATH", "HOST", "SCHEME", "PROGRAMNAME", "PIPELINENAME", "CERTIFICATE", "AUTHENTICATE", "DESCRIPTION", "TRANSACTIONNAME", "WEBSERVICENAME", "ENABLEATTR", "TCPIPSERVICE"]
+    },
     "CICSLibrary": {
       "identifier": {
         "aliases": ["lib"],
         "humanNameSingular": "Library",
         "humanNamePlural": "Libraries",
-        "primaryKey": "library",
+        "primaryKey": "NAME",
         "maxPrimaryKeyLength": 8
       },
       "actions": [
@@ -71,7 +139,7 @@
         "verb": "disabling",
         "verbPastTense": "disabled"
       },
-      "options": ["BUSY"]
+      "options": []
     }
   },
   "options": {
@@ -82,6 +150,71 @@
       "allowableValues": ["WAIT", "NOWAIT", "FORCE"],
       "caseSensitive": false,
       "description": "The busy condition option. Valid values: WAIT, NOWAIT, FORCE."
+    },
+    "CSDGROUP": {
+      "name": "csdGroup",
+      "type": "string",
+      "description": "The CICS CSD Group for resource definition operations."
+    },
+    "PATH": {
+      "name": "path",
+      "type": "string",
+      "description": "Path component of URI to which the map applies (up to 255 characters)."
+    },
+    "HOST": {
+      "name": "host",
+      "type": "string",
+      "description": "Host component of URI to which the map applies (up to 116 characters)."
+    },
+    "SCHEME": {
+      "name": "scheme",
+      "type": "string",
+      "description": "Scheme component of URI to which the map applies (http or https)."
+    },
+    "PROGRAMNAME": {
+      "name": "programName",
+      "type": "string",
+      "description": "Application program that will process the request (server URIMaps only, up to 8 characters)."
+    },
+    "PIPELINENAME": {
+      "name": "pipelineName",
+      "type": "string",
+      "description": "Pipeline that will process the request (pipeline URIMaps only, up to 8 characters)."
+    },
+    "CERTIFICATE": {
+      "name": "certificate",
+      "type": "string",
+      "description": "Certificate that will be used to negotiate an SSL handshake (client URIMaps only)."
+    },
+    "AUTHENTICATE": {
+      "name": "authenticate",
+      "type": "string",
+      "description": "Authentication and identification scheme to be used for URIMAPs (client URIMaps only, NO or BASIC)."
+    },
+    "DESCRIPTION": {
+      "name": "description",
+      "type": "string",
+      "description": "Description text for the resource."
+    },
+    "TRANSACTIONNAME": {
+      "name": "transactionName",
+      "type": "string",
+      "description": "Transaction resource associated with the URIMap (pipeline URIMaps only, up to 4 characters)."
+    },
+    "WEBSERVICENAME": {
+      "name": "webserviceName",
+      "type": "string",
+      "description": "Web service resource associated with the URIMap (pipeline URIMaps only, up to 32 characters)."
+    },
+    "ENABLEATTR": {
+      "name": "enable",
+      "type": "boolean",
+      "description": "Enable attribute of the resource."
+    },
+    "TCPIPSERVICE": {
+      "name": "tcpipservice",
+      "type": "string",
+      "description": "The TCPIPSERVICE to which a URIMAP applies (server and pipeline URIMAPs only, up to 8 characters)."
     }
   }
 }

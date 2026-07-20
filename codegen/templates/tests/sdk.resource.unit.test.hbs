@@ -17,20 +17,14 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  {{sdkFunction}},
-  type ICMCIApiResponse,
-  type {{parmsInterface}},
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, {{sdkFunction}}, type ICMCIApiResponse, {{#if allOptions.length}}type {{parmsInterface}}{{else}}type IResourceParms{{/if}} } from "../../../src";
 
 describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
   const {{camelCase humanNameLower}} = "TESTFILE";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const {{actionLower}}Parms: {{parmsInterface}} = {
+  const {{actionLower}}Parms: {{#if allOptions.length}}{{parmsInterface}}{{else}}IResourceParms{{/if}} = {
     regionName: region,
     name: {{camelCase humanNameLower}},
   };
@@ -141,9 +135,18 @@ describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
         CicsCmciConstants.{{sdkResourceType}} +
         "/" +
         region +
-        `?CRITERIA=({{criteriaField}}%3D${ {{actionLower}}Parms.name})`;
+        `?CRITERIA=({{criteriaField}}%3D{{dollarBrace}}{{actionLower}}Parms.name})`;
       requestBody = {
         request: {
+{{#if useAttributeUpdate}}
+          update: {
+            attributes: {
+              $: {
+                {{attributeField}}: "{{attributeValue}}",
+              },
+            },
+          },
+{{else}}
           action: {
             $: {
               name: "{{actionName}}",
@@ -155,6 +158,7 @@ describe("CMCI - {{capitalize actionLower}} {{humanNameLower}}", () => {
               },
             },{{/if}}{{/if}}
           },
+{{/if}}
         },
       };
 

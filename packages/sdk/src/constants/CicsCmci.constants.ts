@@ -54,11 +54,6 @@ export const CicsCmciConstants = {
    * Specifies the required part of the REST interface URI to access library resources
    */
   CICS_LIBRARY_RESOURCE: "CICSLibrary",
-  
-  /**
-   * Alias for CICS_LIBRARY_RESOURCE (used by codegen)
-   */
-  CICS_CMCI_LIBRARY: "CICSLibrary",
 
   /**
    * Specifies the required part of the REST interface URI to access library dataset resources
@@ -99,11 +94,6 @@ export const CicsCmciConstants = {
    * Specifies the required part of the REST interface URI to access JVM server resources
    */
   CICS_JVMSERVER_RESOURCE: "CICSJVMServer",
-
-  /*
-   * Specifies the required part of the REST interface URI to access URIMaps
-   */
-  CICS_URIMAP: "CICSURIMap",
 
   /*
    * Specifies the required part of the REST interface URI to access Region Groups
@@ -202,6 +192,21 @@ export const CicsCmciConstants = {
   CICS_BUSY_VALUES: ["WAIT", "NOWAIT", "FORCE"],
 
   /**
+   * The CICS CMCI program
+   */
+  CICS_CMCI_PROGRAM: "CICSProgram",
+
+  /**
+   * The CICS CMCI urimap
+   */
+  CICS_URIMAP: "CICSURIMap",
+
+  /**
+   * The CICS CMCI library
+   */
+  CICS_CMCI_LIBRARY: "CICSLibrary",
+
+  /**
    * The criteria field name for local file resources
    */
   CICS_LOCAL_FILE_CRITERIA_FIELD: "file",
@@ -217,9 +222,39 @@ export const CicsCmciConstants = {
   CICS_LOCAL_FILE_ACTIONS: ["CLOSE", "DISABLE", "ENABLE", "OPEN"],
 
   /**
+   * The criteria field name for program resources
+   */
+  CICS_PROGRAM_CRITERIA_FIELD: "PROGRAM",
+
+  /**
+   * Maximum length for CICS program names
+   */
+  CICS_PROGRAM_MAX_LENGTH: 8,
+
+  /**
+   * Valid action types for program operations
+   */
+  CICS_PROGRAM_ACTIONS: ["DISABLE", "ENABLE"],
+
+  /**
+   * The criteria field name for urimap resources
+   */
+  CICS_URI_MAP_CRITERIA_FIELD: "NAME",
+
+  /**
+   * Maximum length for CICS urimap names
+   */
+  CICS_URI_MAP_MAX_LENGTH: 8,
+
+  /**
+   * Valid action types for urimap operations
+   */
+  CICS_URI_MAP_ACTIONS: ["DISABLE", "ENABLE"],
+
+  /**
    * The criteria field name for library resources
    */
-  CICS_LIBRARY_CRITERIA_FIELD: "library",
+  CICS_LIBRARY_CRITERIA_FIELD: "NAME",
 
   /**
    * Maximum length for CICS library names
@@ -324,6 +359,16 @@ export const CicsCmciConstants = {
  * Valid local file action types
  */
 export type LocalFileAction = "CLOSE" | "DISABLE" | "ENABLE" | "OPEN";
+
+/**
+ * Valid program action types
+ */
+export type ProgramAction = "DISABLE" | "ENABLE";
+
+/**
+ * Valid urimap action types
+ */
+export type URIMapAction = "DISABLE" | "ENABLE";
 
 /**
  * Valid library action types

@@ -17,13 +17,7 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import {
-  CicsCmciConstants,
-  CicsCmciRestClient,
-  enableLocalFile,
-  type ICMCIApiResponse,
-  type ILocalFileParms,
-} from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "../../../src";
 
 describe("CMCI - Enable local file", () => {
   const localFile = "TESTFILE";
@@ -113,7 +107,7 @@ describe("CMCI - Enable local file", () => {
         CicsCmciConstants.CICS_CMCI_LOCAL_FILE +
         "/" +
         region +
-        `?CRITERIA=(file%3D${ enableParms.name})`;
+        `?CRITERIA=(file%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {

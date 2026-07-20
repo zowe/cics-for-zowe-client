@@ -24,6 +24,8 @@ interface ResourceIdentifier {
   humanNamePlural?: string;
   primaryKey: string;
   maxPrimaryKeyLength?: number;
+  snakeKey?: string;
+  constantName?: string;
 }
 
 interface ActionIdentifier {
@@ -44,19 +46,27 @@ interface OptionDefinition {
   description?: string;
 }
 
+interface UpdateAttribute {
+  field: string;
+  value: string;
+}
+
 interface ActionReference {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
+  updateAttribute?: UpdateAttribute;
 }
 
 interface ActionDefinition {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
+  updateAttribute?: UpdateAttribute;
 }
 
 interface Resource {
   identifier: ResourceIdentifier;
   actions: (string | ActionReference)[];
+  additionalOptions?: string[];
 }
 
 interface ResourceSpecification {
@@ -86,6 +96,7 @@ interface DerivedResource {
   hasBusyOption: boolean;
   humanNameLower: string;
   humanName: string;
+  testFileSlug: string;
   maxNameLength?: number;
   
   // Resolved actions
@@ -93,6 +104,9 @@ interface DerivedResource {
   
   // Aggregated options from all actions (for Parms interface)
   allOptions: DerivedOption[];
+
+  // True if any action on this resource uses attribute-update style
+  hasAttributeUpdate: boolean;
 }
 
 interface DerivedAction {
@@ -115,6 +129,11 @@ interface DerivedAction {
   // Metadata
   hasParameters: boolean;
   hasValidation: boolean;
+
+  // Attribute-update style (e.g. URIMap ENABLE/DISABLE sets ENABLESTATUS rather than calling a CMCI action)
+  useAttributeUpdate: boolean;
+  attributeField?: string;
+  attributeValue?: string;
 }
 
 interface DerivedOption {
@@ -154,6 +173,7 @@ Handlebars.registerHelper("removePrefix", (str: string, prefix: string) => {
 });
 Handlebars.registerHelper("add", (a: number, b: number) => a + b);
 Handlebars.registerHelper("eq", (a: unknown, b: unknown) => a === b);
+Handlebars.registerHelper("dollarBrace", () => "${");
 
 // ============================================================================
 // Resource-Focused Generator Class
@@ -178,8 +198,9 @@ export class ResourceGenerator {
   public generateAll(): void {
     console.log("🚀 Starting resource-focused code generation...\n");
 
-    this.generateSDK();
-    this.generateTests();
+    const derivedResources = this.deriveResources();
+    this.generateSDK(derivedResources);
+    this.generateTests(derivedResources);
 
     console.log("\n🎉 Code generation complete!");
   }
@@ -187,14 +208,12 @@ export class ResourceGenerator {
   /**
    * Generate SDK code
    */
-  private generateSDK(): void {
+  private generateSDK(derivedResources: DerivedResource[]): void {
     console.log("📦 Generating SDK layer...");
     
     const sdkOutputDir = path.join(this.outputDir, "sdk", "src", "resources");
     this.ensureDir(sdkOutputDir);
 
-    // Process each resource
-    const derivedResources = this.deriveResources();
     
     for (const resource of derivedResources) {
       const fileName = `${resource.sdkFileName}.ts`;
@@ -223,6 +242,12 @@ export class ResourceGenerator {
     this.ensureDir(docOutputDir);
     
     for (const resource of derivedResources) {
+      // Skip generating a parms file for resources with no additional options;
+      // those resources use IResourceParms directly.
+      if (resource.allOptions.length === 0) {
+        continue;
+      }
+
       const parmsFileName = `I${resource.sdkFileName}Parms.ts`;
       const parmsFilePath = path.join(docOutputDir, parmsFileName);
       
@@ -283,15 +308,13 @@ export class ResourceGenerator {
   /**
    * Generate unit tests
    */
-  private generateTests(): void {
+  private generateTests(derivedResources: DerivedResource[]): void {
     console.log("📦 Generating SDK unit tests...");
     this.generatedTestFiles = [];
     
     const sdkTestOutputDir = path.join(this.outputDir, "sdk", "__tests__", "__unit__");
     this.ensureDir(sdkTestOutputDir);
 
-    const derivedResources = this.deriveResources();
-    
     for (const resource of derivedResources) {
       for (const action of resource.actions) {
         const context = {
@@ -301,9 +324,7 @@ export class ResourceGenerator {
           hasRegionName: true,
           hasValidation: action.hasValidation,
           hasParameters: action.hasParameters,
-          testFileName: `${action.identifier.group.charAt(0).toUpperCase() + action.identifier.group.slice(1)}.${
-            resource.sdkFileName.charAt(0).toLowerCase() + resource.sdkFileName.slice(1)
-          }.unit.test.ts`,
+          testFileName: `${action.identifier.group.charAt(0).toUpperCase() + action.identifier.group.slice(1)}.${resource.testFileSlug}.unit.test.ts`,
         };
 
         const outputPath = path.join(
@@ -347,17 +368,22 @@ export class ResourceGenerator {
     // Generate SDK file name (remove CICS prefix if present)
     const sdkFileName = resourceName.replace(/^CICS/, "");
     
-    // Generate constants - convert camelCase/PascalCase to SCREAMING_SNAKE_CASE
-    // Remove CICS prefix first, then convert
+    // Generate constants - convert camelCase/PascalCase to SCREAMING_SNAKE_CASE.
+    // snakeKey in the spec overrides the regex for resources with non-trivial capitalisation
+    // (e.g. CICSURIMap → URI_MAP rather than the naive U_R_I_M_A_P).
     const nameWithoutCICS = resourceName.replace(/^CICS/, "");
-    const resourceTypeUpper = nameWithoutCICS
-      .replace(/([A-Z])/g, "_$1")
-      .toUpperCase()
-      .replace(/^_/, "");
-    const sdkResourceType = `CICS_CMCI_${resourceTypeUpper}`;
+    const resourceTypeUpper = resource.identifier.snakeKey
+      ?? nameWithoutCICS.replace(/([A-Z])/g, "_$1").toUpperCase().replace(/^_/, "");
+
+    // constantName allows the spec to override the full constant name (e.g. "CICS_URIMAP")
+    // when the resource predates the CICS_CMCI_ naming convention.
+    const sdkResourceType = resource.identifier.constantName ?? `CICS_CMCI_${resourceTypeUpper}`;
+    
     const parmsInterface = `I${sdkFileName}Parms`;
-    const criteriaField = resource.identifier.primaryKey.toLowerCase(); // lowercase for tests (original behavior)
-    // For criteria field and busy values, use CICS_ prefix without _CMCI_
+    // primaryKey is used as-is in criteria (IBM docs key field name, e.g. "file", "program", "NAME")
+    const criteriaField = resource.identifier.primaryKey;
+
+    // Use resourceTypeUpper consistently for all criteria field constants
     const criteriaFieldConstant = `CICS_${resourceTypeUpper}_CRITERIA_FIELD`;
     const maxLengthConstant = resource.identifier.maxPrimaryKeyLength
       ? `CICS_${resourceTypeUpper}_MAX_LENGTH`
@@ -400,6 +426,26 @@ export class ResourceGenerator {
         }
       }
     }
+    
+    // Add additional options from resource definition
+    if (resource.additionalOptions) {
+      for (const optionRef of resource.additionalOptions) {
+        if (this.spec.options?.[optionRef]) {
+          const optionDef = this.spec.options[optionRef];
+          const derivedOption: DerivedOption = {
+            ...optionDef,
+            sdkParamName: optionDef.name,
+            constantReference: optionDef.allowableValues
+              ? `CICS_CMCI_${resourceTypeUpper}_${optionDef.name.toUpperCase()}_VALUES`
+              : undefined,
+          };
+          if (!allOptionsMap.has(optionDef.name)) {
+            allOptionsMap.set(optionDef.name, derivedOption);
+          }
+        }
+      }
+    }
+    
     const allOptions = Array.from(allOptionsMap.values());
 
     return {
@@ -416,9 +462,14 @@ export class ResourceGenerator {
       hasBusyOption: usesBusyOption,
       humanNameLower: resource.identifier.humanNameSingular.toLowerCase(),
       humanName: resource.identifier.humanNameSingular,
+      testFileSlug: resource.identifier.humanNameSingular.includes(" ")
+        ? resource.identifier.humanNameSingular.replace(/\s+/g, "").charAt(0).toLowerCase() +
+          resource.identifier.humanNameSingular.replace(/\s+/g, "").slice(1)
+        : resource.identifier.humanNameSingular.toLowerCase(),
       maxNameLength: resource.identifier.maxPrimaryKeyLength,
       actions: derivedActions,
       allOptions,
+      hasAttributeUpdate: derivedActions.some(a => a.useAttributeUpdate),
     };
   }
 
@@ -456,6 +507,8 @@ export class ResourceGenerator {
     const derivedOptions = this.deriveOptions(actionDef.options || [], resourceName);
     const derivedParameters = this.deriveParameters(actionDef.options || [], resourceName);
 
+    const updateAttribute = actionDef.updateAttribute;
+
     return {
       name: identifier.name,
       identifier,
@@ -469,6 +522,9 @@ export class ResourceGenerator {
       parameters: derivedParameters,
       hasParameters: derivedParameters.length > 0,
       hasValidation: derivedParameters.some(p => p.validation),
+      useAttributeUpdate: !!updateAttribute,
+      attributeField: updateAttribute?.field,
+      attributeValue: updateAttribute?.value,
     };
   }
 

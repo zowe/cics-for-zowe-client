@@ -18,92 +18,94 @@
 
 import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
-import type { ICMCIApiResponse, IResourceParms } from "../doc";
-import { performAction } from "../utils/ResourceActions";
+import type { ICMCIApiResponse, IURIMapParms } from "../doc";
+import { performAction, performAttributeUpdate } from "../utils/ResourceActions";
 
 /**
- * Disabling a library in CICS
+ * Disabling a urimap in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { IResourceParms } parms - parameters for disabling the library
- * @param {string} parms.name - the name of the library to disable (1-8 characters)
+ * @param { IURIMapParms } parms - parameters for disabling the urimap
+ * @param {string} parms.name - the name of the urimap to disable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
- * @throws {ImperativeError} CICS library name not defined, blank, or exceeds maximum length
+ * @throws {ImperativeError} CICS urimap name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function disableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
+export async function disableURIMap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS urimap name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
+  // Validate urimap name length (CICS resource names are limited to 8 characters)
+  if (parms.name.length > CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
+      msg: `CICS urimap name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH + ` characters`,
     });
   }
 
   Logger.getAppLogger().debug(
-    `Attempting to disable a library with the following parameters:\n%s`,
+    `Attempting to disable a urimap with the following parameters:\n%s`,
     JSON.stringify(parms)
   );
 
-  // Use generic performAction utility (no additional parameters needed for DISABLE)
-  return performAction(
+  // Use attribute-update style (sets ENABLESTATUS=DISABLED rather than invoking a CMCI action command)
+  return performAttributeUpdate(
     session,
-    CicsCmciConstants.CICS_CMCI_LIBRARY,
-    "DISABLE",
+    CicsCmciConstants.CICS_URIMAP,
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LIBRARY_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD,
+    "ENABLESTATUS",
+    "DISABLED"
   );
 }
 
 /**
- * Enabling a library in CICS
+ * Enabling a urimap in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { IResourceParms } parms - parameters for enabling the library
- * @param {string} parms.name - the name of the library to enable (1-8 characters)
+ * @param { IURIMapParms } parms - parameters for enabling the urimap
+ * @param {string} parms.name - the name of the urimap to enable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
- * @throws {ImperativeError} CICS library name not defined, blank, or exceeds maximum length
+ * @throws {ImperativeError} CICS urimap name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function enableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
+export async function enableURIMap(session: AbstractSession, parms: IURIMapParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS URIMap name", "CICS urimap name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
+  // Validate urimap name length (CICS resource names are limited to 8 characters)
+  if (parms.name.length > CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
+      msg: `CICS urimap name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_URI_MAP_MAX_LENGTH + ` characters`,
     });
   }
 
   Logger.getAppLogger().debug(
-    `Attempting to enable a library with the following parameters:\n%s`,
+    `Attempting to enable a urimap with the following parameters:\n%s`,
     JSON.stringify(parms)
   );
 
-  // Use generic performAction utility (no additional parameters needed for ENABLE)
-  return performAction(
+  // Use attribute-update style (sets ENABLESTATUS=ENABLED rather than invoking a CMCI action command)
+  return performAttributeUpdate(
     session,
-    CicsCmciConstants.CICS_CMCI_LIBRARY,
-    "ENABLE",
+    CicsCmciConstants.CICS_URIMAP,
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LIBRARY_CRITERIA_FIELD
+    CicsCmciConstants.CICS_URI_MAP_CRITERIA_FIELD,
+    "ENABLESTATUS",
+    "ENABLED"
   );
 }
 

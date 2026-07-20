@@ -121,7 +121,8 @@ The specification is organized hierarchically:
   "resources": {
     "ResourceName": {
       "identifier": { /* metadata */ },
-      "actions": [ /* action references or inline definitions */ ]
+      "actions": [ /* action references or inline definitions */ ],
+      "additionalOptions": [ /* optional: extra options for Parms interface */ ]
     }
   },
   "actions": {
@@ -140,6 +141,7 @@ The specification is organized hierarchically:
 - Resources are the primary organizing unit
 - Actions and options can be shared across resources
 - Inline definitions allow resource-specific customization
+- `additionalOptions` enables backward compatibility and resource-specific properties
 - Metadata drives code generation (no manual derivation needed)
 
 ### 2. JSON Schema Validator
@@ -176,6 +178,24 @@ class ResourceGenerator {
   // Template rendering
   private generateFromTemplate(template, output, context): void
   private ensureDir(path): void
+}
+```
+
+**Special Constant Handling**
+
+The generator skips constant generation for `LocalFile` since it uses the existing hardcoded `CICS_CMCI_LOCAL_FILE` constant (with a different naming convention). All other resources, including `Library` and `URIMap`, have their `CICS_CMCI_<X>` constants generated from the spec.
+
+Two optional `identifier` fields control constant naming for non-trivial resources:
+
+- **`snakeKey`** — overrides the SCREAMING_SNAKE suffix used for criteria/maxLength/actions constants. Needed when the naive regex would produce a wrong result (e.g. `CICSURIMap` → `U_R_I_M_A_P` without it, `URI_MAP` with it).
+- **`constantName`** — overrides the full resource-type constant name. Use when the resource predates the `CICS_CMCI_` naming convention and must keep a legacy name (e.g. `CICS_URIMAP`).
+
+```json
+"CICSURIMap": {
+  "identifier": {
+    "snakeKey": "URI_MAP",
+    "constantName": "CICS_URIMAP"
+  }
 }
 ```
 
@@ -821,6 +841,40 @@ User          Generator       Specification    Templates       FileSystem
        }
      }
    }
+   ```
+
+3. **Use additionalOptions for Resource-Specific Properties**
+   
+   The `additionalOptions` field allows adding properties to a resource's Parms interface without associating them with specific actions. This is useful for:
+   - Backward compatibility with existing code
+   - Resource-specific properties used by other operations
+   - Properties that don't fit into the action-option model
+   
+   **Example**: Adding a `csdGroup` property to Program resource:
+   ```json
+   {
+     "resources": {
+       "CICSProgram": {
+         "identifier": {
+           "aliases": ["prog"],
+           "humanNameSingular": "Program",
+           "primaryKey": "program"
+         },
+         "actions": ["ENABLE", "DISABLE"],
+         "additionalOptions": ["CSDGROUP"]
+       }
+     },
+     "options": {
+       "CSDGROUP": {
+         "name": "csdGroup",
+         "type": "string",
+         "description": "The CICS CSD Group for program definition operations."
+       }
+     }
+   }
+   ```
+   
+   This generates `IProgramParms` with both `busy` (from DISABLE action) and `csdGroup` (from additionalOptions) properties, allowing the interface to be used by both enable/disable operations and program definition operations.
    ```
 
 ### Adding New Templates

@@ -41,9 +41,9 @@ export async function closeLocalFile(session: AbstractSession, parms: ILocalFile
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate local file name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS local file name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS local file name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -98,9 +98,9 @@ export async function disableLocalFile(session: AbstractSession, parms: ILocalFi
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate local file name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS local file name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS local file name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -153,9 +153,9 @@ export async function enableLocalFile(session: AbstractSession, parms: ILocalFil
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate local file name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS local file name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS local file name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH + ` characters`,
     });
   }
 
@@ -196,9 +196,9 @@ export async function openLocalFile(session: AbstractSession, parms: ILocalFileP
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
   // Validate local file name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > 8) {
+  if (parms.name.length > CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS local file name "${parms.name}" exceeds maximum length of 8 characters`,
+      msg: `CICS local file name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LOCAL_FILE_MAX_LENGTH + ` characters`,
     });
   }
 

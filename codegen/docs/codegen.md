@@ -89,8 +89,106 @@ Enable with: `npm run generate -- --tests-only`
 1. Add resource definition to `resourceSpecification.json` under `resources` section
 2. Specify resource identifier (name, aliases, primary key, etc.)
 3. List actions for the resource (can reference shared actions or define inline)
-4. Run `npm run generate`
-5. Generated files appear automatically in the SDK package
+4. (Optional) Add `additionalOptions` to include extra properties in the Parms interface
+5. (Optional) If reusing existing constants, update generator to handle special cases
+6. Run `npm run generate`
+7. Generated files appear automatically in the SDK package
+
+**Example 1**: Adding a Program resource with ENABLE/DISABLE actions and a csdGroup option:
+
+```json
+{
+  "resources": {
+    "CICSProgram": {
+      "identifier": {
+        "aliases": ["prog"],
+        "humanNameSingular": "Program",
+        "humanNamePlural": "Programs",
+        "primaryKey": "program",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE"
+      ],
+      "additionalOptions": ["CSDGROUP"]
+    }
+  },
+  "options": {
+    "CSDGROUP": {
+      "name": "csdGroup",
+      "type": "string",
+      "description": "The CICS CSD Group for program definition operations."
+    }
+  }
+}
+```
+
+This generates:
+- `packages/sdk/src/resources/Program.ts` with `enableProgram()` and `disableProgram()` functions
+- `packages/sdk/src/doc/IProgramParms.ts` with `busy` and `csdGroup` properties
+- Unit tests for both operations
+
+**Example 2**: Adding a URIMap resource with many additional options for backward compatibility:
+
+```json
+{
+  "resources": {
+    "CICSURIMap": {
+      "identifier": {
+        "aliases": ["urimap"],
+        "humanNameSingular": "URIMap",
+        "humanNamePlural": "URIMaps",
+        "primaryKey": "urimap",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": [
+        "ENABLE",
+        "DISABLE"
+      ],
+      "additionalOptions": [
+        "CSDGROUP", "PATH", "HOST", "SCHEME",
+        "PROGRAMNAME", "PIPELINENAME", "CERTIFICATE",
+        "AUTHENTICATE", "DESCRIPTION", "TRANSACTIONNAME",
+        "WEBSERVICENAME", "ENABLEATTR", "TCPIPSERVICE"
+      ]
+    }
+  }
+}
+```
+
+This generates:
+- `packages/sdk/src/resources/URIMap.ts` with `enableURIMap()` and `disableURIMap()` functions
+- `packages/sdk/src/doc/IURIMapParms.ts` with all properties needed for both Enable/Disable and Define operations
+- Uses the `CICS_URIMAP` constant (controlled via `constantName: "CICS_URIMAP"` in the spec)
+
+#### Understanding Resource vs Definition in CICS
+
+**Important Distinction**: CICS has two separate concepts that are often confused:
+
+1. **Definitions** (e.g., URIMPDEF) - Stored in CSD (CICS System Definition)
+   - Have a CSDGROUP attribute (which CSD group they belong to)
+   - Used by Define operations (CREATE, CSDINSTALL, etc.)
+   - Example: `defineUrimapServer()` creates a URIMap definition in CSD
+
+2. **Installed Resources** (e.g., URIMAP) - Running in CICS region
+   - Do NOT have a CSDGROUP attribute
+   - Used by runtime operations (ENABLE, DISABLE, INQUIRE, etc.)
+   - Example: `enableURIMap()` enables an installed URIMap resource
+
+**Why additionalOptions includes CSDGROUP and other attributes:**
+
+The codebase uses a **shared Parms interface** pattern where a single interface (e.g., `IURIMapParms`) is used by multiple operations:
+
+- **Define operations** need: CSDGROUP, PATH, HOST, SCHEME, etc.
+- **Enable/Disable operations** only use: name, regionName, cicsPlex
+
+This design choice maintains backward compatibility with existing Define functions while allowing the codegen to generate Enable/Disable operations. The Enable/Disable functions simply ignore the extra parameters they don't need.
+
+**IBM Documentation References:**
+- [URIMAP Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimap-resource-table) - Installed resources (ENABLE/DISABLE)
+- [URIMPDEF Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimpdef-resource-table) - Definitions (CSDGROUP, Define operations)
+- Unit tests for both operations
 
 ### Adding a New Action
 

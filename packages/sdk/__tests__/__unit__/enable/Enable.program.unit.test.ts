@@ -17,16 +17,16 @@
 // ============================================================================
 
 import { Session } from "@zowe/imperative";
-import { CicsCmciConstants, CicsCmciRestClient, disableLibrary, type ICMCIApiResponse, type IResourceParms } from "../../../src";
+import { CicsCmciConstants, CicsCmciRestClient, enableProgram, type ICMCIApiResponse, type IProgramParms } from "../../../src";
 
-describe("CMCI - Disable library", () => {
-  const library = "TESTFILE";
+describe("CMCI - Enable program", () => {
+  const program = "TESTFILE";
   const region = "region";
   const content = "ThisIsATest" as unknown as ICMCIApiResponse;
 
-  const disableParms: IResourceParms = {
+  const enableParms: IProgramParms = {
     regionName: region,
-    name: library,
+    name: program,
   };
 
   const dummySession = new Session({
@@ -45,14 +45,14 @@ describe("CMCI - Disable library", () => {
     beforeEach(() => {
       response = undefined;
       error = undefined;
-      disableParms.regionName = region;
-      disableParms.name = library;
+      enableParms.regionName = region;
+      enableParms.name = program;
     });
 
     it("should throw an error if no region name is specified", async () => {
-      (disableParms as any).regionName = undefined;
+      (enableParms as any).regionName = undefined;
       try {
-        response = await disableLibrary(dummySession, disableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
@@ -61,22 +61,22 @@ describe("CMCI - Disable library", () => {
       expect(error.message).toContain("CICS region name is required");
     });
 
-    it("should throw an error if no library name is specified", async () => {
-      (disableParms as any).name = undefined;
+    it("should throw an error if no program name is specified", async () => {
+      (enableParms as any).name = undefined;
       try {
-        response = await disableLibrary(dummySession, disableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
       expect(response).toBeUndefined();
       expect(error).toBeDefined();
-      expect(error.message).toContain("CICS library name is required");
+      expect(error.message).toContain("CICS program name is required");
     });
 
-    it("should throw an error if library name exceeds maximum length", async () => {
-      disableParms.name = "TOOLONGNAME";
+    it("should throw an error if program name exceeds maximum length", async () => {
+      enableParms.name = "TOOLONGNAME";
       try {
-        response = await disableLibrary(dummySession, disableParms);
+        response = await enableProgram(dummySession, enableParms);
       } catch (err) {
         error = err;
       }
@@ -88,39 +88,39 @@ describe("CMCI - Disable library", () => {
   });
 
   describe("success scenarios", () => {
-    const disableSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
+    const enableSpy = jest.spyOn(CicsCmciRestClient, "putExpectParsedXml").mockResolvedValue(content);
 
     beforeEach(() => {
       response = undefined;
       error = undefined;
-      disableSpy.mockClear();
-      disableSpy.mockResolvedValue(content);
-      disableParms.regionName = region;
-      disableParms.name = library;
+      enableSpy.mockClear();
+      enableSpy.mockResolvedValue(content);
+      enableParms.regionName = region;
+      enableParms.name = program;
     });
 
-    it("should be able to disable a library", async () => {
+    it("should be able to enable a program", async () => {
       endPoint =
         "/" +
         CicsCmciConstants.CICS_SYSTEM_MANAGEMENT +
         "/" +
-        CicsCmciConstants.CICS_CMCI_LIBRARY +
+        CicsCmciConstants.CICS_CMCI_PROGRAM +
         "/" +
         region +
-        `?CRITERIA=(NAME%3D${disableParms.name})`;
+        `?CRITERIA=(PROGRAM%3D${enableParms.name})`;
       requestBody = {
         request: {
           action: {
             $: {
-              name: "DISABLE",
+              name: "ENABLE",
             },
           },
         },
       };
 
-      response = await disableLibrary(dummySession, disableParms);
+      response = await enableProgram(dummySession, enableParms);
       expect(response).toContain(content);
-      expect(disableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
+      expect(enableSpy).toHaveBeenCalledWith(dummySession, endPoint, [], requestBody);
     });
   });
 });

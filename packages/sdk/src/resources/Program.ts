@@ -18,92 +18,92 @@
 
 import { type AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { CicsCmciConstants } from "../constants";
-import type { ICMCIApiResponse, IResourceParms } from "../doc";
+import type { ICMCIApiResponse, IProgramParms } from "../doc";
 import { performAction } from "../utils/ResourceActions";
 
 /**
- * Disabling a library in CICS
+ * Disabling a program in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { IResourceParms } parms - parameters for disabling the library
- * @param {string} parms.name - the name of the library to disable (1-8 characters)
+ * @param { IProgramParms } parms - parameters for disabling the program
+ * @param {string} parms.name - the name of the program to disable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
- * @throws {ImperativeError} CICS library name not defined, blank, or exceeds maximum length
+ * @throws {ImperativeError} CICS program name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function disableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
+export async function disableProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
+  // Validate program name length (CICS resource names are limited to 8 characters)
+  if (parms.name.length > CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
+      msg: `CICS program name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH + ` characters`,
     });
   }
 
   Logger.getAppLogger().debug(
-    `Attempting to disable a library with the following parameters:\n%s`,
+    `Attempting to disable a program with the following parameters:\n%s`,
     JSON.stringify(parms)
   );
 
   // Use generic performAction utility (no additional parameters needed for DISABLE)
   return performAction(
     session,
-    CicsCmciConstants.CICS_CMCI_LIBRARY,
+    CicsCmciConstants.CICS_CMCI_PROGRAM,
     "DISABLE",
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LIBRARY_CRITERIA_FIELD
+    CicsCmciConstants.CICS_PROGRAM_CRITERIA_FIELD
   );
 }
 
 /**
- * Enabling a library in CICS
+ * Enabling a program in CICS
  * @param {AbstractSession} session - the session to connect to CMCI with
- * @param { IResourceParms } parms - parameters for enabling the library
- * @param {string} parms.name - the name of the library to enable (1-8 characters)
+ * @param { IProgramParms } parms - parameters for enabling the program
+ * @param {string} parms.name - the name of the program to enable (1-8 characters)
  * @param {string} parms.regionName - the CICS region name
  * @param {string} [parms.cicsPlex] - the CICSPlex name (optional)
  * @returns {Promise<ICMCIApiResponse>} promise that resolves to the response
- * @throws {ImperativeError} CICS library name not defined, blank, or exceeds maximum length
+ * @throws {ImperativeError} CICS program name not defined, blank, or exceeds maximum length
  * @throws {ImperativeError} CICS region name not defined or blank
  * @throws {ImperativeError} CicsCmciRestClient request fails
  */
-export async function enableLibrary(session: AbstractSession, parms: IResourceParms): Promise<ICMCIApiResponse> {
+export async function enableProgram(session: AbstractSession, parms: IProgramParms): Promise<ICMCIApiResponse> {
   // Validate required parameters
-  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Library name", "CICS library name is required");
+  ImperativeExpect.toBeDefinedAndNonBlank(parms.name, "CICS Program name", "CICS program name is required");
   ImperativeExpect.toBeDefinedAndNonBlank(parms.regionName, "CICS Region name", "CICS region name is required");
 
-  // Validate library name length (CICS resource names are limited to 8 characters)
-  if (parms.name.length > CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH) {
+  // Validate program name length (CICS resource names are limited to 8 characters)
+  if (parms.name.length > CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH) {
     throw new ImperativeError({
-      msg: `CICS library name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_LIBRARY_MAX_LENGTH + ` characters`,
+      msg: `CICS program name "${parms.name}" exceeds maximum length of ` + CicsCmciConstants.CICS_PROGRAM_MAX_LENGTH + ` characters`,
     });
   }
 
   Logger.getAppLogger().debug(
-    `Attempting to enable a library with the following parameters:\n%s`,
+    `Attempting to enable a program with the following parameters:\n%s`,
     JSON.stringify(parms)
   );
 
   // Use generic performAction utility (no additional parameters needed for ENABLE)
   return performAction(
     session,
-    CicsCmciConstants.CICS_CMCI_LIBRARY,
+    CicsCmciConstants.CICS_CMCI_PROGRAM,
     "ENABLE",
     {
       name: parms.name,
       regionName: parms.regionName,
       cicsPlex: parms.cicsPlex,
     },
-    CicsCmciConstants.CICS_LIBRARY_CRITERIA_FIELD
+    CicsCmciConstants.CICS_PROGRAM_CRITERIA_FIELD
   );
 }
 
