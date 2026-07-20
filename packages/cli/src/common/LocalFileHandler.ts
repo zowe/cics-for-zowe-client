@@ -16,7 +16,14 @@
 // Any manual changes will be overwritten when the generator runs.
 // ============================================================================
 
-import { closeLocalFile, disableLocalFile, enableLocalFile, openLocalFile, type ICMCIApiResponse, type ILocalFileParms } from "@zowe/cics-for-zowe-sdk";
+import {
+  closeLocalFile,
+  disableLocalFile,
+  enableLocalFile,
+  openLocalFile,
+  type ICMCIApiResponse,
+  type ILocalFileParms,
+} from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../CicsBaseHandler";
 
@@ -45,30 +52,28 @@ export default class LocalFileHandler extends CicsBaseHandler {
    * @returns {LocalFileAction} The action type
    */
   private getActionType(params: IHandlerParameters): LocalFileAction {
-    // Check parent command name first (works in tests)
-    const parentCommand = params.definition.parent?.name;
-    if (parentCommand === "close") { return "CLOSE"; }
-    if (parentCommand === "disable") { return "DISABLE"; }
-    if (parentCommand === "enable") { return "ENABLE"; }
-    if (parentCommand === "open") { return "OPEN"; }
+     const actionMap: Record<string, LocalFileAction> = {
+       "close": "CLOSE",
+       "disable": "DISABLE",
+       "enable": "ENABLE",
+       "open": "OPEN",
+     };
+     const parentCommand = params.definition.parent?.name ?? "";
+     if (actionMap[parentCommand]) { return actionMap[parentCommand]; }
 
-    // Check positionals array which contains the command chain
-    const positionals = params.positionals || [];
-    if (positionals.includes("close")) { return "CLOSE"; }
-    if (positionals.includes("disable")) { return "DISABLE"; }
-    if (positionals.includes("enable")) { return "ENABLE"; }
-    if (positionals.includes("open")) { return "OPEN"; }
+     const positionals = params.positionals || [];
+     const positionalMatch = positionals.find((p: string) => actionMap[p]);
+     if (positionalMatch) { return actionMap[positionalMatch]; }
 
-    // Last resort: check if handler path contains the action segment
-    const handlerPath = params.definition.handler || "";
-    if (handlerPath.includes("/close/") || handlerPath.includes("\close\\")) { return "CLOSE"; }
-    if (handlerPath.includes("/disable/") || handlerPath.includes("\disable\\")) { return "DISABLE"; }
-    if (handlerPath.includes("/enable/") || handlerPath.includes("\enable\\")) { return "ENABLE"; }
-    if (handlerPath.includes("/open/") || handlerPath.includes("\open\\")) { return "OPEN"; }
+     const handlerPath = params.definition.handler ?? "";
+     const pathMatch = Object.keys(actionMap).find(
+       (key) => handlerPath.includes(`/${key}/`) || handlerPath.includes(`\\${key}\\`)
+     );
+     if (pathMatch) { return actionMap[pathMatch]; }
 
-    // Should not reach here with proper command structure
-    throw new Error("Unable to determine action type from command context");
-  }
+     // Should not reach here with proper command structure
+     throw new Error("Unable to determine action type from command context");
+   }
 
   /**
    * Gets the appropriate strings based on action type
