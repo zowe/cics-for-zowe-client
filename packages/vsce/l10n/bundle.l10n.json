@@ -28,7 +28,9 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": ["Log level"]
+    "comment": [
+      "Log level"
+    ]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -268,7 +270,6 @@
   "Cannot compare CICS resources of different types.": "Cannot compare CICS resources of different types.",
   "No resources found.": "No resources found.",
   "No filter applied.": "No filter applied.",
-  "No CICS resource information available to compare": "No CICS resource information available to compare",
   "File": "File",
   "Enter resource name...": "Enter resource name...",
   "Recent CICS {0}": "Recent CICS {0}",
