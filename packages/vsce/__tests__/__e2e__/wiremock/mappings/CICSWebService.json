@@ -1,0 +1,70 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSWebService/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WEBSERVICETOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WEBSERVICETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSWebService/MYPLEX1/MYREG1?CRITERIA=(name%3DMYWS1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS1/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WS1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS1/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WS1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS1/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    }
+  ]
+}

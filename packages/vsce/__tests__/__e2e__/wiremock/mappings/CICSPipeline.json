@@ -1,0 +1,70 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSPipeline/MYPLEX1/MYREG1?CRITERIA=(NAME%3D*)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPELINETOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPELINETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSPipeline/MYPLEX1/MYREG1?CRITERIA=(name%3DMYPIPE1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE1/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPE1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE1/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPE1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE1/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    }
+  ]
+}

@@ -51,6 +51,8 @@ export const constants = {
   URIMAP_1_FULL_NAME: "URI1 [HTTPS] (/test)",
   URIMAP_2_NAME: "URI2",
   URIMAP_2_FULL_NAME: "URI2 [HTTP] (/test2)",
+  PIPELINE_1_NAME: "MYPIPE1",
+  WEBSERVICE_1_NAME: "MYWS1",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. Please refer to the IBM documentation for additional details`,
   BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
@@ -147,7 +149,13 @@ export const getResourceInspector = (page: Page) => {
   return page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame");
 };
 
-export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left", esc: boolean = true, timeout: number = 5000) => {
+export const findAndClickTreeItem = async (
+  page: Page,
+  label: string,
+  button: "left" | "right" | "middle" = "left",
+  esc: boolean = true,
+  timeout: number = 5000
+) => {
   const itm = getTreeItem(page, label);
   await expect(itm).toBeVisible({ timeout });
   await expect(itm).toHaveText(label, { timeout });
