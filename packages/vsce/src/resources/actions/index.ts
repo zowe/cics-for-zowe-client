@@ -20,6 +20,8 @@ import { getRegionActions } from "./RegionActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
 import { getTaskActions } from "./TaskActions";
 import { getTransactionActions } from "./TransactionActions";
+import { getTCPIPActions } from "./TCPIPActions";
+import { getURIMapActions } from "./URIMapsActions";
 
 export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
   const map = new Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>();
@@ -34,6 +36,8 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSTask, getTaskActions());
   map.set(ResourceTypes.CICSManagedRegion, getManagedRegionActions());
   map.set(ResourceTypes.CICSRegion, getRegionActions());
+  map.set(ResourceTypes.CICSTCPIPService, getTCPIPActions());
+  map.set(ResourceTypes.CICSURIMap, getURIMapActions());
 
   return map;
 }
@@ -48,3 +52,5 @@ export * from "./RegionActions";
 export * from "./TSQueueActions";
 export * from "./TaskActions";
 export * from "./TransactionActions";
+export * from "./TCPIPActions";
+export * from "./URIMapsActions";

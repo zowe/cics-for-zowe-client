@@ -45,6 +45,12 @@ export const constants = {
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
   ALL_JVM_SERVERS: "All JVM Servers",
+  TCPIP_1_NAME: "MYTCPIP1 [Port #8080]",
+  TCPIP_2_NAME: "MYTCPIP2 [Port #9090]",
+  URIMAP_1_NAME: "URI1",
+  URIMAP_1_FULL_NAME: "URI1 [HTTPS] (/test)",
+  URIMAP_2_NAME: "URI2",
+  URIMAP_2_FULL_NAME: "URI2 [HTTP] (/test2)",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. Please refer to the IBM documentation for additional details`,
   BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
@@ -141,10 +147,10 @@ export const getResourceInspector = (page: Page) => {
   return page.frameLocator('iframe[src *= "extensionId=Zowe.cics-extension-for-zowe"]').frameLocator("#active-frame");
 };
 
-export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left", esc: boolean = true) => {
+export const findAndClickTreeItem = async (page: Page, label: string, button: "left" | "right" | "middle" = "left", esc: boolean = true, timeout: number = 5000) => {
   const itm = getTreeItem(page, label);
-  await expect(itm).toBeVisible();
-  await expect(itm).toHaveText(label);
+  await expect(itm).toBeVisible({ timeout });
+  await expect(itm).toHaveText(label, { timeout });
   if (esc) {
     await page.keyboard.press("Escape");
   }
@@ -152,7 +158,7 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
 };
 
 export const waitForNotification = async (page: Page, string: string) => {
-  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 1000 });
+  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 5000 });
   await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
 };
 
