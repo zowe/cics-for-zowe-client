@@ -618,7 +618,7 @@ describe("CICSResourceContainerNode tests", () => {
       showWarningMessageSpy.mockRestore();
     });
 
-    it("should show warning message when partial results detected", async () => {
+    it("should show tooltip/badge but NOT a popup when NOTPERMIT partial results detected", async () => {
       getResourceMock.mockResolvedValue({
         response: {
           resultsummary: {
@@ -645,10 +645,9 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
-      expect(showWarningMessageSpy).toHaveBeenCalledWith(
-      expect.stringContaining("The request failed on profile MYPROF")
-      );
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.tooltip).toBeDefined();
+      expect(String(containerNode.description)).toContain("ⓘ");
     });
 
     it("should update icon to warning when partial results detected", async () => {
@@ -756,7 +755,7 @@ describe("CICSResourceContainerNode tests", () => {
       expect(containerNode.description).not.toContain("(Incomplete Results)");
     });
 
-    it("should show warning only once on first fetch", async () => {
+    it("should set tooltip once on first fetch and not re-set on cached second fetch", async () => {
       getResourceMock.mockResolvedValue({
         response: {
           resultsummary: {
@@ -781,13 +780,14 @@ describe("CICSResourceContainerNode tests", () => {
         },
       });
 
-      // First call
+      // First call — tooltip should be set, no popup
       await containerNode.getChildren();
-      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.tooltip).toBeDefined();
 
-      // Second call (should not show warning again)
+      // Second call — already fetched, returns cached children, no additional calls
       await containerNode.getChildren();
-      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
     });
 
     it("should not show multiple error messages when multiple resource types have errors", async () => {
@@ -919,7 +919,7 @@ describe("CICSResourceContainerNode tests", () => {
       handleErrorSpy.mockRestore();
     });
 
-    it("should use resource type name in warning message", async () => {
+    it("should set tooltip (not popup) for NOTPERMIT on node with existing resource", async () => {
       containerNode = new CICSResourceContainerNode(
         "Programs",
         {
@@ -960,13 +960,11 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      // Updated to match new detailed error format
-      expect(showWarningMessageSpy).toHaveBeenCalledWith(
-        expect.stringContaining("The request failed on profile MYPROF")
-      );
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.tooltip).toBeDefined();
     });
 
-    it("should handle partial results with pagination", async () => {
+    it("should handle NOTPERMIT partial results with pagination - tooltip only, no popup", async () => {
       jest.spyOn(PersistentStorage, "getNumberOfResourcesToFetch").mockReturnValue(5);
       containerNode = new CICSResourceContainerNode(
         "Programs",
@@ -1006,7 +1004,8 @@ describe("CICSResourceContainerNode tests", () => {
 
       await containerNode.getChildren();
 
-      expect(showWarningMessageSpy).toHaveBeenCalledTimes(1);
+      expect(showWarningMessageSpy).not.toHaveBeenCalled();
+      expect(containerNode.tooltip).toBeDefined();
       expect(containerNode.iconPath).toBeDefined();
       expect(containerNode.iconPath).toEqual(expect.objectContaining({ light: expect.any(String), dark: expect.any(String) }));
       expect(containerNode.description).toContain("[5 of 10]");

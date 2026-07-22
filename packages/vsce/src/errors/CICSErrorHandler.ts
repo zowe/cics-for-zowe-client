@@ -143,7 +143,9 @@ export class CICSErrorHandler {
     const message = CICSExtensionError.formatDetailedErrorMessage(resultsummary, profileName);
     const formattedMessage = this.formatMessageWithDocLink(message, resourceType);
     CICSLogger.error(formattedMessage);
-    window.showErrorMessage(formattedMessage);
+    if (resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT)) {
+      window.showErrorMessage(formattedMessage);
+    }
   }
 
   /**
@@ -153,7 +155,7 @@ export class CICSErrorHandler {
    * @returns MarkdownString tooltip, or undefined if no error in summary
    */
   static buildIncompleteResultsTooltip(resultsummary: ICMCIResponseResultSummary): MarkdownString | undefined {
-    if (!resultsummary || resultsummary.api_response1 === String(CicsCmciConstants.RESPONSE_1_CODES.OK)) {
+    if (!resultsummary || resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT)) {
       return undefined;
     }
 
