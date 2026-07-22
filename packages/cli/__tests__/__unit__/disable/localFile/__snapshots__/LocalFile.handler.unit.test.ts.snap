@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`DisableLocalFileHandler should call the disableLocalFile api 1`] = `"The local file '%s' was disabled successfully."`;
 
