@@ -190,9 +190,6 @@ test.describe("Resource Inspector Actions - JVM Endpoint", () => {
   });
 });
 
-test.describe("Resource Inspector Actions - TCP/IP Service", () => {
-  test("should show Copy Name and Compare to actions for TCP/IP Service in Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "TCP/IP Services", constants.TCPIP_1_NAME, "MYTCPIP1");
 test.describe("Resource Inspector Actions - Pipeline", () => {
   test("should show Copy Name and Compare to actions for Pipeline in Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
@@ -202,8 +199,6 @@ test.describe("Resource Inspector Actions - Pipeline", () => {
     await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
   });
 
-  test("should copy TCP/IP Service name to clipboard from Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "TCP/IP Services", constants.TCPIP_1_NAME, "MYTCPIP1");
   test("should copy Pipeline name to clipboard from Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
 
@@ -211,33 +206,6 @@ test.describe("Resource Inspector Actions - Pipeline", () => {
     await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
     await page.waitForTimeout(200);
 
-    expect(await getClipboardContent(page)).toEqual("MYTCPIP1");
-  });
-
-  test("should compare TCP/IP Service MYTCPIP1 to MYTCPIP2 from Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "TCP/IP Services", constants.TCPIP_1_NAME, "MYTCPIP1");
-
-    await openContextMenu(page);
-    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
-
-    // Select region: "Other CICS Region" → profile → plex → region
-    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
-    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
-    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
-    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
-
-    // Enter the second resource name to compare against
-    await page.locator("input.input").fill("MYTCPIP2");
-    await page.keyboard.press("Enter");
-
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYTCPIP1" }).first()).toBeVisible({ timeout: 10000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYTCPIP2" }).first()).toBeVisible({ timeout: 10000 });
-  });
-});
-
-test.describe("Resource Inspector Actions - URIMap", () => {
-  test("should show Copy Name and Compare to actions for URI Map in Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "URI Maps", constants.URIMAP_1_FULL_NAME, constants.URIMAP_1_NAME);
     expect(await getClipboardContent(page)).toEqual("MYPIPE1");
   });
 });
@@ -251,8 +219,6 @@ test.describe("Resource Inspector Actions - Web Service", () => {
     await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
   });
 
-  test("should copy URI Map name to clipboard from Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "URI Maps", constants.URIMAP_1_FULL_NAME, constants.URIMAP_1_NAME);
   test("should copy Web Service name to clipboard from Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "Web Services", constants.WEBSERVICE_1_NAME);
 
@@ -260,27 +226,6 @@ test.describe("Resource Inspector Actions - Web Service", () => {
     await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
     await page.waitForTimeout(200);
 
-    expect(await getClipboardContent(page)).toEqual("URI1");
-  });
-
-  test("should compare URI Map URI1 to URI2 from Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "URI Maps", constants.URIMAP_1_FULL_NAME, constants.URIMAP_1_NAME);
-
-    await openContextMenu(page);
-    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
-
-    // Select region: "Other CICS Region" → profile → plex → region
-    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
-    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
-    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
-    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
-
-    // Enter the second resource name to compare against
-    await page.locator("input.input").fill("URI2");
-    await page.keyboard.press("Enter");
-
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "URI1" }).first()).toBeVisible({ timeout: 10000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "URI2" }).first()).toBeVisible({ timeout: 10000 });
     expect(await getClipboardContent(page)).toEqual("MYWS1");
   });
 });
