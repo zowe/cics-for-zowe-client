@@ -76,8 +76,10 @@ export default {
         DESCRIPTION: "Define a new bundle to CICS.",
         POSITIONALS: {
           BUNDLENAME: "The name of the new bundle to define. The maximum length of the bundle name is eight characters.",
-          BUNDLEDIR: "The fully qualified name of the root directory for the bundle on z/OS UNIX. The first character must be / and the end character /. The maximum length is 255 characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the new bundle that you want to define. The maximum length of the group name is eight characters.",
+          BUNDLEDIR: "The fully qualified name of the root directory for the bundle on z/OS UNIX. " +
+            "The first character must be / and the end character /. The maximum length is 255 characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new bundle that you want to define. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new bundle",
@@ -95,7 +97,8 @@ export default {
         DESCRIPTION: "Define a new program to CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the new program to define. The maximum length of the program name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the new program that you want to define. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new program that you want to define. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new program",
@@ -114,7 +117,8 @@ export default {
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the new transaction to define. The maximum length of the transaction name is four characters.",
           PROGRAMNAME: "The name of the program that the transaction uses. The maximum length of the program name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the new transaction that you want to define. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new transaction that you want to define. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new transaction",
@@ -184,13 +188,16 @@ export default {
         DESCRIPTION: "Define a new web service to CICS.",
         POSITIONALS: {
           WEBSERVICENAME: "The name of the WEBSERVICE to create. The maximum length of the web service name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the new web service that you want to define. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new web service that you want to define. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
-          PIPELINENAME: "The name of the PIPELINE resource definition for the web service. The maximum length of the pipeline name is eight characters",
+          PIPELINENAME: "The name of the PIPELINE resource definition for the web service. " +
+            "The maximum length of the pipeline name is eight characters",
           WSBIND: "The file name of the web service binding file on HFS.",
           DESCRIPTION: "Description of the web service resource being defined.",
-          VALIDATION: "Specifies whether full validation of SOAP messages against the corresponding schema in the web service description should be performed at run time.",
+          VALIDATION: "Specifies whether full validation of SOAP messages against the corresponding schema " +
+            "in the web service description should be performed at run time.",
           WSDLFILE: "The file name of the web service description (WSDL) file on HFS.",
           REGIONNAME: "The CICS region name to which to define the new web service.",
           CICSPLEX: "The name of the CICSPlex to which to define the new web service.",
@@ -200,7 +207,8 @@ export default {
           PROGRESS: "Defining web service to CICS",
         },
         EXAMPLES: {
-          EX1: "Define a webservice named WEBSVCA for the pipeline named PIPE123 to the region named MYREGION in the CSD group MYGRP where the binding file is /u/exampleapp/wsbind/example.log",
+          EX1: "Define a webservice named WEBSVCA for the pipeline named PIPE123 to the region named MYREGION " +
+            "in the CSD group MYGRP where the binding file is /u/exampleapp/wsbind/example.log",
         },
       },
     },
@@ -213,7 +221,8 @@ export default {
         DESCRIPTION: "Delete a program from CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the program to delete. The maximum length of the program name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to delete. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to delete. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the program",
@@ -231,7 +240,8 @@ export default {
         DESCRIPTION: "Delete a transaction from CICS.",
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the transaction to delete. The maximum length of the transaction name is four characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to delete. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to delete. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the transaction",
@@ -249,7 +259,8 @@ export default {
         DESCRIPTION: "Delete a urimap from CICS.",
         POSITIONALS: {
           URIMAPNAME: "The name of the urimap to delete. The maximum length of the urimap name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to delete. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to delete. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the urimap",
@@ -266,7 +277,8 @@ export default {
         DESCRIPTION: "Delete a web service from CICS.",
         POSITIONALS: {
           WEBSERVICENAME: "The name of the web service to delete. The maximum length of the web service name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the web service that you want to delete. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the web service that you want to delete. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the web service",
@@ -461,7 +473,8 @@ export default {
         DESCRIPTION: "Install a program to CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the program to install. The maximum length of the program name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to install. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to install. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the program",
@@ -479,7 +492,8 @@ export default {
         DESCRIPTION: "Install a transaction to CICS.",
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the transaction to install. The maximum length of the transaction name is four characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to install. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to install. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the transaction",
@@ -497,7 +511,8 @@ export default {
         DESCRIPTION: "Install a urimap to CICS.",
         POSITIONALS: {
           URIMAPNAME: "The name of the urimap to install. The maximum length of the urimap name is eight characters.",
-          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to install. The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to install. " +
+            "The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the urimap",

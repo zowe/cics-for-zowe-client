@@ -47,7 +47,7 @@ export const LocalFileDefinition: ICommandDefinition = {
       type: "string",
       defaultValue: false,
       allowableValues: {
-        values: ["WAIT","NOWAIT","FORCE"],
+        values: ["WAIT", "NOWAIT", "FORCE"],
         caseSensitive: false,
       },
     },

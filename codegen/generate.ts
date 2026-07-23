@@ -209,7 +209,7 @@ Handlebars.registerHelper("removePrefix", (str: string, prefix: string) => {
 Handlebars.registerHelper("add", (a: number, b: number) => a + b);
 Handlebars.registerHelper("eq", (a: unknown, b: unknown) => a === b);
 Handlebars.registerHelper("dollarBrace", () => "${");
-Handlebars.registerHelper("json", (value: unknown) => JSON.stringify(value));
+Handlebars.registerHelper("json", (value: unknown) => JSON.stringify(value, null, 0).replace(/,/g, ", "));
 
 // ============================================================================
 // Resource-Focused Generator Class
