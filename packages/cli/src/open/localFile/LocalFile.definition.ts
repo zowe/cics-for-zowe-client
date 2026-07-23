@@ -20,21 +20,21 @@ import type { ICommandDefinition } from "@zowe/imperative";
 import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.URIMAP;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).OPEN.RESOURCES.LOCALFILE;
 
 /**
- * Urimap command definition for the Disable command group
+ * LocalFile command definition for the Open command group
  */
-export const UrimapDefinition: ICommandDefinition = {
-  name: "urimap",
-  aliases: [],
+export const LocalFileDefinition: ICommandDefinition = {
+  name: "CICSLocalFile",
+  aliases: ["lf"],
   description: strings.DESCRIPTION,
-  handler: __dirname + "/Urimap.handler",
+  handler: __dirname + "/../../common/LocalFileHandler",
   type: "command",
   positionals: [
     {
-      name: "urimapName",
-      description: strings.POSITIONALS.URIMAPNAME,
+      name: "fileName",
+      description: strings.POSITIONALS.FILENAME,
       type: "string",
       required: true,
     },
@@ -55,7 +55,7 @@ export const UrimapDefinition: ICommandDefinition = {
   examples: [
     {
       description: strings.EXAMPLES.EX1,
-      options: "URIMAPA --region-name MYREGION",
+      options: "TESTFILE --region-name MYREGION",
     },
   ],
 };

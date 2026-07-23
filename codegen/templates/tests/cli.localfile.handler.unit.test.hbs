@@ -21,8 +21,8 @@ import { type IHandlerParameters, Session } from "@zowe/imperative";
 import type { ICMCIApiResponse } from "../../../../src";
 import LocalFileHandler from "../../../../src/common/LocalFileHandler";
 
-// Import the Close command group definition
-const GroupDefinition = require("../../../../src/close/Close.definition");
+// Import the {{capitalize actionGroup}} command group definition
+const GroupDefinition = require("../../../../src/{{actionGroup}}/{{capitalize actionGroup}}.definition");
 const LocalFileDefinition = GroupDefinition.children![0];
 
 // Set up parent relationship for the handler to determine action type
@@ -47,12 +47,12 @@ const PROFILE_MAP = {
   password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-  positionals: ["cics", "close", "CICSLocalFile"],
+  positionals: ["cics", "{{actionGroup}}", "CICSLocalFile"],
   definition: LocalFileDefinition,
   arguments: PROFILE_MAP,
 });
 
-describe("CloseLocalFileHandler", () => {
+describe("{{capitalize actionGroup}}LocalFileHandler", () => {
   const fileName = "TESTFILE";
   const regionName = "testRegion";
   const cicsPlex = "testPlex";
@@ -64,14 +64,14 @@ describe("CloseLocalFileHandler", () => {
     },
   };
 
-  const functionSpy = jest.spyOn(sdk, "closeLocalFile");
+  const functionSpy = jest.spyOn(sdk, "{{sdkFunction}}");
 
   beforeEach(() => {
     functionSpy.mockClear();
     functionSpy.mockImplementation(async () => defaultReturn);
   });
 
-  it("should call the closeLocalFile api", async () => {
+  it("should call the {{sdkFunction}} api", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -118,7 +118,7 @@ describe("CloseLocalFileHandler", () => {
     );
   });
 
-  it("should call the closeLocalFile api with cicsPlex", async () => {
+  it("should call the {{sdkFunction}} api with cicsPlex", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -166,8 +166,9 @@ describe("CloseLocalFileHandler", () => {
       }
     );
   });
+{{#if hasBusyOption}}
 
-  it("should call the closeLocalFile api with busy parameter", async () => {
+  it("should call the {{sdkFunction}} api with busy parameter", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -217,4 +218,32 @@ describe("CloseLocalFileHandler", () => {
       }
     );
   });
+{{else}}
+
+  it("should not include busy parameter for {{actionGroup}} action", async () => {
+    const handler = new LocalFileHandler();
+
+    const commandParameters = { ...DEFAULT_PARAMETERS };
+    commandParameters.arguments = {
+      ...commandParameters.arguments,
+      fileName,
+      regionName,
+      busy: "WAIT", // This should be ignored for {{actionGroup}} action
+      host,
+      port,
+      user,
+      password,
+      protocol,
+      rejectUnauthorized,
+    };
+
+    await handler.process(commandParameters);
+
+    expect(functionSpy).toHaveBeenCalledTimes(1);
+
+    // Verify busy parameter is not passed to {{actionGroup}} action
+    const callArgs = functionSpy.mock.calls[0][1] as any;
+    expect(callArgs.busy).toBeUndefined();
+  });
+{{/if}}
 });

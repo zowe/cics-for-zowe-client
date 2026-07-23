@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api 1`] = `"The local file '%s' was closed successfully."`;
+exports[`EnableLocalFileHandler should call the enableLocalFile api 1`] = `"The local file '%s' was enabled successfully."`;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api 2`] = `
+exports[`EnableLocalFileHandler should call the enableLocalFile api 2`] = `
 {
   "response": {
     "records": "testing",
@@ -16,9 +16,9 @@ exports[`CloseLocalFileHandler should call the closeLocalFile api 2`] = `
 }
 `;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 1`] = `"The local file '%s' was closed successfully."`;
+exports[`EnableLocalFileHandler should call the enableLocalFile api with cicsPlex 1`] = `"The local file '%s' was enabled successfully."`;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 2`] = `
+exports[`EnableLocalFileHandler should call the enableLocalFile api with cicsPlex 2`] = `
 {
   "response": {
     "records": "testing",
@@ -32,9 +32,9 @@ exports[`CloseLocalFileHandler should call the closeLocalFile api with busy para
 }
 `;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with cicsPlex 1`] = `"The local file '%s' was closed successfully."`;
+exports[`EnableLocalFileHandler should not include busy parameter for enable action 1`] = `"The local file '%s' was enabled successfully."`;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with cicsPlex 2`] = `
+exports[`EnableLocalFileHandler should not include busy parameter for enable action 2`] = `
 {
   "response": {
     "records": "testing",

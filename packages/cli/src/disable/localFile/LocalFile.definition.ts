@@ -17,29 +17,50 @@
 // ============================================================================
 
 import type { ICommandDefinition } from "@zowe/imperative";
+import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
 import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.URIMAP;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.LOCALFILE;
 
 /**
- * Urimap command definition for the Disable command group
+ * LocalFile command definition for the Disable command group
  */
-export const UrimapDefinition: ICommandDefinition = {
-  name: "urimap",
-  aliases: [],
+export const LocalFileDefinition: ICommandDefinition = {
+  name: "CICSLocalFile",
+  aliases: ["lf"],
   description: strings.DESCRIPTION,
-  handler: __dirname + "/Urimap.handler",
+  handler: __dirname + "/../../common/LocalFileHandler",
   type: "command",
   positionals: [
     {
-      name: "urimapName",
-      description: strings.POSITIONALS.URIMAPNAME,
+      name: "fileName",
+      description: strings.POSITIONALS.FILENAME,
       type: "string",
       required: true,
     },
   ],
   options: [
+    {
+      name: "busy",
+      description: strings.OPTIONS.BUSY,
+      type: "string",
+      defaultValue: false,
+      allowableValues: {
+        values: ["WAIT", "NOWAIT", "FORCE"],
+        caseSensitive: false,
+      },
+    },
+    {
+      name: "busy",
+      description: strings.OPTIONS.BUSY,
+      type: "string",
+      defaultValue: "WAIT",
+      allowableValues: {
+        values: [...CicsCmciConstants.CICS_BUSY_VALUES],
+        caseSensitive: false,
+      },
+    },
     {
       name: "region-name",
       description: strings.OPTIONS.REGIONNAME,
@@ -55,7 +76,11 @@ export const UrimapDefinition: ICommandDefinition = {
   examples: [
     {
       description: strings.EXAMPLES.EX1,
-      options: "URIMAPA --region-name MYREGION",
+      options: "TESTFILE --region-name MYREGION",
+    },
+    {
+      description: strings.EXAMPLES.EX2,
+      options: "TESTFILE --region-name MYREGION --busy FORCE",
     },
   ],
 };

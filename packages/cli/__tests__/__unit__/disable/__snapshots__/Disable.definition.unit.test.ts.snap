@@ -1,8 +1,11 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`cics disable urimap should not have changed 1`] = `
+exports[`cics disable should not have changed 1`] = `
 {
-  "description": "Disable resources (for example, urimaps) from CICS through IBM CMCI.",
+  "aliases": [
+    "dis",
+  ],
+  "description": "Disable resources (for example, local files) from CICS through IBM CMCI.",
   "name": "disable",
   "passOn": [
     {

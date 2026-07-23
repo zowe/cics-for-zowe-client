@@ -21,8 +21,8 @@ import { type IHandlerParameters, Session } from "@zowe/imperative";
 import type { ICMCIApiResponse } from "../../../../src";
 import LocalFileHandler from "../../../../src/common/LocalFileHandler";
 
-// Import the Close command group definition
-const GroupDefinition = require("../../../../src/close/Close.definition");
+// Import the Disable command group definition
+const GroupDefinition = require("../../../../src/disable/Disable.definition");
 const LocalFileDefinition = GroupDefinition.children![0];
 
 // Set up parent relationship for the handler to determine action type
@@ -47,12 +47,12 @@ const PROFILE_MAP = {
   password,
 };
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-  positionals: ["cics", "close", "CICSLocalFile"],
+  positionals: ["cics", "disable", "CICSLocalFile"],
   definition: LocalFileDefinition,
   arguments: PROFILE_MAP,
 });
 
-describe("CloseLocalFileHandler", () => {
+describe("DisableLocalFileHandler", () => {
   const fileName = "TESTFILE";
   const regionName = "testRegion";
   const cicsPlex = "testPlex";
@@ -64,14 +64,14 @@ describe("CloseLocalFileHandler", () => {
     },
   };
 
-  const functionSpy = jest.spyOn(sdk, "closeLocalFile");
+  const functionSpy = jest.spyOn(sdk, "disableLocalFile");
 
   beforeEach(() => {
     functionSpy.mockClear();
     functionSpy.mockImplementation(async () => defaultReturn);
   });
 
-  it("should call the closeLocalFile api", async () => {
+  it("should call the disableLocalFile api", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -118,7 +118,7 @@ describe("CloseLocalFileHandler", () => {
     );
   });
 
-  it("should call the closeLocalFile api with cicsPlex", async () => {
+  it("should call the disableLocalFile api with cicsPlex", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -167,7 +167,7 @@ describe("CloseLocalFileHandler", () => {
     );
   });
 
-  it("should call the closeLocalFile api with busy parameter", async () => {
+  it("should call the disableLocalFile api with busy parameter", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };

@@ -1,0 +1,29 @@
+  {{toUpperCase actionGroup}}: {
+    SUMMARY: "{{capitalize actionGroup}} resources in CICS",
+    DESCRIPTION: "{{capitalize actionGroup}} resources (for example, local files) in CICS through IBM CMCI.",
+    RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "{{capitalize actionGroup}} a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to {{actionGroup}}. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to {{actionGroup}} the local file",
+          CICSPLEX: "The name of the CICSPlex in which to {{actionGroup}} the local file",
+{{#if hasBusyOption}}
+          BUSY: "The busy condition option for {{actionGroup}}ing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+{{/if}}
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was {{actionPastTense}} successfully.",
+          PROGRESS: "{{capitalize actionGroup}}ing local file in CICS",
+        },
+        EXAMPLES: {
+          EX1: "{{capitalize actionGroup}} a local file named TESTFILE in the region named MYREGION",
+{{#if hasBusyOption}}
+          EX2: "{{capitalize actionGroup}} a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+{{/if}}
+        },
+      },
+    },
+  },

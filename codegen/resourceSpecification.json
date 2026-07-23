@@ -3,6 +3,12 @@
   "resources": {
     "CICSLocalFile": {
       "identifier": {
+        "cliName": "CICSLocalFile",
+        "cliDir": "localFile",
+        "cliClass": "LocalFile",
+        "cliAliases": ["lf"],
+        "cliPositionalName": "fileName",
+        "useSharedHandler": true,
         "aliases": ["lf"],
         "humanNameSingular": "Local File",
         "humanNamePlural": "Local Files",
@@ -62,6 +68,9 @@
     },
     "CICSURIMap": {
       "identifier": {
+        "cliName": "urimap",
+        "cliAliases": [],
+        "cliPositionalName": "urimapName",
         "aliases": ["urimap"],
         "humanNameSingular": "URIMap",
         "humanNamePlural": "URIMaps",
@@ -81,6 +90,7 @@
             "verbPastTense": "enabled"
           },
           "options": [],
+          "sdkFunction": "enableUrimap",
           "updateAttribute": {
             "field": "ENABLESTATUS",
             "value": "ENABLED"
@@ -96,6 +106,7 @@
             "verbPastTense": "disabled"
           },
           "options": [],
+          "sdkFunction": "disableUrimap",
           "updateAttribute": {
             "field": "ENABLESTATUS",
             "value": "DISABLED"
@@ -215,6 +226,36 @@
       "name": "tcpipservice",
       "type": "string",
       "description": "The TCPIPSERVICE to which a URIMAP applies (server and pipeline URIMAPs only, up to 8 characters)."
+    }
+  },
+  "groupMeta": {
+    "enable": {
+      "name": "enable",
+      "aliases": ["enb"],
+      "summary": "Enable resources in CICS",
+      "description": "Enable resources (for example, local files) in CICS through IBM CMCI.",
+      "stringsKey": "ENABLE"
+    },
+    "disable": {
+      "name": "disable",
+      "aliases": ["dis"],
+      "summary": "Disable resources from CICS",
+      "description": "Disable resources (for example, local files) from CICS through IBM CMCI.",
+      "stringsKey": "DISABLE"
+    },
+    "open": {
+      "name": "open",
+      "aliases": ["opn"],
+      "summary": "Open resources in CICS",
+      "description": "Open resources (for example, local files) in CICS through IBM CMCI.",
+      "stringsKey": "OPEN"
+    },
+    "close": {
+      "name": "close",
+      "aliases": ["cls"],
+      "summary": "Close resources in CICS",
+      "description": "Close resources (for example, local files) in CICS through IBM CMCI.",
+      "stringsKey": "CLOSE"
     }
   }
 }

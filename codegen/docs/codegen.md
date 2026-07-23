@@ -1,12 +1,46 @@
-# CICS SDK Code Generation
+# CICS Code Generation
 
 ## Quick Start
 
-1. Install dependencies: `npm install`
+1. Install dependencies: `npm install` (inside `codegen/`)
 2. Generate code: `npm run generate`
 3. Verify changes: `npm run check-generated`
 
-The generator reads `resourceSpecification.json` and produces SDK files, utility files, and test files using Handlebars templates.
+The generator reads `resourceSpecification.json` and produces SDK files, CLI files, utility files, and test files using Handlebars templates.
+
+---
+
+## What Does Codegen Generate?
+
+The generator currently owns code in two packages:
+
+### SDK Package (`packages/sdk`)
+
+| Generated File | Template |
+|---|---|
+| `src/resources/<Resource>.ts` | `sdk/resource.file.hbs` |
+| `src/resources/index.ts` | `sdk/resource.index.hbs` |
+| `src/doc/I<Resource>Parms.ts` | `sdk/parms.interface.hbs` |
+| `src/doc/index.ts` | `sdk/doc.index.hbs` |
+| `src/utils/ResourceActions.ts` | `sdk/utils.resourceactions.hbs` |
+| `src/utils/index.ts` | `sdk/utils.index.hbs` |
+| `src/constants.ts` | `sdk/constants.hbs` |
+| `__tests__/__unit__/<action>/<action>.<resource>.unit.test.ts` | `tests/sdk.resource.unit.test.hbs` |
+
+### CLI Package (`packages/cli`)
+
+| Generated File | Template |
+|---|---|
+| `src/common/LocalFileHandler.ts` | `cli/localfile.handler.hbs` (Pattern A only) |
+| `src/<group>/<Group>.definition.ts` | `cli/group.definition.hbs` |
+| `src/<group>/<resourceDir>/<Resource>.definition.ts` | `cli/resource.definition.hbs` |
+| `src/<group>/<resourceDir>/<Resource>.handler.ts` | `cli/resource.handler.hbs` (Pattern B only) |
+| `src/-strings-/en.ts` | `cli/en.ts.hbs` |
+| `__tests__/__unit__/<group>/localFile/<Resource>.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` (Pattern A only) |
+| `__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` |
+
+Pattern A (`useSharedHandler: true`) — definition points at the shared `LocalFileHandler`; no per-resource handler file is generated.
+Pattern B — definition and handler are co-located in the same subdirectory.
 
 ---
 
@@ -19,39 +53,13 @@ The generator reads `resourceSpecification.json` and produces SDK files, utility
 
 ---
 
-## What is the Use of Codegen?
-
-The code generation system automates the creation of CICS SDK code from a single source of truth specification. It generates:
-
-- **SDK Resource Files**: TypeScript classes for CICS resources (LocalFile, Program, Transaction, etc.)
-- **Utility Files**: Helper functions and constants for resource actions
-- **Test Files**: Unit tests for SDK resource classes
-- **Type Definitions**: Interfaces and type definitions for parameters
-
-This eliminates manual coding errors, ensures consistency across resources, and makes it easy to add new resources or actions.
-
----
-
 ## Why Use Codegen?
-
-### Benefits
 
 1. **Single Source of Truth**: All resource definitions, actions, and options are defined once in `resourceSpecification.json`
 2. **Consistency**: Generated code follows the same patterns and conventions across all resources
 3. **Reduced Duplication**: Shared actions and options are defined once and referenced by multiple resources
-4. **Maintainability**: Changes to resource behavior only require updating the specification and regenerating
-5. **Error Prevention**: Automated generation eliminates manual coding mistakes
-6. **Scalability**: Adding new resources or actions is straightforward
-7. **Documentation**: The specification serves as documentation for available resources and actions
-
-### Resource-Focused Architecture
-
-The specification is organized by resources rather than actions, which:
-
-- Reduces specification size by 79% (from 323 lines to 68 lines)
-- Eliminates duplication of resource information across action groups
-- Makes it easier to understand what actions are available for each resource
-- Allows sharing of common actions and options across resources
+4. **Maintainability**: Changes to resource behaviour only require updating the specification and regenerating
+5. **Scalability**: Adding new resources or actions is straightforward
 
 ---
 
@@ -59,42 +67,22 @@ The specification is organized by resources rather than actions, which:
 
 ### Basic Workflow
 
-1. **Modify Specification**: Edit `resourceSpecification.json` to add/modify resources, actions, or options
+1. **Modify Specification**: Edit `resourceSpecification.json` to add or modify resources, actions, or options
 2. **Validate**: The JSON schema automatically validates your changes
-3. **Generate Code**: Run `npm run generate` to create SDK files
-4. **Review Changes**: Check the generated files in `packages/sdk/src/` and `packages/sdk/__tests__/`
+3. **Generate Code**: Run `npm run generate` to create files
+4. **Review Changes**: Check the generated files in `packages/sdk/src/` and `packages/cli/src/`
 5. **Test**: Run tests to ensure generated code works correctly
-6. **Commit**: Commit both specification and generated files together
+6. **Commit**: Commit both the specification and the generated files together
 
-### Generation Modes
+### Adding a New Resource (SDK)
 
-#### Direct Mode (Default)
-Generates all files directly into the SDK package:
-- SDK resource files in `packages/sdk/src/`
-- Utility files in `packages/sdk/src/utils/`
-- Test files in `packages/sdk/__tests__/__unit__/`
+1. Add a resource entry to the `resources` section of `resourceSpecification.json`
+2. Specify the resource identifier (name, aliases, primary key, etc.)
+3. List actions for the resource (reference shared actions or define inline)
+4. Optionally add `additionalOptions` to include extra properties in the Parms interface
+5. Run `npm run generate`
 
-Use this mode during active development when making changes to resources.
-
-#### Tests-Only Mode
-Generates only test files without modifying SDK source files. Useful for:
-- Updating tests after manual SDK changes
-- Regenerating tests when templates change
-- Verifying test coverage
-
-Enable with: `npm run generate -- --tests-only`
-
-### Adding a New Resource
-
-1. Add resource definition to `resourceSpecification.json` under `resources` section
-2. Specify resource identifier (name, aliases, primary key, etc.)
-3. List actions for the resource (can reference shared actions or define inline)
-4. (Optional) Add `additionalOptions` to include extra properties in the Parms interface
-5. (Optional) If reusing existing constants, update generator to handle special cases
-6. Run `npm run generate`
-7. Generated files appear automatically in the SDK package
-
-**Example 1**: Adding a Program resource with ENABLE/DISABLE actions and a csdGroup option:
+**Example — Program resource with ENABLE/DISABLE and a `csdGroup` option:**
 
 ```json
 {
@@ -107,166 +95,103 @@ Enable with: `npm run generate -- --tests-only`
         "primaryKey": "program",
         "maxPrimaryKeyLength": 8
       },
-      "actions": [
-        "ENABLE",
-        "DISABLE"
-      ],
+      "actions": ["ENABLE", "DISABLE"],
       "additionalOptions": ["CSDGROUP"]
-    }
-  },
-  "options": {
-    "CSDGROUP": {
-      "name": "csdGroup",
-      "type": "string",
-      "description": "The CICS CSD Group for program definition operations."
     }
   }
 }
 ```
 
 This generates:
-- `packages/sdk/src/resources/Program.ts` with `enableProgram()` and `disableProgram()` functions
-- `packages/sdk/src/doc/IProgramParms.ts` with `busy` and `csdGroup` properties
+- `packages/sdk/src/resources/Program.ts` with `enableProgram()` and `disableProgram()`
+- `packages/sdk/src/doc/IProgramParms.ts` with `csdGroup` in the interface
 - Unit tests for both operations
 
-**Example 2**: Adding a URIMap resource with many additional options for backward compatibility:
+**Example — URIMap resource with inline action overrides and many additional options:**
 
 ```json
 {
   "resources": {
     "CICSURIMap": {
       "identifier": {
-        "aliases": ["urimap"],
-        "humanNameSingular": "URIMap",
-        "humanNamePlural": "URIMaps",
-        "primaryKey": "urimap",
-        "maxPrimaryKeyLength": 8
+        "snakeKey": "URI_MAP",
+        "constantName": "CICS_URIMAP"
       },
       "actions": [
-        "ENABLE",
-        "DISABLE"
+        {
+          "identifier": { "name": "ENABLE", ... },
+          "updateAttribute": { "field": "ENABLESTATUS", "value": "ENABLED" }
+        }
       ],
-      "additionalOptions": [
-        "CSDGROUP", "PATH", "HOST", "SCHEME",
-        "PROGRAMNAME", "PIPELINENAME", "CERTIFICATE",
-        "AUTHENTICATE", "DESCRIPTION", "TRANSACTIONNAME",
-        "WEBSERVICENAME", "ENABLEATTR", "TCPIPSERVICE"
-      ]
+      "additionalOptions": ["CSDGROUP", "PATH", "HOST", ...]
     }
   }
 }
 ```
 
-This generates:
-- `packages/sdk/src/resources/URIMap.ts` with `enableURIMap()` and `disableURIMap()` functions
-- `packages/sdk/src/doc/IURIMapParms.ts` with all properties needed for both Enable/Disable and Define operations
-- Uses the `CICS_URIMAP` constant (controlled via `constantName: "CICS_URIMAP"` in the spec)
-
-#### Understanding Resource vs Definition in CICS
-
-**Important Distinction**: CICS has two separate concepts that are often confused:
-
-1. **Definitions** (e.g., URIMPDEF) - Stored in CSD (CICS System Definition)
-   - Have a CSDGROUP attribute (which CSD group they belong to)
-   - Used by Define operations (CREATE, CSDINSTALL, etc.)
-   - Example: `defineUrimapServer()` creates a URIMap definition in CSD
-
-2. **Installed Resources** (e.g., URIMAP) - Running in CICS region
-   - Do NOT have a CSDGROUP attribute
-   - Used by runtime operations (ENABLE, DISABLE, INQUIRE, etc.)
-   - Example: `enableURIMap()` enables an installed URIMap resource
-
-**Why additionalOptions includes CSDGROUP and other attributes:**
-
-The codebase uses a **shared Parms interface** pattern where a single interface (e.g., `IURIMapParms`) is used by multiple operations:
-
-- **Define operations** need: CSDGROUP, PATH, HOST, SCHEME, etc.
-- **Enable/Disable operations** only use: name, regionName, cicsPlex
-
-This design choice maintains backward compatibility with existing Define functions while allowing the codegen to generate Enable/Disable operations. The Enable/Disable functions simply ignore the extra parameters they don't need.
-
-**IBM Documentation References:**
-- [URIMAP Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimap-resource-table) - Installed resources (ENABLE/DISABLE)
-- [URIMPDEF Resource Table](https://www.ibm.com/docs/en/cics-ts/6.x?topic=tables-urimpdef-resource-table) - Definitions (CSDGROUP, Define operations)
-- Unit tests for both operations
+The `snakeKey` and `constantName` fields let you control constant naming when the default derivation would produce the wrong result (e.g. `CICSURIMap` → `URI_MAP` not `U_R_I_M_A_P`).
 
 ### Adding a New Action
 
-1. Define action in `actions` section of `resourceSpecification.json`
-2. Specify action identifier (name, aliases, description, verbs)
-3. List options for the action (can reference shared options or define inline)
-4. Reference the action in relevant resources
-5. Run `npm run generate`
+1. Define the action in the `actions` section with an identifier, description, verbs, and options
+2. Reference it by name in any relevant resource's `actions` array
+3. Run `npm run generate`
 
 ### Modifying Options
 
-1. Update option definition in `options` section
-2. Changes automatically apply to all actions using that option
+1. Update the option definition in the `options` section
+2. Changes automatically propagate to all actions that reference that option
 3. Run `npm run generate`
 
 ---
 
-## Architecture of Codegen
+## Architecture
 
 ### Components
 
-#### 1. Specification File (`resourceSpecification.json`)
-The single source of truth containing:
-- **Resources**: CICS resource types (LocalFile, Program, Transaction, etc.)
-- **Actions**: Operations that can be performed (ENABLE, DISABLE, OPEN, CLOSE, etc.)
-- **Options**: Parameters for actions (busy, force, etc.)
+#### 1. Specification (`resourceSpecification.json`)
 
-#### 2. Schema File (`resourceSpecification.schema.json`)
-JSON schema that validates the specification structure and ensures:
-- Required fields are present
-- Data types are correct
-- References to shared actions/options are valid
-- Naming conventions are followed
+The single source of truth, organised into three sections:
+
+- **`resources`** — CICS resource types; each has an `identifier`, `actions` list, and optional `additionalOptions`
+- **`actions`** — shared action definitions (e.g. `ENABLE`, `DISABLE`) that resources can reference by name
+- **`options`** — shared option definitions (e.g. `BUSY`, `CSDGROUP`) that actions can reference by name
+
+Resources can also define actions and options inline for resource-specific behaviour.
+
+#### 2. Schema (`resourceSpecification.schema.json`)
+
+Validates the specification: required fields, data types, reference validity.
 
 #### 3. Generator (`generate.ts`)
-TypeScript program that:
-- Reads and validates the specification
-- Derives properties (constants, interface names, function names)
-- Processes Handlebars templates
-- Writes generated files to the SDK package
-- Handles both direct and tests-only generation modes
+
+Reads the specification, derives additional properties, renders Handlebars templates, and writes files to the SDK and CLI packages. Key derivation examples:
+
+| Input | Derived |
+|---|---|
+| `"CICSLocalFile"` | SDK file `LocalFile.ts`, interface `ILocalFileParms`, constant `CICS_CMCI_LOCAL_FILE` |
+| action group `"enable"` | function name `enableLocalFile`, CLI handler path, test file slug |
 
 #### 4. Templates (`templates/`)
-Handlebars templates that define the structure of generated files:
-- `sdk/resource.file.hbs`: SDK resource class template
-- `sdk/resource.index.hbs`: SDK index file template
-- `sdk/utils.resourceactions.hbs`: Utility functions template
-- `sdk/utils.index.hbs`: Utility index file template
-- `tests/sdk.resource.unit.test.hbs`: Unit test template
 
-### Data Flow
+Handlebars templates; one template typically produces one file per resource or per resource+action combination. See the table under [What Does Codegen Generate?](#what-does-codegen-generate) for the current mapping.
 
-1. **Input**: `resourceSpecification.json` defines resources, actions, and options
-2. **Validation**: JSON schema validates the specification structure
-3. **Processing**: Generator reads specification and derives additional properties
-4. **Template Rendering**: Handlebars templates are populated with resource data
-5. **Output**: Generated TypeScript files are written to SDK package
+### Shared vs Inline Definitions
 
-### Derived Properties
+| Type | Where defined | When to use |
+|---|---|---|
+| Shared action | `actions` section | Same semantics across multiple resources (e.g. standard ENABLE) |
+| Inline action | Inside the resource | Resource-specific overrides (e.g. URIMap ENABLE sets `ENABLESTATUS`) |
+| Shared option | `options` section | Same option reused by multiple actions (e.g. `BUSY`) |
+| Inline option | Inside the action | One-off option for a single action |
 
-The generator automatically creates properties that don't need to be stored in the specification:
+---
 
-- **SDK Resource Type**: Constant name like `CICS_CMCI_LOCALFILE`
-- **Parameters Interface**: Interface name like `ILocalFileParms`
-- **Criteria Field**: Primary key field name in lowercase
-- **Function Names**: Action function names like `openLocalFile`
-- **File Names**: SDK file names like `LocalFile.ts`
+## Known Design Gaps
 
-This reduces specification size and eliminates manual maintenance of derived values.
+### `group.definition.hbs` hardcodes its children list
 
-### Shared Definitions
-
-Actions and options can be defined once and referenced by multiple resources:
-
-- **Shared Actions**: Common actions like ENABLE and DISABLE are defined in the `actions` section
-- **Shared Options**: Common options like BUSY are defined in the `options` section
-- **References**: Resources reference shared definitions by name
-- **Inline Definitions**: Resources can also define actions/options inline for resource-specific behavior
+The top-level group definition template hardcodes `[LocalFileDefinition, UrimapDefinition]` as the children array. When a new resource is added to the spec its CLI definition is not automatically wired in — the template must be manually updated. The children list should instead be derived from the resources in the spec that have a CLI definition for that action group.
 
 ---
 
@@ -274,105 +199,59 @@ Actions and options can be defined once and referenced by multiple resources:
 
 ### Automated Checks
 
-The CI pipeline includes a check to ensure generated files are up-to-date:
+The CI pipeline verifies that generated files are up to date:
 
 1. CI runs `npm run check-generated`
-2. Script regenerates all files in a temporary directory
-3. Compares generated files with committed files
-4. Fails if differences are detected
+2. The script regenerates all files and compares them to the committed versions
+3. The check fails if any differences are found
 
-This prevents:
-- Manual modifications to generated files
-- Forgetting to regenerate after specification changes
-- Inconsistencies between specification and code
+This prevents manual edits to generated files and ensures the specification and code stay in sync.
 
 ### Git Workflow
 
-1. **Modify Specification**: Make changes to `resourceSpecification.json`
-2. **Generate Code**: Run `npm run generate` locally
-3. **Review Changes**: Check generated files with `git diff`
-4. **Commit Together**: Commit specification and generated files in the same commit
-5. **Push**: CI automatically verifies generated files match specification
+1. Modify `resourceSpecification.json`
+2. Run `npm run generate` locally
+3. Review changes with `git diff`
+4. Commit specification and generated files together
+5. Push — CI verifies they match
 
 ### Best Practices
 
-- Always regenerate after modifying the specification
-- Never manually edit generated files (they will be overwritten)
-- Commit specification and generated files together
-- Use meaningful commit messages describing specification changes
-- Run `npm run check-generated` before pushing to catch issues early
+- Never manually edit files marked `⚠️ GENERATED FILE - DO NOT EDIT MANUALLY`
+- Always commit specification and generated files in the same commit
+- Run `npm run check-generated` before pushing
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
+### Generated files don't reflect specification changes
 
-#### Generated Files Don't Match Specification
+- Ensure `resourceSpecification.json` was saved before generating
+- Check for JSON syntax errors
+- Verify schema validation passes
 
-**Problem**: After running `npm run generate`, the generated files don't reflect your specification changes.
+### Schema validation errors
 
-**Solutions**:
-- Ensure you saved `resourceSpecification.json` before generating
-- Check for JSON syntax errors in the specification
-- Verify the schema validation passes
-- Clear any cached files and regenerate
-
-#### Schema Validation Errors
-
-**Problem**: The generator reports schema validation errors.
-
-**Solutions**:
-- Check that all required fields are present in your resource definitions
+- Check that all required fields are present
 - Verify action and option references exist in their respective sections
-- Ensure data types match the schema (strings, arrays, objects)
-- Review the error message for specific field issues
+- Review the error message for the specific field
 
-#### CI Check Fails
+### CI check fails after regenerating locally
 
-**Problem**: The `check-generated` CI check fails even though you regenerated locally.
+- Ensure generated files were committed alongside the specification
+- Verify you are using the same Node.js version as CI
+- Check for platform line-ending differences (CRLF vs LF)
+- Run `npm run check-generated` locally to reproduce the failure
 
-**Solutions**:
-- Ensure you committed the generated files along with the specification
-- Verify you're using the same Node.js version as CI
-- Run `npm run check-generated` locally to reproduce the issue
-- Check for platform-specific line ending differences (CRLF vs LF)
+### Template rendering errors
 
-#### Template Rendering Errors
+- Check that all template variables are defined in the spec
+- Verify Handlebars template syntax
+- Review generator code for the relevant property derivation logic
 
-**Problem**: Handlebars template errors during generation.
+### Expected file not generated
 
-**Solutions**:
-- Check that all template variables are defined in the specification
-- Verify template syntax is correct
-- Ensure derived properties are being generated correctly
-- Review the generator code for property derivation logic
-
-#### Missing Generated Files
-
-**Problem**: Some expected files are not generated.
-
-**Solutions**:
-- Verify the resource is properly defined in the specification
-- Check that the resource has at least one action
-- Ensure templates exist for the file types you expect
+- Verify the resource is defined in the specification with at least one action
+- Check that the template for the expected file type exists
 - Review generator output for error messages
-
-#### Incorrect Action Order
-
-**Problem**: Actions appear in the wrong order in generated files.
-
-**Solutions**:
-- The generator sorts actions with CLOSE first, then alphabetically
-- This is intentional for consistency
-- If you need a different order, modify the generator's sorting logic
-
-### Getting Help
-
-If you encounter issues not covered here:
-
-1. Check the specification schema for validation rules
-2. Review the generator code for processing logic
-3. Examine template files for expected data structure
-4. Run the generator with verbose logging if available
-5. Consult the team or create an issue with details about the problem
