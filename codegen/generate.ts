@@ -437,13 +437,13 @@ export class ResourceGenerator {
     for (const [resourceName, specResource] of Object.entries(this.spec.resources)) {
       // Find the corresponding derived resource for SDK-derived properties
       const resource = derivedResources.find(r => r.name === resourceName)!;
-      if (!resource) continue;
+      if (!resource) { continue; }
 
       const rid = specResource.identifier;
 
       // Skip resources that have no CLI metadata — they are SDK-only for now.
       // A resource opts into CLI generation by setting cliName or useSharedHandler.
-      if (!rid.cliName && !rid.useSharedHandler) continue;
+      if (!rid.cliName && !rid.useSharedHandler) { continue; }
 
       const isShared = !!rid.useSharedHandler;
       const cliPositionalName = rid.cliPositionalName ?? this.camelCase(rid.primaryKey);
@@ -509,12 +509,12 @@ export class ResourceGenerator {
         for (const rawOpt of rawOptions) {
           let optDef: OptionDefinition;
           if (typeof rawOpt === "string") {
-            if (!this.spec.options?.[rawOpt]) continue;
+            if (!this.spec.options?.[rawOpt]) { continue; }
             optDef = this.spec.options[rawOpt];
           } else {
             optDef = rawOpt;
           }
-          if (optDef.isPositional) continue; // handled separately as extra positionals
+          if (optDef.isPositional) { continue; } // handled separately as extra positionals
           const cliOptName = optDef.cliName ?? this.toKebabCase(optDef.name);
           const cliOptAliases = optDef.cliAliases ?? [];
           actionOptions.push({
@@ -534,7 +534,7 @@ export class ResourceGenerator {
         // Resolve extra positionals
         const extraPositionals: CLIPositional[] = [];
         for (const posRef of (actionDef.extraPositionals ?? [])) {
-          if (!this.spec.options?.[posRef]) continue;
+          if (!this.spec.options?.[posRef]) { continue; }
           const posDef = this.spec.options[posRef];
           extraPositionals.push({
             name: posDef.name,
@@ -563,7 +563,8 @@ export class ResourceGenerator {
           cliPositionalName.includes("program") ? "PGM123" :
           cliPositionalName.includes("file") ? "TESTFILE" :
           "MYRESOURCE";
-        const hasBusy = rawOptions.includes("BUSY") || (typeof rawOptions[0] !== "string" && (rawOptions as OptionDefinition[]).some(o => o.name === "busy"));
+        const hasBusy = rawOptions.includes("BUSY") ||
+          (typeof rawOptions[0] !== "string" && (rawOptions as OptionDefinition[]).some(o => o.name === "busy"));
         const exampleOptions = `${mainArg} --region-name MYREGION`;
 
         const entry: CLIResourceEntry = {
@@ -594,7 +595,7 @@ export class ResourceGenerator {
           actionGroup: group,
         };
 
-        if (!groupMap.has(group)) groupMap.set(group, []);
+        if (!groupMap.has(group)) { groupMap.set(group, []); }
         groupMap.get(group)!.push(entry);
       }
     }
@@ -648,15 +649,20 @@ export class ResourceGenerator {
         const resTestDir = path.join(cliTestDir, groupDirName, entry.resourceDir);
         this.ensureDir(resTestDir);
 
-        if (entry.useSharedHandler) {
-          // Pattern A: only render the definition file; handler already generated
-          this.generateFromTemplate("cli/localfile.definition.hbs", path.join(resDir, `${entry.resourceClass}.definition.ts`), {
-            ...entry,
-            actionGroup: group,
-          });
-          console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
+        // Compute handler path — Pattern A points at the shared handler two dirs up;
+        // Pattern B points at the co-located handler file in the same directory.
+        const handlerPath = entry.useSharedHandler
+          ? "/../../common/LocalFileHandler"
+          : `/${entry.resourceClass}.handler`;
 
-          // Handler unit test (shared handler test)
+        // Render definition file (single template covers both patterns)
+        this.generateFromTemplate("cli/resource.definition.hbs",
+          path.join(resDir, `${entry.resourceClass}.definition.ts`),
+          { ...entry, handlerPath });
+        console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
+
+        if (entry.useSharedHandler) {
+          // Pattern A: handler already generated above; only emit the handler unit test
           const localFileDerivedAction = localFileResource?.actions.find(a => a.identifier.group === group);
           if (localFileDerivedAction) {
             this.generateFromTemplate("tests/cli.localfile.handler.unit.test.hbs",
@@ -670,11 +676,7 @@ export class ResourceGenerator {
             console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
           }
         } else {
-          // Pattern B: render both definition and handler
-          this.generateFromTemplate("cli/resource.definition.hbs",
-            path.join(resDir, `${entry.resourceClass}.definition.ts`), entry);
-          console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
-
+          // Pattern B: also render the co-located handler file
           this.generateFromTemplate("cli/resource.handler.hbs",
             path.join(resDir, `${entry.resourceClass}.handler.ts`), entry);
           console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.ts`);

@@ -89,8 +89,9 @@ cics-for-zowe-client/
 │   │   │   ├── utils.index.hbs
 │   │   │   └── constants.hbs
 │   │   ├── cli/
-│   │   │   ├── localfile.definition.hbs   # ⚠ Resource-specific (see Design Gaps)
-│   │   │   ├── localfile.handler.hbs      # ⚠ Resource-specific (see Design Gaps)
+│   │   │   ├── resource.definition.hbs    # Generic — covers Pattern A and Pattern B
+│   │   │   ├── resource.handler.hbs       # Pattern B only (own handler per resource)
+│   │   │   ├── localfile.handler.hbs      # Pattern A only (shared LocalFile handler)
 │   │   │   ├── group.definition.hbs       # ⚠ Hardcoded children (see Design Gaps)
 │   │   │   ├── strings.en.snippet.hbs
 │   │   │   └── en.ts.hbs
@@ -242,14 +243,18 @@ Each template is Handlebars (`.hbs`). The generator compiles a template once and
 | `sdk/utils.index.hbs` | `packages/sdk/src/utils/index.ts` |
 | `sdk/constants.hbs` | `packages/sdk/src/constants.ts` |
 
-**CLI templates** — currently resource-specific (see [Known Design Gaps](#known-design-gaps)):
+**CLI templates:**
 
-| Template | Output |
-|---|---|
-| `cli/localfile.handler.hbs` | `packages/cli/src/common/LocalFileHandler.ts` |
-| `cli/localfile.definition.hbs` | `packages/cli/src/<group>/localFile/LocalFile.definition.ts` |
-| `cli/group.definition.hbs` | `packages/cli/src/<group>/<Group>.definition.ts` |
-| `cli/en.ts.hbs` | `packages/cli/src/-strings-/en.ts` |
+| Template | Pattern | Output |
+|---|---|---|
+| `cli/resource.definition.hbs` | A + B | `packages/cli/src/<group>/<resourceDir>/<Resource>.definition.ts` |
+| `cli/resource.handler.hbs` | B only | `packages/cli/src/<group>/<resourceDir>/<Resource>.handler.ts` |
+| `cli/localfile.handler.hbs` | A only | `packages/cli/src/common/LocalFileHandler.ts` |
+| `cli/group.definition.hbs` | — | `packages/cli/src/<group>/<Group>.definition.ts` |
+| `cli/en.ts.hbs` | — | `packages/cli/src/-strings-/en.ts` |
+
+Pattern A = `useSharedHandler: true` (CICSLocalFile) — definition points at the shared handler two dirs up; no per-action handler file is generated.
+Pattern B = all other resources — definition and handler are co-located in the same subdirectory.
 
 **Test templates** — rendered once per resource×action combination:
 
@@ -524,32 +529,11 @@ Generated SDK files:
 
 > These are current limitations of the CLI generation layer. They are documented here as the authoritative record of what needs to change.
 
-### 1. CLI templates are resource-specific, not generic
+### 1. Only `enable`, `disable`, `open`, and `close` action groups are owned by codegen
 
-`cli/localfile.definition.hbs` and `cli/localfile.handler.hbs` have `LocalFile` hardcoded throughout — the export name, handler path, strings key path, positional argument name, and example options. They cannot be reused to generate CLI files for `CICSProgram`, `CICSURIMap`, or any other resource.
+All four action groups (enable, disable, open, close) are now generated from the spec via `groupMap`. Adding a new action group requires adding it to `groupMeta` in the spec and ensuring the resources that participate in it declare the action.
 
-**Target design**: rename to `cli/resource.definition.hbs` and `cli/resource.handler.hbs`. Replace all hardcoded `LocalFile`/`localFile`/`LOCALFILE` references with template variables sourced from `DerivedResource` (e.g. `{{sdkFileName}}`, `{{parmsInterface}}`, `{{identifier.primaryKey}}`). This mirrors how `sdk/resource.file.hbs` already works.
-
-### 2. Only `enable` and `disable` action groups are owned by codegen
-
-`open` and `close` are manually maintained in `packages/cli/src/open/` and `packages/cli/src/close/` and are excluded from the generator via a hardcoded allowlist in `generateCLI()`:
-
-```ts
-const GROUPS_OWNED_BY_CODEGEN = new Set(["enable", "disable"]);
-```
-
-Additionally, `generateCLI()` opens with:
-
-```ts
-const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
-if (!localFileResource) { return; }
-```
-
-This makes the entire CLI generation unconditionally dependent on a single specific resource name.
-
-**Target design**: once templates are generic (gap 1), remove the allowlist and the `CICSLocalFile` guard. Iterate over all resources and all action groups in the spec, rendering the generic templates for each.
-
-### 3. `group.definition.hbs` hardcodes its children list
+### 2. `group.definition.hbs` hardcodes its children list
 
 The template contains:
 

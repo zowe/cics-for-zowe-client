@@ -29,18 +29,18 @@ The generator currently owns code in two packages:
 
 ### CLI Package (`packages/cli`)
 
-The CLI codegen currently owns only a subset of CLI files. See [Current Limitations](#current-limitations) for the full picture.
-
 | Generated File | Template |
 |---|---|
-| `src/common/LocalFileHandler.ts` | `cli/localfile.handler.hbs` |
-| `src/enable/Enable.definition.ts` | `cli/group.definition.hbs` |
-| `src/disable/Disable.definition.ts` | `cli/group.definition.hbs` |
-| `src/enable/localFile/LocalFile.definition.ts` | `cli/localfile.definition.hbs` |
-| `src/disable/localFile/LocalFile.definition.ts` | `cli/localfile.definition.hbs` |
+| `src/common/LocalFileHandler.ts` | `cli/localfile.handler.hbs` (Pattern A only) |
+| `src/<group>/<Group>.definition.ts` | `cli/group.definition.hbs` |
+| `src/<group>/<resourceDir>/<Resource>.definition.ts` | `cli/resource.definition.hbs` |
+| `src/<group>/<resourceDir>/<Resource>.handler.ts` | `cli/resource.handler.hbs` (Pattern B only) |
 | `src/-strings-/en.ts` | `cli/en.ts.hbs` |
-| `__tests__/__unit__/enable/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` |
-| `__tests__/__unit__/disable/localFile/LocalFile.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` |
+| `__tests__/__unit__/<group>/localFile/<Resource>.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` (Pattern A only) |
+| `__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` |
+
+Pattern A (`useSharedHandler: true`) — definition points at the shared `LocalFileHandler`; no per-resource handler file is generated.
+Pattern B — definition and handler are co-located in the same subdirectory.
 
 ---
 
@@ -187,29 +187,11 @@ Handlebars templates; one template typically produces one file per resource or p
 
 ---
 
-## Current Limitations
-
-> **Note**: The CLI codegen layer is a work in progress. The following limitations are known and planned for resolution.
-
-### Resource-specific CLI templates
-
-The CLI templates `localfile.definition.hbs` and `localfile.handler.hbs` have `LocalFile` hardcoded throughout (export names, handler path, strings key, positional argument name). They are not generic templates — they cannot be reused to generate definitions for `CICSProgram`, `CICSURIMap`, or any other resource.
-
-The intended design is a single generic `resource.definition.hbs` (and `resource.handler.hbs`) template that is rendered once per resource, with the resource name, aliases, primary key, and SDK function names sourced from the spec — exactly how `sdk/resource.file.hbs` already works for the SDK.
-
-### Only two of four action groups are owned by codegen
-
-`enable` and `disable` CLI files are generated. `open` and `close` are manually maintained in `packages/cli/src/open/` and `packages/cli/src/close/` and are excluded from the generator via a hardcoded allowlist:
-
-```ts
-const GROUPS_OWNED_BY_CODEGEN = new Set(["enable", "disable"]);
-```
-
-All four action groups should be owned by codegen once the templates are made generic.
+## Known Design Gaps
 
 ### `group.definition.hbs` hardcodes its children list
 
-The top-level group definition template hardcodes `[LocalFileDefinition, UrimapDefinition]` as the children array. When a new resource is added to the spec, or an existing one's CLI definition is moved under codegen, this template must be manually updated. The children list should instead be derived from the resources in the spec that have a CLI definition for that action group.
+The top-level group definition template hardcodes `[LocalFileDefinition, UrimapDefinition]` as the children array. When a new resource is added to the spec its CLI definition is not automatically wired in — the template must be manually updated. The children list should instead be derived from the resources in the spec that have a CLI definition for that action group.
 
 ---
 
