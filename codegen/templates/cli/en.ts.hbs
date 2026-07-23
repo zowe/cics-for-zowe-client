@@ -16,7 +16,7 @@
 // Any manual changes will be overwritten when the generator runs.
 // ============================================================================
 
-// ******* ATTENTION:  LEASE KEEP IN ALPHABETICAL ORDER
+// ******* ATTENTION: PLEASE KEEP IN ALPHABETICAL ORDER
 
 export default {
   ADDTOLIST: {
@@ -35,9 +35,35 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The CSD Group '%s' was successfully added to '%s'.",
+          PROGRESS: "Adding CSD Group to CSD List on CICS",
         },
         EXAMPLES: {
           EX1: "Add the CSD Group MYGRP to the CSD List MYLIST in the region named MYREG",
+        },
+      },
+    },
+  },
+  CLOSE: {
+    SUMMARY: "Close resources in CICS",
+    DESCRIPTION: "Close resources (for example, local files) in CICS through IBM CMCI.",
+    RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Close a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to close. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to close the local file",
+          CICSPLEX: "The name of the CICSPlex in which to close the local file",
+          BUSY: "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was closed successfully.",
+          PROGRESS: "Closing local file from CICS",
+        },
+        EXAMPLES: {
+          EX1: "Close a local file named TESTFILE from the region named MYREGION",
+          EX2: "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
         },
       },
     },
@@ -46,14 +72,30 @@ export default {
     SUMMARY: "Define new resources to CICS",
     DESCRIPTION: "Define new resources (for example, programs) to CICS through IBM CMCI.",
     RESOURCES: {
+      BUNDLE: {
+        DESCRIPTION: "Define a new bundle to CICS.",
+        POSITIONALS: {
+          BUNDLENAME: "The name of the new bundle to define. The maximum length of the bundle name is eight characters.",
+          BUNDLEDIR: "The fully qualified name of the root directory for the bundle on z/OS UNIX. The first character must be / and the end character /. The maximum length is 255 characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new bundle that you want to define. The maximum length of the group name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name to which to define the new bundle",
+          CICSPLEX: "The name of the CICSplex to which to define the new bundle",
+        },
+        MESSAGES: {
+          SUCCESS: "The bundle '%s' was defined successfully.",
+          PROGRESS: "Defining bundle to CICS",
+        },
+        EXAMPLES: {
+          EX1: "Define a bundle named BND123 to the region name MYREGION in the CSD group MYGRP",
+        },
+      },
       PROGRAM: {
         DESCRIPTION: "Define a new program to CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the new program to define. The maximum length of the program name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the new program that you want to define." +
-            " The maximum length of the group " +
-            "name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new program that you want to define. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new program",
@@ -61,6 +103,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was defined successfully.",
+          PROGRESS: "Defining program to CICS",
         },
         EXAMPLES: {
           EX1: "Define a program named PGM123 to the region name MYREGION in the CSD group MYGRP",
@@ -71,9 +114,7 @@ export default {
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the new transaction to define. The maximum length of the transaction name is four characters.",
           PROGRAMNAME: "The name of the program that the transaction uses. The maximum length of the program name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the new transaction that you want to define." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new transaction that you want to define. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new transaction",
@@ -81,9 +122,10 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was defined successfully.",
+          PROGRESS: "Defining transaction to CICS",
         },
         EXAMPLES: {
-          EX1: "Define a transaction named TRN1 for the program named PGM123 to the region named MYREGION " + "in the CSD group MYGRP",
+          EX1: "Define a transaction named TRN1 for the program named PGM123 to the region named MYREGION in the CSD group MYGRP",
         },
       },
       URIMAP: {
@@ -142,52 +184,23 @@ export default {
         DESCRIPTION: "Define a new web service to CICS.",
         POSITIONALS: {
           WEBSERVICENAME: "The name of the WEBSERVICE to create. The maximum length of the web service name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the new web service that you want to define." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the new web service that you want to define. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
-          PIPELINENAME:
-            "The name of the PIPELINE resource definition for the web service." + " The maximum length of the pipeline name is eight characters",
+          PIPELINENAME: "The name of the PIPELINE resource definition for the web service. The maximum length of the pipeline name is eight characters",
           WSBIND: "The file name of the web service binding file on HFS.",
           DESCRIPTION: "Description of the web service resource being defined.",
-          VALIDATION:
-            "Specifies whether full validation of SOAP messages against the corresponding schema in the web service " +
-            "description should be performed at run time.",
+          VALIDATION: "Specifies whether full validation of SOAP messages against the corresponding schema in the web service description should be performed at run time.",
           WSDLFILE: "The file name of the web service description (WSDL) file on HFS.",
           REGIONNAME: "The CICS region name to which to define the new web service.",
           CICSPLEX: "The name of the CICSPlex to which to define the new web service.",
         },
         MESSAGES: {
           SUCCESS: "The WEBSERVICE '%s' was defined successfully.",
+          PROGRESS: "Defining web service to CICS",
         },
         EXAMPLES: {
-          EX1:
-            "Define a webservice named WEBSVCA for the pipeline named PIPE123 to the region named MYREGION " +
-            "in the CSD group MYGRP where the binding file is /u/exampleapp/wsbind/example.log",
-        },
-      },
-      BUNDLE: {
-        DESCRIPTION: "Define a new bundle to CICS.",
-        POSITIONALS: {
-          BUNDLENAME: "The name of the new bundle to define. The maximum length of the bundle name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the new bundle that you want to define." +
-            " The maximum length of the group " +
-            "name is eight characters.",
-          BUNDLEDIR:
-            "The fully qualified name of the root directory for the bundle on z/OS UNIX. " +
-            "The first character must be / and the end character /. The maximum length is 255 characters.",
-        },
-        OPTIONS: {
-          REGIONNAME: "The CICS region name to which to define the new bundle",
-          CICSPLEX: "The name of the CICSplex to which to define the new bundle",
-        },
-        MESSAGES: {
-          SUCCESS: "The bundle '%s' was defined successfully.",
-        },
-        EXAMPLES: {
-          EX1: "Define a bundle named BND123 to the region name MYREGION in the CSD group MYGRP",
+          EX1: "Define a webservice named WEBSVCA for the pipeline named PIPE123 to the region named MYREGION in the CSD group MYGRP where the binding file is /u/exampleapp/wsbind/example.log",
         },
       },
     },
@@ -200,9 +213,7 @@ export default {
         DESCRIPTION: "Delete a program from CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the program to delete. The maximum length of the program name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the program that you want to delete." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to delete. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the program",
@@ -210,6 +221,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was deleted successfully.",
+          PROGRESS: "Deleting program from CICS",
         },
         EXAMPLES: {
           EX1: "Delete a program named PGM123 from the region named MYREGION",
@@ -219,10 +231,7 @@ export default {
         DESCRIPTION: "Delete a transaction from CICS.",
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the transaction to delete. The maximum length of the transaction name is four characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the transaction that you want to delete." +
-            " The maximum length of the group " +
-            "name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to delete. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the transaction",
@@ -230,6 +239,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was deleted successfully.",
+          PROGRESS: "Deleting transaction from CICS",
         },
         EXAMPLES: {
           EX1: "Delete a transaction named TRN1 from the region named MYREGION",
@@ -239,15 +249,14 @@ export default {
         DESCRIPTION: "Delete a urimap from CICS.",
         POSITIONALS: {
           URIMAPNAME: "The name of the urimap to delete. The maximum length of the urimap name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the urimap that you want to delete." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to delete. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was deleted successfully.",
+          PROGRESS: "Deleting URIMAP from CICS",
         },
         EXAMPLES: {
           EX1: "Delete a urimap named URIMAPA from the region named MYREGION belonging to the csdgroup MYGRP",
@@ -257,66 +266,17 @@ export default {
         DESCRIPTION: "Delete a web service from CICS.",
         POSITIONALS: {
           WEBSERVICENAME: "The name of the web service to delete. The maximum length of the web service name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the web service that you want to delete." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the web service that you want to delete. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the web service",
         },
         MESSAGES: {
           SUCCESS: "The web service '%s' was deleted successfully.",
+          PROGRESS: "Deleting web service from CICS",
         },
         EXAMPLES: {
           EX1: "Delete a web service named WEBSVCA from the region named MYREGION belonging to the csdgroup MYGRP",
-        },
-      },
-    },
-  },
-  CLOSE: {
-    SUMMARY: "Close resources in CICS",
-    DESCRIPTION: "Close resources (for example, local files) in CICS through IBM CMCI.",
-    RESOURCES: {
-      LOCALFILE: {
-        DESCRIPTION: "Close a local file in CICS.",
-        POSITIONALS: {
-          FILENAME: "The name of the local file to close. The maximum length of the file name is eight characters.",
-        },
-        OPTIONS: {
-          REGIONNAME: "The CICS region name in which to close the local file",
-          CICSPLEX: "The name of the CICSPlex in which to close the local file",
-          BUSY: "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
-        },
-        MESSAGES: {
-          SUCCESS: "The local file '%s' was closed successfully.",
-          PROGRESS: "Closing local file from CICS",
-        },
-        EXAMPLES: {
-          EX1: "Close a local file named TESTFILE from the region named MYREGION",
-          EX2: "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
-        },
-      },
-    },
-  },
-  OPEN: {
-    SUMMARY: "Open resources in CICS",
-    DESCRIPTION: "Open resources (for example, local files) in CICS through IBM CMCI.",
-    RESOURCES: {
-      LOCALFILE: {
-        DESCRIPTION: "Open a local file in CICS.",
-        POSITIONALS: {
-          FILENAME: "The name of the local file to open. The maximum length of the file name is eight characters.",
-        },
-        OPTIONS: {
-          REGIONNAME: "The CICS region name in which to open the local file",
-          CICSPLEX: "The name of the CICSPlex in which to open the local file",
-        },
-        MESSAGES: {
-          SUCCESS: "The local file '%s' was opened successfully.",
-          PROGRESS: "Opening local file in CICS",
-        },
-        EXAMPLES: {
-          EX1: "Open a local file named TESTFILE in the region named MYREGION",
         },
       },
     },
@@ -354,6 +314,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was disabled successfully.",
+          PROGRESS: "Disabling URIMAP in CICS",
         },
         EXAMPLES: {
           EX1: "Disable a urimap named URIMAPA from the region named MYREGION",
@@ -376,6 +337,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was discarded successfully.",
+          PROGRESS: "Discarding program from CICS",
         },
         EXAMPLES: {
           EX1: "Discard a program named PGM123 from the region named MYREGION",
@@ -392,6 +354,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was discarded successfully.",
+          PROGRESS: "Discarding transaction from CICS",
         },
         EXAMPLES: {
           EX1: "Discard a transaction named TRN1 from the region named MYREGION",
@@ -404,9 +367,11 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to discard the urimap",
+          CICSPLEX: "The name of the CICSPlex from which to discard the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was discarded successfully.",
+          PROGRESS: "Discarding URIMAP from CICS",
         },
         EXAMPLES: {
           EX1: "Discard a urimap named URIMAPA from the region named MYREGION",
@@ -445,6 +410,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was enabled successfully.",
+          PROGRESS: "Enabling URIMAP in CICS",
         },
         EXAMPLES: {
           EX1: "Enable a urimap named URIMAPA from the region named MYREGION",
@@ -469,6 +435,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The resource(s) for '%s' were retrieved successfully.",
+          PROGRESS: "Getting resources from CICS",
         },
         EXAMPLES: {
           EX1: "Get program resources from the region named MYREGION",
@@ -492,9 +459,7 @@ export default {
         DESCRIPTION: "Install a program to CICS.",
         POSITIONALS: {
           PROGRAMNAME: "The name of the program to install. The maximum length of the program name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the program that you want to install." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the program that you want to install. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the program",
@@ -502,6 +467,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The program named '%s' was installed successfully.",
+          PROGRESS: "Installing program to CICS",
         },
         EXAMPLES: {
           EX1: "Install a program named PGM123 to the region named MYREGION in the CSD group MYGRP",
@@ -511,9 +477,7 @@ export default {
         DESCRIPTION: "Install a transaction to CICS.",
         POSITIONALS: {
           TRANSACTIONNAME: "The name of the transaction to install. The maximum length of the transaction name is four characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the transaction that you want to install." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the transaction that you want to install. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the transaction",
@@ -521,27 +485,50 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was installed successfully.",
+          PROGRESS: "Installing transaction to CICS",
         },
         EXAMPLES: {
-          EX1: "Install a transaction named TRN1 to the region named MYREGION " + "in the CSD group MYGRP",
+          EX1: "Install a transaction named TRN1 to the region named MYREGION in the CSD group MYGRP",
         },
       },
       URIMAP: {
         DESCRIPTION: "Install a urimap to CICS.",
         POSITIONALS: {
           URIMAPNAME: "The name of the urimap to install. The maximum length of the urimap name is eight characters.",
-          CSDGROUP:
-            "The CICS system definition (CSD) Group for the urimap that you want to install." +
-            " The maximum length of the group name is eight characters.",
+          CSDGROUP: "The CICS system definition (CSD) Group for the urimap that you want to install. The maximum length of the group name is eight characters.",
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was installed successfully.",
+          PROGRESS: "Installing URIMAP from CICS",
         },
         EXAMPLES: {
           EX1: "Install a urimap named URIMAPA to the region named MYREGION belonging to the csdgroup MYGRP",
+        },
+      },
+    },
+  },
+  OPEN: {
+    SUMMARY: "Open resources in CICS",
+    DESCRIPTION: "Open resources (for example, local files) in CICS through IBM CMCI.",
+    RESOURCES: {
+      LOCALFILE: {
+        DESCRIPTION: "Open a local file in CICS.",
+        POSITIONALS: {
+          FILENAME: "The name of the local file to open. The maximum length of the file name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to open the local file",
+          CICSPLEX: "The name of the CICSPlex in which to open the local file",
+        },
+        MESSAGES: {
+          SUCCESS: "The local file '%s' was opened successfully.",
+          PROGRESS: "Opening local file in CICS",
+        },
+        EXAMPLES: {
+          EX1: "Open a local file named TESTFILE in the region named MYREGION",
         },
       },
     },
@@ -561,9 +548,12 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was refreshed successfully.",
+          PROGRESS: "Refreshing program to CICS",
+          DEFINE_EXAMPLE_ONE: "Refresh a program named PGM123 from the region named MYREGION",
         },
         EXAMPLES: {
           DEFINE_EXAMPLE_ONE: "Refresh a program named PGM123 from the region named MYREGION",
+          EX1: "Refresh a program named PGM123 from the region named MYREGION",
         },
       },
     },
@@ -584,6 +574,7 @@ export default {
         },
         MESSAGES: {
           SUCCESS: "The CSD Group '%s' was successfully removed from '%s'.",
+          PROGRESS: "Removing CSD Group from CSD List on CICS",
         },
         EXAMPLES: {
           EX1: "Remove the CSD Group MYGRP from the CSD List MYLIST in the region named MYREG",

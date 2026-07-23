@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`cics disable local file should not have changed 1`] = `
+exports[`cics disable should not have changed 1`] = `
 {
   "aliases": [
     "dis",

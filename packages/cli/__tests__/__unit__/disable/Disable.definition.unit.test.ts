@@ -18,7 +18,7 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 
-describe("cics disable local file", () => {
+describe("cics disable", () => {
   const RESOURCES_COUNT = 2;
 
   it("should not have changed", () => {

@@ -1,32 +1,34 @@
-# CICS Code Generation System - Design Document
+# CICS Code Generation System — Design Document
 
 ## Table of Contents
 1. [Overview](#overview)
 2. [System Architecture](#system-architecture)
 3. [Component Design](#component-design)
 4. [Data Flow](#data-flow)
-5. [UML Diagrams](#uml-diagrams)
-6. [Flowcharts](#flowcharts)
-7. [Extension Points](#extension-points)
-8. [Future Enhancements](#future-enhancements)
+5. [Diagrams](#diagrams)
+6. [Extension Points](#extension-points)
+7. [Known Design Gaps](#known-design-gaps)
 
 ---
 
 ## Overview
 
-The CICS Code Generation System is a template-based code generator that produces SDK and CLI code for CICS resources from a single JSON specification. It follows a resource-focused architecture where resources are the primary organizing principle.
+The CICS Code Generation System is a template-based code generator that produces SDK and CLI code for CICS resources from a single JSON specification. Resources are the primary organising unit: each resource declares the actions it supports, and the generator derives all naming, constants, and file structure from that declaration.
 
 ### Key Features
 - **Single Source of Truth**: All resource definitions in `resourceSpecification.json`
 - **Template-Based Generation**: Handlebars templates for consistent code structure
-- **Multi-Package Support**: Generates code for SDK and CLI packages
+- **Multi-Package Support**: Generates code for the SDK and CLI packages
 - **Automated Testing**: Generates unit tests alongside implementation code
-- **CI Integration**: Automated validation of generated code
+- **CI Integration**: Automated validation that generated files match the specification
 
 ### Supported Packages
-1. **SDK Package** (`packages/sdk`): Core TypeScript SDK for CICS operations
-2. **CLI Package** (`packages/cli`): Command-line interface (future)
-3. **VSCode Extension** (`packages/vsce`): VS Code extension (future)
+
+| Package | Status |
+|---|---|
+| `packages/sdk` | Fully generated |
+| `packages/cli` | Partially generated — see [Known Design Gaps](#known-design-gaps) |
+| `packages/vsce` | Not yet in scope |
 
 ---
 
@@ -35,77 +37,108 @@ The CICS Code Generation System is a template-based code generator that produces
 ### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Code Generation System                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────────┐         ┌──────────────────┐             │
-│  │   Specification  │────────▶│  JSON Schema     │             │
-│  │   (JSON)         │         │  Validator       │             │
-│  └──────────────────┘         └──────────────────┘             │
-│           │                             │                        │
-│           │                             ▼                        │
-│           │                    ┌─────────────────┐              │
-│           └───────────────────▶│   Generator     │              │
-│                                │   (TypeScript)  │              │
-│                                └─────────────────┘              │
-│                                         │                        │
-│                    ┌────────────────────┼────────────────────┐  │
-│                    ▼                    ▼                    ▼  │
-│           ┌─────────────────┐  ┌─────────────────┐  ┌──────────┴──┐
-│           │  SDK Templates  │  │  CLI Templates  │  │ Test Templates│
-│           │  (Handlebars)   │  │  (Handlebars)   │  │ (Handlebars)  │
-│           └─────────────────┘  └─────────────────┘  └──────────────┘
-│                    │                    │                    │
-│                    └────────────────────┼────────────────────┘
-│                                         ▼
-│                              ┌─────────────────────┐
-│                              │  Generated Code     │
-│                              │  - SDK Resources    │
-│                              │  - CLI Handlers     │
-│                              │  - Unit Tests       │
-│                              └─────────────────────┘
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                      Code Generation System                       │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│  ┌──────────────────┐          ┌──────────────────┐              │
+│  │  Specification   │─────────▶│  JSON Schema     │              │
+│  │  (JSON)          │          │  Validator       │              │
+│  └──────────────────┘          └──────────────────┘              │
+│           │                              │                         │
+│           │                              ▼                         │
+│           │                     ┌────────────────┐                │
+│           └────────────────────▶│   Generator    │                │
+│                                 │  (TypeScript)  │                │
+│                                 └────────────────┘                │
+│                                          │                         │
+│                    ┌─────────────────────┼────────────────────┐   │
+│                    ▼                     ▼                     ▼   │
+│          ┌─────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│          │  SDK Templates  │  │  CLI Templates   │  │ Test Templates   │
+│          │  (Handlebars)   │  │  (Handlebars)    │  │ (Handlebars)     │
+│          └─────────────────┘  └──────────────────┘  └──────────────────┘
+│                    │                     │                     │    │
+│                    └─────────────────────┼─────────────────────┘    │
+│                                          ▼                           │
+│                               ┌─────────────────────┐               │
+│                               │   Generated Code    │               │
+│                               │   - SDK resources   │               │
+│                               │   - CLI handlers    │               │
+│                               │   - Unit tests      │               │
+│                               └─────────────────────┘               │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-### Package Structure
+### Repository Structure
 
 ```
 cics-for-zowe-client/
-├── codegen/                          # Code generation system
-│   ├── resourceSpecification.json    # Single source of truth
-│   ├── resourceSpecification.schema.json
-│   ├── generate.ts                   # Main generator
-│   ├── check-generated.ts            # CI validation
-│   ├── templates/                    # Handlebars templates
+├── codegen/
+│   ├── resourceSpecification.json        # Single source of truth
+│   ├── resourceSpecification.schema.json # Validates the spec
+│   ├── generate.ts                        # Main generator
+│   ├── check-generated.ts                 # CI validation script
+│   ├── templates/
 │   │   ├── sdk/
-│   │   │   ├── resource.file.hbs
+│   │   │   ├── resource.file.hbs          # One file per resource
 │   │   │   ├── resource.index.hbs
+│   │   │   ├── parms.interface.hbs        # One interface per resource
+│   │   │   ├── doc.index.hbs
 │   │   │   ├── utils.resourceactions.hbs
-│   │   │   └── utils.index.hbs
-│   │   ├── cli/                      # Future CLI templates
+│   │   │   ├── utils.index.hbs
+│   │   │   └── constants.hbs
+│   │   ├── cli/
+│   │   │   ├── localfile.definition.hbs   # ⚠ Resource-specific (see Design Gaps)
+│   │   │   ├── localfile.handler.hbs      # ⚠ Resource-specific (see Design Gaps)
+│   │   │   ├── group.definition.hbs       # ⚠ Hardcoded children (see Design Gaps)
+│   │   │   ├── strings.en.snippet.hbs
+│   │   │   └── en.ts.hbs
 │   │   └── tests/
-│   │       └── sdk.resource.unit.test.hbs
+│   │       ├── sdk.resource.unit.test.hbs
+│   │       ├── cli.localfile.handler.unit.test.hbs
+│   │       └── cli.group.definition.unit.test.hbs
 │   └── docs/
-│       ├── codegen.md                # User documentation
-│       └── DESIGN.md                 # This document
+│       ├── codegen.md   # User guide
+│       └── DESIGN.md    # This document
 │
-├── packages/
-│   ├── sdk/                          # Generated SDK code
-│   │   ├── src/
-│   │   │   ├── resources/            # Generated resource files
-│   │   │   │   ├── LocalFile.ts
-│   │   │   │   └── index.ts
-│   │   │   └── utils/
-│   │   │       ├── ResourceActions.ts
-│   │   │       └── index.ts
-│   │   └── __tests__/__unit__/       # Generated tests
-│   │       ├── close/
-│   │       ├── open/
-│   │       └── ...
-│   │
-│   ├── cli/                          # Future CLI package
-│   └── vsce/                         # Future VSCode extension
+└── packages/
+    ├── sdk/
+    │   ├── src/
+    │   │   ├── resources/              # ✅ Fully generated
+    │   │   │   ├── LocalFile.ts
+    │   │   │   ├── Program.ts
+    │   │   │   ├── URIMap.ts
+    │   │   │   ├── Library.ts
+    │   │   │   └── index.ts
+    │   │   ├── doc/                    # ✅ Fully generated
+    │   │   │   ├── ILocalFileParms.ts
+    │   │   │   └── ...
+    │   │   ├── utils/                  # ✅ Fully generated
+    │   │   │   ├── ResourceActions.ts
+    │   │   │   └── index.ts
+    │   │   └── constants.ts            # ✅ Fully generated
+    │   └── __tests__/__unit__/         # ✅ Fully generated
+    │
+    └── cli/
+        ├── src/
+        │   ├── common/
+        │   │   └── LocalFileHandler.ts      # ✅ Generated
+        │   ├── enable/
+        │   │   ├── Enable.definition.ts     # ✅ Generated
+        │   │   ├── localFile/
+        │   │   │   └── LocalFile.definition.ts  # ✅ Generated
+        │   │   └── urimap/                  # ✗ Not generated
+        │   ├── disable/
+        │   │   ├── Disable.definition.ts    # ✅ Generated
+        │   │   ├── localFile/
+        │   │   │   └── LocalFile.definition.ts  # ✅ Generated
+        │   │   └── urimap/                  # ✗ Not generated
+        │   ├── open/                        # ✗ Not generated (manually maintained)
+        │   └── close/                       # ✗ Not generated (manually maintained)
+        └── __tests__/__unit__/
+            ├── enable/                      # ✅ Generated
+            └── disable/                     # ✅ Generated
 ```
 
 ---
@@ -114,7 +147,7 @@ cics-for-zowe-client/
 
 ### 1. Resource Specification (`resourceSpecification.json`)
 
-The specification is organized hierarchically:
+The specification is organised hierarchically:
 
 ```json
 {
@@ -122,7 +155,7 @@ The specification is organized hierarchically:
     "ResourceName": {
       "identifier": { /* metadata */ },
       "actions": [ /* action references or inline definitions */ ],
-      "additionalOptions": [ /* optional: extra options for Parms interface */ ]
+      "additionalOptions": [ /* optional: extra fields in Parms interface */ ]
     }
   },
   "actions": {
@@ -138,971 +171,392 @@ The specification is organized hierarchically:
 ```
 
 **Design Principles:**
-- Resources are the primary organizing unit
+- Resources are the primary organising unit
 - Actions and options can be shared across resources
-- Inline definitions allow resource-specific customization
-- `additionalOptions` enables backward compatibility and resource-specific properties
-- Metadata drives code generation (no manual derivation needed)
+- Inline definitions allow resource-specific customisation
+- `additionalOptions` adds fields to the Parms interface that aren't tied to a specific action (e.g. backward-compat fields for Define operations)
+- All naming, constants, and file paths are derived — nothing is manually specified
 
-### 2. JSON Schema Validator
+**Special identifier fields:**
 
-Validates the specification structure:
-- Required fields presence
-- Data type correctness
-- Reference validity (shared actions/options exist)
-- Naming convention compliance
+| Field | Purpose | Example |
+|---|---|---|
+| `snakeKey` | Overrides the `SCREAMING_SNAKE` suffix used for constants. Needed when the naive capitalisation split would be wrong. | `CICSURIMap` → `URI_MAP` (without: `U_R_I_M_A_P`) |
+| `constantName` | Overrides the full resource-type constant name. For legacy resources that predate the `CICS_CMCI_` prefix convention. | `CICS_URIMAP` instead of `CICS_CMCI_URI_MAP` |
+
+### 2. JSON Schema Validator (`resourceSpecification.schema.json`)
+
+Validates the specification on every generator run:
+- Required fields are present
+- Data types are correct
+- Referenced shared actions and options exist
+- Naming conventions are followed
 
 ### 3. Generator (`generate.ts`)
 
-**Class: ResourceGenerator**
+**Class: `ResourceGenerator`**
 
-```typescript
-class ResourceGenerator {
-  private spec: ResourceSpecification;
-  private templateDir: string;
-  private outputDir: string;
-  
-  // Main generation methods
-  public generateAll(): void
-  private generateSDK(): void
-  private generateCLI(): void  // Future
-  private generateTests(): void
-  
-  // Resource processing
-  private deriveResources(): DerivedResource[]
-  private deriveResource(name, resource): DerivedResource
-  private deriveAction(action, resourceName): DerivedAction
-  private deriveOptions(options): DerivedOption[]
-  private deriveParameters(options): DerivedParameter[]
-  
-  // Template rendering
-  private generateFromTemplate(template, output, context): void
-  private ensureDir(path): void
-}
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                       ResourceGenerator                           │
+├──────────────────────────────────────────────────────────────────┤
+│ - spec: ResourceSpecification                                     │
+│ - templateDir: string                                             │
+│ - outputDir: string                                               │
+│ - generatedTestFiles: string[]                                    │
+├──────────────────────────────────────────────────────────────────┤
+│ + generateAll(): void                                             │
+│ - generateSDK(resources): void                                    │
+│ - generateCLI(resources): void                                    │
+│ - generateTests(resources): void                                  │
+│ - deriveResources(): DerivedResource[]                            │
+│ - deriveResource(name, resource): DerivedResource                 │
+│ - deriveAction(action, resourceName): DerivedAction               │
+│ - deriveOptions(options): DerivedOption[]                         │
+│ - deriveParameters(options): DerivedParameter[]                   │
+│ - generateFromTemplate(template, output, context): void           │
+│ - renderTemplate(template, context): string                       │
+│ - ensureDir(path): void                                           │
+│ + runTests(): void                                                │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-**Special Constant Handling**
+`generateAll()` calls three sub-generators in sequence:
+1. `generateSDK()` — runs over all resources in the spec
+2. `generateCLI()` — currently only runs for `CICSLocalFile` and only for `enable`/`disable` action groups (see [Known Design Gaps](#known-design-gaps))
+3. `generateTests()` — generates SDK unit tests for all resources
 
-The generator skips constant generation for `LocalFile` since it uses the existing hardcoded `CICS_CMCI_LOCAL_FILE` constant (with a different naming convention). All other resources, including `Library` and `URIMap`, have their `CICS_CMCI_<X>` constants generated from the spec.
+### 4. Templates (`templates/`)
 
-Two optional `identifier` fields control constant naming for non-trivial resources:
+Each template is Handlebars (`.hbs`). The generator compiles a template once and renders it with a `DerivedResource` or `DerivedAction` context object.
 
-- **`snakeKey`** — overrides the SCREAMING_SNAKE suffix used for criteria/maxLength/actions constants. Needed when the naive regex would produce a wrong result (e.g. `CICSURIMap` → `U_R_I_M_A_P` without it, `URI_MAP` with it).
-- **`constantName`** — overrides the full resource-type constant name. Use when the resource predates the `CICS_CMCI_` naming convention and must keep a legacy name (e.g. `CICS_URIMAP`).
+**SDK templates** — generic; rendered once per resource:
 
-```json
-"CICSURIMap": {
-  "identifier": {
-    "snakeKey": "URI_MAP",
-    "constantName": "CICS_URIMAP"
-  }
-}
-```
+| Template | Output per resource |
+|---|---|
+| `sdk/resource.file.hbs` | `packages/sdk/src/resources/<Resource>.ts` |
+| `sdk/resource.index.hbs` | `packages/sdk/src/resources/index.ts` |
+| `sdk/parms.interface.hbs` | `packages/sdk/src/doc/I<Resource>Parms.ts` |
+| `sdk/doc.index.hbs` | `packages/sdk/src/doc/index.ts` |
+| `sdk/utils.resourceactions.hbs` | `packages/sdk/src/utils/ResourceActions.ts` |
+| `sdk/utils.index.hbs` | `packages/sdk/src/utils/index.ts` |
+| `sdk/constants.hbs` | `packages/sdk/src/constants.ts` |
 
-### 4. Templates (Handlebars)
+**CLI templates** — currently resource-specific (see [Known Design Gaps](#known-design-gaps)):
 
-**Template Types:**
+| Template | Output |
+|---|---|
+| `cli/localfile.handler.hbs` | `packages/cli/src/common/LocalFileHandler.ts` |
+| `cli/localfile.definition.hbs` | `packages/cli/src/<group>/localFile/LocalFile.definition.ts` |
+| `cli/group.definition.hbs` | `packages/cli/src/<group>/<Group>.definition.ts` |
+| `cli/en.ts.hbs` | `packages/cli/src/-strings-/en.ts` |
 
-1. **SDK Resource Template** (`sdk/resource.file.hbs`)
-   - Generates TypeScript resource files
-   - Includes action functions with validation
-   - Uses shared utility functions
+**Test templates** — rendered once per resource×action combination:
 
-2. **SDK Utils Template** (`sdk/utils.resourceactions.hbs`)
-   - Generates generic action performer
-   - Handles CMCI REST API calls
-   - Builds request bodies
-
-3. **Test Template** (`tests/sdk.resource.unit.test.hbs`)
-   - Generates Jest unit tests
-   - Tests validation logic
-   - Tests success scenarios with mocks
-
-4. **Index Templates**
-   - Generate barrel exports
-   - Maintain clean module structure
+| Template | Output |
+|---|---|
+| `tests/sdk.resource.unit.test.hbs` | `packages/sdk/__tests__/__unit__/<action>/<Action>.<resource>.unit.test.ts` |
+| `tests/cli.localfile.handler.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/localFile/LocalFile.handler.unit.test.ts` |
+| `tests/cli.group.definition.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` |
 
 ---
 
 ## Data Flow
 
-### Generation Process Flow
+### Generation Process
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. LOAD SPECIFICATION                                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  resourceSpecification.json ──▶ Parse JSON ──▶ Validate Schema  │
-│                                                                   │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 2. DERIVE PROPERTIES                                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  For each Resource:                                              │
-│    ├─ Generate SDK file name (remove CICS prefix)               │
-│    ├─ Generate constants (SCREAMING_SNAKE_CASE)                 │
-│    ├─ Generate interface names (IPascalCaseParms)               │
-│    ├─ Resolve action references                                 │
-│    └─ For each Action:                                           │
-│         ├─ Generate function names (camelCase)                   │
-│         ├─ Resolve option references                            │
-│         └─ Derive parameters from options                       │
-│                                                                   │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 3. RENDER TEMPLATES                                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  For each Resource:                                              │
-│    ├─ Render SDK resource file                                  │
-│    └─ For each Action:                                           │
-│         └─ Render unit test file                                │
-│                                                                   │
-│  Render utility files:                                           │
-│    ├─ ResourceActions.ts                                         │
-│    └─ index.ts files                                             │
-│                                                                   │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 4. WRITE OUTPUT                                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  packages/sdk/src/resources/                                     │
-│    ├─ LocalFile.ts                                               │
-│    └─ index.ts                                                   │
-│                                                                   │
-│  packages/sdk/src/utils/                                         │
-│    ├─ ResourceActions.ts                                         │
-│    └─ index.ts                                                   │
-│                                                                   │
-│  packages/sdk/__tests__/__unit__/                                │
-│    ├─ close/Close.localFile.unit.test.ts                        │
-│    └─ open/Open.localFile.unit.test.ts                          │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
+resourceSpecification.json
+          │
+          ▼
+  Parse & validate against schema
+          │
+          ▼
+  deriveResources()
+  ┌────────────────────────────────────────────────────────────┐
+  │ For each resource:                                          │
+  │   • Remove "CICS" prefix → SDK file name                   │
+  │   • Split on capitals → SCREAMING_SNAKE_CASE constant      │
+  │   • Build interface name (IPascalCaseParms)                 │
+  │   • For each action:                                        │
+  │       – Resolve shared or inline action definition          │
+  │       – Derive function name (camelCase: group+ResourceName)│
+  │       – Resolve shared or inline options                    │
+  │       – Derive SDK parameters from options                  │
+  └────────────────────────────────────────────────────────────┘
+          │
+          ├──▶ generateSDK()   — renders one file per resource
+          │
+          ├──▶ generateCLI()   — renders LocalFile handler + enable/disable
+          │                       group and definition files only
+          │
+          └──▶ generateTests() — renders one test file per resource×action
 ```
 
-### Property Derivation Flow
+### Property Derivation Example
 
 ```
 Input: "CICSLocalFile"
   │
-  ├─▶ Remove "CICS" prefix ──▶ "LocalFile"
-  │                              │
-  │                              ├─▶ SDK File Name: "LocalFile"
-  │                              └─▶ Interface Name: "ILocalFileParms"
+  ├─▶ Strip "CICS" prefix ──▶ "LocalFile"
+  │       │
+  │       ├─▶ SDK file name:     LocalFile.ts
+  │       └─▶ Parms interface:   ILocalFileParms
   │
-  └─▶ Convert to SCREAMING_SNAKE_CASE
-      │
-      ├─▶ Split on capitals: ["CICS", "Local", "File"]
-      ├─▶ Remove "CICS": ["Local", "File"]
-      ├─▶ Join with "_": "LOCAL_FILE"
-      └─▶ Add prefix: "CICS_CMCI_LOCAL_FILE"
+  └─▶ Split on capitals, join with "_", uppercase
           │
-          ├─▶ Resource Type Constant
-          ├─▶ Criteria Field Constant: "CICS_CMCI_LOCAL_FILE_CRITERIA_FIELD"
-          ├─▶ Max Length Constant: "CICS_CMCI_LOCAL_FILE_MAX_LENGTH"
-          └─▶ Busy Values Constant: "CICS_CMCI_LOCAL_FILE_BUSY_VALUES"
+          └─▶ "LOCAL_FILE"
+                  │
+                  ├─▶ Resource type constant:  CICS_CMCI_LOCAL_FILE
+                  ├─▶ Criteria field constant: CICS_CMCI_LOCAL_FILE_CRITERIA_FIELD
+                  ├─▶ Max length constant:     CICS_CMCI_LOCAL_FILE_MAX_LENGTH
+                  └─▶ Busy values constant:    CICS_CMCI_LOCAL_FILE_BUSY_VALUES
+
+  snakeKey / constantName override fields skip the derivation above
+  when the naive algorithm would produce an incorrect result.
+```
+
+### Action Resolution
+
+```
+Action entry in spec
+        │
+        ▼
+  Is it a string?
+  ├── Yes ──▶ Look up in spec["actions"] ──▶ Not found? → throw error
+  └── No  ──▶ Use the inline object directly
+        │
+        ▼
+  Extract identifier (name, group, aliases, description, verbs)
+        │
+        ▼
+  Derive function name = camelCase(group) + PascalCase(resourceName)
+  e.g. group="enable", resource="LocalFile" → "enableLocalFile"
+        │
+        ▼
+  Resolve options (shared lookup or inline)
+        │
+        ▼
+  Derive SDK parameters from resolved options
+        │
+        ▼
+  Return DerivedAction
 ```
 
 ---
 
-## UML Diagrams
+## Diagrams
 
 ### Class Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ResourceSpecification                         │
-├─────────────────────────────────────────────────────────────────┤
-│ + resources: Map<string, Resource>                               │
-│ + actions: Map<string, ActionDefinition>                         │
-│ + options: Map<string, OptionDefinition>                         │
-└─────────────────────────────────────────────────────────────────┘
-                          │
-                          │ contains
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                         Resource                                 │
-├─────────────────────────────────────────────────────────────────┤
-│ + identifier: ResourceIdentifier                                 │
-│ + actions: (string | ActionReference)[]                          │
-├─────────────────────────────────────────────────────────────────┤
-│ + deriveResource(): DerivedResource                              │
-└─────────────────────────────────────────────────────────────────┘
-                          │
-                          │ has
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    ResourceIdentifier                            │
-├─────────────────────────────────────────────────────────────────┤
-│ + aliases: string[]                                              │
-│ + humanNameSingular: string                                      │
-│ + humanNamePlural: string                                        │
-│ + primaryKey: string                                             │
-│ + maxPrimaryKeyLength: number                                    │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                    ActionDefinition                              │
-├─────────────────────────────────────────────────────────────────┤
-│ + identifier: ActionIdentifier                                   │
-│ + options: (string | OptionDefinition)[]                         │
-├─────────────────────────────────────────────────────────────────┤
-│ + deriveAction(): DerivedAction                                  │
-└─────────────────────────────────────────────────────────────────┘
-                          │
-                          │ has
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    ActionIdentifier                              │
-├─────────────────────────────────────────────────────────────────┤
-│ + name: string                                                   │
-│ + aliases: string[]                                              │
-│ + group: string                                                  │
-│ + description: string                                            │
-│ + verb: string                                                   │
-│ + verbPastTense: string                                          │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                    OptionDefinition                              │
-├─────────────────────────────────────────────────────────────────┤
-│ + name: string                                                   │
-│ + type: string                                                   │
-│ + defaultValue: any                                              │
-│ + allowableValues: string[]                                      │
-│ + caseSensitive: boolean                                         │
-│ + description: string                                            │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                    ResourceGenerator                             │
-├─────────────────────────────────────────────────────────────────┤
-│ - spec: ResourceSpecification                                    │
-│ - templateDir: string                                            │
-│ - outputDir: string                                              │
-│ - generatedTestFiles: string[]                                   │
-├─────────────────────────────────────────────────────────────────┤
-│ + generateAll(): void                                            │
-│ - generateSDK(): void                                            │
-│ - generateCLI(): void                                            │
-│ - generateTests(): void                                          │
-│ - deriveResources(): DerivedResource[]                           │
-│ - deriveResource(name, resource): DerivedResource                │
-│ - deriveAction(action, resourceName): DerivedAction              │
-│ - deriveOptions(options): DerivedOption[]                        │
-│ - deriveParameters(options): DerivedParameter[]                  │
-│ - generateFromTemplate(template, output, context): void          │
-│ - ensureDir(path): void                                          │
-│ + runTests(): void                                               │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│              ResourceSpecification            │
+├──────────────────────────────────────────────┤
+│ + resources: Record<string, Resource>         │
+│ + actions?:  Record<string, ActionDefinition> │
+│ + options?:  Record<string, OptionDefinition> │
+└──────────────────────────────────────────────┘
+                      │ contains
+                      ▼
+┌──────────────────────────────────────────────┐
+│                   Resource                    │
+├──────────────────────────────────────────────┤
+│ + identifier:       ResourceIdentifier        │
+│ + actions:          (string|ActionReference)[]│
+│ + additionalOptions?: string[]                │
+└──────────────────────────────────────────────┘
+          │ has                    │ references
+          ▼                        ▼
+┌────────────────────┐   ┌────────────────────────┐
+│ ResourceIdentifier │   │    ActionDefinition     │
+├────────────────────┤   ├────────────────────────┤
+│ aliases?: string[] │   │ identifier: ActionIdent │
+│ humanNameSingular  │   │ options?: (string|Opt)[]│
+│ humanNamePlural?   │   │ updateAttribute?        │
+│ primaryKey         │   └────────────────────────┘
+│ maxPrimaryKeyLength│             │ has
+│ snakeKey?          │             ▼
+│ constantName?      │   ┌────────────────────────┐
+└────────────────────┘   │   ActionIdentifier      │
+                         ├────────────────────────┤
+                         │ name: string            │
+                         │ aliases?: string[]      │
+                         │ group: string           │
+                         │ description: string     │
+                         │ verb: string            │
+                         │ verbPastTense: string   │
+                         └────────────────────────┘
 ```
 
-### Sequence Diagram - Code Generation
+### Sequence Diagram — Code Generation
 
 ```
-User          Generator       Specification    Templates       FileSystem
- │                │                │               │               │
- │ npm run       │                │               │               │
- │ generate      │                │               │               │
- ├──────────────▶│                │               │               │
- │                │                │               │               │
- │                │ Load & Parse   │               │               │
- │                ├───────────────▶│               │               │
- │                │                │               │               │
- │                │ Validate       │               │               │
- │                │ Schema         │               │               │
- │                ├───────────────▶│               │               │
- │                │◀───────────────┤               │               │
- │                │                │               │               │
- │                │ For each Resource              │               │
- │                │ ┌──────────────┐               │               │
- │                │ │ Derive       │               │               │
- │                │ │ Properties   │               │               │
- │                │ └──────────────┘               │               │
- │                │                │               │               │
- │                │                │ Load Template │               │
- │                │                ├──────────────▶│               │
- │                │                │◀──────────────┤               │
- │                │                │               │               │
- │                │                │ Render with   │               │
- │                │                │ Context       │               │
- │                │                ├──────────────▶│               │
- │                │                │◀──────────────┤               │
- │                │                │               │               │
- │                │                │               │ Write File    │
- │                │                │               ├──────────────▶│
- │                │                │               │               │
- │                │ └──────────────────────────────┘               │
- │                │                │               │               │
- │                │ Generate Tests │               │               │
- │                │ ┌──────────────┐               │               │
- │                │ │ For each     │               │               │
- │                │ │ Action       │               │               │
- │                │ └──────────────┘               │               │
- │                │                │               │               │
- │◀───────────────┤                │               │               │
- │ Complete       │                │               │               │
-```
-
----
-
-## Flowcharts
-
-### Main Generation Flow
-
-```
-                    START
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Load Specification     │
-         │ (JSON)                 │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Validate Against       │
-         │ JSON Schema            │
-         └────────────────────────┘
-                      │
-                      ▼
-              ┌───────────────┐
-              │ Valid?        │
-              └───────────────┘
-                 │         │
-                No        Yes
-                 │         │
-                 ▼         ▼
-         ┌──────────┐  ┌────────────────────────┐
-         │ Throw    │  │ Parse Resources        │
-         │ Error    │  │ from Specification     │
-         └──────────┘  └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ For Each Resource      │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Derive Properties:     │
-                   │ - SDK File Name        │
-                   │ - Constants            │
-                   │ - Interface Names      │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Resolve Actions        │
-                   │ (Shared or Inline)     │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ For Each Action        │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Derive Action Props:   │
-                   │ - Function Names       │
-                   │ - Parameters           │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Resolve Options        │
-                   │ (Shared or Inline)     │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Render SDK Template    │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Write SDK File         │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Render Test Template   │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ Write Test File        │
-                   └────────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────────┐
-                   │ More Resources?        │
-                   └────────────────────────┘
-                         │         │
-                        Yes       No
-                         │         │
-                         └─────────┤
-                                   ▼
-                        ┌────────────────────────┐
-                        │ Generate Index Files   │
-                        └────────────────────────┘
-                                   │
-                                   ▼
-                        ┌────────────────────────┐
-                        │ Generate Utils Files   │
-                        └────────────────────────┘
-                                   │
-                                   ▼
-                                  END
-```
-
-### Property Derivation Flow
-
-```
-                    START
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Input: Resource Name   │
-         │ (e.g., "CICSLocalFile")│
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Remove "CICS" Prefix   │
-         │ Result: "LocalFile"    │
-         └────────────────────────┘
-                      │
-                      ├─────────────────────────┐
-                      │                         │
-                      ▼                         ▼
-         ┌────────────────────────┐  ┌────────────────────────┐
-         │ SDK File Name          │  │ Convert to             │
-         │ = "LocalFile"          │  │ SCREAMING_SNAKE_CASE   │
-         └────────────────────────┘  └────────────────────────┘
-                                                │
-                                                ▼
-                                     ┌────────────────────────┐
-                                     │ Split on Capitals:     │
-                                     │ ["Local", "File"]      │
-                                     └────────────────────────┘
-                                                │
-                                                ▼
-                                     ┌────────────────────────┐
-                                     │ Join with "_":         │
-                                     │ "LOCAL_FILE"           │
-                                     └────────────────────────┘
-                                                │
-                                                ▼
-                                     ┌────────────────────────┐
-                                     │ Add Prefix:            │
-                                     │ "CICS_CMCI_LOCAL_FILE" │
-                                     └────────────────────────┘
-                                                │
-                      ┌─────────────────────────┼─────────────────────────┐
-                      │                         │                         │
-                      ▼                         ▼                         ▼
-         ┌────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
-         │ Resource Type      │  │ Criteria Field       │  │ Max Length           │
-         │ Constant           │  │ Constant             │  │ Constant             │
-         └────────────────────┘  └──────────────────────┘  └──────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Interface Name:        │
-         │ "I" + SDK File Name    │
-         │ + "Parms"              │
-         │ = "ILocalFileParms"    │
-         └────────────────────────┘
-                      │
-                      ▼
-                     END
-```
-
-### Action Resolution Flow
-
-```
-                    START
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Input: Action          │
-         │ (string or object)     │
-         └────────────────────────┘
-                      │
-                      ▼
-              ┌───────────────┐
-              │ Is String?    │
-              └───────────────┘
-                 │         │
-                Yes       No
-                 │         │
-                 ▼         ▼
-    ┌────────────────────┐  ┌────────────────────┐
-    │ Lookup in Shared   │  │ Use Inline         │
-    │ Actions            │  │ Definition         │
-    └────────────────────┘  └────────────────────┘
-                 │                     │
-                 ▼                     │
-         ┌───────────────┐             │
-         │ Found?        │             │
-         └───────────────┘             │
-            │         │                │
-           Yes       No                │
-            │         │                │
-            │         ▼                │
-            │  ┌──────────┐            │
-            │  │ Throw    │            │
-            │  │ Error    │            │
-            │  └──────────┘            │
-            │                          │
-            └──────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Extract Identifier     │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Generate Function Name │
-         │ = group + ResourceName │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Resolve Options        │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Derive Parameters      │
-         │ from Options           │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Return DerivedAction   │
-         └────────────────────────┘
-                      │
-                      ▼
-                     END
-```
-
-### CI Validation Flow
-
-```
-                    START
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ CI Pipeline Triggered  │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Run check-generated.ts │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Execute Generator      │
-         │ in Repository          │
-         └────────────────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │ Run git diff           │
-         │ on packages/sdk        │
-         └────────────────────────┘
-                      │
-                      ▼
-              ┌───────────────┐
-              │ Files Changed?│
-              └───────────────┘
-                 │         │
-                Yes       No
-                 │         │
-                 ▼         ▼
-         ┌──────────┐  ┌────────────────────┐
-         │ List     │  │ ✅ Check Passed    │
-         │ Changed  │  │ Generated files    │
-         │ Files    │  │ are up-to-date     │
-         └──────────┘  └────────────────────┘
-                 │              │
-                 ▼              │
-         ┌──────────┐           │
-         │ ❌ Fail  │           │
-         │ CI Check │           │
-         └──────────┘           │
-                 │              │
-                 └──────────────┘
-                        │
-                        ▼
-                       END
+User         Generator      Specification    Templates     FileSystem
+ │               │                │              │              │
+ │ npm run       │                │              │              │
+ │ generate      │                │              │              │
+ ├──────────────▶│                │              │              │
+ │               │ Load & Parse   │              │              │
+ │               ├───────────────▶│              │              │
+ │               │ Validate schema│              │              │
+ │               ├───────────────▶│              │              │
+ │               │◀───────────────┤              │              │
+ │               │                │              │              │
+ │               │  deriveResources() ───────────┤              │
+ │               │  ┌─────────────────────────┐  │              │
+ │               │  │ For each resource        │  │              │
+ │               │  │   derive properties      │  │              │
+ │               │  │   derive actions/options │  │              │
+ │               │  └─────────────────────────┘  │              │
+ │               │                │              │              │
+ │               │  generateSDK() / generateCLI()│              │
+ │               │  ┌─────────────────────────┐  │              │
+ │               │  │ For each output file     │  │              │
+ │               │  │   Load template          ├─▶│              │
+ │               │  │   Render with context    │◀─┤              │
+ │               │  │   Write output           ├──┼─────────────▶│
+ │               │  └─────────────────────────┘  │              │
+ │               │                │              │              │
+ │               │  generateTests()              │              │
+ │               │  ┌─────────────────────────┐  │              │
+ │               │  │ For each resource×action │  │              │
+ │               │  │   Render test template   ├─▶│              │
+ │               │  │   Write test file        ├──┼─────────────▶│
+ │               │  └─────────────────────────┘  │              │
+ │◀──────────────┤                │              │              │
+ │ Complete      │                │              │              │
 ```
 
 ---
 
 ## Extension Points
 
-### Adding New Resource Types
+### Adding a New Resource
 
-1. **Update Specification**
-   ```json
-   {
-     "resources": {
-       "CICSNewResource": {
-         "identifier": {
-           "humanNameSingular": "New Resource",
-           "primaryKey": "resourcekey",
-           "maxPrimaryKeyLength": 8
-         },
-         "actions": ["ENABLE", "DISABLE"]
-       }
-     }
-   }
-   ```
+1. Add an entry to `resources` in `resourceSpecification.json`:
 
-2. **Run Generator**
-   ```bash
-   npm run generate
-   ```
-
-3. **Generated Files**
-   - `packages/sdk/src/resources/NewResource.ts`
-   - `packages/sdk/__tests__/__unit__/enable/Enable.newResource.unit.test.ts`
-   - `packages/sdk/__tests__/__unit__/disable/Disable.newResource.unit.test.ts`
-
-### Adding New Actions
-
-1. **Define Shared Action**
-   ```json
-   {
-     "actions": {
-       "REFRESH": {
-         "identifier": {
-           "name": "REFRESH",
-           "group": "refresh",
-           "description": "Refresh a resource",
-           "verb": "refreshing",
-           "verbPastTense": "refreshed"
-         },
-         "options": []
-       }
-     }
-   }
-   ```
-
-2. **Reference in Resources**
-   ```json
-   {
-     "resources": {
-       "CICSProgram": {
-         "actions": ["ENABLE", "DISABLE", "REFRESH"]
-       }
-     }
-   }
-   ```
-
-### Adding New Options
-
-1. **Define Shared Option**
-   ```json
-   {
-     "options": {
-       "TIMEOUT": {
-         "name": "timeout",
-         "type": "number",
-         "defaultValue": 30,
-         "description": "Timeout in seconds"
-       }
-     }
-   }
-   ```
-
-2. **Reference in Actions**
-   ```json
-   {
-     "actions": {
-       "OPEN": {
-         "options": ["BUSY", "TIMEOUT"]
-       }
-     }
-   }
-   ```
-
-3. **Use additionalOptions for Resource-Specific Properties**
-   
-   The `additionalOptions` field allows adding properties to a resource's Parms interface without associating them with specific actions. This is useful for:
-   - Backward compatibility with existing code
-   - Resource-specific properties used by other operations
-   - Properties that don't fit into the action-option model
-   
-   **Example**: Adding a `csdGroup` property to Program resource:
-   ```json
-   {
-     "resources": {
-       "CICSProgram": {
-         "identifier": {
-           "aliases": ["prog"],
-           "humanNameSingular": "Program",
-           "primaryKey": "program"
-         },
-         "actions": ["ENABLE", "DISABLE"],
-         "additionalOptions": ["CSDGROUP"]
-       }
-     },
-     "options": {
-       "CSDGROUP": {
-         "name": "csdGroup",
-         "type": "string",
-         "description": "The CICS CSD Group for program definition operations."
-       }
-     }
-   }
-   ```
-   
-   This generates `IProgramParms` with both `busy` (from DISABLE action) and `csdGroup` (from additionalOptions) properties, allowing the interface to be used by both enable/disable operations and program definition operations.
-   ```
-
-### Adding New Templates
-
-1. **Create Template File**
-   - Location: `codegen/templates/cli/handler.hbs`
-   - Use Handlebars syntax with derived properties
-
-2. **Update Generator**
-   ```typescript
-   private generateCLI(): void {
-     const derivedResources = this.deriveResources();
-     for (const resource of derivedResources) {
-       this.generateFromTemplate(
-         "cli/handler.hbs",
-         `packages/cli/src/${resource.sdkFileName}Handler.ts`,
-         resource
-       );
-     }
-   }
-   ```
-
-3. **Call in generateAll()**
-   ```typescript
-   public generateAll(): void {
-     this.generateSDK();
-     this.generateCLI();  // Add this
-     this.generateTests();
-   }
-   ```
-
----
-
-## Future Enhancements
-
-### 1. CLI Package Generation
-
-**Goal**: Generate CLI command handlers and definitions
-
-**Components to Generate**:
-- Command definition files
-- Handler classes
-- Command group definitions
-- Help text
-
-**Template Structure**:
-```
-templates/
-├── cli/
-│   ├── handler.hbs
-│   ├── definition.hbs
-│   └── group.definition.hbs
-```
-
-**Example Output**:
-```typescript
-// packages/cli/src/open/OpenLocalFile.handler.ts
-export class OpenLocalFileHandler extends CicsBaseHandler {
-  public async process(params: IHandlerParameters): Promise<void> {
-    const response = await openLocalFile(
-      this.session,
-      {
-        name: params.arguments.name,
-        regionName: params.arguments.regionName,
-        cicsPlex: params.arguments.cicsPlex,
-      }
-    );
-    // Handle response...
-  }
-}
-```
-
-### 2. VSCode Extension Generation
-
-**Goal**: Generate VS Code command registrations and handlers
-
-**Components to Generate**:
-- Command registration code
-- Tree view item actions
-- Context menu contributions
-- Command palette entries
-
-**Template Structure**:
-```
-templates/
-├── vsce/
-│   ├── command.registration.hbs
-│   ├── command.handler.hbs
-│   └── package.json.contribution.hbs
-```
-
-### 3. Documentation Generation
-
-**Goal**: Generate API documentation from specification
-
-**Components to Generate**:
-- Markdown API reference
-- JSDoc comments
-- Usage examples
-- Migration guides
-
-**Template Structure**:
-```
-templates/
-├── docs/
-│   ├── api.reference.hbs
-│   ├── resource.guide.hbs
-│   └── changelog.entry.hbs
-```
-
-### 4. Enhanced Validation
-
-**Improvements**:
-- Cross-reference validation (ensure all referenced actions/options exist)
-- Naming convention enforcement
-- Duplicate detection
-- Deprecation warnings
-
-**Implementation**:
-```typescript
-class SpecificationValidator {
-  public validate(spec: ResourceSpecification): ValidationResult {
-    const errors: ValidationError[] = [];
-    
-    // Check for duplicate resource names
-    // Validate action references
-    // Validate option references
-    // Check naming conventions
-    
-    return { valid: errors.length === 0, errors };
-  }
-}
-```
-
-### 5. Incremental Generation
-
-**Goal**: Only regenerate changed files
-
-**Benefits**:
-- Faster generation
-- Preserve manual customizations in non-generated sections
-- Better IDE performance
-
-**Implementation**:
-```typescript
-class IncrementalGenerator extends ResourceGenerator {
-  private computeHash(content: string): string {
-    // Compute content hash
-  }
-  
-  private shouldRegenerate(file: string, context: any): boolean {
-    // Compare hashes
-  }
-}
-```
-
-### 6. Multi-Language Support
-
-**Goal**: Generate code for multiple languages
-
-**Supported Languages**:
-- TypeScript (current)
-- Python (future)
-- Java (future)
-
-**Template Structure**:
-```
-templates/
-├── typescript/
-│   └── sdk/
-├── python/
-│   └── sdk/
-└── java/
-    └── sdk/
-```
-
-### 7. Custom Template Plugins
-
-**Goal**: Allow external template contributions
-
-**Plugin System**:
-```typescript
-interface TemplatePlugin {
-  name: string;
-  templateDir: string;
-  outputDir: string;
-  generate(resources: DerivedResource[]): void;
-}
-
-class PluginManager {
-  private plugins: TemplatePlugin[] = [];
-  
-  public registerPlugin(plugin: TemplatePlugin): void {
-    this.plugins.push(plugin);
-  }
-  
-  public generateAll(): void {
-    for (const plugin of this.plugins) {
-      plugin.generate(this.deriveResources());
+```json
+{
+  "resources": {
+    "CICSNewResource": {
+      "identifier": {
+        "humanNameSingular": "New Resource",
+        "humanNamePlural": "New Resources",
+        "primaryKey": "name",
+        "maxPrimaryKeyLength": 8
+      },
+      "actions": ["ENABLE", "DISABLE"]
     }
   }
 }
 ```
 
+2. Run `npm run generate`.
+
+Generated SDK files:
+- `packages/sdk/src/resources/NewResource.ts`
+- `packages/sdk/src/doc/INewResourceParms.ts`
+- `packages/sdk/__tests__/__unit__/enable/Enable.newResource.unit.test.ts`
+- `packages/sdk/__tests__/__unit__/disable/Disable.newResource.unit.test.ts`
+
+> CLI files are **not** automatically generated for new resources until the CLI template gaps described below are resolved.
+
+### Adding a New Shared Action
+
+1. Define it in the `actions` section:
+
+```json
+{
+  "actions": {
+    "REFRESH": {
+      "identifier": {
+        "name": "REFRESH",
+        "group": "refresh",
+        "description": "Refresh a resource in CICS",
+        "verb": "refreshing",
+        "verbPastTense": "refreshed"
+      },
+      "options": []
+    }
+  }
+}
+```
+
+2. Reference it by name in any resource's `actions` array:
+
+```json
+"actions": ["ENABLE", "DISABLE", "REFRESH"]
+```
+
+3. Run `npm run generate`.
+
+### Adding a New Shared Option
+
+1. Define it in the `options` section:
+
+```json
+{
+  "options": {
+    "TIMEOUT": {
+      "name": "timeout",
+      "type": "number",
+      "defaultValue": 30,
+      "description": "Timeout in seconds."
+    }
+  }
+}
+```
+
+2. Reference it by name in an action's `options` array.
+
+3. Run `npm run generate`.
+
+### Adding a New Template
+
+1. Create a `.hbs` file in the appropriate `templates/` subdirectory.
+2. Add a `generateFromTemplate()` call in the relevant generator method (`generateSDK`, `generateCLI`, `generateTests`).
+3. The context passed to the template is a `DerivedResource` or a subset of it — refer to the `DerivedResource` / `DerivedAction` interfaces in `generate.ts` for available fields.
+
 ---
 
-## Conclusion
+## Known Design Gaps
 
-The CICS Code Generation System provides a robust, extensible foundation for generating consistent code across multiple packages. Its resource-focused architecture, template-based approach, and comprehensive validation ensure maintainability and scalability as the project grows.
+> These are current limitations of the CLI generation layer. They are documented here as the authoritative record of what needs to change.
 
-### Key Takeaways
+### 1. CLI templates are resource-specific, not generic
 
-1. **Single Source of Truth**: All resource definitions in one place
-2. **Template-Driven**: Easy to modify output without changing generator logic
-3. **Extensible**: Simple to add new resources, actions, and packages
-4. **Validated**: JSON schema ensures specification correctness
-5. **CI-Integrated**: Automated checks prevent drift between spec and code
+`cli/localfile.definition.hbs` and `cli/localfile.handler.hbs` have `LocalFile` hardcoded throughout — the export name, handler path, strings key path, positional argument name, and example options. They cannot be reused to generate CLI files for `CICSProgram`, `CICSURIMap`, or any other resource.
 
-### Next Steps
+**Target design**: rename to `cli/resource.definition.hbs` and `cli/resource.handler.hbs`. Replace all hardcoded `LocalFile`/`localFile`/`LOCALFILE` references with template variables sourced from `DerivedResource` (e.g. `{{sdkFileName}}`, `{{parmsInterface}}`, `{{identifier.primaryKey}}`). This mirrors how `sdk/resource.file.hbs` already works.
 
-1. Implement CLI package generation
-2. Add VSCode extension generation
-3. Enhance validation with cross-reference checks
-4. Create documentation generation templates
-5. Develop incremental generation capability
+### 2. Only `enable` and `disable` action groups are owned by codegen
 
----
+`open` and `close` are manually maintained in `packages/cli/src/open/` and `packages/cli/src/close/` and are excluded from the generator via a hardcoded allowlist in `generateCLI()`:
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-06-19  
-**Author**: Code Generation System Design Team
+```ts
+const GROUPS_OWNED_BY_CODEGEN = new Set(["enable", "disable"]);
+```
+
+Additionally, `generateCLI()` opens with:
+
+```ts
+const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
+if (!localFileResource) { return; }
+```
+
+This makes the entire CLI generation unconditionally dependent on a single specific resource name.
+
+**Target design**: once templates are generic (gap 1), remove the allowlist and the `CICSLocalFile` guard. Iterate over all resources and all action groups in the spec, rendering the generic templates for each.
+
+### 3. `group.definition.hbs` hardcodes its children list
+
+The template contains:
+
+```ts
+children: [LocalFileDefinition, UrimapDefinition],
+```
+
+This cannot be derived from the spec at render time because each resource's CLI definition file may or may not exist yet (due to gap 1 and gap 2 above).
+
+**Target design**: pass a `children` array into the template context, built by the generator from the resources in the spec that have a CLI definition for the given action group. The template then iterates `{{#each children}}` to produce the imports and the `children` array.

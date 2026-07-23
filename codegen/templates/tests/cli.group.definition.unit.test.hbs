@@ -18,11 +18,11 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 
-describe("cics {{actionGroup}} local file", () => {
+describe("cics {{actionGroup}}", () => {
   const RESOURCES_COUNT = {{resourcesCount}};
 
   it("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../src/{{actionGroup}}/{{capitalize actionGroup}}.definition");
+    const definition: ICommandDefinition = require("../../../src/{{actionGroup}}/{{groupClassName}}.definition");
     expect(definition).toBeDefined();
     expect(definition.children?.length).toBe(RESOURCES_COUNT);
     delete definition.children;

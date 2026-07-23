@@ -17,27 +17,28 @@
 // ============================================================================
 
 import type { ICommandDefinition } from "@zowe/imperative";
-import { LocalFileDefinition } from "./localFile/LocalFile.definition";
-import { UrimapDefinition } from "./urimap/Urimap.definition";
+{{#each imports}}
+import { {{exportName}} } from "./{{dir}}/{{file}}";
+{{/each}}
 import { CicsSession } from "../CicsSession";
 
 import type i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).{{toUpperCase actionGroup}};
+const strings = (require("../-strings-/en").default as typeof i18nTypings).{{stringsKey}};
 
 /**
- * Definition for the "{{actionGroup}}" group of commands under the CICS Plugin
+ * Definition for the "{{groupName}}" group of commands under the CICS Plugin
  */
 const definition: ICommandDefinition = {
-  name: "{{actionGroup}}",
+  name: "{{groupName}}",
 {{#if aliases.length}}
   aliases: {{{json aliases}}},
 {{/if}}
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [LocalFileDefinition, UrimapDefinition],
+  children: [{{#each imports}}{{exportName}}{{#unless @last}}, {{/unless}}{{/each}}],
   passOn: [
     {
       property: "options",

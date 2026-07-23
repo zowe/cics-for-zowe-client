@@ -20,6 +20,12 @@ import Handlebars from "handlebars";
 
 interface ResourceIdentifier {
   aliases?: string[];
+  cliName?: string;
+  cliDir?: string;
+  cliClass?: string;
+  cliAliases?: string[];
+  cliPositionalName?: string;
+  useSharedHandler?: boolean;
   humanNameSingular: string;
   humanNamePlural?: string;
   primaryKey: string;
@@ -39,11 +45,15 @@ interface ActionIdentifier {
 
 interface OptionDefinition {
   name: string;
+  cliName?: string;
+  cliAliases?: string[];
   type: string;
   defaultValue?: string | number | boolean;
   allowableValues?: string[];
   caseSensitive?: boolean;
   description?: string;
+  required?: boolean;
+  isPositional?: boolean;
 }
 
 interface UpdateAttribute {
@@ -55,12 +65,32 @@ interface ActionReference {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
   updateAttribute?: UpdateAttribute;
+  noCicsPlex?: boolean;
+  sdkFunction?: string;
+  urimapVariant?: string;
+  extraPositionals?: string[];
+  webserviceAction?: boolean;
+  getAction?: boolean;
 }
 
 interface ActionDefinition {
   identifier: ActionIdentifier;
   options?: (string | OptionDefinition)[];
   updateAttribute?: UpdateAttribute;
+  noCicsPlex?: boolean;
+  sdkFunction?: string;
+  urimapVariant?: string;
+  extraPositionals?: string[];
+  webserviceAction?: boolean;
+  getAction?: boolean;
+}
+
+interface GroupMeta {
+  name: string;
+  aliases: string[];
+  summary: string;
+  description: string;
+  stringsKey: string;
 }
 
 interface Resource {
@@ -73,6 +103,7 @@ interface ResourceSpecification {
   resources: Record<string, Resource>;
   actions?: Record<string, ActionDefinition>;
   options?: Record<string, OptionDefinition>;
+  groupMeta?: Record<string, GroupMeta>;
 }
 
 // ============================================================================
@@ -168,6 +199,10 @@ Handlebars.registerHelper("camelCase", (str: string) => {
     .replace(/[-\s]([a-z])/g, (g) => g[1].toUpperCase())
     .replace(/^[a-z]/, (g) => g.toLowerCase());
 });
+Handlebars.registerHelper("kebabCase", (str: string) => {
+  return str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+});
+Handlebars.registerHelper("lowerFirst", (str: string) => str ? str.charAt(0).toLowerCase() + str.slice(1) : "");
 Handlebars.registerHelper("removePrefix", (str: string, prefix: string) => {
   return str.startsWith(prefix) ? str.slice(prefix.length) : str;
 });
@@ -308,114 +343,370 @@ export class ResourceGenerator {
   }
 
   /**
-   * Generate CLI command definitions, the shared LocalFileHandler, the full
-   * i18n strings file, and unit tests for resources that use the shared
-   * LocalFileHandler pattern (currently CICSLocalFile actions).
+   * Generate ALL CLI files from the spec — definitions, handlers, i18n strings,
+   * and unit tests. No file under packages/cli/src/ or packages/cli/__tests__/ is
+   * manually maintained after this runs.
    *
-   * Generated output:
-   *   - packages/cli/src/common/LocalFileHandler.ts
-   *   - packages/cli/src/-strings-/en.ts
-   *   - For each codegen-owned action group (enable, disable):
-   *     - packages/cli/src/<group>/localFile/LocalFile.definition.ts
-   *     - packages/cli/src/<group>/<Group>.definition.ts
-   *     - packages/cli/__tests__/__unit__/<group>/localFile/LocalFile.handler.unit.test.ts
-   *     - packages/cli/__tests__/__unit__/<group>/<Group>.definition.unit.test.ts
+   * Pattern A (CICSLocalFile): one shared handler, one definition per action group.
+   * Pattern B (all other resources): one handler + one definition per (resource, action-group).
+   *
+   * Special cases handled:
+   *   - urimapVariant: "server"|"client"|"pipeline" → sub-command name like "urimap-server"
+   *   - webserviceAction: custom wsbind path-fix logic
+   *   - getAction: outputFormatOptions + format.output response
+   *   - noCicsPlex: omit cics-plex option
+   *   - sdkFunction override: e.g. REFRESH uses programNewcopy
+   *   - extraPositionals: additional positional args (csdGroup, programName, bundleDir)
    */
   private generateCLI(derivedResources: DerivedResource[]): void {
     console.log("📦 Generating CLI layer...");
 
-    // Only CICSLocalFile uses the shared LocalFileHandler pattern
-    const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
-    if (!localFileResource) {
-      console.log("  ⚠️  CICSLocalFile not found in spec, skipping CLI generation");
-      return;
-    }
-
     const cliSrcDir = path.join(this.outputDir, "cli", "src");
     const cliTestDir = path.join(this.outputDir, "cli", "__tests__", "__unit__");
 
-    // 1. Generate the shared LocalFileHandler (covers all 4 actions)
-    const busyActionNames = localFileResource.actions
-      .filter(a => a.options.some(o => o.name === "busy"))
-      .map(a => a.name);
-    const handlerContext = { actions: localFileResource.actions, busyActionNames };
-    this.generateFromTemplate(
-      "cli/localfile.handler.hbs",
-      path.join(cliSrcDir, "common", "LocalFileHandler.ts"),
-      handlerContext
-    );
-    console.log("  ✓ cli/src/common/LocalFileHandler.ts");
+    // ── 1. Shared LocalFileHandler (Pattern A) ──────────────────────────────
+    const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
+    if (localFileResource) {
+      const busyActionNames = localFileResource.actions
+        .filter(a => a.options.some(o => o.name === "busy"))
+        .map(a => a.name);
+      this.generateFromTemplate(
+        "cli/localfile.handler.hbs",
+        path.join(cliSrcDir, "common", "LocalFileHandler.ts"),
+        { actions: localFileResource.actions, busyActionNames }
+      );
+      console.log("  ✓ cli/src/common/LocalFileHandler.ts");
+    }
 
-    // 2. Generate the full en.ts i18n strings file
-    this.generateFromTemplate(
-      "cli/en.ts.hbs",
-      path.join(cliSrcDir, "-strings-", "en.ts"),
-      {}
-    );
+    // ── 2. i18n strings ─────────────────────────────────────────────────────
+    this.generateFromTemplate("cli/en.ts.hbs", path.join(cliSrcDir, "-strings-", "en.ts"), {});
     console.log("  ✓ cli/src/-strings-/en.ts");
 
-    // Groups whose enable/disable group definition files are owned by codegen.
-    // open/close are manually maintained and must not be overwritten.
-    const GROUPS_OWNED_BY_CODEGEN = new Set(["enable", "disable"]);
+    // ── 3. Build a per-group map: group → [CLIResourceEntry] ─────────────────
+    // Each entry carries everything a template needs to render one resource cmd.
+    interface CLIResourceEntry {
+      resourceName: string;
+      cliName: string;           // e.g. "CICSLocalFile", "program", "urimap-server"
+      cliAliases: string[];
+      cliPositionalName: string; // camelCase positional arg
+      resourceClass: string;     // PascalCase, e.g. "LocalFile", "UrimapServer"
+      resourceDir: string;       // subdir inside group, e.g. "localFile", "urimap-server"
+      definitionExport: string;  // e.g. "LocalFileDefinition"
+      definitionFile: string;    // filename without .ts, e.g. "LocalFile.definition"
+      useSharedHandler: boolean;
+      sdkFunction: string;
+      stringsGroupKey: string;   // e.g. "ENABLE"
+      stringsResourceKey: string;// e.g. "CICSLOCALFILE", "URIMAP"
+      stringsImportPath: string; // relative from handler/definition file
+      cicsBaseHandlerImport: string;
+      actionVerb: string;
+      humanName: string;
+      hasBusyOption: boolean;
+      noCicsPlex: boolean;
+      isWebserviceAction: boolean;
+      isGetAction: boolean;
+      actionOptions: CLIOption[];
+      extraPositionals: CLIPositional[];
+      sdkCallParams: { name: string; argName: string }[];
+      exampleOptions: string;
+      // for group.definition context
+      actionGroup: string;
+    }
 
-    for (const action of localFileResource.actions) {
-      const group = action.identifier.group;
-      if (!GROUPS_OWNED_BY_CODEGEN.has(group)) { continue; }
+    interface CLIOption {
+      name: string;              // sdk param name
+      cliOptionName: string;     // kebab-case CLI option name
+      cliAliases: string[];
+      stringsKey: string;        // UPPERCASE key in strings.OPTIONS
+      type: string;
+      defaultValue?: string | number | boolean;
+      allowableValues?: string[];
+      caseSensitive?: boolean;
+      required?: boolean;
+      argName: string;           // camelCase for params.arguments
+    }
 
-      const hasBusyOption = action.options.some(o => o.name === "busy");
-      const aliases = action.identifier.aliases ?? [];
-      const context = {
-        ...localFileResource,
-        ...action,
+    interface CLIPositional {
+      name: string;              // camelCase argument name
+      stringsKey: string;        // UPPERCASE strings key
+    }
+
+    const groupMap = new Map<string, CLIResourceEntry[]>();
+
+    // Iterate over RAW spec resources (not derived) to access urimapVariant and other spec-only fields
+    for (const [resourceName, specResource] of Object.entries(this.spec.resources)) {
+      // Find the corresponding derived resource for SDK-derived properties
+      const resource = derivedResources.find(r => r.name === resourceName)!;
+      if (!resource) continue;
+
+      const rid = specResource.identifier;
+
+      // Skip resources that have no CLI metadata — they are SDK-only for now.
+      // A resource opts into CLI generation by setting cliName or useSharedHandler.
+      if (!rid.cliName && !rid.useSharedHandler) continue;
+
+      const isShared = !!rid.useSharedHandler;
+      const cliPositionalName = rid.cliPositionalName ?? this.camelCase(rid.primaryKey);
+
+      for (const rawAction of specResource.actions) {
+        // Resolve action definition
+        let actionDef: ActionDefinition;
+        if (typeof rawAction === "string") {
+          if (!this.spec.actions?.[rawAction]) {
+            throw new Error(`Action "${rawAction}" not found in spec.actions`);
+          }
+          actionDef = this.spec.actions[rawAction];
+        } else {
+          actionDef = rawAction as ActionDefinition;
+        }
+
+        const group = actionDef.identifier.group;
+        const groupMeta = this.spec.groupMeta?.[group];
+        const stringsGroupKey = groupMeta?.stringsKey ?? group.replace(/-/g, "").toUpperCase();
+
+        // Determine CLI command name (may differ for urimap variants)
+        const variant = actionDef.urimapVariant;
+        const baseCliName = rid.cliName ?? rid.humanNameSingular.toLowerCase();
+        const cliName = variant ? `${baseCliName}-${variant}` : baseCliName;
+
+        // PascalCase resource class name — use spec override if present
+        const resourceClass = rid.cliClass
+          ? (variant ? this.toPascalCase(`${rid.cliClass} ${variant}`) : rid.cliClass)
+          : this.toPascalCase(cliName.replace(/-/g, " "));
+
+        // Sub-directory inside the group dir — use spec override if present
+        const resourceDir = rid.cliDir
+          ? (variant ? `${rid.cliDir}-${variant}` : rid.cliDir)
+          : cliName;
+
+        // strings resource key: UPPERCASE, no dashes
+        // For shared handler, it's the resource name without CICS prefix
+        const stringsResourceKey = isShared
+          ? resource.name.replace(/^CICS/, "").toUpperCase()
+          : (variant
+              ? `${baseCliName.replace(/-/g, "")}${variant}`.toUpperCase()
+              : baseCliName.replace(/-/g, "").toUpperCase());
+
+        // Import depth: from src/<group>/<resourceDir>/ → src/-strings-/en
+        const stringsImportPath = "../../-strings-/en";
+        const cicsBaseHandlerImport = "../../CicsBaseHandler";
+
+        // Resolve SDK function name
+        let sdkFunction: string;
+        if (actionDef.sdkFunction) {
+          sdkFunction = actionDef.sdkFunction;
+        } else {
+          const actionLower = actionDef.identifier.name.toLowerCase().replace(/_/g, "");
+          sdkFunction = `${actionLower}${resource.sdkFileName}`;
+          if (variant) {
+            sdkFunction = `${actionLower}${resource.sdkFileName}${this.capitalize(variant)}`;
+          }
+        }
+
+        // Resolve options (non-positional, non-busy CLI options)
+        const actionOptions: CLIOption[] = [];
+        const rawOptions = actionDef.options ?? [];
+        for (const rawOpt of rawOptions) {
+          let optDef: OptionDefinition;
+          if (typeof rawOpt === "string") {
+            if (!this.spec.options?.[rawOpt]) continue;
+            optDef = this.spec.options[rawOpt];
+          } else {
+            optDef = rawOpt;
+          }
+          if (optDef.isPositional) continue; // handled separately as extra positionals
+          const cliOptName = optDef.cliName ?? this.toKebabCase(optDef.name);
+          const cliOptAliases = optDef.cliAliases ?? [];
+          actionOptions.push({
+            name: optDef.name,
+            cliOptionName: cliOptName,
+            cliAliases: cliOptAliases,
+            stringsKey: (optDef.cliName ?? optDef.name).replace(/-/g, "").toUpperCase(),
+            type: optDef.type,
+            defaultValue: optDef.defaultValue,
+            allowableValues: optDef.allowableValues,
+            caseSensitive: optDef.caseSensitive,
+            required: optDef.required,
+            argName: this.camelCase(cliOptName),
+          });
+        }
+
+        // Resolve extra positionals
+        const extraPositionals: CLIPositional[] = [];
+        for (const posRef of (actionDef.extraPositionals ?? [])) {
+          if (!this.spec.options?.[posRef]) continue;
+          const posDef = this.spec.options[posRef];
+          extraPositionals.push({
+            name: posDef.name,
+            stringsKey: posDef.name.toUpperCase(),
+          });
+        }
+
+        // Build SDK call params list (for the handler template)
+        const sdkCallParams: { name: string; argName: string }[] = [];
+        // Extra positionals → SDK params
+        for (const ep of extraPositionals) {
+          sdkCallParams.push({ name: ep.name, argName: ep.name });
+        }
+        // Action options → SDK params
+        for (const opt of actionOptions) {
+          sdkCallParams.push({ name: opt.name, argName: opt.argName });
+        }
+
+        // Example options string
+        const mainArg = cliPositionalName === "name" ? "MYGRP" :
+          cliPositionalName === "resourceName" ? "CICSProgram" :
+          cliPositionalName.includes("urimap") ? "URIMAPA" :
+          cliPositionalName.includes("bundle") ? "BND123" :
+          cliPositionalName.includes("webservice") ? "WEBSVCA" :
+          cliPositionalName.includes("transaction") ? "TRN1" :
+          cliPositionalName.includes("program") ? "PGM123" :
+          cliPositionalName.includes("file") ? "TESTFILE" :
+          "MYRESOURCE";
+        const hasBusy = rawOptions.includes("BUSY") || (typeof rawOptions[0] !== "string" && (rawOptions as OptionDefinition[]).some(o => o.name === "busy"));
+        const exampleOptions = `${mainArg} --region-name MYREGION`;
+
+        const entry: CLIResourceEntry = {
+          resourceName: resource.name,
+          cliName,
+          cliAliases: rid.cliAliases ?? [],
+          cliPositionalName,
+          resourceClass,
+          resourceDir,
+          definitionExport: `${resourceClass}Definition`,
+          definitionFile: `${resourceClass}.definition`,
+          useSharedHandler: isShared,
+          sdkFunction,
+          stringsGroupKey,
+          stringsResourceKey,
+          stringsImportPath,
+          cicsBaseHandlerImport,
+          actionVerb: actionDef.identifier.verb,
+          humanName: resource.humanName,
+          hasBusyOption: !!hasBusy,
+          noCicsPlex: !!actionDef.noCicsPlex,
+          isWebserviceAction: !!actionDef.webserviceAction,
+          isGetAction: !!actionDef.getAction,
+          actionOptions,
+          extraPositionals,
+          sdkCallParams,
+          exampleOptions,
+          actionGroup: group,
+        };
+
+        if (!groupMap.has(group)) groupMap.set(group, []);
+        groupMap.get(group)!.push(entry);
+      }
+    }
+
+    // ── 4. For each action group: render definitions, handlers, group def ─────
+    for (const [group, entries] of groupMap.entries()) {
+      const groupMeta = this.spec.groupMeta?.[group];
+      const stringsKey = groupMeta?.stringsKey ?? group.replace(/-/g, "").toUpperCase();
+      const groupAliases = groupMeta?.aliases ?? [];
+      const capitalize = this.capitalize.bind(this);
+      const groupDirName = group;
+
+      // Build imports array for group definition template
+      const imports = entries.map(e => ({
+        exportName: e.definitionExport,
+        dir: e.resourceDir,
+        file: e.definitionFile,
+      }));
+
+      // Group definition file
+      const groupDefFile = path.join(
+        cliSrcDir, groupDirName,
+        `${this.toPascalCase(group.replace(/-/g, " "))}.definition.ts`
+      );
+      this.generateFromTemplate("cli/group.definition.hbs", groupDefFile, {
+        groupName: group,
+        aliases: groupAliases,
+        stringsKey,
+        imports,
+      });
+      console.log(`  ✓ cli/src/${group}/${path.basename(groupDefFile)}`);
+
+      // Group definition unit test
+      const groupTestDir = path.join(cliTestDir, groupDirName);
+      this.ensureDir(groupTestDir);
+      const groupTestFile = path.join(groupTestDir,
+        `${this.toPascalCase(group.replace(/-/g, " "))}.definition.unit.test.ts`);
+      this.generateFromTemplate("tests/cli.group.definition.unit.test.hbs", groupTestFile, {
         actionGroup: group,
-        actionPastTense: action.actionPastTense,
-        hasBusyOption,
-        aliases,
-        sdkFunction: action.sdkFunction,
-        // LocalFile + Urimap = 2 children in the group definition
-        resourcesCount: 2,
-      };
+        capitalize,
+        resourcesCount: entries.length,
+        stringsKey,
+        groupClassName: this.toPascalCase(group.replace(/-/g, " ")),
+      });
+      console.log(`  ✓ cli/__tests__/__unit__/${group}/${path.basename(groupTestFile)}`);
 
-      // 3. LocalFile definition
-      const defDir = path.join(cliSrcDir, group, "localFile");
-      this.ensureDir(defDir);
-      this.generateFromTemplate(
-        "cli/localfile.definition.hbs",
-        path.join(defDir, "LocalFile.definition.ts"),
-        context
-      );
-      console.log(`  ✓ cli/src/${group}/localFile/LocalFile.definition.ts`);
+      // Per-resource files
+      for (const entry of entries) {
+        const resDir = path.join(cliSrcDir, groupDirName, entry.resourceDir);
+        this.ensureDir(resDir);
+        const resTestDir = path.join(cliTestDir, groupDirName, entry.resourceDir);
+        this.ensureDir(resTestDir);
 
-      // 4. Group definition (top-level <Group>.definition.ts)
-      this.generateFromTemplate(
-        "cli/group.definition.hbs",
-        path.join(cliSrcDir, group, `${this.capitalize(group)}.definition.ts`),
-        context
-      );
-      console.log(`  ✓ cli/src/${group}/${this.capitalize(group)}.definition.ts`);
+        if (entry.useSharedHandler) {
+          // Pattern A: only render the definition file; handler already generated
+          this.generateFromTemplate("cli/localfile.definition.hbs", path.join(resDir, `${entry.resourceClass}.definition.ts`), {
+            ...entry,
+            actionGroup: group,
+          });
+          console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
 
-      // 5. CLI unit test – handler
-      const testHandlerDir = path.join(cliTestDir, group, "localFile");
-      this.ensureDir(testHandlerDir);
-      this.generateFromTemplate(
-        "tests/cli.localfile.handler.unit.test.hbs",
-        path.join(testHandlerDir, "LocalFile.handler.unit.test.ts"),
-        context
-      );
-      console.log(`  ✓ cli/__tests__/__unit__/${group}/localFile/LocalFile.handler.unit.test.ts`);
+          // Handler unit test (shared handler test)
+          const localFileDerivedAction = localFileResource?.actions.find(a => a.identifier.group === group);
+          if (localFileDerivedAction) {
+            this.generateFromTemplate("tests/cli.localfile.handler.unit.test.hbs",
+              path.join(resTestDir, `${entry.resourceClass}.handler.unit.test.ts`),
+              {
+                ...entry,
+                actionGroup: group,
+                sdkFunction: localFileDerivedAction.sdkFunction,
+                hasBusyOption: localFileDerivedAction.options.some(o => o.name === "busy"),
+              });
+            console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
+          }
+        } else {
+          // Pattern B: render both definition and handler
+          this.generateFromTemplate("cli/resource.definition.hbs",
+            path.join(resDir, `${entry.resourceClass}.definition.ts`), entry);
+          console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
 
-      // 6. CLI unit test – group definition
-      const testGroupDir = path.join(cliTestDir, group);
-      this.ensureDir(testGroupDir);
-      this.generateFromTemplate(
-        "tests/cli.group.definition.unit.test.hbs",
-        path.join(testGroupDir, `${this.capitalize(group)}.definition.unit.test.ts`),
-        context
-      );
-      console.log(`  ✓ cli/__tests__/__unit__/${group}/${this.capitalize(group)}.definition.unit.test.ts`);
+          this.generateFromTemplate("cli/resource.handler.hbs",
+            path.join(resDir, `${entry.resourceClass}.handler.ts`), entry);
+          console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.ts`);
+        }
+      }
     }
 
     console.log("✅ CLI layer generated");
+  }
+
+  /** Convert a space-separated or camelCase string to PascalCase */
+  private toPascalCase(str: string): string {
+    return str
+      .split(/[\s-_]+/)
+      .map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+      .join("")
+      .replace(/^(.)/, c => c.toUpperCase());
+  }
+
+  /** Convert a camelCase or PascalCase string to kebab-case */
+  private toKebabCase(str: string): string {
+    return str
+      .replace(/([a-z])([A-Z])/g, "$1-$2")
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
+      .toLowerCase();
+  }
+
+  /** camelCase from any string */
+  private camelCase(str: string): string {
+    return str
+      .toLowerCase()
+      .replace(/[-\s_]([a-z])/g, (_, c) => c.toUpperCase());
   }
 
   /** Capitalise the first letter of a string */
