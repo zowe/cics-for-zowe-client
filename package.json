@@ -35,7 +35,7 @@
     "@types/xml2js": "^0.4.4",
     "@types/yargs": "^17.0.24",
     "@zowe/cli-test-utils": "^8.0.0",
-    "@zowe/imperative": "^8.33.0",
+    "@zowe/imperative": "^8.34.0",
     "@zowe/zowe-explorer-api": "^3.5.1",
     "chalk": "^4.1.2",
     "diff": "^8.0.3",
