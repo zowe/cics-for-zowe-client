@@ -87,6 +87,23 @@ describe("Test suite for CICSRegionsContainer", () => {
       expect(newContainer.activeFilter).toBe("TEST*");
       expect(newContainer.contextValue).toBe("cicsregionscontainer.FILTERED");
     });
+
+    it("should set activeFilter to * when parent has a group name", () => {
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue("MYGROUP");
+      const newContainer = new CICSRegionsContainer(plexTree);
+      expect(newContainer.activeFilter).toBe("*");
+      expect(newContainer.contextValue).toBe("cicsregionscontainer.");
+    });
+
+    it("should set activeFilter to * when profile has no cicsPlex", () => {
+      jest.spyOn(plexTree, "getProfile").mockReturnValue({
+        ...profile,
+        profile: { ...profile.profile, cicsPlex: undefined },
+      } as imperative.IProfileLoaded);
+      const newContainer = new CICSRegionsContainer(plexTree);
+      expect(newContainer.activeFilter).toBe("*");
+      expect(newContainer.contextValue).toBe("cicsregionscontainer.");
+    });
   });
 
   describe("Test suite for filterRegions", () => {
@@ -243,6 +260,22 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       expect(regionsContainer.children.length).toBe(1);
       expect(regionsContainer.children[0].getRegionName()).toBe("SINGLE");
+    });
+
+    it("should clear tooltip when no incomplete results in loadRegionsInCICSGroup", async () => {
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInCICSGroup();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
     });
 
     it("should handle error using centralized error handler in loadRegionsInCICSGroup", async () => {
@@ -599,6 +632,26 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       expect(getRegionInfoSpy).toHaveBeenCalled();
     });
+
+    it("should not reload regions when activeFilter is * and children already exist", async () => {
+      const profileWithRegionAndPlex = {
+        ...profile,
+        profile: { ...profile.profile, regionName: "TESTREGION", cicsPlex: "TESTPLEX" },
+      } as imperative.IProfileLoaded;
+
+      jest.spyOn(plexTree, "getProfile").mockReturnValue(profileWithRegionAndPlex);
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue(undefined);
+
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, "getRegionInfoInPlex");
+      const mockRegionTree = { getRegionName: () => "TEST" } as Partial<CICSRegionTree> as CICSRegionTree;
+      regionsContainer.children = [mockRegionTree];
+      regionsContainer.activeFilter = "*";
+
+      const children = await regionsContainer.getChildren();
+
+      expect(getRegionInfoSpy).not.toHaveBeenCalled();
+      expect(children.length).toBe(1);
+    });
   });
 
   describe("Test suite for updateDescription", () => {
@@ -864,6 +917,22 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       await regionsContainer.loadRegionsInPlex();
 
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should not set tooltip when apiResponse has no resultsummary", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: { response: { records: { cicsregion: record } } },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn();
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      // When resultsummary is absent, buildIncompleteResultsTooltip is not called and tooltip stays unset
+      expect(CICSErrorHandler.buildIncompleteResultsTooltip).not.toHaveBeenCalled();
       expect(regionsContainer.tooltip).toBeUndefined();
     });
   });
