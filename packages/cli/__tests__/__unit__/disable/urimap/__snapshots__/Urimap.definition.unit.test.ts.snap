@@ -17,6 +17,11 @@ exports[`cics disable urimap should not have changed 1`] = `
       "name": "region-name",
       "type": "string",
     },
+    {
+      "description": "The name of the CICSPlex in which to disable the urimap",
+      "name": "cics-plex",
+      "type": "string",
+    },
   ],
   "positionals": [
     {

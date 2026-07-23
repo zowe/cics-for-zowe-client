@@ -43,6 +43,7 @@ export default class UrimapHandler extends CicsBaseHandler {
     const response = await enableUrimap(session, {
       name: params.arguments.urimapName,
       regionName: params.arguments.regionName,
+      cicsPlex: params.arguments.cicsPlex,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.urimapName);

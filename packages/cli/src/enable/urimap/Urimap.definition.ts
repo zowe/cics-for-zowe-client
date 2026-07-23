@@ -45,6 +45,11 @@ export const UrimapDefinition: ICommandDefinition = {
       description: strings.OPTIONS.REGIONNAME,
       type: "string",
     },
+    {
+      name: "cics-plex",
+      description: strings.OPTIONS.CICSPLEX,
+      type: "string",
+    },
   ],
   profile: { optional: ["cics"] },
   examples: [

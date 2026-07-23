@@ -90,7 +90,6 @@
             "verbPastTense": "enabled"
           },
           "options": [],
-          "noCicsPlex": true,
           "sdkFunction": "enableUrimap",
           "updateAttribute": {
             "field": "ENABLESTATUS",
@@ -107,7 +106,6 @@
             "verbPastTense": "disabled"
           },
           "options": [],
-          "noCicsPlex": true,
           "sdkFunction": "disableUrimap",
           "updateAttribute": {
             "field": "ENABLESTATUS",
