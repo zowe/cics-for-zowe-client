@@ -2,7 +2,7 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
-## Recent Changes
+## `3.23.0`
 
 - Enhancement: Added Resource Inspector actions for library, tasks, JVM Servers, JVM Endpoint, TCPIP Services and URI Maps. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
 - Enhancement: Added Recent Resources QuickPick for Inspect and Compare Resource commands. Shows last 5 resources per type with free-text entry support. [#649](https://github.com/zowe/cics-for-zowe-client/issues/649)
