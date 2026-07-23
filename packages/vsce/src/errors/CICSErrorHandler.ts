@@ -130,6 +130,16 @@ export class CICSErrorHandler {
   }
 
   /**
+   * Returns true when the CMCI response code is NOTPERMIT.
+   * In that case we decorate the tree item with a tooltip instead of popping
+   * an error notification — the condition is advisory for the user, not a
+   * hard failure that requires immediate attention.
+   */
+  private static shouldDecorateInsteadOfNotify(resultsummary: ICMCIResponseResultSummary | null | undefined): boolean {
+    return !!resultsummary && resultsummary.api_response1 === String(CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT);
+  }
+
+  /**
    * Show error message with documentation link
    * @param resultsummary - The result summary containing error details
    * @param resourceType - The resource type for documentation URL generation
@@ -143,7 +153,7 @@ export class CICSErrorHandler {
     const message = CICSExtensionError.formatDetailedErrorMessage(resultsummary, profileName);
     const formattedMessage = this.formatMessageWithDocLink(message, resourceType);
     CICSLogger.error(formattedMessage);
-    if (resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT)) {
+    if (!this.shouldDecorateInsteadOfNotify(resultsummary)) {
       window.showErrorMessage(formattedMessage);
     }
   }
@@ -155,7 +165,7 @@ export class CICSErrorHandler {
    * @returns MarkdownString tooltip, or undefined if no error in summary
    */
   static buildIncompleteResultsTooltip(resultsummary: ICMCIResponseResultSummary): MarkdownString | undefined {
-    if (!resultsummary || resultsummary.api_response1 !== String(CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT)) {
+    if (!this.shouldDecorateInsteadOfNotify(resultsummary)) {
       return undefined;
     }
 

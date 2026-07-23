@@ -635,7 +635,128 @@ describe("CICSErrorHandler", () => {
     });
   });
 
+  /**
+   * shouldDecorateInsteadOfNotify is private, so it is exercised through the
+   * two public entry-points that call it:
+   *   • showErrorWithDocLink  (via handleErrorIfPresent)
+   *   • buildIncompleteResultsTooltip
+   *
+   * The describe block below covers every distinct input class of the helper.
+   */
+  describe("shouldDecorateInsteadOfNotify (via public surface)", () => {
+    const NOTPERMIT_CODE = "1031";   // CicsCmciConstants.RESPONSE_1_CODES.NOTPERMIT
+    const OTHER_ERROR_CODE = "1028"; // e.g. INVALIDPARM — any non-NOTPERMIT, non-OK code
 
+    // ── helpers ──────────────────────────────────────────────────────────────
+
+    /** Build a minimal resultsummary with the given resp1 code */
+    function makeSummary(api_response1: string) {
+      return {
+        api_response1,
+        api_response1_alt: "ALT",
+        api_response2: "0",
+        api_response2_alt: "OK",
+        recordcount: "5",
+        displayed_recordcount: "5",
+      } as any;
+    }
+
+    /** Build a full API response wrapper around the summary */
+    function makeApiResponse(summary: ReturnType<typeof makeSummary>) {
+      return {
+        response: {
+          resultsummary: summary,
+          records: { cicsprogram: [{ program: "PROG1" }] },
+        },
+      };
+    }
+
+    // ── true branch: NOTPERMIT ────────────────────────────────────────────────
+
+    it("returns true for NOTPERMIT — buildIncompleteResultsTooltip returns a tooltip", () => {
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(makeSummary(NOTPERMIT_CODE));
+      expect(tooltip).toBeDefined();
+    });
+
+    it("returns true for NOTPERMIT — showErrorWithDocLink does NOT call window.showErrorMessage", () => {
+      const mockShowErrorMessage = jest.fn();
+      jest.spyOn(require("vscode").window, "showErrorMessage").mockImplementation(mockShowErrorMessage);
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+
+      CICSErrorHandler.handleErrorIfPresent(makeApiResponse(makeSummary(NOTPERMIT_CODE)));
+
+      expect(mockShowErrorMessage).not.toHaveBeenCalled();
+    });
+
+    // ── false branch: non-NOTPERMIT error ────────────────────────────────────
+
+    it("returns false for a non-NOTPERMIT error — buildIncompleteResultsTooltip returns undefined", () => {
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(makeSummary(OTHER_ERROR_CODE));
+      expect(tooltip).toBeUndefined();
+    });
+
+    it("returns false for a non-NOTPERMIT error — showErrorWithDocLink DOES call window.showErrorMessage", () => {
+      const mockShowErrorMessage = jest.fn();
+      jest.spyOn(require("vscode").window, "showErrorMessage").mockImplementation(mockShowErrorMessage);
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+
+      CICSErrorHandler.handleErrorIfPresent(makeApiResponse(makeSummary(OTHER_ERROR_CODE)));
+
+      expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+    });
+
+    // ── false branch: OK response ─────────────────────────────────────────────
+
+    it("returns false for OK code — buildIncompleteResultsTooltip returns undefined", () => {
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(makeSummary("1024"));
+      expect(tooltip).toBeUndefined();
+    });
+
+    // ── false branch: null / undefined ───────────────────────────────────────
+
+    it("returns false for null — buildIncompleteResultsTooltip returns undefined", () => {
+      expect(CICSErrorHandler.buildIncompleteResultsTooltip(null as any)).toBeUndefined();
+    });
+
+    it("returns false for undefined — buildIncompleteResultsTooltip returns undefined", () => {
+      expect(CICSErrorHandler.buildIncompleteResultsTooltip(undefined as any)).toBeUndefined();
+    });
+
+    // ── both call-sites must agree on the same decision ───────────────────────
+
+    it("both call-sites agree: NOTPERMIT → tooltip defined AND no error notification", () => {
+      const mockShowErrorMessage = jest.fn();
+      jest.spyOn(require("vscode").window, "showErrorMessage").mockImplementation(mockShowErrorMessage);
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+
+      const summary = makeSummary(NOTPERMIT_CODE);
+
+      // buildIncompleteResultsTooltip path
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
+      expect(tooltip).toBeDefined();
+
+      // showErrorWithDocLink path (via handleErrorIfPresent)
+      CICSErrorHandler.handleErrorIfPresent(makeApiResponse(summary));
+      expect(mockShowErrorMessage).not.toHaveBeenCalled();
+    });
+
+    it("both call-sites agree: non-NOTPERMIT → tooltip undefined AND error notification shown", () => {
+      const mockShowErrorMessage = jest.fn();
+      jest.spyOn(require("vscode").window, "showErrorMessage").mockImplementation(mockShowErrorMessage);
+      mockGenerateDocumentationURL.mockReturnValue(undefined);
+
+      const summary = makeSummary(OTHER_ERROR_CODE);
+
+      // buildIncompleteResultsTooltip path
+      const tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
+      expect(tooltip).toBeUndefined();
+
+      // showErrorWithDocLink path (via handleErrorIfPresent)
+      CICSErrorHandler.handleErrorIfPresent(makeApiResponse(summary));
+      expect(mockShowErrorMessage).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 
