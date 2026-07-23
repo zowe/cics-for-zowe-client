@@ -21,6 +21,7 @@ import { ProgramMeta, type IResourceMeta } from "../../../src/doc";
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 
 jest.spyOn(PersistentStorage, "getCriteria").mockReturnValue(undefined);
+jest.spyOn(PersistentStorage, "getLoadedCICSProfiles").mockReturnValue([]);
 
 const region = {
   cicsname: "cics",
@@ -41,13 +42,30 @@ describe("Test suite for CICSRegionTree", () => {
   let cicsTree: CICSTree;
   let sessionTree: CICSSessionTree;
   let regionTree: CICSRegionTree;
+  let configSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    configSpy = jest.spyOn(workspace, "getConfiguration").mockImplementation((schema?: string) => {
+      if (schema === "zowe.cics.resources") {
+        const resMap = new Map<string, boolean>([
+          ["Program", true], ["Transaction", false], ["LocalFile", false],
+          ["Task", true], ["Library", true], ["Pipeline", true],
+          ["TCP/IPService", true], ["URIMap", true], ["WebService", true],
+          ["JVMServer", true], ["Bundle", true], ["TSQueue", true],
+        ]);
+        return resMap as any;
+      }
+      return { get: jest.fn(), update: jest.fn(), has: jest.fn(), inspect: jest.fn() } as any;
+    });
     cicsTree = new CICSTree();
     sessionTree = new CICSSessionTree(profile, cicsTree);
     regionTree = new CICSRegionTree("regionName", region, sessionTree, undefined, sessionTree);
 
     expect(regionTree.isActive).toBeTruthy();
+  });
+
+  afterEach(() => {
+    configSpy?.mockRestore();
   });
 
   it("Should load region Tree when cicsstate is DISABLED", () => {
@@ -212,4 +230,5 @@ describe("Test suite for CICSRegionTree", () => {
 
     getConfigSpy.mockRestore();
   });
+
 });
