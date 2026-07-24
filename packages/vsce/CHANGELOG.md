@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added Resource Inspector actions for pipelines and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
+
 ## `3.23.0`
 
 - Enhancement: Added Resource Inspector actions for library, tasks, JVM Servers, JVM Endpoint, pipelines and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)

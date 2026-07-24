@@ -65,6 +65,39 @@
         "bodyFileName": "CICSPipeline/MYPIPE1/remove-cache.xml",
         "headers": { "Content-Type": "text/xml" }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSPipeline/MYPLEX1/MYREG1?CRITERIA=(name%3DMYPIPE2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE2/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPE2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE2/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/PIPE2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSPipeline/MYPIPE2/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
     }
   ]
 }

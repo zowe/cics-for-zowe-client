@@ -208,6 +208,26 @@ test.describe("Resource Inspector Actions - Pipeline", () => {
 
     expect(await getClipboardContent(page)).toEqual("MYPIPE1");
   });
+
+  test("should compare Pipeline MYPIPE1 to MYPIPE2 from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
+
+    // Select region: "Other CICS Region" → profile → plex → region
+    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
+    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
+
+    // Enter the second resource name to compare against
+    await page.locator("input.input").fill(constants.PIPELINE_2_NAME);
+    await page.keyboard.press("Enter");
+
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE1" }).first()).toBeVisible({ timeout: 10000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE2" }).first()).toBeVisible({ timeout: 10000 });
+  });
 });
 
 test.describe("Resource Inspector Actions - Web Service", () => {
@@ -227,6 +247,26 @@ test.describe("Resource Inspector Actions - Web Service", () => {
     await page.waitForTimeout(200);
 
     expect(await getClipboardContent(page)).toEqual("MYWS1");
+  });
+
+  test("should compare Web Service MYWS1 to MYWS2 from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Web Services", constants.WEBSERVICE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
+
+    // Select region: "Other CICS Region" → profile → plex → region
+    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
+    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
+
+    // Enter the second resource name to compare against
+    await page.locator("input.input").fill(constants.WEBSERVICE_2_NAME);
+    await page.keyboard.press("Enter");
+
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS1" }).first()).toBeVisible({ timeout: 10000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS2" }).first()).toBeVisible({ timeout: 10000 });
   });
 });
 

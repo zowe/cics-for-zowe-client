@@ -65,6 +65,39 @@
         "bodyFileName": "CICSWebService/MYWS1/remove-cache.xml",
         "headers": { "Content-Type": "text/xml" }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSWebService/MYPLEX1/MYREG1?CRITERIA=(name%3DMYWS2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS2/summary.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WS2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS2/records.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/WS2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSWebService/MYWS2/remove-cache.xml",
+        "headers": { "Content-Type": "text/xml" }
+      }
     }
   ]
 }
