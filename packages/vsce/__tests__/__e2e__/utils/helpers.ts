@@ -55,12 +55,6 @@ export const constants = {
   PIPELINE_2_NAME: "MYPIPE2",
   WEBSERVICE_1_NAME: "MYWS1",
   WEBSERVICE_2_NAME: "MYWS2",
-  TCPIP_1_NAME: "MYTCPIP1 [Port #8080]",
-  TCPIP_2_NAME: "MYTCPIP2 [Port #9090]",
-  URIMAP_1_NAME: "URI1",
-  URIMAP_1_FULL_NAME: "URI1 [HTTPS] (/test)",
-  URIMAP_2_NAME: "URI2",
-  URIMAP_2_FULL_NAME: "URI2 [HTTP] (/test2)",
   JVM_SERVER_DISABLE_ERROR_MESSAGE: `Failed to DISABLE JVMSERVER MYJVM1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 10. Please refer to the IBM documentation for additional details`,
   BUNDLE_ENABLE_ERROR_MESSAGE: `Failed to ENABLE  BUNDLE MYBUNDLE1 on profile wiremock_localhost with API: PERFORM SET, RESP: 16 (INVREQ) and RESP2: 6.
   Please refer to the IBM documentation for additional details`,
