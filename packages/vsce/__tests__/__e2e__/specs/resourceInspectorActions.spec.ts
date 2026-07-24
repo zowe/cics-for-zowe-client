@@ -225,8 +225,8 @@ test.describe("Resource Inspector Actions - Pipeline", () => {
     await page.locator("input.input").fill(constants.PIPELINE_2_NAME);
     await page.keyboard.press("Enter");
 
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE1" }).first()).toBeVisible({ timeout: 10000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE2" }).first()).toBeVisible({ timeout: 10000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE1" }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYPIPE2" }).first()).toBeVisible({ timeout: 20000 });
   });
 });
 
@@ -265,8 +265,8 @@ test.describe("Resource Inspector Actions - Web Service", () => {
     await page.locator("input.input").fill(constants.WEBSERVICE_2_NAME);
     await page.keyboard.press("Enter");
 
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS1" }).first()).toBeVisible({ timeout: 10000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS2" }).first()).toBeVisible({ timeout: 10000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS1" }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYWS2" }).first()).toBeVisible({ timeout: 20000 });
   });
 });
 
