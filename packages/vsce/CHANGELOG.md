@@ -2,9 +2,13 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added Resource Inspector actions for pipelines and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
+
 ## `3.23.0`
 
-- Enhancement: Added Resource Inspector actions for library, tasks, JVM Servers, JVM Endpoint, TCPIP Services and URI Maps. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
+- Enhancement: Added Resource Inspector actions for library, tasks, JVM Servers, JVM Endpoint, pipelines and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
 - Enhancement: Added Recent Resources QuickPick for Inspect and Compare Resource commands. Shows last 5 resources per type with free-text entry support. [#649](https://github.com/zowe/cics-for-zowe-client/issues/649)
 - Enhancement: When a filter is applied from Zowe config file, a visual indicator shows the filter is active, the filter can be cleared, and it persists when the tree reopens. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
 - Enhancement: Added "Show in table view" to CICS tree. [#113](https://github.com/zowe/cics-for-zowe-client/issues/113)
