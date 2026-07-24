@@ -10,6 +10,7 @@
  */
 
 import { ExtensionContext, window } from "vscode";
+import { MarkdownString } from "vscode";
 import { CICSSessionTree } from "../../../src/trees";
 import { CICSPlexTree } from "../../../src/trees/CICSPlexTree";
 import { CICSRegionsContainer } from "../../../src/trees/CICSRegionsContainer";
@@ -85,6 +86,23 @@ describe("Test suite for CICSRegionsContainer", () => {
       const newContainer = new CICSRegionsContainer(plexTree, "TEST*");
       expect(newContainer.activeFilter).toBe("TEST*");
       expect(newContainer.contextValue).toBe("cicsregionscontainer.FILTERED");
+    });
+
+    it("should set activeFilter to * when parent has a group name", () => {
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue("MYGROUP");
+      const newContainer = new CICSRegionsContainer(plexTree);
+      expect(newContainer.activeFilter).toBe("*");
+      expect(newContainer.contextValue).toBe("cicsregionscontainer.");
+    });
+
+    it("should set activeFilter to * when profile has no cicsPlex", () => {
+      jest.spyOn(plexTree, "getProfile").mockReturnValue({
+        ...profile,
+        profile: { ...profile.profile, cicsPlex: undefined },
+      } as imperative.IProfileLoaded);
+      const newContainer = new CICSRegionsContainer(plexTree);
+      expect(newContainer.activeFilter).toBe("*");
+      expect(newContainer.contextValue).toBe("cicsregionscontainer.");
     });
   });
 
@@ -242,6 +260,22 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       expect(regionsContainer.children.length).toBe(1);
       expect(regionsContainer.children[0].getRegionName()).toBe("SINGLE");
+    });
+
+    it("should clear tooltip when no incomplete results in loadRegionsInCICSGroup", async () => {
+      getResourceMock.mockResolvedValueOnce({
+        response: {
+          resultsummary: { api_response1: "1024", api_response2: "0", recordcount: "1", displayed_recordcount: "1" },
+          records: { cicsmanagedregion: record },
+        },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInCICSGroup();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
     });
 
     it("should handle error using centralized error handler in loadRegionsInCICSGroup", async () => {
@@ -598,6 +632,26 @@ describe("Test suite for CICSRegionsContainer", () => {
 
       expect(getRegionInfoSpy).toHaveBeenCalled();
     });
+
+    it("should not reload regions when activeFilter is * and children already exist", async () => {
+      const profileWithRegionAndPlex = {
+        ...profile,
+        profile: { ...profile.profile, regionName: "TESTREGION", cicsPlex: "TESTPLEX" },
+      } as imperative.IProfileLoaded;
+
+      jest.spyOn(plexTree, "getProfile").mockReturnValue(profileWithRegionAndPlex);
+      jest.spyOn(plexTree, "getGroupName").mockReturnValue(undefined);
+
+      const getRegionInfoSpy = jest.spyOn(ProfileManagement, "getRegionInfoInPlex");
+      const mockRegionTree = { getRegionName: () => "TEST" } as Partial<CICSRegionTree> as CICSRegionTree;
+      regionsContainer.children = [mockRegionTree];
+      regionsContainer.activeFilter = "*";
+
+      const children = await regionsContainer.getChildren();
+
+      expect(getRegionInfoSpy).not.toHaveBeenCalled();
+      expect(children.length).toBe(1);
+    });
   });
 
   describe("Test suite for updateDescription", () => {
@@ -774,6 +828,112 @@ describe("Test suite for CICSRegionsContainer", () => {
       regionsContainer.activeFilter = "*";
       regionsContainer["updateLabelAndContext"]();
       expect(regionsContainer.contextValue).toBe("cicsregionscontainer.");
+    });
+  });
+
+  describe("Test suite for incomplete results tooltip", () => {
+    const notpermitApiResponse = {
+      response: {
+        resultsummary: {
+          api_response1: "1031",
+          api_response2: "1345",
+          api_response1_alt: "NOTPERMIT",
+          api_response2_alt: "USRID",
+          recordcount: "5",
+        },
+        records: { cicsmanagedregion: record },
+      },
+    };
+
+    it("should set NOTPERMIT tooltip when filterRegions returns partial-auth response", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: notpermitApiResponse,
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn().mockReturnValue(
+        Object.assign(new MarkdownString(), { value: "Retrieving these resources resulted in an error:\n\n**NOTPERMIT (1031) / USRID (1345)**\n\nVisit [IBM docs](https://example.com) for resp code details" })
+      );
+
+      await regionsContainer.filterRegions("*");
+
+      expect(regionsContainer.tooltip).toBeInstanceOf(MarkdownString);
+      const tooltipValue = (regionsContainer.tooltip as MarkdownString).value;
+      expect(tooltipValue).toContain("NOTPERMIT");
+      expect(tooltipValue).toContain("1031");
+      expect(String(regionsContainer.description)).toContain("ⓘ");
+    });
+
+    it("should clear tooltip on clean filterRegions (no error)", async () => {
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+
+      await regionsContainer.filterRegions("*");
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+      expect(String(regionsContainer.description)).not.toContain("ⓘ");
+    });
+
+    it("should set NOTPERMIT tooltip when loadRegionsInPlex returns partial-auth response", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: notpermitApiResponse,
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn().mockReturnValue(
+        Object.assign(new MarkdownString(), { value: "Retrieving these resources resulted in an error:\n\n**NOTPERMIT (1031) / USRID (1345)**" })
+      );
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeInstanceOf(MarkdownString);
+    });
+
+    it("should clear tooltip on clean loadRegionsInPlex (no error)", async () => {
+      regionsContainer.tooltip = new MarkdownString("old tooltip");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({ regions: record, apiResponse: null });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(false);
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should clear tooltip (no popup) when filterRegions throws a fatal error", async () => {
+      const networkError = new Error("Network error");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(networkError);
+
+      await regionsContainer.filterRegions("TEST*");
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should clear tooltip when loadRegionsInPlex throws a fatal error", async () => {
+      const networkError = new Error("Network error");
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockRejectedValue(networkError);
+
+      await regionsContainer.loadRegionsInPlex();
+
+      expect(regionsContainer.tooltip).toBeUndefined();
+    });
+
+    it("should not set tooltip when apiResponse has no resultsummary", async () => {
+      (ProfileManagement.getRegionInfoInPlex as jest.Mock) = jest.fn().mockResolvedValue({
+        regions: record,
+        apiResponse: { response: { records: { cicsregion: record } } },
+      });
+      (CICSErrorHandler.handleErrorIfPresent as jest.Mock) = jest.fn().mockReturnValue(true);
+      (CICSErrorHandler.buildIncompleteResultsTooltip as jest.Mock) = jest.fn();
+
+      regionsContainer.activeFilter = "*";
+      await regionsContainer.loadRegionsInPlex();
+
+      // When resultsummary is absent, buildIncompleteResultsTooltip is not called and tooltip stays unset
+      expect(CICSErrorHandler.buildIncompleteResultsTooltip).not.toHaveBeenCalled();
+      expect(regionsContainer.tooltip).toBeUndefined();
     });
   });
 

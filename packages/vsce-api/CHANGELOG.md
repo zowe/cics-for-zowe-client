@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Explorer for IBM CICS Transaction Server API will be documented in this file.
 
-## Recent Changes
+## `6.23.0`
 
 - Enhancement: Added CICSJVMEndpoint to ResourceTypes enum and ResourceTypeMap interface. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
 

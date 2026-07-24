@@ -114,7 +114,7 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   private filterItemsArr(containedResource: IContainedResource<IResource>) {
     let indexOfOutdatedResource = 0;
 
-    const filtered = this.items.filter((itm, idx) => {
+      const filtered = this.items.filter((itm, idx) => {
       // Using the resource name AND region applid as unique identifier
       const currentResName = itm.meta.getName(itm.resource);
       const currentResReg = itm.resource.attributes.eyu_cicsname;
@@ -193,12 +193,15 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.items.length === 0) {
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
-      
+
+      // Reset before checking — ensures a clean re-load clears a stale badge.
+      this.tooltip = undefined;
       // Check for errors in the API responses for each resource type
       const resourceTypes = this.fetcher.getResourceTypes();
       for (const meta of resourceTypes) {
         const summary = this.fetcher.getSummary(meta);
         if (summary && CICSErrorHandler.handleErrorIfPresent(summary, "get", this.getProfileName())) {
+          this.tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
           break; // Only show one error message
         }
       }
@@ -255,6 +258,10 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
       this.description += `[${progress}]`;
     }
 
+    if (this.tooltip) {
+      this.description += ` ⓘ`;
+    }
+
     this.description = this.description.trim();
   }
 
@@ -265,11 +272,14 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     const fetched = await this.fetcher.fetchNextPage();
     this.items.push(...fetched);
 
+    // Reset before checking — ensures a clean page clears a stale badge.
+    this.tooltip = undefined;
     // Check for errors in the API responses for each resource type
     const resourceTypes = this.fetcher.getResourceTypes();
     for (const meta of resourceTypes) {
       const summary = this.fetcher.getSummary(meta);
       if (summary && CICSErrorHandler.handleErrorIfPresent(summary, "get", this.getProfileName())) {
+        this.tooltip = CICSErrorHandler.buildIncompleteResultsTooltip(summary);
         break; // Only show one error message
       }
     }
