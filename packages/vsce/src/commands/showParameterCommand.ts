@@ -11,6 +11,7 @@
 
 import type { IResource } from "@zowe/cics-for-zowe-explorer-api";
 import { CicsCmciConstants } from "@zowe/cics-for-zowe-sdk";
+import sanitizeHtml from "sanitize-html";
 import { type WebviewPanel, commands, l10n, window } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import type { CICSResourceContainerNode } from "../trees/CICSResourceContainerNode";
@@ -69,11 +70,15 @@ export function getShowRegionSITParametersCommand() {
         <th class="valueHeading">${headingValue}</th></tr></thead>`;
       webText += "<tbody>";
       for (const systemParameter of response.records.cicssystemparameter) {
-        webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th>`;
-        webText += `<td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
+        const keyword = sanitizeHtml(systemParameter.keyword.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        const source = sanitizeHtml(systemParameter.source.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        const value = sanitizeHtml(systemParameter.value.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        webText += `<tr><th class="colHeading">${keyword}</th>`;
+        webText += `<td>${source}</td><td>${value}</td></tr>`;
       }
       webText += "</tbody>";
-      const webviewHTML = getParametersHtml(regionName, webText);
+      const sanitizedRegionName = sanitizeHtml(regionName, { allowedTags: [], allowedAttributes: {} });
+      const webviewHTML = getParametersHtml(sanitizedRegionName, webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panelTitle = l10n.t("CICS Region {0}", regionName);
       const panel: WebviewPanel = window.createWebviewPanel("zowe", panelTitle, column || 1, {
