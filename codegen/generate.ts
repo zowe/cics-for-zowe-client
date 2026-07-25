@@ -364,18 +364,34 @@ export class ResourceGenerator {
     const cliSrcDir = path.join(this.outputDir, "cli", "src");
     const cliTestDir = path.join(this.outputDir, "cli", "__tests__", "__unit__");
 
-    // ── 1. Shared LocalFileHandler (Pattern A) ──────────────────────────────
-    const localFileResource = derivedResources.find(r => r.name === "CICSLocalFile");
-    if (localFileResource) {
-      const busyActionNames = localFileResource.actions
+    // ── 1. Shared handlers (Pattern A: useSharedHandler resources) ──────────
+    // Collect resources that use a shared handler and generate one file each.
+    const sharedHandlerResources = derivedResources.filter(r => r.identifier.useSharedHandler);
+    for (const sharedResource of sharedHandlerResources) {
+      const busyActionNames = sharedResource.actions
         .filter(a => a.options.some(o => o.name === "busy"))
         .map(a => a.name);
+      const rid = sharedResource.identifier;
+      const resourceClass = rid.cliClass ?? this.toPascalCase((rid.cliName ?? rid.humanNameSingular).replace(/-/g, " "));
+      const cliPositionalName = rid.cliPositionalName ?? this.camelCase(rid.primaryKey);
+      const stringsResourceKey = sharedResource.name.replace(/^CICS/, "").toUpperCase();
       this.generateFromTemplate(
-        "cli/localfile.handler.hbs",
-        path.join(cliSrcDir, "common", "LocalFileHandler.ts"),
-        { actions: localFileResource.actions, busyActionNames }
+        "cli/resource.handler.hbs",
+        path.join(cliSrcDir, "common", `${resourceClass}Handler.ts`),
+        {
+          useSharedHandler: true,
+          actions: sharedResource.actions,
+          busyActionNames,
+          resourceClass,
+          cliPositionalName,
+          parmsInterface: sharedResource.parmsInterface,
+          humanName: sharedResource.humanName,
+          stringsResourceKey,
+          stringsImportPath: "../-strings-/en",
+          cicsBaseHandlerImport: "../CicsBaseHandler",
+        }
       );
-      console.log("  ✓ cli/src/common/LocalFileHandler.ts");
+      console.log(`  ✓ cli/src/common/${resourceClass}Handler.ts`);
     }
 
     // ── 2. i18n strings ─────────────────────────────────────────────────────
@@ -652,7 +668,7 @@ export class ResourceGenerator {
         // Compute handler path — Pattern A points at the shared handler two dirs up;
         // Pattern B points at the co-located handler file in the same directory.
         const handlerPath = entry.useSharedHandler
-          ? "/../../common/LocalFileHandler"
+          ? `/../../common/${entry.resourceClass}Handler`
           : `/${entry.resourceClass}.handler`;
 
         // Render definition file (single template covers both patterns)
@@ -663,15 +679,16 @@ export class ResourceGenerator {
 
         if (entry.useSharedHandler) {
           // Pattern A: handler already generated above; only emit the handler unit test
-          const localFileDerivedAction = localFileResource?.actions.find(a => a.identifier.group === group);
-          if (localFileDerivedAction) {
+          const sharedResource = sharedHandlerResources.find(r => r.name === entry.resourceName);
+          const sharedDerivedAction = sharedResource?.actions.find(a => a.identifier.group === group);
+          if (sharedDerivedAction) {
             this.generateFromTemplate("tests/cli.localfile.handler.unit.test.hbs",
               path.join(resTestDir, `${entry.resourceClass}.handler.unit.test.ts`),
               {
                 ...entry,
                 actionGroup: group,
-                sdkFunction: localFileDerivedAction.sdkFunction,
-                hasBusyOption: localFileDerivedAction.options.some(o => o.name === "busy"),
+                sdkFunction: sharedDerivedAction.sdkFunction,
+                hasBusyOption: sharedDerivedAction.options.some(o => o.name === "busy"),
               });
             console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
           }
