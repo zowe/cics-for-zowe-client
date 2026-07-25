@@ -434,10 +434,10 @@ generated unit test. This phase adds the two missing test templates.
 
 | Template | Tests | Pattern |
 |---|---|---|
+| `tests/cli.resource.definition.unit.test.hbs` | Resource definition shape | Pattern A + B ✅ |
 | `tests/cli.shared.handler.unit.test.hbs` | `<Resource>Handler` (Pattern A) | Shared multi-action handler |
 | `tests/cli.group.definition.unit.test.hbs` | Group definition children count | Group definition |
 | _(missing)_ | Pattern B per-resource handler | Per-action handler |
-| _(missing)_ | Per-resource definition shape | Resource definition |
 
 #### New templates
 
@@ -526,14 +526,14 @@ sequenceDiagram
         Tpl-->>CLI: __tests__/.../<Group>.definition.unit.test.ts
 
         loop for each resource in this group
+            Gen->>Tpl: render resource.definition.hbs
+            Tpl-->>CLI: src/<group>/<res>/<Res>.definition.ts
+            Gen->>Tpl: render cli.resource.definition.unit.test.hbs
+            Tpl-->>CLI: __tests__/.../<Res>.definition.unit.test.ts
             alt useSharedHandler (CICSLocalFile)
-                Gen->>Tpl: render localfile.definition.hbs
-                Tpl-->>CLI: src/<group>/<res>/LocalFile.definition.ts
                 Gen->>Tpl: render cli.shared.handler.unit.test.hbs
                 Tpl-->>CLI: __tests__/.../<Resource>.handler.unit.test.ts
             else Pattern B (CICSURIMap, future resources)
-                Gen->>Tpl: render resource.definition.hbs
-                Tpl-->>CLI: src/<group>/<res>/<Res>.definition.ts
                 Gen->>Tpl: render resource.handler.hbs
                 Tpl-->>CLI: src/<group>/<res>/<Res>.handler.ts
             end

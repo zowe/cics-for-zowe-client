@@ -36,6 +36,7 @@ The generator currently owns code in two packages:
 | `src/<group>/<resourceDir>/<Resource>.definition.ts` | `cli/resource.definition.hbs` |
 | `src/<group>/<resourceDir>/<Resource>.handler.ts` | `cli/resource.handler.hbs` (Pattern B only) |
 | `src/-strings-/en.ts` | `cli/en.ts.hbs` |
+| `__tests__/__unit__/<group>/<resourceDir>/<Resource>.definition.unit.test.ts` | `tests/cli.resource.definition.unit.test.hbs` (Pattern A + B) |
 | `__tests__/__unit__/<group>/<resourceDir>/<Resource>.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` (Pattern A only) |
 | `__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` |
 

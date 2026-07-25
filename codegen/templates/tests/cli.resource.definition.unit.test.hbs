@@ -18,13 +18,13 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 
-describe("cics enable urimap", () => {
+describe("cics {{actionGroup}} {{cliName}}", () => {
   it("should not have changed", () => {
-    const definition: ICommandDefinition = require("../../../../src/enable/urimap/Urimap.definition").UrimapDefinition;
+    const definition: ICommandDefinition = require("../../../../src/{{actionGroup}}/{{resourceDir}}/{{resourceClass}}.definition").{{resourceClass}}Definition;
     expect(definition).toBeDefined();
-    expect(definition.name).toBe("urimap");
+    expect(definition.name).toBe("{{cliName}}");
     expect(definition.type).toBe("command");
-    expect(definition.positionals?.[0].name).toBe("urimapName");
+    expect(definition.positionals?.[0].name).toBe("{{cliPositionalName}}");
     delete definition.handler;
     expect(definition).toMatchSnapshot();
   });

@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`cics close CICSLocalFile should not have changed 1`] = `
+{
+  "aliases": [
+    "lf",
+  ],
+  "description": "Close a local file in CICS.",
+  "examples": [
+    {
+      "description": "Close a local file named TESTFILE from the region named MYREGION",
+      "options": "TESTFILE --region-name MYREGION",
+    },
+    {
+      "description": "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+      "options": "TESTFILE --region-name MYREGION --busy FORCE",
+    },
+  ],
+  "name": "CICSLocalFile",
+  "options": [
+    {
+      "allowableValues": {
+        "caseSensitive": false,
+        "values": [
+          "WAIT",
+          "NOWAIT",
+          "FORCE",
+        ],
+      },
+      "defaultValue": false,
+      "description": "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+      "name": "busy",
+      "type": "string",
+    },
+    {
+      "allowableValues": {
+        "caseSensitive": false,
+        "values": [
+          "WAIT",
+          "NOWAIT",
+          "FORCE",
+        ],
+      },
+      "defaultValue": "WAIT",
+      "description": "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+      "name": "busy",
+      "type": "string",
+    },
+    {
+      "description": "The CICS region name in which to close the local file",
+      "name": "region-name",
+      "type": "string",
+    },
+    {
+      "description": "The name of the CICSPlex in which to close the local file",
+      "name": "cics-plex",
+      "type": "string",
+    },
+  ],
+  "positionals": [
+    {
+      "description": "The name of the local file to close. The maximum length of the file name is eight characters.",
+      "name": "fileName",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": {
+    "optional": [
+      "cics",
+    ],
+  },
+  "type": "command",
+}
+`;

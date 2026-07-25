@@ -677,6 +677,12 @@ export class ResourceGenerator {
           { ...entry, handlerPath });
         console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.ts`);
 
+        // Render definition unit test (covers both Pattern A and Pattern B)
+        this.generateFromTemplate("tests/cli.resource.definition.unit.test.hbs",
+          path.join(resTestDir, `${entry.resourceClass}.definition.unit.test.ts`),
+          { ...entry, actionGroup: group });
+        console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.definition.unit.test.ts`);
+
         if (entry.useSharedHandler) {
           // Pattern A: handler already generated above; only emit the handler unit test
           const sharedResource = sharedHandlerResources.find(r => r.name === entry.resourceName);

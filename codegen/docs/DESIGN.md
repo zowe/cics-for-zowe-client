@@ -96,6 +96,7 @@ cics-for-zowe-client/
 │   │   │   └── en.ts.hbs
 │   │   └── tests/
 │   │       ├── sdk.resource.unit.test.hbs
+│   │       ├── cli.resource.definition.unit.test.hbs
 │   │       ├── cli.shared.handler.unit.test.hbs
 │   │       └── cli.group.definition.unit.test.hbs
 │   └── docs/
@@ -260,6 +261,7 @@ Pattern B = all other resources — definition and handler are co-located in the
 | Template | Output |
 |---|---|
 | `tests/sdk.resource.unit.test.hbs` | `packages/sdk/__tests__/__unit__/<action>/<Action>.<resource>.unit.test.ts` |
+| `tests/cli.resource.definition.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<resourceDir>/<Resource>.definition.unit.test.ts` |
 | `tests/cli.shared.handler.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<resourceDir>/<Resource>.handler.unit.test.ts` |
 | `tests/cli.group.definition.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` |
 
