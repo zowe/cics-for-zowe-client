@@ -682,13 +682,15 @@ export class ResourceGenerator {
           const sharedResource = sharedHandlerResources.find(r => r.name === entry.resourceName);
           const sharedDerivedAction = sharedResource?.actions.find(a => a.identifier.group === group);
           if (sharedDerivedAction) {
-            this.generateFromTemplate("tests/cli.localfile.handler.unit.test.hbs",
+            this.generateFromTemplate("tests/cli.shared.handler.unit.test.hbs",
               path.join(resTestDir, `${entry.resourceClass}.handler.unit.test.ts`),
               {
                 ...entry,
                 actionGroup: group,
                 sdkFunction: sharedDerivedAction.sdkFunction,
                 hasBusyOption: sharedDerivedAction.options.some(o => o.name === "busy"),
+                resourceClass: entry.resourceClass,
+                cliPositionalName: entry.cliPositionalName,
               });
             console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
           }

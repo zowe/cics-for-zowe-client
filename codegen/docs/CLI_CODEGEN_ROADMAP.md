@@ -37,7 +37,7 @@
 
 | File | Template | Notes |
 |---|---|---|
-| `src/common/LocalFileHandler.ts` | `cli/localfile.handler.hbs` | Shared multi-action handler for CICSLocalFile (Pattern A) |
+| `src/common/LocalFileHandler.ts` | `cli/resource.handler.hbs` (Pattern A branch) | Shared multi-action handler for CICSLocalFile (Pattern A) |
 | `src/-strings-/en.ts` | `cli/en.ts.hbs` | Full i18n strings file (static template, spec-driven in Phase 6) |
 | `src/enable/Enable.definition.ts` | `cli/group.definition.hbs` | Dynamic children list — loops over spec imports |
 | `src/enable/localFile/LocalFile.definition.ts` | `cli/localfile.definition.hbs` | All names/aliases derived from spec |
@@ -52,10 +52,10 @@
 | `src/close/Close.definition.ts` | `cli/group.definition.hbs` | ✨ **New** — `close` group now codegen-owned |
 | `src/close/localFile/LocalFile.definition.ts` | `cli/localfile.definition.hbs` | ✨ **New** — replaces `CloseLocalFile.ts` |
 | **Tests** | | |
-| `__tests__/__unit__/enable/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` | Pattern A handler test |
-| `__tests__/__unit__/disable/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` | Pattern A handler test |
-| `__tests__/__unit__/open/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` | ✨ **New** |
-| `__tests__/__unit__/close/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` | ✨ **New** |
+| `__tests__/__unit__/enable/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` | Pattern A handler test |
+| `__tests__/__unit__/disable/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` | Pattern A handler test |
+| `__tests__/__unit__/open/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` | ✨ **New** |
+| `__tests__/__unit__/close/localFile/LocalFile.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` | ✨ **New** |
 | `__tests__/__unit__/enable/Enable.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` | Checks children count |
 | `__tests__/__unit__/disable/Disable.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` | Checks children count |
 | `__tests__/__unit__/open/Open.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` | ✨ **New** |
@@ -113,17 +113,16 @@ graph TD
     Gen["generate.ts → generateCLI()"]
 
     subgraph templates["templates/cli/"]
-        T1["localfile.handler.hbs"]
         T2["localfile.definition.hbs"]
         T3["resource.definition.hbs"]
-        T4["resource.handler.hbs"]
+        T4["resource.handler.hbs (Pattern A + B)"]
         T5["group.definition.hbs"]
         T6["en.ts.hbs (spec-driven loop)"]
         T7["strings.en.snippet.hbs"]
     end
 
     subgraph outputs["packages/cli/src/"]
-        O1["common/LocalFileHandler.ts"]
+        O1["common/<Res>Handler.ts"]
         O2["-strings-/en.ts"]
         O3["<group>/<Group>.definition.ts"]
         O4["<group>/<Res>/<Res>.definition.ts"]
@@ -138,7 +137,7 @@ graph TD
     end
 
     Spec --> Gen
-    Gen --> T1 --> O1
+    Gen --> T4 --> O1
     Gen --> T6 --> O2
     Gen --> T5 --> O3
     Gen --> T2 --> O4
@@ -205,7 +204,7 @@ This replaces the hand-written `Urimap.handler.ts`.
 ```mermaid
 graph TD
     Q{"Does the resource use\nthe shared multi-action\nhandler? (CICSLocalFile)"}
-    Q -->|Yes| PA["Pattern A:\nShared handler\ncli/localfile.handler.hbs\n(already existed — no change)"]
+    Q -->|Yes| PA["Pattern A:\nShared handler\ncli/resource.handler.hbs\n(useSharedHandler branch)"]
     Q -->|No| PB["Pattern B:\nPer-resource handler\ncli/resource.handler.hbs\n(DELIVERED ✅)"]
 ```
 
@@ -435,7 +434,7 @@ generated unit test. This phase adds the two missing test templates.
 
 | Template | Tests | Pattern |
 |---|---|---|
-| `tests/cli.localfile.handler.unit.test.hbs` | LocalFileHandler (Pattern A) | Shared multi-action handler |
+| `tests/cli.shared.handler.unit.test.hbs` | `<Resource>Handler` (Pattern A) | Shared multi-action handler |
 | `tests/cli.group.definition.unit.test.hbs` | Group definition children count | Group definition |
 | _(missing)_ | Pattern B per-resource handler | Per-action handler |
 | _(missing)_ | Per-resource definition shape | Resource definition |
@@ -472,22 +471,21 @@ block-beta
     columns 2
 
     block:before["Before (PR start)"]:2
-        B1["localfile.handler.hbs\n(CICSLocalFile only)"]
+        B1["localfile.handler.hbs\n(CICSLocalFile only — deleted)"]
         B2["localfile.definition.hbs\n(CICSLocalFile only, hardcoded names)"]
         B3["group.definition.hbs\n(hardcoded children list)"]
         B4["en.ts.hbs\n(static 595-line file)"]
-        BT1["cli.localfile.handler.unit.test.hbs"]
+        BT1["cli.localfile.handler.unit.test.hbs\n(deleted)"]
         BT2["cli.group.definition.unit.test.hbs\n(enable + disable only)"]
     end
 
-    block:after["After (PR merged — Phases 1–4 done)"]:2
-        A1["localfile.handler.hbs\n(unchanged — CICSLocalFile)"]
+    block:after["After (handler templates merged)"]:2
         A2["localfile.definition.hbs\n(uses spec context vars ✅)"]
-        A3["resource.definition.hbs ✅\n(generic — all Pattern B resources)"]
-        A4["resource.handler.hbs ✅\n(generic — Pattern B)"]
+        A3["resource.definition.hbs ✅\n(generic — all Pattern A + B)"]
+        A4["resource.handler.hbs ✅\n(Pattern A + B merged ✅)"]
         A5["group.definition.hbs\n(dynamic children loop ✅)"]
         A6["en.ts.hbs\n(static — spec-driven loop in Phase 6)"]
-        AT1["cli.localfile.handler.unit.test.hbs\n(unchanged)"]
+        AT1["cli.shared.handler.unit.test.hbs ✅\n(generic Pattern A test)"]
         AT2["cli.group.definition.unit.test.hbs\n(all 4 groups ✅)"]
     end
 ```
@@ -511,8 +509,8 @@ sequenceDiagram
     Gen->>Spec: deriveResources()
     Note over Gen: builds DerivedResource[]<br/>with all action groups
 
-    Gen->>Tpl: render localfile.handler.hbs
-    Tpl-->>CLI: src/common/LocalFileHandler.ts
+    Gen->>Tpl: render resource.handler.hbs (Pattern A branch, once per useSharedHandler resource)
+    Tpl-->>CLI: src/common/<Resource>Handler.ts
 
     Gen->>Tpl: render en.ts.hbs (static)
     Tpl-->>CLI: src/-strings-/en.ts
@@ -531,8 +529,8 @@ sequenceDiagram
             alt useSharedHandler (CICSLocalFile)
                 Gen->>Tpl: render localfile.definition.hbs
                 Tpl-->>CLI: src/<group>/<res>/LocalFile.definition.ts
-                Gen->>Tpl: render cli.localfile.handler.unit.test.hbs
-                Tpl-->>CLI: __tests__/.../LocalFile.handler.unit.test.ts
+                Gen->>Tpl: render cli.shared.handler.unit.test.hbs
+                Tpl-->>CLI: __tests__/.../<Resource>.handler.unit.test.ts
             else Pattern B (CICSURIMap, future resources)
                 Gen->>Tpl: render resource.definition.hbs
                 Tpl-->>CLI: src/<group>/<res>/<Res>.definition.ts

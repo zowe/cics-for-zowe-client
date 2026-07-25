@@ -90,14 +90,13 @@ cics-for-zowe-client/
 │   │   │   └── constants.hbs
 │   │   ├── cli/
 │   │   │   ├── resource.definition.hbs    # Generic — covers Pattern A and Pattern B
-│   │   │   ├── resource.handler.hbs       # Pattern B only (own handler per resource)
-│   │   │   ├── localfile.handler.hbs      # Pattern A only (shared LocalFile handler)
+│   │   │   ├── resource.handler.hbs       # Pattern A (shared handler) and Pattern B (per-resource handler)
 │   │   │   ├── group.definition.hbs       # ⚠ Hardcoded children (see Design Gaps)
 │   │   │   ├── strings.en.snippet.hbs
 │   │   │   └── en.ts.hbs
 │   │   └── tests/
 │   │       ├── sdk.resource.unit.test.hbs
-│   │       ├── cli.localfile.handler.unit.test.hbs
+│   │       ├── cli.shared.handler.unit.test.hbs
 │   │       └── cli.group.definition.unit.test.hbs
 │   └── docs/
 │       ├── codegen.md   # User guide
@@ -248,12 +247,12 @@ Each template is Handlebars (`.hbs`). The generator compiles a template once and
 | Template | Pattern | Output |
 |---|---|---|
 | `cli/resource.definition.hbs` | A + B | `packages/cli/src/<group>/<resourceDir>/<Resource>.definition.ts` |
-| `cli/resource.handler.hbs` | B only | `packages/cli/src/<group>/<resourceDir>/<Resource>.handler.ts` |
-| `cli/localfile.handler.hbs` | A only | `packages/cli/src/common/LocalFileHandler.ts` |
+| `cli/resource.handler.hbs` | A — `{{#if useSharedHandler}}` branch | `packages/cli/src/common/<Resource>Handler.ts` |
+| `cli/resource.handler.hbs` | B — `{{else}}` branch | `packages/cli/src/<group>/<resourceDir>/<Resource>.handler.ts` |
 | `cli/group.definition.hbs` | — | `packages/cli/src/<group>/<Group>.definition.ts` |
 | `cli/en.ts.hbs` | — | `packages/cli/src/-strings-/en.ts` |
 
-Pattern A = `useSharedHandler: true` (CICSLocalFile) — definition points at the shared handler two dirs up; no per-action handler file is generated.
+Pattern A = `useSharedHandler: true` (CICSLocalFile) — definition points at the shared handler in `src/common/`; no per-action handler file is generated. One file handles all actions for the resource.
 Pattern B = all other resources — definition and handler are co-located in the same subdirectory.
 
 **Test templates** — rendered once per resource×action combination:
@@ -261,7 +260,7 @@ Pattern B = all other resources — definition and handler are co-located in the
 | Template | Output |
 |---|---|
 | `tests/sdk.resource.unit.test.hbs` | `packages/sdk/__tests__/__unit__/<action>/<Action>.<resource>.unit.test.ts` |
-| `tests/cli.localfile.handler.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/localFile/LocalFile.handler.unit.test.ts` |
+| `tests/cli.shared.handler.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<resourceDir>/<Resource>.handler.unit.test.ts` |
 | `tests/cli.group.definition.unit.test.hbs` | `packages/cli/__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` |
 
 ---

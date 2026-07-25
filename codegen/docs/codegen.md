@@ -31,15 +31,15 @@ The generator currently owns code in two packages:
 
 | Generated File | Template |
 |---|---|
-| `src/common/LocalFileHandler.ts` | `cli/localfile.handler.hbs` (Pattern A only) |
+| `src/common/<Resource>Handler.ts` | `cli/resource.handler.hbs` (Pattern A only) |
 | `src/<group>/<Group>.definition.ts` | `cli/group.definition.hbs` |
 | `src/<group>/<resourceDir>/<Resource>.definition.ts` | `cli/resource.definition.hbs` |
 | `src/<group>/<resourceDir>/<Resource>.handler.ts` | `cli/resource.handler.hbs` (Pattern B only) |
 | `src/-strings-/en.ts` | `cli/en.ts.hbs` |
-| `__tests__/__unit__/<group>/localFile/<Resource>.handler.unit.test.ts` | `tests/cli.localfile.handler.unit.test.hbs` (Pattern A only) |
+| `__tests__/__unit__/<group>/<resourceDir>/<Resource>.handler.unit.test.ts` | `tests/cli.shared.handler.unit.test.hbs` (Pattern A only) |
 | `__tests__/__unit__/<group>/<Group>.definition.unit.test.ts` | `tests/cli.group.definition.unit.test.hbs` |
 
-Pattern A (`useSharedHandler: true`) — definition points at the shared `LocalFileHandler`; no per-resource handler file is generated.
+Pattern A (`useSharedHandler: true`) — definition points at the shared `<Resource>Handler` in `src/common/`; no per-action handler file is generated. One shared handler handles all actions for the resource.
 Pattern B — definition and handler are co-located in the same subdirectory.
 
 ---
