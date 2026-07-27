@@ -185,67 +185,134 @@ describe("CicsCmciRestClient tests", () => {
   });
 
   describe("putExpectParsedXml", () => {
-    it("should return a formatted JSON object based on the XML retrieved from PUT with object payload", async () => {
-      const payload = { request: { update: { attributes: { status: "ENABLED" } } } };
+    it("should inject Content-Type and Content-Length headers and return parsed XML for PUT with object payload", async () => {
+      const payload = { request: { update: { attributes: { $: { status: "ENABLED" } } } } };
       putExpectStringSpy.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
       expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = putExpectStringSpy.mock.calls[0][2];
+      expect(calledHeaders).toEqual(expect.arrayContaining([{ "Content-Type": "application/xml" }]));
+      const contentLengthHeader = calledHeaders.find((h) => h["Content-Length"] !== undefined);
+      expect(contentLengthHeader).toBeDefined();
+      expect(parseInt(contentLengthHeader["Content-Length"])).toBeGreaterThan(0);
       expect(response).toEqual(commonExpectedJson);
     });
 
-    it("should return a formatted JSON object based on the XML retrieved from PUT with string payload", async () => {
+    it("should inject Content-Type and Content-Length headers and return parsed XML for PUT with string payload", async () => {
       const payload = "<request><update><attributes><status>ENABLED</status></attributes></update></request>";
       putExpectStringSpy.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
       expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = putExpectStringSpy.mock.calls[0][2];
+      expect(calledHeaders).toEqual(
+        expect.arrayContaining([
+          { "Content-Type": "application/xml" },
+          { "Content-Length": Buffer.byteLength(payload).toString() },
+        ])
+      );
       expect(response).toEqual(commonExpectedJson);
     });
 
-    it("should handle PUT with null payload", async () => {
+    it("should preserve caller-supplied headers alongside the injected Content-Type and Content-Length for PUT", async () => {
+      const payload = "<request><action name=\"NEWCOPY\"/></request>";
+      const extraHeader = { "X-CMCI-Header": "test-value" };
+      putExpectStringSpy.mockResolvedValueOnce(commonXmlResponse);
+
+      await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, [extraHeader], payload);
+      expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = putExpectStringSpy.mock.calls[0][2];
+      expect(calledHeaders).toEqual(
+        expect.arrayContaining([
+          { "Content-Type": "application/xml" },
+          { "Content-Length": Buffer.byteLength(payload).toString() },
+          extraHeader,
+        ])
+      );
+    });
+
+    it("should not inject Content-Type or Content-Length headers when PUT payload is null", async () => {
       putExpectStringSpy.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, null);
       expect(putExpectStringSpy).toHaveBeenCalledWith(dummySession, testEndpoint, dummyHeaders, null);
       expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = putExpectStringSpy.mock.calls[0][2];
+      expect(calledHeaders.find((h) => h["Content-Type"])).toBeUndefined();
+      expect(calledHeaders.find((h) => h["Content-Length"])).toBeUndefined();
       expect(response).toEqual(commonExpectedJson);
     });
 
     it("should handle PUT with failOnNoData=false when no records returned", async () => {
+      const payload = "<root/>";
       putExpectStringSpy.mockResolvedValueOnce(noRecordsXmlResponse);
 
-      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, {}, { failOnNoData: false });
+      const response = await CicsCmciRestClient.putExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload, { failOnNoData: false });
       expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = putExpectStringSpy.mock.calls[0][2];
+      expect(calledHeaders).toEqual(expect.arrayContaining([{ "Content-Type": "application/xml" }]));
       expect(response).toEqual(noRecordsExpectedJson);
     });
   });
 
   describe("postExpectParsedXml", () => {
-    it("should return a formatted JSON object based on the XML retrieved from POST with object payload", async () => {
-      const payload = { request: { create: { attributes: { name: "TESTPROG" } } } };
+    it("should inject Content-Type and Content-Length headers and return parsed XML for POST with object payload", async () => {
+      const payload = { request: { create: { attributes: { $: { name: "TESTPROG" } } } } };
       postClientExpect.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
       expect(postClientExpect).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = postClientExpect.mock.calls[0][2];
+      expect(calledHeaders).toEqual(expect.arrayContaining([{ "Content-Type": "application/xml" }]));
+      const contentLengthHeader = calledHeaders.find((h) => h["Content-Length"] !== undefined);
+      expect(contentLengthHeader).toBeDefined();
+      expect(parseInt(contentLengthHeader["Content-Length"])).toBeGreaterThan(0);
       expect(response).toEqual(commonExpectedJson);
     });
 
-    it("should return a formatted JSON object based on the XML retrieved from POST with string payload", async () => {
+    it("should inject Content-Type and Content-Length headers and return parsed XML for POST with string payload", async () => {
       const payload = "<request><create><attributes><name>TESTPROG</name></attributes></create></request>";
       postClientExpect.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, payload);
       expect(postClientExpect).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = postClientExpect.mock.calls[0][2];
+      expect(calledHeaders).toEqual(
+        expect.arrayContaining([
+          { "Content-Type": "application/xml" },
+          { "Content-Length": Buffer.byteLength(payload).toString() },
+        ])
+      );
       expect(response).toEqual(commonExpectedJson);
     });
 
-    it("should handle POST with null payload", async () => {
+    it("should preserve caller-supplied headers alongside the injected Content-Type and Content-Length for POST", async () => {
+      const payload = "<request><create><attributes><name>TESTPROG</name></attributes></create></request>";
+      const extraHeader = { "X-CMCI-Header": "test-value" };
+      postClientExpect.mockResolvedValueOnce(commonXmlResponse);
+
+      await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, [extraHeader], payload);
+      expect(postClientExpect).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = postClientExpect.mock.calls[0][2];
+      expect(calledHeaders).toEqual(
+        expect.arrayContaining([
+          { "Content-Type": "application/xml" },
+          { "Content-Length": Buffer.byteLength(payload).toString() },
+          extraHeader,
+        ])
+      );
+    });
+
+    it("should not inject Content-Type or Content-Length headers when POST payload is null", async () => {
       postClientExpect.mockResolvedValueOnce(commonXmlResponse);
 
       const response = await CicsCmciRestClient.postExpectParsedXml(dummySession, testEndpoint, dummyHeaders, null);
       expect(postClientExpect).toHaveBeenCalledWith(dummySession, testEndpoint, dummyHeaders, null);
       expect(postClientExpect).toHaveBeenCalledTimes(1);
+      const calledHeaders: any[] = postClientExpect.mock.calls[0][2];
+      expect(calledHeaders.find((h) => h["Content-Type"])).toBeUndefined();
+      expect(calledHeaders.find((h) => h["Content-Length"])).toBeUndefined();
       expect(response).toEqual(commonExpectedJson);
     });
   });
