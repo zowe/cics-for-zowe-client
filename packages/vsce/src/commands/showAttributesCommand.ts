@@ -9,6 +9,7 @@
  *
  */
 
+import sanitizeHtml = require("sanitize-html");
 import { commands, window, WebviewPanel, TreeView } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { CICSLibraryDatasets } from "../trees/treeItems/CICSLibraryDatasets";
@@ -25,6 +26,10 @@ import { CICSWebServiceTreeItem } from "../trees/treeItems/web/treeItems/CICSWeb
 import { findSelectedNodes } from "../utils/commandUtils";
 import { getAttributesHtml } from "../utils/webviewHTML";
 
+function sanitizeValue(value: unknown): string {
+  return sanitizeHtml(String(value), { allowedTags: [], allowedAttributes: {} });
+}
+
 export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.showProgramAttributes", async (node) => {
     const allSelectedNodes = findSelectedNodes(treeview, CICSProgramTreeItem, node);
@@ -38,11 +43,11 @@ export function getShowProgramAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${program[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(program[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(program.program, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(program.program), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
@@ -68,11 +73,11 @@ export function getShowRegionAttributes(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..." /></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${region[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(region[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(regionTree.getRegionName(), webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(regionTree.getRegionName()), webText);
 
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${regionTree.getRegionName()}`, column || 1, {
@@ -96,11 +101,11 @@ export function getShowLocalFileAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${localFile[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(localFile[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(localFile.file, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(localFile.file), webText);
 
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
@@ -127,11 +132,11 @@ export function getShowTransactionAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${transaction[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(transaction[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(transaction.tranid, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(transaction.tranid), webText);
 
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
@@ -159,11 +164,11 @@ export function getShowTaskAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${task[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(task[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(task.task, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(task.task), webText);
 
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Task ${localTaskTreeItem.parentRegion.label}(${task.task})`, column || 1, {
@@ -187,11 +192,11 @@ export function getShowLibraryAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${library[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(library[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(library.name, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(library.name), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
@@ -217,11 +222,11 @@ export function getShowLibraryDatasetsAttributesCommand(treeview: TreeView<any>)
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${dataset[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(dataset[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(dataset.dsname, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(dataset.dsname), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
@@ -247,11 +252,11 @@ export function getShowTCPIPServiceAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${tcpips[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(tcpips[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(tcpips.name, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(tcpips.name), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS TCPIPS ${tcpipsTreeItem.parentRegion.label}(${tcpips.name})`, column || 1, {
         enableScripts: true,
@@ -274,11 +279,11 @@ export function getShowURIMapAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${urimap[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(urimap[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(urimap.name, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(urimap.name), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS URIMap ${urimapTreeItem.parentRegion.label}(${urimap.name})`, column || 1, {
         enableScripts: true,
@@ -301,11 +306,11 @@ export function getShowPipelineAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${pipeline[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(pipeline[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(pipeline.name, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(pipeline.name), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
@@ -331,11 +336,11 @@ export function getShowWebServiceAttributesCommand(treeview: TreeView<any>) {
       let webText = `<thead><tr><th class="headingTH">Attribute <input type="text" id="searchBox" placeholder="Search Attribute..."/></th><th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const heading of attributeHeadings) {
-        webText += `<tr><th class="colHeading">${heading.toUpperCase()}</th><td>${webService[heading]}</td></tr>`;
+        webText += `<tr><th class="colHeading">${sanitizeValue(heading.toUpperCase())}</th><td>${sanitizeValue(webService[heading])}</td></tr>`;
       }
       webText += "</tbody>";
 
-      const webviewHTML = getAttributesHtml(webService.name, webText);
+      const webviewHTML = getAttributesHtml(sanitizeValue(webService.name), webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel(
         "zowe",
