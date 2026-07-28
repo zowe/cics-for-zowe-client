@@ -40,7 +40,7 @@ test.describe("Inspect Region tests", async () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Region");
 
-    await waitForNotification(page, `Loading CICS resource '${constants.REGION_NAME}'...`);
+    await waitForNotification(page, `Loading CICS resource '${constants.REGION_NAME}'...`, false);
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/inspectRegion/3.png" });
 
     await getResourceInspector(page).getByText("MYREG1(Region)").waitFor();

@@ -43,7 +43,7 @@ async function openResourceInspector(
   }
   await findAndClickText(page, "Inspect Resource");
 
-  await waitForNotification(page, `Loading CICS resource '${resourceName}'...`);
+  await waitForNotification(page, `Loading CICS resource '${resourceName}'...`, false);
 }
 
 test.beforeEach(async ({ page, request }) => {
@@ -105,7 +105,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.LIBRARY_1_NAME, "right", false);
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
-    await waitForNotification(page, `Loading CICS resource '${constants.LIBRARY_1_NAME}'...`);
+    await waitForNotification(page, `Loading CICS resource '${constants.LIBRARY_1_NAME}'...`, false);
     
     await getResourceInspector(page).locator("span").filter({ hasText: constants.LIBRARY_1_NAME }).waitFor();
     await page.screenshot({ fullPage: true, path: "./__tests__/screenshots/resourceInspector/search-field-cleared.png" });
@@ -126,7 +126,7 @@ test.describe("Resource Inspector tests", async () => {
     await findAndClickTreeItem(page, constants.PROGRAM_2_NAME, "right");
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
-    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_2_NAME}'...`);
+    await waitForNotification(page, `Loading CICS resource '${constants.PROGRAM_2_NAME}'...`, false);
 
     await getResourceInspector(page).locator("span").filter({ hasText: constants.PROGRAM_2_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus"), "cedfstatus should be visible for second program").toBeVisible();
