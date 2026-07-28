@@ -11,8 +11,8 @@
 
 import type { IResource, IResourceProfileNameInfo } from "@zowe/cics-for-zowe-explorer-api";
 import type { ICMCIResponseResultSummary } from "@zowe/cics-for-zowe-sdk";
-import { l10n } from "vscode";
 import type { IContainedResource, IResourceMeta } from "../doc";
+import { l10n } from "vscode";
 import { CICSErrorHandler } from "../errors/CICSErrorHandler";
 import { CICSExtensionError } from "../errors/CICSExtensionError";
 import { CICSLogger } from "../utils/CICSLogger";
