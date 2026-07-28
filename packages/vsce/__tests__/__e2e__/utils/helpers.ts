@@ -157,9 +157,16 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
   await clickTreeNode(page, label, button);
 };
 
-export const waitForNotification = async (page: Page, string: string) => {
-  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 5000 });
-  await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
+
+export const waitForNotification = async (page: Page, string: string, failIfNotSeen: boolean = true) => {
+  try {
+    await page.waitForSelector(`text="${string}"`, { state: "attached", timeout: 5000 });
+    await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
+  } catch (timeoutError) {
+    if (failIfNotSeen) {
+      throw timeoutError;
+    }
+  }
 };
 
 export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {

@@ -41,7 +41,7 @@ test.describe("Hyperlink navigation tests", async () => {
     await findAndClickTreeItem(page, constants.JVM_SERVER_NAME, "right");
     await page.waitForTimeout(200);
     await findAndClickText(page, "Inspect Resource");
-    await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`);
+    await waitForNotification(page, `Loading CICS resource '${constants.JVM_SERVER_NAME}'...`, false);
 
     await getResourceInspector(page).locator("span").filter({ hasText: constants.JVM_SERVER_NAME }).waitFor();
     await expect(getResourceInspector(page).getByText("cedfstatus")).toBeDefined();

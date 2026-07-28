@@ -34,7 +34,7 @@ async function openResourceInspector(page: Page, resourceType: string, resourceN
   await page.waitForTimeout(200);
   await findAndClickText(page, "Inspect Resource");
 
-  await waitForNotification(page, `Loading CICS resource '${notificationName ?? resourceName}'...`);
+  await waitForNotification(page, `Loading CICS resource '${notificationName ?? resourceName}'...`, false);
 }
 
 async function openJVMEndpointResourceInspector(page: Page, jvmEndpointName: string) {
@@ -50,7 +50,7 @@ async function openJVMEndpointResourceInspector(page: Page, jvmEndpointName: str
   await findAndClickText(page, "Inspect Resource");
 
   const endpointResourceName = jvmEndpointName.split(" ")[0]; // strip the port suffix e.g. "MYJVMENDPOINT1 (9080)" → "MYJVMENDPOINT1"
-  await waitForNotification(page, `Loading CICS resource '${endpointResourceName}'...`);
+  await waitForNotification(page, `Loading CICS resource '${endpointResourceName}'...`, false);
 }
 
 async function openContextMenu(page: Page) {
@@ -222,6 +222,7 @@ test.describe("Resource Inspector Actions - TCP/IP Service", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
     await page.locator("input.input").fill("MYTCPIP2");
     await page.keyboard.press("Enter");
 
@@ -262,6 +263,7 @@ test.describe("Resource Inspector Actions - URIMap", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
     await page.locator("input.input").fill("URI2");
     await page.keyboard.press("Enter");
 

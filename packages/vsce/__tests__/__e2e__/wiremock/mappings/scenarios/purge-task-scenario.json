@@ -24,6 +24,7 @@
     {
       "scenarioName": "Purge Task",
       "requiredScenarioState": "task-purged",
+      "priority": 1,
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSTask/MYPLEX1/MYREG1?SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"

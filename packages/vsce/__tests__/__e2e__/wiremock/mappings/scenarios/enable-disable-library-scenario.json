@@ -24,6 +24,7 @@
     {
       "scenarioName": "Enable Disable Library",
       "requiredScenarioState": "mylib1-disabled",
+      "priority": 1,
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
@@ -90,6 +91,7 @@
     {
       "scenarioName": "Enable Disable Library",
       "requiredScenarioState": "myprog1-enabled",
+      "priority": 1,
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"

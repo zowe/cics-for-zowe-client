@@ -92,9 +92,15 @@ test.describe("Program tests", () => {
     await page.waitForTimeout(200);
     await findAndClickText(page, "Show Library");
 
-    await expect(getTreeItem(page, `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`, false)).toHaveCount(
-      1
-    );
+    const mylib1Selector = `${constants.LIBRARY_1_NAME} (DSNAME='MYLIBDS1') AND (LIBRARY='${constants.LIBRARY_1_NAME}')`;
+    const mylib1Item = getTreeItem(page, mylib1Selector, false);
+    await expect(mylib1Item).toBeVisible({ timeout: 10000 });
+    const isExpanded = (await mylib1Item.getAttribute("aria-expanded")) === "true";
+    if (!isExpanded) {
+      await mylib1Item.click({ force: true });
+    }
+
+    await expect(mylib1Item).toHaveCount(1);
     await expect(getTreeItem(page, constants.LIBRARY_DS_2_NAME)).toHaveCount(1);
   });
 
