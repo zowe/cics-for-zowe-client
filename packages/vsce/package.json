@@ -928,6 +928,7 @@
     "@types/node": "^24.2.0",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "@types/sanitize-html": "^2.16.0",
     "@types/vscode": "~1.53.0",
     "@vscode/vsce": "^3.7.1",
     "chai": "^4.4.1",
@@ -959,7 +960,8 @@
     "@zowe/cics-for-zowe-sdk": "6.23.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.5.1",
-    "@vscode/codicons": "^0.0.40"
+    "@vscode/codicons": "^0.0.40",
+    "sanitize-html": "^2.17.0"
   },
   "overrides": {
     "brace-expansion@1": "^1.1.12",

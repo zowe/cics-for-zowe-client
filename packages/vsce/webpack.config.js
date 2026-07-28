@@ -123,6 +123,16 @@ function webviews(mode) {
           use: ["style-loader", "css-loader", "postcss-loader"],
           exclude: /\.module\.s?(c|a)ss$/,
         },
+        {
+          test: /\.js$/,
+          include: /sanitize-html/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+            },
+          },
+        },
       ],
     },
     performance: {
