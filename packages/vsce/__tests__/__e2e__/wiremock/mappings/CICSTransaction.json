@@ -51,6 +51,45 @@
           "Content-Type": "text/xml"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLocalTransaction/MYPLEX1/MYREG1?CRITERIA=(TRANID%3DCEMT)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/CEMT/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/CEMTTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/CEMT/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/CEMTTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSTransaction/CEMT/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
     }
   ]
 }
