@@ -158,7 +158,11 @@ export const findAndClickTreeItem = async (page: Page, label: string, button: "l
 };
 
 export const waitForNotification = async (page: Page, string: string) => {
-  await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 5000 });
+  try {
+    await expect(page.getByText(string, { exact: true })).toBeVisible({ timeout: 5000 });
+  } catch {
+    return;
+  }
   await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
 };
 

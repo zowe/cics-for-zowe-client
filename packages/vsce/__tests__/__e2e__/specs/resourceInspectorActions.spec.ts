@@ -222,6 +222,7 @@ test.describe("Resource Inspector Actions - TCP/IP Service", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
     await page.locator("input.input").fill("MYTCPIP2");
     await page.keyboard.press("Enter");
 
@@ -262,6 +263,7 @@ test.describe("Resource Inspector Actions - URIMap", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
     await page.locator("input.input").fill("URI2");
     await page.keyboard.press("Enter");
 
