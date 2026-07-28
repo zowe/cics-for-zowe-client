@@ -108,6 +108,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
   ): Promise<ICMCIApiResponse> {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
+      reqHeaders = [{ "Content-Type": "application/xml" }, { "Content-Length": Buffer.byteLength(payload).toString() }, ...reqHeaders];
     }
     const data = await RestClient.putExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
     const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
@@ -138,6 +139,7 @@ export class CicsCmciRestClient extends AbstractRestClient {
   ): Promise<ICMCIApiResponse> {
     if (payload != null) {
       payload = CicsCmciRestClient.convertPayloadToXML(payload);
+      reqHeaders = [{ "Content-Type": "application/xml" }, { "Content-Length": Buffer.byteLength(payload).toString() }, ...reqHeaders];
     }
     const data = await RestClient.postExpectString.call(AbstractRestClient, session, resource, reqHeaders, payload);
     const apiResponse: ICMCIApiResponse = CicsCmciRestClient.parseStringSync(data);
