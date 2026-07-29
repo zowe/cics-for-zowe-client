@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`cics enable CICSLocalFile should not have changed 1`] = `
+{
+  "aliases": [
+    "lf",
+  ],
+  "description": "Enable a local file in CICS.",
+  "examples": [
+    {
+      "description": "Enable a local file named TESTFILE in the region named MYREGION",
+      "options": "TESTFILE --region-name MYREGION",
+    },
+  ],
+  "name": "CICSLocalFile",
+  "options": [
+    {
+      "description": "The CICS region name in which to enable the local file",
+      "name": "region-name",
+      "type": "string",
+    },
+    {
+      "description": "The name of the CICSplex in which to enable the local file",
+      "name": "cics-plex",
+      "type": "string",
+    },
+  ],
+  "positionals": [
+    {
+      "description": "The name of the local file to enable. The maximum length of the file name is eight characters.",
+      "name": "fileName",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": {
+    "optional": [
+      "cics",
+    ],
+  },
+  "type": "command",
+}
+`;

@@ -20,7 +20,7 @@ exports[`cics delete transaction should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex from which to delete the transaction",
+      "description": "The name of the CICSplex from which to delete the transaction",
       "name": "cics-plex",
       "type": "string",
     },
