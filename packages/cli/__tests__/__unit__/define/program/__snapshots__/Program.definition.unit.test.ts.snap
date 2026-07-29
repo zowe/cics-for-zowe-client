@@ -9,7 +9,7 @@ exports[`cics define program should not have changed 1`] = `
   "examples": [
     {
       "description": "Define a program named PGM123 to the region name MYREGION in the CSD group MYGRP",
-      "options": "PGM123 --region-name MYREGION",
+      "options": "PGM123 MYGRP --region-name MYREGION",
     },
   ],
   "name": "program",

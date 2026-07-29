@@ -454,6 +454,7 @@ export class ResourceGenerator {
     interface CLIPositional {
       name: string;              // camelCase argument name
       stringsKey: string;        // UPPERCASE strings key
+      exampleValue: string;      // example value for use in exampleOptions
     }
 
     const groupMap = new Map<string, CLIResourceEntry[]>();
@@ -573,9 +574,15 @@ export class ResourceGenerator {
         for (const posRef of (actionDef.extraPositionals ?? [])) {
           if (!this.spec.options?.[posRef]) { continue; }
           const posDef = this.spec.options[posRef];
+          const posName = posDef.name;
+          const posExampleValue = posName.includes("csdGroup") ? "MYGRP" :
+            posName.includes("program") ? "PGM123" :
+            posName.includes("transaction") ? "TRN1" :
+            "MYVALUE";
           extraPositionals.push({
-            name: posDef.name,
-            stringsKey: posDef.name.toUpperCase(),
+            name: posName,
+            stringsKey: posName.toUpperCase(),
+            exampleValue: posExampleValue,
           });
         }
 
@@ -600,7 +607,10 @@ export class ResourceGenerator {
           cliPositionalName.includes("program") ? "PGM123" :
           cliPositionalName.includes("file") ? "TESTFILE" :
           "MYRESOURCE";
-        const exampleOptions = `${mainArg} --region-name MYREGION`;
+        const extraPositionalArgs = extraPositionals.map(ep => ep.exampleValue).join(" ");
+        const exampleOptions = extraPositionalArgs
+          ? `${mainArg} ${extraPositionalArgs} --region-name MYREGION`
+          : `${mainArg} --region-name MYREGION`;
 
         const entry: CLIResourceEntry = {
           resourceName: resource.name,
