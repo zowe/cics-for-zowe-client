@@ -31,7 +31,7 @@ const {{resourceClass}}Definition = GroupDefinition.children![0];
 jest.mock("@zowe/cics-for-zowe-sdk");
 const sdk = require("@zowe/cics-for-zowe-sdk");
 
-const host = "somewhere.com";
+const host = "example.com";
 const port = 43443;
 const user = "someone";
 const password = "somesecret";
@@ -166,9 +166,9 @@ describe("{{capitalize actionGroup}}{{resourceClass}}Handler", () => {
       }
     );
   });
-{{#if hasBusyOption}}
+{{#if actionOptions.length}}
 
-  it("should call the {{sdkFunction}} api with busy parameter", async () => {
+  it("should call the {{sdkFunction}} api with action options", async () => {
     const handler = new {{resourceClass}}Handler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };
@@ -177,7 +177,9 @@ describe("{{capitalize actionGroup}}{{resourceClass}}Handler", () => {
       {{cliPositionalName}},
       regionName,
       cicsPlex,
-      busy: "FORCE",
+{{#each actionOptions}}
+      {{this.argName}}: "{{this.exampleValue}}",
+{{/each}}
       host,
       port,
       user,
@@ -214,36 +216,11 @@ describe("{{capitalize actionGroup}}{{resourceClass}}Handler", () => {
         name: {{cliPositionalName}},
         regionName,
         cicsPlex,
-        busy: "FORCE",
+{{#each actionOptions}}
+        {{this.argName}}: "{{this.exampleValue}}",
+{{/each}}
       }
     );
-  });
-{{else}}
-
-  it("should not include busy parameter for {{actionGroup}} action", async () => {
-    const handler = new {{resourceClass}}Handler();
-
-    const commandParameters = { ...DEFAULT_PARAMETERS };
-    commandParameters.arguments = {
-      ...commandParameters.arguments,
-      {{cliPositionalName}},
-      regionName,
-      busy: "WAIT", // This should be ignored for {{actionGroup}} action
-      host,
-      port,
-      user,
-      password,
-      protocol,
-      rejectUnauthorized,
-    };
-
-    await handler.process(commandParameters);
-
-    expect(functionSpy).toHaveBeenCalledTimes(1);
-
-    // Verify busy parameter is not passed to {{actionGroup}} action
-    const callArgs = functionSpy.mock.calls[0][1] as any;
-    expect(callArgs.busy).toBeUndefined();
   });
 {{/if}}
 });

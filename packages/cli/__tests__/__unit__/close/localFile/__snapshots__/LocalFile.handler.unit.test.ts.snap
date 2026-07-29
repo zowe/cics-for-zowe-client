@@ -16,9 +16,9 @@ exports[`CloseLocalFileHandler should call the closeLocalFile api 2`] = `
 }
 `;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 1`] = `"The local file '%s' was closed successfully."`;
+exports[`CloseLocalFileHandler should call the closeLocalFile api with action options 1`] = `"The local file '%s' was closed successfully."`;
 
-exports[`CloseLocalFileHandler should call the closeLocalFile api with busy parameter 2`] = `
+exports[`CloseLocalFileHandler should call the closeLocalFile api with action options 2`] = `
 {
   "response": {
     "records": "testing",

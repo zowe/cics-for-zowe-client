@@ -18,7 +18,7 @@ exports[`cics enable urimap should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex in which to enable the urimap",
+      "description": "The name of the CICSplex in which to enable the urimap",
       "name": "cics-plex",
       "type": "string",
     },

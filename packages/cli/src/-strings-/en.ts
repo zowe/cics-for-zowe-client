@@ -31,7 +31,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to add the CSD Group to the CSD List",
-          CICSPLEX: "The name of the CICSPlex to which to add the CSD Group to the CSD List",
+          CICSPLEX: "The name of the CICSplex to which to add the CSD Group to the CSD List",
         },
         MESSAGES: {
           SUCCESS: "The CSD Group '%s' was successfully added to '%s'.",
@@ -54,7 +54,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to close the local file",
-          CICSPLEX: "The name of the CICSPlex in which to close the local file",
+          CICSPLEX: "The name of the CICSplex in which to close the local file",
           BUSY: "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
         },
         MESSAGES: {
@@ -63,7 +63,7 @@ export default {
         },
         EXAMPLES: {
           EX1: "Close a local file named TESTFILE from the region named MYREGION",
-          EX2: "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+          EX_BUSY: "Close a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
         },
       },
     },
@@ -102,7 +102,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new program",
-          CICSPLEX: "The name of the CICSPlex to which to define the new program",
+          CICSPLEX: "The name of the CICSplex to which to define the new program",
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was defined successfully.",
@@ -122,7 +122,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to define the new transaction",
-          CICSPLEX: "The name of the CICSPlex to which to define the new transaction",
+          CICSPLEX: "The name of the CICSplex to which to define the new transaction",
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was defined successfully.",
@@ -149,7 +149,7 @@ export default {
           URIMAPPATH: "The path component of the URI.",
           URIMAPSCHEME: "The scheme component to be used with the request (http or https).",
           REGIONNAME: "The CICS region name to which to define the new URIMAP.",
-          CICSPLEX: "The name of the CICSPlex to which to define the new URIMAP.",
+          CICSPLEX: "The name of the CICSplex to which to define the new URIMAP.",
           PROGRAMNAME: "The application program that makes or handles the requests.",
           PIPELINENAME:
             "The name of the PIPELINE resource definition for the URIMAP. " + "The maximum length of the pipeline name is eight characters.",
@@ -200,7 +200,7 @@ export default {
             "in the web service description should be performed at run time.",
           WSDLFILE: "The file name of the web service description (WSDL) file on HFS.",
           REGIONNAME: "The CICS region name to which to define the new web service.",
-          CICSPLEX: "The name of the CICSPlex to which to define the new web service.",
+          CICSPLEX: "The name of the CICSplex to which to define the new web service.",
         },
         MESSAGES: {
           SUCCESS: "The WEBSERVICE '%s' was defined successfully.",
@@ -226,7 +226,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the program",
-          CICSPLEX: "The name of the CICSPlex from which to delete the program",
+          CICSPLEX: "The name of the CICSplex from which to delete the program",
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was deleted successfully.",
@@ -245,7 +245,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to delete the transaction",
-          CICSPLEX: "The name of the CICSPlex from which to delete the transaction",
+          CICSPLEX: "The name of the CICSplex from which to delete the transaction",
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was deleted successfully.",
@@ -304,7 +304,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to disable the local file",
-          CICSPLEX: "The name of the CICSPlex in which to disable the local file",
+          CICSPLEX: "The name of the CICSplex in which to disable the local file",
           BUSY: "The busy condition option for disabling the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
         },
         MESSAGES: {
@@ -313,7 +313,7 @@ export default {
         },
         EXAMPLES: {
           EX1: "Disable a local file named TESTFILE in the region named MYREGION",
-          EX2: "Disable a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+          EX_BUSY: "Disable a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
         },
       },
       URIMAP: {
@@ -323,7 +323,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to disable the urimap",
-          CICSPLEX: "The name of the CICSPlex in which to disable the urimap",
+          CICSPLEX: "The name of the CICSplex in which to disable the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was disabled successfully.",
@@ -346,7 +346,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to discard the program",
-          CICSPLEX: "The name of the CICSPlex from which to discard the program",
+          CICSPLEX: "The name of the CICSplex from which to discard the program",
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was discarded successfully.",
@@ -363,7 +363,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to discard the transaction",
-          CICSPLEX: "The name of the CICSPlex from which to discard the transaction",
+          CICSPLEX: "The name of the CICSplex from which to discard the transaction",
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was discarded successfully.",
@@ -380,7 +380,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to discard the urimap",
-          CICSPLEX: "The name of the CICSPlex from which to discard the urimap",
+          CICSPLEX: "The name of the CICSplex from which to discard the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was discarded successfully.",
@@ -403,7 +403,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to enable the local file",
-          CICSPLEX: "The name of the CICSPlex in which to enable the local file",
+          CICSPLEX: "The name of the CICSplex in which to enable the local file",
         },
         MESSAGES: {
           SUCCESS: "The local file '%s' was enabled successfully.",
@@ -420,7 +420,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to enable the urimap",
-          CICSPLEX: "The name of the CICSPlex in which to enable the urimap",
+          CICSPLEX: "The name of the CICSplex in which to enable the urimap",
         },
         MESSAGES: {
           SUCCESS: "The urimap '%s' was enabled successfully.",
@@ -443,7 +443,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name from which to get the resources",
-          CICSPLEX: "The name of the CICSPlex from which to get the resources",
+          CICSPLEX: "The name of the CICSplex from which to get the resources",
           CRITERIA: "The criteria by which to filter the resource",
           PARAMETER: "The parameter by which to refine the resource",
         },
@@ -478,7 +478,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the program",
-          CICSPLEX: "The name of the CICSPlex to which to install the program",
+          CICSPLEX: "The name of the CICSplex to which to install the program",
         },
         MESSAGES: {
           SUCCESS: "The program named '%s' was installed successfully.",
@@ -497,7 +497,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to install the transaction",
-          CICSPLEX: "The name of the CICSPlex to which to install the transaction",
+          CICSPLEX: "The name of the CICSplex to which to install the transaction",
         },
         MESSAGES: {
           SUCCESS: "The transaction '%s' was installed successfully.",
@@ -538,7 +538,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to open the local file",
-          CICSPLEX: "The name of the CICSPlex in which to open the local file",
+          CICSPLEX: "The name of the CICSplex in which to open the local file",
         },
         MESSAGES: {
           SUCCESS: "The local file '%s' was opened successfully.",
@@ -561,7 +561,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name on which you want to refresh the program",
-          CICSPLEX: "The name of the CICSPlex on which to refresh the program",
+          CICSPLEX: "The name of the CICSplex on which to refresh the program",
         },
         MESSAGES: {
           SUCCESS: "The program '%s' was refreshed successfully.",
@@ -587,7 +587,7 @@ export default {
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name to which to remove the CSD Group from the CSD List",
-          CICSPLEX: "The name of the CICSPlex to which to remove the CSD Group from the CSD List",
+          CICSPLEX: "The name of the CICSplex to which to remove the CSD Group from the CSD List",
         },
         MESSAGES: {
           SUCCESS: "The CSD Group '%s' was successfully removed from '%s'.",

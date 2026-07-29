@@ -16,9 +16,9 @@ exports[`DisableLocalFileHandler should call the disableLocalFile api 2`] = `
 }
 `;
 
-exports[`DisableLocalFileHandler should call the disableLocalFile api with busy parameter 1`] = `"The local file '%s' was disabled successfully."`;
+exports[`DisableLocalFileHandler should call the disableLocalFile api with action options 1`] = `"The local file '%s' was disabled successfully."`;
 
-exports[`DisableLocalFileHandler should call the disableLocalFile api with busy parameter 2`] = `
+exports[`DisableLocalFileHandler should call the disableLocalFile api with action options 2`] = `
 {
   "response": {
     "records": "testing",

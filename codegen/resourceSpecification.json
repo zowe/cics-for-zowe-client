@@ -83,7 +83,7 @@
         {
           "identifier": {
             "name": "ENABLE",
-            "aliases": ["enb"],
+            "aliases": ["en"],
             "group": "enable",
             "description": "Enable a resource in CICS",
             "verb": "enabling",
@@ -133,7 +133,7 @@
     "ENABLE": {
       "identifier": {
         "name": "ENABLE",
-        "aliases": ["enb"],
+        "aliases": ["en"],
         "group": "enable",
         "description": "Enable a resource in CICS",
         "verb": "enabling",
@@ -231,7 +231,7 @@
   "groupMeta": {
     "enable": {
       "name": "enable",
-      "aliases": ["enb"],
+      "aliases": ["en"],
       "summary": "Enable resources in CICS",
       "description": "Enable resources (for example, local files) in CICS through IBM CMCI.",
       "stringsKey": "ENABLE"

@@ -57,7 +57,7 @@ exports[`cics define webservice should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex to which to define the new web service.",
+      "description": "The name of the CICSplex to which to define the new web service.",
       "name": "cics-plex",
       "type": "string",
     },

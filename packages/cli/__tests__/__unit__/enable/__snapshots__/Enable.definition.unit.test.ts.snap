@@ -3,7 +3,7 @@
 exports[`cics enable should not have changed 1`] = `
 {
   "aliases": [
-    "enb",
+    "en",
   ],
   "description": "Enable resources (for example, local files) in CICS through IBM CMCI.",
   "name": "enable",

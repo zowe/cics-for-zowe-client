@@ -417,7 +417,6 @@ export class ResourceGenerator {
       cicsBaseHandlerImport: string;
       actionVerb: string;
       humanName: string;
-      hasBusyOption: boolean;
       noCicsPlex: boolean;
       isWebserviceAction: boolean;
       isGetAction: boolean;
@@ -434,8 +433,11 @@ export class ResourceGenerator {
       cliOptionName: string;     // kebab-case CLI option name
       cliAliases: string[];
       stringsKey: string;        // UPPERCASE key in strings.OPTIONS
+      exampleKey: string;        // UPPERCASE key in strings.EXAMPLES, e.g. "EX_BUSY"
+      exampleValue: string;      // example value for this option, e.g. "FORCE"
       type: string;
       defaultValue?: string | number | boolean;
+      defaultValueLiteral?: string; // pre-formatted TS literal, e.g. '"WAIT"' or 'true'
       allowableValues?: string[];
       caseSensitive?: boolean;
       required?: boolean;
@@ -533,13 +535,25 @@ export class ResourceGenerator {
           if (optDef.isPositional) { continue; } // handled separately as extra positionals
           const cliOptName = optDef.cliName ?? this.toKebabCase(optDef.name);
           const cliOptAliases = optDef.cliAliases ?? [];
+          const stringsKey = (optDef.cliName ?? optDef.name).replace(/-/g, "").toUpperCase();
+          // Use the last allowable value as example (e.g. "FORCE" for BUSY), or a sensible placeholder
+          const exampleValue = optDef.allowableValues
+            ? String(optDef.allowableValues[optDef.allowableValues.length - 1])
+            : optDef.defaultValue !== undefined ? String(optDef.defaultValue) : "VALUE";
+          // Pre-format default value as a TS literal to avoid template helper issues
+          const defaultValueLiteral = optDef.defaultValue !== undefined
+            ? (optDef.type === "boolean" ? String(optDef.defaultValue) : `"${optDef.defaultValue}"`)
+            : undefined;
           actionOptions.push({
             name: optDef.name,
             cliOptionName: cliOptName,
             cliAliases: cliOptAliases,
-            stringsKey: (optDef.cliName ?? optDef.name).replace(/-/g, "").toUpperCase(),
+            stringsKey,
+            exampleKey: `EX_${stringsKey}`,
+            exampleValue,
             type: optDef.type,
             defaultValue: optDef.defaultValue,
+            defaultValueLiteral,
             allowableValues: optDef.allowableValues,
             caseSensitive: optDef.caseSensitive,
             required: optDef.required,
@@ -579,8 +593,6 @@ export class ResourceGenerator {
           cliPositionalName.includes("program") ? "PGM123" :
           cliPositionalName.includes("file") ? "TESTFILE" :
           "MYRESOURCE";
-        const hasBusy = rawOptions.includes("BUSY") ||
-          (typeof rawOptions[0] !== "string" && (rawOptions as OptionDefinition[]).some(o => o.name === "busy"));
         const exampleOptions = `${mainArg} --region-name MYREGION`;
 
         const entry: CLIResourceEntry = {
@@ -600,7 +612,6 @@ export class ResourceGenerator {
           cicsBaseHandlerImport,
           actionVerb: actionDef.identifier.verb,
           humanName: resource.humanName,
-          hasBusyOption: !!hasBusy,
           noCicsPlex: !!actionDef.noCicsPlex,
           isWebserviceAction: !!actionDef.webserviceAction,
           isGetAction: !!actionDef.getAction,
@@ -694,7 +705,6 @@ export class ResourceGenerator {
                 ...entry,
                 actionGroup: group,
                 sdkFunction: sharedDerivedAction.sdkFunction,
-                hasBusyOption: sharedDerivedAction.options.some(o => o.name === "busy"),
                 resourceClass: entry.resourceClass,
                 cliPositionalName: entry.cliPositionalName,
               });

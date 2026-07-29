@@ -31,7 +31,7 @@ LocalFileDefinition.parent = GroupDefinition;
 jest.mock("@zowe/cics-for-zowe-sdk");
 const sdk = require("@zowe/cics-for-zowe-sdk");
 
-const host = "somewhere.com";
+const host = "example.com";
 const port = 43443;
 const user = "someone";
 const password = "somesecret";
@@ -167,7 +167,7 @@ describe("DisableLocalFileHandler", () => {
     );
   });
 
-  it("should call the disableLocalFile api with busy parameter", async () => {
+  it("should call the disableLocalFile api with action options", async () => {
     const handler = new LocalFileHandler();
 
     const commandParameters = { ...DEFAULT_PARAMETERS };

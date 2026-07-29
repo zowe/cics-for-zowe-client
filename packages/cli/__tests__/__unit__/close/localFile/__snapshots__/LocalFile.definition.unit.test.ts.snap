@@ -27,20 +27,6 @@ exports[`cics close CICSLocalFile should not have changed 1`] = `
           "FORCE",
         ],
       },
-      "defaultValue": false,
-      "description": "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
-      "name": "busy",
-      "type": "string",
-    },
-    {
-      "allowableValues": {
-        "caseSensitive": false,
-        "values": [
-          "WAIT",
-          "NOWAIT",
-          "FORCE",
-        ],
-      },
       "defaultValue": "WAIT",
       "description": "The busy condition option for closing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
       "name": "busy",
@@ -52,7 +38,7 @@ exports[`cics close CICSLocalFile should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex in which to close the local file",
+      "description": "The name of the CICSplex in which to close the local file",
       "name": "cics-plex",
       "type": "string",
     },

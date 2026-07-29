@@ -31,7 +31,7 @@ LocalFileDefinition.parent = GroupDefinition;
 jest.mock("@zowe/cics-for-zowe-sdk");
 const sdk = require("@zowe/cics-for-zowe-sdk");
 
-const host = "somewhere.com";
+const host = "example.com";
 const port = 43443;
 const user = "someone";
 const password = "somesecret";
@@ -165,31 +165,5 @@ describe("EnableLocalFileHandler", () => {
         cicsPlex,
       }
     );
-  });
-
-  it("should not include busy parameter for enable action", async () => {
-    const handler = new LocalFileHandler();
-
-    const commandParameters = { ...DEFAULT_PARAMETERS };
-    commandParameters.arguments = {
-      ...commandParameters.arguments,
-      fileName,
-      regionName,
-      busy: "WAIT", // This should be ignored for enable action
-      host,
-      port,
-      user,
-      password,
-      protocol,
-      rejectUnauthorized,
-    };
-
-    await handler.process(commandParameters);
-
-    expect(functionSpy).toHaveBeenCalledTimes(1);
-
-    // Verify busy parameter is not passed to enable action
-    const callArgs = functionSpy.mock.calls[0][1] as any;
-    expect(callArgs.busy).toBeUndefined();
   });
 });

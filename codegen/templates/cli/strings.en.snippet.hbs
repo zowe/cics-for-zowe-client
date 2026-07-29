@@ -9,10 +9,10 @@
         },
         OPTIONS: {
           REGIONNAME: "The CICS region name in which to {{actionGroup}} the local file",
-          CICSPLEX: "The name of the CICSPlex in which to {{actionGroup}} the local file",
-{{#if hasBusyOption}}
-          BUSY: "The busy condition option for {{actionGroup}}ing the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
-{{/if}}
+          CICSPLEX: "The name of the CICSplex in which to {{actionGroup}} the local file",
+{{#each actionOptions}}
+          {{toUpperCase this.stringsKey}}: "{{this.description}}",
+{{/each}}
         },
         MESSAGES: {
           SUCCESS: "The local file '%s' was {{actionPastTense}} successfully.",
@@ -20,9 +20,9 @@
         },
         EXAMPLES: {
           EX1: "{{capitalize actionGroup}} a local file named TESTFILE in the region named MYREGION",
-{{#if hasBusyOption}}
-          EX2: "{{capitalize actionGroup}} a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
-{{/if}}
+{{#each actionOptions}}
+          {{this.exampleKey}}: "{{capitalize ../actionGroup}} a local file named TESTFILE from the region named MYREGION with {{toUpperCase this.name}}={{this.exampleValue}}",
+{{/each}}
         },
       },
     },
