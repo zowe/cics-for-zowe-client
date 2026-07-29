@@ -167,34 +167,6 @@ export default class {{resourceClass}}Handler extends CicsBaseHandler {
       output: response.response.records[params.arguments.{{cliPositionalName}}.toLowerCase()],
     });
     return response;
-{{else if isWebserviceAction}}
-    /*
-     * Git Bash on Windows attempts to replace forward slashes with a
-     * directory path (e.g., /u -> U:/). CICS is picky when it validates the
-     * wsbind path. Unlike typical Unix paths, it must start with one slash
-     * and two are not allowed. We need to support paths prefixed with two
-     * slashes so Git Bash does not tamper with them, and then strip off the
-     * extra leading slash here so CICS validation will not complain.
-     */
-    let wsBind: string = params.arguments.wsbind;
-    if (wsBind.startsWith("//")) {
-      wsBind = wsBind.slice(1);
-    }
-
-    const response = await {{sdkFunction}}(session, {
-      name: params.arguments.{{cliPositionalName}},
-      csdGroup: params.arguments.csdGroup,
-      pipelineName: params.arguments.pipelineName,
-      wsBind,
-      description: params.arguments.description,
-      validation: params.arguments.validation,
-      wsdlFile: params.arguments.wsdlFile,
-      regionName: params.arguments.regionName,
-      cicsPlex: params.arguments.cicsPlex,
-    });
-
-    params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.{{cliPositionalName}});
-    return response;
 {{else}}
     const response = await {{sdkFunction}}(session, {
       name: params.arguments.{{cliPositionalName}},

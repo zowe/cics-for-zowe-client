@@ -69,7 +69,6 @@ interface ActionReference {
   sdkFunction?: string;
   urimapVariant?: string;
   extraPositionals?: string[];
-  webserviceAction?: boolean;
   getAction?: boolean;
 }
 
@@ -81,7 +80,6 @@ interface ActionDefinition {
   sdkFunction?: string;
   urimapVariant?: string;
   extraPositionals?: string[];
-  webserviceAction?: boolean;
   getAction?: boolean;
 }
 
@@ -352,7 +350,6 @@ export class ResourceGenerator {
    *
    * Special cases handled:
    *   - urimapVariant: "server"|"client"|"pipeline" → sub-command name like "urimap-server"
-   *   - webserviceAction: custom wsbind path-fix logic
    *   - getAction: outputFormatOptions + format.output response
    *   - noCicsPlex: omit cics-plex option
    *   - sdkFunction override: e.g. REFRESH uses programNewcopy
@@ -418,7 +415,6 @@ export class ResourceGenerator {
       actionVerb: string;
       humanName: string;
       noCicsPlex: boolean;
-      isWebserviceAction: boolean;
       isGetAction: boolean;
       actionOptions: CLIOption[];
       extraPositionals: CLIPositional[];
@@ -613,7 +609,6 @@ export class ResourceGenerator {
           actionVerb: actionDef.identifier.verb,
           humanName: resource.humanName,
           noCicsPlex: !!actionDef.noCicsPlex,
-          isWebserviceAction: !!actionDef.webserviceAction,
           isGetAction: !!actionDef.getAction,
           actionOptions,
           extraPositionals,
