@@ -9,7 +9,7 @@ exports[`cics install program should not have changed 1`] = `
   "examples": [
     {
       "description": "Install a program named PGM123 to the region named MYREGION in the CSD group MYGRP",
-      "options": "PGM123 MYGRP --region-name MYREGION",
+      "options": "PGM123 --region-name MYREGION",
     },
   ],
   "name": "program",

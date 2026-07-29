@@ -316,6 +316,23 @@ export default {
           EX_BUSY: "Disable a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
         },
       },
+      PROGRAM: {
+        DESCRIPTION: "Disable a program in CICS.",
+        POSITIONALS: {
+          PROGRAMNAME: "The name of the program to disable. The maximum length of the program name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to disable the program",
+          CICSPLEX: "The name of the CICSPlex in which to disable the program",
+        },
+        MESSAGES: {
+          SUCCESS: "The program '%s' was disabled successfully.",
+          PROGRESS: "Disabling program in CICS",
+        },
+        EXAMPLES: {
+          EX1: "Disable a program named PGM123 in the region named MYREGION",
+        },
+      },
       URIMAP: {
         DESCRIPTION: "Disable a urimap from CICS.",
         POSITIONALS: {
@@ -411,6 +428,23 @@ export default {
         },
         EXAMPLES: {
           EX1: "Enable a local file named TESTFILE in the region named MYREGION",
+        },
+      },
+      PROGRAM: {
+        DESCRIPTION: "Enable a program in CICS.",
+        POSITIONALS: {
+          PROGRAMNAME: "The name of the program to enable. The maximum length of the program name is eight characters.",
+        },
+        OPTIONS: {
+          REGIONNAME: "The CICS region name in which to enable the program",
+          CICSPLEX: "The name of the CICSPlex in which to enable the program",
+        },
+        MESSAGES: {
+          SUCCESS: "The program '%s' was enabled successfully.",
+          PROGRESS: "Enabling program in CICS",
+        },
+        EXAMPLES: {
+          EX1: "Enable a program named PGM123 in the region named MYREGION",
         },
       },
       URIMAP: {

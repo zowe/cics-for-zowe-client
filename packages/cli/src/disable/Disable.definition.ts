@@ -18,6 +18,7 @@
 
 import type { ICommandDefinition } from "@zowe/imperative";
 import { LocalFileDefinition } from "./localFile/LocalFile.definition";
+import { ProgramDefinition } from "./program/Program.definition";
 import { UrimapDefinition } from "./urimap/Urimap.definition";
 import { CicsSession } from "../CicsSession";
 
@@ -35,7 +36,7 @@ const definition: ICommandDefinition = {
   summary: strings.SUMMARY,
   description: strings.DESCRIPTION,
   type: "group",
-  children: [LocalFileDefinition, UrimapDefinition],
+  children: [LocalFileDefinition, ProgramDefinition, UrimapDefinition],
   passOn: [
     {
       property: "options",

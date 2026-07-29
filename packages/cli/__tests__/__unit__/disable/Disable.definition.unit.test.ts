@@ -19,7 +19,7 @@
 import type { ICommandDefinition } from "@zowe/imperative";
 
 describe("cics disable", () => {
-  const RESOURCES_COUNT = 2;
+  const RESOURCES_COUNT = 3;
 
   it("should not have changed", () => {
     const definition: ICommandDefinition = require("../../../src/disable/Disable.definition");

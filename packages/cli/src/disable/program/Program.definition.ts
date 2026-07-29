@@ -20,10 +20,10 @@ import type { ICommandDefinition } from "@zowe/imperative";
 import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE.RESOURCES.PROGRAM;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.PROGRAM;
 
 /**
- * Program command definition for the Delete command group
+ * Program command definition for the Disable command group
  */
 export const ProgramDefinition: ICommandDefinition = {
   name: "program",
@@ -35,12 +35,6 @@ export const ProgramDefinition: ICommandDefinition = {
     {
       name: "programName",
       description: strings.POSITIONALS.PROGRAMNAME,
-      type: "string",
-      required: true,
-    },
-    {
-      name: "csdGroup",
-      description: strings.POSITIONALS.CSDGROUP,
       type: "string",
       required: true,
     },
