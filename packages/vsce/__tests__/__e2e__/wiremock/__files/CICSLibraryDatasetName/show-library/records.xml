@@ -10,5 +10,9 @@
       dsnsearchpos="1001"
       dsnum="1" eyu_cicsname="MYREG1" eyu_cicsrel="E710" eyu_reserved="0" library="MYLIB1"
       searchpos="1" />
+    <cicslibrarydatasetname _keydata="C4C6C8D9D7D3404000000002" dsname="MYLIBDS2"
+      dsnsearchpos="1002"
+      dsnum="2" eyu_cicsname="MYREG1" eyu_cicsrel="E710" eyu_reserved="0" library="MYLIB1"
+      searchpos="2" />
   </records>
 </response>

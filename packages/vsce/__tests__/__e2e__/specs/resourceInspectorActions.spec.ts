@@ -72,7 +72,6 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Resource Inspector Actions - Library", () => {
-
   test("should disable then enable MYLIB1 from Resource Inspector", async ({ page }) => {
     // Open MYLIB1 (ENABLED) in the Resource Inspector
     await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
@@ -190,6 +189,88 @@ test.describe("Resource Inspector Actions - JVM Endpoint", () => {
   });
 });
 
+test.describe("Resource Inspector Actions - Pipeline", () => {
+  test("should show Copy Name and Compare to actions for Pipeline in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Copy Name", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+  });
+
+  test("should copy Pipeline name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.PIPELINE_1_NAME);
+  });
+
+  test("should compare Pipeline MYPIPE1 to MYPIPE2 from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Pipelines", constants.PIPELINE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
+
+    // Select region: "Other CICS Region" → profile → plex → region
+    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
+    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
+
+    // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
+    await page.locator("input.input").fill(constants.PIPELINE_2_NAME);
+    await page.keyboard.press("Enter");
+
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_1_NAME }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_2_NAME }).first()).toBeVisible({ timeout: 20000 });
+  });
+});
+
+test.describe("Resource Inspector Actions - Web Service", () => {
+  test("should show Copy Name and Compare to actions for Web Service in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Web Services", constants.WEBSERVICE_1_NAME);
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Copy Name", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+  });
+
+  test("should copy Web Service name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Web Services", constants.WEBSERVICE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.WEBSERVICE_1_NAME);
+  });
+
+  test("should compare Web Service MYWS1 to MYWS2 from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Web Services", constants.WEBSERVICE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
+
+    // Select region: "Other CICS Region" → profile → plex → region
+    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
+    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
+
+    // Enter the second resource name to compare against
+    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
+    await page.locator("input.input").fill(constants.WEBSERVICE_2_NAME);
+    await page.keyboard.press("Enter");
+
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_1_NAME }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_2_NAME }).first()).toBeVisible({ timeout: 20000 });
+  });
+});
+
 test.describe("Resource Inspector Actions - TCP/IP Service", () => {
   test("should show Copy Name and Compare to actions for TCP/IP Service in Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "TCP/IP Services", constants.TCPIP_1_NAME, "MYTCPIP1");
@@ -222,7 +303,6 @@ test.describe("Resource Inspector Actions - TCP/IP Service", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
-    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
     await page.locator("input.input").fill("MYTCPIP2");
     await page.keyboard.press("Enter");
 
