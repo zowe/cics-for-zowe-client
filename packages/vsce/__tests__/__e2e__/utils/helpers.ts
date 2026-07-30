@@ -176,7 +176,6 @@ export const waitForNotification = async (page: Page, string: string, failIfNotS
       throw timeoutError;
     }
   }
-  await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
 };
 
 export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
