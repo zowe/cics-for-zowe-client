@@ -15,13 +15,15 @@ import { getJVMServerActions } from "./JVMServerActions";
 import { getLibraryActions } from "./LibraryActions";
 import { getLocalFileActions } from "./LocalFileActions";
 import { getManagedRegionActions } from "./ManagedRegionActions";
+import { getPipelineActions } from "./PipelineActions";
 import { getProgramActions } from "./ProgramActions";
 import { getRegionActions } from "./RegionActions";
+import { getTCPIPActions } from "./TCPIPActions";
 import { getSharedTSQueueActions, getTSQueueActions } from "./TSQueueActions";
 import { getTaskActions } from "./TaskActions";
 import { getTransactionActions } from "./TransactionActions";
-import { getTCPIPActions } from "./TCPIPActions";
 import { getURIMapActions } from "./URIMapsActions";
+import { getWebServiceActions } from "./WebServiceActions";
 
 export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
   const map = new Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>();
@@ -38,6 +40,8 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   map.set(ResourceTypes.CICSRegion, getRegionActions());
   map.set(ResourceTypes.CICSTCPIPService, getTCPIPActions());
   map.set(ResourceTypes.CICSURIMap, getURIMapActions());
+  map.set(ResourceTypes.CICSPipeline, getPipelineActions());
+  map.set(ResourceTypes.CICSWebService, getWebServiceActions());
 
   return map;
 }
@@ -47,10 +51,12 @@ export * from "./JVMServerActions";
 export * from "./LibraryActions";
 export * from "./LocalFileActions";
 export * from "./ManagedRegionActions";
+export * from "./PipelineActions";
 export * from "./ProgramActions";
 export * from "./RegionActions";
+export * from "./TCPIPActions";
 export * from "./TSQueueActions";
 export * from "./TaskActions";
 export * from "./TransactionActions";
-export * from "./TCPIPActions";
 export * from "./URIMapsActions";
+export * from "./WebServiceActions";
