@@ -727,10 +727,16 @@ export class ResourceGenerator {
             console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
           }
         } else {
-          // Pattern B: also render the co-located handler file
+          // Pattern B: also render the co-located handler file and its handler unit test
           this.generateFromTemplate("cli/resource.handler.hbs",
             path.join(resDir, `${entry.resourceClass}.handler.ts`), entry);
           console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.ts`);
+
+          this.generateFromTemplate("tests/cli.resource.handler.unit.test.hbs",
+            path.join(resTestDir, `${entry.resourceClass}.handler.unit.test.ts`),
+            { ...entry, actionGroup: group },
+            /* skipIfHandWritten */ true);
+          console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
         }
       }
     }
