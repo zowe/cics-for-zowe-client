@@ -10,9 +10,9 @@ on:
 
 jobs:
   sonar:
-    # PRs from forks do not have access to workflow secrets so Sonarqube fails.
-    # Therefore we are skipping this job on forks.
-    if: contains(github.event.pull_request.head.repo.url, '/repos/zowe/cics-for-zowe-client')
+    # PRs from forks or Dependabot do not have access to workflow secrets so Sonarqube fails.
+    # Therefore we are skipping this job on forks and Dependabot PRs.
+    if: contains(github.event.pull_request.head.repo.url, '/repos/zowe/cics-for-zowe-client') && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
