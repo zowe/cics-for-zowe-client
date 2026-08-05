@@ -301,6 +301,5 @@
   "Failed to {0} all {1} resource(s)": "Failed to {0} all {1} resource(s)",
   "{0} {1} of {2} resource(s). {3} failed.": "{0} {1} of {2} resource(s). {3} failed.",
   "Successfully {0} {1} resource(s)": "Successfully {0} {1} resource(s)",
-  "No CICS local file selected": "No CICS local file selected",
-  "Change": "Change"
+  "No CICS local file selected": "No CICS local file selected"
 }
