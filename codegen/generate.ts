@@ -70,6 +70,8 @@ interface ActionReference {
   urimapVariant?: string;
   extraPositionals?: string[];
   getAction?: boolean;
+  /** When true this action is only used for CLI generation; the SDK generator skips it. */
+  cliOnly?: boolean;
 }
 
 interface ActionDefinition {
@@ -81,6 +83,8 @@ interface ActionDefinition {
   urimapVariant?: string;
   extraPositionals?: string[];
   getAction?: boolean;
+  /** When true this action is only used for CLI generation; the SDK generator skips it. */
+  cliOnly?: boolean;
 }
 
 interface GroupMeta {
@@ -253,13 +257,14 @@ export class ResourceGenerator {
     for (const resource of derivedResources) {
       const fileName = `${resource.sdkFileName}.ts`;
       const filePath = path.join(sdkOutputDir, fileName);
-      
+
       this.generateFromTemplate(
         "sdk/resource.file.hbs",
         filePath,
-        resource
+        resource,
+        /* skipIfHandWritten */ true
       );
-      
+
       console.log(`  ✓ sdk/src/resources/${fileName}`);
     }
 
@@ -268,14 +273,15 @@ export class ResourceGenerator {
     this.generateFromTemplate(
       "sdk/resource.index.hbs",
       indexPath,
-      { resources: derivedResources.map(r => ({ sdkFileName: r.sdkFileName })) }
+      { resources: derivedResources.map(r => ({ sdkFileName: r.sdkFileName })) },
+      /* skipIfHandWritten */ true
     );
     console.log(`  ✓ sdk/src/resources/index.ts`);
 
     // Generate Parms interfaces in doc directory
     const docOutputDir = path.join(this.outputDir, "sdk", "src", "doc");
     this.ensureDir(docOutputDir);
-    
+
     for (const resource of derivedResources) {
       // Skip generating a parms file for resources with no additional options;
       // those resources use IResourceParms directly.
@@ -285,13 +291,14 @@ export class ResourceGenerator {
 
       const parmsFileName = `I${resource.sdkFileName}Parms.ts`;
       const parmsFilePath = path.join(docOutputDir, parmsFileName);
-      
+
       this.generateFromTemplate(
         "sdk/parms.interface.hbs",
         parmsFilePath,
-        resource
+        resource,
+        /* skipIfHandWritten */ true
       );
-      
+
       console.log(`  ✓ sdk/src/doc/${parmsFileName}`);
     }
 
@@ -300,31 +307,34 @@ export class ResourceGenerator {
     this.generateFromTemplate(
       "sdk/doc.index.hbs",
       docIndexPath,
-      { resources: derivedResources }
+      { resources: derivedResources },
+      /* skipIfHandWritten */ true
     );
     console.log(`  ✓ sdk/src/doc/index.ts`);
 
     // Generate CicsCmci.constants.ts
     const constantsDir = path.join(this.outputDir, "sdk", "src", "constants");
     this.ensureDir(constantsDir);
-    
+
     const constantsPath = path.join(constantsDir, "CicsCmci.constants.ts");
     this.generateFromTemplate(
       "sdk/constants.hbs",
       constantsPath,
-      { resources: derivedResources }
+      { resources: derivedResources },
+      /* skipIfHandWritten */ true
     );
     console.log(`  ✓ sdk/src/constants/CicsCmci.constants.ts`);
 
     // Generate ResourceActions.ts utility file
     const utilsDir = path.join(this.outputDir, "sdk", "src", "utils");
     this.ensureDir(utilsDir);
-    
+
     const resourceActionsPath = path.join(utilsDir, "ResourceActions.ts");
     this.generateFromTemplate(
       "sdk/utils.resourceactions.hbs",
       resourceActionsPath,
-      {}
+      {},
+      /* skipIfHandWritten */ true
     );
     console.log(`  ✓ sdk/src/utils/ResourceActions.ts`);
 
@@ -333,7 +343,8 @@ export class ResourceGenerator {
     this.generateFromTemplate(
       "sdk/utils.index.hbs",
       utilsIndexPath,
-      {}
+      {},
+      /* skipIfHandWritten */ true
     );
     console.log(`  ✓ sdk/src/utils/index.ts`);
 
@@ -443,6 +454,7 @@ export class ResourceGenerator {
     interface CLIPositional {
       name: string;              // camelCase argument name
       stringsKey: string;        // UPPERCASE strings key
+      exampleValue: string;      // example value for use in exampleOptions
     }
 
     const groupMap = new Map<string, CLIResourceEntry[]>();
@@ -562,9 +574,15 @@ export class ResourceGenerator {
         for (const posRef of (actionDef.extraPositionals ?? [])) {
           if (!this.spec.options?.[posRef]) { continue; }
           const posDef = this.spec.options[posRef];
+          const posName = posDef.name;
+          const posExampleValue = posName.includes("csdGroup") ? "MYGRP" :
+            posName.includes("program") ? "PGM123" :
+            posName.includes("transaction") ? "TRN1" :
+            "MYVALUE";
           extraPositionals.push({
-            name: posDef.name,
-            stringsKey: posDef.name.toUpperCase(),
+            name: posName,
+            stringsKey: posName.toUpperCase(),
+            exampleValue: posExampleValue,
           });
         }
 
@@ -589,7 +607,10 @@ export class ResourceGenerator {
           cliPositionalName.includes("program") ? "PGM123" :
           cliPositionalName.includes("file") ? "TESTFILE" :
           "MYRESOURCE";
-        const exampleOptions = `${mainArg} --region-name MYREGION`;
+        const extraPositionalArgs = extraPositionals.map(ep => ep.exampleValue).join(" ");
+        const exampleOptions = extraPositionalArgs
+          ? `${mainArg} ${extraPositionalArgs} --region-name MYREGION`
+          : `${mainArg} --region-name MYREGION`;
 
         const entry: CLIResourceEntry = {
           resourceName: resource.name,
@@ -647,7 +668,7 @@ export class ResourceGenerator {
         aliases: groupAliases,
         stringsKey,
         imports,
-      });
+      }, /* skipIfHandWritten */ true);
       console.log(`  ✓ cli/src/${group}/${path.basename(groupDefFile)}`);
 
       // Group definition unit test
@@ -661,7 +682,7 @@ export class ResourceGenerator {
         resourcesCount: entries.length,
         stringsKey,
         groupClassName: this.toPascalCase(group.replace(/-/g, " ")),
-      });
+      }, /* skipIfHandWritten */ true);
       console.log(`  ✓ cli/__tests__/__unit__/${group}/${path.basename(groupTestFile)}`);
 
       // Per-resource files
@@ -706,10 +727,16 @@ export class ResourceGenerator {
             console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
           }
         } else {
-          // Pattern B: also render the co-located handler file
+          // Pattern B: also render the co-located handler file and its handler unit test
           this.generateFromTemplate("cli/resource.handler.hbs",
             path.join(resDir, `${entry.resourceClass}.handler.ts`), entry);
           console.log(`  ✓ cli/src/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.ts`);
+
+          this.generateFromTemplate("tests/cli.resource.handler.unit.test.hbs",
+            path.join(resTestDir, `${entry.resourceClass}.handler.unit.test.ts`),
+            { ...entry, actionGroup: group },
+            /* skipIfHandWritten */ true);
+          console.log(`  ✓ cli/__tests__/__unit__/${group}/${entry.resourceDir}/${entry.resourceClass}.handler.unit.test.ts`);
         }
       }
     }
@@ -785,7 +812,8 @@ export class ResourceGenerator {
         this.generateFromTemplate(
           "tests/sdk.resource.unit.test.hbs",
           outputPath,
-          context
+          context,
+          /* skipIfHandWritten */ true
         );
         
         this.generatedTestFiles.push(outputPath);
@@ -849,10 +877,13 @@ export class ResourceGenerator {
     });
     const busyValuesConstant = usesBusyOption ? `CICS_${resourceTypeUpper}_BUSY_VALUES` : undefined;
 
-    // Derive actions
-    const derivedActions = resource.actions.map(action =>
-      this.deriveAction(action, resourceName, sdkFileName)
-    );
+    // Derive actions — skip any that are CLI-only (they don't need SDK functions generated).
+    const derivedActions = resource.actions
+      .filter(action => {
+        if (typeof action === "string") { return true; }
+        return !(action as ActionReference).cliOnly;
+      })
+      .map(action => this.deriveAction(action, resourceName, sdkFileName));
 
     // Sort actions: CLOSE first, then others alphabetically
     derivedActions.sort((a, b) => {
@@ -1057,13 +1088,29 @@ export class ResourceGenerator {
   /**
    * Generate a file from a Handlebars template
    */
-  private generateFromTemplate(templatePath: string, outputPath: string, context: unknown): void {
+  private generateFromTemplate(templatePath: string, outputPath: string, context: unknown, skipIfHandWritten = false): void {
     const fullTemplatePath = path.join(this.templateDir, templatePath);
     const templateContent = fs.readFileSync(fullTemplatePath, "utf-8");
     const template = Handlebars.compile(templateContent);
     const output = template(context);
-    
+
     this.ensureDir(path.dirname(outputPath));
+
+    // When skipIfHandWritten is true:
+    //   1. If the file exists and has NO generated header → it is hand-written, skip it.
+    //   2. If the file exists, HAS a generated header, but the new output is identical → skip
+    //      (avoids unnecessary writes, e.g. SDK files whose content didn't change).
+    if (skipIfHandWritten && fs.existsSync(outputPath)) {
+      const existing = fs.readFileSync(outputPath, "utf-8");
+      if (!existing.includes("⚠️  GENERATED FILE - DO NOT EDIT MANUALLY")) {
+        console.log(`  ⏭  skipped (hand-written): ${path.relative(path.join(this.outputDir, ".."), outputPath)}`);
+        return;
+      }
+      if (existing === output) {
+        return; // content unchanged — no write needed
+      }
+    }
+
     fs.writeFileSync(outputPath, output, "utf-8");
   }
 

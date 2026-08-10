@@ -54,6 +54,11 @@
     },
     "CICSProgram": {
       "identifier": {
+        "cliName": "program",
+        "cliDir": "program",
+        "cliClass": "Program",
+        "cliAliases": ["prog"],
+        "cliPositionalName": "programName",
         "aliases": ["prog"],
         "humanNameSingular": "Program",
         "humanNamePlural": "Programs",
@@ -62,7 +67,71 @@
       },
       "actions": [
         "ENABLE",
-        "DISABLE"
+        "DISABLE",
+        {
+          "identifier": {
+            "name": "DEFINE",
+            "aliases": ["def"],
+            "group": "define",
+            "description": "Define a new program to CICS",
+            "verb": "defining",
+            "verbPastTense": "defined"
+          },
+          "cliOnly": true,
+          "extraPositionals": ["CSDGROUP"],
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "DELETE",
+            "aliases": ["del"],
+            "group": "delete",
+            "description": "Delete a program from CICS",
+            "verb": "deleting",
+            "verbPastTense": "deleted"
+          },
+          "cliOnly": true,
+          "extraPositionals": ["CSDGROUP"],
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "DISCARD",
+            "aliases": ["disc"],
+            "group": "discard",
+            "description": "Discard a program from CICS",
+            "verb": "discarding",
+            "verbPastTense": "discarded"
+          },
+          "cliOnly": true,
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "INSTALL",
+            "aliases": ["inst"],
+            "group": "install",
+            "description": "Install a program to CICS",
+            "verb": "installing",
+            "verbPastTense": "installed"
+          },
+          "cliOnly": true,
+          "extraPositionals": ["CSDGROUP"],
+          "options": []
+        },
+        {
+          "identifier": {
+            "name": "REFRESH",
+            "aliases": ["ref"],
+            "group": "refresh",
+            "description": "Refresh a program on CICS",
+            "verb": "refreshing",
+            "verbPastTense": "refreshed"
+          },
+          "cliOnly": true,
+          "sdkFunction": "programNewcopy",
+          "options": []
+        }
       ],
       "additionalOptions": ["CSDGROUP"]
     },
@@ -256,6 +325,41 @@
       "summary": "Close resources in CICS",
       "description": "Close resources (for example, local files) in CICS through IBM CMCI.",
       "stringsKey": "CLOSE"
+    },
+    "define": {
+      "name": "define",
+      "aliases": ["def"],
+      "summary": "Define new resources to CICS",
+      "description": "Define new resources (for example, programs) to CICS through IBM CMCI.",
+      "stringsKey": "DEFINE"
+    },
+    "delete": {
+      "name": "delete",
+      "aliases": ["del"],
+      "summary": "Delete resources from CICS",
+      "description": "Delete resources (for example, programs) from CICS through IBM CMCI.",
+      "stringsKey": "DELETE"
+    },
+    "discard": {
+      "name": "discard",
+      "aliases": ["disc"],
+      "summary": "Discard resources from CICS",
+      "description": "Discard resources (for example, programs) from CICS through IBM CMCI.",
+      "stringsKey": "DISCARD"
+    },
+    "install": {
+      "name": "install",
+      "aliases": ["inst"],
+      "summary": "Install resources to CICS",
+      "description": "Install resources (for example, programs) to CICS through IBM CMCI.",
+      "stringsKey": "INSTALL"
+    },
+    "refresh": {
+      "name": "refresh",
+      "aliases": ["ref"],
+      "summary": "Refresh program on CICS",
+      "description": "Refresh a program on CICS through IBM CMCI.",
+      "stringsKey": "REFRESH"
     }
   }
 }

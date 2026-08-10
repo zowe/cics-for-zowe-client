@@ -16,17 +16,17 @@
 // Any manual changes will be overwritten when the generator runs.
 // ============================================================================
 
-import { type ICMCIApiResponse, defineProgram } from "@zowe/cics-for-zowe-sdk";
+import { type ICMCIApiResponse, disableProgram } from "@zowe/cics-for-zowe-sdk";
 import { type AbstractSession, type IHandlerParameters, type ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { CicsBaseHandler } from "../../CicsBaseHandler";
 
 import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).DEFINE.RESOURCES.PROGRAM;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.PROGRAM;
 
 /**
- * Command handler for defining CICS Program via CMCI
+ * Command handler for disabling CICS Program via CMCI
  * @export
  * @class ProgramHandler
  * @extends {CicsBaseHandler}
@@ -40,11 +40,10 @@ export default class ProgramHandler extends CicsBaseHandler {
     };
     params.response.progress.startBar({ task: status });
 
-    const response = await defineProgram(session, {
+    const response = await disableProgram(session, {
       name: params.arguments.programName,
       regionName: params.arguments.regionName,
       cicsPlex: params.arguments.cicsPlex,
-      csdGroup: params.arguments.csdGroup,
     });
 
     params.response.console.log(strings.MESSAGES.SUCCESS, params.arguments.programName);

@@ -20,10 +20,10 @@ import type { ICommandDefinition } from "@zowe/imperative";
 import type i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).REFRESH.RESOURCES.PROGRAM;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).DISABLE.RESOURCES.PROGRAM;
 
 /**
- * Program command definition for the Refresh command group
+ * Program command definition for the Disable command group
  */
 export const ProgramDefinition: ICommandDefinition = {
   name: "program",

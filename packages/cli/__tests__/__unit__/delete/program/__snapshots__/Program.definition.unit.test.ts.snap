@@ -9,7 +9,7 @@ exports[`cics delete program should not have changed 1`] = `
   "examples": [
     {
       "description": "Delete a program named PGM123 from the region named MYREGION",
-      "options": "PGM123 --region-name MYREGION",
+      "options": "PGM123 MYGRP --region-name MYREGION",
     },
   ],
   "name": "program",
