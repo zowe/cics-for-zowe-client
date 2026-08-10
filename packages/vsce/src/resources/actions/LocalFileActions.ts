@@ -48,6 +48,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSLocalFile>[] = [
     action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
+  {
+    id: "CICS.CICSLocalFile.COPY_NAME",
+    name: l10n.t("Copy Name"),
+    resourceType: ResourceTypes.CICSLocalFile,
+    action: "cics-extension-for-zowe.copyResourceName",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getLocalFileActions(): ResourceAction<ResourceTypes.CICSLocalFile>[] {

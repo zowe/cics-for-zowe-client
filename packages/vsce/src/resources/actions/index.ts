@@ -10,6 +10,7 @@
  */
 
 import { ResourceTypes, type ResourceAction, type ResourceTypeMap } from "@zowe/cics-for-zowe-explorer-api";
+import { getBundleActions } from "./BundleActions";
 import { getJVMEndpointActions } from "./JVMEndpointActions";
 import { getJVMServerActions } from "./JVMServerActions";
 import { getLibraryActions } from "./LibraryActions";
@@ -27,6 +28,7 @@ import { getWebServiceActions } from "./WebServiceActions";
 
 export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]> {
   const map = new Map<keyof ResourceTypeMap, ResourceAction<keyof ResourceTypeMap>[]>();
+  map.set(ResourceTypes.CICSBundle, getBundleActions());
   map.set(ResourceTypes.CICSProgram, getProgramActions());
   map.set(ResourceTypes.CICSLocalTransaction, getTransactionActions());
   map.set(ResourceTypes.CICSLocalFile, getLocalFileActions());
@@ -46,6 +48,7 @@ export function getBuiltInResourceActions(): Map<keyof ResourceTypeMap, Resource
   return map;
 }
 
+export * from "./BundleActions";
 export * from "./JVMEndpointActions";
 export * from "./JVMServerActions";
 export * from "./LibraryActions";

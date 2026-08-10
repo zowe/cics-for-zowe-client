@@ -22,12 +22,14 @@ import {
 } from "../../../src/commands/inspectTreeResourceCommand";
 import { CICSResourceContainerNode, TextTreeItem } from "../../../src/trees";
 import { ResourceInspectorViewProvider } from "../../../src/trees/ResourceInspectorViewProvider";
+import { ResourceContainer } from "../../../src/resources";
 
 jest.mock("vscode");
 jest.mock("@zowe/zowe-explorer-api");
 jest.mock("../../../src/trees/ResourceInspectorViewProvider");
 jest.mock("../../../src/commands/compareResourceCommand");
 jest.mock("../../../src/commands/inspectResourceCommandUtils");
+jest.mock("../../../src/resources");
 
 describe("inspectTreeResourceCommand", () => {
   let mockContext: ExtensionContext;
@@ -402,8 +404,14 @@ describe("inspectTreeResourceCommand", () => {
 
   describe("getInspectMultipleResourcesCommand", () => {
     let mockContainerNode: Partial<CICSResourceContainerNode<IResource>>;
+    let mockFetchNextPage: jest.Mock;
 
     beforeEach(() => {
+      mockFetchNextPage = jest.fn().mockResolvedValue([]);
+      (ResourceContainer as jest.Mock).mockImplementation(() => ({
+        fetchNextPage: mockFetchNextPage,
+      }));
+
       mockContainerNode = {
         children: [],
         getChildren: jest.fn().mockResolvedValue([]),
@@ -413,6 +421,7 @@ describe("inspectTreeResourceCommand", () => {
         }),
         getProfile: jest.fn().mockReturnValue({ name: "testProfile" }),
         getSession: jest.fn().mockReturnValue({ session: "mockSession" }),
+        getProfileName: jest.fn().mockReturnValue("testProfile"),
         cicsplexName: "PLEX1",
         regionName: "REGION1",
       };
@@ -424,16 +433,14 @@ describe("inspectTreeResourceCommand", () => {
       expect(commands.registerCommand).toHaveBeenCalledWith("cics-extension-for-zowe.viewInTable", expect.any(Function));
     });
 
-    it("should call getChildren when node has no children and then show message when still empty", async () => {
+    it("should show 'No resources found' when node has no children and meta has no child type", async () => {
       mockContainerNode.children = [];
-      mockContainerNode.getChildren = jest.fn().mockResolvedValue([]);
 
       getInspectMultipleResourcesCommand(mockContext);
       const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
 
       await commandHandler(mockContainerNode);
 
-      expect(mockContainerNode.getChildren).toHaveBeenCalled();
       expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("No resources found"));
       expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
     });
@@ -501,6 +508,82 @@ describe("inspectTreeResourceCommand", () => {
 
       const callArgs = (inspectResourceCommandUtils.showInspectResource as jest.Mock).mock.calls[0][1];
       expect(callArgs[0].ctx.regionName).toBe("REGION1"); // falls back to eyu_cicsname
+    });
+
+    it("should fetch children via ResourceContainer and call showInspectResource when node has no pre-loaded children but has childType", async () => {
+      const mockChildType = [{ resourceName: "CICSLibraryDatasetName" }];
+      mockContainerNode.getContainedResource = jest.fn().mockReturnValue({
+        meta: { ...mockMeta, childType: mockChildType },
+        resource: mockResource,
+      });
+      mockContainerNode.children = [];
+
+      const fetchedResource = {
+        meta: mockMeta,
+        resource: { attributes: { eyu_cicsname: "REGION1" } },
+      };
+      mockFetchNextPage.mockResolvedValue([fetchedResource]);
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(ResourceContainer).toHaveBeenCalledWith(
+        mockChildType,
+        { profileName: "testProfile", cicsplexName: "PLEX1", regionName: "REGION1" },
+        mockResource
+      );
+      expect(mockFetchNextPage).toHaveBeenCalled();
+      expect(inspectResourceCommandUtils.showInspectResource).toHaveBeenCalledWith(
+        mockContext,
+        expect.arrayContaining([
+          expect.objectContaining({
+            containedResource: fetchedResource,
+            ctx: expect.objectContaining({ regionName: "REGION1" }),
+          }),
+        ]),
+        "table"
+      );
+    });
+
+    it("should show 'No resources found' when ResourceContainer returns empty results", async () => {
+      mockContainerNode.getContainedResource = jest.fn().mockReturnValue({
+        meta: { ...mockMeta, childType: [{ resourceName: "CICSLibraryDatasetName" }] },
+        resource: mockResource,
+      });
+      mockContainerNode.children = [];
+      mockFetchNextPage.mockResolvedValue([]);
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      expect(Gui.showMessage).toHaveBeenCalledWith(expect.stringContaining("No resources found"));
+      expect(inspectResourceCommandUtils.showInspectResource).not.toHaveBeenCalled();
+    });
+
+    it("should use node.regionName as fallback when eyu_cicsname is absent in fetched resource", async () => {
+      mockContainerNode.getContainedResource = jest.fn().mockReturnValue({
+        meta: { ...mockMeta, childType: [{ resourceName: "CICSLibraryDatasetName" }] },
+        resource: mockResource,
+      });
+      mockContainerNode.children = [];
+
+      const fetchedResource = {
+        meta: mockMeta,
+        resource: { attributes: { eyu_cicsname: undefined as string | undefined } },
+      };
+      mockFetchNextPage.mockResolvedValue([fetchedResource]);
+
+      getInspectMultipleResourcesCommand(mockContext);
+      const commandHandler = (commands.registerCommand as jest.Mock).mock.calls[0][1];
+
+      await commandHandler(mockContainerNode);
+
+      const callArgs = (inspectResourceCommandUtils.showInspectResource as jest.Mock).mock.calls[0][1];
+      expect(callArgs[0].ctx.regionName).toBe("REGION1"); // falls back to node.regionName
     });
   });
 });
