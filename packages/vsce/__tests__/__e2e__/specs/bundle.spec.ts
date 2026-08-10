@@ -21,7 +21,7 @@ test.afterEach(async ({ page }) => {
   await resetZoweExplorerView(page);
 });
 
-test.describe("Bundle", () => {
+test.describe("Bundle tests", () => {
   test("should trigger show bundle directory command and select USS profile", async ({ page }) => {
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
     await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
