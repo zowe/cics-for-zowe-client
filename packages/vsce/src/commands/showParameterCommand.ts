@@ -9,6 +9,7 @@
  *
  */
 
+import sanitizeHtml = require("sanitize-html");
 import { commands, window, WebviewPanel, TreeView } from "vscode";
 import { CICSRegionTree } from "../trees/CICSRegionTree";
 import { findSelectedNodes } from "../utils/commandUtils";
@@ -43,11 +44,14 @@ export function getShowRegionSITParametersCommand(treeview: TreeView<any>) {
         <th class="valueHeading">Value</th></tr></thead>`;
       webText += "<tbody>";
       for (const systemParameter of db2transactionResponse.response.records.cicssystemparameter) {
-        const attributeHeadings = Object.keys(systemParameter);
-        webText += `<tr><th class="colHeading">${systemParameter.keyword.toUpperCase()}</th><td>${systemParameter.source.toUpperCase()}</td><td>${systemParameter.value.toUpperCase()}</td></tr>`;
+        const keyword = sanitizeHtml(systemParameter.keyword.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        const source = sanitizeHtml(systemParameter.source.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        const value = sanitizeHtml(systemParameter.value.toUpperCase(), { allowedTags: [], allowedAttributes: {} });
+        webText += `<tr><th class="colHeading">${keyword}</th><td>${source}</td><td>${value}</td></tr>`;
       }
       webText += "</tbody>";
-      const webviewHTML = getParametersHtml(regionTree.getRegionName(), webText);
+      const sanitizedRegionName = sanitizeHtml(regionTree.getRegionName(), { allowedTags: [], allowedAttributes: {} });
+      const webviewHTML = getParametersHtml(sanitizedRegionName, webText);
       const column = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
       const panel: WebviewPanel = window.createWebviewPanel("zowe", `CICS Region ${regionTree.getRegionName()}`, column || 1, {
         enableScripts: true,
