@@ -222,12 +222,18 @@ test.describe("Resource Inspector Actions - Pipeline", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
-    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
-    await page.locator("input.input").fill(constants.PIPELINE_2_NAME);
+    const input = page.locator("input.input");
+    await expect(input).toBeVisible({ timeout: 5000 });
+    await input.selectText();
+    await input.fill(constants.PIPELINE_2_NAME);
     await page.keyboard.press("Enter");
 
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_1_NAME }).first()).toBeVisible({ timeout: 20000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_2_NAME }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_1_NAME }).first()).toBeVisible({
+      timeout: 20000,
+    });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.PIPELINE_2_NAME }).first()).toBeVisible({
+      timeout: 20000,
+    });
   });
 });
 
@@ -264,12 +270,18 @@ test.describe("Resource Inspector Actions - Web Service", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
-    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
-    await page.locator("input.input").fill(constants.WEBSERVICE_2_NAME);
+    const input = page.locator("input.input");
+    await expect(input).toBeVisible({ timeout: 5000 });
+    await input.selectText();
+    await input.fill(constants.WEBSERVICE_2_NAME);
     await page.keyboard.press("Enter");
 
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_1_NAME }).first()).toBeVisible({ timeout: 20000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_2_NAME }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_1_NAME }).first()).toBeVisible({
+      timeout: 20000,
+    });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.WEBSERVICE_2_NAME }).first()).toBeVisible({
+      timeout: 20000,
+    });
   });
 });
 
@@ -315,6 +327,86 @@ test.describe("Resource Inspector Actions - TCP/IP Service", () => {
   });
 });
 
+test.describe("Resource Inspector Actions - Bundle", () => {
+  test("should show Enable but not Disable for a DISABLED Bundle in Resource Inspector", async ({ page }) => {
+    // MYBUNDLE1 starts as DISABLED in the tree
+    await openResourceInspector(page, "Bundles", constants.BUNDLE_1_NAME, "MYBUNDLE1");
+
+    await openContextMenu(page);
+
+    // MYBUNDLE1 is DISABLED — Enable should be visible, Disable should not
+    await expect(getResourceInspector(page).getByText("Enable Bundle", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Disable Bundle", { exact: true })).not.toBeVisible();
+  });
+
+  test("should enable then disable MYBUNDLE1 from Resource Inspector", async ({ page }) => {
+    // MYBUNDLE1 starts DISABLED — open the RI for it
+    await openResourceInspector(page, "Bundles", constants.BUNDLE_1_NAME, "MYBUNDLE1");
+
+    // Verify initial state shows DISABLED
+    await expect(getResourceInspector(page).getByText("Enable status: DISABLED", { exact: false })).toBeVisible();
+
+    // --- Enable ---
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Enable Bundle", { exact: true }).click();
+
+    // RI refreshes automatically after enable action
+    // Assert the RI panel now shows the bundle as ENABLED
+    await expect(getResourceInspector(page).getByText("Enable status: ENABLED", { exact: false })).toBeVisible({ timeout: 10000 });
+
+    // --- Disable ---
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Disable Bundle", { exact: true }).click();
+
+    // Assert the RI panel shows DISABLED again
+    await expect(getResourceInspector(page).getByText("Enable status: DISABLED", { exact: false })).toBeVisible({ timeout: 10000 });
+  });
+
+  test("should show Copy Name and Compare to actions for Bundle in Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Bundles", constants.BUNDLE_1_NAME, "MYBUNDLE1");
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Copy Name", { exact: true })).toBeVisible();
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+  });
+
+  test("should copy Bundle name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Bundles", constants.BUNDLE_1_NAME, "MYBUNDLE1");
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual("MYBUNDLE1");
+  });
+
+  test("should compare Bundle MYBUNDLE1 to MYBUNDL2 from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Bundles", constants.BUNDLE_1_NAME, "MYBUNDLE1");
+
+    await openContextMenu(page);
+    await expect(getResourceInspector(page).getByText("Compare to...", { exact: true })).toBeVisible();
+    await getResourceInspector(page).getByText("Compare to...", { exact: true }).click();
+
+    // Select region: "Other CICS Region" → profile → plex → region
+    await page.getByRole("option", { name: "Other CICS Region", exact: true }).click();
+    await page.getByRole("option", { name: constants.PROFILE_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.CICSPLEX_NAME, exact: true }).click();
+    await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
+
+    // Enter the second bundle name to compare against
+    const input = page.locator("input.input");
+    await expect(input).toBeVisible({ timeout: 5000 });
+    await input.selectText();
+    await input.fill(constants.BUNDLE_2_NAME);
+    await page.keyboard.press("Enter");
+
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "MYBUNDLE1" }).first()).toBeVisible({ timeout: 20000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.BUNDLE_2_NAME }).first()).toBeVisible({
+      timeout: 20000,
+    });
+  });
+});
+
 test.describe("Resource Inspector Actions - URIMap", () => {
   test("should show Copy Name and Compare to actions for URI Map in Resource Inspector", async ({ page }) => {
     await openResourceInspector(page, "URI Maps", constants.URIMAP_1_FULL_NAME, constants.URIMAP_1_NAME);
@@ -331,7 +423,7 @@ test.describe("Resource Inspector Actions - URIMap", () => {
     await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
     await page.waitForTimeout(200);
 
-    expect(await getClipboardContent(page)).toEqual("URI1");
+    expect(await getClipboardContent(page)).toEqual(constants.URIMAP_1_NAME);
   });
 
   test("should compare URI Map URI1 to URI2 from Resource Inspector", async ({ page }) => {
@@ -348,11 +440,93 @@ test.describe("Resource Inspector Actions - URIMap", () => {
     await page.getByRole("option", { name: constants.REGION_NAME, exact: true }).click();
 
     // Enter the second resource name to compare against
-    await expect(page.locator("input.input")).toBeVisible({ timeout: 5000 });
-    await page.locator("input.input").fill("URI2");
+    const input = page.locator("input.input");
+    await expect(input).toBeVisible({ timeout: 5000 });
+    await input.selectText();
+    await input.fill(constants.URIMAP_2_NAME);
     await page.keyboard.press("Enter");
 
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "URI1" }).first()).toBeVisible({ timeout: 10000 });
-    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: "URI2" }).first()).toBeVisible({ timeout: 10000 });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.URIMAP_1_NAME }).first()).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(getResourceInspector(page).locator("span.font-normal", { hasText: constants.URIMAP_2_NAME }).first()).toBeVisible({
+      timeout: 10000,
+    });
+  });
+});
+
+test.describe("Resource Inspector Actions - Library (new actions)", () => {
+  test("should copy Library name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.LIBRARY_1_NAME);
+  });
+
+  test("should open table view for Library datasets from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("View in Table", { exact: true }).click();
+
+    // View in Table fetches the library's child datasets and renders them in a table
+    const ri = getResourceInspector(page);
+    await expect(ri.getByText("RESOURCE", { exact: true })).toBeVisible({ timeout: 10000 });
+    await expect(ri.locator("tbody tr").first()).toBeVisible({ timeout: 10000 });
+
+    // MYLIBDS1 is the first library dataset under MYLIB1
+    await expect(ri.getByText(constants.LIBRARY_DS_2_NAME, { exact: true }).first()).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Resource Inspector Actions - Task (new actions)", () => {
+  test("should copy Task name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Tasks", constants.TASK_1_NAME, "00001");
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    // Task name is its task number
+    expect(await getClipboardContent(page)).toEqual("00001");
+  });
+});
+
+test.describe("Resource Inspector Actions - Program (new actions)", () => {
+  test("should copy Program name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Programs", constants.PROGRAM_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.PROGRAM_1_NAME);
+  });
+});
+
+test.describe("Resource Inspector Actions - Transaction (new actions)", () => {
+  test("should copy Transaction name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Transactions", constants.TRANSACTION_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.TRANSACTION_1_NAME);
+  });
+});
+
+test.describe("Resource Inspector Actions - Local File (new actions)", () => {
+  test("should copy Local File name to clipboard from Resource Inspector", async ({ page }) => {
+    await openResourceInspector(page, "Files", constants.LOCAL_FILE_1_NAME);
+
+    await openContextMenu(page);
+    await getResourceInspector(page).getByText("Copy Name", { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    expect(await getClipboardContent(page)).toEqual(constants.LOCAL_FILE_1_NAME);
   });
 });

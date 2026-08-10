@@ -4,7 +4,7 @@
       "scenarioName": "Show Program Library",
       "requiredScenarioState": "Started",
       "newScenarioState": "fetched-libraries-with-libraryname-summary",
-      "priority": 1,
+      "priority": 10,
       "request": {
         "method": "GET",
         "url": "/CICSSystemManagement/CICSLibrary/MYPLEX1/MYREG1?CRITERIA=(name%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"

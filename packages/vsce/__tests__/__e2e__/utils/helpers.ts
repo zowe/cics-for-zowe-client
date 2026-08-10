@@ -34,6 +34,7 @@ export const constants = {
   JVM_ENDPOINT_1_NAME: "MYJVMENDPOINT1 (9080)",
   JVM_ENDPOINT_2_NAME: "MYJVMENDPOINT2 (9081) (Disabled)",
   BUNDLE_1_NAME: "MYBUNDLE1 (DISABLED)",
+  BUNDLE_2_NAME: "MYBUNDL2",
   BUNDLE_1_USS_PATH: "/u/expauto/bundles/test_plugin_1.0.1",
   LOCAL_FILE_1_NAME: "LOCFILE1",
   REMOTE_FILE_1_NAME: "REMFILE1",
@@ -45,6 +46,7 @@ export const constants = {
   DISABLE_LIBRARY: "Disable Library",
   DISABLE_PROGRAM: "Disable Program",
   ALL_JVM_SERVERS: "All JVM Servers",
+  TRANSACTION_1_NAME: "MYTRAN1",
   TCPIP_1_NAME: "MYTCPIP1 [Port #8080]",
   TCPIP_2_NAME: "MYTCPIP2 [Port #9090]",
   URIMAP_1_NAME: "URI1",
@@ -176,6 +178,7 @@ export const waitForNotification = async (page: Page, string: string, failIfNotS
       throw timeoutError;
     }
   }
+  await expect(page.getByText(string, { exact: true })).not.toBeVisible({ timeout: 5000 });
 };
 
 export const findAndClickText = async (page: Page, label: string, button: "left" | "right" | "middle" = "left") => {
