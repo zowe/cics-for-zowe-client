@@ -4,8 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- Enhancement: Added Resource Inspector actions for bundles and Added copy name action to Resource Inspector actions for Files, Libraries, programs, tasks, transactions. [#712](https://github.com/zowe/cics-for-zowe-client/pull/712)
-- Enhancement: Added Resource Inspector actions for pipelines and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
+- Enhancement: Added Resource Inspector actions for bundles, pipelines, and web-services. [#712](https://github.com/zowe/cics-for-zowe-client/pull/712) [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
 
 ## `3.23.0`
 
