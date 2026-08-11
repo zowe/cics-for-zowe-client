@@ -465,21 +465,6 @@ test.describe("Resource Inspector Actions - Library (new actions)", () => {
 
     expect(await getClipboardContent(page)).toEqual(constants.LIBRARY_1_NAME);
   });
-
-  test("should open table view for Library datasets from Resource Inspector", async ({ page }) => {
-    await openResourceInspector(page, "Libraries", constants.LIBRARY_1_NAME);
-
-    await openContextMenu(page);
-    await getResourceInspector(page).getByText("View in Table", { exact: true }).click();
-
-    // View in Table fetches the library's child datasets and renders them in a table
-    const ri = getResourceInspector(page);
-    await expect(ri.getByText("RESOURCE", { exact: true })).toBeVisible({ timeout: 10000 });
-    await expect(ri.locator("tbody tr").first()).toBeVisible({ timeout: 10000 });
-
-    // MYLIBDS1 is the first library dataset under MYLIB1
-    await expect(ri.getByText(constants.LIBRARY_DS_2_NAME, { exact: true }).first()).toBeVisible({ timeout: 10000 });
-  });
 });
 
 test.describe("Resource Inspector Actions - Task (new actions)", () => {

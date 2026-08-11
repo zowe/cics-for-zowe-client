@@ -60,15 +60,6 @@ describe("Resource Inspector Actions Integration", () => {
       expect(copyAction?.refreshResourceInspector).toBe(false);
     });
 
-    it("should include VIEW_IN_TABLE action for Library in RI", () => {
-      const actionsMap = getBuiltInResourceActions();
-      const libraryActions = actionsMap.get(ResourceTypes.CICSLibrary);
-      const viewAction = libraryActions.find((a) => a.id === "CICS.CICSLibrary.VIEW_IN_TABLE");
-
-      expect(viewAction).toBeDefined();
-      expect(viewAction?.action).toBe("cics-extension-for-zowe.viewInTable");
-      expect(viewAction?.refreshResourceInspector).toBe(false);
-    });
   });
 
   describe("Task Actions in RI", () => {

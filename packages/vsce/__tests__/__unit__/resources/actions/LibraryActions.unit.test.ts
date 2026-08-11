@@ -40,10 +40,10 @@ describe("Library Actions", () => {
       });
     });
 
-    it("should return exactly 5 library actions", () => {
+    it("should return exactly 4 library actions", () => {
       const actions = getLibraryActions();
 
-      expect(actions).toHaveLength(5);
+      expect(actions).toHaveLength(4);
     });
 
     it("should have correct resource type for all actions", () => {
@@ -223,28 +223,6 @@ describe("Library Actions", () => {
     });
   });
 
-  describe("Action: VIEW_IN_TABLE", () => {
-    it("should include VIEW_IN_TABLE action with correct id", () => {
-      expect(getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.VIEW_IN_TABLE")).toBeDefined();
-    });
-
-    it("should have correct action command for VIEW_IN_TABLE", () => {
-      const action = getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.VIEW_IN_TABLE")!;
-
-      expect(action.action).toBe("cics-extension-for-zowe.viewInTable");
-    });
-
-    it("should not refresh resource inspector after VIEW_IN_TABLE", () => {
-      const action = getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.VIEW_IN_TABLE")!;
-
-      expect(action.refreshResourceInspector).toBe(false);
-    });
-
-    it("should have no visibleWhen condition (always visible)", () => {
-      expect(getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.VIEW_IN_TABLE")!.visibleWhen).toBeUndefined();
-    });
-  });
-
   describe("Visibility Logic - Enable/Disable Mutual Exclusivity", () => {
     it("should show ENABLE but not DISABLE when library is DISABLED", () => {
       const library = createMockLibrary("DISABLED");
@@ -304,7 +282,6 @@ describe("Library Actions", () => {
       expect(actions[1].id).toBe("CICS.CICSLibrary.DISABLE");
       expect(actions[2].id).toBe("CICS.CICSLibrary.COMPARE_TO");
       expect(actions[3].id).toBe("CICS.CICSLibrary.COPY_NAME");
-      expect(actions[4].id).toBe("CICS.CICSLibrary.VIEW_IN_TABLE");
     });
   });
 
@@ -312,7 +289,7 @@ describe("Library Actions", () => {
     it("should provide actions that can be executed from Resource Inspector", () => {
       const actions = getLibraryActions();
 
-      expect(actions).toHaveLength(5);
+      expect(actions).toHaveLength(4);
       actions.forEach((action) => {
         expect(action.action).toBeDefined();
         expect(typeof action.action).toBe("string");
