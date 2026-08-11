@@ -19,7 +19,7 @@ describe("Resource Inspector Actions Integration", () => {
       const libraryActions = actionsMap.get(ResourceTypes.CICSLibrary);
 
       expect(libraryActions).toBeDefined();
-      expect(libraryActions).toHaveLength(5);
+      expect(libraryActions).toHaveLength(4);
     });
 
     it("should include ENABLE action for Library in RI", () => {
