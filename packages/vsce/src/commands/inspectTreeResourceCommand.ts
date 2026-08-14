@@ -14,8 +14,10 @@ import { Gui, MessageSeverity } from "@zowe/zowe-explorer-api";
 import { type ExtensionContext, type TreeView, commands, l10n, window } from "vscode";
 import { CICSResourceContainerNode, TextTreeItem } from "../trees";
 import { ResourceInspectorViewProvider } from "../trees/ResourceInspectorViewProvider";
+import { ResourceContainer } from "../resources";
 import { compareResourceFromInspector, compareTreeNodeWithPrompts } from "./compareResourceCommand";
 import { inspectResourceByNode, showInspectResource } from "./inspectResourceCommandUtils";
+import type { IResourceInspectorResource } from "../webviews/common/vscode";
 
 export function getInspectTreeResourceCommand(context: ExtensionContext, treeview: TreeView<any>) {
   return commands.registerCommand("cics-extension-for-zowe.inspectTreeResource", async (node: CICSResourceContainerNode<IResource>) => {
@@ -134,29 +136,21 @@ export function getCompareResourceToCommand(context: ExtensionContext) {
 
 export function getInspectMultipleResourcesCommand(context: ExtensionContext) {
   return commands.registerCommand("cics-extension-for-zowe.viewInTable", async (node: CICSResourceContainerNode<IResource>) => {
+    const contained = node.getContainedResource();
+    const childTypes = contained?.meta?.childType;
 
-    if (!node.children || node.children.length === 0) {
-      await node.getChildren();
-    }
-
-    if (node.children.length === 0) {
-      return Gui.showMessage(l10n.t("No resources found."));
-    }
-    
-    if (node.children.length === 1 && node.children[0] instanceof TextTreeItem) {
-      return Gui.showMessage(l10n.t("No filter applied."));
-    }
-
-    const filteredChildren = node.children.filter((n) => n instanceof CICSResourceContainerNode);
-    
-    if (filteredChildren.length === 0) {
-      return Gui.showMessage(l10n.t("No resources found."));
-    }
-
-    return showInspectResource(
-      context,
-      filteredChildren.map((n: CICSResourceContainerNode<IResource>) => {
-        return {
+    // If the node is a real tree node with pre-loaded children, use those directly
+    if (node.children && node.children.length > 0) {
+      if (node.children.length === 1 && node.children[0] instanceof TextTreeItem) {
+        return Gui.showMessage(l10n.t("No filter applied."));
+      }
+      const filteredChildren = node.children.filter((n) => n instanceof CICSResourceContainerNode);
+      if (filteredChildren.length === 0) {
+        return Gui.showMessage(l10n.t("No resources found."));
+      }
+      return showInspectResource(
+        context,
+        filteredChildren.map((n: CICSResourceContainerNode<IResource>) => ({
           containedResource: n.getContainedResource(),
           ctx: {
             session: n.getSession(),
@@ -164,9 +158,40 @@ export function getInspectMultipleResourcesCommand(context: ExtensionContext) {
             cicsplexName: n.cicsplexName,
             regionName: n.regionName ?? n.getContainedResource().resource.attributes.eyu_cicsname,
           },
-        };
-      }),
-      "table"
-    );
+        })),
+        "table"
+      );
+    }
+
+    // Node has no pre-loaded children — fetch child resources directly via ResourceContainer.
+    // This path is used when viewInTable is triggered from the Resource Inspector (headless node).
+    if (!childTypes || childTypes.length === 0) {
+      return Gui.showMessage(l10n.t("No resources found."));
+    }
+
+    const ctx = {
+      profileName: node.getProfileName(),
+      cicsplexName: node.cicsplexName,
+      regionName: node.regionName,
+    };
+
+    const container = new ResourceContainer(childTypes, ctx, contained?.resource);
+    const resources = await container.fetchNextPage();
+
+    if (resources.length === 0) {
+      return Gui.showMessage(l10n.t("No resources found."));
+    }
+
+    const resourcesWithCtx: { containedResource: typeof resources[0]; ctx: IResourceInspectorResource["context"] }[] = resources.map((r) => ({
+      containedResource: r,
+      ctx: {
+        profile: node.getProfile(),
+        session: node.getSession(),
+        cicsplexName: node.cicsplexName,
+        regionName: r.resource.attributes.eyu_cicsname ?? node.regionName,
+      },
+    }));
+
+    return showInspectResource(context, resourcesWithCtx, "table");
   });
 }

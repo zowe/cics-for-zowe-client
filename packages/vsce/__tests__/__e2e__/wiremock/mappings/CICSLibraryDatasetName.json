@@ -3,6 +3,58 @@
     {
       "request": {
         "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(DSNAME%3D'MYLIB.DS1')%20AND%20(LIBRARY%3D'MYLIB1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(DSNAME%3D'MYLIBDS1')%20AND%20(LIBRARY%3D'MYLIB1')&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0SHOWLIBDSNTOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/0SHOWLIBDSNTOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSLibraryDatasetName/show-library/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/CICSSystemManagement/CICSLibraryDatasetName/MYPLEX1/MYREG1?CRITERIA=(LIBRARY%3DMYLIB1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
       },
       "response": {

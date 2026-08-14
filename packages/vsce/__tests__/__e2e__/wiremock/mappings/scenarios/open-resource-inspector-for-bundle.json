@@ -1,0 +1,53 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Open Resource Inspector for Bundle",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "fetched-bundle-summary",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Resource Inspector for Bundle",
+      "requiredScenarioState": "fetched-bundle-summary",
+      "newScenarioState": "fetched-bundle-records",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDLE1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Open Resource Inspector for Bundle",
+      "requiredScenarioState": "fetched-bundle-records",
+      "newScenarioState": "removed-bundle-cache",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDLE1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

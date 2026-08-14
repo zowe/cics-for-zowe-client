@@ -34,6 +34,13 @@ const actions: ResourceActionOptions<ResourceTypes.CICSLibrary>[] = [
     action: "cics-extension-for-zowe.compareTreeResourceTo",
     refreshResourceInspector: false,
   },
+  {
+    id: "CICS.CICSLibrary.COPY_NAME",
+    name: l10n.t("Copy Name"),
+    resourceType: ResourceTypes.CICSLibrary,
+    action: "cics-extension-for-zowe.copyResourceName",
+    refreshResourceInspector: false,
+  },
 ];
 
 export function getLibraryActions(): ResourceAction<ResourceTypes.CICSLibrary>[] {

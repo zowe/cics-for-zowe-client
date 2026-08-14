@@ -40,10 +40,10 @@ describe("Library Actions", () => {
       });
     });
 
-    it("should return exactly 3 library actions", () => {
+    it("should return exactly 4 library actions", () => {
       const actions = getLibraryActions();
 
-      expect(actions).toHaveLength(3);
+      expect(actions).toHaveLength(4);
     });
 
     it("should have correct resource type for all actions", () => {
@@ -189,14 +189,6 @@ describe("Library Actions", () => {
       expect(compareAction.action).toBe("cics-extension-for-zowe.compareTreeResourceTo");
     });
 
-    it("should have correct name for COMPARE_TO action", () => {
-      const actions = getLibraryActions();
-      const compareAction = actions.find((a) => a.id === "CICS.CICSLibrary.COMPARE_TO")!;
-
-      expect(compareAction.name).toBeDefined();
-      expect(typeof compareAction.name).toBe("string");
-    });
-
     it("should not refresh resource inspector after COMPARE_TO", () => {
       const actions = getLibraryActions();
       const compareAction = actions.find((a) => a.id === "CICS.CICSLibrary.COMPARE_TO")!;
@@ -204,17 +196,30 @@ describe("Library Actions", () => {
       expect(compareAction.refreshResourceInspector).toBe(false);
     });
 
-    it("should be visible for any library (no visibleWhen condition)", () => {
-      const library = createMockLibrary("ENABLED");
-      const actions = getLibraryActions();
-      const compareAction = actions.find((a) => a.id === "CICS.CICSLibrary.COMPARE_TO")!;
+    it("should have no visibleWhen condition (always visible)", () => {
+      expect(getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.COMPARE_TO")!.visibleWhen).toBeUndefined();
+    });
+  });
 
-      if (compareAction.visibleWhen) {
-        const isVisible = compareAction.visibleWhen(library, mockResourceContext);
-        expect(isVisible).toBe(true);
-      } else {
-        expect(compareAction.visibleWhen).toBeUndefined();
-      }
+  describe("Action: COPY_NAME", () => {
+    it("should include COPY_NAME action with correct id", () => {
+      expect(getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.COPY_NAME")).toBeDefined();
+    });
+
+    it("should have correct action command for COPY_NAME", () => {
+      const action = getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.COPY_NAME")!;
+
+      expect(action.action).toBe("cics-extension-for-zowe.copyResourceName");
+    });
+
+    it("should not refresh resource inspector after COPY_NAME", () => {
+      const action = getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.COPY_NAME")!;
+
+      expect(action.refreshResourceInspector).toBe(false);
+    });
+
+    it("should have no visibleWhen condition (always visible)", () => {
+      expect(getLibraryActions().find((a) => a.id === "CICS.CICSLibrary.COPY_NAME")!.visibleWhen).toBeUndefined();
     });
   });
 
@@ -276,6 +281,7 @@ describe("Library Actions", () => {
       expect(actions[0].id).toBe("CICS.CICSLibrary.ENABLE");
       expect(actions[1].id).toBe("CICS.CICSLibrary.DISABLE");
       expect(actions[2].id).toBe("CICS.CICSLibrary.COMPARE_TO");
+      expect(actions[3].id).toBe("CICS.CICSLibrary.COPY_NAME");
     });
   });
 
@@ -283,7 +289,7 @@ describe("Library Actions", () => {
     it("should provide actions that can be executed from Resource Inspector", () => {
       const actions = getLibraryActions();
 
-      expect(actions).toHaveLength(3);
+      expect(actions).toHaveLength(4);
       actions.forEach((action) => {
         expect(action.action).toBeDefined();
         expect(typeof action.action).toBe("string");

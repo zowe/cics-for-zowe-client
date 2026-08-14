@@ -7,7 +7,33 @@
       },
       "response": {
         "status": 200,
-        "bodyFileName": "CICSBundle/bundle-summary.xml",
+        "bodyFileName": "CICSBundle/error-bundle-summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/ERRORBUNDLETOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/error-bundle-records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/ERRORBUNDLETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/error-bundle-remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }
@@ -41,6 +67,63 @@
     },
     {
       "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDLE1TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDLE1TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDLE1/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/ERRORS?CRITERIA=(name%3DMYBUNDLE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n <action name=\"ENABLE\"/>\n </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/error-on-enable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
         "method": "PUT",
         "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)",
         "bodyPatterns": [
@@ -52,6 +135,45 @@
       "response": {
         "status": 200,
         "bodyFileName": "CICSBundle/error-on-enable.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDL2)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDL2/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDL2TOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDL2/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/MYBUNDL2TOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/MYBUNDL2/remove-cache.xml",
         "headers": {
           "Content-Type": "text/xml"
         }

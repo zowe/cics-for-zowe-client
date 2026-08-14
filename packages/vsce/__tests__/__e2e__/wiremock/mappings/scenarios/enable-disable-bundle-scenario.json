@@ -1,0 +1,141 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "mybundle1-enabling",
+      "priority": 1,
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n <action name=\"ENABLE\"/>\n </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/enable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-enabling",
+      "newScenarioState": "mybundle1-enabled",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/enable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/ENABLEBUNDLETOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/enable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-enabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/ENABLEBUNDLETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/enable/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-enabled",
+      "newScenarioState": "mybundle1-disabling",
+      "request": {
+        "method": "PUT",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)",
+        "bodyPatterns": [
+          {
+            "equalToXml": "<request>\n <action name=\"DISABLE\"/>\n </request>"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/disable/response.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-disabling",
+      "newScenarioState": "mybundle1-disabled",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSBundle/MYPLEX1/MYREG1?CRITERIA=(name%3DMYBUNDLE1)&SUMMONLY&NODISCARD&OVERRIDEWARNINGCOUNT"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/disable/summary.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/DISABLEBUNDLETOKEN/1/250?NODISCARD"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/disable/records.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    },
+    {
+      "scenarioName": "Enable Disable Bundle",
+      "requiredScenarioState": "mybundle1-disabled",
+      "request": {
+        "method": "GET",
+        "url": "/CICSSystemManagement/CICSResultCache/DISABLEBUNDLETOKEN?SUMMONLY"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "CICSBundle/disable/remove-cache.xml",
+        "headers": {
+          "Content-Type": "text/xml"
+        }
+      }
+    }
+  ]
+}

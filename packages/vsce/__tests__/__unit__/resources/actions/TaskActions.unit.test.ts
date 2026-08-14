@@ -43,10 +43,10 @@ describe("Task Actions", () => {
       });
     });
 
-    it("should return exactly 3 task actions", () => {
+    it("should return exactly 4 task actions", () => {
       const actions = getTaskActions();
 
-      expect(actions).toHaveLength(3);
+      expect(actions).toHaveLength(4);
     });
 
     it("should have correct resource type for all actions", () => {
@@ -142,6 +142,28 @@ describe("Task Actions", () => {
     });
   });
 
+  describe("Action: COPY_NAME", () => {
+    it("should include COPY_NAME action with correct id", () => {
+      expect(getTaskActions().find((a) => a.id === "CICS.CICSTask.COPY_NAME")).toBeDefined();
+    });
+
+    it("should have correct action command for COPY_NAME", () => {
+      const action = getTaskActions().find((a) => a.id === "CICS.CICSTask.COPY_NAME")!;
+
+      expect(action.action).toBe("cics-extension-for-zowe.copyResourceName");
+    });
+
+    it("should not refresh resource inspector after COPY_NAME", () => {
+      const action = getTaskActions().find((a) => a.id === "CICS.CICSTask.COPY_NAME")!;
+
+      expect(action.refreshResourceInspector).toBe(false);
+    });
+
+    it("should have no visibleWhen condition (always visible)", () => {
+      expect(getTaskActions().find((a) => a.id === "CICS.CICSTask.COPY_NAME")!.visibleWhen).toBeUndefined();
+    });
+  });
+
   describe("Action: COMPARE_TO", () => {
     it("should include COMPARE_TO action with correct id", () => {
       const actions = getTaskActions();
@@ -201,6 +223,7 @@ describe("Task Actions", () => {
       expect(actions[0].id).toBe("CICS.CICSTask.PURGE");
       expect(actions[1].id).toBe("CICS.CICSTask.INQUIRE_TRANSACTION");
       expect(actions[2].id).toBe("CICS.CICSTask.COMPARE_TO");
+      expect(actions[3].id).toBe("CICS.CICSTask.COPY_NAME");
     });
   });
 
@@ -208,7 +231,7 @@ describe("Task Actions", () => {
     it("should provide actions that can be executed from Resource Inspector", () => {
       const actions = getTaskActions();
 
-      expect(actions).toHaveLength(3);
+      expect(actions).toHaveLength(4);
       actions.forEach((action) => {
         expect(action.action).toBeDefined();
         expect(typeof action.action).toBe("string");
@@ -216,7 +239,7 @@ describe("Task Actions", () => {
       });
     });
 
-    it("should have all actions with refreshResourceInspector set to false", () => {
+    it("should have all actions with refreshResourceInspector set to false or undefined", () => {
       const actions = getTaskActions();
 
       actions.forEach((action) => {
