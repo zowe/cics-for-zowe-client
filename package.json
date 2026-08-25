@@ -8,7 +8,8 @@
   },
   "repository": "https://github.com/zowe/cics-for-zowe-client",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/vsce/__tests__/__e2e__/resources/extender-extension"
   ],
   "scripts": {
     "build": "turbo build",
