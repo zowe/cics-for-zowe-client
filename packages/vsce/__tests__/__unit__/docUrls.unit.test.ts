@@ -16,7 +16,13 @@ const resources = getMetas()
   .filter((meta) => meta.eibfnName && meta.eibfnName.trim() !== "")
   .map((meta) => meta.eibfnName?.toUpperCase());
 
-describe("Test suite to validate IBM Documentation URL", () => {
+// Node 20's bundled OpenSSL (3.0.x) produces a TLS fingerprint that IBM's WAF blocks with 403 when
+// requests originate from CI (GitHub Actions) IP ranges. Node 22+ (OpenSSL 3.5.x) is unaffected.
+// Node 20 has no equivalent OpenSSL upgrade path, so skip there rather than fail on an environment artifact.
+const nodeVersion = parseInt(process.versions.node.split(".")[0], 10);
+const minNodeVersion = 22;
+
+(nodeVersion < minNodeVersion ? describe.skip : describe)("Test suite to validate IBM Documentation URL", () => {
   for (const resource of resources) {
     it(`should successfully validate the documentation link for ${resource}`, async () => {
       const url = generateDocumentationURL(resource!);
