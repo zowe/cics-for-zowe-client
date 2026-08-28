@@ -33,9 +33,6 @@ module.exports = {
         [
             "@octorelease/lerna",
             {
-                // The shrinkwrap pruning should happen after only as part of the prepack of the CLI Plug-in
-                // pruneShrinkwrap: ["@zowe/cics-for-zowe-cli"],
-
                 // Use Lerna only for versioning and publish packages independently
                 npmPublish: false,
                 versionIndependent: ["cics-extension-for-zowe"],

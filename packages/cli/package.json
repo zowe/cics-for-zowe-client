@@ -21,7 +21,6 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "npm-shrinkwrap.json",
     "NOTICE"
   ],
   "publishConfig": {
@@ -34,17 +33,18 @@
     "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
-    "prepublishOnly": "npm run build && npm run preshrinkwrap",
+    "prepublishOnly": "npm run build",
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "npm run prepublishOnly && node ../../scripts/bundleTgz.js",
+    "package": "npm run prepublishOnly && npm pack",
     "test": "npm run test:unit && npm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
     "test:e2e": "echo 'Nothing to e2e test'",
     "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
-    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js",
+    "prepack": "node ../../scripts/bundleCliDeps.js prepack",
+    "postpack": "node ../../scripts/bundleCliDeps.js postpack",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" \"__mocks__/**/*.ts\" --ignore-path ../../.prettierignore"
   },
@@ -59,8 +59,5 @@
   },
   "engines": {
     "node": ">=18.12.0"
-  },
-  "bundleDependencies": [
-    "@zowe/cics-for-zowe-sdk"
-  ]
+  }
 }
