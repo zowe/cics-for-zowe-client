@@ -53,9 +53,16 @@ const relPkgDir = normalizePath(pkgDir);
 // The package's runtime deps, as npm resolved them on disk. An optional dep npm never installed
 // (e.g. a platform-specific native) has no path to copy from, so it is skipped.
 function prodDepTree() {
-    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkgName}`, {
-        maxBuffer: 1024 * 1024 * 100,
-    });
+    let output;
+    try {
+        output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkgName}`, {
+            maxBuffer: 1024 * 1024 * 100,
+        });
+    } catch (err) {
+        // npm exits non-zero for problems like missing optional/peer deps, but still writes valid JSON to stdout.
+        if (err.stdout == null || err.stdout.length === 0) throw err;
+        output = err.stdout;
+    }
 
     const tree = new Map(); // real absolute path -> npm ls entry
     const skipped = [];
@@ -87,6 +94,7 @@ function archiveLocations(tree) {
     const locate = (archivePath) => {
         if (archivePath.startsWith("node_modules/")) return archivePath;
         for (const [ownerDir, location] of owners) {
+            if (archivePath === ownerDir) return location;
             if (!archivePath.startsWith(ownerDir + "/")) continue;
             const nested = archivePath.slice(ownerDir.length + 1);
             return location === "" ? nested : `${location}/${nested}`;
