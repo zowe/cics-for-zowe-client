@@ -83,8 +83,5 @@
       "minimatch": "^3.1.2"
     },
     "serialize-javascript": "^7.0.3"
-  },
-  "dependencies": {
-    "mocha": "11.3.0"
   }
 }
