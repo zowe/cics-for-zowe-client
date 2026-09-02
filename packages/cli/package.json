@@ -37,7 +37,7 @@
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "npm run prepublishOnly && npm pack",
+    "package": "npm run prepublishOnly && npm pack --pack-destination=../../dist",
     "test": "npm run test:unit && npm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
