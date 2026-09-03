@@ -58,7 +58,7 @@
     "jest-stare": "^2.5.3",
     "js-yaml": "^4.1.0",
     "madge": "^6.0.0",
-    "npm-lockfile": "^4.0.0",
+    "npm-packlist": "^9.0.0",
     "prettier": "2.6.0",
     "rimraf": "^4.4.1",
     "syncpack": "^13.0.2",
