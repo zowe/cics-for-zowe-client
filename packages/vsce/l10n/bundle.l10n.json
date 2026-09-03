@@ -28,7 +28,9 @@
   "Initialized logger for Zowe Explorer for IBM CICS TS": "Initialized logger for Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
-    "comment": ["Log level"]
+    "comment": [
+      "Log level"
+    ]
   },
   "View more...": "View more...",
   "Could not find region data and job id for region {0} to show logs.": "Could not find region data and job id for region {0} to show logs.",
@@ -96,6 +98,8 @@
   "Disable JVM Server": "Disable JVM Server",
   "Enable JVM Endpoint": "Enable JVM Endpoint",
   "Disable JVM Endpoint": "Disable JVM Endpoint",
+  "Enable Bundle": "Enable Bundle",
+  "Disable Bundle": "Disable Bundle",
   "The request failed. Response details: API_FUNCTION: {0}, RESP: {1} ({2}), RESP2: {3} ({4}).": "The request failed. Response details: API_FUNCTION: {0}, RESP: {1} ({2}), RESP2: {3} ({4}).",
   "Failed to {0} {1} {2} on profile {3} with API: {4}, RESP: {5} ({6}) and RESP2: {7}.": "Failed to {0} {1} {2} on profile {3} with API: {4}, RESP: {5} ({6}) and RESP2: {7}.",
   "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}": "Failed to send request on profile {0}. Response details - {1}URL: {2}, Message: {3}",
@@ -270,8 +274,8 @@
   "No resource is currently open in the Resource Inspector": "No resource is currently open in the Resource Inspector",
   "No CICS resource information available to compare": "No CICS resource information available to compare",
   "Cannot compare CICS resources of different types.": "Cannot compare CICS resources of different types.",
-  "No resources found.": "No resources found.",
   "No filter applied.": "No filter applied.",
+  "No resources found.": "No resources found.",
   "File": "File",
   "Enter resource name...": "Enter resource name...",
   "Recent CICS {0}": "Recent CICS {0}",
