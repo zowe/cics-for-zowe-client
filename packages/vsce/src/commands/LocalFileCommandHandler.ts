@@ -14,8 +14,6 @@ import type { AbstractSession } from "@zowe/imperative";
 import {
   closeLocalFile,
   openLocalFile,
-  enableLocalFile,
-  disableLocalFile,
   type ICMCIApiResponse,
   type ILocalFileParms,
   type LocalFileAction
@@ -85,10 +83,6 @@ export class LocalFileCommandHandler {
         return closeLocalFile;
       case "OPEN":
         return openLocalFile;
-      case "ENABLE":
-        return enableLocalFile;
-      case "DISABLE":
-        return disableLocalFile;
       default:
         throw new Error(`Unsupported action: ${action}`);
     }
@@ -170,30 +164,6 @@ export class LocalFileCommandHandler {
   }
 
   /**
-   * Registers the ENABLE local file command (future implementation)
-   * @returns Disposable command registration
-   */
-  public registerEnableCommand() {
-    return this.createActionCommand({
-      commandId: "cics-extension-for-zowe.enableLocalFile",
-      action: "ENABLE",
-      // TODO: Add parameter configuration based on CICS ENABLE requirements (e.g., status options)
-    });
-  }
-
-  /**
-   * Registers the DISABLE local file command (future implementation)
-   * @returns Disposable command registration
-   */
-  public registerDisableCommand() {
-    return this.createActionCommand({
-      commandId: "cics-extension-for-zowe.disableLocalFile",
-      action: "DISABLE",
-      // TODO: Add parameter configuration based on CICS DISABLE requirements (e.g., force options)
-    });
-  }
-
-  /**
    * Registers all local file commands at once
    * @returns Array of disposable command registrations
    */
@@ -201,9 +171,6 @@ export class LocalFileCommandHandler {
     return [
       this.registerCloseCommand(),
       this.registerOpenCommand(),
-      // Uncomment when ready to implement:
-      // this.registerEnableCommand(),
-      // this.registerDisableCommand(),
     ];
   }
 }

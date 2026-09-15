@@ -1,0 +1,233 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CICS Resource Specification",
+  "description": "Resource-focused schema for defining CICS resources, actions, and options with shared definitions",
+  "type": "object",
+  "properties": {
+    "resources": {
+      "type": "object",
+      "description": "Map of resource types with their properties and supported actions",
+      "additionalProperties": {
+        "$ref": "#/definitions/Resource"
+      }
+    },
+    "actions": {
+      "type": "object",
+      "description": "Shared action definitions that can be referenced by resources",
+      "additionalProperties": {
+        "$ref": "#/definitions/ActionDefinition"
+      }
+    },
+    "options": {
+      "type": "object",
+      "description": "Shared option definitions that can be referenced by actions",
+      "additionalProperties": {
+        "$ref": "#/definitions/OptionDefinition"
+      }
+    }
+  },
+  "required": ["resources"],
+  "definitions": {
+    "Resource": {
+      "type": "object",
+      "description": "A CICS resource type definition",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/ResourceIdentifier"
+        },
+        "actions": {
+          "type": "array",
+          "description": "Actions supported by this resource (can be string references or inline definitions)",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Reference to a shared action definition"
+              },
+              {
+                "$ref": "#/definitions/ActionReference"
+              }
+            ]
+          }
+        }
+      },
+      "required": ["identifier", "actions"]
+    },
+    "ResourceIdentifier": {
+      "type": "object",
+      "description": "Resource identification and metadata",
+      "properties": {
+        "aliases": {
+          "type": "array",
+          "description": "Short aliases for the resource (e.g., ['lf'] for Local File)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "humanNameSingular": {
+          "type": "string",
+          "description": "Human-readable singular name (e.g., 'Local File')"
+        },
+        "humanNamePlural": {
+          "type": "string",
+          "description": "Human-readable plural name (e.g., 'Local Files')"
+        },
+        "primaryKey": {
+          "type": "string",
+          "description": "CMCI criteria field name (e.g., 'file', 'program')"
+        },
+        "maxPrimaryKeyLength": {
+          "type": "integer",
+          "description": "Maximum length for the primary key/resource name"
+        },
+        "snakeKey": {
+          "type": "string",
+          "description": "Override for the SCREAMING_SNAKE_CASE constant suffix (e.g., 'URI_MAP'). Only needed when the automatic PascalCase→SNAKE_CASE conversion would produce an incorrect result."
+        },
+        "constantName": {
+          "type": "string",
+          "description": "Override for the full generated constant name (e.g., 'CICS_URIMAP'). Use when the resource predates the CICS_CMCI_ naming convention and must keep a legacy name."
+        }
+      },
+      "required": ["humanNameSingular", "primaryKey"]
+    },
+    "UpdateAttribute": {
+      "type": "object",
+      "description": "Describes an attribute-update style action (e.g. URIMap ENABLE/DISABLE which sets ENABLESTATUS rather than invoking a CMCI action command)",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The CMCI attribute name to update (e.g. 'ENABLESTATUS')"
+        },
+        "value": {
+          "type": "string",
+          "description": "The value to set the attribute to (e.g. 'ENABLED', 'DISABLED')"
+        }
+      },
+      "required": ["field", "value"]
+    },
+    "ActionReference": {
+      "type": "object",
+      "description": "Action with optional overrides or inline definition",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/ActionIdentifier"
+        },
+        "options": {
+          "type": "array",
+          "description": "Options for this action (can be string references or inline definitions)",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Reference to a shared option definition"
+              },
+              {
+                "$ref": "#/definitions/OptionDefinition"
+              }
+            ]
+          }
+        },
+        "updateAttribute": {
+          "$ref": "#/definitions/UpdateAttribute"
+        }
+      },
+      "required": ["identifier"]
+    },
+    "ActionDefinition": {
+      "type": "object",
+      "description": "Complete action definition",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/ActionIdentifier"
+        },
+        "options": {
+          "type": "array",
+          "description": "Options for this action",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/OptionDefinition"
+              }
+            ]
+          }
+        },
+        "updateAttribute": {
+          "$ref": "#/definitions/UpdateAttribute"
+        }
+      },
+      "required": ["identifier"]
+    },
+    "ActionIdentifier": {
+      "type": "object",
+      "description": "Action identification and metadata",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Action name in uppercase (e.g., 'OPEN', 'CLOSE', 'ENABLE')"
+        },
+        "aliases": {
+          "type": "array",
+          "description": "Short aliases for the action",
+          "items": {
+            "type": "string"
+          }
+        },
+        "group": {
+          "type": "string",
+          "description": "Command group name (e.g., 'open', 'close', 'enable')"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of what the action does"
+        },
+        "verb": {
+          "type": "string",
+          "description": "Present continuous form (e.g., 'Opening', 'Closing')"
+        },
+        "verbPastTense": {
+          "type": "string",
+          "description": "Past tense form (e.g., 'Opened', 'Closed')"
+        }
+      },
+      "required": ["name", "group", "description", "verb", "verbPastTense"]
+    },
+    "OptionDefinition": {
+      "type": "object",
+      "description": "Option/parameter definition",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Option name (lowercase, e.g., 'busy')"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean"],
+          "description": "Data type of the option"
+        },
+        "defaultValue": {
+          "description": "Default value for the option"
+        },
+        "allowableValues": {
+          "type": "array",
+          "description": "List of allowed values",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caseSensitive": {
+          "type": "boolean",
+          "description": "Whether values are case-sensitive"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the option"
+        }
+      },
+      "required": ["name", "type"]
+    }
+  }
+}

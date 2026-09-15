@@ -16,7 +16,7 @@ import { UrimapDefinition } from "../../../../src/enable/urimap/Urimap.definitio
 import UrimapHandler from "../../../../src/enable/urimap/Urimap.handler";
 
 jest.mock("@zowe/cics-for-zowe-sdk");
-const Enable = require("@zowe/cics-for-zowe-sdk");
+const sdk = require("@zowe/cics-for-zowe-sdk");
 
 const host = "somewhere.com";
 const port = 43443;
@@ -52,7 +52,7 @@ describe("enableUrimapHandler", () => {
     },
   };
 
-  const functionSpy = jest.spyOn(Enable, "enableUrimap");
+  const functionSpy = jest.spyOn(sdk, "enableUrimap");
 
   beforeEach(() => {
     functionSpy.mockClear();

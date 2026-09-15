@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`cics disable CICSLocalFile should not have changed 1`] = `
+{
+  "aliases": [
+    "lf",
+  ],
+  "description": "Disable a local file in CICS.",
+  "examples": [
+    {
+      "description": "Disable a local file named TESTFILE in the region named MYREGION",
+      "options": "TESTFILE --region-name MYREGION",
+    },
+    {
+      "description": "Disable a local file named TESTFILE from the region named MYREGION with BUSY=FORCE",
+      "options": "TESTFILE --region-name MYREGION --busy FORCE",
+    },
+  ],
+  "name": "CICSLocalFile",
+  "options": [
+    {
+      "allowableValues": {
+        "caseSensitive": false,
+        "values": [
+          "WAIT",
+          "NOWAIT",
+          "FORCE",
+        ],
+      },
+      "defaultValue": "WAIT",
+      "description": "The busy condition option for disabling the file. Valid values: WAIT, NOWAIT, FORCE. Default is WAIT.",
+      "name": "busy",
+      "type": "string",
+    },
+    {
+      "description": "The CICS region name in which to disable the local file",
+      "name": "region-name",
+      "type": "string",
+    },
+    {
+      "description": "The name of the CICSplex in which to disable the local file",
+      "name": "cics-plex",
+      "type": "string",
+    },
+  ],
+  "positionals": [
+    {
+      "description": "The name of the local file to disable. The maximum length of the file name is eight characters.",
+      "name": "fileName",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": {
+    "optional": [
+      "cics",
+    ],
+  },
+  "type": "command",
+}
+`;

@@ -76,7 +76,7 @@ export const getCICSProfileDefinition = (): imperative.ICommandProfileTypeConfig
           type: "string",
           optionDefinition: {
             name: "cics-plex",
-            description: "The name of the CICSPlex to interact with",
+            description: "The name of the CICSplex to interact with",
             type: "string",
           },
         },

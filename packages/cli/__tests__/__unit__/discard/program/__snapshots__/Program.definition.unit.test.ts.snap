@@ -20,7 +20,7 @@ exports[`cics discard program should not have changed 1`] = `
       "type": "string",
     },
     {
-      "description": "The name of the CICSPlex from which to discard the program",
+      "description": "The name of the CICSplex from which to discard the program",
       "name": "cics-plex",
       "type": "string",
     },
