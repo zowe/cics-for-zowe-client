@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/zowe/cics-for-zowe-client.git"
   },
-  "version": "3.23.0",
+  "version": "3.23.1",
   "engines": {
     "vscode": "^1.101.0"
   },
@@ -957,8 +957,8 @@
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
     "@vscode/codicons": "^0.0.40",
-    "@zowe/cics-for-zowe-explorer-api": "6.23.0",
-    "@zowe/cics-for-zowe-sdk": "6.23.0",
+    "@zowe/cics-for-zowe-explorer-api": "6.23.1",
+    "@zowe/cics-for-zowe-sdk": "6.23.1",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.6.0",
     "jest-junit": "17.0.0",

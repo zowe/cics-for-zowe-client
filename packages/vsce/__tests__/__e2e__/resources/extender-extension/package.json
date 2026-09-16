@@ -3,7 +3,7 @@
   "displayName": "cics-extension-extender",
   "publisher": "Zowe",
   "description": "",
-  "version": "0.0.1",
+  "version": "6.23.1",
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -35,11 +35,11 @@
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
     "@vscode/vsce": "^3.6.0",
-    "@zowe/cics-for-zowe-sdk": "^6.8.0",
+    "@zowe/cics-for-zowe-sdk": "^6.23.1",
     "@zowe/zowe-explorer-api": "^3.6.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-explorer-api": "../../../../../vsce-api/"
+    "@zowe/cics-for-zowe-explorer-api": ".6.23.1"
   }
 }
