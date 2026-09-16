@@ -82,6 +82,7 @@ export function createMockZoweAPI(
     getCommandApi: jest.fn(),
     onProfilesUpdate: jest.fn(),
     registeredApiTypes: jest.fn().mockReturnValue([]),
+    getFileApi: jest.fn(),
   };
 
   return mockZoweApi as ReturnType<typeof ZoweVsCodeExtension.getZoweExplorerApi>;
