@@ -36,7 +36,7 @@
     "@types/vscode": "^1.100.0",
     "@vscode/vsce": "^3.6.0",
     "@zowe/cics-for-zowe-sdk": "^6.8.0",
-    "@zowe/zowe-explorer-api": "^3.2.1",
+    "@zowe/zowe-explorer-api": "^3.6.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {

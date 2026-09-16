@@ -960,7 +960,7 @@
     "@zowe/cics-for-zowe-explorer-api": "6.23.0",
     "@zowe/cics-for-zowe-sdk": "6.23.0",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
-    "@zowe/zowe-explorer-api": "^3.5.1",
+    "@zowe/zowe-explorer-api": "^3.6.0",
     "jest-junit": "17.0.0",
     "sanitize-html": "^2.17.0"
   },
