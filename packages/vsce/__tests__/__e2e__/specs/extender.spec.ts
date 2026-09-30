@@ -20,6 +20,7 @@ import {
   resetZoweExplorerView,
   runInCommandPalette,
 } from "../utils/helpers";
+import extenderPackageJson from "../resources/extender-extension/package.json";
 
 let ssCount = 1;
 let testId: string;
@@ -62,7 +63,7 @@ test.describe("Extender tests", () => {
     await page
       .getByRole("textbox", { name: "Install from VSIX" })
       .first()
-      .fill("/config/workspace/resources/extender-extension/cics-extension-extender-0.0.1.vsix");
+      .fill(`/config/workspace/resources/extender-extension/cics-extension-extender-${extenderPackageJson.version}.vsix`);
     await screenshot(page);
     await page.getByRole("button", { name: "Install", exact: true }).click();
     await screenshot(page);
@@ -163,7 +164,7 @@ test.describe("Extender tests", () => {
     await screenshot(page);
     await expect(page.getByText("cics-extension-extender", { exact: true })).toBeVisible();
     await screenshot(page);
-    await page.getByRole("listitem", { name: "cics-extension-extender, 0.0." }).getByLabel("Manage").click();
+    await page.getByRole("listitem", { name: `cics-extension-extender, ${extenderPackageJson.version}` }).getByLabel("Manage").click();
     await page.waitForTimeout(200);
     await screenshot(page);
     await expect(page.getByText("Uninstall", { exact: true })).toBeVisible();
