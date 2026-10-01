@@ -1,3 +1,5 @@
+name: cics_e2e
+
 services:
   wiremock:
     image: wiremock/wiremock:latest
