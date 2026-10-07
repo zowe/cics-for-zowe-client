@@ -59,14 +59,20 @@ export class CICSLogger {
     CICSLogger.logOutputChannel.warn(message);
   }
 
-  public static error(message: string): void {
+  public static error(message: string, error?: unknown): void {
     CICSLogger.ensureInitialized();
     CICSLogger.logOutputChannel.error(message);
+    if (error !== undefined) {
+      CICSLogger.logOutputChannel.error(error instanceof Error ? (error.stack ?? String(error)) : String(error));
+    }
   }
 
-  public static fatal(message: string): void {
+  public static fatal(message: string, error?: unknown): void {
     CICSLogger.ensureInitialized();
     CICSLogger.logOutputChannel.error(message);
+    if (error !== undefined) {
+      CICSLogger.logOutputChannel.error(error instanceof Error ? (error.stack ?? String(error)) : String(error));
+    }
   }
 
   public static dispose(): void {
