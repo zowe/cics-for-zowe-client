@@ -58,7 +58,7 @@ exports[`cics get resource should not have changed 1`] = `
       "aliases": [
         "cp",
       ],
-      "description": "The name of the CICSPlex from which to get the resources",
+      "description": "The name of the CICSplex from which to get the resources",
       "name": "cics-plex",
       "type": "string",
     },
