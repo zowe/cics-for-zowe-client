@@ -56,7 +56,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
       }
       CICSLogger.debug(CICSMessages.zoweExplorerModified.message);
     } catch (_error) {
-      CICSLogger.error(CICSMessages.notInitializedCorrectly.message);
+      CICSLogger.error(CICSMessages.notInitializedCorrectly.message, _error);
       return;
     }
   } else {
