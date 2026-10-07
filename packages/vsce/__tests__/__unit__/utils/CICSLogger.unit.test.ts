@@ -9,7 +9,7 @@
  *
  */
 
-import { extensions } from "vscode";
+import { extensions, window } from "vscode";
 import { CICSLogger } from "../../../src/utils/CICSLogger";
 
 const infoSpy = jest.spyOn(CICSLogger, "info");
@@ -60,6 +60,33 @@ describe("CICS Logger", () => {
     expect(errorSpy).toHaveBeenCalledTimes(0);
     CICSLogger.error("MY MSG");
     expect(errorSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should log error with stack trace when an Error is passed", () => {
+    const channel = (window.createOutputChannel as jest.Mock)("test-channel", { log: true });
+    const channelErrorSpy = jest.spyOn(channel, "error");
+
+    const err = new Error("boom");
+    CICSLogger.error("MY MSG", err);
+
+    expect(channelErrorSpy).toHaveBeenCalledTimes(2);
+    expect(channelErrorSpy).toHaveBeenNthCalledWith(1, "MY MSG");
+    expect(channelErrorSpy).toHaveBeenNthCalledWith(2, err.stack);
+
+    channelErrorSpy.mockRestore();
+  });
+
+  it("should log error with string representation when a non-Error is thrown", () => {
+    const channel = (window.createOutputChannel as jest.Mock)("test-channel", { log: true });
+    const channelErrorSpy = jest.spyOn(channel, "error");
+
+    CICSLogger.error("MY MSG", "something went wrong");
+
+    expect(channelErrorSpy).toHaveBeenCalledTimes(2);
+    expect(channelErrorSpy).toHaveBeenNthCalledWith(1, "MY MSG");
+    expect(channelErrorSpy).toHaveBeenNthCalledWith(2, "something went wrong");
+
+    channelErrorSpy.mockRestore();
   });
 
   it("should log fatal", () => {
