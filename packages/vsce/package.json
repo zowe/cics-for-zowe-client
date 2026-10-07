@@ -57,7 +57,7 @@
       "zowe": [
         {
           "id": "cics-view",
-          "name": "cics"
+          "name": "CICS"
         }
       ],
       "inspector-panel": [
