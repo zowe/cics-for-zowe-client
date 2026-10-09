@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added localization infrastructure — `package.json` display strings moved to placeholders with English values in `package.nls.json`, `l10n/bundle.l10n.json` is now deterministically sorted, and scripts added for generating and fetching translations from artifactory.
+
 ## `3.23.1`
 
 - Enhancement: Added Resource Inspector actions for bundles, pipelines, and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)
