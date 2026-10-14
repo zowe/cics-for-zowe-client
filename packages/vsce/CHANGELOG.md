@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- Bug: Log stack trace if an error occurs starting the extension [#732](https://github.com/zowe/cics-for-zowe-client/issues/732)
+
 ## `3.23.1`
 
 - Enhancement: Added Resource Inspector actions for bundles, pipelines, and web-services. [#634](https://github.com/zowe/cics-for-zowe-client/issues/634)

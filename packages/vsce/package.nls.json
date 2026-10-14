@@ -2,7 +2,7 @@
   "extension.displayName": "Zowe Explorer for IBM CICS Transaction Server",
   "extension.description": "Adds IBM CICS support to Zowe Explorer.",
   "panel.cicsResourceInspector.title": "CICS Resource Inspector",
-  "view.cics.name": "cics",
+  "view.cics.name": "CICS",
   "view.cicsResourceInspector.name": "CICS Resource Inspector",
   "configuration.title": "Zowe Explorer for IBM CICS TS",
   "config.zowe.cics.persistent.description": "Zowe CICS Extension History",
