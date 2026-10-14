@@ -109,6 +109,10 @@ exports[`CICS remove-from-list csdGroup command should be able to display the he
 
       The file path to a certificate key file to use for authentication
 
+   --cert-account (string)
+
+      The account name for PKCS 12 certificate stored in credential manager
+
  GLOBAL OPTIONS
  --------------
 
