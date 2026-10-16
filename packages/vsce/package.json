@@ -745,6 +745,21 @@
           "description": "%config.zowe.cics.persistent.description%",
           "scope": "window"
         },
+        "zowe.cics.logLevel": {
+          "type": "string",
+          "enum": [
+            "off",
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error",
+            "fatal"
+          ],
+          "default": "info",
+          "description": "%config.zowe.cics.logLevel.description%",
+          "scope": "window"
+        },
         "zowe.cics.program.filter": {
           "type": "string",
           "default": "NOT (PROGRAM=CEE* OR PROGRAM=DFH* OR PROGRAM=CJ* OR PROGRAM=EYU* OR PROGRAM=CSQ* OR PROGRAM=CEL* OR PROGRAM=IGZ*)",
