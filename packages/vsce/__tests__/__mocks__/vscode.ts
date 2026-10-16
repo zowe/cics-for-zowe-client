@@ -42,7 +42,10 @@ module.exports = {
     openExternal: jest.fn().mockResolvedValue(true),
   },
   l10n: {
-    t: (key: string, ...args: any[]) => {
+    t: (key: string | { message: string; args?: any[] }, ...args: any[]) => {
+      if (typeof key === "object" && typeof key?.message === "string") {
+        return key.message.replace(/\{(\d+)\}/g, (_, idx) => (key.args?.[Number(idx)] !== undefined ? String(key.args[Number(idx)]) : ""));
+      }
       if (typeof key !== "string") {
         return String(key);
       }
@@ -52,6 +55,7 @@ module.exports = {
   window: {
     ...mock.window,
     createOutputChannel: jest.fn().mockReturnValue({
+      appendLine: jest.fn(),
       trace: jest.fn(),
       debug: jest.fn(),
       info: jest.fn(),
@@ -93,6 +97,9 @@ module.exports = {
           resMap.set("TSQueue", true);
 
           return resMap;
+        case "zowe.cics":
+          // Used by CICSLogger for zowe.cics.logLevel; kept separate so it doesn't affect shared get-call counts
+          return { get: jest.fn() };
         default:
           return {
             get: workspaceConfigurationGetMock,

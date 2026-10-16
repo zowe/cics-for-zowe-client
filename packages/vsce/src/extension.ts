@@ -29,6 +29,8 @@ import PersistentStorage from "./utils/PersistentStorage";
  * @returns
  */
 export async function activate(context: ExtensionContext): Promise<IExtensionAPI> {
+  CICSLogger.init(context);
+
   const zeVersion = getZoweExplorerVersion();
 
   let treeDataProv: CICSTree = null;
@@ -56,7 +58,7 @@ export async function activate(context: ExtensionContext): Promise<IExtensionAPI
       }
       CICSLogger.debug(CICSMessages.zoweExplorerModified.message);
     } catch (_error) {
-      CICSLogger.error(CICSMessages.notInitializedCorrectly.message, _error);
+      CICSLogger.error(`${CICSMessages.notInitializedCorrectly.message} ${_error instanceof Error ? _error.message : String(_error)}`);
       return;
     }
   } else {

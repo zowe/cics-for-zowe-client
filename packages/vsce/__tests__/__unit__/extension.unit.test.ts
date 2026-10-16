@@ -81,6 +81,12 @@ describe("extension", () => {
   });
 
   describe("activate", () => {
+    it("should initialise the logger with the extension context", async () => {
+      await activate(mockContext);
+
+      expect(CICSLogger.init).toHaveBeenCalledWith(mockContext);
+    });
+
     it("should return API when successfully activated", async () => {
       const returnedAPI = await activate(mockContext);
 
