@@ -2,6 +2,10 @@
 
 All notable changes to the "cics-extension-for-zowe" extension will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency. []()
+
 ## `2.3.11`
 
 - BugFix: Fixed an issue where assignments to the Node.js global HTTP agent (`http.globalAgent`) could impact concurrent requests for different Zowe profiles. [#689](https://github.com/zowe/cics-for-zowe-client/pull/689)
