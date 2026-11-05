@@ -897,8 +897,6 @@
     "@zowe/zowe-explorer-api": "^2.18.4",
     "https": "~1.0.0",
     "sanitize-html": "^2.16.0",
-    "syncpack": "^13.0.2",
-    "tsup": "^8.3.6",
     "xml-js": "~1.6.11"
   }
 }
