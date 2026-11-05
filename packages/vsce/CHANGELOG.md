@@ -4,7 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
-- BugFix: Updated dependencies for technical currency. []()
+- BugFix: Updated dependencies for technical currency. [#750](https://github.com/zowe/cics-for-zowe-client/pull/750)
 
 ## `2.3.11`
 
