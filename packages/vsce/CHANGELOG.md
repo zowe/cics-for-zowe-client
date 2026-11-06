@@ -5,6 +5,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 ## Recent Changes
 
 - Bug: Log stack trace if an error occurs starting the extension [#732](https://github.com/zowe/cics-for-zowe-client/issues/732)
+- BugFix: Updated the various @zowe scoped dependencies for technical currency. []()
 
 ## `3.23.1`
 
