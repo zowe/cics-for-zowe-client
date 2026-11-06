@@ -4,6 +4,7 @@ All notable changes to the "cics-extension-for-zowe" extension will be documente
 
 ## Recent Changes
 
+- Enhancement: Added the `zowe.cics.logLevel` setting (`off`, `trace`, `debug`, `info`, `warn`, `error`, `fatal`; default `info`) to control logging. The level is saved in your settings and takes effect immediately. Logs are now also written to `zowe.log` in the extension's log folder, or in a `cics` folder inside the Zowe custom logs folder (`zowe.files.logsFolder.path`) if one is set. The output channel no longer has the VS Code log level selector, so use the setting instead.
 - Bug: Log stack trace if an error occurs starting the extension [#732](https://github.com/zowe/cics-for-zowe-client/issues/732)
 
 ## `3.23.1`

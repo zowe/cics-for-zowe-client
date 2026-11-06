@@ -6,6 +6,7 @@
   "view.cicsResourceInspector.name": "CICS Resource Inspector",
   "configuration.title": "Zowe Explorer for IBM CICS TS",
   "config.zowe.cics.persistent.description": "Zowe CICS Extension History",
+  "config.zowe.cics.logLevel.description": "Log level for Zowe Explorer for IBM CICS TS, applied to both the output channel and the log file. A change takes effect immediately.",
   "config.zowe.cics.program.filter.description": "Default filter criteria for Programs",
   "config.zowe.cics.transaction.filter.description": "Default filter criteria for Transactions",
   "config.zowe.cics.localFile.filter.description": "Default filter criteria for Local Files",
