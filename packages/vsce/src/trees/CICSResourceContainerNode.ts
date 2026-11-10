@@ -93,11 +93,25 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.resourceTypes.length > 0) {
       this.contextValue += `.FILTERABLE`;
     }
-    if (this.fetcher?.isCriteriaApplied()) {
-      this.contextValue += `.FILTERED`;
-    }
+    this.updateFilterContext();
 
     this.refreshIcon();
+  }
+
+  /**
+   * Keeps the FILTERED and TABLEABLE context suffixes in step with the filter state.
+   * TABLEABLE controls "View in table": region-scoped nodes always list resources, but
+   * plex-wide ("All ...") nodes only list resources once a filter has been applied.
+   */
+  private updateFilterContext() {
+    const filtered = !!this.fetcher?.isCriteriaApplied();
+    this.contextValue = this.contextValue.replaceAll(".FILTERED", "").replaceAll(".TABLEABLE", "");
+    if (filtered) {
+      this.contextValue += `.FILTERED`;
+    }
+    if (this.resourceTypes.length > 0 && (filtered || this.regionName)) {
+      this.contextValue += `.TABLEABLE`;
+    }
   }
 
   refreshIcon(folderOpen: boolean = false): void {
@@ -150,15 +164,14 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   setCriteria(criteria: string[]) {
     this.fetcher?.setCriteria(criteria);
-    this.contextValue.replaceAll(".FILTERED", "");
     PersistentStorage.setCriteria(this.buildCriteriaStorageKey(), criteria.join("~~"));
-    this.contextValue += `.FILTERED`;
+    this.updateFilterContext();
   }
 
   clearCriteria() {
     this.fetcher?.resetCriteria();
-    this.contextValue = this.contextValue.replaceAll(".FILTERED", "");
     PersistentStorage.setCriteria(this.buildCriteriaStorageKey());
+    this.updateFilterContext();
   }
 
   getSessionNode() {

@@ -93,7 +93,18 @@ describe("CICSResourceContainerNode tests", () => {
   });
 
   it("should build context values", () => {
-    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE");
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.TABLEABLE");
+  });
+
+  it("should only be TABLEABLE for plex-wide nodes once a filter is set", () => {
+    const plexWideNode = new CICSResourceContainerNode("All Programs", { profile, parentNode: regionTree }, undefined, [ProgramMeta]);
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE");
+
+    plexWideNode.setCriteria(["a"]);
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE.FILTERED.TABLEABLE");
+
+    plexWideNode.clearCriteria();
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE");
   });
 
   it("should build context values with contained resources", () => {
@@ -122,7 +133,7 @@ describe("CICSResourceContainerNode tests", () => {
       [ProgramMeta]
     );
 
-    expect(containerNode.contextValue).toEqual("CICSResourceNode.CICSProgram.ENABLED.MYPROG.FILTERABLE");
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.CICSProgram.ENABLED.MYPROG.FILTERABLE.TABLEABLE");
   });
 
   it("should build context values with contained resources and filtered", () => {
@@ -152,7 +163,7 @@ describe("CICSResourceContainerNode tests", () => {
     );
 
     containerNode.setCriteria(["a", "b"]);
-    expect(containerNode.contextValue).toEqual("CICSResourceNode.CICSProgram.DISABLED.MYPROG.FILTERABLE.FILTERED");
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.CICSProgram.DISABLED.MYPROG.FILTERABLE.FILTERED.TABLEABLE");
   });
 
   it("should set contained resource", () => {
