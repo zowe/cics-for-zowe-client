@@ -71,7 +71,6 @@
     "diff": "^8.0.3",
     "glob": "^13.0.6",
     "htmlparser2": "^10.1.0",
-    "minimatch": "^10.2.2",
     "test-exclude": "^8.0.0",
     "typedoc": {
       "minimatch": "^10.2.2"

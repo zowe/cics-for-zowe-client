@@ -29,7 +29,7 @@
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "webpack --mode development",
-    "package": "vsce package --no-dependencies --allow-star-activation"
+    "package:e2e": "vsce package --no-dependencies --allow-star-activation --skip-license"
   },
   "devDependencies": {
     "@types/node": "20.x",
@@ -40,6 +40,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-explorer-api": ".6.23.1"
+    "@zowe/cics-for-zowe-explorer-api": "../../../../../vsce-api/"
   }
 }
