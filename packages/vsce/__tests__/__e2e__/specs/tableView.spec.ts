@@ -31,6 +31,30 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Table View tests", async () => {
+  test("should only offer View in table on a plex-wide folder once a filter is set", async ({ page }) => {
+    await findAndClickTreeItem(page, constants.PROFILE_NAME);
+    await findAndClickTreeItem(page, constants.CICSPLEX_NAME);
+    await findAndClickTreeItem(page, constants.ALL_JVM_SERVERS);
+
+    // No filter yet, so "View in table" should not be offered (the filter button is, which proves the inline actions have rendered)
+    const filterButton = page.getByRole("button", { name: "Filter Resources", exact: true });
+    const viewInTableButton = page.getByRole("button", { name: "View in table", exact: true });
+    await expect(filterButton).toBeVisible();
+    await expect(viewInTableButton, "View in table should be hidden until a filter is set").toHaveCount(0);
+
+    // Apply a filter
+    await filterButton.click();
+
+    const textBox = page.getByRole("textbox", { name: "Select a Filter", exact: false });
+    await expect(textBox).toBeEditable();
+    await textBox.fill("MYJVM1");
+    await textBox.press("Enter");
+    await page.waitForTimeout(500);
+
+    // With a filter, "View in table" should now be offered
+    await expect(viewInTableButton, "View in table should be offered once a filter is set").toBeVisible();
+  });
+
   test("should display multiple resources in table view with search, refresh, and actions", async ({ page }) => {
     // Navigate to Programs resource type
     await findAndClickTreeItem(page, constants.PROFILE_NAME);
