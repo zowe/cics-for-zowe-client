@@ -37,7 +37,7 @@
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "pnpm run prepublishOnly && pnpm pack --pack-destination=../../dist",
+    "package": "pnpm pack --pack-destination=../../dist",
     "test": "pnpm run test:unit && pnpm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",

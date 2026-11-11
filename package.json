@@ -11,7 +11,7 @@
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm -r --stream --sort run build",
     "watch": "pnpm -r --parallel run watch",
-    "package": "pnpm -r --sort run package",
+    "package": "pnpm run build && pnpm -r --sort run package",
     "test": "pnpm -r run test",
     "test:system": "pnpm run validate:system-tests && pnpm -r run test:system",
     "test:unit": "pnpm -r run test:unit",
@@ -22,7 +22,7 @@
     "license": "node scripts/updateLicenses.js",
     "pretty": "prettier --write .",
     "validate:system-tests": "node scripts/validate-system-test-config.js",
-    "clean": "pnpm -r run clean && rimraf dist"
+    "clean": "pnpm -r run clean && rimraf dist/*.tgz dist/*.vsix"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",
