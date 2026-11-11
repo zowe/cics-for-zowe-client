@@ -92,6 +92,7 @@ jobs:
   e2e-test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     steps:
       - name: Change workspace folder so wiremock service can write
         run: |
@@ -118,7 +119,7 @@ jobs:
         run: pnpm run package
 
       - name: Install browsers
-        run: npx playwright install --with-deps
+        run: pnpm --filter cics-extension-for-zowe exec playwright install --with-deps
       
       - name: Install SDK
         run: |
@@ -139,7 +140,7 @@ jobs:
         run: |
           cd packages/vsce/
           pnpm run test:e2e:setup
-          CI=true npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
+          CI=true pnpm exec playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
 
       - name: Save wiremock logs
         if: success() || failure()

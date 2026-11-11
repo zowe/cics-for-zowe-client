@@ -1,5 +1,5 @@
 
-install-extension Zowe.vscode-extension-for-zowe@3.6.0 --extensions-dir /config/extensions
+# install-extension Zowe.vscode-extension-for-zowe@3.6.0 --extensions-dir /config/extensions
 install-extension /config/workspace/dist/`ls -t /config/workspace/dist/ | grep cics-extension-for-zowe | head -n 1` --extensions-dir /config/extensions
 
 mkdir -p /config/data/User
