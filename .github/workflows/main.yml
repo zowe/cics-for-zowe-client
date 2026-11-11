@@ -123,8 +123,12 @@ jobs:
       
       - name: Install SDK
         run: |
-          npm install ./dist/zowe-cics-for-zowe-sdk-6.*.tgz
-          node scripts/sdk-test.js
+          SDK_TARBALL=$(ls -1 $GITHUB_WORKSPACE/dist/zowe-cics-for-zowe-sdk-*.tgz | head -n 1)
+          TEMP_SDK_DIR=$(mktemp -d)
+          cd "$TEMP_SDK_DIR"
+          npm init -y
+          npm install "$SDK_TARBALL"
+          node "$GITHUB_WORKSPACE/scripts/sdk-test.js"
       
       - name: Install CLI
         run: |
