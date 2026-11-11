@@ -61,6 +61,30 @@ interface QueueItem {
     parentArchivePath: string;
 }
 
+function resolveSrcPath(name: string, rawPath: string): string {
+    const backupCandidate = rawPath.replace(pkgNodeModules + path.sep, nodeModulesBackup + path.sep);
+    if (fs.existsSync(backupCandidate)) {
+        return backupCandidate;
+    }
+    if (fs.existsSync(rawPath)) {
+        return rawPath;
+    }
+    const hoistedPath = path.join(rootDir, "node_modules", name);
+    if (fs.existsSync(hoistedPath)) {
+        return hoistedPath;
+    }
+    const localHoistedPath = path.join(nodeModulesBackup, name);
+    if (fs.existsSync(localHoistedPath)) {
+        return localHoistedPath;
+    }
+    try {
+        const resolvedJson = require.resolve(`${name}/package.json`, { paths: [rootDir, pkgDir] });
+        return path.dirname(resolvedJson);
+    } catch {
+        return rawPath;
+    }
+}
+
 function walkDepTree(rootDeps: { [pkgName: string]: PnpmDepTree }): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
@@ -90,7 +114,7 @@ function walkDepTree(rootDeps: { [pkgName: string]: PnpmDepTree }): Record<strin
                     throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
                 }
             } else {
-                const isWorkspaceLink = !tree.path.includes(".pnpm");
+                const isWorkspaceLink = !tree.path.includes("node_modules");
                 bundleDeps[archivePath] = {
                     id: pkgId,
                     srcPath: tree.path,
@@ -127,17 +151,18 @@ async function prepack(pkgName: string) {
         fs.mkdirSync(pkgNodeModules);
 
         for (const [destPath, bundleDep] of Object.entries(prodDepMap)) {
-            const srcPath = bundleDep.srcPath.replace(pkgNodeModules + path.sep, nodeModulesBackup + path.sep);
+            const depName = bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@"));
+            const srcPath = resolveSrcPath(depName, bundleDep.srcPath);
             if (bundleDep.link) {
                 const packlist = await npmPacklist({
                     path: srcPath,
-                    package: bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@")),
+                    package: depName,
                     edgesOut: new Map(),
                 });
                 for (const relFilePath of packlist) {
                     const absFilePath = path.join(pkgDir, destPath, relFilePath);
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
-                    fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
+                    fs.copyFileSync(path.join(srcPath, relFilePath), absFilePath);
                 }
             } else {
                 const absPkgPath = path.join(pkgDir, destPath);
