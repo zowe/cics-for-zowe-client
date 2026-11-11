@@ -29,7 +29,7 @@
   "scripts": {
     "vscode:prepublish": "pnpm run build",
     "build": "webpack --mode development",
-    "package:e2e": "vsce package --no-dependencies --allow-star-activation --skip-license"
+    "package:e2e": "pnpm exec vsce package --no-dependencies --allow-star-activation --skip-license"
   },
   "devDependencies": {
     "@types/node": "20.x",

@@ -41,6 +41,9 @@ importers:
       '@types/yargs':
         specifier: ^17.0.24
         version: 17.0.35
+      '@vscode/vsce':
+        specifier: ^3.7.1
+        version: 3.9.2(supports-color@7.2.0)
       '@zowe/cli-test-utils':
         specifier: ^8.41.1
         version: 8.43.0(@zowe/imperative@8.43.0(supports-color@7.2.0))
