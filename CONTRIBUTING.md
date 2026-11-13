@@ -53,25 +53,25 @@ To build the project locally, follow these steps:
 2. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Build all packages:
 
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 4. Run tests:
 
    ```bash
-   npm run test:unit
+   pnpm run test:unit
    ```
 
 5. Run e2e tests (or check results in the CI build if you don't have a suitable Docker environment):
 
    ```bash
-   npm run test:e2e
+   pnpm run test:e2e
    ```
 
 6. If any e2e tests fail, see more details by using the playwright show-report tool. If the tests failed in CI, you can download the data and replay what happened. From the e2e-test job in GitHub Actions, find the "Archive E2E screenshots, Wiremock log, and Playwright test report" step. This step's logs contain a link to the artifact download URL. Download and unzip the artifact zip.
@@ -84,7 +84,7 @@ To build the project locally, follow these steps:
 
 7. Create distributable packages (optional):
    ```bash
-   npm run package
+   pnpm run package
    ```
 
 The built packages will be placed in the [`dist` directory](dist):
@@ -105,11 +105,11 @@ colima start
 From within `packages/vsce`...
 Tear down any existing running e2e tests:
 ```
-npm run test:e2e:teardown
+pnpm run test:e2e:teardown
 ```
 Run the tests interactively - this will pop up a playwright window where you can play each e2e test:
 ```
-npm run test:e2e:dev:interactive
+pnpm run test:e2e:dev:interactive
 ```
 You can also open a browser to http://localhost:1234/ - this will let you use VS Code against the wiremock CICSplex. It's a bit limited but is a useful way to test out the e2e test framework yourself.
 

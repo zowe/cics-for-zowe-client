@@ -2,29 +2,27 @@
   "name": "@zowe/cics_monorepo",
   "private": true,
   "version": "6.23.2",
-  "packageManager": "npm@10.9.2",
+  "packageManager": "pnpm@10.5.2",
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "repository": "https://github.com/zowe/cics-for-zowe-client",
-  "workspaces": [
-    "packages/*",
-    "packages/vsce/__tests__/__e2e__/resources/extender-extension"
-  ],
   "scripts": {
-    "build": "turbo build",
-    "watch": "turbo watch",
-    "package": "turbo package",
-    "test": "npm run test --workspaces --if-present",
-    "test:system": "npm run validate:system-tests && npm run test:system --workspaces --if-present",
-    "test:unit": "npm run test:unit --workspaces --if-present",
-    "test:e2e": "npm run test:e2e --workspaces --if-present",
-    "lint": "npx eslint --ignore-pattern packages --ignore-pattern scripts && npm run lint --workspaces --if-present",
-    "lintErrors": "npm run lintErrors --workspaces --if-present",
+    "preinstall": "npx only-allow pnpm",
+    "build": "pnpm -r --stream --sort run build",
+    "watch": "pnpm -r --parallel run watch",
+    "package": "pnpm run build && pnpm -r --sort run package",
+    "test": "pnpm -r run test",
+    "test:system": "pnpm run validate:system-tests && pnpm -r run test:system",
+    "test:unit": "pnpm -r run test:unit",
+    "test:e2e": "pnpm --filter cics-extension-for-zowe run test:e2e",
+    "lint": "eslint --ignore-pattern packages --ignore-pattern scripts && pnpm -r run lint",
+    "lintErrors": "pnpm -r run lintErrors",
     "prepare": "husky install",
     "license": "node scripts/updateLicenses.js",
-    "pretty": "turbo pretty --no-cache",
-    "validate:system-tests": "node scripts/validate-system-test-config.js"
+    "pretty": "prettier --write .",
+    "validate:system-tests": "node scripts/validate-system-test-config.js",
+    "clean": "pnpm -r run clean && rimraf dist/*.tgz dist/*.vsix"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",
@@ -35,6 +33,7 @@
     "@types/uuid": "^9.0.1",
     "@types/xml2js": "^0.4.4",
     "@types/yargs": "^17.0.24",
+    "@vscode/vsce": "^3.7.1",
     "@zowe/cli-test-utils": "^8.41.1",
     "@zowe/imperative": "^8.43.0",
     "@zowe/zowe-explorer-api": "^3.6.0",
@@ -60,21 +59,9 @@
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.4.0",
-    "turbo": "^2.9.14",
     "typedoc": "^0.28.17",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.56.0",
     "uuid": "^14.0.0"
-  },
-  "overrides": {
-    "linkify-it": "^5.0.2",
-    "diff": "^8.0.3",
-    "glob": "^13.0.6",
-    "htmlparser2": "^10.1.0",
-    "test-exclude": "^8.0.0",
-    "typedoc": {
-      "minimatch": "^10.2.2"
-    },
-    "serialize-javascript": "^7.0.3"
   }
 }

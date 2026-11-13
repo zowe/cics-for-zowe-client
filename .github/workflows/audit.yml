@@ -22,10 +22,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
     - name: Use Node.js LTS
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: lts/*
 
     - name: Check Vulnerabilities
-      run: npm audit --workspaces --omit=dev --audit-level=moderate
+      run: pnpm audit --prod --audit-level=moderate

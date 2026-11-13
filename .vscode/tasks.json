@@ -4,14 +4,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "npm run watch",
+      "label": "pnpm run watch",
       "group": "build",
       "isBackground": true,
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}/packages/vsce"
       },
-      "command": "npm",
+      "command": "pnpm",
       "args": [
         "run",
         "watch"

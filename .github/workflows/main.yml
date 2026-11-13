@@ -33,10 +33,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
 
     - name: Disable Lint Annotations
       run: |
@@ -44,7 +48,7 @@ jobs:
         echo "::remove-matcher owner=eslint-stylish::"
 
     - name: Install Dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Update Dependencies
       id: npm-update
@@ -55,11 +59,11 @@ jobs:
 
     - name: Build Source
       id: build
-      run: npm run build
+      run: pnpm run build
 
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:unit
+      run: pnpm run test:unit
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
@@ -88,6 +92,7 @@ jobs:
   e2e-test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     steps:
       - name: Change workspace folder so wiremock service can write
         run: |
@@ -97,25 +102,33 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Use Node.js 22.15.1
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.15.1
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run package
         id: build
-        run: npm run package
+        run: pnpm run package
 
       - name: Install browsers
-        run: npx playwright install --with-deps
+        run: pnpm --filter cics-extension-for-zowe exec playwright install --with-deps
       
       - name: Install SDK
         run: |
-          npm install ./dist/zowe-cics-for-zowe-sdk-6.*.tgz
-          node scripts/sdk-test.js
+          SDK_TARBALL=$(ls -1 $GITHUB_WORKSPACE/dist/zowe-cics-for-zowe-sdk-*.tgz | head -n 1)
+          TEMP_SDK_DIR=$(mktemp -d)
+          cd "$TEMP_SDK_DIR"
+          npm init -y
+          npm install "$SDK_TARBALL"
+          node "$GITHUB_WORKSPACE/scripts/sdk-test.js"
       
       - name: Install CLI
         run: |
@@ -130,8 +143,8 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: |
           cd packages/vsce/
-          npm run test:e2e:setup
-          CI=true npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
+          pnpm run test:e2e:setup
+          CI=true pnpm exec playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1
 
       - name: Save wiremock logs
         if: success() || failure()
@@ -166,13 +179,17 @@ jobs:
         persist-credentials: false
         ref: ${{ github.ref }}
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
     - name: Use Node.js LTS
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: lts/-1
+        cache: 'pnpm'
 
     - name: Install Dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Update Dependencies
       uses: zowe-actions/octorelease/script@e4c509e08c4dfca0186571e937c605284a50de06 # v1
@@ -204,7 +221,7 @@ jobs:
         git commit -s -m "Update Notice Files [ci skip]" || true
 
     - name: Build Source
-      run: npm run build
+      run: pnpm run build
 
     - uses: zowe-actions/octorelease@e4c509e08c4dfca0186571e937c605284a50de06 # v1
       env:
