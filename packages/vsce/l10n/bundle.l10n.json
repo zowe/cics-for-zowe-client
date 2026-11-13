@@ -286,6 +286,7 @@
   "Web Service": "Web Service",
   "Web Services": "Web Services",
   "Zowe CICS profile": "Zowe CICS profile",
+  "Zowe Explorer for IBM CICS TS": "Zowe Explorer for IBM CICS TS",
   "Zowe Explorer for IBM CICS TS log level: {0}/Log level": {
     "message": "Zowe Explorer for IBM CICS TS log level: {0}",
     "comment": [

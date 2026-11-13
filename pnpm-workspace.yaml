@@ -1,0 +1,27 @@
+packages:
+  - "packages/*"
+  - "packages/vsce/__tests__/__e2e__/resources/extender-extension"
+
+publicHoistPattern:
+  - "*eslint*"
+  - "*prettier*"
+  - "*typescript*"
+  - "@types/*"
+
+allowBuilds:
+  "@parcel/watcher": true
+  "@vscode/vsce-sign": true
+  "@zowe/secrets-for-zowe-sdk": true
+  "cpu-features": true
+  "esbuild": true
+  "keytar": true
+  "ssh2": true
+
+overrides:
+  "linkify-it": "^5.0.2"
+  "diff": "^8.0.3"
+  "glob": "^13.0.6"
+  "htmlparser2": "^10.1.0"
+  "test-exclude": "^8.0.0"
+  "serialize-javascript": "^7.0.3"
+  "typedoc>minimatch": "^10.2.2"

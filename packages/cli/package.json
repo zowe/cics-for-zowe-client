@@ -27,22 +27,22 @@
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "scripts": {
-    "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
+    "build": "tsc --pretty && pnpm run checkTestsCompile && pnpm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "madge -c lib",
-    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "prebuild": "pnpm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "pnpm run build",
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:src": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "package": "npm run prepublishOnly && npm pack --pack-destination=../../dist",
-    "test": "npm run test:unit && npm run test:system",
+    "package": "pnpm run prepublishOnly && pnpm pack --pack-destination=../../dist",
+    "test": "pnpm run test:unit && pnpm run test:system",
     "test:system": "jest --config system.jest_config.ts",
     "test:unit": "jest --config unit.jest_config.ts",
     "test:e2e": "echo 'Nothing to e2e test'",
-    "installPlugin": "npm install && npm run clean && npm run build && zowe plugins install .",
+    "installPlugin": "pnpm install && pnpm run clean && pnpm run build && zowe plugins install .",
     "prepack": "npx ts-node ../../scripts/bundleCliDeps.ts prepack",
     "postpack": "npx ts-node ../../scripts/bundleCliDeps.ts postpack",
     "typedoc": "typedoc --out ./docs/typedoc/ ./src/ --disableOutputCheck",
@@ -52,7 +52,7 @@
     "configurationModule": "lib/imperative.js"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "6.23.2"
+    "@zowe/cics-for-zowe-sdk": "workspace:*"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0"

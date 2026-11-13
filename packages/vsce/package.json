@@ -912,31 +912,31 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run getPrebuilds && npm run generateLocalization && npm run build:production",
-    "build": "webpack --mode development && npm run generateLocalization",
+    "vscode:prepublish": "pnpm run getPrebuilds && pnpm run generateLocalization && pnpm run build:production",
+    "build": "webpack --mode development && pnpm run generateLocalization",
     "build:production": "webpack --mode production",
-    "generateLocalization": "npx vscode-l10n-dev export \"src/**/*.ts\" --outDir l10n && node ./scripts/sortL10nBundle.js",
+    "generateLocalization": "pnpm exec vscode-l10n-dev export \"src/**/*.ts\" --outDir l10n && node ./scripts/sortL10nBundle.js",
     "fetchLocalizations": "node ./scripts/downloadLocalizations.js",
-    "build:nlsPseudo": "npx vscode-l10n-dev generate-pseudo -p ./l10n/bundle.l10n.json -o ./l10n",
+    "build:nlsPseudo": "pnpm exec vscode-l10n-dev generate-pseudo -p ./l10n/bundle.l10n.json -o ./l10n",
     "lint": "eslint src --ext ts",
-    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "prebuild": "pnpm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib && rimraf dist",
     "watch": "webpack --mode development --watch",
     "test:system": "echo 'Please run the system tests via VSCode UI' && exit 0",
     "test:unit": "jest --config unit.jest_config.ts",
-    "test": "npm run test:unit",
+    "test": "pnpm run test:unit",
     "tsupDep": "node ./scripts/tsup-deps.js",
     "getPrebuilds": "node ./scripts/getSecretsPrebuilds.js",
-    "package": "vsce package --dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
-    "test:e2e:setupExtenderExtension": "cd __tests__/__e2e__/resources/extender-extension && npm run package:e2e && cd ../../../../",
-    "test:e2e:setup": "npm run test:e2e:setupExtenderExtension && npm run package && cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
+    "package": "vsce package --no-dependencies --allow-star-activation && node ../../scripts/mv-pack.js cics-extension-for-zowe vsix",
+    "test:e2e:setupExtenderExtension": "cd __tests__/__e2e__/resources/extender-extension && pnpm run package:e2e && cd ../../../../",
+    "test:e2e:setup": "pnpm run test:e2e:setupExtenderExtension && pnpm run package && cd __tests__/__e2e__ && docker compose up -d && docker exec code-server bash /config/workspace/setup.sh",
     "test:e2e:teardown": "cd __tests__/__e2e__ && docker exec code-server bash /config/workspace/teardown.sh && docker compose down",
     "test:e2e:run": "npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1",
-    "test:e2e": "npm run test:e2e:setup && npm run test:e2e:run && npm run test:e2e:teardown",
-    "test:e2e:dev:interactive": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --ui && npm run test:e2e:teardown",
-    "test:e2e:dev": "npm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --headed && npm run test:e2e:teardown",
+    "test:e2e": "pnpm run test:e2e:setup && pnpm run test:e2e:run && pnpm run test:e2e:teardown",
+    "test:e2e:dev:interactive": "pnpm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --ui && pnpm run test:e2e:teardown",
+    "test:e2e:dev": "pnpm run test:e2e:setup && npx playwright test -c __tests__/__e2e__/playwright.config.ts --workers=1 --headed && pnpm run test:e2e:teardown",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" --ignore-path ../../.prettierignore",
-    "l10n:export": "npx vscode-l10n-dev export \"src/**/*.ts\" --outDir l10n"
+    "l10n:export": "pnpm exec vscode-l10n-dev export \"src/**/*.ts\" --outDir l10n"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
@@ -972,18 +972,11 @@
   "dependencies": {
     "@vscode-elements/react-elements": "^1.15.1",
     "@vscode/codicons": "^0.0.40",
-    "@zowe/cics-for-zowe-explorer-api": "6.23.2",
-    "@zowe/cics-for-zowe-sdk": "6.23.2",
+    "@zowe/cics-for-zowe-explorer-api": "workspace:*",
+    "@zowe/cics-for-zowe-sdk": "workspace:*",
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/zowe-explorer-api": "^3.6.0",
     "jest-junit": "17.0.0",
     "sanitize-html": "^2.17.0"
-  },
-  "overrides": {
-    "brace-expansion@1": "^1.1.12",
-    "brace-expansion@2": "^2.0.2",
-    "@vscode/l10n-dev": {
-      "minimatch": "^10.2.2"
-    }
   }
 }

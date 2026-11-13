@@ -271,9 +271,9 @@ function main() {
   if (results.errors.length === 0 && results.warnings.length === 0) {
     logSuccess('All validations passed! ✓');
     logInfo('\nYou can now run system tests:');
-    logInfo('  • SDK tests: npm run test:system --workspace=packages/sdk');
-    logInfo('  • CLI tests: npm run test:system --workspace=packages/cli');
-    logInfo('  • All tests: npm run test:system');
+    logInfo('  • SDK tests: pnpm --filter @zowe/cics-for-zowe-sdk run test:system');
+    logInfo('  • CLI tests: pnpm --filter @zowe/cics-for-zowe-cli run test:system');
+    logInfo('  • All tests: pnpm run test:system');
     process.exit(0);
   } else {
     if (results.errors.length > 0) {
