@@ -26,23 +26,23 @@
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "scripts": {
-    "build": "tsc --pretty && npm run checkTestsCompile && npm run madge",
+    "build": "tsc --pretty && pnpm run checkTestsCompile && pnpm run madge",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
     "madge": "madge -c lib",
-    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "prebuild": "pnpm run clean && echo Using TypeScript && tsc --version",
     "clean": "rimraf lib",
     "watch": "tsc --pretty --watch",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "pnpm run build",
     "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
-    "package": "npm pack --pack-destination=../../dist",
-    "test": "npm run test:unit && npm run test:system",
+    "package": "pnpm pack --pack-destination=../../dist",
+    "test": "pnpm run test:unit && pnpm run test:system",
     "test:system": "echo 'Nothing to system test'",
     "test:unit": "jest --config unit.jest_config.ts",
     "test:e2e": "echo 'Nothing to e2e test'",
     "pretty": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\" --ignore-path ../../.prettierignore"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-sdk": "^6.23.2",
+    "@zowe/cics-for-zowe-sdk": "workspace:*",
     "compare-versions": "^6.1.1"
   },
   "peerDependencies": {

@@ -27,19 +27,22 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run build",
+    "vscode:prepublish": "pnpm run build",
     "build": "webpack --mode development",
-    "package:e2e": "vsce package --no-dependencies --allow-star-activation --skip-license"
+    "package:e2e": "pnpm exec vsce package --no-dependencies --allow-star-activation --skip-license"
   },
   "devDependencies": {
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
     "@vscode/vsce": "^3.6.0",
-    "@zowe/cics-for-zowe-sdk": "^6.23.2",
+    "@zowe/cics-for-zowe-sdk": "workspace:*",
     "@zowe/zowe-explorer-api": "^3.6.0",
-    "typescript": "^5.8.3"
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@zowe/cics-for-zowe-explorer-api": ".6.23.2"
+    "@zowe/cics-for-zowe-explorer-api": "workspace:*"
   }
 }

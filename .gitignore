@@ -9,9 +9,8 @@ lib_test
 results/
 __results__/
 __tests__/__results__/
-**/__tests__/__resources__/properties/custom_properties.yaml
+/**/__tests__/__resources__/properties/custom_properties.yaml
 docs/typedoc
-.turbo
 build/**
 .next/**
 dist/*
@@ -19,3 +18,4 @@ dist/*
 **/.DS_Store
 packages/vsce/__tests__/__e2e__/resources/extender-extension/*.vsix
 packages/vsce/__tests__/__e2e__/resources/extender-extension/out
+.worktrees/
