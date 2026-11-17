@@ -6,7 +6,10 @@ This document is intended to be a living summary of conventions & best practices
 
 ### Requirements
 
-- Install Node 20
+- Install Node 22 (22.15.0 or later)
+- Install [pnpm](https://pnpm.io/installation) v10 or later. This repository uses pnpm workspaces. Older versions (such as v8) are not supported, and npm/yarn are blocked by the `preinstall` check. Check your version with `pnpm --version`.
+  - The repo pins the version in the `packageManager` field of the root `package.json`. If you have Node's Corepack enabled (`corepack enable`), the correct pnpm version is used automatically.
+  - To upgrade an existing install, run `npm install -g pnpm@latest-10` or `pnpm self-update`.
 
 ### Project structure
 

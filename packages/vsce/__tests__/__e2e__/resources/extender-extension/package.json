@@ -32,7 +32,7 @@
     "package:e2e": "pnpm exec vsce package --no-dependencies --allow-star-activation --skip-license"
   },
   "devDependencies": {
-    "@types/node": "20.x",
+    "@types/node": "22.x",
     "@types/vscode": "^1.100.0",
     "@vscode/vsce": "^3.6.0",
     "@zowe/cics-for-zowe-sdk": "workspace:*",
