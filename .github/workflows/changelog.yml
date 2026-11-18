@@ -27,4 +27,4 @@ jobs:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
         lerna: true
-        ignoreFiles: '__tests__|package.json|package-lock.json|*.md'
+        ignoreFiles: '__tests__|package.json|package-lock.json|pnpm-lock.yaml|*.md'

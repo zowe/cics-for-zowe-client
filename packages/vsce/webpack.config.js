@@ -19,6 +19,8 @@ const webpack = require("webpack");
 const fs = require("fs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const codiconsDir = path.dirname(require.resolve("@vscode/codicons/package.json"));
+
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 const extensionConfig = {
@@ -38,14 +40,17 @@ const extensionConfig = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "../../node_modules", "@vscode", "codicons", "dist", "codicon.css"),
+          from: path.join(codiconsDir, "dist", "codicon.css"),
           to: path.resolve(__dirname, "dist", "codicon.css"),
         },
         {
-          from: path.resolve(__dirname, "../../node_modules", "@vscode", "codicons", "dist", "codicon.ttf"),
+          from: path.join(codiconsDir, "dist", "codicon.ttf"),
           to: path.resolve(__dirname, "dist", "codicon.ttf"),
         },
       ],
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^cpu-features$/,
     }),
   ],
   externals: [

@@ -9,15 +9,6 @@
 *
 */
 
-/*
-This script works around npm bugs related to bundling deps in workspaces:
- 1. Deps located in root node_modules are not bundled:
-    https://github.com/npm/cli/issues/3466
- 2. Symlinked node_modules result in paths with backtracking in TGZ
- 3. Installing subpackage deps fails in CI when bundleDependencies is true
- 4. Copying lockfile into subpackage dir may not resolve all deps correctly
-*/
-
 /* eslint-disable no-console */
 import * as childProcess from "node:child_process";
 import * as fs from "node:fs";
@@ -26,7 +17,7 @@ const npmPacklist = require("npm-packlist");
 
 const cmdName = process.argv[2];
 const pkgDir = process.cwd();
-process.chdir(path.join(__dirname, ".."));
+const rootDir = path.resolve(__dirname, "..");
 const pkgNodeModules = path.join(pkgDir, "node_modules");
 const nodeModulesBackup = path.join(pkgDir, "node_modules_old");
 const pkgJsonPath = path.join(pkgDir, "package.json");
@@ -49,12 +40,13 @@ function updatePkgJson(update: (_: Record<string, any>) => void) {
     fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
-interface NpmDepTree {
+interface PnpmDepTree {
     version: string;
-    name: string;
-    resolved?: string;
+    from?: string;
     path: string;
-    dependencies?: { [pkgName: string]: NpmDepTree };
+    resolved?: string;
+    dependencies?: { [pkgName: string]: PnpmDepTree };
+    scripts?: { install?: string };
     [key: string]: any;
 }
 interface BundleDepInfo {
@@ -64,42 +56,75 @@ interface BundleDepInfo {
     hasInstallScript: boolean;
 }
 interface QueueItem {
-    tree: NpmDepTree;
+    name: string;
+    tree: PnpmDepTree;
     parentArchivePath: string;
 }
-function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDepInfo> {
+
+function resolveSrcPath(name: string, rawPath: string): string {
+    const backupCandidate = rawPath.replace(pkgNodeModules + path.sep, nodeModulesBackup + path.sep);
+    if (fs.existsSync(backupCandidate)) {
+        return backupCandidate;
+    }
+    if (fs.existsSync(rawPath)) {
+        return rawPath;
+    }
+    const hoistedPath = path.join(rootDir, "node_modules", name);
+    if (fs.existsSync(hoistedPath)) {
+        return hoistedPath;
+    }
+    const localHoistedPath = path.join(nodeModulesBackup, name);
+    if (fs.existsSync(localHoistedPath)) {
+        return localHoistedPath;
+    }
+    try {
+        const resolvedJson = require.resolve(`${name}/package.json`, { paths: [rootDir, pkgDir] });
+        return path.dirname(resolvedJson);
+    } catch {
+        return rawPath;
+    }
+}
+
+function walkDepTree(rootDeps: { [pkgName: string]: PnpmDepTree }): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
     const visited = new Set<string>();
-    let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
-        .map((tree) => ({ tree, parentArchivePath: "node_modules" }));
+    let queue: QueueItem[] = Object.entries(rootDeps ?? {}).map(([name, tree]) => ({
+        name,
+        tree,
+        parentArchivePath: "node_modules",
+    }));
 
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
-        for (const { tree, parentArchivePath } of queue) {
+        for (const { name, tree, parentArchivePath } of queue) {
+            if (!tree || !tree.path) continue;
+            // Skip peer dependency @zowe/imperative
+            if (name === "@zowe/imperative") continue;
             if (visited.has(tree.path)) continue;
             visited.add(tree.path);
 
-            const pkgId = `${tree.name}@${tree.version}`;
-            const flatPath = path.posix.join("node_modules", tree.name);
+            const pkgId = `${name}@${tree.version}`;
+            const flatPath = path.posix.join("node_modules", name);
             const archivePath = flatPath in bundleDeps && bundleDeps[flatPath].id !== pkgId ?
-                path.posix.join(parentArchivePath, "node_modules", tree.name) : flatPath;
+                path.posix.join(parentArchivePath, "node_modules", name) : flatPath;
 
             if (archivePath in bundleDeps) {
                 if (bundleDeps[archivePath].id !== pkgId) {
                     throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
                 }
             } else {
+                const isWorkspaceLink = !tree.path.includes("node_modules");
                 bundleDeps[archivePath] = {
                     id: pkgId,
                     srcPath: tree.path,
-                    link: tree.resolved != null,
+                    link: isWorkspaceLink,
                     hasInstallScript: tree.scripts?.install != null,
                 };
             }
 
-            for (const subtree of Object.values(tree.dependencies ?? {})) {
-                if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
+            for (const [subName, subtree] of Object.entries(tree.dependencies ?? {})) {
+                if (subName != null) nextQueue.push({ name: subName, tree: subtree, parentArchivePath: archivePath });
             }
         }
         queue = nextQueue;
@@ -109,32 +134,35 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
 }
 
 async function prepack(pkgName: string) {
-    /* eslint-disable @typescript-eslint/no-magic-numbers */
     if (fs.existsSync(nodeModulesBackup)) {
-        throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
+        restoreNodeModules();
     }
     const start = Date.now();
-    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkgName}`, {
+    const output = childProcess.execSync(`pnpm list --json --prod --depth Infinity`, {
+        cwd: pkgDir,
         maxBuffer: 1024 * 1024 * 100, // 100MB
     });
-    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkgName);
+    const parsed = JSON.parse(output.toString());
+    const rootData = Array.isArray(parsed) ? parsed[0] : parsed;
+    const prodDepMap = walkDepTree(rootData.dependencies ?? {});
 
     try {
         if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
         fs.mkdirSync(pkgNodeModules);
 
         for (const [destPath, bundleDep] of Object.entries(prodDepMap)) {
-            const srcPath = bundleDep.srcPath.replace(pkgNodeModules + path.sep, nodeModulesBackup + path.sep);
+            const depName = bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@"));
+            const srcPath = resolveSrcPath(depName, bundleDep.srcPath);
             if (bundleDep.link) {
                 const packlist = await npmPacklist({
                     path: srcPath,
-                    package: bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@")),
+                    package: depName,
                     edgesOut: new Map(),
                 });
                 for (const relFilePath of packlist) {
                     const absFilePath = path.join(pkgDir, destPath, relFilePath);
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
-                    fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
+                    fs.copyFileSync(path.join(srcPath, relFilePath), absFilePath);
                 }
             } else {
                 const absPkgPath = path.join(pkgDir, destPath);

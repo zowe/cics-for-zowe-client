@@ -13,21 +13,21 @@ This is a monorepo. The primary packages are under `packages/`:
 
 ## Running commands
 
-Always run package-level scripts via `npm run <script>` from the relevant package directory — do not invoke `jest`, `tsc`, `eslint`, or `webpack` directly. Each package has its own config files and the npm scripts wire them up correctly.
+Always run package-level scripts via `pnpm run <script>` or `pnpm --filter <pkg> <script>` — do not invoke `jest`, `tsc`, `eslint`, or `webpack` directly. Each package has its own config files and the npm scripts wire them up correctly.
 
 ```sh
 cd packages/vsce
 
-npm run test:unit   # unit tests (uses unit.jest_config.ts)
-npm run lint        # ESLint
-npm run build       # webpack dev build + l10n export
+pnpm run test:unit   # unit tests (uses unit.jest_config.ts)
+pnpm run lint        # ESLint
+pnpm run build       # webpack dev build + l10n export
 ```
 
 To run all unit tests across the whole monorepo:
 
 ```sh
 # from repo root
-npm run test:unit
+pnpm run test:unit
 ```
 
 ## Typecheck

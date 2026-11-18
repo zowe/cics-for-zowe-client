@@ -10,6 +10,13 @@
  */
 
 
-const sdk = require("@zowe/cics-for-zowe-sdk");
+const { createRequire } = require("module");
+let sdk;
+try {
+  const localRequire = createRequire(process.cwd() + "/package.json");
+  sdk = localRequire("@zowe/cics-for-zowe-sdk");
+} catch {
+  sdk = require("@zowe/cics-for-zowe-sdk");
+}
 
 console.log(sdk);
