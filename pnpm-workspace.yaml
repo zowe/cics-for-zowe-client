@@ -2,6 +2,13 @@ packages:
   - "packages/*"
   - "packages/vsce/__tests__/__e2e__/resources/extender-extension"
 
+nodeLinker: hoisted
+autoInstallPeers: true
+strictPeerDependencies: false
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+fetchTimeout: 60000
+
 publicHoistPattern:
   - "*eslint*"
   - "*prettier*"
