@@ -31,6 +31,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   defaultDescription: string;
 
   private items: IContainedResource<IResource>[] = [];
+  /** True once a fetch for the current filter has returned resources; cleared when the filter changes. */
+  private knownToHaveResources = false;
   private fetcher?: ResourceContainer;
 
   constructor(
@@ -93,11 +95,24 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.resourceTypes.length > 0) {
       this.contextValue += `.FILTERABLE`;
     }
+    this.updateFilterContext();
+
+    this.refreshIcon();
+  }
+
+  /**
+   * Keeps the FILTERED and TABLEABLE context suffixes in step with the filter and load state.
+   * TABLEABLE controls "View in table", which is only offered once the node is known to have
+   * resources to show (see `knownToHaveResources`).
+   */
+  private updateFilterContext() {
+    this.contextValue = this.contextValue.replaceAll(".FILTERED", "").replaceAll(".TABLEABLE", "");
     if (this.fetcher?.isCriteriaApplied()) {
       this.contextValue += `.FILTERED`;
     }
-
-    this.refreshIcon();
+    if (this.resourceTypes.length > 0 && this.knownToHaveResources) {
+      this.contextValue += `.TABLEABLE`;
+    }
   }
 
   refreshIcon(folderOpen: boolean = false): void {
@@ -150,15 +165,17 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
 
   setCriteria(criteria: string[]) {
     this.fetcher?.setCriteria(criteria);
-    this.contextValue.replaceAll(".FILTERED", "");
     PersistentStorage.setCriteria(this.buildCriteriaStorageKey(), criteria.join("~~"));
-    this.contextValue += `.FILTERED`;
+    // A new filter invalidates whatever we knew about the results
+    this.knownToHaveResources = false;
+    this.updateFilterContext();
   }
 
   clearCriteria() {
     this.fetcher?.resetCriteria();
-    this.contextValue = this.contextValue.replaceAll(".FILTERED", "");
     PersistentStorage.setCriteria(this.buildCriteriaStorageKey());
+    this.knownToHaveResources = false;
+    this.updateFilterContext();
   }
 
   getSessionNode() {
@@ -193,6 +210,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
     if (this.items.length === 0) {
       const fetched = await this.fetcher.fetchNextPage();
       this.items.push(...fetched);
+      this.knownToHaveResources = this.items.length > 0;
+      this.updateFilterContext();
 
       // Reset before checking — ensures a clean re-load clears a stale badge.
       this.tooltip = undefined;
@@ -296,6 +315,8 @@ export class CICSResourceContainerNode<T extends IResource> extends CICSTreeNode
   }
 
   async reset() {
+    // `knownToHaveResources` is deliberately kept: collapsing a node resets it, and the node's
+    // "View in table" state should not flip just because it was collapsed.
     this.items = [];
     await this.fetcher?.reset();
   }

@@ -543,12 +543,12 @@
           "group": "1.CICSResourceNode.inquire"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.TABLEABLE.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.viewInTable",
           "group": "inline"
         },
         {
-          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.FILTERABLE.*/ && !listMultiSelection",
+          "when": "view == cics-view && viewItem =~ /^CICSResourceNode.*.TABLEABLE.*/ && !listMultiSelection",
           "command": "cics-extension-for-zowe.viewInTable",
           "group": "1.CICSResourceNode.inquire"
         },

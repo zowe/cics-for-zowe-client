@@ -96,6 +96,17 @@ describe("CICSResourceContainerNode tests", () => {
     expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE");
   });
 
+  it("should not be TABLEABLE for a filtered plex-wide node until its resources are loaded", async () => {
+    const plexWideNode = new CICSResourceContainerNode("All Programs", { profile, parentNode: regionTree }, undefined, [ProgramMeta]);
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE");
+
+    plexWideNode.setCriteria(["a"]);
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE.FILTERED");
+
+    await plexWideNode.getChildren();
+    expect(plexWideNode.contextValue).toEqual("CICSResourceNode.All Programs.FILTERABLE.FILTERED.TABLEABLE");
+  });
+
   it("should build context values with contained resources", () => {
     containerNode = new CICSResourceContainerNode(
       "Programs",
@@ -195,6 +206,44 @@ describe("CICSResourceContainerNode tests", () => {
 
     expect(fetcherSpy).toHaveBeenCalledTimes(1);
     expect(ensureSumSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should only be TABLEABLE once resources are known, and stay so on collapse until the filter changes", async () => {
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE");
+
+    await containerNode.getChildren();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.TABLEABLE");
+
+    // Collapsing a node calls reset(); the node is still known to have resources
+    await containerNode.reset();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.TABLEABLE");
+
+    containerNode.setCriteria(["OTHER"]);
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.FILTERED");
+
+    await containerNode.reset();
+    await containerNode.getChildren(); // consumes the pending description-update refresh from the earlier load
+    await containerNode.getChildren();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.FILTERED.TABLEABLE");
+
+    containerNode.clearCriteria();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE");
+  });
+
+  it("should not be TABLEABLE when loaded with no results, including after collapse", async () => {
+    getCacheMock.mockResolvedValue({
+      response: {
+        resultsummary: { recordcount: "0" },
+        records: { cicsprogram: [] },
+      },
+    });
+
+    containerNode.setCriteria(["NOSUCHPROG"]);
+    await containerNode.getChildren();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.FILTERED");
+
+    await containerNode.reset();
+    expect(containerNode.contextValue).toEqual("CICSResourceNode.Programs.FILTERABLE.FILTERED");
   });
 
   it("should get children", async () => {
