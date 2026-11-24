@@ -33,7 +33,7 @@ function collectProdDependencies(pkgDir) {
         continue;
       }
       if (info && info.version) {
-        pkgMap.set(name, info.version);
+        pkgMap.set(`${name}@${info.version}`, { name, version: info.version });
       }
       if (info.dependencies) {
         walk(info.dependencies);
@@ -43,9 +43,9 @@ function collectProdDependencies(pkgDir) {
 
   walk(data.dependencies);
 
-  return Array.from(pkgMap.entries())
-    .map(([name, version]) => ({ name, version }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  return Array.from(pkgMap.values()).sort(
+    (a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version)
+  );
 }
 
 async function updateNotices() {
