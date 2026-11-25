@@ -35,10 +35,7 @@ jobs:
 
       - name: Update Dependencies
         id: npm-update
-        uses: zowe-actions/octorelease/script@e4c509e08c4dfca0186571e937c605284a50de06 # v1
-        with:
-          config-dir: .github
-          script: npmUpdate
+        run: node scripts/updateZoweDeps.js
 
       - name: Build Source
         id: build

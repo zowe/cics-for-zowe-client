@@ -52,10 +52,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease/script@e4c509e08c4dfca0186571e937c605284a50de06 # v1
-      with:
-        config-dir: .github
-        script: npmUpdate
+      run: node scripts/updateZoweDeps.js
 
     - name: Build Source
       id: build
@@ -181,14 +178,11 @@ jobs:
       run: pnpm install --frozen-lockfile
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease/script@e4c509e08c4dfca0186571e937c605284a50de06 # v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
         NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
-      with:
-        config-dir: .github
-        script: npmUpdate
+      run: node scripts/updateZoweDeps.js --commit
 
     - name: Update NOTICE file
       run: bash scripts/updateNotices.sh
