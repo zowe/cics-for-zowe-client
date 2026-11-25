@@ -15,7 +15,7 @@
         "--verbose"
       ],
       "outFiles": ["${workspaceFolder}/packages/vsce/dist/**/*.js"],
-      "preLaunchTask": "npm run watch",
+      "preLaunchTask": "pnpm run watch",
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"],
       "enableTurboSourcemaps": true,
@@ -25,7 +25,7 @@
       "type": "node",
       "request": "launch",
       "name": "Run VSCE Tests",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "cwd": "${workspaceFolder}/packages/vsce",
       "args": [ "test" ],
       "enableTurboSourcemaps": true,

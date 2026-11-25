@@ -14,8 +14,14 @@ const fs = require("fs");
 const path = require("path");
 const packageName = process.argv[2];
 const extension = process.argv[3];
-const fullPackageName = `${packageName}-${process.env.npm_package_version}.${extension}`;
-let targetPath = path.join("..", "..", "dist", fullPackageName);
+const packageJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), "package.json"), "utf8"));
+const packageVersion = process.env.npm_package_version || packageJson.version;
+const fullPackageName = `${packageName}-${packageVersion}.${extension}`;
+const distDir = path.join("..", "..", "dist");
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+}
+let targetPath = path.join(distDir, fullPackageName);
 if (targetPath.includes("-SNAPSHOT") && process.env.GITHUB_REF_PROTECTED !== "true") {
     const gitBranch = childProcess.execSync("git rev-parse --abbrev-ref HEAD").toString().trim().replace(/\//g, "_");
     const gitSha = process.env.CI && childProcess.execSync("git rev-parse --short HEAD").toString().trim();

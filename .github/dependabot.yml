@@ -24,3 +24,33 @@ updates:
           - "patch"
     open-pull-requests-limit: 10
     target-branch: "zowe-v2-lts"
+  # Keep Zowe dependencies up to date
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/packages/*"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-name: "@zowe/imperative"
+      - dependency-name: "@zowe/zowe-explorer-api"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 10
+    target-branch: "main"
+  # Keep Zowe dependencies up to date
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/packages/*"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-name: "@zowe/imperative"
+      - dependency-name: "@zowe/zowe-explorer-api"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 10
+    target-branch: "zowe-v2-lts"
